@@ -8,6 +8,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <style>
+        @keyframes subtlePan {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* Design System Tokens */
         :root {
             --bg-base: #121417;
@@ -27,8 +37,11 @@
 
         body {
             background-color: var(--bg-base);
-            /* 그라데이션 배경으로 깊이감 연출 */
-            background-image: radial-gradient(circle at 50% -20%, #2a313b 0%, transparent 60%);
+            /* 애니메이션 효과가 들어간 깊은 다크 그래디언트 */
+            background-image: radial-gradient(circle at 30% 0%, #2a313b 0%, transparent 50%),
+                              radial-gradient(circle at 70% 100%, #1a222c 0%, transparent 50%);
+            background-size: 200% 200%;
+            animation: subtlePan 15s ease infinite alternate;
             color: var(--text-primary);
             font-family: var(--font-main);
             height: 100vh;
@@ -83,9 +96,14 @@
             border-radius: 6px;
             cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .tool-btn:hover { background: var(--hover-bg); color: var(--text-primary); }
+        .tool-btn:hover { 
+            background: var(--hover-bg); 
+            color: var(--text-primary);
+            transform: scale(1.05); /* 호버 시 마이크로 애니메이션 강화 */
+        }
+        .tool-btn:active { transform: scale(0.95); }
         .tool-btn.active { background: var(--selected-bg); color: var(--accent); }
 
         .file-upload-wrapper { position: relative; }
@@ -192,14 +210,15 @@
 
         /* HTML IFrame Viewer */
         .artboard-iframe {
-            box-shadow: var(--box-shadow);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
             border-radius: 6px;
-            background: #ffffff; /* HTML 기본 화이트 배경 */
-            width: 1440px; /* 데스크탑 표준 너비 */
+            background: #ffffff;
+            width: 1440px; 
             height: 900px;
             border: 1px solid rgba(255,255,255,0.2);
             display: none; 
-            transition: opacity 0.2s;
+            transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s;
+            animation: fadeInSlideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
         .placeholder-card {
@@ -287,6 +306,13 @@
             <button class="tool-btn active" id="btn-select" title="선택 도구 (V)"><span class="material-icons-outlined">near_me</span></button>
             <button class="tool-btn" id="btn-hand" title="이동 도구 (Space)"><span class="material-icons-outlined">pan_tool</span></button>
             <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+            
+            <!-- 기기 뷰어 버튼 -->
+            <button class="tool-btn" onclick="setDeviceViewport('mobile', 375, 812)" title="Mobile View (375x812)"><span class="material-icons-outlined">smartphone</span></button>
+            <button class="tool-btn" onclick="setDeviceViewport('tablet', 768, 1024)" title="Tablet View (768x1024)"><span class="material-icons-outlined">tablet_mac</span></button>
+            <button class="tool-btn active" id="btn-desktop" onclick="setDeviceViewport('desktop', 1440, 900)" title="Desktop View (1440x900)"><span class="material-icons-outlined">desktop_windows</span></button>
+            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+            
             <label class="file-upload-wrapper tool-btn" title="로컬 HTML 업로드">
                 <span class="material-icons-outlined">note_add</span>
                 <input type="file" id="file-upload-top" accept=".html,.htm" multiple>
@@ -495,6 +521,28 @@
                 `;
                 centerViewForImage(f.w, f.h);
             }
+        }
+
+        // 3.5 Device Viewport Management
+        function setDeviceViewport(type, w, h) {
+            // 버튼 활성화 상태 업데이트
+            document.querySelectorAll('.tools .tool-btn[onclick^="setDeviceViewport"]').forEach(btn => btn.classList.remove('active'));
+            if(type === 'mobile') document.querySelector('.tools .tool-btn[onclick*="mobile"]').classList.add('active');
+            else if(type === 'tablet') document.querySelector('.tools .tool-btn[onclick*="tablet"]').classList.add('active');
+            else document.getElementById('btn-desktop').classList.add('active');
+
+            // iframe 크기 조절 (CSS 트랜지션 효과 적용됨)
+            DOM.iframe.style.width = w + 'px';
+            DOM.iframe.style.height = h + 'px';
+
+            // 크기 변경 후 약간의 지연 후에 도화지 중심 맞춤 (트랜지션이 부드럽게 보이도록)
+            setTimeout(() => {
+                const cw = DOM.canvas.clientWidth;
+                const ch = DOM.canvas.clientHeight;
+                const s = Math.min((cw * 0.8) / w, (ch * 0.8) / h, 1);
+                state.transform = {x: 0, y: 0, scale: s};
+                updateTransform();
+            }, 50);
         }
 
         // 4. Tools (Select vs Pan)
