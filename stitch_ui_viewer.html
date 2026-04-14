@@ -369,6 +369,18 @@
                     <p style="margin-top:12px; font-size:12px; color:var(--text-secondary); line-height:1.5;">HTML 파일 업로드<br>(클릭 또는 드롭)</p>
                 </label>
 
+                <!-- GitHub Integration -->
+                <div class="prop-section">
+                    <div class="prop-title" style="display:flex; justify-content:space-between; align-items:center;">
+                        GitHub Sync
+                        <span id="gh-status" style="font-size:10px; font-weight:normal; color:var(--text-secondary);"></span>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <input type="password" id="gh-token" placeholder="Personal Access Token" style="flex:1; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); color:#fff; padding:6px 10px; border-radius:4px; font-size:12px;" />
+                        <button class="tool-btn" id="btn-save-token" style="width:auto; padding:0 12px; font-size:12px; height:auto;">Save</button>
+                    </div>
+                </div>
+
                 <!-- Properties Panel -->
                 <div id="properties-panel" style="margin-top: 16px;">
                     <div class="empty-text" style="padding:10px 0;">선택된 화면이 없습니다.</div>
@@ -389,6 +401,12 @@
             startX: 0, startY: 0
         };
 
+        const ghConfig = {
+            owner: 'bychoi-space',
+            repo: 'AI-work',
+            token: localStorage.getItem('gh_token') || ''
+        };
+
         // UI Reference
         const DOM = {
             uploadTop: document.getElementById('file-upload-top'),
@@ -404,6 +422,66 @@
             btnSelect: document.getElementById('btn-select'),
             btnHand: document.getElementById('btn-hand')
         };
+
+        // Setup GitHub Settings
+        if (ghConfig.token) {
+            document.getElementById('gh-token').value = ghConfig.token;
+            document.getElementById('gh-status').innerText = '가동 중🟢';
+            document.getElementById('gh-status').style.color = '#4ade80';
+        }
+        document.getElementById('btn-save-token').addEventListener('click', () => {
+            const val = document.getElementById('gh-token').value.trim();
+            localStorage.setItem('gh_token', val);
+            ghConfig.token = val;
+            alert(val ? "GitHub 토큰이 안전하게 저장되었습니다!" : "토큰이 삭제되었습니다.");
+            document.getElementById('gh-status').innerText = val ? '가동 중🟢' : '';
+            document.getElementById('gh-status').style.color = '#4ade80';
+        });
+
+        function encodeBase64(str) {
+            return btoa(unescape(encodeURIComponent(str)));
+        }
+
+        async function uploadToGitHub(filename, content) {
+            if (!ghConfig.token) return; 
+            
+            const statusEl = document.getElementById('gh-status');
+            statusEl.innerText = '업로드 중 ⏳';
+            statusEl.style.color = '#facc15';
+
+            try {
+                const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${filename}`;
+                
+                let sha = undefined;
+                const getRes = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
+                if (getRes.ok) {
+                    const data = await getRes.json();
+                    sha = data.sha;
+                }
+
+                const putRes = await fetch(url, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `token ${ghConfig.token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: `Auto-upload: ${filename} from UI Viewer`,
+                        content: encodeBase64(content),
+                        sha: sha
+                    })
+                });
+
+                if (putRes.ok) {
+                    statusEl.innerText = '저장 완료 ✅';
+                    statusEl.style.color = '#4ade80';
+                    setTimeout(() => statusEl.innerText = '가동 중🟢', 3000);
+                } else {
+                    throw new Error('Upload failed');
+                }
+            } catch (err) {
+                console.error(err);
+                statusEl.innerText = '오류 발생 ❌';
+                statusEl.style.color = '#ef4444';
+            }
+        }
 
         // 1. File Upload & Processing (HTML 전용)
         function processFiles(fileList) {
@@ -432,6 +510,9 @@
                     state.files.unshift(newFile);
                     renderList();
                     if(!state.activeId) selectFile(newFile.id);
+                    
+                    // GitHub 자동 업로드 호출
+                    uploadToGitHub(file.name, htmlCode);
                 };
                 reader.readAsText(file); // HTML 요소를 위해 텍스트로 읽음
             });
