@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BYCHOI 화면설계 스튜디오 (Screen Design Studio)</title>
+    <!-- 폰트 및 아이콘 시스템 적용 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        /* Design System Tokens */
+        :root {
+            --bg-base: #121417;
+            --panel-bg: rgba(28, 31, 35, 0.7); /* Glassmorphism 패널 */
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f0f0f0;
+            --text-secondary: #9aa0a6;
+            --accent: #a8c7fa; 
+            --accent-hover: #c2e7ff;
+            --hover-bg: rgba(255, 255, 255, 0.04);
+            --selected-bg: rgba(168, 199, 250, 0.12);
+            --font-main: 'Inter', -apple-system, sans-serif;
+            --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-base);
+            /* 그라데이션 배경으로 깊이감 연출 */
+            background-image: radial-gradient(circle at 50% -20%, #2a313b 0%, transparent 60%);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ----------------------------------------------------
+           1. Header Toolbar (상단 바)
+           ---------------------------------------------------- */
+        .toolbar {
+            height: 56px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+        }
+        .brand-icon { 
+            color: var(--accent); 
+            font-size: 22px; 
+        }
+
+        .tools {
+            display: flex;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tool-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            width: 34px; height: 34px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .tool-btn:hover { background: var(--hover-bg); color: var(--text-primary); }
+        .tool-btn.active { background: var(--selected-bg); color: var(--accent); }
+
+        .file-upload-wrapper { position: relative; }
+        .file-upload-wrapper input[type="file"] { position: absolute; width: 0; height: 0; opacity: 0; }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+        }
+        .zoom-level { color: var(--text-secondary); width: 44px; text-align: right; }
+
+        /* ----------------------------------------------------
+           2. Main Workspace (메인 레이아웃)
+           ---------------------------------------------------- */
+        .workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Sidebars */
+        .sidebar {
+            width: 280px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            z-index: 5;
+        }
+        .sidebar-left { border-right: 1px solid var(--border-color); }
+        .sidebar-right { border-left: 1px solid var(--border-color); }
+
+        .panel-header {
+            padding: 18px 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        /* Object List (좌측) */
+        .layer-list { list-style: none; }
+        .layer-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .layer-item:hover { background: var(--hover-bg); }
+        .layer-item.active { background: var(--selected-bg); color: #fff; }
+        .layer-item.active .material-icons-outlined { color: var(--accent); }
+        .layer-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .empty-text {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* ----------------------------------------------------
+           3. Canvas (도화지 / 중앙 영역)
+           ---------------------------------------------------- */
+        .canvas {
+            flex: 1;
+            background-color: var(--bg-base);
+            background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+            background-size: 24px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .canvas.hand-active { cursor: grab; }
+        .canvas.hand-active:active { cursor: grabbing; }
+
+        /* The scaling container */
+        .stage {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            transform-origin: 0 0;
+            will-change: transform;
+        }
+        
+        .artboard-wrapper {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* HTML IFrame Viewer */
+        .artboard-iframe {
+            box-shadow: var(--box-shadow);
+            border-radius: 6px;
+            background: #ffffff; /* HTML 기본 화이트 배경 */
+            width: 1440px; /* 데스크탑 표준 너비 */
+            height: 900px;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: none; 
+            transition: opacity 0.2s;
+        }
+
+        .placeholder-card {
+            background: rgba(30, 30, 35, 0.6);
+            border: 1px dashed rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 40px 60px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            color: var(--text-secondary);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+        .placeholder-card:hover { background: rgba(40, 40, 45, 0.6); }
+        .placeholder-card i { font-size: 48px; margin-bottom: 20px; color: var(--text-primary); opacity: 0.8; }
+
+        /* ----------------------------------------------------
+           4. Properties & Upload Zone (우측 패널)
+           ---------------------------------------------------- */
+        .upload-zone {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 30px 20px;
+            cursor: pointer;
+            text-align: center;
+            background: rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--accent);
+            background: rgba(168, 199, 250, 0.05);
+        }
+
+        .prop-section {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .prop-section:last-child { border-bottom: none; }
+        .prop-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+        .prop-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 12px;
+            align-items: center;
+        }
+        .prop-row:last-child { margin-bottom: 0; }
+        .prop-label { color: var(--text-secondary); width: 80px; }
+        .prop-value-box {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Inter', monospace;
+            color: var(--text-primary);
+            flex: 1;
+            text-align: right;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body>
+
+    <!-- Header Toolbar -->
+    <header class="toolbar">
+        <div class="brand">
+            <span class="material-icons-outlined brand-icon">art_track</span>
+            <span style="font-weight: 600; letter-spacing: 0.5px;">BYCHOI Screen Design Studio</span>
+        </div>
+        
+        <!-- Center Tools -->
+        <div class="tools">
+            <button class="tool-btn active" id="btn-select" title="선택 도구 (V)"><span class="material-icons-outlined">near_me</span></button>
+            <button class="tool-btn" id="btn-hand" title="이동 도구 (Space)"><span class="material-icons-outlined">pan_tool</span></button>
+            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+            <label class="file-upload-wrapper tool-btn" title="로컬 HTML 업로드">
+                <span class="material-icons-outlined">note_add</span>
+                <input type="file" id="file-upload-top" accept=".html,.htm" multiple>
+            </label>
+        </div>
+
+        <!-- Right Actions -->
+        <div class="actions">
+            <span class="zoom-level" id="zoom-txt">100%</span>
+            <button class="tool-btn" onclick="centerView()" title="가운데 맞춤"><span class="material-icons-outlined">center_focus_strong</span></button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="workspace">
+        <!-- Left Panel: Pages / Layers -->
+        <aside class="sidebar sidebar-left">
+            <div class="panel-header">HTML Pages</div>
+            <div class="panel-content">
+                <ul class="layer-list" id="file-list">
+                    <div class="empty-text">
+                        업로드된 화면이 없습니다.<br><br>
+                        <span class="material-icons-outlined" style="font-size:24px; margin-top: 12px; opacity: 0.5;">cloud_upload</span>
+                    </div>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Center: Interactive Canvas -->
+        <main class="canvas" id="canvas">
+            <div class="stage" id="stage">
+                <div class="artboard-wrapper">
+                    <!-- Image를 HTML Iframe으로 변경 -->
+                    <iframe id="main-iframe" class="artboard-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+                    
+                    <div class="placeholder-card" id="placeholder">
+                        <i class="material-icons-outlined">web</i>
+                        <h3 style="color:var(--text-primary); font-weight: 500; font-size: 15px;">HTML 웹 설계서 뷰어</h3>
+                        <p style="margin-top: 8px; font-size: 13px;">우측 업로드 영역 혹은 화면 아무 곳에<br>`.html` 파일을 끌어다 놓으세요.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Panel: Properties & Upload Zone -->
+        <aside class="sidebar sidebar-right">
+            <div class="panel-header">Upload & Properties</div>
+            <div class="panel-content" style="padding: 16px;">
+                
+                <!-- 우측 업로드 영역 추가 -->
+                <label id="right-upload-zone" class="upload-zone">
+                    <input type="file" id="file-upload-right" accept=".html,.htm" multiple hidden>
+                    <i class="material-icons-outlined" style="font-size:36px; color:var(--accent);">upload_file</i>
+                    <p style="margin-top:12px; font-size:12px; color:var(--text-secondary); line-height:1.5;">HTML 파일 업로드<br>(클릭 또는 드롭)</p>
+                </label>
+
+                <!-- Properties Panel -->
+                <div id="properties-panel" style="margin-top: 16px;">
+                    <div class="empty-text" style="padding:10px 0;">선택된 화면이 없습니다.</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Interface Logic -->
+    <script>
+        // State Management
+        const state = {
+            files: [],
+            activeId: null,
+            tool: 'select',
+            transform: { x: 0, y: 0, scale: 1 },
+            isDragging: false,
+            startX: 0, startY: 0
+        };
+
+        // UI Reference
+        const DOM = {
+            uploadTop: document.getElementById('file-upload-top'),
+            uploadRight: document.getElementById('file-upload-right'),
+            rightZone: document.getElementById('right-upload-zone'),
+            list: document.getElementById('file-list'),
+            canvas: document.getElementById('canvas'),
+            stage: document.getElementById('stage'),
+            iframe: document.getElementById('main-iframe'),
+            placeholder: document.getElementById('placeholder'),
+            props: document.getElementById('properties-panel'),
+            zoomTxt: document.getElementById('zoom-txt'),
+            btnSelect: document.getElementById('btn-select'),
+            btnHand: document.getElementById('btn-hand')
+        };
+
+        // 1. File Upload & Processing (HTML 전용)
+        function processFiles(fileList) {
+            const newFiles = Array.from(fileList).filter(f => f.name.endsWith('.html') || f.name.endsWith('.htm') || f.type === 'text/html');
+            if(newFiles.length === 0) {
+                alert("HTML 파일만 업로드할 수 있습니다 (.html 기호를 확인해주세요).");
+                return;
+            }
+
+            newFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    const htmlCode = ev.target.result;
+                    // HTML 텍스트를 IFrame에 넣기 위해 Blob URL로 변환
+                    const blob = new Blob([htmlCode], {type: 'text/html;charset=utf-8'});
+                    const blobUrl = URL.createObjectURL(blob);
+
+                    const newFile = {
+                        id: 'html_' + Date.now() + Math.random().toString(16).slice(2,8),
+                        name: file.name,
+                        src: blobUrl,
+                        w: 1440, // Web 기본 해상도 매핑
+                        h: 900,
+                        size: (file.size / 1024).toFixed(1) + ' KB'
+                    };
+                    state.files.unshift(newFile);
+                    renderList();
+                    if(!state.activeId) selectFile(newFile.id);
+                };
+                reader.readAsText(file); // HTML 요소를 위해 텍스트로 읽음
+            });
+        }
+
+        // Bind File Inputs
+        DOM.uploadTop.addEventListener('change', (e) => { processFiles(e.target.files); e.target.value = ''; });
+        DOM.uploadRight.addEventListener('change', (e) => { processFiles(e.target.files); e.target.value = ''; });
+
+        // 1.5 Global Drag & Drop with Right Zone Highlight
+        let dragCounter = 0;
+
+        document.body.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+            dragCounter++;
+            DOM.rightZone.classList.add('dragover');
+        });
+
+        document.body.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        document.body.addEventListener('dragleave', (e) => {
+            dragCounter--;
+            if (dragCounter === 0) {
+                DOM.rightZone.classList.remove('dragover');
+            }
+        });
+
+        document.body.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragCounter = 0;
+            DOM.rightZone.classList.remove('dragover');
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                processFiles(e.dataTransfer.files);
+            }
+        });
+
+        // 2. Layer List Rendering
+        function renderList() {
+            if(state.files.length === 0) return;
+            DOM.list.innerHTML = '';
+            state.files.forEach(f => {
+                const li = document.createElement('li');
+                li.className = 'layer-item ' + (f.id === state.activeId ? 'active' : '');
+                li.innerHTML = `<span class="material-icons-outlined">web</span><span class="layer-name" title="${f.name}">${f.name}</span>`;
+                li.onclick = () => selectFile(f.id);
+                DOM.list.appendChild(li);
+            });
+        }
+
+        // 3. Selection & IFrame View Update
+        function selectFile(id) {
+            state.activeId = id;
+            renderList();
+            const f = state.files.find(x => x.id === id);
+            
+            if(f) {
+                DOM.placeholder.style.display = 'none';
+                DOM.iframe.src = f.src;
+                DOM.iframe.style.display = 'block';
+                
+                // Update Properties Panel
+                DOM.props.innerHTML = `
+                    <div class="prop-section">
+                        <div class="prop-title">File Info</div>
+                        <div class="prop-row">
+                            <span class="prop-label">Name</span>
+                            <div class="prop-value-box" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${f.name}">${f.name}</div>
+                        </div>
+                        <div class="prop-row">
+                            <span class="prop-label">Size</span>
+                            <div class="prop-value-box">${f.size}</div>
+                        </div>
+                    </div>
+                    <div class="prop-section">
+                        <div class="prop-title">Default Dimensions</div>
+                        <div class="prop-row">
+                            <span class="prop-label">View Width</span>
+                            <div class="prop-value-box">${f.w}</div>
+                        </div>
+                        <div class="prop-row">
+                            <span class="prop-label">View Height</span>
+                            <div class="prop-value-box">${f.h}</div>
+                        </div>
+                    </div>
+                `;
+                centerViewForImage(f.w, f.h);
+            }
+        }
+
+        // 4. Tools (Select vs Pan)
+        function setTool(t) {
+            state.tool = t;
+            DOM.btnSelect.classList.toggle('active', t === 'select');
+            DOM.btnHand.classList.toggle('active', t === 'hand');
+            DOM.canvas.classList.toggle('hand-active', t === 'hand');
+            // Allow pointer events on iframe only when the 'Select' tool is active.
+            // This grants iframe scrolling/clicking naturally. If 'Hand', we steal dragging!
+            DOM.iframe.style.pointerEvents = t === 'hand' ? 'none' : 'auto';
+        }
+        DOM.btnSelect.onclick = () => setTool('select');
+        DOM.btnHand.onclick = () => setTool('hand');
+
+        // Shortcut Keys (Spacebar temporarily overrides Select Tool to Hand)
+        window.addEventListener('keydown', e => {
+            if(e.code === 'Space' && state.tool !== 'hand' && e.target.tagName !== 'INPUT') {
+                DOM.canvas.classList.add('hand-active');
+                DOM.iframe.style.pointerEvents = 'none';
+            }
+            if(e.code === 'KeyV' && e.target.tagName !== 'INPUT') setTool('select');
+            if(e.code === 'KeyH' && e.target.tagName !== 'INPUT') setTool('hand');
+        });
+        window.addEventListener('keyup', e => {
+            if(e.code === 'Space' && state.tool !== 'hand') {
+                DOM.canvas.classList.remove('hand-active');
+                DOM.iframe.style.pointerEvents = 'auto'; // 리스토어
+            }
+        });
+
+        // 5. Canvas Pan & Zoom Engine
+        function updateTransform() {
+            DOM.stage.style.transform = `translate(${state.transform.x}px, ${state.transform.y}px) scale(${state.transform.scale})`;
+            DOM.zoomTxt.innerText = Math.round(state.transform.scale * 100) + '%';
+        }
+
+        window.centerView = function() {
+            state.transform = {x: 0, y: 0, scale: 1};
+            updateTransform();
+        }
+
+        function centerViewForImage(iw, ih) {
+            const cw = DOM.canvas.clientWidth;
+            const ch = DOM.canvas.clientHeight;
+            // Pad 20%
+            const s = Math.min((cw * 0.8) / iw, (ch * 0.8) / ih, 1);
+            state.transform = {x: 0, y: 0, scale: s};
+            updateTransform();
+        }
+
+        DOM.canvas.addEventListener('wheel', e => {
+            // Iframe 내부에서 스크롤을 시도할 수도 있으니, 
+            // Select 툴 상태에서 iframe 영역에 마우스를 둔 경우 wheel 이벤트가 iframe 내부를 움직입니다.
+            // 이 이벤트 리스너는 canvas (Stage 영역 밖 혹은 pointer-events가 none일 때) 동작합니다.
+            
+            e.preventDefault();
+            const s = state.transform.scale;
+            // Zoom behavior
+            const zoomSensitivity = 0.05;
+            const delta = e.deltaY > 0 ? -zoomSensitivity : zoomSensitivity;
+            const ns = Math.max(0.05, Math.min(s * (1 + delta), 20)); // allow large zoom
+            
+            // Zoom precisely to cursor position
+            const r = DOM.canvas.getBoundingClientRect();
+            const mx = e.clientX - r.left;
+            const my = e.clientY - r.top;
+            
+            state.transform.x = mx - (mx - state.transform.x) * (ns / s);
+            state.transform.y = my - (my - state.transform.y) * (ns / s);
+            state.transform.scale = ns;
+            updateTransform();
+        }, {passive: false});
+
+        DOM.canvas.addEventListener('mousedown', e => {
+            const isHand = state.tool === 'hand' || e.button === 1 || DOM.canvas.classList.contains('hand-active');
+            if(isHand) {
+                state.isDragging = true;
+                state.startX = e.clientX - state.transform.x;
+                state.startY = e.clientY - state.transform.y;
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('mousemove', e => {
+            if(!state.isDragging) return;
+            state.transform.x = e.clientX - state.startX;
+            state.transform.y = e.clientY - state.startY;
+            updateTransform();
+        });
+
+        window.addEventListener('mouseup', () => state.isDragging = false);
+
+        // Initial setup
+        updateTransform();
+    </script>
+</body>
+</html>
