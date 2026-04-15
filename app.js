@@ -91,7 +91,11 @@ async function syncFilesFromGitHub(callback) {
         if (!res.ok) throw new Error('Sync failed');
         
         const data = await res.json();
-        const htmlFiles = data.filter(item => item.name.endsWith('.html') || item.name.endsWith('.htm'));
+        const systemFiles = ['index.html', 'viewer.html', 'style.css', 'app.js', 'stitch_ui_viewer.html'];
+        const htmlFiles = data.filter(item => 
+            (item.name.endsWith('.html') || item.name.endsWith('.htm')) && 
+            !systemFiles.includes(item.name)
+        );
         
         if (callback) callback(htmlFiles);
         return htmlFiles;
