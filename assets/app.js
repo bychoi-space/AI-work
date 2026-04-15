@@ -5,7 +5,8 @@
 const ghConfig = {
     owner: 'bychoi-space',
     repo: 'AI-work',
-    token: localStorage.getItem('gh_token') || ''
+    token: localStorage.getItem('gh_token') || '',
+    dataDir: 'data/' // 사용자 파일 저장 폴더
 };
 
 function encodeBase64(str) {
@@ -21,7 +22,7 @@ async function uploadToGitHub(filename, content, statusCallback) {
     if (statusCallback) statusCallback('업로드 중 ⏳', '#facc15');
 
     try {
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${filename}`;
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${filename}`;
         
         let sha = undefined;
         const getRes = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
@@ -63,7 +64,7 @@ async function fetchFileContent(filename) {
     if (!ghConfig.token) return null;
     
     try {
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${filename}`;
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${filename}`;
         const res = await fetch(url, { 
             headers: { 
                 'Authorization': `token ${ghConfig.token}`,
@@ -86,7 +87,7 @@ async function syncFilesFromGitHub(callback) {
     if (!ghConfig.token) return [];
     
     try {
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/`;
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}`;
         const res = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
         if (!res.ok) throw new Error('Sync failed');
         
@@ -114,7 +115,7 @@ async function deleteFileFromGitHub(filename, sha, statusCallback) {
     if (statusCallback) statusCallback('삭제 중 ⏳', '#f87171');
 
     try {
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${filename}`;
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${filename}`;
         
         const res = await fetch(url, {
             method: 'DELETE',
