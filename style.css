@@ -387,3 +387,40 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* Delete Buttons */
+.delete-btn-card {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+.delete-btn-card:hover {
+    background: #ef4444;
+    color: #fff;
+    transform: scale(1.1);
+}
+.delete-btn-card span { font-size: 18px; }
+
+.tool-btn-danger {
+    color: #f87171;
+}
+.tool-btn-danger:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #ef4444 !important;
+}
+.tool-btn-danger.active {
+    background: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}

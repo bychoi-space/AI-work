@@ -100,3 +100,43 @@ async function syncFilesFromGitHub(callback) {
         return [];
     }
 }
+
+/**
+ * GitHub API Helper: Delete file
+ */
+async function deleteFileFromGitHub(filename, sha, statusCallback) {
+    if (!ghConfig.token || !sha) return false;
+
+    if (statusCallback) statusCallback('삭제 중 ⏳', '#f87171');
+
+    try {
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${filename}`;
+        
+        const res = await fetch(url, {
+            method: 'DELETE',
+            headers: { 
+                'Authorization': `token ${ghConfig.token}`,
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({
+                message: `Delete: ${filename} from UI Viewer`,
+                sha: sha
+            })
+        });
+
+        if (res.ok) {
+            if (statusCallback) {
+                statusCallback('삭제 완료 ✅', '#4ade80');
+                setTimeout(() => statusCallback('가동 중🟢', '#4ade80'), 2000);
+            }
+            return true;
+        } else {
+            throw new Error('Delete failed');
+        }
+    } catch (err) {
+        console.error(err);
+        if (statusCallback) statusCallback('삭제 오류 ❌', '#ef4444');
+        return false;
+    }
+}
+
