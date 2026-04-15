@@ -151,13 +151,12 @@
             background: var(--panel-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 20px;
+            padding: 16px;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
         .file-card:hover {
@@ -167,22 +166,46 @@
             background: var(--hover-bg);
         }
 
+        .file-card .thumbnail-wrapper {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: border-color 0.2s;
+        }
+        
+        .file-card:hover .thumbnail-wrapper {
+            border-color: rgba(0, 229, 255, 0.3);
+        }
+
+        .file-card .thumbnail-iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 1440px; 
+            height: 900px;
+            border: none;
+            transform-origin: 0 0;
+            pointer-events: none;
+            background: #fff;
+        }
+
         .file-card .icon-wrapper {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
-            background: rgba(0, 229, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--accent);
         }
-
-        .file-card .icon-wrapper .material-icons-outlined { font-size: 32px; }
         
         .file-card .card-info {
-            text-align: center;
+            text-align: left;
             width: 100%;
+            padding: 0 4px;
         }
 
         .file-card .card-name {
@@ -277,16 +300,15 @@
         /* The scaling container */
         .stage {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0; left: 0;
             transform-origin: 0 0;
             will-change: transform;
         }
         
         .artboard-wrapper {
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex; align-items: center; justify-content: center;
+            top: 0; left: 0;
+            display: flex; align-items: flex-start; justify-content: flex-start;
         }
 
         /* HTML IFrame Viewer */
@@ -720,13 +742,25 @@
                 const card = document.createElement('div');
                 card.className = 'file-card';
                 card.onclick = () => selectFile(f.id);
+
+                let thumbnailHtml = '';
+                if (f.src) { 
+                    thumbnailHtml = `<iframe src="${f.src}" class="thumbnail-iframe" style="transform: scale(0.18);" tabindex="-1"></iframe>`;
+                } else {
+                    thumbnailHtml = `
+                        <div class="icon-wrapper" style="width: 100%; height: 100%;">
+                            <span class="material-icons-outlined" style="font-size: 36px; opacity: 0.4;">cloud_download</span>
+                        </div>
+                    `;
+                }
+
                 card.innerHTML = `
-                    <div class="icon-wrapper">
-                        <span class="material-icons-outlined">web</span>
+                    <div class="thumbnail-wrapper">
+                        ${thumbnailHtml}
                     </div>
                     <div class="card-info">
                         <div class="card-name" title="${f.name}">${f.name}</div>
-                        <div class="card-meta">${f.isRemote ? 'Cloud' : 'Local'} • ${f.size}</div>
+                        <div class="card-meta">${f.isRemote ? 'Cloud' : 'Local'} • ${f.size} ${!f.src && f.isRemote ? '(Click to Download)' : ''}</div>
                     </div>
                 `;
                 DOM.list.appendChild(card);
@@ -746,6 +780,8 @@
                     statusEl.innerText = '로드 중... ⏳';
                     await fetchFileContent(f);
                     statusEl.innerText = '가동 중🟢';
+                    // 다운로드 완료 시 목록 화면의 썸네일도 갱신
+                    renderList();
                 }
 
                 DOM.placeholder.style.display = 'none';
@@ -830,11 +866,7 @@
 
             // 크기 변경 후 약간의 지연 후에 도화지 중심 맞춤 (트랜지션이 부드럽게 보이도록)
             setTimeout(() => {
-                const cw = DOM.canvas.clientWidth;
-                const ch = DOM.canvas.clientHeight;
-                const s = Math.min((cw * 0.8) / w, (ch * 0.8) / h, 1);
-                state.transform = {x: 0, y: 0, scale: s};
-                updateTransform();
+                centerViewForImage(w, h);
             }, 50);
         }
 
@@ -877,8 +909,15 @@
         }
 
         window.centerView = function() {
-            state.transform = {x: 0, y: 0, scale: 1};
-            updateTransform();
+            let iw = 1440; let ih = 900;
+            if (DOM.iframe && DOM.iframe.style.display !== 'none') {
+                iw = DOM.iframe.offsetWidth || 1440;
+                ih = DOM.iframe.offsetHeight || 900;
+            } else if (DOM.placeholder && DOM.placeholder.style.display !== 'none') {
+                iw = DOM.placeholder.offsetWidth || 400;
+                ih = DOM.placeholder.offsetHeight || 200;
+            }
+            centerViewForImage(iw, ih);
         }
 
         function centerViewForImage(iw, ih) {
@@ -886,7 +925,13 @@
             const ch = DOM.canvas.clientHeight;
             // Pad 20%
             const s = Math.min((cw * 0.8) / iw, (ch * 0.8) / ih, 1);
-            state.transform = {x: 0, y: 0, scale: s};
+            
+            // 중앙 자동 정렬 (캔버스 크기에서 축소된 화면의 크기를 뺀 여백의 절반)
+            state.transform = {
+                x: (cw - (iw * s)) / 2,
+                y: (ch - (ih * s)) / 2,
+                scale: s
+            };
             updateTransform();
         }
 
@@ -933,7 +978,7 @@
         window.addEventListener('mouseup', () => state.isDragging = false);
 
         // Initial setup
-        updateTransform();
+        centerView();
         if (ghConfig.token) syncFilesFromGitHub(); 
     </script>
 </body>
