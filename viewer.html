@@ -135,7 +135,10 @@
 
                     if (success) {
                         alert("성공적으로 삭제되었습니다.");
-                        window.location.href = 'index.html';
+                        // GitHub API 반영 지연을 고려하여 1초 후 이동
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
                     } else {
                         DOM.placeholder.style.display = 'none';
                         DOM.iframe.style.display = 'block';
