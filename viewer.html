@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bychoi workspace - Viewer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="toolbar">
+        <div class="brand">
+            <a href="index.html" class="tool-btn" id="btn-back" title="목록으로 돌아가기 (Esc)">
+                <span class="material-icons-outlined">arrow_back</span>
+            </a>
+            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+            <span class="material-icons-outlined brand-icon">art_track</span>
+            <span style="font-weight: 600; letter-spacing: 0.5px;" id="file-name-display">Loading...</span>
+        </div>
+        
+        <div class="tools">
+            <button class="tool-btn active" id="btn-select" title="선택 도구 (V)"><span class="material-icons-outlined">near_me</span></button>
+            <button class="tool-btn" id="btn-hand" title="이동 도구 (Space)"><span class="material-icons-outlined">pan_tool</span></button>
+            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+            
+            <button class="tool-btn device-btn" onclick="setDeviceViewport('mobile', 375, 812)" title="Mobile View"><span class="material-icons-outlined">smartphone</span></button>
+            <button class="tool-btn device-btn" onclick="setDeviceViewport('tablet', 768, 1024)" title="Tablet View"><span class="material-icons-outlined">tablet_mac</span></button>
+            <button class="tool-btn active device-btn" id="btn-desktop" onclick="setDeviceViewport('desktop', 1440, 900)" title="Desktop View"><span class="material-icons-outlined">desktop_windows</span></button>
+        </div>
+
+        <div class="actions">
+            <span class="zoom-level" id="zoom-txt">100%</span>
+            <button class="tool-btn" onclick="centerView()" title="가운데 맞춤"><span class="material-icons-outlined">center_focus_strong</span></button>
+        </div>
+    </header>
+
+    <div id="workspace-view">
+        <main class="canvas" id="canvas">
+            <div class="stage" id="stage">
+                <div class="artboard-wrapper">
+                    <iframe id="main-iframe" class="artboard-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+                    <div class="placeholder-card" id="placeholder">
+                        <i class="material-icons-outlined">sync</i>
+                        <h3 id="placeholder-text">GitHub에서 파일을 불러오는 중...</h3>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar sidebar-right">
+            <div class="panel-header">Properties</div>
+            <div class="panel-content" id="properties-panel" style="padding: 16px;">
+                <div class="empty-text">Loading properties...</div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        const state = {
+            activeFile: null,
+            tool: 'select',
+            transform: { x: 0, y: 0, scale: 1 },
+            isDragging: false,
+            startX: 0, startY: 0
+        };
+
+        const DOM = {
+            iframe: document.getElementById('main-iframe'),
+            placeholder: document.getElementById('placeholder'),
+            placeholderTxt: document.getElementById('placeholder-text'),
+            canvas: document.getElementById('canvas'),
+            stage: document.getElementById('stage'),
+            zoomTxt: document.getElementById('zoom-txt'),
+            fileName: document.getElementById('file-name-display'),
+            props: document.getElementById('properties-panel'),
+            btnSelect: document.getElementById('btn-select'),
+            btnHand: document.getElementById('btn-hand')
+        };
+
+        // 1. Initial Load & URL Parsing
+        async function init() {
+            const params = new URLSearchParams(window.location.search);
+            const fileName = params.get('file');
+
+            if (!fileName) {
+                DOM.placeholderTxt.innerText = "파일을 찾을 수 없습니다.";
+                return;
+            }
+
+            DOM.fileName.innerText = fileName;
+            const content = await fetchFileContent(fileName);
+
+            if (content) {
+                const blob = new Blob([content], {type: 'text/html;charset=utf-8'});
+                const url = URL.createObjectURL(blob);
+                
+                DOM.placeholder.style.display = 'none';
+                DOM.iframe.src = url;
+                DOM.iframe.style.display = 'block';
+
+                state.activeFile = { name: fileName, size: (content.length / 1024).toFixed(1) + ' KB' };
+                updateProperties();
+                setTimeout(() => centerView(), 100);
+            } else {
+                DOM.placeholderTxt.innerText = "파일 내용을 불러오지 못했습니다. GitHub 토큰을 확인하세요.";
+            }
+        }
+
+        function updateProperties() {
+            if (!state.activeFile) return;
+            DOM.props.innerHTML = `
+                <div class="prop-section">
+                    <div class="prop-title">File Info</div>
+                    <div class="prop-row">
+                        <span class="prop-label">Name</span>
+                        <div class="prop-value-box" title="${state.activeFile.name}">${state.activeFile.name}</div>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Size</span>
+                        <div class="prop-value-box">${state.activeFile.size}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 2. Viewport & Canvas Logic
+        function setDeviceViewport(type, w, h) {
+            document.querySelectorAll('.tools .device-btn').forEach(btn => btn.classList.remove('active'));
+            if(type === 'mobile') document.querySelector('.tools .tool-btn[onclick*="mobile"]').classList.add('active');
+            else if(type === 'tablet') document.querySelector('.tools .tool-btn[onclick*="tablet"]').classList.add('active');
+            else document.getElementById('btn-desktop').classList.add('active');
+
+            DOM.iframe.style.width = w + 'px';
+            DOM.iframe.style.height = h + 'px';
+            setTimeout(() => centerView(), 50);
+        }
+
+        function centerView() {
+            let iw = DOM.iframe.offsetWidth || 1440;
+            let ih = DOM.iframe.offsetHeight || 900;
+            const cw = DOM.canvas.clientWidth;
+            const ch = DOM.canvas.clientHeight;
+            const s = Math.min((cw * 0.8) / iw, (ch * 0.8) / ih, 1);
+            
+            state.transform = {
+                x: (cw - (iw * s)) / 2,
+                y: (ch - (ih * s)) / 2,
+                scale: s
+            };
+            updateTransform();
+        }
+
+        function updateTransform() {
+            DOM.stage.style.transform = `translate(${state.transform.x}px, ${state.transform.y}px) scale(${state.transform.scale})`;
+            DOM.zoomTxt.innerText = Math.round(state.transform.scale * 100) + '%';
+        }
+
+        // 3. Tools & Inputs
+        function setTool(t) {
+            state.tool = t;
+            DOM.btnSelect.classList.toggle('active', t === 'select');
+            DOM.btnHand.classList.toggle('active', t === 'hand');
+            DOM.canvas.classList.toggle('hand-active', t === 'hand');
+            DOM.iframe.style.pointerEvents = t === 'hand' ? 'none' : 'auto';
+        }
+        DOM.btnSelect.onclick = () => setTool('select');
+        DOM.btnHand.onclick = () => setTool('hand');
+
+        window.addEventListener('keydown', e => {
+            if(e.key === 'Escape') window.location.href = 'index.html';
+            if(e.code === 'Space' && state.tool !== 'hand') {
+                DOM.canvas.classList.add('hand-active');
+                DOM.iframe.style.pointerEvents = 'none';
+            }
+            if(e.code === 'KeyV') setTool('select');
+            if(e.code === 'KeyH') setTool('hand');
+        });
+        window.addEventListener('keyup', e => {
+            if(e.code === 'Space' && state.tool !== 'hand') {
+                DOM.canvas.classList.remove('hand-active');
+                DOM.iframe.style.pointerEvents = 'auto';
+            }
+        });
+
+        DOM.canvas.addEventListener('wheel', e => {
+            e.preventDefault();
+            const s = state.transform.scale;
+            const delta = e.deltaY > 0 ? -0.05 : 0.05;
+            const ns = Math.max(0.05, Math.min(s * (1 + delta), 20));
+            const r = DOM.canvas.getBoundingClientRect();
+            const mx = e.clientX - r.left;
+            const my = e.clientY - r.top;
+            
+            state.transform.x = mx - (mx - state.transform.x) * (ns / s);
+            state.transform.y = my - (my - state.transform.y) * (ns / s);
+            state.transform.scale = ns;
+            updateTransform();
+        }, {passive: false});
+
+        DOM.canvas.addEventListener('mousedown', e => {
+            const isHand = state.tool === 'hand' || e.button === 1 || DOM.canvas.classList.contains('hand-active');
+            if(isHand) {
+                state.isDragging = true;
+                state.startX = e.clientX - state.transform.x;
+                state.startY = e.clientY - state.transform.y;
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('mousemove', e => {
+            if(!state.isDragging) return;
+            state.transform.x = e.clientX - state.startX;
+            state.transform.y = e.clientY - state.startY;
+            updateTransform();
+        });
+
+        window.addEventListener('mouseup', () => state.isDragging = false);
+
+        init();
+    </script>
+</body>
+</html>
