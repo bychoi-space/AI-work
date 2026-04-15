@@ -46,6 +46,15 @@
         </div>
     </div>
 
+    <!-- Drag & Drop Overlay -->
+    <div id="drop-overlay">
+        <div class="drop-message">
+            <span class="material-icons-outlined" style="font-size: 64px; color: var(--accent); display: block; margin-bottom: 16px;">cloud_upload</span>
+            <h2>여기에 파일을 드롭하여 업로드</h2>
+            <p style="color: var(--text-secondary); margin-top: 8px;">HTML 파일을 한 번에 여러 개 업로드할 수 있습니다.</p>
+        </div>
+    </div>
+
     <script src="assets/app.js"></script>
     <script>
         const state = {
@@ -155,11 +164,11 @@
             }
         });
 
-        // Upload Logic
-        DOM.uploadTop.addEventListener('change', async (e) => {
-            const fileList = e.target.files;
+        // Upload Logic (Refactored)
+        async function handleFiles(fileList) {
             const newFiles = Array.from(fileList).filter(f => f.name.endsWith('.html') || f.name.endsWith('.htm'));
-            
+            if (newFiles.length === 0) return;
+
             for (const file of newFiles) {
                 const reader = new FileReader();
                 reader.onload = async (ev) => {
@@ -169,7 +178,32 @@
                 };
                 reader.readAsText(file);
             }
+        }
+
+        DOM.uploadTop.addEventListener('change', async (e) => {
+            await handleFiles(e.target.files);
             e.target.value = '';
+        });
+
+        // Drag & Drop Handling
+        window.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            document.body.classList.add('drag-active');
+        });
+
+        window.addEventListener('dragleave', (e) => {
+            // Check if leaving to outside the window
+            if (e.relatedTarget === null) {
+                document.body.classList.remove('drag-active');
+            }
+        });
+
+        window.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            document.body.classList.remove('drag-active');
+            if (e.dataTransfer.files) {
+                await handleFiles(e.dataTransfer.files);
+            }
         });
 
         // Initial Load
