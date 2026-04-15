@@ -118,10 +118,93 @@
         .zoom-level { color: var(--text-secondary); width: 44px; text-align: right; }
 
         /* ----------------------------------------------------
-           2. Main Workspace (메인 레이아웃)
+           2. Dashboard View & Card Grid (목록 화면)
            ---------------------------------------------------- */
-        .workspace {
+        #dashboard-view {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
             display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .file-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .file-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: var(--box-shadow);
+            background: var(--hover-bg);
+        }
+
+        .file-card .icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: rgba(0, 229, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+
+        .file-card .icon-wrapper .material-icons-outlined { font-size: 32px; }
+        
+        .file-card .card-info {
+            text-align: center;
+            width: 100%;
+        }
+
+        .file-card .card-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .file-card .card-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* ----------------------------------------------------
+           3. Main Workspace (상세 에디터 화면)
+           ---------------------------------------------------- */
+        #workspace-view {
+            display: none; /* 초기에는 숨김 처리 */
             flex: 1;
             overflow: hidden;
             position: relative;
@@ -137,7 +220,8 @@
             flex-direction: column;
             z-index: 5;
         }
-        .sidebar-left { border-right: 1px solid var(--border-color); }
+        /* 왼쪽 사이드바는 이제 제거하므로 삭제 또는 숨김 처리, 하지만 CSS는 남겨둘 수 있음 */
+        
         .sidebar-right { border-left: 1px solid var(--border-color); }
 
         .panel-header {
@@ -154,9 +238,6 @@
             overflow-y: auto;
             padding: 8px 0;
         }
-
-        /* Object List (좌측) */
-        .layer-list { list-style: none; }
         .layer-item {
             display: flex;
             align-items: center;
@@ -303,45 +384,51 @@
         
         <!-- Center Tools -->
         <div class="tools">
-            <button class="tool-btn active" id="btn-select" title="선택 도구 (V)"><span class="material-icons-outlined">near_me</span></button>
-            <button class="tool-btn" id="btn-hand" title="이동 도구 (Space)"><span class="material-icons-outlined">pan_tool</span></button>
-            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+            <!-- 뒤로가기 버튼 (상세화면용) -->
+            <button class="tool-btn" id="btn-back" onclick="goBackToDashboard()" title="목록으로 돌아가기 (Esc)" style="display:none; margin-right: 8px;">
+                <span class="material-icons-outlined">arrow_back</span>
+            </button>
+            <div id="divider-back" style="width: 1px; background: var(--border-color); margin: 6px 4px; display:none;"></div>
+
+            <button class="tool-btn active" id="btn-select" title="선택 도구 (V)" style="display:none;"><span class="material-icons-outlined">near_me</span></button>
+            <button class="tool-btn" id="btn-hand" title="이동 도구 (Space)" style="display:none;"><span class="material-icons-outlined">pan_tool</span></button>
+            <div id="divider-tools" style="width: 1px; background: var(--border-color); margin: 6px 4px; display:none;"></div>
             
             <!-- 기기 뷰어 버튼 -->
-            <button class="tool-btn" onclick="setDeviceViewport('mobile', 375, 812)" title="Mobile View (375x812)"><span class="material-icons-outlined">smartphone</span></button>
-            <button class="tool-btn" onclick="setDeviceViewport('tablet', 768, 1024)" title="Tablet View (768x1024)"><span class="material-icons-outlined">tablet_mac</span></button>
-            <button class="tool-btn active" id="btn-desktop" onclick="setDeviceViewport('desktop', 1440, 900)" title="Desktop View (1440x900)"><span class="material-icons-outlined">desktop_windows</span></button>
-            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
-            
-            <label class="file-upload-wrapper tool-btn" title="로컬 HTML 업로드">
-                <span class="material-icons-outlined">note_add</span>
-                <input type="file" id="file-upload-top" accept=".html,.htm" multiple>
-            </label>
+            <button class="tool-btn device-btn" onclick="setDeviceViewport('mobile', 375, 812)" title="Mobile View (375x812)" style="display:none;"><span class="material-icons-outlined">smartphone</span></button>
+            <button class="tool-btn device-btn" onclick="setDeviceViewport('tablet', 768, 1024)" title="Tablet View (768x1024)" style="display:none;"><span class="material-icons-outlined">tablet_mac</span></button>
+            <button class="tool-btn active device-btn" id="btn-desktop" onclick="setDeviceViewport('desktop', 1440, 900)" title="Desktop View (1440x900)" style="display:none;"><span class="material-icons-outlined">desktop_windows</span></button>
         </div>
 
         <!-- Right Actions -->
-        <div class="actions">
+        <div class="actions" id="header-actions" style="display:none;">
             <span class="zoom-level" id="zoom-txt">100%</span>
             <button class="tool-btn" onclick="centerView()" title="가운데 맞춤"><span class="material-icons-outlined">center_focus_strong</span></button>
         </div>
     </header>
 
     <!-- Main Content -->
-    <div class="workspace">
-        <!-- Left Panel: Pages / Layers -->
-        <aside class="sidebar sidebar-left">
-            <div class="panel-header">HTML Pages</div>
-            <div class="panel-content">
-                <ul class="layer-list" id="file-list">
-                    <div class="empty-text">
-                        업로드된 화면이 없습니다.<br><br>
-                        <span class="material-icons-outlined" style="font-size:24px; margin-top: 12px; opacity: 0.5;">cloud_upload</span>
-                    </div>
-                </ul>
+    <!-- 1. Dashboard View -->
+    <div id="dashboard-view">
+        <div class="dashboard-header">
+            <h2 class="dashboard-title">Recent Files</h2>
+            <label class="tool-btn" title="로컬 HTML 업로드" style="width: auto; padding: 0 16px; background: var(--accent); color: #000; font-weight: 600;">
+                <span class="material-icons-outlined" style="margin-right: 6px;">note_add</span> New Upload
+                <input type="file" id="file-upload-top" accept=".html,.htm" multiple style="display:none;">
+            </label>
+        </div>
+        <div class="card-grid" id="file-list">
+            <!-- 텅 빈 상태일 때 디자인 -->
+            <div class="empty-text" style="grid-column: 1 / -1;">
+                업로드된 화면이 없습니다.<br><br>
+                <span class="material-icons-outlined" style="font-size:36px; margin-top: 12px; opacity: 0.5;">cloud_upload</span>
             </div>
-        </aside>
+        </div>
+    </div>
 
-        <!-- Center: Interactive Canvas -->
+    <!-- 2. Workspace View -->
+    <div id="workspace-view">
+        <!-- Center: Interactive Canvas (사이드바 삭제로 확장) -->
         <main class="canvas" id="canvas">
             <div class="stage" id="stage">
                 <div class="artboard-wrapper">
@@ -436,6 +523,8 @@
             alert(val ? "GitHub 토큰이 안전하게 저장되었습니다!" : "토큰이 삭제되었습니다.");
             document.getElementById('gh-status').innerText = val ? '가동 중🟢' : '';
             document.getElementById('gh-status').style.color = '#4ade80';
+            
+            if (val) syncFilesFromGitHub(); // 토큰 저장 시 즉시 동기화
         });
 
         function encodeBase64(str) {
@@ -473,6 +562,10 @@
                     statusEl.innerText = '저장 완료 ✅';
                     statusEl.style.color = '#4ade80';
                     setTimeout(() => statusEl.innerText = '가동 중🟢', 3000);
+                    // 성공 시 목록 갱신 (이미 목록에 없을 경우를 위해)
+                    if (!state.files.find(f => f.name === filename)) {
+                         syncFilesFromGitHub();
+                    }
                 } else {
                     throw new Error('Upload failed');
                 }
@@ -480,6 +573,67 @@
                 console.error(err);
                 statusEl.innerText = '오류 발생 ❌';
                 statusEl.style.color = '#ef4444';
+            }
+        }
+
+        // -- GitHub 동기화 고도화 (새로고침 유지 로직) --
+        
+        async function syncFilesFromGitHub() {
+            if (!ghConfig.token) return;
+            const statusEl = document.getElementById('gh-status');
+            statusEl.innerText = '동기화 중... 🔄';
+            
+            try {
+                const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/`;
+                const res = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
+                if (!res.ok) throw new Error('Sync failed');
+                
+                const data = await res.json();
+                const htmlFiles = data.filter(item => item.name.endsWith('.html') || item.name.endsWith('.htm'));
+                
+                // 기존의 Blob URL이 있는 파일들과 합치되, 중복 방지
+                htmlFiles.forEach(item => {
+                    const existing = state.files.find(f => f.name === item.name);
+                    if (!existing) {
+                        state.files.push({
+                            id: 'gh_' + item.sha,
+                            name: item.name,
+                            src: null, // 원격 데이터 (처음엔 비워둠)
+                            w: 1440, h: 900,
+                            size: (item.size / 1024).toFixed(1) + ' KB',
+                            isRemote: true
+                        });
+                    }
+                });
+                
+                renderList();
+                statusEl.innerText = '동기화 완료 ✅';
+                setTimeout(() => statusEl.innerText = '가동 중🟢', 2000);
+            } catch (err) {
+                console.error(err);
+                statusEl.innerText = '동기화 실패 ⚠️';
+            }
+        }
+
+        async function fetchFileContent(f) {
+            if (!ghConfig.token || !f.isRemote || f.src) return;
+            
+            try {
+                const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${f.name}`;
+                const res = await fetch(url, { 
+                    headers: { 
+                        'Authorization': `token ${ghConfig.token}`,
+                        'Accept': 'application/vnd.github.v3.raw'
+                    }
+                });
+                if (!res.ok) throw new Error('Fetch content failed');
+                
+                const htmlCode = await res.text();
+                const blob = new Blob([htmlCode], {type: 'text/html;charset=utf-8'});
+                f.src = URL.createObjectURL(blob);
+            } catch (err) {
+                console.error(err);
+                alert("파일 내용을 가져오지 못했습니다.");
             }
         }
 
@@ -551,29 +705,68 @@
             }
         });
 
-        // 2. Layer List Rendering
+        // 2. Layer List Rendering (Dashboard Grid View)
         function renderList() {
-            if(state.files.length === 0) return;
+            if(state.files.length === 0) {
+                DOM.list.innerHTML = `
+                <div class="empty-text" style="grid-column: 1 / -1;">
+                    저장소에 HTML 파일이 없습니다. 상단의 Upload 버튼을 누르거나 화면에 드롭하세요.<br><br>
+                    <span class="material-icons-outlined" style="font-size:36px; margin-top: 12px; opacity: 0.5;">web_asset_off</span>
+                </div>`;
+                return;
+            }
             DOM.list.innerHTML = '';
             state.files.forEach(f => {
-                const li = document.createElement('li');
-                li.className = 'layer-item ' + (f.id === state.activeId ? 'active' : '');
-                li.innerHTML = `<span class="material-icons-outlined">web</span><span class="layer-name" title="${f.name}">${f.name}</span>`;
-                li.onclick = () => selectFile(f.id);
-                DOM.list.appendChild(li);
+                const card = document.createElement('div');
+                card.className = 'file-card';
+                card.onclick = () => selectFile(f.id);
+                card.innerHTML = `
+                    <div class="icon-wrapper">
+                        <span class="material-icons-outlined">web</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-name" title="${f.name}">${f.name}</div>
+                        <div class="card-meta">${f.isRemote ? 'Cloud' : 'Local'} • ${f.size}</div>
+                    </div>
+                `;
+                DOM.list.appendChild(card);
             });
         }
 
         // 3. Selection & IFrame View Update
-        function selectFile(id) {
+        async function selectFile(id) {
             state.activeId = id;
             renderList();
             const f = state.files.find(x => x.id === id);
             
             if(f) {
+                // 원격 데이터이고 데이터가 없다면 먼저 가져옴
+                if (f.isRemote && !f.src) {
+                    const statusEl = document.getElementById('gh-status');
+                    statusEl.innerText = '로드 중... ⏳';
+                    await fetchFileContent(f);
+                    statusEl.innerText = '가동 중🟢';
+                }
+
                 DOM.placeholder.style.display = 'none';
                 DOM.iframe.src = f.src;
                 DOM.iframe.style.display = 'block';
+                
+                // 뷰 전환: Dashboard -> Workspace
+                document.getElementById('dashboard-view').style.display = 'none';
+                document.getElementById('workspace-view').style.display = 'flex';
+                
+                // 툴바 버튼 노출 설정
+                document.getElementById('btn-back').style.display = 'flex';
+                document.getElementById('divider-back').style.display = 'block';
+                document.getElementById('btn-select').style.display = 'flex';
+                document.getElementById('btn-hand').style.display = 'flex';
+                document.getElementById('divider-tools').style.display = 'block';
+                document.querySelectorAll('.device-btn').forEach(btn => btn.style.display = 'flex');
+                document.getElementById('header-actions').style.display = 'flex';
+                
+                // 도화지 렌더링 리사이즈 맞춤
+                setTimeout(() => centerViewForImage(f.w, f.h), 10);
                 
                 // Update Properties Panel
                 DOM.props.innerHTML = `
@@ -602,6 +795,25 @@
                 `;
                 centerViewForImage(f.w, f.h);
             }
+        }
+
+        // Workspace -> Dashboard 전환 로직
+        window.goBackToDashboard = function() {
+            state.activeId = null;
+            DOM.iframe.src = '';
+            DOM.iframe.style.display = 'none';
+            // 뷰 전환: Workspace -> Dashboard
+            document.getElementById('dashboard-view').style.display = 'flex';
+            document.getElementById('workspace-view').style.display = 'none';
+            
+            // 툴바 버튼 숨김 설정
+            document.getElementById('btn-back').style.display = 'none';
+            document.getElementById('divider-back').style.display = 'none';
+            document.getElementById('btn-select').style.display = 'none';
+            document.getElementById('btn-hand').style.display = 'none';
+            document.getElementById('divider-tools').style.display = 'none';
+            document.querySelectorAll('.device-btn').forEach(btn => btn.style.display = 'none');
+            document.getElementById('header-actions').style.display = 'none';
         }
 
         // 3.5 Device Viewport Management
@@ -641,7 +853,10 @@
 
         // Shortcut Keys (Spacebar temporarily overrides Select Tool to Hand)
         window.addEventListener('keydown', e => {
-            if(e.code === 'Space' && state.tool !== 'hand' && e.target.tagName !== 'INPUT') {
+            if(e.key === 'Escape' && state.activeId) {
+                goBackToDashboard();
+            }
+            if(e.code === 'Space' && state.tool !== 'hand' && e.target.tagName !== 'INPUT' && state.activeId) {
                 DOM.canvas.classList.add('hand-active');
                 DOM.iframe.style.pointerEvents = 'none';
             }
@@ -719,6 +934,7 @@
 
         // Initial setup
         updateTransform();
+        if (ghConfig.token) syncFilesFromGitHub(); 
     </script>
 </body>
 </html>
