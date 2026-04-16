@@ -573,21 +573,6 @@
             }
         };
 
-
-        DOM.descriptionList.onclick = (e) => {
-            if (state.isReadOnly) return;
-            const btn = e.target.closest('.desc-btn-del');
-            if (!btn) return;
-            
-            const index = parseInt(btn.dataset.index);
-            const list = state.activeFile.meta.description;
-            
-            if (confirm('이 항목을 삭제하시겠습니까?')) {
-                list.splice(index, 1);
-                renderDescriptionList();
-            }
-        };
-
         DOM.btnSaveDescription.onclick = async () => {
             if (state.isReadOnly) return showAuthModal();
             if (!state.activeFile) return;
@@ -611,27 +596,8 @@
                 }
             });
         };
-            if (!state.activeFile || !state.currentProject) return;
-            const list = state.activeFile.meta.description.filter(item => {
-                const hasText = item.text && item.text.trim() !== '';
-                const hasPos = item.x !== undefined && item.y !== undefined;
-                return hasText || hasPos;
-            });
 
-            // Local Screen Data update
-            const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, { description: list }, (msg, color) => {
-                DOM.btnSaveDescription.innerText = msg;
-                if (color === '#4ade80') {
-                    setTimeout(() => DOM.btnSaveDescription.innerText = '수정 내용 저장', 2000);
-                }
-            });
-            if (success) {
-                state.activeFile.meta.description = list;
-                renderDescriptionList();
-            }
-        };
-
-        // 4. Panel Handlers
+        // --- Layout & Panel Handlers ---
         function toggleSidebar(side) {
             if (side === 'left') {
                 DOM.sidebarLeft.classList.toggle('collapsed');
@@ -640,14 +606,12 @@
                 DOM.sidebarRight.classList.toggle('collapsed');
                 DOM.btnToggleRight.classList.toggle('active');
             }
-            // Trigger resize/recenter after animation
             setTimeout(() => centerView(), 300);
         }
 
         DOM.btnToggleLeft.onclick = () => toggleSidebar('left');
         DOM.btnToggleRight.onclick = () => toggleSidebar('right');
 
-        // 2. Viewport & Canvas Logic
         function setDeviceViewport(type, w, h) {
             document.querySelectorAll('.tools .device-btn').forEach(btn => btn.classList.remove('active'));
             if(type === 'mobile') document.querySelector('.tools .tool-btn[onclick*="mobile"]').classList.add('active');
@@ -656,31 +620,18 @@
 
             DOM.iframe.style.width = w + 'px';
             DOM.iframe.style.height = h + 'px';
-            
-            // Wait for DOM to commit style changes and then center
-            setTimeout(() => {
-                centerView();
-            }, 100);
+            setTimeout(() => centerView(), 100);
         }
 
-        // Event: Auth Modal
-        document.getElementById('btn-show-auth').onclick = showAuthModal;
-        document.getElementById('btn-modal-auth-submit').onclick = handleAuthSubmit;
-        document.getElementById('btn-modal-auth-cancel').onclick = hideAuthModal;
-        document.getElementById('modal-gh-token').onkeyup = (e) => { if(e.key === 'Enter') handleAuthSubmit(); };
-            // Use style dimensions instead of offsetWidth to get the *intended* size immediately
-            let iw = parseInt(DOM.iframe.style.width) || 1440;
-            let ih = parseInt(DOM.iframe.style.height) || 900;
+        function centerView() {
+            if (!DOM.canvas || !DOM.iframe) return;
+            const iw = parseInt(DOM.iframe.style.width) || 1440;
+            const ih = parseInt(DOM.iframe.style.height) || 900;
             const cw = DOM.canvas.clientWidth;
             const ch = DOM.canvas.clientHeight;
-            
-            // 1. Calculate scale for 95% view (minimized margins)
             let s = Math.min((cw * 0.95) / iw, (ch * 0.95) / ih, 1);
-            
-            // 2. Cap scale for a tiny bit of breathing room
             if (s > 0.98) s = 0.98;
             
-            // 3. Coordinate calculation MUST use the final scale
             state.transform = {
                 x: (cw - (iw * s)) / 2,
                 y: (ch - (ih * s)) / 2,
@@ -694,7 +645,7 @@
             DOM.zoomTxt.innerText = Math.round(state.transform.scale * 100) + '%';
         }
 
-        // 3. Tools & Inputs
+        // --- Tools & Inputs ---
         function setTool(t) {
             state.tool = t;
             DOM.btnSelect.classList.toggle('active', t === 'select');
@@ -705,10 +656,9 @@
         DOM.btnSelect.onclick = () => setTool('select');
         DOM.btnHand.onclick = () => setTool('hand');
 
+        // Keyboard Shortcuts
         window.addEventListener('keydown', e => {
-            // Ignore shortcuts when typing in inputs or textareas
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
             if(e.key === 'Escape') window.location.href = 'index.html';
             if(e.code === 'Space' && state.tool !== 'hand') {
                 DOM.canvas.classList.add('hand-active');
@@ -726,16 +676,15 @@
             }
         });
 
+        // Mouse Interactivity
         DOM.canvas.addEventListener('wheel', e => {
             e.preventDefault();
             const s = state.transform.scale;
-            // 10% steps
             const delta = e.deltaY > 0 ? -0.1 : 0.1;
             const ns = Math.max(0.1, Math.min(s * (1 + delta), 20));
             const r = DOM.canvas.getBoundingClientRect();
             const mx = e.clientX - r.left;
             const my = e.clientY - r.top;
-            
             state.transform.x = mx - (mx - state.transform.x) * (ns / s);
             state.transform.y = my - (my - state.transform.y) * (ns / s);
             state.transform.scale = ns;
@@ -753,49 +702,37 @@
         });
 
         window.addEventListener('mousemove', e => {
-            // 1. Scene Panning
             if (state.isDragging) {
                 state.transform.x = e.clientX - state.startX;
                 state.transform.y = e.clientY - state.startY;
                 updateTransform();
             }
-            
-            // 2. Pin Dragging (Optimized Global Listener)
             if (state.draggingPinIndex !== null) {
                 const r = DOM.pinsLayer.getBoundingClientRect();
-                let px = ((e.clientX - r.left) / r.width) * 100;
-                let py = ((e.clientY - r.top) / r.height) * 100;
-                
-                px = Math.max(0, Math.min(px, 100));
-                py = Math.max(0, Math.min(py, 100));
-                
+                let px = Math.max(0, Math.min(((e.clientX - r.left) / r.width) * 100, 100));
+                let py = Math.max(0, Math.min(((e.clientY - r.top) / r.height) * 100, 100));
                 const item = state.activeFile.meta.description[state.draggingPinIndex];
                 if (item) {
                     item.x = px;
                     item.y = py;
                     const pin = DOM.pinsLayer.querySelector(`.pin-marker[data-index="${state.draggingPinIndex}"]`);
-                    if (pin) {
-                        pin.style.left = px + '%';
-                        pin.style.top = py + '%';
-                    }
+                    if (pin) { pin.style.left = px + '%'; pin.style.top = py + '%'; }
                 }
             }
         });
 
         window.addEventListener('mouseup', () => {
             state.isDragging = false;
-            if (state.draggingPinIndex !== null) {
-                state.draggingPinIndex = null;
-                renderDescriptionList(); // Redraw to clear highlight classes and sync UI
-            }
+            state.draggingPinIndex = null;
         });
-
-        init();
         // Event for Auth Modal
         if (DOM.btnShowAuth) DOM.btnShowAuth.onclick = () => showAuthModal();
         if (DOM.btnAuthSubmit) DOM.btnAuthSubmit.onclick = handleAuthSubmit;
         if (DOM.btnAuthClose) DOM.btnAuthClose.onclick = hideAuthModal;
         if (DOM.tokenInput) DOM.tokenInput.onkeyup = (e) => { if(e.key==='Enter') handleAuthSubmit(); };
+
+        // 8. Start App
+        init();
     </script>
 </body>
 </html>
