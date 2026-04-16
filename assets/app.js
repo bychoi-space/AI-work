@@ -54,6 +54,25 @@ async function listContents(path = '') {
 }
 
 /**
+ * GitHub API Helper: List repository root (Used for Migration only)
+ */
+async function listRepoRoot() {
+    if (!ghConfig.token) return [];
+    try {
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/`;
+        const res = await fetch(url, { 
+            headers: { 'Authorization': `token ${ghConfig.token}` },
+            cache: 'no-store'
+        });
+        if (!res.ok) return [];
+        return await res.json();
+    } catch (err) {
+        console.error("[GitHub API] listRepoRoot error:", err);
+        return [];
+    }
+}
+
+/**
  * GitHub API Helper: Upload to a specific project
  */
 async function uploadToProject(project, filename, content, statusCallback) {
@@ -137,18 +156,21 @@ async function uploadToGitHub(filename, content, statusCallback) {
 
 /**
  * GitHub API Helper: Fetch file content
+ * @param {boolean} isRoot - If true, ignores dataDir (used for migration)
  */
-async function fetchFileContent(filename) {
+async function fetchFileContent(filename, isRoot = false) {
     if (!ghConfig.token) return null;
     
     try {
-        const encodedPath = encodeURIComponent(`${ghConfig.dataDir}${filename}`).replace(/%2F/g, '/');
+        const fullPath = isRoot ? filename : `${ghConfig.dataDir}${filename}`;
+        const encodedPath = encodeURIComponent(fullPath).replace(/%2F/g, '/');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
         const res = await fetch(url, { 
             headers: { 
                 'Authorization': `token ${ghConfig.token}`,
                 'Accept': 'application/vnd.github.v3.raw'
-            }
+            },
+            cache: 'no-store'
         });
         if (!res.ok) throw new Error('Fetch content failed');
         
@@ -188,14 +210,21 @@ async function syncFilesFromGitHub(callback) {
 
 /**
  * GitHub API Helper: Delete file
+ * @param {boolean} isRoot - If true, ignores dataDir
  */
-async function deleteFileFromGitHub(filename, sha, statusCallback) {
+async function deleteFileFromGitHub(filename, sha, isRoot = false, statusCallback) {
+    // Correct argument ordering if called from index.html (filename, sha, callback)
+    if (typeof isRoot === 'function') {
+        statusCallback = isRoot;
+        isRoot = false;
+    }
+    
     if (!ghConfig.token || !sha) return false;
-
     if (statusCallback) statusCallback('삭제 중 ⏳', '#f87171');
 
     try {
-        const encodedPath = encodeURIComponent(`${ghConfig.dataDir}${filename}`).replace(/%2F/g, '/');
+        const fullPath = isRoot ? filename : `${ghConfig.dataDir}${filename}`;
+        const encodedPath = encodeURIComponent(fullPath).replace(/%2F/g, '/');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
         
         const res = await fetch(url, {

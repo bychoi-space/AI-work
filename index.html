@@ -174,19 +174,27 @@
             updateStatusUI('동기화 중... 🔄', '#facc15');
             
             try {
-                // 1. Fetch root contents
-                const rootItems = await listContents('');
+                // 1. Fetch Repository Root for Migration check
+                const rootItems = await listRepoRoot();
                 
-                // 2. Identify Legacy Files and Folders
-                const legacies = rootItems.filter(i => i.type === 'file' && (i.name.endsWith('.html') || i.name.endsWith('.htm')));
-                const folders = rootItems.filter(i => i.type === 'dir' && i.name !== 'assets');
+                // 2. Identify Legacy Files (HTML files in root NOT being index.html or viewer.html)
+                const systemFiles = ['index.html', 'viewer.html', 'stitch_ui_viewer.html'];
+                const legacies = rootItems.filter(i => 
+                    i.type === 'file' && 
+                    (i.name.endsWith('.html') || i.name.endsWith('.htm')) &&
+                    !systemFiles.includes(i.name.toLowerCase())
+                );
+                
+                // 3. Fetch data/ directory for project listing
+                const dataItems = await listContents('');
+                const folders = dataItems.filter(i => i.type === 'dir' && i.name !== 'assets');
 
                 // Update loading text if migration starts
                 const loadingText = document.querySelector('#loading-state div:last-child');
+
                 if (legacies.length > 0) {
-                    console.log("[Migration] Moving legacy files to Default_Project...");
+                    console.log("[Migration] Found legacy files in root. Moving to Default_Project...");
                     updateStatusUI('기존 파일 마이그레이션 중... ⏳', '#facc15');
-                    
                     if (loadingText) loadingText.innerText = "기존 파일을 프로젝트로 옮기는 중입니다 (수 분 소요될 수 있음)...";
                     
                     const defaultMeta = await fetchProjectMetadata('Default_Project');
@@ -195,22 +203,20 @@
                         count++;
                         if (loadingText) loadingText.innerText = `마이그레이션 중... (${count}/${legacies.length})`;
                         try {
-                            const content = await fetchFileContent(f.name);
+                            // isRoot = true
+                            const content = await fetchFileContent(f.name, true);
                             if (content) {
                                 defaultMeta.screens = defaultMeta.screens || {};
                                 defaultMeta.screens[f.name] = { updatedAt: new Date().toISOString() };
                                 await uploadToProject('Default_Project', f.name, content);
-                                await deleteFileFromGitHub(f.name, f.sha);
+                                await deleteFileFromGitHub(f.name, f.sha, true);
                             }
                         } catch (e) { console.error("Migration failed for:", f.name, e); }
                     }
                     await saveProjectMetadata('Default_Project', defaultMeta);
                     
-                    // After migration, instead of recursive call, just remove them from the local list
-                    // to allow the rest of the function to proceed normally.
-                    rootItems.splice(0, rootItems.length, ...rootItems.filter(i => i.type !== 'file' || !i.name.endsWith('.html')));
                     // Add Default_Project to folders if not already there
-                    if (!folders.find(f => f.name === 'Default_Project')) {
+                    if (!folders.find(fol => fol.name === 'Default_Project')) {
                         folders.push({ name: 'Default_Project', type: 'dir' });
                     }
                 }
