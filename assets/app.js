@@ -5,20 +5,23 @@
 const ghConfig = {
     owner: 'bychoi-space',
     repo: 'AI-work',
-    // Stricter token handling to prevent sending 'null' strings or invalid headers
+    // Strictest token handling: only accept real GitHub tokens
     get token() {
-        const t = localStorage.getItem('gh_token');
-        if (!t || t === 'null' || t === 'undefined' || t.trim() === '') return null;
-        return t.trim();
+        try {
+            const t = localStorage.getItem('gh_token');
+            if (!t || typeof t !== 'string') return null;
+            const trimmed = t.trim();
+            // A real ghp token is at least 40 chars and starts with ghp_
+            if (trimmed.startsWith('ghp_') && trimmed.length >= 10) return trimmed;
+            return null;
+        } catch (e) { return null; }
     },
-    dataDir: 'data/', // Base folder for user projects
+    dataDir: 'data/', 
     get isReadOnly() { 
-        const t = this.token;
-        // Strict check: Must be a string AND start with ghp_ or similar to be considered an editor
-        return !t || !t.startsWith('ghp_');
+        return !this.token; // Now safe because .token is sanitized
     },
     updateToken(newToken) {
-        if (!newToken || newToken.trim() === '') {
+        if (!newToken || typeof newToken !== 'string' || !newToken.trim().startsWith('ghp_')) {
             localStorage.removeItem('gh_token');
         } else {
             localStorage.setItem('gh_token', newToken.trim());
