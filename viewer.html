@@ -505,11 +505,11 @@
             const cw = DOM.canvas.clientWidth;
             const ch = DOM.canvas.clientHeight;
             
-            // 1. Calculate scale for 80% view
-            let s = Math.min((cw * 0.8) / iw, (ch * 0.8) / ih, 1);
+            // 1. Calculate scale for 95% view (minimized margins)
+            let s = Math.min((cw * 0.95) / iw, (ch * 0.95) / ih, 1);
             
-            // 2. Cap scale for breathing room
-            if (s > 0.9) s = 0.9;
+            // 2. Cap scale for a tiny bit of breathing room
+            if (s > 0.98) s = 0.98;
             
             // 3. Coordinate calculation MUST use the final scale
             state.transform = {
