@@ -333,8 +333,8 @@
             if (editBtn) {
                 e.preventDefault();
                 e.stopPropagation();
-                const filename = editBtn.dataset.filename;
-                openEditModal(filename);
+                const projectName = editBtn.dataset.project;
+                openEditProjectModal(projectName);
                 return;
             }
 
@@ -487,16 +487,18 @@
             }
         }
 
-        DOM.uploadTop.addEventListener('change', async (e) => {
-            if (ghConfig.isReadOnly) {
-                e.preventDefault();
-                showAuthModal();
+        if (DOM.uploadTop) {
+            DOM.uploadTop.addEventListener('change', async (e) => {
+                if (ghConfig.isReadOnly) {
+                    e.preventDefault();
+                    showAuthModal();
+                    e.target.value = '';
+                    return;
+                }
+                await handleFiles(e.target.files);
                 e.target.value = '';
-                return;
-            }
-            await handleFiles(e.target.files);
-            e.target.value = '';
-        });
+            });
+        }
 
         // Event for Auth Modal
         DOM.btnShowAuth.onclick = () => showAuthModal();
