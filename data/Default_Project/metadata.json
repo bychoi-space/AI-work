@@ -1,7 +1,19 @@
 {
   "screens": {
     "hazzys_royal_sports_club_pc.html": {
-      "updatedAt": "2026-04-16T05:37:17.803Z"
+      "description": [
+        {
+          "text": "",
+          "x": 50,
+          "y": 50
+        },
+        {
+          "text": "가나다라마바사",
+          "x": 86.03238866396761,
+          "y": 34.25910931174089
+        }
+      ],
+      "updatedAt": "2026-04-16T05:42:23.574Z"
     }
   },
   "title": "Default_Project"
