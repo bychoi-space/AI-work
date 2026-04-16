@@ -1,6 +1,7 @@
 {
   "projects": {
-    "Default_Project": { "title": "기본 프로젝트" }
+    "Default_Project": { "title": "기본 프로젝트" },
+    "O2O_Inventory": { "title": "온오프 재고 효율화" }
   },
   "screens": {
     "hazzys_royal_sports_club_pc.html": {
