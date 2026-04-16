@@ -384,10 +384,14 @@
                 btn.innerText = msg;
                 if (color === '#4ade80') {
                     setTimeout(() => btn.innerText = '메타데이터 저장', 2000);
+                } else if (color === '#ef4444') {
+                    console.error("Metadata save failed:", msg);
+                    setTimeout(() => btn.innerText = '메타데이터 저장 (재시도)', 3000);
                 }
             });
             if (success) {
-                Object.assign(state.activeFile.meta, data);
+                // Keep local state in sync
+                state.activeFile.meta = { ...state.activeFile.meta, ...data };
             }
         }
 
@@ -466,6 +470,9 @@
         DOM.btnHand.onclick = () => setTool('hand');
 
         window.addEventListener('keydown', e => {
+            // Ignore shortcuts when typing in inputs or textareas
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
             if(e.key === 'Escape') window.location.href = 'index.html';
             if(e.code === 'Space' && state.tool !== 'hand') {
                 DOM.canvas.classList.add('hand-active');

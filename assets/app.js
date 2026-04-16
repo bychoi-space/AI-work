@@ -16,26 +16,30 @@ function encodeBase64(str) {
 /**
  * GitHub API Helper: Upload or Update file
  */
-async function uploadToGitHub(filename, content, statusCallback) {
-    if (!ghConfig.token) return;
-    
-    if (statusCallback) statusCallback('업로드 중 ⏳', '#facc15');
-
     try {
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${filename}`;
         
+        // 1. Get SHA (if file exists)
         let sha = undefined;
         const getRes = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
         if (getRes.ok) {
             const data = await getRes.json();
             sha = data.sha;
+        } else if (getRes.status !== 404) {
+            // Some other error (e.g. 403, 401)
+            const errBody = await getRes.json().catch(() => ({}));
+            throw new Error(`SHA check failed (${getRes.status}): ${errBody.message || ''}`);
         }
 
+        // 2. Put content
         const putRes = await fetch(url, {
             method: 'PUT',
-            headers: { 'Authorization': `token ${ghConfig.token}`, 'Content-Type': 'application/json' },
+            headers: { 
+                'Authorization': `token ${ghConfig.token}`,
+                'Content-Type': 'application/json' 
+            },
             body: JSON.stringify({
-                message: `Auto-upload: ${filename} from UI Viewer`,
+                message: `Update: ${filename} via UI Studio`,
                 content: encodeBase64(content),
                 sha: sha
             })
@@ -48,10 +52,11 @@ async function uploadToGitHub(filename, content, statusCallback) {
             }
             return true;
         } else {
-            throw new Error('Upload failed');
+            const errBody = await putRes.json().catch(() => ({}));
+            throw new Error(`Upload failed (${putRes.status}): ${errBody.message || ''}`);
         }
     } catch (err) {
-        console.error(err);
+        console.error("uploadToGitHub error:", err);
         if (statusCallback) statusCallback('오류 발생 ❌', '#ef4444');
         return false;
     }
@@ -150,16 +155,24 @@ async function deleteFileFromGitHub(filename, sha, statusCallback) {
  * Metadata Storage (JSON DB) Helpers
  */
 const METADATA_FILE = 'metadata.json';
-
 async function fetchMetadata() {
     if (!ghConfig.token) return { files: {} };
-    
     try {
-        const content = await fetchFileContent(METADATA_FILE);
-        if (!content) return { files: {} };
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${METADATA_FILE}`;
+        const res = await fetch(url, { 
+            headers: { 
+                'Authorization': `token ${ghConfig.token}`,
+                'Accept': 'application/vnd.github.v3.raw'
+            }
+        });
+        
+        if (res.status === 404) return { files: {} };
+        if (!res.ok) throw new Error(`Fetch metadata failed: ${res.status}`);
+        
+        const content = await res.text();
         return JSON.parse(content);
     } catch (err) {
-        console.warn('Metadata not found or corrupt, starting fresh.');
+        console.error('fetchMetadata Error:', err);
         return { files: {} };
     }
 }
