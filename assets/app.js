@@ -44,7 +44,12 @@ async function uploadToGitHub(filename, content, statusCallback) {
         
         // 1. Get SHA (if file exists)
         let sha = undefined;
-        const getRes = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
+        // Added cache: 'no-store' to prevent stale 404s or old SHAs from blocking updates
+        const getRes = await fetch(url, { 
+            headers: { 'Authorization': `token ${ghConfig.token}` },
+            cache: 'no-store'
+        });
+        
         if (getRes.ok) {
             const data = await getRes.json();
             sha = data.sha;
@@ -55,7 +60,7 @@ async function uploadToGitHub(filename, content, statusCallback) {
             const errBody = await getRes.json().catch(() => ({}));
             const detailedMsg = errBody.message || getRes.statusText;
             console.error(`[GitHub API] SHA check failed. Status: ${getRes.status}`, errBody);
-            throw new Error(`SHA_CHECK_${getRes.status}_(${detailedMsg})`);
+            throw new Error(`SHA_FETCH_${getRes.status}_(${detailedMsg})`);
         }
 
         // 2. Put content
