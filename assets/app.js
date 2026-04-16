@@ -16,6 +16,7 @@ function encodeBase64(str) {
 /**
  * GitHub API Helper: Upload or Update file
  */
+async function uploadToGitHub(filename, content, statusCallback) {
     try {
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${filename}`;
         
