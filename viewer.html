@@ -487,22 +487,26 @@
             DOM.iframe.style.width = w + 'px';
             DOM.iframe.style.height = h + 'px';
             
-            // Immediately recalculate center with some extra padding/breathing room
+            // Wait for DOM to commit style changes and then center
             setTimeout(() => {
                 centerView();
-                // Sub-optimization: slight zoom-out if content is too tight
-                if (state.transform.scale > 0.9) state.transform.scale = 0.9;
-                updateTransform();
-            }, 60);
+            }, 100);
         }
 
         function centerView() {
-            let iw = DOM.iframe.offsetWidth || 1440;
-            let ih = DOM.iframe.offsetHeight || 900;
+            // Use style dimensions instead of offsetWidth to get the *intended* size immediately
+            let iw = parseInt(DOM.iframe.style.width) || 1440;
+            let ih = parseInt(DOM.iframe.style.height) || 900;
             const cw = DOM.canvas.clientWidth;
             const ch = DOM.canvas.clientHeight;
-            const s = Math.min((cw * 0.8) / iw, (ch * 0.8) / ih, 1);
             
+            // 1. Calculate scale for 80% view
+            let s = Math.min((cw * 0.8) / iw, (ch * 0.8) / ih, 1);
+            
+            // 2. Cap scale for breathing room
+            if (s > 0.9) s = 0.9;
+            
+            // 3. Coordinate calculation MUST use the final scale
             state.transform = {
                 x: (cw - (iw * s)) / 2,
                 y: (ch - (ih * s)) / 2,
