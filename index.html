@@ -315,11 +315,24 @@
                 jira: DOM.metaJira.value.trim()
             };
 
-            DOM.modal.style.display = 'none';
-            const success = await updateFileMetadata(filename, data, updateStatusUI);
-            if (success) {
-                refreshFileList();
-            }
+            const originalText = DOM.btnModalSave.innerText;
+            const success = await updateFileMetadata(filename, data, (msg, color) => {
+                DOM.btnModalSave.innerText = msg;
+                DOM.btnModalSave.style.background = color;
+                if (color === '#4ade80') {
+                    setTimeout(() => {
+                        DOM.modal.style.display = 'none';
+                        DOM.btnModalSave.innerText = originalText;
+                        DOM.btnModalSave.style.background = '';
+                        refreshFileList();
+                    }, 1000);
+                } else if (color === '#ef4444') {
+                    setTimeout(() => {
+                        DOM.btnModalSave.innerText = originalText;
+                        DOM.btnModalSave.style.background = '';
+                    }, 3000);
+                }
+            });
         });
 
         // Upload Logic (Refactored)

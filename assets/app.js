@@ -18,6 +18,7 @@ function encodeBase64(str) {
  */
 async function uploadToGitHub(filename, content, statusCallback) {
     try {
+        console.log(`[GitHub API] Initiating update for: ${filename}`);
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${filename}`;
         
         // 1. Get SHA (if file exists)
@@ -26,10 +27,13 @@ async function uploadToGitHub(filename, content, statusCallback) {
         if (getRes.ok) {
             const data = await getRes.json();
             sha = data.sha;
-        } else if (getRes.status !== 404) {
-            // Some other error (e.g. 403, 401)
+            console.log(`[GitHub API] Found existing file SHA: ${sha}`);
+        } else if (getRes.status === 404) {
+            console.log(`[GitHub API] File not found (404). Will create new.`);
+        } else {
             const errBody = await getRes.json().catch(() => ({}));
-            throw new Error(`SHA check failed (${getRes.status}): ${errBody.message || ''}`);
+            console.error(`[GitHub API] SHA check failed. Status: ${getRes.status}`, errBody);
+            throw new Error(`SHA_CHECK_FAILED_${getRes.status}`);
         }
 
         // 2. Put content
@@ -47,6 +51,7 @@ async function uploadToGitHub(filename, content, statusCallback) {
         });
 
         if (putRes.ok) {
+            console.log(`[GitHub API] Successfully updated: ${filename}`);
             if (statusCallback) {
                 statusCallback('저장 완료 ✅', '#4ade80');
                 setTimeout(() => statusCallback('가동 중🟢', '#4ade80'), 3000);
@@ -54,11 +59,12 @@ async function uploadToGitHub(filename, content, statusCallback) {
             return true;
         } else {
             const errBody = await putRes.json().catch(() => ({}));
-            throw new Error(`Upload failed (${putRes.status}): ${errBody.message || ''}`);
+            console.error(`[GitHub API] Upload failed. Status: ${putRes.status}`, errBody);
+            throw new Error(`UPLOAD_FAILED_${putRes.status}`);
         }
     } catch (err) {
-        console.error("uploadToGitHub error:", err);
-        if (statusCallback) statusCallback('오류 발생 ❌', '#ef4444');
+        console.error("[GitHub API] Fatal Error:", err.message);
+        if (statusCallback) statusCallback(`에러 (${err.message}) ❌`, '#ef4444');
         return false;
     }
 }
@@ -168,12 +174,19 @@ async function fetchMetadata() {
         });
         
         if (res.status === 404) return { files: {} };
-        if (!res.ok) throw new Error(`Fetch metadata failed: ${res.status}`);
+        if (!res.ok) throw new Error(`FETCH_META_FAILED_${res.status}`);
         
         const content = await res.text();
-        return JSON.parse(content);
+        if (!content || content.trim() === '') return { files: {} };
+        
+        try {
+            return JSON.parse(content);
+        } catch (pErr) {
+            console.error('[GitHub API] JSON Parse Error in metadata.json:', pErr);
+            return { files: {} };
+        }
     } catch (err) {
-        console.error('fetchMetadata Error:', err);
+        console.error('[GitHub API] fetchMetadata Error:', err.message);
         return { files: {} };
     }
 }
