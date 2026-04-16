@@ -176,6 +176,11 @@
                 const assigneeTag = m.assignee ? `<span class="meta-tag">👤 ${m.assignee}</span>` : '';
                 const periodTag = m.period ? `<span class="meta-tag">📅 ${m.period}</span>` : '';
 
+                const mainTitle = m.title || f.name;
+                const subInfo = (m.assignee || m.period) 
+                    ? `${m.assignee ? '👤 ' + m.assignee : ''} ${m.period ? ' • ' + m.period : ''}`
+                    : `${f.size} • ${f.name}`;
+
                 card.innerHTML = `
                     <div class="edit-btn-card" data-filename="${f.name}" title="Edit Metadata">
                         <span class="material-icons-outlined">edit</span>
@@ -189,12 +194,11 @@
                         </div>
                     </div>
                     <div class="card-info">
-                        <div class="card-name" title="${m.title || f.name}">${m.title || f.name}</div>
-                        <div class="card-meta">${f.name} • ${f.size}</div>
+                        <div class="card-name" title="${mainTitle}">${mainTitle}</div>
+                        <div class="card-meta" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${subInfo}</div>
                         <div class="metadata-row">
                             ${jiraTag}
-                            ${assigneeTag}
-                            ${periodTag}
+                            ${(m.assignee || m.period) ? `<span class="meta-tag" style="opacity:0.6; font-size:9px;">${f.name}</span>` : ''}
                         </div>
                     </div>
                 `;
