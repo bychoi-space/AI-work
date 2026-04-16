@@ -116,6 +116,7 @@
             tool: 'select',
             transform: { x: 0, y: 0, scale: 1 },
             isDragging: false,
+            draggingPinIndex: null,
             startX: 0, startY: 0
         };
 
@@ -358,34 +359,13 @@
                 row.onmouseenter = () => highlight(true);
                 row.onmouseleave = () => highlight(false);
 
-                // Pin Dragging
-                let isDraggingPin = false;
+                // Pin Dragging Start
                 pin.onmousedown = (e) => {
                     e.stopPropagation();
-                    isDraggingPin = true;
+                    e.preventDefault();
+                    state.draggingPinIndex = index;
                     highlight(true);
                 };
-                window.addEventListener('mousemove', (e) => {
-                    if (!isDraggingPin) return;
-                    const r = DOM.pinsLayer.getBoundingClientRect();
-                    let px = ((e.clientX - r.left) / r.width) * 100;
-                    let py = ((e.clientY - r.top) / r.height) * 100;
-                    
-                    // Bounds checking
-                    px = Math.max(0, Math.min(px, 100));
-                    py = Math.max(0, Math.min(py, 100));
-                    
-                    item.x = px;
-                    item.y = py;
-                    pin.style.left = px + '%';
-                    pin.style.top = py + '%';
-                });
-                window.addEventListener('mouseup', () => {
-                    if (isDraggingPin) {
-                        isDraggingPin = false;
-                        highlight(false);
-                    }
-                });
 
                 // Row Text Input Persistence
                 const input = row.querySelector('.desc-input');
@@ -647,13 +627,42 @@
         });
 
         window.addEventListener('mousemove', e => {
-            if(!state.isDragging) return;
-            state.transform.x = e.clientX - state.startX;
-            state.transform.y = e.clientY - state.startY;
-            updateTransform();
+            // 1. Scene Panning
+            if (state.isDragging) {
+                state.transform.x = e.clientX - state.startX;
+                state.transform.y = e.clientY - state.startY;
+                updateTransform();
+            }
+            
+            // 2. Pin Dragging (Optimized Global Listener)
+            if (state.draggingPinIndex !== null) {
+                const r = DOM.pinsLayer.getBoundingClientRect();
+                let px = ((e.clientX - r.left) / r.width) * 100;
+                let py = ((e.clientY - r.top) / r.height) * 100;
+                
+                px = Math.max(0, Math.min(px, 100));
+                py = Math.max(0, Math.min(py, 100));
+                
+                const item = state.activeFile.meta.description[state.draggingPinIndex];
+                if (item) {
+                    item.x = px;
+                    item.y = py;
+                    const pin = DOM.pinsLayer.querySelector(`.pin-marker[data-index="${state.draggingPinIndex}"]`);
+                    if (pin) {
+                        pin.style.left = px + '%';
+                        pin.style.top = py + '%';
+                    }
+                }
+            }
         });
 
-        window.addEventListener('mouseup', () => state.isDragging = false);
+        window.addEventListener('mouseup', () => {
+            state.isDragging = false;
+            if (state.draggingPinIndex !== null) {
+                state.draggingPinIndex = null;
+                renderDescriptionList(); // Redraw to clear highlight classes and sync UI
+            }
+        });
 
         init();
     </script>
