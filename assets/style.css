@@ -827,18 +827,19 @@ body.drag-active #drop-overlay {
    8. Splash Screen (Intro)
    ---------------------------------------------------- */
 .brand-logo {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     object-fit: contain;
     margin-right: 8px;
-    filter: drop-shadow(0 0 5px rgba(0, 229, 255, 0.3));
+    /* Removed drop-shadow for borderless minimalist feel */
 }
 .intro-logo-img {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     object-fit: contain;
     margin-bottom: 24px;
-    filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.5));
+    /* Soft cyan glow instead of heavy shadow */
+    filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.4));
     animation: intro-glow 2s infinite alternate ease-in-out;
 }
 .intro-overlay {
