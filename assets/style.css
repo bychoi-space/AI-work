@@ -522,6 +522,10 @@ body.drag-active #drop-overlay {
     justify-content: center;
 }
 
+.modal-overlay.active {
+    display: flex !important;
+}
+
 .modal-card {
     background: #252830;
     width: 100%;

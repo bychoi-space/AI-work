@@ -11,6 +11,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
+    <style>
+        /* Fail-safe Modal CSS */
+        .modal-overlay.active {
+            display: flex !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -182,7 +188,13 @@
             btnDelete: document.getElementById('btn-delete'),
             btnToggleLeft: document.getElementById('btn-toggle-left'),
             btnToggleRight: document.getElementById('btn-toggle-right'),
-            btnSaveDescription: document.getElementById('btn-save-description')
+            btnSaveDescription: document.getElementById('btn-save-description'),
+            
+            // Auth Modal DOM
+            authModal: document.getElementById('auth-modal'),
+            btnAuthClose: document.getElementById('btn-modal-auth-cancel'),
+            btnAuthSubmit: document.getElementById('btn-modal-auth-submit'),
+            tokenInput: document.getElementById('modal-gh-token')
         };
 
         // 1. Initial Load & URL Parsing
@@ -229,11 +241,12 @@
          * Auth Modal Logic
          */
         function showAuthModal() {
-            document.getElementById('auth-modal').classList.add('active');
+            if (DOM.authModal) DOM.authModal.classList.add('active');
         }
         function hideAuthModal() {
-            document.getElementById('auth-modal').classList.remove('active');
-            document.getElementById('modal-auth-status').innerText = "";
+            if (DOM.authModal) DOM.authModal.classList.remove('active');
+            const status = document.getElementById('modal-auth-status');
+            if (status) status.innerText = "";
         }
         async function handleAuthSubmit() {
             const tokenInput = document.getElementById('modal-gh-token');
@@ -317,41 +330,35 @@
         }
 
         DOM.btnDelete.onclick = async () => {
+            if (state.isReadOnly) return showAuthModal();
             const fileName = state.activeFile?.name;
             if (!fileName) return;
 
             if (confirm(`'${fileName}' 파일을 정말 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
-                // To delete, we need the SHA first
-                DOM.placeholderTxt.innerText = "파일 정보를 가져오는 중...";
-                DOM.placeholder.style.display = 'flex';
-                DOM.iframe.style.display = 'none';
+                const project = state.currentProject;
+                
+                // For Editor mode, we need SHA
+                const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${project}/${fileName}`;
+                const res = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
+                if (!res.ok) {
+                    alert("파일 정보를 가져오지 못했습니다. (이미 삭제되었거나 권한 부족)");
+                    return;
+                }
+                const data = await res.json();
+                
+                const success = await deleteFileFromGitHub(`${project}/${fileName}`, data.sha, false, (msg, color) => {
+                    DOM.placeholderTxt.innerText = msg;
+                    DOM.placeholderTxt.style.color = color;
+                });
 
-                try {
-                    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${fileName}`;
-                    const res = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
-                    if (!res.ok) throw new Error('Failed to get file SHA');
+                if (success) {
+                    // Update project list
+                    const meta = await fetchProjectMetadata(project);
+                    if (meta.screens) delete meta.screens[fileName];
+                    await saveProjectMetadata(project, meta);
                     
-                    const data = await res.json();
-                    const success = await deleteFileFromGitHub(fileName, data.sha, (msg, color) => {
-                        DOM.placeholderTxt.innerText = msg;
-                        DOM.placeholderTxt.style.color = color;
-                    });
-
-                    if (success) {
-                        alert("성공적으로 삭제되었습니다.");
-                        // GitHub API 반영 지연을 고려하여 1초 후 이동
-                        setTimeout(() => {
-                            window.location.href = 'index.html';
-                        }, 1000);
-                    } else {
-                        DOM.placeholder.style.display = 'none';
-                        DOM.iframe.style.display = 'block';
-                    }
-                } catch (err) {
-                    console.error(err);
-                    alert("삭제 중 오류가 발생했습니다.");
-                    DOM.placeholder.style.display = 'none';
-                    DOM.iframe.style.display = 'block';
+                    alert("성공적으로 삭제되었습니다.");
+                    window.location.href = 'index.html';
                 }
             }
         };
@@ -581,23 +588,29 @@
             }
         };
 
-        // --- Save Handlers ---
-            if (state.isReadOnly) return showAuthModal();
-            if (!state.activeFile) return;
-            const filename = state.activeFile.name;
-            const sha = state.activeFile.sha;
-            if (confirm(`'${filename}' 파일을 정말 삭제하시겠습니까?`)) {
-                deleteFileFromGitHub(filename, sha, (msg, color) => {
-                    updateStatusUI(msg, color);
-                    if (color === '#4ade80') {
-                        setTimeout(() => location.href = 'index.html', 1500);
-                    }
-                }, true);
-            }
-        };
-
         DOM.btnSaveDescription.onclick = async () => {
             if (state.isReadOnly) return showAuthModal();
+            if (!state.activeFile) return;
+            
+            const originalText = DOM.btnSaveDescription.innerText;
+            DOM.btnSaveDescription.innerText = '저장 중...';
+            
+            const data = {
+                description: state.activeFile.meta.description
+            };
+
+            const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, data, (msg, color) => {
+                DOM.btnSaveDescription.innerText = msg;
+                DOM.btnSaveDescription.style.background = color;
+                
+                if (color === '#4ade80') {
+                    setTimeout(() => {
+                        DOM.btnSaveDescription.innerText = originalText;
+                        DOM.btnSaveDescription.style.background = '';
+                    }, 2000);
+                }
+            });
+        };
             if (!state.activeFile || !state.currentProject) return;
             const list = state.activeFile.meta.description.filter(item => {
                 const hasText = item.text && item.text.trim() !== '';
@@ -778,6 +791,11 @@
         });
 
         init();
+        // Event for Auth Modal
+        if (DOM.btnShowAuth) DOM.btnShowAuth.onclick = () => showAuthModal();
+        if (DOM.btnAuthSubmit) DOM.btnAuthSubmit.onclick = handleAuthSubmit;
+        if (DOM.btnAuthClose) DOM.btnAuthClose.onclick = hideAuthModal;
+        if (DOM.tokenInput) DOM.tokenInput.onkeyup = (e) => { if(e.key==='Enter') handleAuthSubmit(); };
     </script>
 </body>
 </html>

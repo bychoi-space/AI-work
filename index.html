@@ -33,6 +33,10 @@
             visibility: hidden !important;
             pointer-events: none !important;
         }
+        /* Fail-safe Modal CSS */
+        .modal-overlay.active {
+            display: flex !important;
+        }
     </style>
 </head>
 <body>
@@ -158,7 +162,13 @@
             metaFigma: document.getElementById('meta-figma'),
             metaPub: document.getElementById('meta-pub'),
             btnModalClose: document.getElementById('btn-modal-close'),
-            btnModalSave: document.getElementById('btn-modal-save')
+            btnModalSave: document.getElementById('btn-modal-save'),
+            
+            // Auth Modal DOM
+            authModal: document.getElementById('auth-modal'),
+            btnAuthClose: document.getElementById('btn-modal-auth-cancel'),
+            btnAuthSubmit: document.getElementById('btn-modal-auth-submit'),
+            tokenInput: document.getElementById('modal-gh-token')
         };
 
         const context = {
@@ -259,15 +269,18 @@
          * Auth Modal Logic
          */
         function showAuthModal() {
-            document.getElementById('auth-modal').classList.add('active');
+            if (DOM.authModal) DOM.authModal.classList.add('active');
         }
         function hideAuthModal() {
-            document.getElementById('auth-modal').classList.remove('active');
-            document.getElementById('modal-auth-status').innerText = "";
+            if (DOM.authModal) DOM.authModal.classList.remove('active');
+            const status = document.getElementById('modal-auth-status');
+            if (status) status.innerText = "";
         }
         async function handleAuthSubmit() {
-            const tokenInput = document.getElementById('modal-gh-token');
+            const tokenInput = DOM.tokenInput;
             const status = document.getElementById('modal-auth-status');
+            if (!tokenInput || !status) return;
+
             const token = tokenInput.value.trim();
             
             if (!token) {
@@ -284,7 +297,7 @@
             if (success) {
                 setTimeout(() => {
                     hideAuthModal();
-                    location.reload(); // Hard reload to ensure clean state
+                    location.reload(); 
                 }, 1000);
             }
         }
@@ -401,7 +414,7 @@
             DOM.metaFigma.value = m.figmaUrl || '';
             DOM.metaPub.value = m.pubUrl || '';
             
-            DOM.modal.style.display = 'flex';
+            DOM.modal.classList.add('active');
             updateStatusUI('가동 중🟢', '#4ade80');
             
             // Initialization of Period Picker (Flatpickr)
@@ -429,7 +442,7 @@
             }
         });
 
-        DOM.btnModalClose.onclick = () => DOM.modal.style.display = 'none';
+        DOM.btnModalClose.onclick = () => DOM.modal.classList.remove('active');
 
         DOM.btnModalSave.onclick = async () => {
             if (!context.currentEditingProject) return;
@@ -453,7 +466,7 @@
                 DOM.btnModalSave.style.background = color;
                 if (color === '#4ade80') {
                     setTimeout(() => {
-                        DOM.modal.style.display = 'none';
+                        DOM.modal.classList.remove('active');
                         DOM.btnModalSave.innerText = originalText;
                         DOM.btnModalSave.style.background = '';
                         refreshFileList();
@@ -501,10 +514,10 @@
         }
 
         // Event for Auth Modal
-        DOM.btnShowAuth.onclick = () => showAuthModal();
-        document.getElementById('btn-modal-auth-submit').onclick = handleAuthSubmit;
-        document.getElementById('btn-modal-auth-cancel').onclick = hideAuthModal;
-        document.getElementById('modal-gh-token').onkeyup = (e) => { if(e.key==='Enter') handleAuthSubmit(); };
+        if (DOM.btnShowAuth) DOM.btnShowAuth.onclick = () => showAuthModal();
+        if (DOM.btnAuthSubmit) DOM.btnAuthSubmit.onclick = handleAuthSubmit;
+        if (DOM.btnAuthClose) DOM.btnAuthClose.onclick = hideAuthModal;
+        if (DOM.tokenInput) DOM.tokenInput.onkeyup = (e) => { if(e.key==='Enter') handleAuthSubmit(); };
 
         // Drag & Drop Handling
         window.addEventListener('dragover', (e) => {

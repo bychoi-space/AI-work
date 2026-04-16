@@ -5,27 +5,38 @@
 const ghConfig = {
     owner: 'bychoi-space',
     repo: 'AI-work',
-    // Strictest token handling: only accept real GitHub tokens
-    get token() {
-        try {
-            const t = localStorage.getItem('gh_token');
-            if (!t || typeof t !== 'string') return null;
-            const trimmed = t.trim();
-            // A real ghp token is at least 40 chars and starts with ghp_
-            if (trimmed.startsWith('ghp_') && trimmed.length >= 10) return trimmed;
-            return null;
-        } catch (e) { return null; }
-    },
     dataDir: 'data/', 
-    get isReadOnly() { 
-        return !this.token; // Now safe because .token is sanitized
+    
+    // Internal private state
+    _token: (localStorage.getItem('gh_token') || '').trim(),
+
+    // Robust getter for token
+    get token() {
+        const t = (localStorage.getItem('gh_token') || '').trim();
+        // Strict ghp_ validation
+        if (t.startsWith('ghp_') && t.length >= 10) return t;
+        return null;
     },
-    updateToken(newToken) {
-        if (!newToken || typeof newToken !== 'string' || !newToken.trim().startsWith('ghp_')) {
+
+    set token(val) {
+        if (!val || val === 'null' || val === 'undefined' || !val.trim().startsWith('ghp_')) {
             localStorage.removeItem('gh_token');
         } else {
-            localStorage.setItem('gh_token', newToken.trim());
+            localStorage.setItem('gh_token', val.trim());
         }
+    },
+
+    get isReadOnly() { 
+        return !this.token; 
+    },
+
+    updateToken(newToken) {
+        this.token = newToken; // Goes through setter
+    },
+
+    handleAuthError() {
+        console.warn("[Auth] 401 Unauthorized detected. Purging token and resetting.");
+        this.token = null; 
     }
 };
 
@@ -52,22 +63,31 @@ function encodeBase64(str) {
     }
 }
 
-/**
- * GitHub API Helper: List contents of a directory (Relative to dataDir)
- */
 async function listContents(path = '') {
     try {
         const fullPath = `${ghConfig.dataDir}${path}`.replace(/\/$/, '');
+        
+        // --- HYBRID FETCHING LOGIC ---
+        // If guest, we cannot 'list' directories via HTTP easily.
+        // We MUST rely on metadata.json to know what screens exist.
+        if (ghConfig.isReadOnly) {
+            console.log("[Hybrid] Guest mode detected. Using metadata mapping instead of API listing.");
+            const meta = await fetchProjectMetadata(path);
+            if (!meta || !meta.screens) return [];
+            return Object.keys(meta.screens).map(name => ({
+                name: name,
+                type: 'file',
+                path: `${fullPath}/${name}`
+            }));
+        }
+
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${fullPath}`;
+        const headers = { 'Authorization': `token ${ghConfig.token}`, 'Cache-Control': 'no-cache' };
         
-        const headers = {};
-        if (ghConfig.token) headers['Authorization'] = `token ${ghConfig.token}`;
-        
-        const res = await fetch(url, { 
-            headers: headers,
-            cache: 'no-store'
-        });
+        const res = await fetch(url, { headers });
+        if (res.status === 401) { ghConfig.handleAuthError(); return listContents(path); }
         if (!res.ok) return [];
+        
         const data = await res.json();
         return Array.isArray(data) ? data : [];
     } catch (err) {
@@ -76,21 +96,18 @@ async function listContents(path = '') {
     }
 }
 
-/**
- * GitHub API Helper: List repository root (Used for Migration only)
- */
 async function listRepoRoot() {
     try {
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/`;
-        
-        const headers = {};
-        if (ghConfig.token) headers['Authorization'] = `token ${ghConfig.token}`;
+        // Migration is an Editor-only task. Guests should never see this.
+        if (ghConfig.isReadOnly) return [];
 
-        const res = await fetch(url, { 
-            headers: headers,
-            cache: 'no-store'
-        });
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/`;
+        const headers = { 'Authorization': `token ${ghConfig.token}` };
+
+        const res = await fetch(url, { headers });
+        if (res.status === 401) { ghConfig.handleAuthError(); return []; }
         if (!res.ok) return [];
+        
         const data = await res.json();
         return Array.isArray(data) ? data : [];
     } catch (err) {
@@ -181,28 +198,32 @@ async function uploadToGitHub(filename, content, statusCallback) {
     }
 }
 
-/**
- * GitHub API Helper: Fetch file content
- * @param {boolean} isRoot - If true, ignores dataDir (used for migration)
- */
 async function fetchFileContent(filename, isRoot = false) {
     try {
         const fullPath = isRoot ? filename : `${ghConfig.dataDir}${filename}`;
+        
+        // --- HYBRID FETCHING LOGIC ---
+        // Guests fetch directly from the domain (relative path)
+        if (ghConfig.isReadOnly) {
+            const res = await fetch(fullPath, { cache: 'no-store' });
+            if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+            return await res.text();
+        }
+
         const encodedPath = encodeURIComponent(fullPath).replace(/%2F/g, '/');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
-        
-        const headers = { 'Accept': 'application/vnd.github.v3.raw' };
-        if (ghConfig.token) headers['Authorization'] = `token ${ghConfig.token}`;
+        const headers = { 
+            'Authorization': `token ${ghConfig.token}`,
+            'Accept': 'application/vnd.github.v3.raw' 
+        };
 
-        const res = await fetch(url, { 
-            headers: headers,
-            cache: 'no-store'
-        });
+        const res = await fetch(url, { headers, cache: 'no-store' });
+        if (res.status === 401) { ghConfig.handleAuthError(); return fetchFileContent(filename, isRoot); }
         if (!res.ok) throw new Error('Fetch content failed');
         
         return await res.text();
     } catch (err) {
-        console.error(err);
+        console.error("[Hybrid] fetchFileContent error:", err);
         return null;
     }
 }
@@ -289,32 +310,37 @@ async function deleteFileFromGitHub(filename, sha, isRoot = false, statusCallbac
 const METADATA_FILE = 'metadata.json';
 
 async function fetchProjectMetadata(project) {
-    // If no project, fallback to root context (legacy)
     const fullPath = project ? `${project}/${METADATA_FILE}` : METADATA_FILE;
+    const relativePath = `${ghConfig.dataDir}${fullPath}`;
     
-    try {
-        const encodedPath = encodeURIComponent(`${ghConfig.dataDir}${fullPath}`).replace(/%2F/g, '/');
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
-        
-        const headers = { 
-            'Accept': 'application/vnd.github.v3.raw'
-        };
-        if (ghConfig.token) headers['Authorization'] = `token ${ghConfig.token}`;
-
-        const res = await fetch(url, { 
-            headers: headers,
-            cache: 'no-store'
-        });
-        
-        if (res.status === 404) return { screens: {}, title: project || 'Default Project' };
-        if (!res.ok) throw new Error(`FETCH_META_FAILED_${res.status}`);
-        
-        const content = await res.text();
-        return JSON.parse(content);
-    } catch (err) {
-        console.error('[GitHub API] fetchProjectMetadata Error:', err.message);
-        return { screens: {}, title: project || 'Default Project' };
+    // --- DUAL-CHANNEL FETCHING ---
+    // 1. Try API if authenticated
+    if (!ghConfig.isReadOnly) {
+        try {
+            const encodedPath = encodeURIComponent(relativePath).replace(/%2F/g, '/');
+            const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
+            const res = await fetch(url, {
+                headers: { 
+                    'Authorization': `token ${ghConfig.token}`,
+                    'Accept': 'application/vnd.github.v3.raw' 
+                },
+                cache: 'no-store'
+            });
+            if (res.status === 401) { ghConfig.handleAuthError(); /* Fallback to step 2 */ }
+            else if (res.ok) return await res.json();
+        } catch (e) { console.warn("[API] Fetch failed, falling back to local:", e); }
     }
+
+    // 2. Fallback to direct fetch (Relative local path)
+    try {
+        const res = await fetch(relativePath, { cache: 'no-store' });
+        if (res.status === 404) return { screens: {}, title: project || 'Default Project' };
+        if (res.ok) return await res.json();
+    } catch (e) {
+        console.error("[Hybrid] Metadata fetch fatal error:", e);
+    }
+
+    return { screens: {}, title: project || 'Default Project' };
 }
 
 /**
