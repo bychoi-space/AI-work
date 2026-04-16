@@ -10,7 +10,12 @@ const ghConfig = {
 };
 
 function encodeBase64(str) {
-    return btoa(unescape(encodeURIComponent(str)));
+    try {
+        return btoa(unescape(encodeURIComponent(str)));
+    } catch (e) {
+        console.error("[Base64] Encoding failed for string:", str, e);
+        return "";
+    }
 }
 
 /**
@@ -19,7 +24,8 @@ function encodeBase64(str) {
 async function uploadToGitHub(filename, content, statusCallback) {
     try {
         console.log(`[GitHub API] Initiating update for: ${filename}`);
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${filename}`;
+        const encodedPath = encodeURIComponent(`${ghConfig.dataDir}${filename}`).replace(/%2F/g, '/');
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
         
         // 1. Get SHA (if file exists)
         let sha = undefined;
@@ -76,7 +82,8 @@ async function fetchFileContent(filename) {
     if (!ghConfig.token) return null;
     
     try {
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${filename}`;
+        const encodedPath = encodeURIComponent(`${ghConfig.dataDir}${filename}`).replace(/%2F/g, '/');
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
         const res = await fetch(url, { 
             headers: { 
                 'Authorization': `token ${ghConfig.token}`,
@@ -99,7 +106,8 @@ async function syncFilesFromGitHub(callback) {
     if (!ghConfig.token) return [];
     
     try {
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}`;
+        const encodedPath = encodeURIComponent(`${ghConfig.dataDir}`).replace(/%2F/g, '/');
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
         const res = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
         if (!res.ok) throw new Error('Sync failed');
         
@@ -127,7 +135,8 @@ async function deleteFileFromGitHub(filename, sha, statusCallback) {
     if (statusCallback) statusCallback('삭제 중 ⏳', '#f87171');
 
     try {
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${filename}`;
+        const encodedPath = encodeURIComponent(`${ghConfig.dataDir}${filename}`).replace(/%2F/g, '/');
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
         
         const res = await fetch(url, {
             method: 'DELETE',
@@ -165,7 +174,8 @@ const METADATA_FILE = 'metadata.json';
 async function fetchMetadata() {
     if (!ghConfig.token) return { files: {} };
     try {
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${METADATA_FILE}`;
+        const encodedPath = encodeURIComponent(`${ghConfig.dataDir}${METADATA_FILE}`).replace(/%2F/g, '/');
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
         const res = await fetch(url, { 
             headers: { 
                 'Authorization': `token ${ghConfig.token}`,
