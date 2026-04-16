@@ -446,6 +446,45 @@
             DOM.bottomUpdated.innerText = m.updatedAt ? new Date(m.updatedAt).toLocaleString() : '-';
         }
 
+        async function saveMetadataViewer() {
+            const btn = document.getElementById('btn-save-meta-viewer');
+            if (!btn) return;
+
+            const originalText = btn.innerText;
+            btn.innerText = '저장 중...';
+            btn.style.opacity = '0.7';
+
+            const projectMeta = {
+                title: document.getElementById('viewer-meta-title')?.value || '',
+                assignee: document.getElementById('viewer-meta-assignee')?.value || '',
+                period: document.getElementById('viewer-meta-period')?.value || '',
+                jira: document.getElementById('viewer-meta-jira')?.value || '',
+                figmaUrl: document.getElementById('viewer-meta-figma')?.value || '',
+                pubUrl: document.getElementById('viewer-meta-pub')?.value || ''
+            };
+
+            const data = { projectMeta };
+
+            const success = await updateScreenMetadata(state.currentProject, state.activeFile?.name, data, (msg, color) => {
+                btn.innerText = msg;
+                btn.style.background = color || '';
+                btn.style.opacity = '1';
+                
+                if (color === '#4ade80') {
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.style.background = '';
+                    }, 2000);
+                }
+            });
+
+            if (success) {
+                // Update local state and title display
+                Object.assign(state.projectMetadata, projectMeta);
+                if (projectMeta.title) DOM.fileName.innerText = projectMeta.title;
+            }
+        }
+
         function renderDescriptionList() {
             if (!state.activeFile) return;
             const list = state.activeFile.meta.description;
