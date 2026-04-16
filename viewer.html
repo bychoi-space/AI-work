@@ -29,13 +29,18 @@
         </div>
         
         <div class="tools">
-            <button class="tool-btn active" id="btn-select" title="선택 도구 (V)"><span class="material-icons-outlined">near_me</span></button>
-            <button class="tool-btn" id="btn-hand" title="이동 도구 (Space)"><span class="material-icons-outlined">pan_tool</span></button>
-            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+            <div class="tool-group">
+                <button class="tool-btn active" id="btn-select" title="선택 도구 (V)"><span class="material-icons-outlined">near_me</span></button>
+                <button class="tool-btn" id="btn-hand" title="이동 도구 (Space)"><span class="material-icons-outlined">pan_tool</span></button>
+            </div>
             
-            <button class="tool-btn device-btn" onclick="setDeviceViewport('mobile', 375, 812)" title="Mobile View"><span class="material-icons-outlined">smartphone</span></button>
-            <button class="tool-btn device-btn" onclick="setDeviceViewport('tablet', 768, 1024)" title="Tablet View"><span class="material-icons-outlined">tablet_mac</span></button>
-            <button class="tool-btn active device-btn" id="btn-desktop" onclick="setDeviceViewport('desktop', 1440, 900)" title="Desktop View"><span class="material-icons-outlined">desktop_windows</span></button>
+            <div style="width: 1px; background: var(--border-color); margin: 6px 12px;"></div>
+            
+            <div class="tool-group">
+                <button class="tool-btn device-btn" onclick="setDeviceViewport('mobile', 375, 812)" title="Mobile View"><span class="material-icons-outlined">smartphone</span></button>
+                <button class="tool-btn device-btn" onclick="setDeviceViewport('tablet', 768, 1024)" title="Tablet View"><span class="material-icons-outlined">tablet_mac</span></button>
+                <button class="tool-btn active device-btn" id="btn-desktop" onclick="setDeviceViewport('desktop', 1440, 900)" title="Desktop View"><span class="material-icons-outlined">desktop_windows</span></button>
+            </div>
         </div>
 
         <div class="actions">
@@ -481,7 +486,14 @@
 
             DOM.iframe.style.width = w + 'px';
             DOM.iframe.style.height = h + 'px';
-            setTimeout(() => centerView(), 50);
+            
+            // Immediately recalculate center with some extra padding/breathing room
+            setTimeout(() => {
+                centerView();
+                // Sub-optimization: slight zoom-out if content is too tight
+                if (state.transform.scale > 0.9) state.transform.scale = 0.9;
+                updateTransform();
+            }, 60);
         }
 
         function centerView() {
