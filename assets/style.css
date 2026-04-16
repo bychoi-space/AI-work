@@ -73,11 +73,17 @@ body {
 
 .tools {
     display: flex;
-    gap: 6px;
+    align-items: center;
+    gap: 12px;
     background: rgba(0, 0, 0, 0.2);
-    padding: 4px;
-    border-radius: 8px;
+    padding: 2px 8px;
+    border-radius: 10px;
     border: 1px solid var(--border-color);
+}
+.tool-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .tool-btn {
