@@ -86,11 +86,16 @@
         </div>
 
         <!-- Right Sidebar: Description -->
-        <aside class="sidebar sidebar-right" id="sidebar-right" style="width: 320px; background: var(--panel-bg); display: flex; flex-direction: column;">
+        <aside class="sidebar sidebar-right" id="sidebar-right" style="width: 340px; background: var(--panel-bg); display: flex; flex-direction: column;">
             <div class="panel-header">Description</div>
             <div class="description-container">
-                <textarea id="text-description" class="description-textarea" placeholder="이 파일에 대한 상세 설명을 작성하세요..."></textarea>
-                <div class="panel-actions">
+                <div id="description-list">
+                    <!-- Dynamic rows here -->
+                </div>
+                <button class="add-row-btn" id="btn-add-desc-row">
+                    <span class="material-icons-outlined">add_circle_outline</span> 새 행 추가
+                </button>
+                <div class="panel-actions" style="margin-top: 8px;">
                     <button id="btn-save-description" class="btn-primary" style="width: 100%;">수정 내용 저장</button>
                 </div>
             </div>
@@ -118,7 +123,7 @@
             
             // Panels
             metadataPanel: document.getElementById('metadata-panel'),
-            descriptionArea: document.getElementById('text-description'),
+            descriptionList: document.getElementById('description-list'),
             sidebarLeft: document.getElementById('sidebar-left'),
             sidebarRight: document.getElementById('sidebar-right'),
             
@@ -133,6 +138,7 @@
             btnDelete: document.getElementById('btn-delete'),
             btnToggleLeft: document.getElementById('btn-toggle-left'),
             btnToggleRight: document.getElementById('btn-toggle-right'),
+            btnAddDescRow: document.getElementById('btn-add-desc-row'),
             btnSaveDescription: document.getElementById('btn-save-description')
         };
 
@@ -160,7 +166,15 @@
                 DOM.iframe.src = url;
                 DOM.iframe.style.display = 'block';
 
-                const m = metadata.files[fileName] || {};
+                let m = metadata.files[fileName] || {};
+                
+                // Data Migration: Convert string description to Array
+                if (typeof m.description === 'string') {
+                    m.description = m.description.trim() ? [m.description] : [];
+                } else if (!m.description) {
+                    m.description = [];
+                }
+
                 state.activeFile = { 
                     name: fileName, 
                     size: (content.length / 1024).toFixed(1) + ' KB',
@@ -216,40 +230,146 @@
         function updateProperties() {
             if (!state.activeFile) return;
             const m = state.activeFile.meta || {};
-            const jiraUrl = m.jira ? `https://jira.lfcorp.com/browse/${m.jira}` : '#';
 
-            // 1. Left Sidebar: Metadata
+            // 1. Left Sidebar: Metadata (Editable)
             DOM.metadataPanel.innerHTML = `
-                <div class="prop-section" style="border:none;">
-                    <div class="prop-row">
-                        <span class="prop-label">Title</span>
-                        <div class="prop-value-box">${m.title || '-'}</div>
+                <div class="prop-section" style="border:none; padding-top:0;">
+                    <div class="form-group">
+                        <label class="form-label">제목</label>
+                        <input type="text" id="viewer-meta-title" class="form-input" value="${m.title || ''}" placeholder="제목 입력">
                     </div>
-                    <div class="prop-row">
-                        <span class="prop-label">Assignee</span>
-                        <div class="prop-value-box">${m.assignee || '-'}</div>
+                    <div class="form-group">
+                        <label class="form-label">담당자</label>
+                        <input type="text" id="viewer-meta-assignee" class="form-input" value="${m.assignee || ''}" placeholder="담당자 입력">
                     </div>
-                    <div class="prop-row">
-                        <span class="prop-label">Period</span>
-                        <div class="prop-value-box" style="font-size: 11px;">${m.period || '-'}</div>
+                    <div class="form-group">
+                        <label class="form-label">기간</label>
+                        <input type="text" id="viewer-meta-period" class="form-input" value="${m.period || ''}" placeholder="기간 입력">
                     </div>
-                    <div class="prop-row">
-                        <span class="prop-label">JIRA</span>
-                        <div class="prop-value-box">
-                            ${m.jira ? `<a href="${jiraUrl}" target="_blank" style="color:var(--accent); text-decoration:none;">${m.jira}</a>` : '-'}
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">JIRA 번호</label>
+                        <input type="text" id="viewer-meta-jira" class="form-input" value="${m.jira || ''}" placeholder="JIRA 번호 입력">
                     </div>
+                    <button id="btn-save-meta-viewer" class="btn-primary" style="width:100%; margin-top:12px;">메타데이터 저장</button>
                 </div>
             `;
 
-            // 2. Right Sidebar: Description
-            DOM.descriptionArea.value = m.description || '';
+            // 2. Right Sidebar: Description (List)
+            renderDescriptionList();
 
             // 3. Bottom Bar: Stats
             DOM.bottomFilename.innerText = state.activeFile.name;
             DOM.bottomSize.innerText = state.activeFile.size;
             DOM.bottomUpdated.innerText = m.updatedAt ? new Date(m.updatedAt).toLocaleString() : '-';
+
+            // Re-bind events for the newly rendered buttons
+            document.getElementById('btn-save-meta-viewer').onclick = saveMetadataViewer;
         }
+
+        function renderDescriptionList() {
+            const list = state.activeFile.meta.description || [];
+            DOM.descriptionList.innerHTML = '';
+            
+            if (list.length === 0) {
+                DOM.descriptionList.innerHTML = '<div class="empty-text">작성된 설명이 없습니다.</div>';
+                return;
+            }
+
+            list.forEach((text, index) => {
+                const row = document.createElement('div');
+                row.className = 'desc-row';
+                row.innerHTML = `
+                    <div class="desc-index">${index + 1}</div>
+                    <input type="text" class="desc-input" value="${text}" placeholder="설명 입력...">
+                    <div class="desc-actions">
+                        <button class="desc-btn desc-btn-up" data-index="${index}" title="위로">
+                            <span class="material-icons-outlined" style="font-size:16px;">expand_less</span>
+                        </button>
+                        <button class="desc-btn desc-btn-down" data-index="${index}" title="아래로">
+                            <span class="material-icons-outlined" style="font-size:16px;">expand_more</span>
+                        </button>
+                        <button class="desc-btn desc-btn-del" data-index="${index}" title="삭제">
+                            <span class="material-icons-outlined" style="font-size:16px;">delete_outline</span>
+                        </button>
+                    </div>
+                `;
+                
+                // Bind input change immediately
+                row.querySelector('.desc-input').oninput = (e) => {
+                    list[index] = e.target.value;
+                };
+
+                DOM.descriptionList.appendChild(row);
+            });
+        }
+
+        // --- Description Manipulation ---
+        DOM.btnAddDescRow.onclick = () => {
+            if (!state.activeFile) return;
+            state.activeFile.meta.description = state.activeFile.meta.description || [];
+            state.activeFile.meta.description.push('');
+            renderDescriptionList();
+            
+            // Focus new row
+            setTimeout(() => {
+                const inputs = DOM.descriptionList.querySelectorAll('.desc-input');
+                inputs[inputs.length - 1]?.focus();
+            }, 50);
+        };
+
+        DOM.descriptionList.onclick = (e) => {
+            const btn = e.target.closest('.desc-btn');
+            if (!btn) return;
+            
+            const index = parseInt(btn.dataset.index);
+            const list = state.activeFile.meta.description;
+            
+            if (btn.classList.contains('desc-btn-del')) {
+                list.splice(index, 1);
+            } else if (btn.classList.contains('desc-btn-up') && index > 0) {
+                [list[index], list[index-1]] = [list[index-1], list[index]];
+            } else if (btn.classList.contains('desc-btn-down') && index < list.length - 1) {
+                [list[index], list[index+1]] = [list[index+1], list[index]];
+            }
+            renderDescriptionList();
+        };
+
+        // --- Save Handlers ---
+        async function saveMetadataViewer() {
+            if (!state.activeFile) return;
+            const btn = document.getElementById('btn-save-meta-viewer');
+            const data = {
+                title: document.getElementById('viewer-meta-title').value.trim(),
+                assignee: document.getElementById('viewer-meta-assignee').value.trim(),
+                period: document.getElementById('viewer-meta-period').value.trim(),
+                jira: document.getElementById('viewer-meta-jira').value.trim()
+            };
+
+            const success = await updateFileMetadata(state.activeFile.name, data, (msg, color) => {
+                btn.innerText = msg;
+                if (color === '#4ade80') {
+                    setTimeout(() => btn.innerText = '메타데이터 저장', 2000);
+                }
+            });
+            if (success) {
+                Object.assign(state.activeFile.meta, data);
+            }
+        }
+
+        DOM.btnSaveDescription.onclick = async () => {
+            if (!state.activeFile) return;
+            const list = state.activeFile.meta.description.filter(t => t.trim() !== '');
+            const success = await updateFileMetadata(state.activeFile.name, { description: list }, (msg, color) => {
+                DOM.btnSaveDescription.innerText = msg;
+                if (color === '#4ade80') {
+                    setTimeout(() => DOM.btnSaveDescription.innerText = '수정 내용 저장', 2000);
+                }
+            });
+            if (success) {
+                state.activeFile.meta.description = list;
+                renderDescriptionList();
+            }
+        };
 
         // 4. Panel Handlers
         function toggleSidebar(side) {
@@ -266,24 +386,6 @@
 
         DOM.btnToggleLeft.onclick = () => toggleSidebar('left');
         DOM.btnToggleRight.onclick = () => toggleSidebar('right');
-
-        DOM.btnSaveDescription.onclick = async () => {
-            if (!state.activeFile) return;
-            const desc = DOM.descriptionArea.value;
-            const success = await updateFileMetadata(state.activeFile.name, { description: desc }, (msg, color) => {
-                DOM.btnSaveDescription.innerText = msg;
-                DOM.btnSaveDescription.style.color = '#000';
-                if (color === '#4ade80') {
-                    setTimeout(() => {
-                        DOM.btnSaveDescription.innerText = '수정 내용 저장';
-                        DOM.btnSaveDescription.style.color = '#000';
-                    }, 2000);
-                }
-            });
-            if (success) {
-                state.activeFile.meta.description = desc;
-            }
-        };
 
         // 2. Viewport & Canvas Logic
         function setDeviceViewport(type, w, h) {
