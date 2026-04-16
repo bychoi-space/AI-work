@@ -424,11 +424,11 @@
                 }, 1000);
             };
 
-            // Main Trigger
-            setTimeout(dismiss, 1200);
+            // Main Trigger (Accelerated for faster intro)
+            setTimeout(dismiss, 800);
 
-            // Emergency Fallback (in case timeout fails or UI hangs)
-            window.addEventListener('load', () => setTimeout(dismiss, 2000));
+            // Emergency Fallback
+            window.addEventListener('load', () => setTimeout(dismiss, 1200));
             
             // Allow clicking to skip
             intro.addEventListener('click', dismiss);
