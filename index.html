@@ -138,7 +138,7 @@
         </div>
     </div>
 
-    <script src="assets/app.js"></script>
+    <script src="assets/app.js?v=20240416_v4"></script>
     <script>
         const state = {
             projects: []
@@ -245,13 +245,19 @@
 
                 if (loadingText) loadingText.innerText = "프로젝트 정보를 불러오는 중...";
 
-                // 4. Fetch metadata for each project in parallel
+                // 4. Force inject Default_Project if not found but exists in metadata
+                if (folders.length === 0 || !folders.find(f => f.name === 'Default_Project')) {
+                    folders.unshift({ name: 'Default_Project', type: 'dir' });
+                }
+
+                // 5. Fetch metadata for each project in parallel
                 const projectData = await Promise.all(folders.map(async (folder) => {
                     const meta = await fetchProjectMetadata(folder.name);
+                    const screens = meta.screens || meta.files || {};
                     return {
                         name: folder.name,
                         meta: meta,
-                        screens: Object.keys(meta.screens || {}).length
+                        screens: Object.keys(screens).length
                     };
                 }));
                 state.projects = projectData;
