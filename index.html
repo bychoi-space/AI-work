@@ -56,11 +56,10 @@
     <!-- Dashboard View -->
     <div id="dashboard-view">
         <div class="dashboard-header">
-            <h2 class="dashboard-title">Recent Files</h2>
-            <label class="tool-btn" title="로컬 HTML 업로드" style="width: auto; padding: 0 16px; background: var(--accent); color: #000; font-weight: 600;">
-                <span class="material-icons-outlined" style="margin-right: 6px;">note_add</span> New Upload
-                <input type="file" id="file-upload-top" accept=".html,.htm" multiple style="display:none;">
-            </label>
+            <h2 class="dashboard-title">My Projects</h2>
+            <button class="tool-btn" id="btn-create-project" title="새 프로젝트 생성" style="width: auto; padding: 0 16px; background: var(--accent); color: #000; font-weight: 600;">
+                <span class="material-icons-outlined" style="margin-right: 6px;">create_new_folder</span> New Project
+            </button>
         </div>
         <div class="card-grid" id="file-list">
             <!-- Loading state -->
@@ -115,7 +114,7 @@
     <script src="assets/app.js"></script>
     <script>
         const state = {
-            files: []
+            projects: []
         };
 
         const DOM = {
@@ -139,10 +138,12 @@
         };
 
         const context = {
-            currentEditingFile: null,
-            metadata: { files: {} }
+            currentEditingProject: null,
+            projectsMetadata: {} // Map: project_name -> metadata_object
         };
 
+        DOM.btnCreateProject = document.getElementById('btn-create-project');
+        
         // Initialize GitHub Status
         function updateStatusUI(text, color) {
             DOM.ghStatus.innerText = text;
@@ -163,82 +164,99 @@
             if (val) refreshFileList();
         });
 
-        // File List Rendering
+        // Project List Rendering
         async function refreshFileList() {
             if (!ghConfig.token) {
-                DOM.list.innerHTML = `
-                    <div class="empty-text" style="grid-column: 1 / -1;">
-                        GitHub 토큰을 입력하여 파일을 동기화하세요.
-                    </div>`;
+                DOM.list.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">GitHub 토큰을 입력하세요.</div>`;
                 return;
             }
 
             updateStatusUI('동기화 중... 🔄', '#facc15');
             
-            // Fetch metadata and files in parallel
-            const [files, metadata] = await Promise.all([
-                syncFilesFromGitHub(),
-                fetchMetadata()
-            ]);
-            
-            context.metadata = metadata;
-            state.files = files.map(item => ({
-                id: item.sha,
-                name: item.name,
-                size: (item.size / 1024).toFixed(1) + ' KB',
-                meta: metadata.files[item.name] || {}
-            }));
-            
-            renderList();
-            updateStatusUI('가동 중🟢', '#4ade80');
+            try {
+                // 1. Fetch root contents
+                const rootItems = await listContents('');
+                
+                // 2. Identify Legacy Files and Folders
+                const legacies = rootItems.filter(i => i.type === 'file' && (i.name.endsWith('.html') || i.name.endsWith('.htm')));
+                const folders = rootItems.filter(i => i.type === 'dir' && i.name !== 'assets');
+
+                // 3. Automated Migration (Move root files to Default_Project)
+                if (legacies.length > 0) {
+                    console.log("[Migration] Moving legacy files to Default_Project...");
+                    updateStatusUI('기존 파일 마이그레이션 중... ⏳', '#facc15');
+                    
+                    // Create Default_Project folder by saving metadata
+                    const defaultMeta = await fetchProjectMetadata('Default_Project');
+                    
+                    for (const f of legacies) {
+                        try {
+                            const content = await fetchFileContent(f.name);
+                            if (content) {
+                                // Add to Default_Project metadata
+                                defaultMeta.screens = defaultMeta.screens || {};
+                                defaultMeta.screens[f.name] = { updatedAt: new Date().toISOString() };
+                                
+                                // Upload to new path & delete old
+                                await uploadToProject('Default_Project', f.name, content);
+                                await deleteFileFromGitHub(f.name, f.sha);
+                            }
+                        } catch (e) { console.error("Migration failed for:", f.name, e); }
+                    }
+                    await saveProjectMetadata('Default_Project', defaultMeta);
+                    return refreshFileList(); // Refresh after migration
+                }
+
+                // 4. Fetch metadata for each project and package
+                const projectData = [];
+                for (const folder of folders) {
+                    const meta = await fetchProjectMetadata(folder.name);
+                    projectData.push({
+                        name: folder.name,
+                        meta: meta,
+                        screens: Object.keys(meta.screens || {}).length
+                    });
+                }
+                
+                state.projects = projectData;
+                renderList();
+                updateStatusUI('가동 중🟢', '#4ade80');
+            } catch (err) {
+                console.error("refreshFileList error:", err);
+                updateStatusUI('동기화 오류 ❌', '#ef4444');
+            }
         }
 
         async function renderList() {
-            if (state.files.length === 0) {
-                DOM.list.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">파일이 없습니다.</div>`;
+            if (state.projects.length === 0) {
+                DOM.list.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">프로젝트가 없습니다.</div>`;
                 return;
             }
 
             DOM.list.innerHTML = '';
-            for (const f of state.files) {
+            for (const p of state.projects) {
                 const card = document.createElement('a');
                 card.className = 'file-card';
-                card.href = `viewer.html?file=${encodeURIComponent(f.name)}`;
+                // Find first screen to open by default, or just open project
+                const firstScreen = Object.keys(p.meta.screens || {})[0] || '';
+                card.href = `viewer.html?project=${encodeURIComponent(p.name)}${firstScreen ? '&file='+encodeURIComponent(firstScreen) : ''}`;
                 
-                const m = f.meta;
-                const jiraUrl = m.jira ? `https://jira.lfcorp.com/browse/${m.jira}` : '#';
-                const jiraTag = m.jira ? `<a href="${jiraUrl}" target="_blank" class="meta-tag jira-tag" onclick="event.stopPropagation();">${m.jira}</a>` : '';
-                const assigneeTag = m.assignee ? `<span class="meta-tag">👤 ${m.assignee}</span>` : '';
-                const periodTag = m.period ? `<span class="meta-tag">📅 ${m.period}</span>` : '';
-                const figmaIcon = m.figmaUrl ? `<a href="${m.figmaUrl}" target="_blank" class="meta-tag" style="color:#ff7262;" onclick="event.stopPropagation();">FIGMA</a>` : '';
-                const pubIcon = m.pubUrl ? `<a href="${m.pubUrl}" target="_blank" class="meta-tag" style="color:#00e5ff;" onclick="event.stopPropagation();">PUB</a>` : '';
-
-                const mainTitle = m.title || f.name;
-                const subInfo = (m.assignee || m.period) 
-                    ? `${m.assignee ? '👤 ' + m.assignee : ''} ${m.period ? ' • ' + m.period : ''}`
-                    : `${f.size} • ${f.name}`;
+                const m = p.meta;
+                const mainTitle = m.title || p.name;
+                const subInfo = `${p.screens} screens • ${p.name}`;
 
                 card.innerHTML = `
-                    <div class="edit-btn-card" data-filename="${f.name}" title="Edit Metadata">
+                    <div class="edit-btn-card" data-project="${p.name}" title="Edit Project Metadata">
                         <span class="material-icons-outlined">edit</span>
                     </div>
-                    <div class="delete-btn-card" data-filename="${f.name}" data-sha="${f.id}" title="Delete File">
-                        <span class="material-icons-outlined">close</span>
-                    </div>
-                    <div class="thumbnail-wrapper">
+                    <div class="thumbnail-wrapper" style="background: linear-gradient(135deg, #1e293b, #0f172a);">
                         <div class="icon-wrapper" style="width: 100%; height: 100%;">
-                            <span class="material-icons-outlined" style="font-size: 36px; opacity: 0.4;">cloud_download</span>
+                            <span class="material-icons-outlined" style="font-size: 48px; opacity: 0.6; color: var(--accent);">folder</span>
                         </div>
                     </div>
                     <div class="card-info">
                         <div class="card-name" title="${mainTitle}">${mainTitle}</div>
-                        <div class="card-meta" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${subInfo}</div>
-                        <div class="metadata-row">
-                            ${jiraTag}
-                            ${figmaIcon}
-                            ${pubIcon}
-                            ${(m.assignee || m.period) ? `<span class="meta-tag" style="opacity:0.6; font-size:9px;">${f.name}</span>` : ''}
-                        </div>
+                        <div class="card-meta">${subInfo}</div>
                     </div>
                 `;
                 DOM.list.appendChild(card);
@@ -289,12 +307,30 @@
             return `${format(selectedDates[0])} ~ ${format(selectedDates[1])}`;
         }
 
-        // Modal Logic
-        function openEditModal(filename) {
-            context.currentEditingFile = filename;
-            const m = context.metadata.files[filename] || {};
-            
-            DOM.modalFilenameDisplay.innerText = filename;
+        // Project Modal & Events
+        DOM.btnCreateProject.onclick = () => {
+            const name = prompt("새 프로젝트 이름을 입력하세요 (폴더명이 됩니다):");
+            if (name && name.trim()) {
+                const projectName = name.trim().replace(/\s+/g, '_');
+                updateStatusUI('프로젝트 생성 중... ⏳', '#facc15');
+                // Create project by uploading initial metadata
+                saveProjectMetadata(projectName, { 
+                    title: name.trim(), 
+                    screens: {}, 
+                    createdAt: new Date().toISOString() 
+                }, (msg, color) => {
+                    if (color === '#4ade80') {
+                        refreshFileList();
+                    }
+                });
+            }
+        };
+
+        async function openEditProjectModal(projectName) {
+            context.currentEditingProject = projectName;
+            updateStatusUI('메타데이터 로딩 중... ⏳', '#facc15');
+            const m = await fetchProjectMetadata(projectName);
+            DOM.modalFilenameDisplay.innerText = `Project: ${projectName}`;
             DOM.metaTitle.value = m.title || '';
             DOM.metaPeriod.value = m.period || '';
             DOM.metaAssignee.value = m.assignee || '';
@@ -303,14 +339,15 @@
             DOM.metaPub.value = m.pubUrl || '';
             
             DOM.modal.style.display = 'flex';
-
-            // Initialize Flatpickr on Period Input
+            updateStatusUI('가동 중🟢', '#4ade80');
+            
+            // Initialization of Period Picker (Flatpickr)
             flatpickr(DOM.metaPeriod, {
                 mode: "range",
                 locale: "ko",
                 dateFormat: "Y.m.d",
                 defaultDate: m.period ? m.period.split(' ~ ') : null,
-                onChange: (selectedDates, dateStr, instance) => {
+                onChange: (selectedDates) => {
                     if (selectedDates.length === 2) {
                         DOM.metaPeriod.value = formatKODateRange(selectedDates);
                     }
@@ -318,23 +355,36 @@
             });
         }
 
-        DOM.btnModalClose.addEventListener('click', () => {
-            DOM.modal.style.display = 'none';
+        document.addEventListener('click', async (e) => {
+            const editBtn = e.target.closest('.edit-btn-card');
+            if (editBtn) {
+                e.preventDefault(); e.stopPropagation();
+                const projectName = editBtn.dataset.project;
+                openEditProjectModal(projectName);
+                return;
+            }
         });
 
-        DOM.btnModalSave.addEventListener('click', async () => {
-            const filename = context.currentEditingFile;
+        DOM.btnModalClose.onclick = () => DOM.modal.style.display = 'none';
+
+        DOM.btnModalSave.onclick = async () => {
+            if (!context.currentEditingProject) return;
+            const projectName = context.currentEditingProject;
+            const originalText = DOM.btnModalSave.innerText;
+            DOM.btnModalSave.innerText = '저장 중...';
+            
             const data = {
-                title: DOM.metaTitle.value.trim(),
-                period: DOM.metaPeriod.value.trim(),
-                assignee: DOM.metaAssignee.value.trim(),
-                jira: DOM.metaJira.value.trim(),
-                figmaUrl: DOM.metaFigma.value.trim(),
-                pubUrl: DOM.metaPub.value.trim()
+                projectMeta: {
+                    title: DOM.metaTitle.value.trim(),
+                    period: DOM.metaPeriod.value.trim(),
+                    assignee: DOM.metaAssignee.value.trim(),
+                    jira: DOM.metaJira.value.trim(),
+                    figmaUrl: DOM.metaFigma.value.trim(),
+                    pubUrl: DOM.metaPub.value.trim()
+                }
             };
 
-            const originalText = DOM.btnModalSave.innerText;
-            const success = await updateFileMetadata(filename, data, (msg, color) => {
+            const success = await updateScreenMetadata(projectName, null, data, (msg, color) => {
                 DOM.btnModalSave.innerText = msg;
                 DOM.btnModalSave.style.background = color;
                 if (color === '#4ade80') {
@@ -344,26 +394,30 @@
                         DOM.btnModalSave.style.background = '';
                         refreshFileList();
                     }, 1000);
-                } else if (color === '#ef4444') {
-                    setTimeout(() => {
-                        DOM.btnModalSave.innerText = originalText;
-                        DOM.btnModalSave.style.background = '';
-                    }, 3000);
                 }
             });
-        });
+        };
 
-        // Upload Logic (Refactored)
+        // Upload Logic (Refactored for Project Support)
         async function handleFiles(fileList) {
             const newFiles = Array.from(fileList).filter(f => f.name.endsWith('.html') || f.name.endsWith('.htm'));
             if (newFiles.length === 0) return;
+
+            const targetProject = prompt("파일을 업로드할 프로젝트 이름을 입력하세요 (없으면 'Default_Project'에 저장):", "Default_Project") || "Default_Project";
 
             for (const file of newFiles) {
                 const reader = new FileReader();
                 reader.onload = async (ev) => {
                     const content = ev.target.result;
-                    const success = await uploadToGitHub(file.name, content, updateStatusUI);
-                    if (success) refreshFileList();
+                    const success = await uploadToProject(targetProject, file.name, content, updateStatusUI);
+                    if (success) {
+                        // Update project screens list in metadata
+                        const meta = await fetchProjectMetadata(targetProject);
+                        meta.screens = meta.screens || {};
+                        meta.screens[file.name] = { updatedAt: new Date().toISOString() };
+                        await saveProjectMetadata(targetProject, meta);
+                        refreshFileList();
+                    }
                 };
                 reader.readAsText(file);
             }

@@ -967,3 +967,49 @@ body.drag-active #drop-overlay {
     border-color: var(--accent) !important;
 }
 
+/* ----------------------------------------------------
+   10. Project & Screen Navigation Styles
+   ---------------------------------------------------- */
+.screen-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-secondary);
+    font-size: 13px;
+    border: 1px solid transparent;
+}
+
+.screen-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.screen-item.active {
+    background: rgba(0, 229, 255, 0.1);
+    color: var(--accent);
+    border-color: rgba(0, 229, 255, 0.2);
+    font-weight: 500;
+}
+
+.screen-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Enhancing Project Cards on Dashboard */
+.file-card .thumbnail-wrapper .material-icons-outlined {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.file-card:hover .thumbnail-wrapper .material-icons-outlined {
+    transform: scale(1.1) rotate(-5deg);
+    opacity: 1 !important;
+}
+

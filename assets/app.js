@@ -7,7 +7,7 @@ const ghConfig = {
     repo: 'AI-work',
     // Trim token in case of leading/trailing spaces
     token: (localStorage.getItem('gh_token') || '').trim(),
-    dataDir: 'data/' // 사용자 파일 저장 폴더
+    dataDir: 'data/' // Base folder for user projects
 };
 
 /**
@@ -31,6 +31,42 @@ function encodeBase64(str) {
             return "";
         }
     }
+}
+
+/**
+ * GitHub API Helper: List contents of a directory (Relative to dataDir)
+ */
+async function listContents(path = '') {
+    if (!ghConfig.token) return [];
+    try {
+        const fullPath = `${ghConfig.dataDir}${path}`.replace(/\/$/, '');
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${fullPath}`;
+        const res = await fetch(url, { 
+            headers: { 'Authorization': `token ${ghConfig.token}` },
+            cache: 'no-store'
+        });
+        if (!res.ok) return [];
+        return await res.json();
+    } catch (err) {
+        console.error("[GitHub API] listContents error:", err);
+        return [];
+    }
+}
+
+/**
+ * GitHub API Helper: Upload to a specific project
+ */
+async function uploadToProject(project, filename, content, statusCallback) {
+    const path = project ? `${project}/${filename}` : filename;
+    return await uploadToGitHub(path, content, statusCallback);
+}
+
+/**
+ * GitHub API Helper: Fetch file content (Project-aware)
+ */
+async function fetchProjectFileContent(project, filename) {
+    const path = project ? `${project}/${filename}` : filename;
+    return await fetchFileContent(path);
 }
 
 /**
@@ -190,61 +226,73 @@ async function deleteFileFromGitHub(filename, sha, statusCallback) {
     }
 }
 
-
 /**
- * Metadata Storage (JSON DB) Helpers
+ * Metadata Storage (Per-Project)
  */
 const METADATA_FILE = 'metadata.json';
-async function fetchMetadata() {
-    if (!ghConfig.token) return { files: {} };
+
+async function fetchProjectMetadata(project) {
+    if (!ghConfig.token) return { screens: {}, title: project, createdAt: null };
+    // If no project, fallback to root context (legacy)
+    const fullPath = project ? `${project}/${METADATA_FILE}` : METADATA_FILE;
+    
     try {
-        const encodedPath = encodeURIComponent(`${ghConfig.dataDir}${METADATA_FILE}`).replace(/%2F/g, '/');
+        const encodedPath = encodeURIComponent(`${ghConfig.dataDir}${fullPath}`).replace(/%2F/g, '/');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
+        
         const res = await fetch(url, { 
             headers: { 
                 'Authorization': `token ${ghConfig.token}`,
                 'Accept': 'application/vnd.github.v3.raw'
-            }
+            },
+            cache: 'no-store'
         });
         
-        if (res.status === 404) return { files: {} };
+        if (res.status === 404) return { screens: {}, title: project || 'Default Project' };
         if (!res.ok) throw new Error(`FETCH_META_FAILED_${res.status}`);
         
         const content = await res.text();
-        if (!content || content.trim() === '') return { files: {} };
-        
-        try {
-            return JSON.parse(content);
-        } catch (pErr) {
-            console.error('[GitHub API] JSON Parse Error in metadata.json:', pErr);
-            return { files: {} };
-        }
+        return JSON.parse(content);
     } catch (err) {
-        console.error('[GitHub API] fetchMetadata Error:', err.message);
-        return { files: {} };
+        console.error('[GitHub API] fetchProjectMetadata Error:', err.message);
+        return { screens: {}, title: project || 'Default Project' };
     }
 }
 
-async function saveMetadata(allMetadata, statusCallback) {
-    if (!ghConfig.token) return false;
-    const content = JSON.stringify(allMetadata, null, 2);
-    return await uploadToGitHub(METADATA_FILE, content, statusCallback);
+async function saveProjectMetadata(project, metadata, statusCallback) {
+    const fullPath = project ? `${project}/${METADATA_FILE}` : METADATA_FILE;
+    const content = JSON.stringify(metadata, null, 2);
+    return await uploadToGitHub(fullPath, content, statusCallback);
 }
 
-async function updateFileMetadata(filename, data, statusCallback) {
-    const metadata = await fetchMetadata();
-    metadata.files = metadata.files || {};
-    const existing = metadata.files[filename] || {};
+async function updateScreenMetadata(project, screenFilename, data, statusCallback) {
+    const metadata = await fetchProjectMetadata(project);
     
-    metadata.files[filename] = {
-        title: data.title !== undefined ? data.title : existing.title || '',
-        period: data.period !== undefined ? data.period : existing.period || '',
-        assignee: data.assignee !== undefined ? data.assignee : existing.assignee || '',
-        jira: data.jira !== undefined ? data.jira : existing.jira || '',
-        description: data.description !== undefined ? data.description : existing.description || '',
-        figmaUrl: data.figmaUrl !== undefined ? data.figmaUrl : existing.figmaUrl || '',
-        pubUrl: data.pubUrl !== undefined ? data.pubUrl : existing.pubUrl || '',
-        updatedAt: new Date().toISOString()
-    };
-    return await saveMetadata(metadata, statusCallback);
+    // 1. Update project-level info
+    if (data.projectMeta) {
+        metadata.title = data.projectMeta.title || metadata.title;
+        metadata.assignee = data.projectMeta.assignee || metadata.assignee;
+        metadata.period = data.projectMeta.period || metadata.period;
+        metadata.jira = data.projectMeta.jira || metadata.jira;
+        metadata.figmaUrl = data.projectMeta.figmaUrl || metadata.figmaUrl;
+        metadata.pubUrl = data.projectMeta.pubUrl || metadata.pubUrl;
+    }
+
+    // 2. Update screen-specific info (Pins, descriptions)
+    if (screenFilename) {
+        metadata.screens = metadata.screens || {};
+        metadata.screens[screenFilename] = {
+            description: data.description !== undefined ? data.description : (metadata.screens[screenFilename]?.description || []),
+            updatedAt: new Date().toISOString()
+        };
+    }
+
+    return await saveProjectMetadata(project, metadata, statusCallback);
+}
+
+// --- Legacy Compatibility Functions (Keep for existing Dashboard flow) ---
+async function fetchMetadata() { return fetchProjectMetadata(null); }
+async function updateFileMetadata(filename, data, statusCallback) {
+    // Treat legacy isolated files as single-screen updates in the root metadata
+    return updateScreenMetadata(null, filename, { ...data, projectMeta: data }, statusCallback);
 }
