@@ -37,6 +37,8 @@ const ghConfig = {
     handleAuthError() {
         console.warn("[Auth] 401 Unauthorized detected. Purging token and resetting.");
         this.token = null; 
+        // Force reload to completely reset app state to Guest Mode
+        setTimeout(() => location.reload(), 100);
     }
 };
 
@@ -326,8 +328,11 @@ async function fetchProjectMetadata(project) {
                 },
                 cache: 'no-store'
             });
-            if (res.status === 401) { ghConfig.handleAuthError(); /* Fallback to step 2 */ }
-            else if (res.ok) return await res.json();
+            if (res.status === 401) { 
+                ghConfig.handleAuthError(); 
+                return { screens: {}, title: project || 'Default Project' }; 
+            }
+            if (res.ok) return await res.json();
         } catch (e) { console.warn("[API] Fetch failed, falling back to local:", e); }
     }
 
