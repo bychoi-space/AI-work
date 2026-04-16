@@ -254,6 +254,20 @@
                         <label class="form-label">JIRA 번호</label>
                         <input type="text" id="viewer-meta-jira" class="form-input" value="${m.jira || ''}" placeholder="JIRA 번호 입력">
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            FIGMA (디자인산출물)
+                            ${m.figmaUrl ? `<a href="${m.figmaUrl}" target="_blank" style="margin-left:8px; font-size:12px; color:var(--accent);">[열기]</a>` : ''}
+                        </label>
+                        <input type="text" id="viewer-meta-figma" class="form-input" value="${m.figmaUrl || ''}" placeholder="피그마 링크 주소">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            퍼블리싱 산출물
+                            ${m.pubUrl ? `<a href="${m.pubUrl}" target="_blank" style="margin-left:8px; font-size:12px; color:var(--accent);">[열기]</a>` : ''}
+                        </label>
+                        <input type="text" id="viewer-meta-pub" class="form-input" value="${m.pubUrl || ''}" placeholder="퍼블리싱 링크 주소">
+                    </div>
                     <button id="btn-save-meta-viewer" class="btn-primary" style="width:100%; margin-top:12px;">메타데이터 저장</button>
                 </div>
             `;
@@ -403,7 +417,9 @@
                 title: document.getElementById('viewer-meta-title').value.trim(),
                 assignee: document.getElementById('viewer-meta-assignee').value.trim(),
                 period: document.getElementById('viewer-meta-period').value.trim(),
-                jira: document.getElementById('viewer-meta-jira').value.trim()
+                jira: document.getElementById('viewer-meta-jira').value.trim(),
+                figmaUrl: document.getElementById('viewer-meta-figma').value.trim(),
+                pubUrl: document.getElementById('viewer-meta-pub').value.trim()
             };
 
             const success = await updateFileMetadata(state.activeFile.name, data, (msg, color) => {

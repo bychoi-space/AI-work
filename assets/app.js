@@ -242,6 +242,8 @@ async function updateFileMetadata(filename, data, statusCallback) {
         assignee: data.assignee !== undefined ? data.assignee : existing.assignee || '',
         jira: data.jira !== undefined ? data.jira : existing.jira || '',
         description: data.description !== undefined ? data.description : existing.description || '',
+        figmaUrl: data.figmaUrl !== undefined ? data.figmaUrl : existing.figmaUrl || '',
+        pubUrl: data.pubUrl !== undefined ? data.pubUrl : existing.pubUrl || '',
         updatedAt: new Date().toISOString()
     };
     return await saveMetadata(metadata, statusCallback);

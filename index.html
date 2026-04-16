@@ -96,6 +96,14 @@
                     <label class="form-label">JIRA 번호</label>
                     <input type="text" id="meta-jira" class="form-input" placeholder="예: LFML-138562">
                 </div>
+                <div class="form-group">
+                    <label class="form-label">FIGMA (디자인산출물)</label>
+                    <input type="text" id="meta-figma" class="form-input" placeholder="피그마 링크 주소">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">퍼블리싱 산출물</label>
+                    <input type="text" id="meta-pub" class="form-input" placeholder="퍼블리싱 링크 주소">
+                </div>
             </div>
             <div class="modal-footer">
                 <button id="btn-modal-close" class="btn-secondary">취소</button>
@@ -124,6 +132,8 @@
             metaPeriod: document.getElementById('meta-period'),
             metaAssignee: document.getElementById('meta-assignee'),
             metaJira: document.getElementById('meta-jira'),
+            metaFigma: document.getElementById('meta-figma'),
+            metaPub: document.getElementById('meta-pub'),
             btnModalClose: document.getElementById('btn-modal-close'),
             btnModalSave: document.getElementById('btn-modal-save')
         };
@@ -200,6 +210,8 @@
                 const jiraTag = m.jira ? `<a href="${jiraUrl}" target="_blank" class="meta-tag jira-tag" onclick="event.stopPropagation();">${m.jira}</a>` : '';
                 const assigneeTag = m.assignee ? `<span class="meta-tag">👤 ${m.assignee}</span>` : '';
                 const periodTag = m.period ? `<span class="meta-tag">📅 ${m.period}</span>` : '';
+                const figmaIcon = m.figmaUrl ? `<a href="${m.figmaUrl}" target="_blank" class="meta-tag" style="color:#ff7262;" onclick="event.stopPropagation();">FIGMA</a>` : '';
+                const pubIcon = m.pubUrl ? `<a href="${m.pubUrl}" target="_blank" class="meta-tag" style="color:#00e5ff;" onclick="event.stopPropagation();">PUB</a>` : '';
 
                 const mainTitle = m.title || f.name;
                 const subInfo = (m.assignee || m.period) 
@@ -223,6 +235,8 @@
                         <div class="card-meta" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${subInfo}</div>
                         <div class="metadata-row">
                             ${jiraTag}
+                            ${figmaIcon}
+                            ${pubIcon}
                             ${(m.assignee || m.period) ? `<span class="meta-tag" style="opacity:0.6; font-size:9px;">${f.name}</span>` : ''}
                         </div>
                     </div>
@@ -285,6 +299,8 @@
             DOM.metaPeriod.value = m.period || '';
             DOM.metaAssignee.value = m.assignee || '';
             DOM.metaJira.value = m.jira || '';
+            DOM.metaFigma.value = m.figmaUrl || '';
+            DOM.metaPub.value = m.pubUrl || '';
             
             DOM.modal.style.display = 'flex';
 
@@ -312,7 +328,9 @@
                 title: DOM.metaTitle.value.trim(),
                 period: DOM.metaPeriod.value.trim(),
                 assignee: DOM.metaAssignee.value.trim(),
-                jira: DOM.metaJira.value.trim()
+                jira: DOM.metaJira.value.trim(),
+                figmaUrl: DOM.metaFigma.value.trim(),
+                pubUrl: DOM.metaPub.value.trim()
             };
 
             const originalText = DOM.btnModalSave.innerText;
