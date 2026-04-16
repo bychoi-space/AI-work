@@ -5,16 +5,31 @@
 const ghConfig = {
     owner: 'bychoi-space',
     repo: 'AI-work',
-    token: localStorage.getItem('gh_token') || '',
+    // Trim token in case of leading/trailing spaces
+    token: (localStorage.getItem('gh_token') || '').trim(),
     dataDir: 'data/' // 사용자 파일 저장 폴더
 };
 
+/**
+ * Robust UTF-8 to Base64 (Modern browser approach)
+ */
 function encodeBase64(str) {
     try {
-        return btoa(unescape(encodeURIComponent(str)));
+        // Use TextEncoder to get UTF-8 bytes, then convert to binary string for btoa
+        const bytes = new TextEncoder().encode(str);
+        let binary = '';
+        for (let i = 0; i < bytes.byteLength; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary);
     } catch (e) {
-        console.error("[Base64] Encoding failed for string:", str, e);
-        return "";
+        console.error("[Base64] Modern encoding failed, falling back:", e);
+        try {
+            return btoa(unescape(encodeURIComponent(str)));
+        } catch (e2) {
+            console.error("[Base64] Full fallback failed:", e2);
+            return "";
+        }
     }
 }
 
@@ -38,8 +53,9 @@ async function uploadToGitHub(filename, content, statusCallback) {
             console.log(`[GitHub API] File not found (404). Will create new.`);
         } else {
             const errBody = await getRes.json().catch(() => ({}));
+            const detailedMsg = errBody.message || getRes.statusText;
             console.error(`[GitHub API] SHA check failed. Status: ${getRes.status}`, errBody);
-            throw new Error(`SHA_CHECK_FAILED_${getRes.status}`);
+            throw new Error(`SHA_CHECK_${getRes.status}_(${detailedMsg})`);
         }
 
         // 2. Put content
@@ -65,12 +81,15 @@ async function uploadToGitHub(filename, content, statusCallback) {
             return true;
         } else {
             const errBody = await putRes.json().catch(() => ({}));
+            // Extract detailed validation errors from GitHub (crucial for 422)
+            const reason = errBody.message || "Unknown Validation Error";
             console.error(`[GitHub API] Upload failed. Status: ${putRes.status}`, errBody);
-            throw new Error(`UPLOAD_FAILED_${putRes.status}`);
+            throw new Error(`FAIL_${putRes.status}_(${reason})`);
         }
     } catch (err) {
         console.error("[GitHub API] Fatal Error:", err.message);
-        if (statusCallback) statusCallback(`에러 (${err.message}) ❌`, '#ef4444');
+        // Display the specific GitHub reason (e.g. "sha is required") on the button
+        if (statusCallback) statusCallback(`에러: ${err.message}`, '#ef4444');
         return false;
     }
 }
