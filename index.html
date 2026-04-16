@@ -181,43 +181,51 @@
                 const legacies = rootItems.filter(i => i.type === 'file' && (i.name.endsWith('.html') || i.name.endsWith('.htm')));
                 const folders = rootItems.filter(i => i.type === 'dir' && i.name !== 'assets');
 
-                // 3. Automated Migration (Move root files to Default_Project)
+                // Update loading text if migration starts
+                const loadingText = document.querySelector('#loading-state div:last-child');
                 if (legacies.length > 0) {
                     console.log("[Migration] Moving legacy files to Default_Project...");
                     updateStatusUI('기존 파일 마이그레이션 중... ⏳', '#facc15');
                     
-                    // Create Default_Project folder by saving metadata
-                    const defaultMeta = await fetchProjectMetadata('Default_Project');
+                    if (loadingText) loadingText.innerText = "기존 파일을 프로젝트로 옮기는 중입니다 (수 분 소요될 수 있음)...";
                     
+                    const defaultMeta = await fetchProjectMetadata('Default_Project');
+                    let count = 0;
                     for (const f of legacies) {
+                        count++;
+                        if (loadingText) loadingText.innerText = `마이그레이션 중... (${count}/${legacies.length})`;
                         try {
                             const content = await fetchFileContent(f.name);
                             if (content) {
-                                // Add to Default_Project metadata
                                 defaultMeta.screens = defaultMeta.screens || {};
                                 defaultMeta.screens[f.name] = { updatedAt: new Date().toISOString() };
-                                
-                                // Upload to new path & delete old
                                 await uploadToProject('Default_Project', f.name, content);
                                 await deleteFileFromGitHub(f.name, f.sha);
                             }
                         } catch (e) { console.error("Migration failed for:", f.name, e); }
                     }
                     await saveProjectMetadata('Default_Project', defaultMeta);
-                    return refreshFileList(); // Refresh after migration
+                    
+                    // After migration, instead of recursive call, just remove them from the local list
+                    // to allow the rest of the function to proceed normally.
+                    rootItems.splice(0, rootItems.length, ...rootItems.filter(i => i.type !== 'file' || !i.name.endsWith('.html')));
+                    // Add Default_Project to folders if not already there
+                    if (!folders.find(f => f.name === 'Default_Project')) {
+                        folders.push({ name: 'Default_Project', type: 'dir' });
+                    }
                 }
 
-                // 4. Fetch metadata for each project and package
-                const projectData = [];
-                for (const folder of folders) {
+                if (loadingText) loadingText.innerText = "프로젝트 정보를 불러오는 중...";
+
+                // 4. Fetch metadata for each project in parallel
+                const projectData = await Promise.all(folders.map(async (folder) => {
                     const meta = await fetchProjectMetadata(folder.name);
-                    projectData.push({
+                    return {
                         name: folder.name,
                         meta: meta,
                         screens: Object.keys(meta.screens || {}).length
-                    });
-                }
-                
+                    };
+                }));
                 state.projects = projectData;
                 renderList();
                 updateStatusUI('가동 중🟢', '#4ade80');
