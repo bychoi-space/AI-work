@@ -173,11 +173,14 @@ async function saveMetadata(allMetadata, statusCallback) {
 async function updateFileMetadata(filename, data, statusCallback) {
     const metadata = await fetchMetadata();
     metadata.files = metadata.files || {};
+    const existing = metadata.files[filename] || {};
+    
     metadata.files[filename] = {
-        title: data.title || '',
-        period: data.period || '',
-        assignee: data.assignee || '',
-        jira: data.jira || '',
+        title: data.title !== undefined ? data.title : existing.title || '',
+        period: data.period !== undefined ? data.period : existing.period || '',
+        assignee: data.assignee !== undefined ? data.assignee : existing.assignee || '',
+        jira: data.jira !== undefined ? data.jira : existing.jira || '',
+        description: data.description !== undefined ? data.description : existing.description || '',
         updatedAt: new Date().toISOString()
     };
     return await saveMetadata(metadata, statusCallback);

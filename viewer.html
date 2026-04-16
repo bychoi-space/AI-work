@@ -12,6 +12,10 @@
 
     <header class="toolbar">
         <div class="brand">
+            <button class="tool-btn toggle-sidebar-btn" id="btn-toggle-left" title="Toggle Metadata (L)">
+                <span class="material-icons-outlined">vertical_split</span>
+            </button>
+            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
             <a href="index.html" class="tool-btn" id="btn-back" title="목록으로 돌아가기 (Esc)">
                 <span class="material-icons-outlined">arrow_back</span>
             </a>
@@ -35,26 +39,60 @@
             <button class="tool-btn" onclick="centerView()" title="가운데 맞춤"><span class="material-icons-outlined">center_focus_strong</span></button>
             <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
             <button class="tool-btn tool-btn-danger" id="btn-delete" title="파일 삭제"><span class="material-icons-outlined">close</span></button>
+            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+            <button class="tool-btn toggle-sidebar-btn" id="btn-toggle-right" title="Toggle Description (R)">
+                <span class="material-icons-outlined">notes</span>
+            </button>
         </div>
     </header>
 
-    <div id="workspace-view">
-        <main class="canvas" id="canvas">
-            <div class="stage" id="stage">
-                <div class="artboard-wrapper">
-                    <iframe id="main-iframe" class="artboard-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
-                    <div class="placeholder-card" id="placeholder">
-                        <i class="material-icons-outlined">sync</i>
-                        <h3 id="placeholder-text">GitHub에서 파일을 불러오는 중...</h3>
+    <div id="workspace-view" style="display: flex; flex: 1; overflow: hidden;">
+        <!-- Left Sidebar: Metadata -->
+        <aside class="sidebar sidebar-left" id="sidebar-left" style="width: 280px; background: var(--panel-bg); display: flex; flex-direction: column;">
+            <div class="panel-header">Metadata</div>
+            <div class="panel-content" id="metadata-panel" style="padding: 16px;">
+                <div class="empty-text">Loading metadata...</div>
+            </div>
+        </aside>
+
+        <!-- Center: Canvas & Bottom Bar -->
+        <div class="center-content">
+            <main class="canvas" id="canvas">
+                <div class="stage" id="stage">
+                    <div class="artboard-wrapper">
+                        <iframe id="main-iframe" class="artboard-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+                        <div class="placeholder-card" id="placeholder">
+                            <i class="material-icons-outlined">sync</i>
+                            <h3 id="placeholder-text">GitHub에서 파일을 불러오는 중...</h3>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </main>
+            </main>
 
-        <aside class="sidebar sidebar-right">
-            <div class="panel-header">Properties</div>
-            <div class="panel-content" id="properties-panel" style="padding: 16px;">
-                <div class="empty-text">Loading properties...</div>
+            <footer class="bottom-bar">
+                <div class="bottom-item" id="bottom-filename">
+                    <i class="material-icons-outlined">description</i>
+                    <span>-</span>
+                </div>
+                <div class="bottom-item" id="bottom-size">
+                    <i class="material-icons-outlined">data_usage</i>
+                    <span>-</span>
+                </div>
+                <div class="bottom-item" id="bottom-updated">
+                    <i class="material-icons-outlined">history</i>
+                    <span>-</span>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Right Sidebar: Description -->
+        <aside class="sidebar sidebar-right" id="sidebar-right" style="width: 320px; background: var(--panel-bg); display: flex; flex-direction: column;">
+            <div class="panel-header">Description</div>
+            <div class="description-container">
+                <textarea id="text-description" class="description-textarea" placeholder="이 파일에 대한 상세 설명을 작성하세요..."></textarea>
+                <div class="panel-actions">
+                    <button id="btn-save-description" class="btn-primary" style="width: 100%;">수정 내용 저장</button>
+                </div>
             </div>
         </aside>
     </div>
@@ -77,10 +115,25 @@
             stage: document.getElementById('stage'),
             zoomTxt: document.getElementById('zoom-txt'),
             fileName: document.getElementById('file-name-display'),
-            props: document.getElementById('properties-panel'),
+            
+            // Panels
+            metadataPanel: document.getElementById('metadata-panel'),
+            descriptionArea: document.getElementById('text-description'),
+            sidebarLeft: document.getElementById('sidebar-left'),
+            sidebarRight: document.getElementById('sidebar-right'),
+            
+            // Bottom Bar
+            bottomFilename: document.getElementById('bottom-filename').querySelector('span'),
+            bottomSize: document.getElementById('bottom-size').querySelector('span'),
+            bottomUpdated: document.getElementById('bottom-updated').querySelector('span'),
+            
+            // Buttons
             btnSelect: document.getElementById('btn-select'),
             btnHand: document.getElementById('btn-hand'),
-            btnDelete: document.getElementById('btn-delete')
+            btnDelete: document.getElementById('btn-delete'),
+            btnToggleLeft: document.getElementById('btn-toggle-left'),
+            btnToggleRight: document.getElementById('btn-toggle-right'),
+            btnSaveDescription: document.getElementById('btn-save-description')
         };
 
         // 1. Initial Load & URL Parsing
@@ -165,9 +218,9 @@
             const m = state.activeFile.meta || {};
             const jiraUrl = m.jira ? `https://jira.lfcorp.com/browse/${m.jira}` : '#';
 
-            DOM.props.innerHTML = `
-                <div class="prop-section">
-                    <div class="prop-title">Metadata</div>
+            // 1. Left Sidebar: Metadata
+            DOM.metadataPanel.innerHTML = `
+                <div class="prop-section" style="border:none;">
                     <div class="prop-row">
                         <span class="prop-label">Title</span>
                         <div class="prop-value-box">${m.title || '-'}</div>
@@ -187,19 +240,50 @@
                         </div>
                     </div>
                 </div>
-                <div class="prop-section">
-                    <div class="prop-title">File Info</div>
-                    <div class="prop-row">
-                        <span class="prop-label">Name</span>
-                        <div class="prop-value-box" title="${state.activeFile.name}">${state.activeFile.name}</div>
-                    </div>
-                    <div class="prop-row">
-                        <span class="prop-label">Size</span>
-                        <div class="prop-value-box">${state.activeFile.size}</div>
-                    </div>
-                </div>
             `;
+
+            // 2. Right Sidebar: Description
+            DOM.descriptionArea.value = m.description || '';
+
+            // 3. Bottom Bar: Stats
+            DOM.bottomFilename.innerText = state.activeFile.name;
+            DOM.bottomSize.innerText = state.activeFile.size;
+            DOM.bottomUpdated.innerText = m.updatedAt ? new Date(m.updatedAt).toLocaleString() : '-';
         }
+
+        // 4. Panel Handlers
+        function toggleSidebar(side) {
+            if (side === 'left') {
+                DOM.sidebarLeft.classList.toggle('collapsed');
+                DOM.btnToggleLeft.classList.toggle('active');
+            } else {
+                DOM.sidebarRight.classList.toggle('collapsed');
+                DOM.btnToggleRight.classList.toggle('active');
+            }
+            // Trigger resize/recenter after animation
+            setTimeout(() => centerView(), 300);
+        }
+
+        DOM.btnToggleLeft.onclick = () => toggleSidebar('left');
+        DOM.btnToggleRight.onclick = () => toggleSidebar('right');
+
+        DOM.btnSaveDescription.onclick = async () => {
+            if (!state.activeFile) return;
+            const desc = DOM.descriptionArea.value;
+            const success = await updateFileMetadata(state.activeFile.name, { description: desc }, (msg, color) => {
+                DOM.btnSaveDescription.innerText = msg;
+                DOM.btnSaveDescription.style.color = '#000';
+                if (color === '#4ade80') {
+                    setTimeout(() => {
+                        DOM.btnSaveDescription.innerText = '수정 내용 저장';
+                        DOM.btnSaveDescription.style.color = '#000';
+                    }, 2000);
+                }
+            });
+            if (success) {
+                state.activeFile.meta.description = desc;
+            }
+        };
 
         // 2. Viewport & Canvas Logic
         function setDeviceViewport(type, w, h) {
@@ -252,6 +336,8 @@
             }
             if(e.code === 'KeyV') setTool('select');
             if(e.code === 'KeyH') setTool('hand');
+            if(e.code === 'KeyL') toggleSidebar('left');
+            if(e.code === 'KeyR') toggleSidebar('right');
         });
         window.addEventListener('keyup', e => {
             if(e.code === 'Space' && state.tool !== 'hand') {

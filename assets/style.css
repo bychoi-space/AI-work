@@ -229,17 +229,47 @@ body {
 }
 
 /* Sidebars */
-.sidebar {
-    width: 280px;
-    background: var(--panel-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+.sidebar-left { border-right: 1px solid var(--border-color); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s; }
+.sidebar-right { border-left: 1px solid var(--border-color); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s; }
+
+.sidebar.collapsed {
+    width: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: none !important;
+}
+
+.center-content {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-base);
+}
+
+.bottom-bar {
+    height: 36px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    gap: 24px;
     z-index: 5;
 }
 
-.sidebar-right { border-left: 1px solid var(--border-color); }
+.bottom-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.bottom-item i { font-size: 14px; opacity: 0.7; }
 
 .panel-header {
     padding: 18px 20px;
@@ -623,3 +653,42 @@ body.drag-active #drop-overlay {
     color: #000;
     transform: scale(1.1);
 }
+
+/* Description Area */
+.description-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+}
+
+.description-textarea {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    color: var(--text-primary);
+    font-size: 13px;
+    line-height: 1.6;
+    resize: none;
+    font-family: var(--font-main);
+}
+
+.description-textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.panel-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.toggle-sidebar-btn {
+    color: var(--text-secondary);
+    transition: color 0.2s;
+}
+.toggle-sidebar-btn:hover { color: var(--accent); }
+.toggle-sidebar-btn.active { color: var(--accent); }
