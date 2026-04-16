@@ -14,6 +14,14 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 </head>
 <body>
+    <!-- Splash Screen (Intro) -->
+    <div id="intro-overlay" class="intro-overlay">
+        <div class="intro-content">
+            <span class="material-icons-outlined intro-logo">art_track</span>
+            <div class="intro-title">bychoi workspace</div>
+            <div class="intro-loader"></div>
+        </div>
+    </div>
 
     <!-- Header Toolbar -->
     <header class="toolbar">
@@ -341,6 +349,17 @@
             if (e.dataTransfer.files) {
                 await handleFiles(e.dataTransfer.files);
             }
+        });
+
+        // 8. Intro (Splash) Handler
+        window.addEventListener('DOMContentLoaded', () => {
+            const intro = document.getElementById('intro-overlay');
+            // Show for 2.2 seconds then fade out
+            setTimeout(() => {
+                intro.classList.add('fade-out');
+                // Remove from DOM after transition
+                setTimeout(() => intro.remove(), 800);
+            }, 2200);
         });
 
         // Initial Load
