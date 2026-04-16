@@ -75,10 +75,10 @@ async function listContents(path = '') {
         if (ghConfig.isReadOnly) {
             console.log("[Hybrid] Guest mode detected. Using metadata mapping instead of API listing.");
             const meta = await fetchProjectMetadata(path);
-            if (!meta || !meta.screens) return [];
-            return Object.keys(meta.screens).map(name => ({
+            const screens = meta.screens || meta.files || {}; // SUPPORT BOTH
+            return Object.keys(screens).map(name => ({
                 name: name,
-                type: 'file',
+                type: path === '' ? 'dir' : 'file', // If root, these are project folders
                 path: `${fullPath}/${name}`
             }));
         }
