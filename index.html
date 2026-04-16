@@ -43,12 +43,14 @@
             <span style="font-weight: 600; letter-spacing: 0.5px;">bychoi workspace</span>
         </a>
         
-        <!-- Right Actions (GitHub Token) -->
+        <!-- Right Actions (Sign In / Status) -->
         <div class="actions">
-             <div style="display:flex; align-items:center; gap:8px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+             <div style="display:flex; align-items:center; gap:8px;">
                 <span id="gh-status" style="font-size:10px; color:var(--text-secondary); margin-right:4px;"></span>
-                <input type="password" id="gh-token" placeholder="GitHub Token" style="background:transparent; border:none; color:#fff; font-size:12px; width: 120px;" />
-                <button id="btn-save-token" class="tool-btn" style="width:auto; height:24px; font-size:11px; padding:0 8px;">Save</button>
+                <button id="btn-show-auth" class="tool-btn" style="width:auto; height:32px; font-size:12px; padding:0 12px; background: rgba(255,255,255,0.05);">
+                    <span class="material-icons-outlined" style="font-size:16px; margin-right:6px;">key</span>
+                    <span id="auth-btn-text">에디터 인증</span>
+                </button>
             </div>
         </div>
     </header>
@@ -111,6 +113,27 @@
         </div>
     </div>
 
+    <!-- Auth Modal (NEW) -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title">에디터 인증</h3>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">관리 권한이 필요한 작업입니다.</p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">GitHub Personal Access Token</label>
+                    <input type="password" id="modal-gh-token" class="form-input" placeholder="ghp_...">
+                    <p id="modal-auth-status" style="font-size: 11px; margin-top: 8px;"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-modal-auth-cancel" class="btn-secondary">닫기</button>
+                <button id="btn-modal-auth-submit" class="btn-primary">인증하기</button>
+            </div>
+        </div>
+    </div>
+
     <script src="assets/app.js"></script>
     <script>
         const state = {
@@ -119,9 +142,10 @@
 
         const DOM = {
             list: document.getElementById('file-list'),
-            ghToken: document.getElementById('gh-token'),
             ghStatus: document.getElementById('gh-status'),
-            btnSaveToken: document.getElementById('btn-save-token'),
+            btnShowAuth: document.getElementById('btn-show-auth'),
+            authBtnText: document.getElementById('auth-btn-text'),
+            btnCreateProject: document.getElementById('btn-create-project'),
             uploadTop: document.getElementById('file-upload-top'),
             
             // Modal DOM
@@ -138,41 +162,24 @@
         };
 
         const context = {
-            currentEditingProject: null,
-            projectsMetadata: {} // Map: project_name -> metadata_object
+            currentEditingProject: null
         };
 
-        DOM.btnCreateProject = document.getElementById('btn-create-project');
-        
         // Initialize GitHub Status
         function updateStatusUI(text, color) {
             DOM.ghStatus.innerText = text;
             if (color) DOM.ghStatus.style.color = color;
         }
 
-        if (ghConfig.token) {
-            DOM.ghToken.value = ghConfig.token;
-            updateStatusUI('가동 중🟢', '#4ade80');
-        }
-
-        DOM.btnSaveToken.addEventListener('click', () => {
-            const val = DOM.ghToken.value.trim();
-            localStorage.setItem('gh_token', val);
-            ghConfig.token = val;
-            alert(val ? "GitHub 토큰이 저장되었습니다!" : "토큰이 삭제되었습니다.");
-            updateStatusUI(val ? '가동 중🟢' : '', '#4ade80');
-            if (val) refreshFileList();
-        });
-
         // Project List Rendering
         async function refreshFileList() {
-            // Check Read-Only state
             const isGuest = ghConfig.isReadOnly;
             
-            // Hide admin buttons if guest
-            const btnCreate = document.getElementById('btn-create-project');
-            if (btnCreate) btnCreate.style.display = isGuest ? 'none' : 'flex';
-            
+            // Update Auth Button UI
+            DOM.authBtnText.innerText = isGuest ? '에디터 인증' : '에디터 모드 (관리 중)';
+            DOM.btnShowAuth.style.background = isGuest ? 'rgba(255,255,255,0.05)' : 'rgba(0, 229, 255, 0.1)';
+            DOM.btnShowAuth.style.color = isGuest ? '#fff' : 'var(--accent)';
+
             if (isGuest) {
                 updateStatusUI('게스트 모드 (읽기 전용) 👥', '#94a3b8');
             } else {
@@ -209,7 +216,6 @@
                         count++;
                         if (loadingText) loadingText.innerText = `마이그레이션 중... (${count}/${legacies.length})`;
                         try {
-                            // isRoot = true
                             const content = await fetchFileContent(f.name, true);
                             if (content) {
                                 defaultMeta.screens = defaultMeta.screens || {};
@@ -220,8 +226,6 @@
                         } catch (e) { console.error("Migration failed for:", f.name, e); }
                     }
                     await saveProjectMetadata('Default_Project', defaultMeta);
-                    
-                    // Add Default_Project to folders if not already there
                     if (!folders.find(fol => fol.name === 'Default_Project')) {
                         folders.push({ name: 'Default_Project', type: 'dir' });
                     }
@@ -244,11 +248,44 @@
             } catch (err) {
                 console.error("refreshFileList error:", err);
                 updateStatusUI('동기화 오류 ❌', '#ef4444');
-                // Ensure UI is updated even on error
                 DOM.list.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">동기화 오류가 발생했습니다. (토큰 또는 네트워크 확인)</div>`;
             } finally {
                 const loading = document.getElementById('loading-state');
                 if (loading) loading.style.display = 'none';
+            }
+        }
+
+        /**
+         * Auth Modal Logic
+         */
+        function showAuthModal() {
+            document.getElementById('auth-modal').classList.add('active');
+        }
+        function hideAuthModal() {
+            document.getElementById('auth-modal').classList.remove('active');
+            document.getElementById('modal-auth-status').innerText = "";
+        }
+        async function handleAuthSubmit() {
+            const tokenInput = document.getElementById('modal-gh-token');
+            const status = document.getElementById('modal-auth-status');
+            const token = tokenInput.value.trim();
+            
+            if (!token) {
+                status.innerText = "토큰을 입력해주세요.";
+                status.style.color = "#f87171";
+                return;
+            }
+
+            const success = await verifyAndSaveToken(token, (msg, color) => {
+                status.innerText = msg;
+                status.style.color = color;
+            });
+
+            if (success) {
+                setTimeout(() => {
+                    hideAuthModal();
+                    location.reload(); // Hard reload to ensure clean state
+                }, 1000);
             }
         }
 
@@ -334,6 +371,7 @@
 
         // Project Modal & Events
         DOM.btnCreateProject.onclick = () => {
+            if (ghConfig.isReadOnly) return showAuthModal();
             const name = prompt("새 프로젝트 이름을 입력하세요 (폴더명이 됩니다):");
             if (name && name.trim()) {
                 const projectName = name.trim().replace(/\s+/g, '_');
@@ -384,6 +422,7 @@
             const editBtn = e.target.closest('.edit-btn-card');
             if (editBtn) {
                 e.preventDefault(); e.stopPropagation();
+                if (ghConfig.isReadOnly) return showAuthModal();
                 const projectName = editBtn.dataset.project;
                 openEditProjectModal(projectName);
                 return;
@@ -449,13 +488,26 @@
         }
 
         DOM.uploadTop.addEventListener('change', async (e) => {
+            if (ghConfig.isReadOnly) {
+                e.preventDefault();
+                showAuthModal();
+                e.target.value = '';
+                return;
+            }
             await handleFiles(e.target.files);
             e.target.value = '';
         });
 
+        // Event for Auth Modal
+        DOM.btnShowAuth.onclick = () => showAuthModal();
+        document.getElementById('btn-modal-auth-submit').onclick = handleAuthSubmit;
+        document.getElementById('btn-modal-auth-cancel').onclick = hideAuthModal;
+        document.getElementById('modal-gh-token').onkeyup = (e) => { if(e.key==='Enter') handleAuthSubmit(); };
+
         // Drag & Drop Handling
         window.addEventListener('dragover', (e) => {
             e.preventDefault();
+            if (ghConfig.isReadOnly) return;
             document.body.classList.add('drag-active');
         });
 

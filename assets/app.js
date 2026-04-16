@@ -8,7 +8,11 @@ const ghConfig = {
     // Trim token in case of leading/trailing spaces
     token: (localStorage.getItem('gh_token') || '').trim(),
     dataDir: 'data/', // Base folder for user projects
-    get isReadOnly() { return !this.token; }
+    get isReadOnly() { return !this.token; },
+    updateToken(newToken) {
+        this.token = newToken.trim();
+        localStorage.setItem('gh_token', this.token);
+    }
 };
 
 /**
@@ -293,6 +297,32 @@ async function fetchProjectMetadata(project) {
     } catch (err) {
         console.error('[GitHub API] fetchProjectMetadata Error:', err.message);
         return { screens: {}, title: project || 'Default Project' };
+    }
+}
+
+/**
+ * Real-time Token Verification
+ */
+async function verifyAndSaveToken(token, statusCallback) {
+    if (!token) return false;
+    if (statusCallback) statusCallback('검증 중... ⏳', '#facc15');
+
+    try {
+        const res = await fetch('https://api.github.com/user', {
+            headers: { 'Authorization': `token ${token.trim()}` }
+        });
+
+        if (res.ok) {
+            ghConfig.updateToken(token);
+            if (statusCallback) statusCallback('인증 완료 ✅', '#4ade80');
+            return true;
+        } else {
+            if (statusCallback) statusCallback('토큰이 유효하지 않습니다 ❌', '#ef4444');
+            return false;
+        }
+    } catch (err) {
+        if (statusCallback) statusCallback('인증 오류 ❌', '#ef4444');
+        return false;
     }
 }
 

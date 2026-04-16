@@ -52,6 +52,11 @@
             <button class="tool-btn toggle-sidebar-btn" id="btn-toggle-right" title="Toggle Description (R)">
                 <span class="material-icons-outlined">notes</span>
             </button>
+            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+            <button id="btn-show-auth" class="tool-btn" style="width:auto; height:32px; font-size:12px; padding:0 12px; background: rgba(255,255,255,0.05);">
+                <span class="material-icons-outlined" style="font-size:16px; margin-right:6px;">key</span>
+                <span id="auth-btn-text">에디터 인증</span>
+            </button>
         </div>
     </header>
 
@@ -112,6 +117,27 @@
                 </div>
             </div>
         </aside>
+    </div>
+
+    <!-- Auth Modal (NEW) -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title">에디터 인증</h3>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">관리 권한이 필요한 작업입니다.</p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">GitHub Personal Access Token</label>
+                    <input type="password" id="modal-gh-token" class="form-input" placeholder="ghp_...">
+                    <p id="modal-auth-status" style="font-size: 11px; margin-top: 8px;"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-modal-auth-cancel" class="btn-secondary">닫기</button>
+                <button id="btn-modal-auth-submit" class="btn-primary">인증하기</button>
+            </div>
+        </div>
     </div>
 
     <script src="assets/app.js"></script>
@@ -192,10 +218,44 @@
 
             updateProperties(); // Project Meta
             
-            if (state.isReadOnly) {
-                document.body.classList.add('guest-mode');
-                DOM.btnDelete.style.display = 'none';
-                DOM.btnSaveDescription.style.display = 'none';
+            // Update Auth Button UI
+            const btnAuthText = document.getElementById('auth-btn-text');
+            const btnAuth = document.getElementById('btn-show-auth');
+            if (btnAuthText) btnAuthText.innerText = state.isReadOnly ? '에디터 인증' : '에디터 모드';
+            if (btnAuth) btnAuth.style.color = state.isReadOnly ? '#fff' : 'var(--accent)';
+        }
+
+        /**
+         * Auth Modal Logic
+         */
+        function showAuthModal() {
+            document.getElementById('auth-modal').classList.add('active');
+        }
+        function hideAuthModal() {
+            document.getElementById('auth-modal').classList.remove('active');
+            document.getElementById('modal-auth-status').innerText = "";
+        }
+        async function handleAuthSubmit() {
+            const tokenInput = document.getElementById('modal-gh-token');
+            const status = document.getElementById('modal-auth-status');
+            const token = tokenInput.value.trim();
+            
+            if (!token) {
+                status.innerText = "토큰을 입력해주세요.";
+                status.style.color = "#f87171";
+                return;
+            }
+
+            const success = await verifyAndSaveToken(token, (msg, color) => {
+                status.innerText = msg;
+                status.style.color = color;
+            });
+
+            if (success) {
+                setTimeout(() => {
+                    hideAuthModal();
+                    location.reload(); 
+                }, 1000);
             }
         }
 
@@ -335,15 +395,17 @@
                         <input type="text" id="viewer-meta-pub" class="form-input" value="${pm.pubUrl || ''}" placeholder="퍼블리싱 링크 주소" ${state.isReadOnly ? 'disabled' : ''}>
                     </div>
                 </div>
-                ${!state.isReadOnly ? `
                 <div class="panel-footer" style="padding: 16px; border-top: 1px solid var(--border-color);">
                     <button id="btn-save-meta-viewer" class="btn-primary" style="width:100%;">프로젝트 정보 저장</button>
-                </div>` : ''}
+                </div>
             `;
 
             // Initialize Events
             const saveBtn = document.getElementById('btn-save-meta-viewer');
-            if (saveBtn) saveBtn.onclick = saveMetadataViewer;
+            if (saveBtn) saveBtn.onclick = () => {
+                if (state.isReadOnly) return showAuthModal();
+                saveMetadataViewer();
+            };
             
             const periodInput = document.getElementById('viewer-meta-period');
             if (!state.isReadOnly) {
@@ -392,10 +454,9 @@
                 row.innerHTML = `
                     <div class="desc-index">${index + 1}</div>
                     <textarea class="desc-input" placeholder="설명을 입력하세요..." ${state.isReadOnly ? 'disabled' : ''}>${item.text || ''}</textarea>
-                    ${!state.isReadOnly ? `
                     <div class="desc-actions">
                         <button class="desc-btn desc-btn-del" data-index="${index}" title="삭제"><span class="material-icons-outlined">remove_circle_outline</span></button>
-                    </div>` : ''}
+                    </div>
                 `;
 
                 // 2. Create Canvas Pin
@@ -461,24 +522,23 @@
         });
 
         // Add Row Button
-        if (!state.isReadOnly) {
-            const addBtn = document.createElement('button');
-            addBtn.className = 'add-row-btn';
-            addBtn.style.margin = '16px 0';
-            addBtn.style.width = '100%';
-            addBtn.innerHTML = '<span class="material-icons-outlined">add_circle_outline</span> 새 행 추가 (화면 클릭)';
-            addBtn.onclick = () => {
-                if (!state.activeFile) return;
-                state.activeFile.meta.description = state.activeFile.meta.description || [];
-                state.activeFile.meta.description.push({ text: '', x: 50, y: 50 });
-                renderDescriptionList();
-                setTimeout(() => {
-                    const inputs = DOM.descriptionList.querySelectorAll('.desc-input');
-                    inputs[inputs.length - 1]?.focus();
-                }, 50);
-            };
-            DOM.descriptionList.appendChild(addBtn);
-        }
+        const addBtn = document.createElement('button');
+        addBtn.className = 'add-row-btn';
+        addBtn.style.margin = '16px 0';
+        addBtn.style.width = '100%';
+        addBtn.innerHTML = '<span class="material-icons-outlined">add_circle_outline</span> 새 행 추가 (화면 클릭)';
+        addBtn.onclick = () => {
+            if (state.isReadOnly) return showAuthModal();
+            if (!state.activeFile) return;
+            state.activeFile.meta.description = state.activeFile.meta.description || [];
+            state.activeFile.meta.description.push({ text: '', x: 50, y: 50 });
+            renderDescriptionList();
+            setTimeout(() => {
+                const inputs = DOM.descriptionList.querySelectorAll('.desc-input');
+                inputs[inputs.length - 1]?.focus();
+            }, 50);
+        };
+        DOM.descriptionList.appendChild(addBtn);
     }
 
         // --- Canvas Click to Place Pin ---
@@ -522,33 +582,22 @@
         };
 
         // --- Save Handlers ---
-        async function saveMetadataViewer() {
-            if (!state.currentProject) return;
-            const btn = document.getElementById('btn-save-meta-viewer');
-            const data = {
-                projectMeta: {
-                    title: document.getElementById('viewer-meta-title').value.trim(),
-                    assignee: document.getElementById('viewer-meta-assignee').value.trim(),
-                    period: document.getElementById('viewer-meta-period').value.trim(),
-                    jira: document.getElementById('viewer-meta-jira').value.trim(),
-                    figmaUrl: document.getElementById('viewer-meta-figma').value.trim(),
-                    pubUrl: document.getElementById('viewer-meta-pub').value.trim()
-                }
-            };
-
-            const success = await updateScreenMetadata(state.currentProject, null, data, (msg, color) => {
-                btn.innerText = msg;
-                if (color === '#4ade80') {
-                    setTimeout(() => btn.innerText = '프로젝트 정보 저장', 2000);
-                }
-            });
-            if (success) {
-                state.projectMetadata = { ...state.projectMetadata, ...data.projectMeta };
-                DOM.fileName.innerText = state.projectMetadata.title || state.currentProject;
+            if (state.isReadOnly) return showAuthModal();
+            if (!state.activeFile) return;
+            const filename = state.activeFile.name;
+            const sha = state.activeFile.sha;
+            if (confirm(`'${filename}' 파일을 정말 삭제하시겠습니까?`)) {
+                deleteFileFromGitHub(filename, sha, (msg, color) => {
+                    updateStatusUI(msg, color);
+                    if (color === '#4ade80') {
+                        setTimeout(() => location.href = 'index.html', 1500);
+                    }
+                }, true);
             }
-        }
+        };
 
         DOM.btnSaveDescription.onclick = async () => {
+            if (state.isReadOnly) return showAuthModal();
             if (!state.activeFile || !state.currentProject) return;
             const list = state.activeFile.meta.description.filter(item => {
                 const hasText = item.text && item.text.trim() !== '';
@@ -601,7 +650,11 @@
             }, 100);
         }
 
-        function centerView() {
+        // Event: Auth Modal
+        document.getElementById('btn-show-auth').onclick = showAuthModal;
+        document.getElementById('btn-modal-auth-submit').onclick = handleAuthSubmit;
+        document.getElementById('btn-modal-auth-cancel').onclick = hideAuthModal;
+        document.getElementById('modal-gh-token').onkeyup = (e) => { if(e.key === 'Enter') handleAuthSubmit(); };
             // Use style dimensions instead of offsetWidth to get the *intended* size immediately
             let iw = parseInt(DOM.iframe.style.width) || 1440;
             let ih = parseInt(DOM.iframe.style.height) || 900;
