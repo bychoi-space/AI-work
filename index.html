@@ -352,15 +352,18 @@
         });
 
         // 8. Intro (Splash) Handler
-        window.addEventListener('DOMContentLoaded', () => {
+        (function() {
             const intro = document.getElementById('intro-overlay');
+            if (!intro) return;
             // Show for 2.2 seconds then fade out
             setTimeout(() => {
                 intro.classList.add('fade-out');
                 // Remove from DOM after transition
-                setTimeout(() => intro.remove(), 800);
+                setTimeout(() => {
+                    if (intro.parentNode) intro.remove();
+                }, 800);
             }, 2200);
-        });
+        })();
 
         // Initial Load
         refreshFileList();
