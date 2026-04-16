@@ -7,7 +7,8 @@ const ghConfig = {
     repo: 'AI-work',
     // Trim token in case of leading/trailing spaces
     token: (localStorage.getItem('gh_token') || '').trim(),
-    dataDir: 'data/' // Base folder for user projects
+    dataDir: 'data/', // Base folder for user projects
+    get isReadOnly() { return !this.token; }
 };
 
 /**
@@ -37,16 +38,20 @@ function encodeBase64(str) {
  * GitHub API Helper: List contents of a directory (Relative to dataDir)
  */
 async function listContents(path = '') {
-    if (!ghConfig.token) return [];
     try {
         const fullPath = `${ghConfig.dataDir}${path}`.replace(/\/$/, '');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${fullPath}`;
+        
+        const headers = {};
+        if (ghConfig.token) headers['Authorization'] = `token ${ghConfig.token}`;
+        
         const res = await fetch(url, { 
-            headers: { 'Authorization': `token ${ghConfig.token}` },
+            headers: headers,
             cache: 'no-store'
         });
         if (!res.ok) return [];
-        return await res.json();
+        const data = await res.json();
+        return Array.isArray(data) ? data : [];
     } catch (err) {
         console.error("[GitHub API] listContents error:", err);
         return [];
@@ -57,15 +62,19 @@ async function listContents(path = '') {
  * GitHub API Helper: List repository root (Used for Migration only)
  */
 async function listRepoRoot() {
-    if (!ghConfig.token) return [];
     try {
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/`;
+        
+        const headers = {};
+        if (ghConfig.token) headers['Authorization'] = `token ${ghConfig.token}`;
+
         const res = await fetch(url, { 
-            headers: { 'Authorization': `token ${ghConfig.token}` },
+            headers: headers,
             cache: 'no-store'
         });
         if (!res.ok) return [];
-        return await res.json();
+        const data = await res.json();
+        return Array.isArray(data) ? data : [];
     } catch (err) {
         console.error("[GitHub API] listRepoRoot error:", err);
         return [];
@@ -159,17 +168,16 @@ async function uploadToGitHub(filename, content, statusCallback) {
  * @param {boolean} isRoot - If true, ignores dataDir (used for migration)
  */
 async function fetchFileContent(filename, isRoot = false) {
-    if (!ghConfig.token) return null;
-    
     try {
         const fullPath = isRoot ? filename : `${ghConfig.dataDir}${filename}`;
         const encodedPath = encodeURIComponent(fullPath).replace(/%2F/g, '/');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
+        
+        const headers = { 'Accept': 'application/vnd.github.v3.raw' };
+        if (ghConfig.token) headers['Authorization'] = `token ${ghConfig.token}`;
+
         const res = await fetch(url, { 
-            headers: { 
-                'Authorization': `token ${ghConfig.token}`,
-                'Accept': 'application/vnd.github.v3.raw'
-            },
+            headers: headers,
             cache: 'no-store'
         });
         if (!res.ok) throw new Error('Fetch content failed');

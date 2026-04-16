@@ -166,12 +166,18 @@
 
         // Project List Rendering
         async function refreshFileList() {
-            if (!ghConfig.token) {
-                DOM.list.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">GitHub 토큰을 입력하세요.</div>`;
-                return;
+            // Check Read-Only state
+            const isGuest = ghConfig.isReadOnly;
+            
+            // Hide admin buttons if guest
+            const btnCreate = document.getElementById('btn-create-project');
+            if (btnCreate) btnCreate.style.display = isGuest ? 'none' : 'flex';
+            
+            if (isGuest) {
+                updateStatusUI('게스트 모드 (읽기 전용) 👥', '#94a3b8');
+            } else {
+                updateStatusUI('동기화 중... 🔄', '#facc15');
             }
-
-            updateStatusUI('동기화 중... 🔄', '#facc15');
             
             try {
                 // 1. Fetch Repository Root for Migration check
@@ -179,7 +185,7 @@
                 
                 // 2. Identify Legacy Files (HTML files in root NOT being index.html or viewer.html)
                 const systemFiles = ['index.html', 'viewer.html', 'stitch_ui_viewer.html'];
-                const legacies = rootItems.filter(i => 
+                const legacies = (Array.isArray(rootItems) ? rootItems : []).filter(i => 
                     i.type === 'file' && 
                     (i.name.endsWith('.html') || i.name.endsWith('.htm')) &&
                     !systemFiles.includes(i.name.toLowerCase())
@@ -238,6 +244,11 @@
             } catch (err) {
                 console.error("refreshFileList error:", err);
                 updateStatusUI('동기화 오류 ❌', '#ef4444');
+                // Ensure UI is updated even on error
+                DOM.list.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">동기화 오류가 발생했습니다. (토큰 또는 네트워크 확인)</div>`;
+            } finally {
+                const loading = document.getElementById('loading-state');
+                if (loading) loading.style.display = 'none';
             }
         }
 
