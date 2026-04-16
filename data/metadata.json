@@ -1,5 +1,8 @@
 {
-  "files": {
+  "projects": {
+    "Default_Project": { "title": "기본 프로젝트" }
+  },
+  "screens": {
     "hazzys_royal_sports_club_pc.html": {
       "title": "온오프 재고 효율화",
       "period": "2026.03.27 ~ 2026.04.16",

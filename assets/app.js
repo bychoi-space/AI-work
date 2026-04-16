@@ -75,12 +75,24 @@ async function listContents(path = '') {
         if (ghConfig.isReadOnly) {
             console.log("[Hybrid] Guest mode detected. Using metadata mapping instead of API listing.");
             const meta = await fetchProjectMetadata(path);
-            const screens = meta.screens || meta.files || {}; // SUPPORT BOTH
-            return Object.keys(screens).map(name => ({
-                name: name,
-                type: path === '' ? 'dir' : 'file', // If root, these are project folders
-                path: `${fullPath}/${name}`
-            }));
+            
+            if (path === '') {
+                // Root listing: Use "projects" key
+                const projects = meta.projects || { "Default_Project": { "title": "Default Project" } };
+                return Object.keys(projects).map(name => ({
+                    name: name,
+                    type: 'dir',
+                    path: `${fullPath}/${name}`
+                }));
+            } else {
+                // Folder listing: Use "screens" or "files" key
+                const screens = meta.screens || meta.files || {};
+                return Object.keys(screens).map(name => ({
+                    name: name,
+                    type: 'file',
+                    path: `${fullPath}/${name}`
+                }));
+            }
         }
 
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${fullPath}`;

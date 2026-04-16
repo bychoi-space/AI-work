@@ -256,7 +256,7 @@
                 }));
                 state.projects = projectData;
                 renderList();
-                updateStatusUI('가동 중🟢', '#4ade80');
+                updateStatusUI(isGuest ? '게스트 모드 (읽기 전용) 👥' : '가동 중🟢', isGuest ? '#94a3b8' : '#4ade80');
             } catch (err) {
                 console.error("refreshFileList error:", err);
                 updateStatusUI('동기화 오류 ❌', '#ef4444');
