@@ -8,6 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
+    <!-- Flatpickr (Date Picker) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 </head>
 <body>
 
@@ -236,6 +240,20 @@
             }
         });
 
+        // Helper for Date Formatting
+        function formatKODateRange(selectedDates) {
+            if (selectedDates.length !== 2) return '';
+            const days = ['일', '월', '화', '수', '목', '금', '토'];
+            const format = (d) => {
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const date = String(d.getDate()).padStart(2, '0');
+                const day = days[d.getDay()];
+                return `${year}.${month}.${date}(${day})`;
+            };
+            return `${format(selectedDates[0])} ~ ${format(selectedDates[1])}`;
+        }
+
         // Modal Logic
         function openEditModal(filename) {
             context.currentEditingFile = filename;
@@ -248,6 +266,19 @@
             DOM.metaJira.value = m.jira || '';
             
             DOM.modal.style.display = 'flex';
+
+            // Initialize Flatpickr on Period Input
+            flatpickr(DOM.metaPeriod, {
+                mode: "range",
+                locale: "ko",
+                dateFormat: "Y.m.d",
+                defaultDate: m.period ? m.period.split(' ~ ') : null,
+                onChange: (selectedDates, dateStr, instance) => {
+                    if (selectedDates.length === 2) {
+                        DOM.metaPeriod.value = formatKODateRange(selectedDates);
+                    }
+                }
+            });
         }
 
         DOM.btnModalClose.addEventListener('click', () => {

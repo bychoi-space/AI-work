@@ -793,9 +793,34 @@ body.drag-active #drop-overlay {
     justify-content: flex-end;
 }
 
-.toggle-sidebar-btn {
-    color: var(--text-secondary);
-    transition: color 0.2s;
+/* ----------------------------------------------------
+   7. Flatpickr Dark Theme Customization
+   ---------------------------------------------------- */
+.flatpickr-calendar {
+    background: #252830 !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 12px !important;
 }
-.toggle-sidebar-btn:hover { color: var(--accent); }
-.toggle-sidebar-btn.active { color: var(--accent); }
+.flatpickr-months .flatpickr-month { background: transparent !important; color: #fff !important; }
+.flatpickr-current-month .flatpickr-monthDropdown-months { background: transparent !important; }
+.flatpickr-current-month .flatpickr-monthDropdown-months:hover { background: var(--hover-bg) !important; }
+.flatpickr-weekday { color: var(--text-secondary) !important; }
+.flatpickr-day { color: var(--text-primary) !important; border-radius: 6px !important; }
+.flatpickr-day.today { border-color: var(--accent) !important; color: var(--accent) !important; }
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange {
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #000 !important;
+}
+.flatpickr-day.inRange {
+    background: rgba(0, 229, 255, 0.1) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+.flatpickr-day:hover { background: var(--hover-bg) !important; border-color: transparent !important; }
+.flatpickr-time { border-top: 1px solid var(--border-color) !important; }
+.flatpickr-innerContainer { padding: 4px; }
+.flatpickr-months .flatpickr-prev-month:hover svg, .flatpickr-months .flatpickr-next-month:hover svg { fill: var(--accent) !important; }
