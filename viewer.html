@@ -278,28 +278,67 @@
             list.forEach((text, index) => {
                 const row = document.createElement('div');
                 row.className = 'desc-row';
+                row.draggable = true;
+                row.dataset.index = index;
+                
                 row.innerHTML = `
-                    <div class="desc-index">${index + 1}</div>
-                    <input type="text" class="desc-input" value="${text}" placeholder="설명 입력...">
+                    <div class="desc-index" title="드래그하여 순서 변경">${index + 1}</div>
+                    <textarea class="desc-input" placeholder="설명 입력...">${text}</textarea>
                     <div class="desc-actions">
-                        <button class="desc-btn desc-btn-up" data-index="${index}" title="위로">
-                            <span class="material-icons-outlined" style="font-size:16px;">expand_less</span>
-                        </button>
-                        <button class="desc-btn desc-btn-down" data-index="${index}" title="아래로">
-                            <span class="material-icons-outlined" style="font-size:16px;">expand_more</span>
-                        </button>
                         <button class="desc-btn desc-btn-del" data-index="${index}" title="삭제">
                             <span class="material-icons-outlined" style="font-size:16px;">delete_outline</span>
                         </button>
                     </div>
                 `;
                 
-                // Bind input change immediately
-                row.querySelector('.desc-input').oninput = (e) => {
+                const textarea = row.querySelector('.desc-input');
+                
+                // 1. Auto-resize logic
+                const autoResize = () => {
+                    textarea.style.height = 'auto';
+                    textarea.style.height = textarea.scrollHeight + 'px';
+                };
+                
+                textarea.oninput = (e) => {
                     list[index] = e.target.value;
+                    autoResize();
+                };
+
+                // 2. Drag & Drop Events
+                row.ondragstart = (e) => {
+                    e.dataTransfer.setData('text/plain', index);
+                    row.classList.add('dragging');
+                };
+
+                row.ondragend = () => {
+                    row.classList.remove('dragging');
+                    document.querySelectorAll('.desc-row').forEach(r => r.classList.remove('drag-over'));
+                };
+
+                row.ondragover = (e) => {
+                    e.preventDefault();
+                    row.classList.add('drag-over');
+                };
+
+                row.ondragleave = () => {
+                    row.classList.remove('drag-over');
+                };
+
+                row.ondrop = (e) => {
+                    e.preventDefault();
+                    const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
+                    const toIndex = parseInt(row.dataset.index);
+                    
+                    if (fromIndex !== toIndex) {
+                        const [movedItem] = list.splice(fromIndex, 1);
+                        list.splice(toIndex, 0, movedItem);
+                        renderDescriptionList();
+                    }
                 };
 
                 DOM.descriptionList.appendChild(row);
+                // Initial resize
+                autoResize();
             });
         }
 
@@ -318,20 +357,16 @@
         };
 
         DOM.descriptionList.onclick = (e) => {
-            const btn = e.target.closest('.desc-btn');
+            const btn = e.target.closest('.desc-btn-del');
             if (!btn) return;
             
             const index = parseInt(btn.dataset.index);
             const list = state.activeFile.meta.description;
             
-            if (btn.classList.contains('desc-btn-del')) {
+            if (confirm('이 항목을 삭제하시겠습니까?')) {
                 list.splice(index, 1);
-            } else if (btn.classList.contains('desc-btn-up') && index > 0) {
-                [list[index], list[index-1]] = [list[index-1], list[index]];
-            } else if (btn.classList.contains('desc-btn-down') && index < list.length - 1) {
-                [list[index], list[index+1]] = [list[index+1], list[index]];
+                renderDescriptionList();
             }
-            renderDescriptionList();
         };
 
         // --- Save Handlers ---

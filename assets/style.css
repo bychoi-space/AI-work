@@ -704,13 +704,25 @@ body.drag-active #drop-overlay {
     border-color: rgba(255, 255, 255, 0.1);
 }
 
+.desc-row.dragging {
+    opacity: 0.4;
+    background: var(--selected-bg);
+}
+
+.desc-row.drag-over {
+    border-top: 2px solid var(--accent);
+}
+
 .desc-index {
-    width: 20px;
+    width: 24px;
     font-size: 11px;
     color: var(--text-secondary);
     font-weight: 500;
     text-align: center;
+    cursor: grab;
+    user-select: none;
 }
+.desc-index:active { cursor: grabbing; }
 
 .desc-input {
     flex: 1;
@@ -718,8 +730,12 @@ body.drag-active #drop-overlay {
     border: none;
     color: var(--text-primary);
     font-size: 13px;
-    padding: 4px 0;
+    padding: 6px 0;
     font-family: var(--font-main);
+    resize: none;
+    overflow: hidden;
+    line-height: 1.5;
+    min-height: 20px;
 }
 .desc-input:focus { outline: none; }
 
