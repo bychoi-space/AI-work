@@ -5,13 +5,24 @@
 const ghConfig = {
     owner: 'bychoi-space',
     repo: 'AI-work',
-    // Trim token in case of leading/trailing spaces
-    token: (localStorage.getItem('gh_token') || '').trim(),
+    // Stricter token handling to prevent sending 'null' strings or invalid headers
+    get token() {
+        const t = localStorage.getItem('gh_token');
+        if (!t || t === 'null' || t === 'undefined' || t.trim() === '') return null;
+        return t.trim();
+    },
     dataDir: 'data/', // Base folder for user projects
-    get isReadOnly() { return !this.token; },
+    get isReadOnly() { 
+        const t = this.token;
+        // Strict check: Must be a string AND start with ghp_ or similar to be considered an editor
+        return !t || !t.startsWith('ghp_');
+    },
     updateToken(newToken) {
-        this.token = newToken.trim();
-        localStorage.setItem('gh_token', this.token);
+        if (!newToken || newToken.trim() === '') {
+            localStorage.removeItem('gh_token');
+        } else {
+            localStorage.setItem('gh_token', newToken.trim());
+        }
     }
 };
 
@@ -197,12 +208,14 @@ async function fetchFileContent(filename, isRoot = false) {
  * GitHub API Helper: Sync file list
  */
 async function syncFilesFromGitHub(callback) {
-    if (!ghConfig.token) return [];
-    
     try {
         const encodedPath = encodeURIComponent(`${ghConfig.dataDir}`).replace(/%2F/g, '/');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
-        const res = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
+        
+        const headers = {};
+        if (ghConfig.token) headers['Authorization'] = `token ${ghConfig.token}`;
+
+        const res = await fetch(url, { headers: headers });
         if (!res.ok) throw new Error('Sync failed');
         
         const data = await res.json();
@@ -273,7 +286,6 @@ async function deleteFileFromGitHub(filename, sha, isRoot = false, statusCallbac
 const METADATA_FILE = 'metadata.json';
 
 async function fetchProjectMetadata(project) {
-    if (!ghConfig.token) return { screens: {}, title: project, createdAt: null };
     // If no project, fallback to root context (legacy)
     const fullPath = project ? `${project}/${METADATA_FILE}` : METADATA_FILE;
     
@@ -281,11 +293,13 @@ async function fetchProjectMetadata(project) {
         const encodedPath = encodeURIComponent(`${ghConfig.dataDir}${fullPath}`).replace(/%2F/g, '/');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
         
+        const headers = { 
+            'Accept': 'application/vnd.github.v3.raw'
+        };
+        if (ghConfig.token) headers['Authorization'] = `token ${ghConfig.token}`;
+
         const res = await fetch(url, { 
-            headers: { 
-                'Authorization': `token ${ghConfig.token}`,
-                'Accept': 'application/vnd.github.v3.raw'
-            },
+            headers: headers,
             cache: 'no-store'
         });
         
