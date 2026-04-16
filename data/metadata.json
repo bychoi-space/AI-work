@@ -2,11 +2,11 @@
   "files": {
     "hazzys_royal_sports_club_pc.html": {
       "title": "온오프 재고 효율화",
-      "period": "",
-      "assignee": "",
-      "jira": "",
+      "period": "2026.03.27(금) ~ 2026.04.16(목)",
+      "assignee": "최범열",
+      "jira": "LFML-138562",
       "description": "스토리보드에 대한 디스크립션입니다",
-      "updatedAt": "2026-04-16T02:24:49.107Z"
+      "updatedAt": "2026-04-16T02:25:37.576Z"
     }
   }
 }
