@@ -12,17 +12,30 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
+    <style>
+        /* Critical Splash Screen CSS (Inlined for reliability) */
+        .intro-overlay {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: #0f1115 !important;
+            z-index: 10000 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: opacity 0.8s ease, visibility 0.8s !important;
+        }
+        .intro-overlay.fade-out {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+    </style>
 </head>
 <body>
-    <!-- Splash Screen (Intro) -->
-    <div id="intro-overlay" class="intro-overlay">
-        <div class="intro-content">
-            <img src="assets/logo.png" class="intro-logo-img" alt="Logo">
-            <div class="intro-title">bychoi workspace</div>
-            <div class="intro-loader"></div>
-        </div>
-    </div>
-
     <!-- Header Toolbar -->
     <header class="toolbar">
         <a href="index.html" class="brand">
@@ -352,21 +365,43 @@
         });
 
         // 8. Intro (Splash) Handler
-        (function() {
-            const intro = document.getElementById('intro-overlay');
-            if (!intro) return;
-            // Show for 2.2 seconds then fade out
-            setTimeout(() => {
-                intro.classList.add('fade-out');
-                // Remove from DOM after transition
-                setTimeout(() => {
-                    if (intro.parentNode) intro.remove();
-                }, 800);
-            }, 2200);
-        })();
+        // (Moved to separate script block above for reliability)
 
         // Initial Load
         refreshFileList();
+    </script>
+    <!-- Splash Screen (Intro) - Relocated to bottom for reliability -->
+    <div id="intro-overlay" class="intro-overlay">
+        <div class="intro-content">
+            <img src="assets/logo.png" class="intro-logo-img" alt="Logo">
+            <div class="intro-title">bychoi workspace</div>
+            <div class="intro-loader"></div>
+        </div>
+    </div>
+    <script>
+        // Extreme Reliability Intro Killer
+        (function() {
+            const intro = document.getElementById('intro-overlay');
+            if (!intro) return;
+            
+            const dismiss = () => {
+                intro.style.opacity = '0';
+                intro.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    if (intro.parentNode) intro.remove();
+                    document.body.style.overflow = 'auto'; // Re-enable scroll if disabled
+                }, 1000);
+            };
+
+            // Main Trigger
+            setTimeout(dismiss, 2500);
+
+            // Emergency Fallback (in case timeout fails or UI hangs)
+            window.addEventListener('load', () => setTimeout(dismiss, 3500));
+            
+            // Allow clicking to skip
+            intro.addEventListener('click', dismiss);
+        })();
     </script>
 </body>
 </html>
