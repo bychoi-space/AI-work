@@ -5,10 +5,13 @@
       "period": "2026.03.27 ~ 2026.04.16",
       "assignee": "최범열",
       "jira": "LFML-138562",
-      "description": "스토리보드에 대한 디스크립션입니다",
+      "description": [
+        "스토리보드에 대한 디스크립션입니다",
+        "두번째 디스크립션 1234"
+      ],
       "figmaUrl": "https://figmashort.link/NXDkGP",
       "pubUrl": "http://lfcp-pc-ux.lfcorp.io/ProductDetail",
-      "updatedAt": "2026-04-16T02:29:19.290Z"
+      "updatedAt": "2026-04-16T02:42:50.148Z"
     }
   }
 }
