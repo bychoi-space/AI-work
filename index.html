@@ -46,12 +46,36 @@
         </div>
     </div>
 
-    <!-- Drag & Drop Overlay -->
-    <div id="drop-overlay">
-        <div class="drop-message">
-            <span class="material-icons-outlined" style="font-size: 64px; color: var(--accent); display: block; margin-bottom: 16px;">cloud_upload</span>
-            <h2>여기에 파일을 드롭하여 업로드</h2>
-            <p style="color: var(--text-secondary); margin-top: 8px;">HTML 파일을 한 번에 여러 개 업로드할 수 있습니다.</p>
+
+    <!-- Metadata Edit Modal -->
+    <div id="metadata-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">파일 정보 수정</h3>
+                <p id="modal-filename" style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;"></p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">제목</label>
+                    <input type="text" id="meta-title" class="form-input" placeholder="예: 메인 페이지 개편안">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">기간</label>
+                    <input type="text" id="meta-period" class="form-input" placeholder="예: 2024.04.10 - 2024.04.20">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">담당자</label>
+                    <input type="text" id="meta-assignee" class="form-input" placeholder="예: 홍길동">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">JIRA 번호</label>
+                    <input type="text" id="meta-jira" class="form-input" placeholder="예: LFML-138562">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-modal-close" class="btn-secondary">취소</button>
+                <button id="btn-modal-save" class="btn-primary">저장하기</button>
+            </div>
         </div>
     </div>
 
@@ -66,7 +90,22 @@
             ghToken: document.getElementById('gh-token'),
             ghStatus: document.getElementById('gh-status'),
             btnSaveToken: document.getElementById('btn-save-token'),
-            uploadTop: document.getElementById('file-upload-top')
+            uploadTop: document.getElementById('file-upload-top'),
+            
+            // Modal DOM
+            modal: document.getElementById('metadata-modal'),
+            modalFilenameDisplay: document.getElementById('modal-filename'),
+            metaTitle: document.getElementById('meta-title'),
+            metaPeriod: document.getElementById('meta-period'),
+            metaAssignee: document.getElementById('meta-assignee'),
+            metaJira: document.getElementById('meta-jira'),
+            btnModalClose: document.getElementById('btn-modal-close'),
+            btnModalSave: document.getElementById('btn-modal-save')
+        };
+
+        const context = {
+            currentEditingFile: null,
+            metadata: { files: {} }
         };
 
         // Initialize GitHub Status
@@ -100,12 +139,19 @@
             }
 
             updateStatusUI('동기화 중... 🔄', '#facc15');
-            const files = await syncFilesFromGitHub();
+            
+            // Fetch metadata and files in parallel
+            const [files, metadata] = await Promise.all([
+                syncFilesFromGitHub(),
+                fetchMetadata()
+            ]);
+            
+            context.metadata = metadata;
             state.files = files.map(item => ({
                 id: item.sha,
                 name: item.name,
                 size: (item.size / 1024).toFixed(1) + ' KB',
-                src: null // Thumbnails will be loaded on demand or if already in session
+                meta: metadata.files[item.name] || {}
             }));
             
             renderList();
@@ -124,7 +170,16 @@
                 card.className = 'file-card';
                 card.href = `viewer.html?file=${encodeURIComponent(f.name)}`;
                 
+                const m = f.meta;
+                const jiraUrl = m.jira ? `https://jira.lfcorp.com/browse/${m.jira}` : '#';
+                const jiraTag = m.jira ? `<a href="${jiraUrl}" target="_blank" class="meta-tag jira-tag" onclick="event.stopPropagation();">${m.jira}</a>` : '';
+                const assigneeTag = m.assignee ? `<span class="meta-tag">👤 ${m.assignee}</span>` : '';
+                const periodTag = m.period ? `<span class="meta-tag">📅 ${m.period}</span>` : '';
+
                 card.innerHTML = `
+                    <div class="edit-btn-card" data-filename="${f.name}" title="Edit Metadata">
+                        <span class="material-icons-outlined">edit</span>
+                    </div>
                     <div class="delete-btn-card" data-filename="${f.name}" data-sha="${f.id}" title="Delete File">
                         <span class="material-icons-outlined">close</span>
                     </div>
@@ -134,17 +189,32 @@
                         </div>
                     </div>
                     <div class="card-info">
-                        <div class="card-name" title="${f.name}">${f.name}</div>
-                        <div class="card-meta">Cloud • ${f.size}</div>
+                        <div class="card-name" title="${m.title || f.name}">${m.title || f.name}</div>
+                        <div class="card-meta">${f.name} • ${f.size}</div>
+                        <div class="metadata-row">
+                            ${jiraTag}
+                            ${assigneeTag}
+                            ${periodTag}
+                        </div>
                     </div>
                 `;
                 DOM.list.appendChild(card);
             }
         }
 
-        // Deletion Logic (Event Delegation)
+        // Deletion & Edition Logic (Event Delegation)
         document.addEventListener('click', async (e) => {
             const delBtn = e.target.closest('.delete-btn-card');
+            const editBtn = e.target.closest('.edit-btn-card');
+
+            if (editBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const filename = editBtn.dataset.filename;
+                openEditModal(filename);
+                return;
+            }
+
             if (delBtn) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -154,13 +224,45 @@
                 if (confirm(`'${filename}' 파일을 정말 삭제하시겠습니까?`)) {
                     const success = await deleteFileFromGitHub(filename, sha, updateStatusUI);
                     if (success) {
-                        // Optimistic UI Update: 로컬 상태에서 즉시 제거
                         state.files = state.files.filter(f => f.name !== filename);
                         renderList();
-                        // 잠시 후 실제 서버 상태와 동기화 (GitHub API 지연 고려)
                         setTimeout(() => refreshFileList(), 1500);
                     }
                 }
+            }
+        });
+
+        // Modal Logic
+        function openEditModal(filename) {
+            context.currentEditingFile = filename;
+            const m = context.metadata.files[filename] || {};
+            
+            DOM.modalFilenameDisplay.innerText = filename;
+            DOM.metaTitle.value = m.title || '';
+            DOM.metaPeriod.value = m.period || '';
+            DOM.metaAssignee.value = m.assignee || '';
+            DOM.metaJira.value = m.jira || '';
+            
+            DOM.modal.style.display = 'flex';
+        }
+
+        DOM.btnModalClose.addEventListener('click', () => {
+            DOM.modal.style.display = 'none';
+        });
+
+        DOM.btnModalSave.addEventListener('click', async () => {
+            const filename = context.currentEditingFile;
+            const data = {
+                title: DOM.metaTitle.value.trim(),
+                period: DOM.metaPeriod.value.trim(),
+                assignee: DOM.metaAssignee.value.trim(),
+                jira: DOM.metaJira.value.trim()
+            };
+
+            DOM.modal.style.display = 'none';
+            const success = await updateFileMetadata(filename, data, updateStatusUI);
+            if (success) {
+                refreshFileList();
             }
         });
 

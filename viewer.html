@@ -94,7 +94,10 @@
             }
 
             DOM.fileName.innerText = fileName;
-            const content = await fetchFileContent(fileName);
+                const [content, metadata] = await Promise.all([
+                    fetchFileContent(fileName),
+                    fetchMetadata()
+                ]);
 
             if (content) {
                 const blob = new Blob([content], {type: 'text/html;charset=utf-8'});
@@ -104,7 +107,12 @@
                 DOM.iframe.src = url;
                 DOM.iframe.style.display = 'block';
 
-                state.activeFile = { name: fileName, size: (content.length / 1024).toFixed(1) + ' KB' };
+                const m = metadata.files[fileName] || {};
+                state.activeFile = { 
+                    name: fileName, 
+                    size: (content.length / 1024).toFixed(1) + ' KB',
+                    meta: m
+                };
                 updateProperties();
                 setTimeout(() => centerView(), 100);
             } else {
@@ -154,7 +162,31 @@
 
         function updateProperties() {
             if (!state.activeFile) return;
+            const m = state.activeFile.meta || {};
+            const jiraUrl = m.jira ? `https://jira.lfcorp.com/browse/${m.jira}` : '#';
+
             DOM.props.innerHTML = `
+                <div class="prop-section">
+                    <div class="prop-title">Metadata</div>
+                    <div class="prop-row">
+                        <span class="prop-label">Title</span>
+                        <div class="prop-value-box">${m.title || '-'}</div>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Assignee</span>
+                        <div class="prop-value-box">${m.assignee || '-'}</div>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Period</span>
+                        <div class="prop-value-box" style="font-size: 11px;">${m.period || '-'}</div>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">JIRA</span>
+                        <div class="prop-value-box">
+                            ${m.jira ? `<a href="${jiraUrl}" target="_blank" style="color:var(--accent); text-decoration:none;">${m.jira}</a>` : '-'}
+                        </div>
+                    </div>
+                </div>
                 <div class="prop-section">
                     <div class="prop-title">File Info</div>
                     <div class="prop-row">

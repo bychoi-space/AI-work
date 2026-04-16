@@ -145,3 +145,40 @@ async function deleteFileFromGitHub(filename, sha, statusCallback) {
     }
 }
 
+
+/**
+ * Metadata Storage (JSON DB) Helpers
+ */
+const METADATA_FILE = 'metadata.json';
+
+async function fetchMetadata() {
+    if (!ghConfig.token) return { files: {} };
+    
+    try {
+        const content = await fetchFileContent(METADATA_FILE);
+        if (!content) return { files: {} };
+        return JSON.parse(content);
+    } catch (err) {
+        console.warn('Metadata not found or corrupt, starting fresh.');
+        return { files: {} };
+    }
+}
+
+async function saveMetadata(allMetadata, statusCallback) {
+    if (!ghConfig.token) return false;
+    const content = JSON.stringify(allMetadata, null, 2);
+    return await uploadToGitHub(METADATA_FILE, content, statusCallback);
+}
+
+async function updateFileMetadata(filename, data, statusCallback) {
+    const metadata = await fetchMetadata();
+    metadata.files = metadata.files || {};
+    metadata.files[filename] = {
+        title: data.title || '',
+        period: data.period || '',
+        assignee: data.assignee || '',
+        jira: data.jira || '',
+        updatedAt: new Date().toISOString()
+    };
+    return await saveMetadata(metadata, statusCallback);
+}
