@@ -1017,3 +1017,43 @@ body.drag-active #drop-overlay {
     opacity: 1 !important;
 }
 
+/* ----------------------------------------------------
+   x. Top Project Info Bar
+   ---------------------------------------------------- */
+.project-info-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 24px;
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.project-info-bar .form-group-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.project-info-bar .form-label {
+    margin-bottom: 0;
+    font-size: 11px;
+}
+
+.project-info-bar .form-input {
+    width: 140px;
+    height: 30px;
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.project-info-bar .btn-primary {
+    padding: 6px 16px;
+    height: 30px;
+    white-space: nowrap;
+    margin-left: auto;
+}
