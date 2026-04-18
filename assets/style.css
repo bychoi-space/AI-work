@@ -15,10 +15,10 @@
     --border-color: rgba(255, 255, 255, 0.12);
     --text-primary: #ffffff;
     --text-secondary: #aab2bd;
-    --accent: #00e5ff; /* 포인트 컬러: 네온 시안 */
-    --accent-hover: #b3f7ff;
+    --accent: #6366f1; /* 포인트 컬러: 비비드 인디고 */
+    --accent-hover: #818cf8;
     --hover-bg: rgba(255, 255, 255, 0.08);
-    --selected-bg: rgba(0, 229, 255, 0.15);
+    --selected-bg: rgba(99, 102, 241, 0.15);
     --font-main: 'Inter', -apple-system, sans-serif;
     --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
@@ -182,7 +182,7 @@ body {
 }
 
 .file-card:hover .thumbnail-wrapper {
-    border-color: rgba(0, 229, 255, 0.3);
+    border-color: rgba(99, 102, 241, 0.3);
 }
 
 .file-card .thumbnail-iframe {
@@ -468,7 +468,7 @@ body {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0, 229, 255, 0.15);
+    background: rgba(99, 102, 241, 0.15);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 1000;
