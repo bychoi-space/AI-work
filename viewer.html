@@ -16,9 +16,70 @@
         .modal-overlay.active {
             display: flex !important;
         }
+
+        /* Premium Loading Screen */
+        .loading-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #1e2128; /* --bg-base value */
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+        }
+        .loading-overlay.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .loading-bar-container {
+            width: 200px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .loading-bar-progress {
+            width: 40%;
+            height: 100%;
+            background: #6366f1; /* --accent value */
+            position: absolute;
+            top: 0;
+            left: -40%;
+            animation: loadingMotion 1.5s infinite ease-in-out;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.6);
+        }
+        @keyframes loadingMotion {
+            0% { left: -40%; }
+            100% { left: 100%; }
+        }
+        .loading-text {
+            margin-top: 20px;
+            font-size: 11px;
+            color: #aab2bd; /* --text-secondary value */
+            letter-spacing: 2px;
+            font-weight: 600;
+            text-transform: uppercase;
+            animation: pulse 2s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
 <body>
+    <!-- Premium Loading Screen Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-bar-container">
+            <div class="loading-bar-progress"></div>
+        </div>
+        <div class="loading-text">Loading Project</div>
+    </div>
 
     <header class="toolbar">
         <div class="brand">
@@ -235,6 +296,14 @@
             const btnAuth = document.getElementById('btn-show-auth');
             if (btnAuthText) btnAuthText.innerText = state.isReadOnly ? '에디터 인증' : '에디터 모드';
             if (btnAuth) btnAuth.style.color = state.isReadOnly ? '#fff' : 'var(--accent)';
+
+            // Hide Loading Overlay
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                setTimeout(() => {
+                    overlay.classList.add('fade-out');
+                }, 300); // Slight delay for smooth feel
+            }
         }
 
         /**
