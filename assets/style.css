@@ -745,7 +745,7 @@ body.drag-active #drop-overlay {
     resize: none;
     overflow: hidden;
     line-height: 1.5;
-    min-height: 20px;
+    min-height: 18px;
 }
 .desc-input:focus { outline: none; }
 
