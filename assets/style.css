@@ -1,0 +1,1103 @@
+@keyframes subtlePan {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+@keyframes fadeInSlideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Design System Tokens */
+:root {
+    --bg-base: #1e2128; /* 조금 더 밝은 배경색 */
+    --panel-bg: rgba(35, 38, 45, 0.75); /* Glassmorphism 패널 (조금 더 밝게) */
+    --border-color: rgba(255, 255, 255, 0.12);
+    --text-primary: #ffffff;
+    --text-secondary: #aab2bd;
+    --accent: #6366f1; /* 포인트 컬러: 비비드 인디고 */
+    --accent-hover: #818cf8;
+    --hover-bg: rgba(255, 255, 255, 0.08);
+    --selected-bg: rgba(99, 102, 241, 0.15);
+    --font-main: 'Inter', -apple-system, sans-serif;
+    --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background-color: var(--bg-base);
+    /* 애니메이션 효과가 들어간 배경 그래디언트 (톤업) */
+    background-image: radial-gradient(circle at 30% 0%, #3a4252 0%, transparent 50%),
+                      radial-gradient(circle at 70% 100%, #2c323f 0%, transparent 50%);
+    background-size: 200% 200%;
+    animation: subtlePan 15s ease infinite alternate;
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ----------------------------------------------------
+   1. Header Toolbar (상단 바)
+   ---------------------------------------------------- */
+.toolbar {
+    height: 56px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 10;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    color: inherit;
+}
+.brand-icon { 
+    color: var(--accent); 
+    font-size: 22px; 
+}
+
+.tools {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+.tool-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tool-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    width: 34px; height: 34px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+}
+.tool-btn:hover { 
+    background: var(--hover-bg); 
+    color: var(--text-primary);
+    transform: scale(1.05); /* 호버 시 마이크로 애니메이션 강화 */
+}
+.tool-btn:active { transform: scale(0.95); }
+.tool-btn.active { background: var(--selected-bg); color: var(--accent); }
+
+.file-upload-wrapper { position: relative; }
+.file-upload-wrapper input[type="file"] { position: absolute; width: 0; height: 0; opacity: 0; }
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+}
+.zoom-level { color: var(--text-secondary); width: 44px; text-align: right; }
+
+/* ----------------------------------------------------
+   2. Dashboard View & Card Grid (목록 화면)
+   ---------------------------------------------------- */
+#dashboard-view {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard-title {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+}
+
+.file-card {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.file-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: var(--box-shadow);
+    background: var(--hover-bg);
+}
+
+.file-card .thumbnail-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: border-color 0.2s;
+}
+
+.file-card:hover .thumbnail-wrapper {
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.file-card .thumbnail-iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 1440px; 
+    height: 900px;
+    border: none;
+    transform-origin: 0 0;
+    pointer-events: none;
+    background: #fff;
+}
+
+.file-card .icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+}
+
+.file-card .card-info {
+    text-align: left;
+    width: 100%;
+    padding: 0 4px;
+}
+
+.file-card .card-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+}
+
+.file-card .card-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* ----------------------------------------------------
+   3. Main Workspace (상세 에디터 화면)
+   ---------------------------------------------------- */
+#workspace-view {
+    display: flex; 
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Sidebars */
+.sidebar-left { border-right: 1px solid var(--border-color); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s; }
+.sidebar-right { border-left: 1px solid var(--border-color); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s; }
+
+.sidebar.collapsed {
+    width: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: none !important;
+}
+
+.center-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-base);
+}
+
+.bottom-bar {
+    height: 36px;
+    background: var(--panel-bg);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    gap: 24px;
+    z-index: 5;
+}
+
+.bottom-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.bottom-item i { font-size: 14px; opacity: 0.7; }
+
+.panel-header {
+    padding: 18px 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+.panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+.layer-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+.layer-item:hover { background: var(--hover-bg); }
+.layer-item.active { background: var(--selected-bg); color: #fff; }
+.layer-item.active .material-icons-outlined { color: var(--accent); }
+.layer-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.screen-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 2px;
+    position: relative;
+    overflow: hidden;
+}
+.screen-item:hover {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+}
+.screen-item.active {
+    background: var(--selected-bg);
+    color: var(--accent);
+    font-weight: 500;
+}
+.screen-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.screen-delete-btn {
+    opacity: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    color: #f87171;
+    transition: all 0.2s;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+.screen-item:hover .screen-delete-btn {
+    opacity: 0.6;
+}
+.screen-delete-btn:hover {
+    opacity: 1 !important;
+    background: rgba(239, 68, 68, 0.2);
+}
+
+.empty-text {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* ----------------------------------------------------
+   3. Canvas (도화지 / 중앙 영역)
+   ---------------------------------------------------- */
+.canvas {
+    flex: 1;
+    background-color: var(--bg-base);
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+    background-size: 24px 24px;
+    position: relative;
+    overflow: hidden;
+}
+.canvas.hand-active { cursor: grab; }
+.canvas.hand-active:active { cursor: grabbing; }
+
+/* The scaling container */
+.stage {
+    position: absolute;
+    top: 0; left: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+}
+
+.artboard-wrapper {
+    position: absolute;
+    top: 0; left: 0;
+    display: flex; align-items: flex-start; justify-content: flex-start;
+}
+
+/* HTML IFrame Viewer */
+.artboard-iframe {
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+    border-radius: 6px;
+    background: #ffffff;
+    width: 1440px; 
+    height: 900px;
+    border: 1px solid rgba(255,255,255,0.2);
+    display: none; 
+    transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s;
+    animation: fadeInSlideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.placeholder-card {
+    background: rgba(30, 30, 35, 0.6);
+    border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 40px 60px;
+    text-align: center;
+    backdrop-filter: blur(8px);
+    color: var(--text-secondary);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+.placeholder-card:hover { background: rgba(40, 40, 45, 0.6); }
+.placeholder-card i { font-size: 48px; margin-bottom: 20px; color: var(--text-primary); opacity: 0.8; }
+
+/* ----------------------------------------------------
+   4. Properties & Upload Zone (우측 패널)
+   ---------------------------------------------------- */
+.upload-zone {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 2px dashed rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 30px 20px;
+    cursor: pointer;
+    text-align: center;
+    background: rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+.upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent);
+    background: rgba(168, 199, 250, 0.05);
+}
+
+.prop-section {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+.prop-section:last-child { border-bottom: none; }
+.prop-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+}
+.prop-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 12px;
+    align-items: center;
+}
+.prop-row:last-child { margin-bottom: 0; }
+.prop-label { color: var(--text-secondary); width: 80px; }
+.prop-value-box {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Inter', monospace;
+    color: var(--text-primary);
+    flex: 1;
+    text-align: right;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* Delete Buttons */
+.delete-btn-card {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+.delete-btn-card:hover {
+    background: #ef4444;
+    color: #fff;
+    transform: scale(1.1);
+}
+.delete-btn-card span { font-size: 18px; }
+
+.tool-btn-danger {
+    color: #f87171;
+}
+.tool-btn-danger:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #ef4444 !important;
+}
+.tool-btn-danger.active {
+    background: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+/* ----------------------------------------------------
+   5. Drag & Drop Overlay
+   ---------------------------------------------------- */
+#drop-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(99, 102, 241, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: none; /* 초기 숨김 */
+    align-items: center;
+    justify-content: center;
+    pointer-events: none; /* 클릭 방해 금지 */
+    border: 4px dashed var(--accent);
+    margin: 0;
+}
+
+body.drag-active #drop-overlay {
+    display: flex;
+}
+
+.drop-message {
+    background: var(--panel-bg);
+    padding: 30px 50px;
+    border-radius: 20px;
+    border: 1px solid var(--accent);
+    box-shadow: var(--box-shadow);
+    text-align: center;
+    animation: fadeInSlideUp 0.3s ease-out;
+}
+
+.drop-message i {
+    font-size: 64px;
+    color: var(--accent);
+    margin-bottom: 20px;
+}
+
+.drop-message h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+
+/* ----------------------------------------------------
+   6. Metadata DB & Modal Styles
+   ---------------------------------------------------- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.active {
+    display: flex !important;
+}
+
+.modal-card {
+    background: #252830;
+    width: 100%;
+    max-width: 480px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+    padding: 32px;
+    animation: fadeInSlideUp 0.3s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.modal-header {
+    margin-bottom: 24px;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #fff;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-secondary:hover {
+    background: var(--hover-bg);
+}
+
+/* Card Metadata Tags */
+.metadata-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.meta-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.jira-tag {
+    color: var(--accent);
+    border-color: var(--selected-bg);
+    background: var(--selected-bg);
+    text-decoration: none;
+}
+.jira-tag:hover {
+    text-decoration: underline;
+}
+
+.edit-btn-card {
+    position: absolute;
+    top: 8px;
+    right: 44px; /* 옆에 삭제 버튼 공간 확보 */
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: rgba(0, 229, 255, 0.1);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--selected-bg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+
+.edit-btn-card:hover {
+    background: var(--accent);
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* Sidebar Inputs */
+.sidebar .form-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: var(--text-primary);
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+.sidebar .form-input:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+
+/* Description List Area */
+.description-container {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    overflow: hidden;
+}
+
+#description-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.desc-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.desc-row:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.desc-row.dragging {
+    opacity: 0.4;
+    background: var(--selected-bg);
+}
+
+.desc-row.drag-over {
+    border-top: 2px solid var(--accent);
+}
+
+.desc-index {
+    width: 24px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-align: center;
+    cursor: grab;
+    user-select: none;
+}
+.desc-index:active { cursor: grabbing; }
+
+.desc-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 13px;
+    padding: 6px 0;
+    font-family: var(--font-main);
+    resize: none;
+    overflow: hidden;
+    line-height: 1.5;
+    min-height: 18px;
+}
+.desc-input:focus { outline: none; }
+
+.desc-actions {
+    display: flex;
+    gap: 2px;
+    opacity: 0.3;
+    transition: opacity 0.2s;
+}
+
+.desc-row:hover .desc-actions {
+    opacity: 1;
+}
+
+.desc-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.desc-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+.desc-btn-del:hover { color: #f87171; }
+
+.add-row-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed var(--border-color);
+    color: var(--text-secondary);
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+.add-row-btn:hover {
+    background: var(--hover-bg);
+    border-color: var(--accent);
+    color: var(--text-primary);
+}
+
+.panel-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ----------------------------------------------------
+   7. Flatpickr Dark Theme Customization
+   ---------------------------------------------------- */
+.flatpickr-calendar {
+    background: #252830 !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 12px !important;
+}
+.flatpickr-months .flatpickr-month { background: transparent !important; color: #fff !important; }
+.flatpickr-current-month .flatpickr-monthDropdown-months { background: transparent !important; }
+.flatpickr-current-month .flatpickr-monthDropdown-months:hover { background: var(--hover-bg) !important; }
+.flatpickr-weekday { color: var(--text-secondary) !important; }
+.flatpickr-day { color: var(--text-primary) !important; border-radius: 6px !important; }
+.flatpickr-day.today { border-color: var(--accent) !important; color: var(--accent) !important; }
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange {
+    background: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #000 !important;
+}
+.flatpickr-day.inRange {
+    background: rgba(0, 229, 255, 0.1) !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+.flatpickr-day:hover { background: var(--hover-bg) !important; border-color: transparent !important; }
+.flatpickr-time { border-top: 1px solid var(--border-color) !important; }
+.flatpickr-innerContainer { padding: 4px; }
+/* ----------------------------------------------------
+   8. Splash Screen (Intro)
+   ---------------------------------------------------- */
+.brand-logo {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    margin-right: 8px;
+    /* Removed drop-shadow for borderless minimalist feel */
+}
+.intro-logo-img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 24px;
+    /* Soft cyan glow instead of heavy shadow */
+    filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.4));
+    animation: intro-glow 2s infinite alternate ease-in-out;
+}
+.intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0f1115;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease, visibility 0.4s;
+}
+.intro-overlay.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+.intro-content {
+    text-align: center;
+    animation: intro-reveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.intro-logo {
+    /* ... skipped ... */
+}
+.intro-title {
+    /* ... skipped ... */
+    animation: intro-text-fade 0.3s 0.1s forwards;
+}
+.intro-loader {
+    animation: intro-text-fade 0.3s 0.2s forwards;
+}
+.intro-loader::after {
+    animation: intro-loading-bar 0.4s 0.3s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+@keyframes intro-reveal {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes intro-glow {
+    from { filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.2)); }
+    to { filter: drop-shadow(0 0 30px rgba(0, 229, 255, 0.6)); }
+}
+@keyframes intro-text-fade {
+    to { opacity: 1; }
+}
+@keyframes intro-loading-bar {
+    to { left: 100%; }
+}
+
+/* ----------------------------------------------------
+   9. Annotation Pin System
+   ---------------------------------------------------- */
+.artboard-wrapper {
+    position: relative;
+    user-select: none;
+}
+
+.pins-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.pin-marker {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: var(--accent);
+    color: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: grab;
+    pointer-events: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+    user-select: none;
+}
+
+.pin-marker:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), 0 0 0 4px rgba(0, 229, 255, 0.3);
+    z-index: 101;
+}
+
+.pin-marker:active {
+    cursor: grabbing;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.pin-marker.highlight {
+    transform: translate(-50%, -50%) scale(1.4);
+    box-shadow: 0 0 0 10px rgba(0, 229, 255, 0.2);
+    z-index: 102;
+    animation: pulsePin 1.5s infinite;
+}
+
+@keyframes pulsePin {
+    0% { box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(0, 229, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
+}
+
+/* Highlight corresponding list item */
+.desc-row.highlight {
+    background: rgba(0, 229, 255, 0.1) !important;
+    border-color: var(--accent) !important;
+}
+
+/* ----------------------------------------------------
+   10. Project & Screen Navigation Styles
+   ---------------------------------------------------- */
+.screen-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-secondary);
+    font-size: 13px;
+    border: 1px solid transparent;
+}
+
+.screen-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.screen-item.active {
+    background: rgba(0, 229, 255, 0.1);
+    color: var(--accent);
+    border-color: rgba(0, 229, 255, 0.2);
+    font-weight: 500;
+}
+
+.screen-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Enhancing Project Cards on Dashboard */
+.file-card .thumbnail-wrapper .material-icons-outlined {
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.file-card:hover .thumbnail-wrapper .material-icons-outlined {
+    transform: scale(1.1) rotate(-5deg);
+    opacity: 1 !important;
+}
+
+/* ----------------------------------------------------
+   x. Top Project Info Bar
+   ---------------------------------------------------- */
+.project-info-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 24px;
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.project-info-bar .form-group-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.project-info-bar .form-label {
+    margin-bottom: 0;
+    font-size: 11px;
+}
+
+.project-info-bar .form-input {
+    width: 140px;
+    height: 30px;
+    padding: 4px 10px;
+    font-size: 12px;
+}
