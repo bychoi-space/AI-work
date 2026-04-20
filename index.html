@@ -462,9 +462,15 @@
             DOM.modal.classList.add('active');
 
             // Auto-ID Logic (Integrated Slugify)
+            let lastAutoId = "";
             DOM.metaTitle.oninput = () => {
                 if (context.isCreateMode) {
-                    DOM.metaProjectId.value = slugify(DOM.metaTitle.value);
+                    const currentId = DOM.metaProjectId.value.trim();
+                    // Only auto-fill if ID is empty or matches the last auto-generated one
+                    if (!currentId || currentId === lastAutoId) {
+                        lastAutoId = slugify(DOM.metaTitle.value);
+                        DOM.metaProjectId.value = lastAutoId;
+                    }
                 }
             };
         };

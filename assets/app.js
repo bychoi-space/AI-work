@@ -56,12 +56,14 @@ function slugify(text) {
     // For a real app, a library like 'hangul' or 'romanize' would be better.
     // Here we'll do a simple mapping or just strip and keep ASCII as fallback.
     
+    // 1. Basic cleaning: spaces to underscores, remove non-alphanumeric (supporting Unicode)
+    // We use \p{L} for any letter and \p{N} for any number to support Korean etc.
     return text.toString().toLowerCase()
-        .replace(/\s+/g, '_')           // Replace spaces with _
-        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars (keeps a-z, 0-9, _)
-        .replace(/\_\_+/g, '_')         // Replace multiple _ with single _
-        .replace(/^_+/, '')             // Trim _ from start
-        .replace(/_+$/, '');            // Trim _ from end
+        .replace(/\s+/g, '_')
+        .replace(/[^\p{L}\p{N}_]+/gu, '') // Keep letters/numbers in any language
+        .replace(/\_\_+/g, '_')
+        .replace(/^_+/, '')
+        .replace(/_+$/, '');
 }
 
 /**
