@@ -3,41 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .nbos-layout-v9 { display: flex; height: 100%; background: #F2F4F7; }
+        .nbos-sidebar-v9 { width: 180px; background: #333; color: #fff; padding: 20px; flex-shrink: 0; }
+        .nbos-menu-v9 { font-size: 11px; font-weight: 700; margin-bottom: 15px; color: #AAA; }
+        .nbos-menu-v9.active { color: #fff; border-left: 3px solid #C8192E; padding-left: 10px; }
+
+        .nbos-main-v9 { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; }
+        .nbos-filter-v9 { 
+            background: #fff; border: 1px solid #DDD; padding: 20px; margin-bottom: 20px; 
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
+        }
+        .nbos-label-v9 { font-size: 11px; font-weight: 900; color: #555; margin-bottom: 5px; display: block; }
+        .nbos-input-v9 { border: 1px solid #CCC; padding: 8px; font-size: 11px; width: 100%; border-radius: 4px; }
+        
+        .nbos-grid-v9 { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #DDD; }
+        .nbos-grid-v9 th { background: #333; color: #fff; padding: 10px; font-size: 11px; font-weight: 900; text-align: center; }
+        .nbos-grid-v9 td { padding: 10px; border: 1px solid #EEE; font-size: 11px; font-weight: 700; text-align: center; }
+        .badge-o2o-v9 { background: #FFEBEB; color: #C8192E; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
+    </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <div class="admin-sidebar-v4">
-            <div style="font-size:10px; opacity:0.4; margin-bottom:20px;">SYSTEM MONITOR</div>
-            <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
-            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 상품 목록 관리</div>
-        </div>
-
-        <div class="admin-stage-v4">
-            <header style="margin-bottom:30px;">
-                <h2 style="font-size:22px; font-weight:900;">전사 통합 상품 마스터 조회</h2>
-            </header>
-
-            <div style="background:#fff; border:1px solid #CCC; padding:20px; display:grid; grid-template-columns: repeat(4, 1fr); gap:15px; margin-bottom:25px;">
-                <div><b>카테고리</b> <select class="form-input-hf" style="width:100%;"><option>전체</option></select></div>
-                <div><b>상품코드</b> <input type="text" class="form-input-hf" style="width:100%;"></div>
-                <div><b>매송여부</b> <select class="form-input-hf" style="width:100%;"><option>Y / N</option></select></div>
-                <div style="display:flex; align-items:flex-end;"><button style="background:var(--ppt-header-bg); color:#fff; border:none; padding:8px 25px; font-weight:bold;">SEARCH</button></div>
+        <div class="nbos-layout-v9">
+            <div class="nbos-sidebar-v9">
+                <div style="font-size:14px; font-weight:900; margin-bottom:40px; color:#fff;">LF nBOS</div>
+                <div class="nbos-menu-v9">Dashboard</div>
+                <div class="nbos-menu-v9 active">상품 마스터 조회</div>
+                <div class="nbos-menu-v9">재고 수불 관리</div>
+                <div class="nbos-menu-v9">매장 주문 배정</div>
             </div>
 
-            <table class="data-grid-v4">
-                <thead>
-                    <tr><th>NO</th><th>IMG</th><th>상품코드</th><th>상품명</th><th>매송대상</th><th>최종가</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>1</td><td><div style="width:30px; height:40px; background:#EEE; margin:0 auto;"></div></td><td style="color:#2E5BFF; font-weight:bold;">HZM22A123</td><td>헤지스 피케 티셔츠</td><td><span style="color:var(--lf-red); font-weight:900;">Y</span></td><td style="text-align:right;">89,000</td></tr>
-                    <tr><td>2</td><td><div style="width:30px; height:40px; background:#EEE; margin:0 auto;"></div></td><td style="color:#2E5BFF; font-weight:bold;">DKS11X442</td><td>닥스 가죽 벨트</td><td><span style="color:#999; font-weight:bold;">N</span></td><td style="text-align:right;">124,000</td></tr>
-                </tbody>
-            </table>
+            <div class="nbos-main-v9">
+                <h2 style="font-size:20px; font-weight:900; margin-bottom:20px; color:#111;">상품 마스터 통합 조회 (Product List)</h2>
+                
+                <div class="nbos-filter-v9">
+                    <div><span class="nbos-label-v9">브랜드</span> <select class="nbos-input-v9"><option>HAZZYS</option></select></div>
+                    <div><span class="nbos-label-v9">상품코드</span> <input type="text" class="nbos-input-v9" placeholder="HZM..."></div>
+                    <div><span class="nbos-label-v9">O2O 여부</span> <select class="nbos-input-v9"><option>O2O 대상 상품</option></select></div>
+                    <div style="display:flex; align-items:flex-end;"><button style="width:100%; background:#111; color:#fff; border:none; padding:10px; font-weight:900; cursor:pointer;">SEARCH</button></div>
+                </div>
+
+                <table class="nbos-grid-v9">
+                    <thead>
+                        <tr>
+                            <th>상품코드</th>
+                            <th>상품이미지</th>
+                            <th>상품명</th>
+                            <th>O2O 운영</th>
+                            <th>가용재고 (센터)</th>
+                            <th style="background:#444;">가용재고 (매장)</th>
+                            <th>표시상태</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>HZM22A123</td>
+                            <td><div style="width:30px; height:40px; background:#EEE; margin:0 auto;"></div></td>
+                            <td>헤지스 기모 베이직 티셔츠</td>
+                            <td><span class="badge-o2o-v9">운영중</span></td>
+                            <td>85</td>
+                            <td style="font-weight:900; color:#C8192E;">44</td>
+                            <td style="color:#10B981;">정상노출</td>
+                        </tr>
+                        <tr>
+                            <td>DKS11X442</td>
+                            <td><div style="width:30px; height:40px; background:#EEE; margin:0 auto;"></div></td>
+                            <td>닥스 시그니처 벨트</td>
+                            <td><span style="color:#999;">미운영</span></td>
+                            <td>12</td>
+                            <td>0</td>
+                            <td style="color:#C8192E;">센터배송</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="ppt-footer">
-            <div class="ppt-logo-box">LF</div>
-            <div>PAGE 31</div>
+            <div class="ppt-logo-box" style="background:#fff; color:#111;">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#fff;">31</div>
         </div>
     </div>
 </body>

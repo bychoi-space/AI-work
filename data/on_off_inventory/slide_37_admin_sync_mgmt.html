@@ -4,35 +4,67 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .config-block-v4 { background: #fff; border: 1px solid #CCC; padding: 30px; margin-bottom: 25px; }
+        .nbos-layout-v9 { display: flex; height: 100%; background: #F2F4F7; }
+        .nbos-sidebar-v9 { width: 180px; background: #333; color: #fff; padding: 20px; flex-shrink: 0; }
+        .nbos-menu-v9 { font-size: 11px; font-weight: 700; margin-bottom: 15px; color: #AAA; }
+        
+        .nbos-main-v9 { flex: 1; padding: 25px; overflow-y: auto; }
+        .sync-grid-v9 { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #DDD; }
+        .sync-grid-v9 th { background: #333; color: #fff; padding: 10px; font-size: 11px; font-weight: 900; }
+        .sync-grid-v9 td { padding: 12px; border: 1px solid #EEE; font-size: 11px; font-weight: 700; text-align: center; }
+        
+        .status-dot-v9 { 
+            width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px;
+            background: #10B981; 
+        }
+        .status-dot-v9.error { background: #C8192E; box-shadow: 0 0 8px rgba(200,25,46,0.6); }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <div class="admin-sidebar-v4">
-            <div style="font-size:10px; opacity:0.4; margin-bottom:20px;">SYSTEM MONITOR</div>
-            <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
-            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 시스템 공통 설정</div>
-        </div>
+        <div class="nbos-layout-v9">
+            <div class="nbos-sidebar-v9">
+                <div style="font-size:14px; font-weight:900; margin-bottom:40px; color:#fff;">LF nBOS</div>
+                <div class="nbos-menu-v9">Interface</div>
+                <div class="nbos-menu-v9 active">브랜드별 재고 연동</div>
+            </div>
 
-        <div class="admin-stage-v4">
-            <header style="margin-bottom:30px;">
-                <h2 style="font-size:22px; font-weight:900;">글로벌 서버 운영 파라미터</h2>
-            </header>
+            <div class="nbos-main-v9">
+                <h2 style="font-size:20px; font-weight:900; margin-bottom:20px; color:#111;">브랜드별 실시간 재고 연동 현황 (Sync Monitor)</h2>
+                
+                <table class="sync-grid-v9">
+                    <thead>
+                        <tr>
+                            <th>브랜드</th>
+                            <th>전체 상품 수</th>
+                            <th>O2O 연동 수</th>
+                            <th>최종 인터페이스 일시</th>
+                            <th>처리 상태</th>
+                            <th>비고</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>HAZZYS</td><td>2,451</td><td>1,200</td><td>2026.04.14 17:30:01</td><td><span class="status-dot-v9"></span>정상</td><td>-</td></tr>
+                        <tr><td>DAKS</td><td>1,822</td><td>850</td><td>2026.04.14 17:35:12</td><td><span class="status-dot-v9"></span>정상</td><td>-</td></tr>
+                        <tr><td>JILLSTUART</td><td>1,205</td><td>600</td><td>2026.04.14 17:32:45</td><td><span class="status-dot-v9"></span>정상</td><td>-</td></tr>
+                        <tr style="background:#FFF9F9;">
+                            <td>MAESTRO</td><td>985</td><td>450</td><td>2026.04.14 17:15:00</td>
+                            <td style="color:#C8192E;"><span class="status-dot-v9 error"></span>오류 (Retry)</td>
+                            <td style="font-size:10px; color:#666;">SAP 연동 타임아웃</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-            <div class="config-block-v4">
-                <h4 style="font-size:16px; font-weight:900; margin-bottom:20px; color:#1E3A8A;">• 가용 재고 산출 옵션</h4>
-                <div style="display:grid; grid-template-columns:180px 1fr; gap:20px; font-size:14px; align-items:center;">
-                    <b>배치 실행 주기</b> <div style="display:flex; gap:10px;"><input type="text" class="form-input-hf" value="10" style="width:60px;"> <span>분 (Default: 10m)</span></div>
-                    <b>기본 안전재고(Safety)</b> <div style="display:flex; gap:10px;"><input type="text" class="form-input-hf" value="2" style="width:60px;"> <span>EA (전점 공통)</span></div>
-                    <b>서비스 중단 시간</b> <div style="display:flex; gap:10px;"><input type="text" class="form-input-hf" value="03:00~04:00" style="width:120px;"> <span>(ERP 정기 점검)</span></div>
+                <div style="margin-top:30px; padding:20px; background:#F4F6F9; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size:12px; font-weight:900; color:#333;">💡 재고 동기화 요약</div>
+                    <div style="font-size:11px; font-weight:700; color:#666;">Batch Cycle: 10 Min | Success Rate: 99.8% | Delayed Items: 1</div>
                 </div>
             </div>
         </div>
 
         <div class="ppt-footer">
-            <div class="ppt-logo-box">LF</div>
-            <div>PAGE 37</div>
+            <div class="ppt-logo-box" style="background:#fff; color:#111;">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#fff;">37</div>
         </div>
     </div>
 </body>

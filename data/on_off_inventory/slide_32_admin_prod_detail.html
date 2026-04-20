@@ -4,39 +4,71 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .master-card-v4 { background: #fff; padding: 40px; border: 1px solid #CCC; border-radius: 8px; box-shadow: var(--ppt-shadow); display: grid; grid-template-columns: 240px 1fr; gap: 40px; }
+        .nbos-layout-v9 { display: flex; height: 100%; background: #F2F4F7; }
+        .nbos-sidebar-v9 { width: 180px; background: #333; color: #fff; padding: 20px; flex-shrink: 0; }
+        .nbos-menu-v9 { font-size: 11px; font-weight: 700; margin-bottom: 15px; color: #AAA; }
+        .nbos-main-v9 { flex: 1; padding: 25px; overflow-y: auto; }
+        
+        .card-v9 { background: #fff; border: 1px solid #DDD; padding: 25px; margin-bottom: 20px; border-radius: 4px; }
+        .card-title-v9 { font-size: 14px; font-weight: 900; color: #333; border-bottom: 1.5px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+        
+        .info-grid-v9 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; font-size: 12px; }
+        .info-row-v9 { display: flex; border-bottom: 1px solid #EEE; padding-bottom: 8px; }
+        .info-label-v9 { width: 100px; font-weight: 900; color: #666; }
+        .info-val-v9 { font-weight: 700; color: #111; }
+
+        .nbos-grid-v9 { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .nbos-grid-v9 th { background: #F1F3F5; padding: 10px; border: 1px solid #DDD; font-size: 11px; font-weight: 900; }
+        .nbos-grid-v9 td { padding: 10px; border: 1px solid #DDD; font-size: 11px; font-weight: 700; text-align: center; }
+        
+        .hl-o2o-v9 { background: #E9EDF4 !important; border: 1.5px solid #2E5BFF !important; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <div class="admin-sidebar-v4">
-            <div style="font-size:10px; opacity:0.4; margin-bottom:20px;">SYSTEM MONITOR</div>
-            <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
-            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 상품 상세 정보</div>
-        </div>
+        <div class="nbos-layout-v9">
+            <div class="nbos-sidebar-v9">
+                <div style="font-size:14px; font-weight:900; margin-bottom:40px; color:#fff;">LF nBOS</div>
+                <div class="nbos-menu-v9">Dashboard</div>
+                <div class="nbos-menu-v9 active">상품 마스터 상세</div>
+            </div>
 
-        <div class="admin-stage-v4">
-            <header style="margin-bottom:30px;">
-                <h2 style="font-size:22px; font-weight:900;">상품 마스터 고유 정보 관리</h2>
-            </header>
-
-            <div class="master-card-v4">
-                <div style="width:240px; height:300px; background:#F1F3F5; border:1px solid #DDD; display:flex; align-items:center; justify-content:center; color:#AAA;">PRODUCT_IMG</div>
-                <div>
-                    <h3 style="font-size:20px; font-weight:900; margin-bottom:25px; border-bottom:1.5px solid #333; padding-bottom:15px;">핵심 관리 항목</h3>
-                    <div style="display:grid; grid-template-columns:120px 1fr; gap:18px; font-size:14.5px;">
-                        <b style="color:#777;">상품코드</b> <span>HZM22A123 (HAZZYS)</span>
-                        <b style="color:#777;">판매가</b> <span>89,000 원</span>
-                        <b style="color:#777;">매송여부</b> <span style="color:var(--lf-red); font-weight:900;">Y (운영대상)</span>
-                        <b style="color:#777;">연동상태</b> <span>정상 (Last sync: 10:45)</span>
+            <div class="nbos-main-v9">
+                <div class="card-v9">
+                    <div class="card-title-v9">기본 정보 (Base Info)</div>
+                    <div class="info-grid-v9">
+                        <div class="info-row-v9"><div class="info-label-v9">상품코드</div><div class="info-val-v9">HZM22A123</div></div>
+                        <div class="info-row-v9"><div class="info-label-v9">상품명</div><div class="info-val-v9">헤지스 기모 베이직 티셔츠</div></div>
+                        <div class="info-row-v9"><div class="info-label-v9">O2O 여부</div><div class="info-val-v9" style="color:#C8192E;">운영대상</div></div>
                     </div>
+                </div>
+
+                <div class="card-v9">
+                    <div class="card-title-v9">사이즈별 재고 현황 (Size Stock)</div>
+                    <table class="nbos-grid-v9">
+                        <thead>
+                            <tr>
+                                <th>사이즈</th>
+                                <th>바코드</th>
+                                <th>총 재고</th>
+                                <th>물류센터 가용</th>
+                                <th class="hl-o2o-v9">비직송매장 가용 (O2O)</th>
+                                <th>판매 상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>95</td><td>880213...</td><td>124</td><td>80</td><td class="hl-o2o-v9">44</td><td>판매중</td></tr>
+                            <tr><td>100</td><td>880214...</td><td>32</td><td>0</td><td class="hl-o2o-v9">32</td><td style="color:#C8192E;">매장배송전환</td></tr>
+                            <tr><td>105</td><td>880215...</td><td>0</td><td>0</td><td class="hl-o2o-v9">0</td><td style="color:#888;">품절</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
         <div class="ppt-footer">
-            <div class="ppt-logo-box">LF</div>
-            <div>PAGE 32</div>
+            <div class="ppt-logo-box" style="background:#fff; color:#111;">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#fff;">32</div>
         </div>
     </div>
 </body>

@@ -3,41 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .nbos-layout-v9 { display: flex; height: 100%; background: #F2F4F7; }
+        .nbos-sidebar-v9 { width: 180px; background: #333; color: #fff; padding: 20px; flex-shrink: 0; }
+        .nbos-menu-v9 { font-size: 11px; font-weight: 700; margin-bottom: 15px; color: #AAA; }
+        .nbos-menu-v9.active { color: #fff; border-left: 3px solid #C8192E; padding-left: 10px; }
+
+        .nbos-main-v9 { flex: 1; padding: 25px; overflow-y: auto; }
+        .nbos-filter-v9 { 
+            background: #fff; border: 1px solid #DDD; padding: 20px; margin-bottom: 20px; 
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
+        }
+        .nbos-grid-v9 { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #DDD; }
+        .nbos-grid-v9 th { background: #333; color: #fff; padding: 10px; font-size: 10px; font-weight: 900; border: 1px solid #444; }
+        .nbos-grid-v9 td { padding: 10px; border: 1px solid #EEE; font-size: 10px; font-weight: 700; text-align: center; }
+        
+        .alert-cancel-v9 { background: #FFEBEB; color: #C8192E; padding: 2px 5px; border-radius: 4px; font-weight: 900; }
+    </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <div class="admin-sidebar-v4">
-            <div style="font-size:10px; opacity:0.4; margin-bottom:20px;">SYSTEM MONITOR</div>
-            <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
-            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 주문 배정 관리</div>
-        </div>
-
-        <div class="admin-stage-v4">
-            <header style="margin-bottom:30px;">
-                <h2 style="font-size:22px; font-weight:900;">실시간 매장 배정 주문 현황</h2>
-            </header>
-
-            <div style="background:#fff; border:1px solid #CCC; padding:20px; display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin-bottom:25px;">
-                <div><b>주문번호</b> <input type="text" class="form-input-hf" style="width:100%;"></div>
-                <div><b>배정상태</b> <select class="form-input-hf" style="width:100%;"><option>전체</option></select></div>
-                <div><b>기간</b> <input type="date" class="form-input-hf" style="width:100%;"></div>
-                <div style="display:flex; align-items:flex-end;"><button style="background:var(--ppt-header-bg); color:#fff; border:none; padding:8px 25px; font-weight:bold;">조회</button></div>
+        <div class="nbos-layout-v9">
+            <div class="nbos-sidebar-v9">
+                <div style="font-size:14px; font-weight:900; margin-bottom:40px; color:#fff;">LF nBOS</div>
+                <div class="nbos-menu-v9">Dashboard</div>
+                <div class="nbos-menu-v9 active">주문 통합 관리</div>
+                <div class="nbos-menu-v9">결품 처리 현황</div>
             </div>
 
-            <table class="data-grid-v4">
-                <thead>
-                    <tr><th>주문일시</th><th>주문번호</th><th>상품명</th><th>배정매장</th><th>배송사</th><th>상태</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>13:45</td><td style="color:#2E5BFF; font-weight:bold;">2026-0420-99</td><td>헤지스 티셔츠</td><td>강남본점</td><td>로젠택배</td><td><span style="background:var(--lf-red); color:#fff; padding:2px 8px; font-size:10px;">배정완료</span></td></tr>
-                    <tr><td>12:20</td><td style="color:#2E5BFF; font-weight:bold;">2026-0420-98</td><td>닥스 벨트</td><td>명동스타일</td><td>-</td><td><span style="background:#888; color:#fff; padding:2px 8px; font-size:10px;">결품</span></td></tr>
-                </tbody>
-            </table>
+            <div class="nbos-main-v9">
+                <h2 style="font-size:20px; font-weight:900; margin-bottom:20px; color:#111;">주문/배송 마스터 조회 (Order Management)</h2>
+                
+                <div class="nbos-filter-v9">
+                    <div><span style="font-size:11px; font-weight:900;">주문번호</span> <input type="text" style="width:100%; border:1px solid #CCC; padding:8px; font-size:11px;"></div>
+                    <div><span style="font-size:11px; font-weight:900;">이행유형</span> <select style="width:100%; border:1px solid #CCC; padding:8px; font-size:11px;"><option>매장상품배송 (O2O)</option></select></div>
+                    <div><span style="font-size:11px; font-weight:900;">결품 알람</span> <select style="width:100%; border:1px solid #CCC; padding:8px; font-size:11px;"><option>결품 24시간 전</option></select></div>
+                    <div style="display:flex; align-items:flex-end;"><button style="width:100%; background:#111; color:#fff; border:none; padding:10px; font-weight:900;">SEARCH</button></div>
+                </div>
+
+                <table class="nbos-grid-v9">
+                    <thead>
+                        <tr>
+                            <th>주문번호</th>
+                            <th>주문일시</th>
+                            <th>상품명</th>
+                            <th>수량</th>
+                            <th>배송매장</th>
+                            <th style="background:#444;">자동결품 예정일</th>
+                            <th>현재상태</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="color:#2E5BFF;">20260414-001</td>
+                            <td>04/14 09:12</td>
+                            <td>DAKS 체크 플리스 자켓</td>
+                            <td>1</td>
+                            <td>명동본점</td>
+                            <td><span class="alert-cancel-v9">04/19 09:00 (D-1)</span></td>
+                            <td style="color:#C8192E;">매장준비중</td>
+                        </tr>
+                        <tr>
+                            <td style="color:#2E5BFF;">20260414-002</td>
+                            <td>04/14 10:45</td>
+                            <td>HAZZYS 기모 티셔츠</td>
+                            <td>2</td>
+                            <td>강남백화점</td>
+                            <td>04/19 11:00 (D-2)</td>
+                            <td style="color:#2E5BFF;">물류센터입고</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="ppt-footer">
-            <div class="ppt-logo-box">LF</div>
-            <div>PAGE 34</div>
+            <div class="ppt-logo-box" style="background:#fff; color:#111;">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#fff;">34</div>
         </div>
     </div>
 </body>

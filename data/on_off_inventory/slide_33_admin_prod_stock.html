@@ -4,45 +4,68 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .admin-main-hf { position: absolute; top: 52px; left: 260px; right: 0; bottom: 0; background: #F4F6F9; padding: 40px; }
-        .prod-panel-hf {
-            background: #fff; padding: 25px; border: 1px solid #CCC; margin-bottom: 25px;
-            display: flex; gap: 30px; align-items: center; box-shadow: var(--ppt-shadow);
+        .modal-overlay-v9 { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
+            z-index: 100;
         }
+        .modal-v9 { 
+            width: 700px; background: #fff; border-radius: 8px; overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 1.5px solid #333;
+        }
+        .modal-header-v9 { background: #333; color: #fff; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body-v9 { padding: 30px; }
+        
+        .nbos-grid-v9 { width: 100%; border-collapse: collapse; border: 1px solid #DDD; }
+        .nbos-grid-v9 th { background: #F1F3F5; padding: 10px; font-size: 11px; font-weight: 900; border: 1px solid #DDD; }
+        .nbos-grid-v9 td { padding: 10px; font-size: 11px; font-weight: 700; border: 1px solid #DDD; text-align: center; }
+        
+        .badge-shop-v9 { background: #FFF2CC; color: #D67D00; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
     </style>
 </head>
 <body>
-    <div class="slide-canvas">
-        <header class="ppt-header">33. [어드민] 자사상품 상세 - 매장별 재고 정보</header>
-
-        <div class="admin-sidebar-hf">
-            <div style="font-size:10px; opacity:0.4; letter-spacing:1px; margin-bottom:20px;">SYSTEM MENU</div>
-            <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
-            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 재고 상세 현황</div>
+    <div class="slide-canvas" style="background:#F2F4F7;">
+        <!-- Base nBOS Screen (Blurred) -->
+        <div style="filter: blur(4px); padding: 40px;">
+            <div style="width:100%; height:400px; border:1px solid #DDD; background:#fff;"></div>
         </div>
 
-        <div class="admin-main-hf">
-            <div class="prod-panel-hf">
-                <div style="width:70px; height:90px; background:#F1F3F5; border-radius:4px;"></div>
-                <div>
-                    <h3 style="font-size:18px; font-weight:900;">HAZZYS 기모 티셔츠 (HZM12345)</h3>
-                    <div style="font-size:14px; color:#555; margin-top:5px;">총 가용 재고: <b style="color:var(--lf-red); font-size:20px;">124</b> EA</div>
+        <!-- Identity Locked: Modal Popup Overlay -->
+        <div class="modal-overlay-v9">
+            <div class="modal-v9">
+                <div class="modal-header-v9">
+                    <span style="font-size:14px; font-weight:900;">매장별 가용 재고 상세 (Shop Stock Info)</span>
+                    <span style="cursor:pointer; font-size:18px;">×</span>
+                </div>
+                <div class="modal-body-v9">
+                    <div style="margin-bottom:20px; font-size:12px; font-weight:900;">[HZM22A123] 100 사이즈 매장별 현황</div>
+                    
+                    <table class="nbos-grid-v9">
+                        <thead>
+                            <tr>
+                                <th>매장코드</th>
+                                <th>매장명</th>
+                                <th>배송 유형</th>
+                                <th>실재고</th>
+                                <th>가동 가용</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>10024</td><td>명동본점</td><td><span class="badge-shop-v9">매장직송</span></td><td>12</td><td><b>10</b></td><td style="color:#2E5BFF;">운영중</td></tr>
+                            <tr><td>10058</td><td>강남백화점</td><td><span class="badge-shop-v9">매장직송</span></td><td>5</td><td><b>4</b></td><td style="color:#2E5BFF;">운영중</td></tr>
+                            <tr><td>10211</td><td>판교점</td><td><span>물량이동</span></td><td>18</td><td><b>14</b></td><td style="color:#2E5BFF;">운영중</td></tr>
+                            <tr><td>10592</td><td>부산광복점</td><td><span class="badge-shop-v9">매장직송</span></td><td>0</td><td><b>0</b></td><td style="color:#C8192E;">품절</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
-            <table class="data-table-hf">
-                <thead>
-                    <tr><th>NO</th><th>매장코드</th><th>매장명 (유형)</th><th>가용재고</th><th>안전재고</th><th>예약재고</th><th>연동시간</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>1</td><td>S001</td><td style="font-weight:bold;">강남본점 (직영)</td><td style="text-align:right;">24</td><td style="text-align:right;">5</td><td style="text-align:right;">2</td><td>14:30</td></tr>
-                    <tr><td>2</td><td>S002</td><td style="font-weight:bold;">명동스타일 (직영)</td><td style="text-align:right;">12</td><td style="text-align:right;">3</td><td style="text-align:right;">0</td><td>14:30</td></tr>
-                    <tr style="background:rgba(200, 25, 46, 0.05);"><td>3</td><td>S008</td><td style="font-weight:bold;">광교갤러리아 (대리점)</td><td style="text-align:right; color:var(--lf-red); font-weight:900;">5</td><td style="text-align:right;">1</td><td style="text-align:right;">1</td><td>14:28</td></tr>
-                </tbody>
-            </table>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box" style="background:#fff; color:#111;">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#555;">33</div>
+        </div>
     </div>
 </body>
 </html>

@@ -3,57 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .nbos-layout-v9 { display: flex; height: 100%; background: #F2F4F7; }
+        .nbos-sidebar-v9 { width: 180px; background: #333; color: #fff; padding: 20px; flex-shrink: 0; }
+        .nbos-menu-v9 { font-size: 11px; font-weight: 700; margin-bottom: 15px; color: #AAA; }
+        
+        .nbos-main-v9 { flex: 1; padding: 25px; overflow-y: auto; }
+        .nbos-grid-v9 { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #DDD; }
+        .nbos-grid-v9 th { background: #333; color: #fff; padding: 10px; font-size: 11px; font-weight: 900; }
+        .nbos-grid-v9 td { padding: 10px; border: 1px solid #EEE; font-size: 11px; font-weight: 700; text-align: center; }
+        
+        .badge-type-v9 { background: #E9EDF4; color: #2E5BFF; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 900; }
+        .badge-box-v9 { background: #FFF2CC; color: #D67D00; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 900; }
+    </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">36. [어드민] 매장 마스터 관리 (Shop Master)</header>
-
-        <div class="admin-sidebar-hf">
-            <div style="font-size:10px; opacity:0.4; letter-spacing:1px; margin-bottom:20px;">SYSTEM MENU</div>
-            <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
-            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 매장 마스터 관리</div>
-        </div>
-
-        <div class="main-stage-hf">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:25px;">
-                <h2 style="font-size:22px; font-weight:900;">매장상품배송 운영 설정</h2>
-                <button style="background:var(--lf-red); color:#fff; border:none; padding:10px 20px; font-weight:bold; border-radius:4px;">+ 매장 추가</button>
+        <div class="nbos-layout-v9">
+            <div class="nbos-sidebar-v9">
+                <div style="font-size:14px; font-weight:900; margin-bottom:40px; color:#fff;">LF nBOS</div>
+                <div class="nbos-menu-v9">매장 정보 관리</div>
+                <div class="nbos-menu-v9 active">O2O 매장 마스터</div>
             </div>
 
-            <table class="data-table-hf">
-                <thead>
-                    <tr><th style="width:80px;">ID</th><th>매장명</th><th style="width:120px;">유형</th><th style="width:140px;">서비스 여부</th><th style="width:100px;">Cap</th><th>최종 수정일</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>S001</td>
-                        <td style="font-weight:900;">강남본점 (HAZZYS)</td>
-                        <td>직영점</td>
-                        <td style="color:#059669; font-weight:800;">● SERVICE ON</td>
-                        <td style="text-align:center;">10 ea</td>
-                        <td>2026-04-18</td>
-                    </tr>
-                    <tr>
-                        <td>S122</td>
-                        <td style="font-weight:900;">명동스타일 (DAKS)</td>
-                        <td>직영점</td>
-                        <td style="color:#059669; font-weight:800;">● SERVICE ON</td>
-                        <td style="text-align:center;">5 ea</td>
-                        <td>2026-04-19</td>
-                    </tr>
-                    <tr>
-                        <td>S341</td>
-                        <td style="font-weight:900;">부산광복점 (MAESTRO)</td>
-                        <td>대리점</td>
-                        <td style="color:#999; font-weight:800;">○ SERVICE OFF</td>
-                        <td style="text-align:center;">0 ea</td>
-                        <td>2026-04-15</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="nbos-main-v9">
+                <h2 style="font-size:20px; font-weight:900; margin-bottom:20px; color:#111;">O2O 운영 매장 마스터 관리 (Shop Management)</h2>
+                
+                <table class="nbos-grid-v9">
+                    <thead>
+                        <tr>
+                            <th>매장코드</th>
+                            <th>매장명</th>
+                            <th>매장 유형</th>
+                            <th>지역 (Zone)</th>
+                            <th style="background:#444;">O2O 전용박스 재고</th>
+                            <th>운영 상태</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>10024</td>
+                            <td>명동본점</td>
+                            <td><span class="badge-type-v9">직송 가능 매장</span></td>
+                            <td>서울/수도권</td>
+                            <td><span class="badge-box-v9">보유 (150)</span></td>
+                            <td style="color:#10B981;">정상</td>
+                        </tr>
+                        <tr>
+                            <td>10211</td>
+                            <td>판교점</td>
+                            <td><span class="badge-type-v9" style="background:#C8192E; color:#fff;">비직송 매장(O2O)</span></td>
+                            <td>서울/수도권</td>
+                            <td><span class="badge-box-v9">부족 (12)</span></td>
+                            <td style="color:#C8192E;">일시중지</td>
+                        </tr>
+                        <tr>
+                            <td>10592</td>
+                            <td>부산광복점</td>
+                            <td><span class="badge-type-v9">직송 가능 매장</span></td>
+                            <td>부산/경남</td>
+                            <td><span class="badge-box-v9">보유 (88)</span></td>
+                            <td style="color:#10B981;">정상</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box" style="background:#fff; color:#111;">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#fff;">36</div>
+        </div>
     </div>
 </body>
 </html>
