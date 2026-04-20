@@ -4,79 +4,146 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .issue-ball {
-            position: absolute;
-            width: 26px; height: 26px;
-            background: linear-gradient(135deg, #FF6B6B, #E60000);
-            color: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 900;
-            box-shadow: 0 4px 8px rgba(230, 0, 0, 0.3);
-            border: 1px solid #C8192E;
-            z-index: 20;
+        .master-stage-v8 { padding: 40px; position: relative; height: 100%; border: 1px solid #CCC; overflow: hidden; }
+        
+        .box-v8 { 
+            position: absolute; border: 1.2px solid #555; border-radius: 4px; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 8.5px; font-weight: 900; text-align: center; line-height: 1.2; 
+            z-index: 10; background: #fff;
+            width: 74px; height: 36px;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.08);
+        }
+        .b-lfmall { background: #E9EDF4; border-color: #92A8D1; }
+        .b-oms { background: #E2EFDA; border-color: #A9D18E; }
+        .b-pos { background: #FFF2CC; border-color: #FFD966; }
+        
+        .b-status-v8 { 
+            width: 48px; height: 48px; border-radius: 50%; background: #333; color: #fff; border: 1.5px solid #222;
+            display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 900; 
+            position: absolute; z-index: 15; line-height: 1.1; 
         }
         
-        .legend-grid-hf {
-            position: absolute;
-            bottom: 85px; left: 45px; right: 45px;
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
-            background: #F8F9FA;
-            padding: 15px;
-            border: 1px solid #EEE;
-            border-radius: 8px;
+        .b-pill-v8 { 
+            background: #FCE4D6; border: 1.8px solid #F4B183; border-radius: 40px; 
+            width: 250px; height: 38px; color: #333; z-index: 10; font-size: 10px; font-weight: 900;
+            position: absolute; display: flex; align-items: center; justify-content: center;
         }
-        .legend-item-hf { font-size: 11.5px; color: #444; line-height: 1.4; }
+        
+        .diamond-v8 {
+            position: absolute; width: 56px; height: 56px; background: #FFF2CC; border: 1.8px solid #F4B183;
+            transform: rotate(45deg); z-index: 5; display: flex; align-items: center; justify-content: center;
+        }
+        .diamond-inner { transform: rotate(-45deg); font-size: 8px; font-weight: 900; text-align: center; line-height: 1.1; }
+
+        .banner-issue-v8 { position: absolute; bottom: 85px; width: 145px; text-align: center; }
+        .banner-label-v8 { background: #C8192E; color: #fff; padding: 4px 18px; border-radius: 20px; font-size: 11px; font-weight: 900; display: inline-block; margin-bottom: 10px; }
+        .banner-text-v8 { font-size: 9.3px; color: #333; font-weight: 900; line-height: 1.5; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">
-            03. 시스템 아키텍처 (System Architecture)
-        </header>
+        <div style="width:100%; height:32px; background:#444; color:#fff; display:flex; align-items:center; padding:0 30px; font-size:13.5px; font-weight:bold;">온오프 재고 효율화</div>
 
-        <!-- SVG Flow Layer -->
-        <svg class="svg-flow-layer">
-            <defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                    <polygon points="0 0, 10 3.5, 0 7" fill="#595959" />
-                </marker>
-            </defs>
-            <!-- Lfmall -> OMS -->
-            <line x1="290" y1="210" x2="430" y2="210" stroke="#595959" stroke-width="2" marker-end="url(#arrowhead)" />
-            <!-- OMS -> SAP (Batch) -->
-            <path d="M 525 255 L 525 350" stroke="#595959" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrowhead)" fill="none" />
-            <!-- SAP -> POS -->
-            <line x1="440" y1="390" x2="300" y2="390" stroke="#595959" stroke-width="2" marker-end="url(#arrowhead)" />
-        </svg>
+        <div class="master-stage-v8">
+            <div style="background:#555; width:130px; height:38px; border-radius:8px; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; box-shadow:0 6px 12px rgba(0,0,0,0.15);">전체 프로세스</div>
 
-        <!-- Nodes -->
-        <div class="ppt-node-hf" style="top: 170px; left: 130px; width: 160px; height: 80px; background: var(--node-lfmall-bg);">LFmall</div>
-        <div class="ppt-node-hf" style="top: 170px; left: 440px; width: 160px; height: 80px; background: var(--node-oms-sap-bg);">OMS</div>
-        <div class="ppt-node-hf" style="top: 360px; left: 440px; width: 160px; height: 80px; background: var(--node-oms-sap-bg);">SAP ERP</div>
-        <div class="ppt-node-hf" style="top: 360px; left: 130px; width: 160px; height: 80px; background: var(--node-pos-bg);">Store POS</div>
+            <svg class="svg-layer-v4">
+                <defs>
+                    <marker id="arr-66" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="#666" />
+                    </marker>
+                    <marker id="arr-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="#C8192E" />
+                    </marker>
+                    <linearGradient id="flag-gr" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#C8192E" stop-opacity="0.05" />
+                        <stop offset="100%" stop-color="#C8192E" stop-opacity="0.6" />
+                    </linearGradient>
+                </defs>
 
-        <!-- Issue Markers -->
-        <div class="issue-ball" style="top: 155px; left: 350px;">1</div>
-        <div class="issue-ball" style="top: 155px; left: 585px;">2</div>
-        <div class="issue-ball" style="top: 345px; left: 585px;">3</div>
-        <div class="issue-ball" style="top: 345px; left: 275px;">4</div>
-        <div class="issue-ball" style="top: 345px; left: 115px;">5</div>
+                <!-- Dashed Dividers -->
+                <line x1="40" y1="280" x2="1400" y2="280" stroke="#DDD" stroke-width="1.2" stroke-dasharray="10,6" />
+                <line x1="40" y1="535" x2="1400" y2="535" stroke="#DDD" stroke-width="1.2" stroke-dasharray="10,6" />
 
-        <div class="legend-grid-hf">
-            <div class="legend-item-hf"><b>①</b> 재고 데이터 연동 주차/지연</div>
-            <div class="legend-item-hf"><b>②</b> 주문 배정 로직/정책 부하</div>
-            <div class="legend-item-hf"><b>③</b> SAP 원장 정합성/배치</div>
-            <div class="legend-item-hf"><b>④</b> 가용 재고 산출(Bucket)</div>
-            <div class="legend-item-hf"><b>⑤</b> 실시간 매장 취소 알림</div>
+                <!-- ISSUE Arrows -->
+                <path d="M 152 280 L 186 280 L 186 540 L 169 565 L 152 540 Z" fill="url(#flag-gr)" opacity="0.4" />
+                <path d="M 465 535 L 499 535 L 499 560 L 482 585 L 465 560 Z" fill="url(#flag-gr)" opacity="0.4" />
+                <path d="M 545 280 L 579 280 L 579 540 L 562 565 L 545 540 Z" fill="url(#flag-gr)" opacity="0.4" />
+                <path d="M 685 280 L 719 280 L 719 540 L 702 565 L 685 540 Z" fill="url(#flag-gr)" opacity="0.4" />
+                <path d="M 1150 280 L 1184 280 L 1184 540 L 1167 565 L 1150 540 Z" fill="url(#flag-gr)" opacity="0.4" />
+
+                <!-- BLUE Pathway restoration (Upper Flow) -->
+                <line x1="165" y1="180" x2="200" y2="180" stroke="#666" marker-end="url(#arr-66)" />
+                <line x1="274" y1="180" x2="305" y2="180" stroke="#666" />
+                <path d="M 305 180 L 305 130 L 335 130" stroke="#666" fill="none" marker-end="url(#arr-66)" />
+                <path d="M 305 180 L 335 180" stroke="#666" fill="none" marker-end="url(#arr-66)" />
+                <path d="M 305 180 L 305 230 L 335 230" stroke="#666" fill="none" marker-end="url(#arr-66)" />
+                <path d="M 409 130 L 430 130 L 430 180 L 450 180" stroke="#666" fill="none" marker-end="url(#arr-66)" />
+                <path d="M 409 180 L 450 180" stroke="#666" fill="none" />
+                <path d="M 409 230 L 430 230 L 430 180" stroke="#666" fill="none" />
+
+                <!-- STATUS Pathway from [주문생성] -->
+                <line x1="524" y1="230" x2="570" y2="230" stroke="#666" marker-end="url(#arr-66)" />
+                <line x1="618" y1="230" x2="710" y2="230" stroke="#666" />
+                <line x1="960" y1="230" x2="1010" y2="230" stroke="#666" marker-end="url(#arr-66)" />
+
+                <!-- GREEN Pathway Backbone Restoration -->
+                <path d="M 590 375 L 590 320 L 960 320" stroke="#666" fill="none" stroke-width="1" />
+                <line x1="660" y1="320" x2="660" y2="355" stroke="#666" stroke-width="1" marker-end="url(#arr-66)" />
+                <line x1="770" y1="320" x2="770" y2="355" stroke="#666" stroke-width="1" marker-end="url(#arr-66)" />
+                <line x1="880" y1="320" x2="880" y2="355" stroke="#666" stroke-width="1" marker-end="url(#arr-66)" />
+                <line x1="960" y1="320" x2="960" y2="355" stroke="#666" stroke-width="1" marker-end="url(#arr-66)" />
+            </svg>
+
+            <!-- Row 1 Nodes -->
+            <div style="position:absolute; top:110px; left:40px; text-align:center;">
+                <div style="font-size:26px;">👥</div>
+                <div style="background:#333; color:#fff; font-size:8px; padding:3px 10px; border-radius:4px; font-weight:900;">고객</div>
+            </div>
+            <div class="box-v8 b-lfmall" style="top:162px; left:125px;">상품 목록</div>
+            <div class="box-v8 b-lfmall" style="top:162px; left:200px;">상품 상세</div>
+            <div class="box-v8 b-lfmall" style="top:112px; left:335px;">원클릭 결제</div>
+            <div class="box-v8 b-lfmall" style="top:162px; left:335px;">쇼핑백</div>
+            <div class="box-v8 b-lfmall" style="top:212px; left:335px;">주문서</div>
+            <div class="box-v8 b-lfmall" style="top:162px; left:450px;">주문완료</div>
+            <div class="box-v8 b-lfmall" style="top:212px; left:450px;">주문생성</div>
+            
+            <div class="b-status-v8" style="top:207px; left:570px;">결제<br>완료</div>
+            <div class="b-pill-v8" style="top:212px; left:710px;">자동결품배치 (알림톡) 정책</div>
+            <div class="b-status-v8" style="top:207px; left:1010px; background:#555;">상품<br>준비중</div>
+            <div class="b-status-v8" style="top:207px; left:1110px;">배송중</div>
+            <div class="b-status-v8" style="top:207px; left:1210px;">배송완료</div>
+
+            <!-- Row 2 Nodes -->
+            <div class="box-v8 b-oms" style="top:355px; left:420px; width:90px;">주문수집</div>
+            <div class="diamond-v8" style="top:345px; left:535px;"><div class="diamond-inner">매장상품<br>배송</div></div>
+            <div style="position:absolute; top:345px; left:605px; font-size:9.5px; font-weight:900;">N</div>
+            
+            <div class="box-v8 b-oms" style="top:358px; left:620px;">출고처지정</div>
+            <div class="box-v8 b-oms" style="top:358px; left:730px;">입고확정</div>
+            <div class="box-v8 b-oms" style="top:358px; left:840px;">송장출력</div>
+            <div class="box-v8 b-oms" style="top:358px; left:950px; background:#EEE; font-size:7.5px;">CJ대한통운<br>배송완료</div>
+
+            <!-- Issues -->
+            <div class="banner-issue-v8" style="left:110px;">
+                <div class="banner-label-v8">ISSUE 1.</div>
+                <div class="banner-text-v8">상품 재고 케이스 별<br>표현 방법</div>
+            </div>
+            <div class="banner-issue-v8" style="left:405px;">
+                <div class="banner-label-v8">ISSUE 2.</div>
+                <div class="banner-text-v8">비직송 매장<br>물량 이동 승인 이슈<br>(매장 제공 혜택)</div>
+            </div>
+            <div class="banner-issue-v8" style="left:535px;">
+                <div class="banner-label-v8">ISSUE 3.</div>
+                <div class="banner-text-v8">자동결품배치<br>예외처리(D+5 등)<br>정책 수립</div>
+            </div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer" style="padding: 0 45px; display:flex; justify-content:space-between; align-items:center; height:45px;">
+            <div style="background:#C8192E; color:#fff; width:35px; height:35px; display:flex; align-items:center; justify-content:center; font-weight:900;">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#555;">5</div>
+        </div>
     </div>
 </body>
 </html>
