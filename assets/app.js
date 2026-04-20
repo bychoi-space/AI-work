@@ -47,6 +47,24 @@ const ghConfig = {
 };
 
 /**
+ * Slugify: Convert string to URL-friendly English ID
+ */
+function slugify(text) {
+    if (!text) return "";
+    
+    // 1. Basic Transliteration for Korean (Simple heuristic)
+    // For a real app, a library like 'hangul' or 'romanize' would be better.
+    // Here we'll do a simple mapping or just strip and keep ASCII as fallback.
+    
+    return text.toString().toLowerCase()
+        .replace(/\s+/g, '_')           // Replace spaces with _
+        .replace(/[^\w\-]+/g, '')       // Remove all non-word chars (keeps a-z, 0-9, _)
+        .replace(/\_\_+/g, '_')         // Replace multiple _ with single _
+        .replace(/^_+/, '')             // Trim _ from start
+        .replace(/_+$/, '');            // Trim _ from end
+}
+
+/**
  * Robust UTF-8 to Base64 (Modern browser approach)
  */
 function encodeBase64(str) {
@@ -444,6 +462,46 @@ async function updateScreenMetadata(project, screenFilename, data, statusCallbac
     }
 
     return await saveProjectMetadata(project, metadata, statusCallback);
+}
+
+/**
+ * Screen Creation from Template
+ */
+async function createScreenFromTemplate(project, screenName, templateName, statusCallback) {
+    try {
+        if (statusCallback) statusCallback('템플릿 불러오는 중... ⏳', '#facc15');
+        
+        // 1. Fetch Template Content
+        const templatePath = `assets/templates/${templateName}`;
+        const res = await fetch(templatePath);
+        if (!res.ok) throw new Error(`Template not found: ${templateName}`);
+        let content = await res.text();
+        
+        // 2. Simple Placeholder Replacement
+        content = content.replace(/{{SCREEN_NAME}}/g, screenName);
+        content = content.replace(/{{PROJECT_NAME}}/g, project);
+        
+        // 3. Upload to GitHub
+        const filename = screenName.endsWith('.html') ? screenName : `${screenName}.html`;
+        const success = await uploadToProject(project, filename, content, statusCallback);
+        
+        if (success) {
+            // 4. Update Metadata
+            const meta = await fetchProjectMetadata(project);
+            meta.screens = meta.screens || {};
+            meta.screens[filename] = { 
+                updatedAt: new Date().toISOString(),
+                template: templateName
+            };
+            await saveProjectMetadata(project, meta);
+            return true;
+        }
+        return false;
+    } catch (err) {
+        console.error("[Template] Error creating screen:", err);
+        if (statusCallback) statusCallback(`실패: ${err.message}`, '#ef4444');
+        return false;
+    }
 }
 
 // --- Legacy Compatibility Functions (Keep for existing Dashboard flow) ---

@@ -81,12 +81,19 @@
     <div id="metadata-modal" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 class="modal-title">파일 정보 수정</h3>
+                <h3 class="modal-title" id="modal-main-title">파일 정보 수정</h3>
                 <p id="modal-filename" style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;"></p>
             </div>
             <div class="modal-body">
+                <div id="group-project-id" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label">프로젝트 ID (영문 폴더명)</label>
+                        <input type="text" id="meta-project-id" class="form-input" placeholder="예: event_promotion_2024">
+                        <p style="font-size:10px; color:var(--accent); margin-top:4px;">* 한글 입력 시 자동으로 변환됩니다.</p>
+                    </div>
+                </div>
                 <div class="form-group">
-                    <label class="form-label">제목</label>
+                    <label class="form-label">프로젝트명 / 제목</label>
                     <input type="text" id="meta-title" class="form-input" placeholder="예: 메인 페이지 개편안">
                 </div>
                 <div class="form-group">
@@ -163,6 +170,9 @@
             
             // Modal DOM
             modal: document.getElementById('metadata-modal'),
+            modalMainTitle: document.getElementById('modal-main-title'),
+            groupIdField: document.getElementById('group-project-id'),
+            metaProjectId: document.getElementById('meta-project-id'),
             modalFilenameDisplay: document.getElementById('modal-filename'),
             metaTitle: document.getElementById('meta-title'),
             metaPeriod: document.getElementById('meta-period'),
@@ -185,7 +195,8 @@
         };
 
         const context = {
-            currentEditingProject: null
+            currentEditingProject: null,
+            isCreateMode: false
         };
 
         // Initialize GitHub Status
@@ -431,40 +442,40 @@
         // Project Modal & Events
         DOM.btnCreateProject.onclick = async () => {
             if (ghConfig.isReadOnly) return showAuthModal();
-            const name = prompt("새 프로젝트 이름을 입력하세요 (영문, 숫자, 언더바 권장):");
-            if (name && name.trim()) {
-                // Sanitize: Allow only alphanumeric, underscore, hyphen
-                const projectName = name.trim().replace(/[^a-zA-Z0-9_-]/g, '_');
-                
-                if (!projectName) {
-                    alert("유효한 프로젝트 이름을 입력해주세요.");
-                    return;
-                }
+            
+            context.isCreateMode = true;
+            context.currentEditingProject = null;
+            
+            // Reset Modal Fields
+            DOM.modalMainTitle.innerText = "새 프로젝트 생성";
+            DOM.groupIdField.style.display = "block";
+            DOM.modalFilenameDisplay.innerText = "새로운 프로젝트 컨테이너를 생성합니다.";
+            
+            DOM.metaProjectId.value = "";
+            DOM.metaTitle.value = "";
+            DOM.metaPeriod.value = "";
+            DOM.metaAssignee.value = "";
+            DOM.metaJira.value = "";
+            DOM.metaFigma.value = "";
+            DOM.metaPub.value = "";
+            
+            DOM.modal.classList.add('active');
 
-                updateStatusUI('프로젝트 생성 중... ⏳', '#facc15');
-                
-                const success = await saveProjectMetadata(projectName, { 
-                    title: name.trim(), 
-                    screens: {}, 
-                    createdAt: new Date().toISOString() 
-                }, (msg, color) => {
-                    updateStatusUI(msg, color);
-                });
-
-                if (success) {
-                    updateStatusUI('목록 갱신 대기 중... ⏳', '#facc15');
-                    // Give GitHub API 1.5 seconds to reflect the new file in directory listing
-                    setTimeout(() => {
-                        refreshFileList();
-                    }, 1500);
-                } else {
-                    alert("프로젝트 생성에 실패했습니다. 토큰 권한이나 네트워크를 확인해주세요.");
+            // Auto-ID Logic (Integrated Slugify)
+            DOM.metaTitle.oninput = () => {
+                if (context.isCreateMode) {
+                    DOM.metaProjectId.value = slugify(DOM.metaTitle.value);
                 }
-            }
+            };
         };
 
         async function openEditProjectModal(projectName) {
+            context.isCreateMode = false;
             context.currentEditingProject = projectName;
+            
+            DOM.modalMainTitle.innerText = "프로젝트 정보 수정";
+            DOM.groupIdField.style.display = "none";
+            
             updateStatusUI('메타데이터 로딩 중... ⏳', '#facc15');
             const m = await fetchProjectMetadata(projectName);
             DOM.modalFilenameDisplay.innerText = `Project: ${projectName}`;
@@ -506,8 +517,12 @@
         DOM.btnModalClose.onclick = () => DOM.modal.classList.remove('active');
 
         DOM.btnModalSave.onclick = async () => {
-            if (!context.currentEditingProject) return;
-            const projectName = context.currentEditingProject;
+            if (context.isCreateMode && !DOM.metaProjectId.value.trim()) {
+                alert("프로젝트 ID를 입력해주세요.");
+                return;
+            }
+
+            const projectName = context.isCreateMode ? DOM.metaProjectId.value.trim() : context.currentEditingProject;
             const originalText = DOM.btnModalSave.innerText;
             DOM.btnModalSave.innerText = '저장 중...';
             
@@ -531,7 +546,7 @@
                         DOM.btnModalSave.innerText = originalText;
                         DOM.btnModalSave.style.background = '';
                         refreshFileList();
-                    }, 1000);
+                    }, context.isCreateMode ? 1500 : 1000); // More time for project creation API sync
                 }
             });
         };

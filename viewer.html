@@ -271,6 +271,50 @@
     <!-- Hidden File Input for Adding Screens -->
     <input type="file" id="add-screen-upload" style="display:none;" multiple accept=".html,.htm">
 
+    <!-- Add Screen Modal (NEW: Template support) -->
+    <div id="add-screen-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 520px;">
+            <div class="modal-header">
+                <h3 class="modal-title">새 화면 추가</h3>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">프로젝트에 새로운 화면을 추가합니다.</p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">화면 파일명 (영문)</label>
+                    <input type="text" id="new-screen-name" class="form-input" placeholder="예: product_detail">
+                </div>
+
+                <div class="modal-section-title">에셋 템플릿 선택</div>
+                <div class="template-grid" id="template-list">
+                    <div class="template-card" data-template="lfmall_mobile_base.html">
+                        <div class="template-thumb">
+                            <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">smartphone</span>
+                        </div>
+                        <div class="template-name">LFmall 모바일 기획서</div>
+                        <div class="template-badge">LFmall</div>
+                    </div>
+                    <div class="template-card" data-template="lfmall_pc_base.html">
+                        <div class="template-thumb">
+                            <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">desktop_windows</span>
+                        </div>
+                        <div class="template-name">LFmall PC 기획서</div>
+                        <div class="template-badge">LFmall</div>
+                    </div>
+                </div>
+
+                <div class="modal-section-title">또는 직접 업로드</div>
+                <button id="btn-upload-local" class="btn-secondary" style="width: 100%; border-style: dashed; border-color: var(--accent); color: var(--accent);">
+                    <span class="material-icons-outlined" style="font-size: 18px; vertical-align: middle; margin-right: 8px;">upload_file</span>
+                    로컬 파일 선택하기
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-add-screen-cancel" class="btn-secondary">취소</button>
+                <button id="btn-add-screen-submit" class="btn-primary">화면 생성하기</button>
+            </div>
+        </div>
+    </div>
+
     <script src="assets/app.js?v=20240416_v4"></script>
     <script>
         const state = {
@@ -318,12 +362,22 @@
             // Screen Management
             btnAddScreen: document.getElementById('btn-add-screen'),
             addScreenUpload: document.getElementById('add-screen-upload'),
+            addScreenModal: document.getElementById('add-screen-modal'),
+            btnCancelAdd: document.getElementById('btn-add-screen-cancel'),
+            btnSubmitAdd: document.getElementById('btn-add-screen-submit'),
+            btnUploadLocal: document.getElementById('btn-upload-local'),
+            newScreenName: document.getElementById('new-screen-name'),
+            templateCards: document.querySelectorAll('.template-card'),
             
             // Auth Modal DOM
             authModal: document.getElementById('auth-modal'),
             btnAuthClose: document.getElementById('btn-modal-auth-cancel'),
             btnAuthSubmit: document.getElementById('btn-modal-auth-submit'),
             tokenInput: document.getElementById('modal-gh-token')
+        };
+
+        const context = {
+            selectedTemplate: null
         };
 
         // 1. Initial Load & URL Parsing
@@ -470,11 +524,60 @@
             }
         }
 
+        // Screen Management UI logic
+        DOM.btnAddScreen.onclick = () => {
+            if (state.isReadOnly) return showAuthModal();
+            DOM.addScreenModal.classList.add('active');
+            DOM.newScreenName.value = "";
+            context.selectedTemplate = null;
+            DOM.templateCards.forEach(c => c.classList.remove('active'));
+        };
+
+        DOM.btnCancelAdd.onclick = () => DOM.addScreenModal.classList.remove('active');
+
+        DOM.templateCards.forEach(card => {
+            card.onclick = () => {
+                DOM.templateCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                context.selectedTemplate = card.dataset.template;
+                
+                // Auto-fill name if empty
+                if (!DOM.newScreenName.value) {
+                    DOM.newScreenName.value = slugify(card.querySelector('.template-name').innerText) + "_1";
+                }
+            };
+        });
+
+        DOM.btnUploadLocal.onclick = () => DOM.addScreenUpload.click();
+
+        DOM.btnSubmitAdd.onclick = async () => {
+            if (!DOM.newScreenName.value.trim()) return alert("화면 파일명을 입력해주세요.");
+            if (!context.selectedTemplate) return alert("사용할 에셋 템플릿을 선택해주세요.");
+
+            const screenName = DOM.newScreenName.value.trim();
+            const template = context.selectedTemplate;
+            
+            DOM.btnSubmitAdd.innerText = "생성 중...";
+            DOM.btnSubmitAdd.disabled = true;
+
+            const success = await createScreenFromTemplate(state.currentProject, screenName, template, (msg, color) => {
+                DOM.placeholderTxt.innerText = msg;
+            });
+
+            if (success) {
+                location.reload();
+            } else {
+                DOM.btnSubmitAdd.innerText = "화면 생성하기";
+                DOM.btnSubmitAdd.disabled = false;
+            }
+        };
+
         async function handleAddScreen(files) {
             if (state.isReadOnly) return showAuthModal();
             const newFiles = Array.from(files).filter(f => f.name.endsWith('.html') || f.name.endsWith('.htm'));
             if (newFiles.length === 0) return;
 
+            DOM.addScreenModal.classList.remove('active');
             DOM.placeholder.style.display = 'flex';
             DOM.placeholderTxt.innerText = "화면 추가 중...";
 
