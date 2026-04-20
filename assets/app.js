@@ -320,6 +320,39 @@ async function listRepoRoot() {
 }
 
 /**
+ * GitHub API Helper: Delete a whole project (Recursive cleanup)
+ */
+async function deleteProjectWithContents(projectName, statusCallback) {
+    if (statusCallback) statusCallback(`프로젝트 '${projectName}' 삭제 중... 🔄`, '#facc15');
+    
+    try {
+        // 1. List all items in the project directory
+        const contents = await listContents(projectName);
+        if (!contents || contents.length === 0) {
+            return true;
+        }
+
+        // 2. Delete each item sequentially
+        for (const item of contents) {
+            if (statusCallback) statusCallback(`삭제 중: ${item.name}...`, '#facc15');
+            // Project files are always in data/{project}/...
+            const success = await deleteFileFromGitHub(`${projectName}/${item.name}`, item.sha, false, statusCallback);
+            if (!success) {
+                if (statusCallback) statusCallback('일부 파일 삭제 실패', '#ef4444');
+                return false;
+            }
+        }
+
+        if (statusCallback) statusCallback('프로젝트 삭제 완료! 🎉', '#4ade80');
+        return true;
+    } catch (err) {
+        console.error("deleteProjectWithContents error:", err);
+        if (statusCallback) statusCallback('삭제 오류 발생', '#ef4444');
+        return false;
+    }
+}
+
+/**
  * GitHub API Helper: Delete file
  * @param {boolean} isRoot - If true, ignores dataDir
  */

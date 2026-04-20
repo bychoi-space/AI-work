@@ -381,8 +381,11 @@
                 const subInfo = `${p.screens} screens • ${p.name}`;
 
                 card.innerHTML = `
-                    <div class="edit-btn-card" data-project="${p.name}" title="Edit Project Metadata">
+                    <div class="edit-btn-card" data-project="${p.name}" title="정보 수정">
                         <span class="material-icons-outlined">edit</span>
+                    </div>
+                    <div class="delete-btn-card" data-project="${p.name}" title="프로젝트 삭제">
+                        <span class="material-icons-outlined">delete_outline</span>
                     </div>
                     <div class="thumbnail-wrapper" style="background: linear-gradient(135deg, #1e293b, #0f172a);">
                         <div class="icon-wrapper" style="width: 100%; height: 100%;">
@@ -416,13 +419,13 @@
             if (delBtn) {
                 e.preventDefault();
                 e.stopPropagation();
-                const filename = delBtn.dataset.filename;
-                const sha = delBtn.dataset.sha;
+                if (ghConfig.isReadOnly) return showAuthModal();
+                const projectName = delBtn.dataset.project;
                 
-                if (confirm(`'${filename}' 파일을 정말 삭제하시겠습니까?`)) {
-                    const success = await deleteFileFromGitHub(filename, sha, updateStatusUI);
+                if (confirm(`'${projectName}' 프로젝트와 모든 관련 파일을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
+                    const success = await deleteProjectWithContents(projectName, updateStatusUI);
                     if (success) {
-                        state.files = state.files.filter(f => f.name !== filename);
+                        state.projects = state.projects.filter(p => p.name !== projectName);
                         renderList();
                         setTimeout(() => refreshFileList(), 1500);
                     }
