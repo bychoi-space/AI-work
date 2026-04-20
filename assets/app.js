@@ -513,11 +513,10 @@ async function createScreenFromTemplate(project, screenName, templateName, statu
     try {
         if (statusCallback) statusCallback('템플릿 불러오는 중... ⏳', '#facc15');
         
-        // 1. Fetch Template Content
+        // 1. Fetch Template Content (Fetch via GitHub API to bypass file:// protocol restrictions)
         const templatePath = `assets/templates/${templateName}`;
-        const res = await fetch(templatePath);
-        if (!res.ok) throw new Error(`Template not found: ${templateName}`);
-        let content = await res.text();
+        const content = await fetchFileContent(templatePath, true);
+        if (!content) throw new Error(`Template not found on GitHub: ${templateName}`);
         
         // 2. Simple Placeholder Replacement
         content = content.replace(/{{SCREEN_NAME}}/g, screenName);
