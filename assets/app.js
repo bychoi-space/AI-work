@@ -222,8 +222,15 @@ async function uploadToGitHub(filename, content, statusCallback) {
         }
     } catch (err) {
         console.error("[GitHub API] Fatal Error:", err.message);
-        // Display the specific GitHub reason (e.g. "sha is required") on the button
-        if (statusCallback) statusCallback(`에러: ${err.message}`, '#ef4444');
+        let errorMsg = err.message;
+        
+        // Human-friendly mapping for common GitHub errors
+        if (errorMsg.includes("409")) errorMsg = "이미 존재하는 파일명입니다 (409 Conflict)";
+        if (errorMsg.includes("401")) errorMsg = "인증 토큰이 올바르지 않습니다 (401 Unauthorized)";
+        if (errorMsg.includes("404")) errorMsg = "저장 위치를 찾을 수 없습니다 (404 Not Found)";
+        if (errorMsg.includes("422")) errorMsg = "잘못된 데이터 형식입니다 (422 validation failed)";
+
+        if (statusCallback) statusCallback(`에러: ${errorMsg}`, '#ef4444');
         return false;
     }
 }
@@ -523,18 +530,29 @@ async function createScreenFromTemplate(project, screenName, templateName, statu
         if (success) {
             // 4. Update Metadata
             const meta = await fetchProjectMetadata(project);
+            if (!meta || typeof meta !== 'object') {
+                throw new Error("Cannot retrieve project metadata for update");
+            }
             meta.screens = meta.screens || {};
             meta.screens[filename] = { 
                 updatedAt: new Date().toISOString(),
                 template: templateName
             };
-            await saveProjectMetadata(project, meta);
+            
+            // Pass the callback to finalize the status on the UI
+            const metaSuccess = await saveProjectMetadata(project, meta, statusCallback);
+            if (!metaSuccess) throw new Error("File was created but Metadata update failed");
+            
             return true;
         }
         return false;
     } catch (err) {
         console.error("[Template] Error creating screen:", err);
-        if (statusCallback) statusCallback(`실패: ${err.message}`, '#ef4444');
+        // Map error for display in statusCallback
+        let displayErr = err.message;
+        if (displayErr.includes("409")) displayErr = "파일이 이미 존재합니다 (409)";
+        
+        if (statusCallback) statusCallback(`실패: ${displayErr}`, '#ef4444');
         return false;
     }
 }

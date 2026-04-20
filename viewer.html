@@ -579,16 +579,17 @@
                 });
 
                 if (success) {
-                    // Update metadata and reload to show new screen
                     location.reload();
                 } else {
+                    // Specific error message is usually updated via callback above
+                    alert("화면 생성에 실패했습니다. 입력한 파일명이 이미 존재하거나 권한이 부족할 수 있습니다.\n콘솔 로그를 확인하거나 다시 시도해주세요.");
                     DOM.btnSubmitAdd.innerText = "화면 생성하기";
                     DOM.btnSubmitAdd.disabled = false;
                     if (activeCard) activeCard.classList.remove('generating');
                 }
             } catch (err) {
                 console.error("[SubmitAdd] Error:", err);
-                alert(`화면 생성 중 오류가 발생했습니다: ${err.message}`);
+                alert(`오류 발생: ${err.message}`);
                 DOM.btnSubmitAdd.innerText = "화면 생성하기";
                 DOM.btnSubmitAdd.disabled = false;
                 if (activeCard) activeCard.classList.remove('generating');
