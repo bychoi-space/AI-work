@@ -3,40 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .iphone-v9 { 
+            width: 320px; height: 650px; background: #000; border-radius: 40px; 
+            padding: 10px; box-shadow: 0 40px 80px rgba(0,0,0,0.3); position: relative;
+            margin: 40px auto;
+        }
+        .screen-v9 { background: #fff; width: 100%; height: 100%; border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; }
+        
+        .pdp-info-mini { padding: 20px; border-bottom: 1px solid #EEE; display: flex; align-items: center; gap: 15px; }
+        .mini-img { width: 50px; height: 60px; background: #F4F6F9; border-radius: 4px; }
+        
+        .option-stage { flex: 1; padding: 20px; background: #F8FAFC; }
+        .grid-v9 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .chip-v9 { 
+            background: #fff; border: 1.5px solid #DDD; border-radius: 8px; height: 65px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 800; cursor: pointer; position: relative;
+        }
+        .chip-v9.selected { border-color: #333; background: #F1F3F5; }
+        .chip-badge { 
+            position: absolute; top: -5px; right: -5px; background: #C8192E; color: #fff; 
+            font-size: 8px; font-weight: 900; padding: 2px 5px; border-radius: 10px; 
+        }
+        
+        .benefit-btn { 
+            margin-top: 30px; border: 1px solid #DDD; padding: 15px; border-radius: 8px; 
+            display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 900;
+            background: #fff;
+        }
+    </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">22. [UI] 상품상세 - 옵션 선택 (PDP Option Selector)</header>
+        <header class="ppt-header">22. [UI] 상품 상세 페이지 - 옵션 선택 (PDP Option)</header>
 
-        <div style="display:flex; justify-content:center; padding:40px;">
-            <div class="phone-frame-hf">
-                <div class="phone-screen-hf">
-                    <div style="height:320px; background:#f1f3f5; opacity:0.3;"></div>
-                    <div style="position:absolute; bottom:0; width:100%; height:480px; background:#fff; border-top:1.5px solid #DDD; box-shadow: 0 -15px 40px rgba(0,0,0,0.1); border-radius: 40px 40px 0 0; padding:30px; display:flex; flex-direction:column;">
-                        <h4 style="font-size:18px; font-weight:900; margin-bottom:25px;">색상 / 사이즈 선택</h4>
-                        
-                        <div style="display:flex; flex-direction:column; gap:12px; flex:1;">
-                            <div style="padding:18px; border:1.5px solid var(--lf-red); border-radius:10px; display:flex; justify-content:space-between; background:rgba(200, 25, 46, 0.02);">
-                                <span style="font-size:15px; font-weight:bold;">Navy / 100</span>
-                                <b style="color:var(--lf-red); font-size:13px;">[매장재고 5개]</b>
-                            </div>
-                            <div style="padding:18px; border:1px solid #EEE; border-radius:10px; display:flex; justify-content:space-between; background:#F8F9FA; opacity:0.5;">
-                                <span style="font-size:15px; color:#999;">Navy / 105</span>
-                                <b style="color:#999; font-size:13px;">품절</b>
-                            </div>
-                            <div style="padding:18px; border:1px solid #EEE; border-radius:10px; display:flex; justify-content:space-between;">
-                                <span style="font-size:15px;">Black / 100</span>
-                                <b style="color:#666; font-size:13px;">일반재고 12개</b>
-                            </div>
-                        </div>
-
-                        <button style="width:100%; height:54px; background:var(--ppt-header-bg); color:#fff; border:none; border-radius:10px; font-weight:900; font-size:17px; margin-top:20px;">장바구니 담기</button>
+        <div class="iphone-v9">
+            <div class="screen-v9">
+                <div class="pdp-info-mini">
+                    <div class="mini-img"></div>
+                    <div>
+                        <div style="font-size:13px; font-weight:900;">DAKS 런던 체크 플리스</div>
+                        <div style="font-size:14px; font-weight:900; color:#C8192E;">433,300</div>
                     </div>
+                </div>
+
+                <div class="option-stage">
+                    <div style="font-size:12px; font-weight:900; margin-bottom:15px; color:#555;">사이즈 선택 (SIZE)</div>
+                    <div class="grid-v9">
+                        <div class="chip-v9">90</div>
+                        <div class="chip-v9">95</div>
+                        <div class="chip-v9 selected">100
+                            <div class="chip-badge">매장배송</div>
+                        </div>
+                        <div class="chip-v9">105</div>
+                        <div class="chip-v9" style="opacity:0.3;">110 (품절)</div>
+                    </div>
+
+                    <div class="benefit-btn">
+                        <span>🏷️ 매장 재고 찾기 (Find Store)</span>
+                        <span style="color:#CCC;">❯</span>
+                    </div>
+
+                    <button style="width:100%; background:#111; color:#fff; padding:18px; border:none; border-radius:8px; font-weight:900; margin-top:40px; font-size:16px;">구매하기 (Buy Now)</button>
                 </div>
             </div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#444;">22</div>
+        </div>
     </div>
 </body>
 </html>

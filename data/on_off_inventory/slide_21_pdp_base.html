@@ -4,59 +4,68 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .iphone-center-hf { display: flex; justify-content: center; padding: 40px; }
-        .iphone-shell-hf {
-            width: 350px; height: 720px; background: #0c0c0c; border-radius: 54px;
-            padding: 14px; box-shadow: 0 50px 100px rgba(0,0,0,0.4); border: 2px solid #333;
-            position: relative;
+        .iphone-v9 { 
+            width: 320px; height: 650px; background: #000; border-radius: 40px; 
+            padding: 10px; box-shadow: 0 40px 80px rgba(0,0,0,0.3); position: relative;
+            margin: 40px auto;
         }
-        .iphone-screen-ins {
-            background: #fff; width: 100%; height: 100%; border-radius: 40px;
-            overflow: hidden; display: flex; flex-direction: column; position: relative;
-        }
+        .screen-v9 { background: #fff; width: 100%; height: 100%; border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
         
-        .pdp-badge-hf {
-            background: var(--lf-red); color: #fff; font-size: 13px; font-weight: 900;
-            padding: 4px 12px; border-radius: 4px; display: inline-block;
+        .pdp-img { height: 320px; background: #F1F3F5; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; color: #AAA; }
+        .pdp-info { padding: 25px; }
+        .badge-red { background: #C8192E; color: #fff; font-size: 11px; padding: 4px 10px; font-weight: 900; display: inline-block; margin-bottom: 10px; }
+        .pdp-title { font-size: 19px; font-weight: 900; color: #111; line-height: 1.4; margin-bottom: 10px; }
+        .pdp-price { font-size: 26px; font-weight: 900; color: #111; }
+        
+        /* Guide Popup */
+        .guide-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 100;
+            display: flex; align-items: flex-end;
         }
+        .guide-box {
+            background: #fff; width: 100%; padding: 40px 25px 50px;
+            border-radius: 25px 25px 0 0; animation: slideUp 0.3s ease;
+        }
+        .guide-title { font-size: 18px; font-weight: 900; color: #111; margin-bottom: 20px; }
+        .guide-item { font-size: 13px; color: #444; line-height: 1.6; font-weight: 700; margin-bottom: 15px; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">21. [UI] 상품상세 - 기본 (PDP Layout)</header>
+        <header class="ppt-header">21. [UI] 상품 상세 페이지 - 기본 (PDP Base)</header>
 
-        <div class="iphone-center-hf">
-            <div class="iphone-shell-hf">
-                <div class="iphone-screen-ins">
-                    <!-- Status Bar -->
-                    <div style="height:44px; padding:0 25px; display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:bold;">
-                        <span>09:41</span>
-                        <div style="display:flex; gap:5px;"><span>📶</span><span>🔋</span></div>
+        <div class="iphone-v9">
+            <div class="screen-v9">
+                <div class="pdp-img">PRODUCT IMAGE</div>
+                <div class="pdp-info">
+                    <div class="badge-red">매장상품배송</div>
+                    <div class="pdp-title">DAKS 런던 체크 플리스 컬렉션 <br>한정수량 특별가</div>
+                    <div class="pdp-price">433,300</div>
+                    <div style="margin-top:20px; font-size:12px; color:#666; font-weight:700; display:flex; align-items:center; gap:5px;">
+                        <span>🚚 평균 5~7일 소요 (매장 배송 상품)</span>
+                        <span style="font-size:16px; color:#CCC;">ⓘ</span>
                     </div>
+                </div>
 
-                    <div style="height:340px; background:#F1F3F5; display:flex; align-items:center; justify-content:center; color:#adb5bd; font-size:11px;">MAIN_PRODUCT_IMG</div>
-                    
-                    <div style="padding:25px;">
-                        <span class="pdp-badge-hf">매장상품배송</span>
-                        <div style="margin-top:12px; font-size:13px; color:#666; font-weight:bold;">HAZZYS MEN</div>
-                        <h4 style="font-size:19px; font-weight:900; margin-top:5px; line-height:1.4;">[매장상품] 헤지스 남성 베이직 <br>네이비 피케 티셔츠</h4>
-                        <div style="font-size:24px; font-weight:900; margin-top:12px;">89,000 원</div>
-                        
-                        <div style="margin-top:35px; background:#F8FAFC; padding:18px; border-radius:10px; border:1.1px solid #E9ECEF; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
-                            <p style="font-size:12px; color:#444; line-height:1.6;">• <b>강남본점</b>에서 직접 발송하는 상품입니다.</p>
-                            <p style="font-size:12px; color:#444; margin-top:6px;">• 무료배송 (런칭 이벤트 대상)</p>
-                        </div>
-                    </div>
-
-                    <div style="margin-top:auto; padding:20px; border-top:1px solid #EEE; display:flex; gap:10px;">
-                        <div style="width:50px; height:50px; border:1.5px solid #EEE; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:20px;">♡</div>
-                        <button style="flex:1; background:var(--ppt-header-bg); color:#fff; border:none; border-radius:8px; font-weight:900; font-size:16px;">구매하기</button>
+                <!-- Identity Locked: Guide Popup Overlay -->
+                <div class="guide-overlay">
+                    <div class="guide-box">
+                        <div class="guide-title">매장상품배송 안내</div>
+                        <div class="guide-item">• 해당 상품은 전국의 오프라인 매장 재고를 활용하여 배송되는 상품입니다.</div>
+                        <div class="guide-item">• 매장 상황에 따라 준비 기간이 5~7일 가량 소요될 수 있습니다.</div>
+                        <div class="guide-item" style="color:#C8192E;">• 매장 재고 품절 시 주문이 자동 취소될 수 있습니다.</div>
+                        <button style="width:100%; background:#111; color:#fff; padding:15px; border:none; border-radius:8px; font-weight:900; margin-top:20px;">확인하였습니다</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#444;">21</div>
+        </div>
     </div>
 </body>
 </html>

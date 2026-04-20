@@ -3,38 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .iphone-v9 { 
+            width: 320px; height: 650px; background: #000; border-radius: 40px; 
+            padding: 10px; box-shadow: 0 40px 80px rgba(0,0,0,0.3); position: relative;
+            margin: 40px auto;
+        }
+        .screen-v9 { background: #fff; width: 100%; height: 100%; border-radius: 32px; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        .pdp-nav { height: 50px; border-bottom: 1px solid #EEE; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; position: sticky; top: 0; background: #fff; z-index: 10; }
+        
+        .benefit-section-v9 { padding: 25px; border-bottom: 8px solid #F4F6F9; }
+        .section-title { font-size: 16px; font-weight: 900; color: #111; margin-bottom: 15px; }
+        
+        .policy-card-v9 { 
+            background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px;
+            display: flex; gap: 15px; margin-bottom: 15px;
+        }
+        .policy-icon { width: 40px; height: 40px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid #DDD; flex-shrink: 0; }
+        .policy-txt { font-size: 13px; color: #444; font-weight: 700; line-height: 1.5; }
+        .policy-txt b { color: #C8192E; }
+    </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">23. [UI] 상품상세 - 배송 혜택 안내 (PDP)</header>
+        <header class="ppt-header">23. [UI] 상품 상세 페이지 - 혜택 정보 (PDP Benefit)</header>
 
-        <div style="display:flex; justify-content:center; padding:40px;">
-            <div style="width:340px; height:700px; background:#000; border-radius:50px; padding:12px; box-shadow: 0 40px 100px rgba(0,0,0,0.2);">
-                <div style="background:#FFF; width:100%; height:100%; border-radius:38px; overflow:hidden;">
-                    <div style="padding:24px; border-bottom:1px solid #EEE;">
-                        <h4 style="font-size:16px; margin-bottom:20px;">배송 혜택</h4>
-                        
-                        <div style="background:#F8FAFC; border:1px solid #E9ECEF; border-radius:12px; padding:20px; margin-bottom:15px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:13px; font-weight:700;">일반 택배 배송</span>
-                                <span style="font-size:11px; color:#999;">3만원 이상 무료</span>
-                            </div>
-                            <div style="margin-top:8px; font-size:11px; color:#666;">전국 물류센터에서 상시 발송</div>
+        <div class="iphone-v9">
+            <div class="screen-v9">
+                <div class="pdp-nav">Delivery & Benefits</div>
+                
+                <div class="benefit-section-v9">
+                    <div class="section-title">배송 정보 (Delivery Info)</div>
+                    <div class="policy-card-v9">
+                        <div class="policy-icon">🚚</div>
+                        <div class="policy-txt">
+                            <b>매장상품배송</b><br>
+                            LF 전국 200여개 오프라인 매장 재고 활용<br>
+                            평균 <b>5~7영업일</b> 이내 배송
                         </div>
+                    </div>
+                </div>
 
-                        <div style="background:rgba(200, 25, 46, 0.05); border:1.5px solid var(--lf-red); border-radius:12px; padding:20px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:13px; font-weight:800; color:var(--lf-red);">매장상품배송 ✨</span>
-                                <span style="font-size:11px; color:var(--lf-red); font-weight:800;">런칭기념 상시무료</span>
-                            </div>
-                            <div style="margin-top:8px; font-size:11px; color:var(--lf-red); opacity:0.8;">인근 매장에서 퀵하게 전용 발송</div>
-                        </div>
+                <div class="benefit-section-v9" style="border-bottom:none;">
+                    <div class="section-title">유의 사항 (Cautions)</div>
+                    <div style="font-size:12px; color:#777; line-height:1.8; font-weight:700;">
+                        1. 매장 상황에 따라 상품이 각각 다른 택배사로 분할 배송될 수 있습니다.<br>
+                        2. 매장 재고 확인 중 품절 발생 시 안내 문자가 발송됩니다.<br>
+                        3. 도서 산간 지역은 추가 배송비가 발생할 수 있습니다.
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#444;">23</div>
+        </div>
     </div>
 </body>
 </html>
