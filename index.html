@@ -453,8 +453,8 @@
             
             // Reset Modal Fields
             DOM.modalMainTitle.innerText = "새 프로젝트 생성";
-            DOM.groupIdField.style.display = "block";
-            DOM.modalFilenameDisplay.innerText = "새로운 프로젝트 컨테이너를 생성합니다.";
+            DOM.groupIdField.style.display = "none"; // Hide ID field as requested for 'Title only' experience
+            DOM.modalFilenameDisplay.innerText = "새로운 프로젝트를 생성합니다. 제목을 입력하면 ID가 자동 생성됩니다.";
             
             DOM.metaProjectId.value = "";
             DOM.metaTitle.value = "";
@@ -466,16 +466,10 @@
             
             DOM.modal.classList.add('active');
 
-            // Auto-ID Logic (Integrated Slugify)
-            let lastAutoId = "";
+            // Auto-ID Logic (Always update in background for Create Mode)
             DOM.metaTitle.oninput = () => {
                 if (context.isCreateMode) {
-                    const currentId = DOM.metaProjectId.value.trim();
-                    // Only auto-fill if ID is empty or matches the last auto-generated one
-                    if (!currentId || currentId === lastAutoId) {
-                        lastAutoId = slugify(DOM.metaTitle.value);
-                        DOM.metaProjectId.value = lastAutoId;
-                    }
+                    DOM.metaProjectId.value = slugify(DOM.metaTitle.value);
                 }
             };
         };
