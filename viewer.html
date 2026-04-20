@@ -438,15 +438,8 @@
             if (btnAuthText) btnAuthText.innerText = state.isReadOnly ? '에디터 인증' : '에디터 모드';
             if (btnAuth) btnAuth.style.color = state.isReadOnly ? '#fff' : 'var(--accent)';
 
-            // Hide Loading Overlay
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) {
-                overlay.style.opacity = '0';
-                setTimeout(() => {
-                    overlay.remove();
-                    centerView(); // Always center even for empty projects
-                }, 500);
-            }
+            // Hide Loading Overlay (Fade out instead of remove for reuse)
+            hideLoading();
 
             // Handle Browser Back/Forward (SPA)
             window.addEventListener('popstate', () => {
@@ -457,6 +450,23 @@
                     updateActiveScreenInUI(f);
                 }
             });
+        }
+
+        function showLoading(text = "Loading Screen") {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                const txt = overlay.querySelector('.loading-text');
+                if (txt) txt.innerText = text;
+                overlay.classList.remove('fade-out');
+            }
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                overlay.classList.add('fade-out');
+            }
+            setTimeout(centerView, 600);
         }
 
         function updateActiveScreenInUI(activeName) {
@@ -690,11 +700,13 @@
         }
 
         async function loadScreen(fileName) {
-            DOM.placeholder.style.display = 'flex';
-            DOM.placeholderTxt.innerText = "불러오는 중...";
+            showLoading("Loading: " + fileName);
+            DOM.placeholder.style.display = 'none';
             
             const content = await fetchProjectFileContent(state.currentProject, fileName);
             if (!content) {
+                hideLoading();
+                DOM.placeholder.style.display = 'flex';
                 DOM.placeholderTxt.innerText = "파일을 불러오지 못했습니다.";
                 return;
             }
@@ -702,7 +714,12 @@
             const blob = new Blob([content], {type: 'text/html;charset=utf-8'});
             const url = URL.createObjectURL(blob);
             
-            DOM.placeholder.style.display = 'none';
+            // Wait for iframe to actually load before hiding overlay
+            DOM.iframe.onload = () => {
+                hideLoading();
+                DOM.iframe.onload = null; // Prevent double trigger
+            };
+
             DOM.iframe.src = url;
             DOM.iframe.style.display = 'block';
 
