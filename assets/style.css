@@ -938,25 +938,86 @@ body.drag-active #drop-overlay {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-radius: 12px !important;
+    color: var(--text-primary) !important;
 }
-.flatpickr-months .flatpickr-month { background: transparent !important; color: #fff !important; }
-.flatpickr-current-month .flatpickr-monthDropdown-months { background: transparent !important; }
-.flatpickr-current-month .flatpickr-monthDropdown-months:hover { background: var(--hover-bg) !important; }
-.flatpickr-weekday { color: var(--text-secondary) !important; }
-.flatpickr-day { color: var(--text-primary) !important; border-radius: 6px !important; }
+
+/* Fix Month Dropdown White Block & Visibility */
+.flatpickr-months .flatpickr-month { 
+    background: transparent !important; 
+    color: var(--text-primary) !important; 
+    fill: var(--text-primary) !important;
+}
+.flatpickr-current-month .flatpickr-monthDropdown-months { 
+    background: #252830 !important; 
+    color: var(--text-primary) !important;
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+}
+.flatpickr-current-month .flatpickr-monthDropdown-months:hover { 
+    background: var(--hover-bg) !important; 
+}
+/* Ensure options inside are dark */
+.flatpickr-monthDropdown-month {
+    background-color: #252830 !important;
+    color: var(--text-primary) !important;
+}
+
+/* Improved Navigation Arrows */
+.flatpickr-prev-month, .flatpickr-next-month {
+    fill: var(--accent) !important;
+    padding: 10px !important;
+    transition: all 0.2s;
+}
+.flatpickr-prev-month:hover, .flatpickr-next-month:hover {
+    background: var(--hover-bg) !important;
+    fill: var(--accent-hover) !important;
+}
+.flatpickr-prev-month svg, .flatpickr-next-month svg {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+/* Year Input Interaction */
+.flatpickr-current-month .numInputWrapper {
+    width: 7ch !important;
+    transition: background 0.2s;
+    border-radius: 4px;
+}
+.flatpickr-current-month .numInputWrapper:hover {
+    background: var(--hover-bg) !important;
+}
+.flatpickr-current-month .numInputWrapper span.arrowUp,
+.flatpickr-current-month .numInputWrapper span.arrowDown {
+    border-color: var(--text-secondary) !important;
+    opacity: 0.3;
+}
+.flatpickr-current-month .numInputWrapper span:hover {
+    background: var(--accent) !important;
+    opacity: 1 !important;
+}
+
+.flatpickr-weekday { color: var(--text-secondary) !important; font-weight: 600 !important; }
+.flatpickr-day { color: var(--text-primary) !important; border-radius: 8px !important; }
 .flatpickr-day.today { border-color: var(--accent) !important; color: var(--accent) !important; }
 .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange {
     background: var(--accent) !important;
     border-color: var(--accent) !important;
     color: #000 !important;
+    font-weight: 700 !important;
 }
 .flatpickr-day.inRange {
-    background: rgba(0, 229, 255, 0.1) !important;
+    background: rgba(99, 102, 241, 0.2) !important;
     border-color: transparent !important;
     box-shadow: none !important;
 }
 .flatpickr-day:hover { background: var(--hover-bg) !important; border-color: transparent !important; }
-.flatpickr-time { border-top: 1px solid var(--border-color) !important; }
+.flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay {
+    color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.flatpickr-time { border-top: 1px solid var(--border-color) !important; background: #252830 !important; }
+.flatpickr-time input { color: var(--text-primary) !important; }
 .flatpickr-innerContainer { padding: 4px; }
 /* ----------------------------------------------------
    8. Splash Screen (Intro)
