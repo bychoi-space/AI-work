@@ -4,51 +4,62 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .toc-grid-v4 { padding: 80px 110px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 100px; }
-        .toc-section-unit { margin-bottom: 45px; }
-        .toc-section-unit h3 { font-size: 19px; font-weight: 900; color: var(--lf-red); margin-bottom: 25px; border-bottom: 2px solid var(--lf-red); display: inline-block; }
-        .toc-item-list { list-style: none; }
-        .toc-item-list li { display: flex; justify-content: space-between; font-size: 14.5px; border-bottom: 1px dotted #CCC; padding-bottom: 8px; margin-bottom: 12px; }
-        .toc-page { color: #888; font-weight: 900; width: 40px; text-align: right; }
+        .toc-stage-v9 { padding: 60px 100px; height: 100%; position: relative; }
+        .toc-item-v9 { display: flex; align-items: baseline; margin-bottom: 24px; }
+        .toc-num-v9 { font-size: 28px; font-weight: 900; color: #C8192E; width: 60px; flex-shrink: 0; line-height: 1; }
+        .toc-text-v9 { font-size: 22px; font-weight: 900; color: #222; }
+        .toc-sub-list { margin-left: 60px; margin-top: 15px; border-left: 1px solid #DDD; padding-left: 25px; margin-bottom: 40px; }
+        .toc-sub-item { font-size: 14.5px; font-weight: 700; color: #555; margin-bottom: 12px; display: flex; align-items: center; }
+        .toc-sub-item::before { content: ""; width: 6px; height: 6px; background: #CCC; border-radius: 50%; margin-right: 12px; flex-shrink: 0; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header-strategy">02. 목차 (Table of Contents)</header>
-        
-        <div class="toc-grid-v4">
-            <div>
-                <div class="toc-section-unit">
-                    <h3>I. 프로젝트 개요 및 전략</h3>
-                    <ul class="toc-item-list">
-                        <li><span>• 프로젝트 현황 및 소비자보호법 준수</span> <span class="toc-page">01</span></li>
-                        <li><span>• 시스템 아키텍처 및 데이터 흐름</span> <span class="toc-page">04</span></li>
-                        <li><span>• 서비스 명칭 및 주요 페인포인트</span> <span class="toc-page">06</span></li>
-                    </ul>
-                </div>
-                <div class="toc-section-unit">
-                    <h3>II. 서비스 운영 정책</h3>
-                    <ul class="toc-item-list">
-                        <li><span>• 가용 재고 산출 및 배송 LT 정책</span> <span class="toc-page">09</span></li>
-                        <li><span>• 물류 프로세스 및 모니터링 체계</span> <span class="toc-page">13</span></li>
-                    </ul>
-                </div>
+        <div style="width:100%; height:32px; background:#444; color:#fff; display:flex; align-items:center; padding:0 30px; font-size:13.5px; font-weight:bold;">온오프 재고 효율화</div>
+
+        <div class="toc-stage-v9">
+            <h2 style="font-size:36px; font-weight:900; margin-bottom:60px; color:#111;">Index</h2>
+
+            <div class="toc-item-v9">
+                <div class="toc-num-v9">01</div>
+                <div class="toc-text-v9">Project Overview</div>
             </div>
-            <div>
-                <div class="toc-section-unit">
-                    <h3>III. 서비스 UI 구축 및 어드민</h3>
-                    <ul class="toc-item-list">
-                        <li><span>• 상세페이지(PDP) 및 주문 UI</span> <span class="toc-page">21</span></li>
-                        <li><span>• 마이페이지 및 배송 추적</span> <span class="toc-page">28</span></li>
-                        <li><span>• 어드민 대시보드 및 운영 도구</span> <span class="toc-page">30</span></li>
-                    </ul>
-                </div>
+            <div class="toc-sub-list">
+                <div class="toc-sub-item">Project Background & Goals</div>
+                <div class="toc-sub-item">System Architecture (Conceptual)</div>
+            </div>
+
+            <div class="toc-item-v9">
+                <div class="toc-num-v9">02</div>
+                <div class="toc-text-v9">Core Business Policies</div>
+            </div>
+            <div class="toc-sub-list">
+                <div class="toc-sub-item">Inventory Selection Logic (Case 1-5)</div>
+                <div class="toc-sub-item">Global Order Fulfillment Flow</div>
+            </div>
+
+            <div class="toc-item-v9">
+                <div class="toc-num-v9">03</div>
+                <div class="toc-text-v9">Technical Architecture</div>
+            </div>
+            <div class="toc-sub-list">
+                <div class="toc-sub-item">Data Synchronization Interface (SAP/OMS/POS)</div>
+                <div class="toc-sub-item">Master Data Mapping</div>
+            </div>
+
+            <div class="toc-item-v9">
+                <div class="toc-num-v9">04</div>
+                <div class="toc-text-v9">UI/UX Prototype</div>
+            </div>
+            <div class="toc-sub-list">
+                <div class="toc-sub-item">Mobile Front-end Wireframes</div>
+                <div class="toc-sub-item">Admin Management Interface</div>
             </div>
         </div>
 
         <div class="ppt-footer">
             <div class="ppt-logo-box">LF</div>
-            <div>PAGE 02</div>
+            <div style="font-size:10px; color:#555; font-weight:bold;">2</div>
         </div>
     </div>
 </body>

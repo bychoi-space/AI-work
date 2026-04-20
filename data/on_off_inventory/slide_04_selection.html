@@ -4,68 +4,103 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .branding-stage-hf { padding: 60px 110px; }
-        .branding-title-hf { font-size: 30px; font-weight: 900; margin-bottom: 20px; border-left: 6px solid var(--lf-red); padding-left: 20px; }
-        
-        .name-grid-hf {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-            margin-top: 40px;
-        }
-        .name-card-hf {
-            background: #fff;
-            border: 1px solid #D9D9D9;
-            box-shadow: var(--ppt-shadow);
-            padding: 35px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 4px;
-        }
-        .name-card-hf.selected {
-            border: 2px solid var(--lf-red);
-            background: rgba(200, 25, 46, 0.02);
-        }
-        .name-card-hf h3 { font-size: 24px; font-weight: 800; color: #333; }
-        .name-card-hf.selected h3 { color: var(--lf-red); }
+        .poly-stage-v9 { padding: 40px 60px; height: 100%; position: relative; }
+        .poly-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 11px; table-layout: fixed; }
+        .poly-table th { background: #444; color: #fff; padding: 12px; border: 1px solid #333; font-weight: 900; }
+        .poly-table td { border: 1px solid #CCC; padding: 10px; text-align: center; background: #fff; line-height: 1.4; vertical-align: middle; font-weight: 700; }
+        .case-title { background: #F2F2F2 !important; font-weight: 900; color: #333; }
+        .highlight-y { background: #E2EFDA !important; color: #375623; }
+        .highlight-n { background: #FCE4D6 !important; color: #833C0C; }
 
-        .tag-hf { font-size: 13px; font-weight: 900; padding: 6px 12px; border-radius: 4px; }
-        .tag-drop { background: #EEE; color: #999; }
-        .tag-selected { background: var(--lf-red); color: #fff; }
-
-        .final-box-hf {
-            margin-top: 50px;
-            background: #252830;
-            padding: 60px;
-            text-align: center;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        .out-of-scope-watermark {
+            position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg);
+            font-size: 84px; font-weight: 900; color: rgba(200, 0, 0, 0.08); 
+            pointer-events: none; white-space: nowrap; z-index: 100;
         }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">04. 서비스 명칭 선정 (Naming Strategy)</header>
+        <header class="ppt-header">04. 재고 선정 로직 (Inventory Selection Logic)</header>
 
-        <div class="branding-stage-hf">
-            <h1 class="branding-title-hf">내부 실무진 선호도 1위 명칭 확정</h1>
-            <p style="font-size:16px; color:#595959;">고객 직관성과 브랜드 아이덴티티를 고려하여 최종 명칭을 선정하였습니다.</p>
+        <div class="poly-stage-v9">
+            <h2 style="font-size:24px; font-weight:900; margin-bottom:15px;">재고 유형별 가용성 정책 (Case 1~5)</h2>
+            
+            <div class="out-of-scope-watermark">OUT OF SCOPE</div>
 
-            <div class="name-grid-hf">
-                <div class="name-card-hf"><h3>하이퍼로컬 배송</h3> <span class="tag-hf tag-drop">Drop</span></div>
-                <div class="name-card-hf"><h3>매장 합포 배송</h3> <span class="tag-hf tag-drop">Drop</span></div>
-                <div class="name-card-hf selected"><h3>매장상품배송</h3> <span class="tag-hf tag-selected">SELECTED</span></div>
-                <div class="name-card-hf"><h3>옴니채널 익스프레스</h3> <span class="tag-hf tag-drop">Drop</span></div>
-            </div>
+            <table class="poly-table">
+                <colgroup>
+                    <col width="100px"><col width="120px"><col span="5">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>유형</th>
+                        <th>구분</th>
+                        <th>Case 1</th>
+                        <th>Case 2</th>
+                        <th>Case 3</th>
+                        <th>Case 4</th>
+                        <th>Case 5</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="2" class="case-title">물류센터</td>
+                        <td>직송 가능</td>
+                        <td class="highlight-y">Y</td>
+                        <td class="highlight-y">Y</td>
+                        <td class="highlight-n">N</td>
+                        <td class="highlight-n">N</td>
+                        <td class="highlight-n">N</td>
+                    </tr>
+                    <tr>
+                        <td>분류 대기</td>
+                        <td class="highlight-n">N</td>
+                        <td class="highlight-y">Y</td>
+                        <td class="highlight-y">Y</td>
+                        <td class="highlight-n">N</td>
+                        <td class="highlight-n">N</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2" class="case-title">오프라인 매장</td>
+                        <td>A급 상권</td>
+                        <td class="highlight-y">Y</td>
+                        <td class="highlight-n">N</td>
+                        <td class="highlight-y">Y</td>
+                        <td class="highlight-y">Y</td>
+                        <td class="highlight-n">N</td>
+                    </tr>
+                    <tr>
+                        <td>일반 매장</td>
+                        <td class="highlight-n">N</td>
+                        <td class="highlight-n">N</td>
+                        <td class="highlight-n">N</td>
+                        <td class="highlight-y">Y</td>
+                        <td class="highlight-y">Y</td>
+                    </tr>
+                    <tr>
+                        <td class="case-title">최종 결정</td>
+                        <td>배송 주체</td>
+                        <td>센터</td>
+                        <td>센터</td>
+                        <td>센터+매장</td>
+                        <td>매장</td>
+                        <td>매장</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <div class="final-box-hf">
-                <div style="color:var(--lf-red); font-size:15px; font-weight:900; letter-spacing:3px; margin-bottom:15px;">FINAL BRAND NAME</div>
-                <div style="color:#fff; font-size:62px; font-weight:900;">매장상품배송</div>
+            <div style="margin-top:40px; padding:20px; background:#F8F9FA; border-radius:8px; border-left:5px solid #C8192E;">
+                <p style="font-size:13px; font-weight:900; color:#222; margin-bottom:5px;">[비고]</p>
+                <p style="font-size:12px; color:#555; font-weight:700;">• Case 3, 4의 경우 매장 재고 안정성 확보를 위해 실시간 동기화 인터페이스 필수 적용</p>
+                <p style="font-size:12px; color:#555; font-weight:700;">• <b>Out of Scope</b>: 해외 배송 및 예약 판매 상품은 본 단계에서 제외</p>
             </div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div style="font-size:10px; color:#555; font-weight:bold;">4</div>
+        </div>
     </div>
 </body>
 </html>

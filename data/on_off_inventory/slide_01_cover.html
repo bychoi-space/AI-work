@@ -4,35 +4,40 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .cover-content-v4 { padding: 80px 110px; height: 100%; display: flex; flex-direction: column; }
-        .cover-red-label { color: var(--lf-red); font-size: 14px; font-weight: 800; margin-bottom: 25px; }
-        .cover-title-v4 { font-size: 64px; font-weight: 900; line-height: 1.1; margin-bottom: 10px; }
+        .cover-content-v9 { padding: 90px 120px; height: 100%; display: flex; flex-direction: column; background: #fff; position: relative; }
+        .cover-red-label { color: #C8192E; font-size: 14.5px; font-weight: 900; margin-bottom: 30px; letter-spacing: 0.5px; }
+        .cover-title-v9 { font-size: 58px; font-weight: 900; line-height: 1.15; margin-bottom: 20px; color: #222; }
         
-        .cover-meta-box-v4 {
+        .cover-meta-box-v9 {
             margin-top: auto; align-self: flex-end;
-            width: 320px; background: #fff; border: 1px solid #DDD; padding: 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            width: 340px; background: #fff; border: 1.5px solid #333; padding: 25px;
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.05);
         }
-        .cover-meta-item { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; border-bottom: 1px dotted #EEE; padding-bottom: 5px; }
+        .cover-meta-item { display: flex; justify-content: space-between; font-size: 13.5px; margin-bottom: 10px; border-bottom: 1px solid #EEE; padding-bottom: 6px; }
+        .cover-meta-item:last-child { border-bottom: none; }
+        .cover-meta-item span { color: #666; font-weight: bold; }
+        .cover-meta-item b { color: #222; font-weight: 900; text-align: right; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <div class="cover-content-v4">
+        <div class="cover-content-v9">
             <div class="cover-red-label">LF ON-OFF INVENTORY OPTIMIZATION PROJECT</div>
-            <h1 class="cover-title-v4">[LFML-138562] <br>온오프 재고 효율화 서비스 구축 <br>기획서 v0.8</h1>
+            <h1 class="cover-title-v9">[LFML-138562] <br>온오프 재고 효율화 서비스 구축 <br>기획서 v0.7</h1>
             
-            <div class="cover-meta-box-v4">
+            <div class="cover-meta-box-v9">
                 <div class="cover-meta-item"><span>프로젝트명</span> <b>온오프 재고 효율화</b></div>
                 <div class="cover-meta-item"><span>작성자</span> <b>IT본부 / Architect</b></div>
                 <div class="cover-meta-item"><span>작성일</span> <b>2026.04.14</b></div>
-                <div class="cover-meta-item"><span>버전</span> <b style="color:var(--lf-red);">v0.8</b></div>
+                <div class="cover-meta-item"><span>검토자</span> <b>IT본부 / CMO</b></div>
+                <div class="cover-meta-item"><span>검토일</span> <b>2026.04.16</b></div>
+                <div class="cover-meta-item"><span>버전</span> <b style="color:#C8192E;">v0.7</b></div>
             </div>
         </div>
         
         <div class="ppt-footer">
             <div class="ppt-logo-box">LF</div>
-            <div>© 2026 LF Corp. All rights reserved.</div>
+            <div style="font-size:10px; color:#555;">© 2026 LF Corp. All rights reserved.</div>
         </div>
     </div>
 </body>

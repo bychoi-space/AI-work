@@ -4,68 +4,87 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .messenger-stage-hf { padding: 100px 110px; display: flex; align-items: flex-start; justify-content: space-between; position: relative; }
+        .msg-stage-v9 { padding: 40px 60px; height: 100%; position: relative; }
+        .msg-box-v9 { 
+            background: #FFEB33; border-radius: 12px; padding: 20px; width: 220px; 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1); position: relative; font-size: 11px; font-weight: 700;
+        }
+        .msg-box-v9::after { content: ""; position: absolute; left: -10px; top: 20px; border-width: 10px 10px 10px 0; border-style: solid; border-color: transparent #FFEB33 transparent transparent; }
         
-        .kakao-bubble-hf {
-            width: 300px;
-            background: #FFEB33;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            position: relative;
-            z-index: 10;
-        }
-        .kakao-header-hf { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 10px; margin-bottom: 15px; }
-        .kakao-header-hf b { font-size: 13px; color: #3E2723; }
+        .logic-card-v9 { border: 1.5px solid #DDD; border-radius: 10px; padding: 20px; background: #fff; margin-bottom: 20px; position: relative; }
+        .logic-title-v9 { font-size: 14px; font-weight: 900; color: #C8192E; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .logic-title-v9::before { content: ""; width: 8px; height: 8px; background: #C8192E; border-radius: 50%; }
 
-        .talk-msg-hf {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .flow-marker-hf { align-self: center; font-size: 32px; color: #CCC; }
+        .bubble-header { border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 6px; margin-bottom: 8px; font-size: 10px; color: #555; font-weight: 900; }
+        .bubble-content { color: #333; line-height: 1.5; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">10. 매장상품배송 알림톡 서비스 (Kakaotalk)</header>
+        <header class="ppt-header">10. 알림톡(Kakaotalk) 발송 로직 및 안내 메시지 정책</header>
 
-        <div class="messenger-stage-hf">
-            <div class="kakao-bubble-hf">
-                <div class="kakao-header-hf"><b>알림톡 [주문완료]</b></div>
-                <div class="talk-msg-hf">
-                    <b style="color:var(--lf-red);">[LFmall]</b><br><br>
-                    고객님의 주문이 <b>강남본점</b>에 배정되어 출고 준비를 시작합니다.
+        <div class="msg-stage-v9">
+            <svg style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none;">
+                <defs>
+                    <marker id="arr-m" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="#666" />
+                    </marker>
+                </defs>
+                <!-- Flow Lines -->
+                <line x1="280" y1="180" x2="350" y2="180" stroke="#666" stroke-width="1.5" marker-end="url(#arr-m)" />
+                <line x1="280" y1="420" x2="350" y2="420" stroke="#666" stroke-width="1.5" marker-end="url(#arr-m)" />
+            </svg>
+
+            <!-- Case A: Single Purchase -->
+            <div class="logic-card-v9">
+                <div class="logic-title-v9">Case A. 단건 주문 알림 (Single Fulfillment)</div>
+                <div style="display:flex; gap:60px; align-items:center;">
+                    <div style="font-size:12px; font-weight:700; color:#444;">매장 배정 시 즉시 발송</div>
+                    <div class="msg-box-v9">
+                        <div class="bubble-header">LFmall 알림톡</div>
+                        <div class="bubble-content">
+                            <b>[LFmall]</b><br><br>
+                            고객님의 상품이 매장 배송 상품으로 확인되어 <b>강남본점</b>에 배정되었습니다.<br>
+                            - 상품명: 헤지스 티셔츠 외 1건
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="flow-marker-hf">▶</div>
-
-            <div class="kakao-bubble-hf">
-                <div class="kakao-header-hf"><b>알림톡 [발송시작]</b></div>
-                <div class="talk-msg-hf">
-                    <b style="color:var(--lf-red);">[LFmall]</b><br><br>
-                    상품 발송이 시작되었습니다!<br>
-                    - 매장: 강남본점<br>
-                    - 송장: [로젠] 123456...
+            <!-- Case B: Multiple Bundles -->
+            <div class="logic-card-v9">
+                <div class="logic-title-v9">Case B. 복수 번들 주문 알림 (Multi-Package)</div>
+                <div style="display:flex; gap:60px; align-items:center;">
+                    <div style="font-size:12px; font-weight:700; color:#444;">입고 확정 및 송장 출력 시 발송</div>
+                    <div class="msg-box-v9">
+                        <div class="bubble-header">LFmall 알림톡</div>
+                        <div class="bubble-content">
+                            <b>[LFmall]</b><br><br>
+                            주문하신 상품이 각 입점 매장에서 발송될 예정입니다.<br>
+                            - 분할 배송 안내: 총 3개의 택배로 순차 배송됩니다.
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="flow-marker-hf">▶</div>
-
-            <div class="kakao-bubble-hf" style="opacity:0.6;">
-                <div class="kakao-header-hf"><b>알림톡 [도착안내]</b></div>
-                <div class="talk-msg-hf">
-                    <b style="color:var(--lf-red);">[LFmall]</b><br><br>
-                    매장에서 발송한 상품이 안전하게 도착했습니다.
+            <div style="padding:20px; background:#F8FAFC; border-radius:8px; display:flex; gap:30px;">
+                <div style="flex:1;">
+                    <p style="font-size:13px; font-weight:900; color:#333; margin-bottom:5px;">[발송 시점 정책]</p>
+                    <p style="font-size:11px; color:#666; font-weight:700;">• 결제 완료 후 30분 이내 발송 (단건)</p>
+                    <p style="font-size:11px; color:#666; font-weight:700;">• 09:00 ~ 19:00 사이 실시간 발송 (야간 주문은 익일 오전)</p>
+                </div>
+                <div style="flex:1;">
+                    <p style="font-size:13px; font-weight:900; color:#333; margin-bottom:5px;">[안내 정보]</p>
+                    <p style="font-size:11px; color:#666; font-weight:700;">• 매장명 익명화 처리 (필요 시)</p>
+                    <p style="font-size:11px; color:#666; font-weight:700;">• 송장번호 연동 및 배송 상세 페이지 링크 포함</p>
                 </div>
             </div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div style="font-size:10px; color:#555; font-weight:bold;">10</div>
+        </div>
     </div>
 </body>
 </html>

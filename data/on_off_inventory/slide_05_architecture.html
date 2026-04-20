@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .master-stage-v9 { padding: 40px; position: relative; height: 100%; border: 1px solid #CCC; overflow: hidden; background: #fff; }
+        
+        .box-v9 { 
+            position: absolute; border: 1.2px solid #555; border-radius: 4px; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 8.5px; font-weight: 900; text-align: center; line-height: 1.2; 
+            z-index: 10; background: #fff;
+            width: 74px; height: 36px;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.08);
+        }
+        .b-lfmall { background: #E9EDF4; border-color: #92A8D1; }
+        .b-oms { background: #E2EFDA; border-color: #A9D18E; }
+        .b-pos { background: #FFF2CC; border-color: #FFD966; }
+        
+        .b-status-v9 { 
+            width: 48px; height: 48px; border-radius: 50%; background: #333; color: #fff; border: 1.5px solid #222;
+            display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 900; 
+            position: absolute; z-index: 15; line-height: 1.1; 
+        }
+        
+        .b-pill-v9 { 
+            background: #FCE4D6; border: 1.8px solid #F4B183; border-radius: 40px; 
+            width: 250px; height: 38px; color: #333; z-index: 10; font-size: 10px; font-weight: 900;
+            position: absolute; display: flex; align-items: center; justify-content: center;
+        }
+        
+        .diamond-v9 {
+            position: absolute; width: 56px; height: 56px; background: #FFF2CC; border: 1.8px solid #F4B183;
+            transform: rotate(45deg); z-index: 5; display: flex; align-items: center; justify-content: center;
+        }
+        .diamond-inner { transform: rotate(-45deg); font-size: 8px; font-weight: 900; text-align: center; line-height: 1.1; }
+
+        .banner-issue-v9 { position: absolute; bottom: 85px; width: 145px; text-align: center; }
+        .banner-label-v9 { background: #C8192E; color: #fff; padding: 4px 18px; border-radius: 20px; font-size: 11px; font-weight: 900; display: inline-block; margin-bottom: 10px; }
+        .banner-text-v9 { font-size: 9.3px; color: #333; font-weight: 900; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div class="slide-canvas">
+        <header class="ppt-header">05. 아키텍처 및 프로세스 맵 (Architecture & Process Map)</header>
+
+        <div class="master-stage-v9">
+            <svg class="svg-layer-v4">
+                <defs>
+                    <marker id="arr-99" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="#666" />
+                    </marker>
+                    <marker id="arr-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="#C8192E" />
+                    </marker>
+                    <linearGradient id="flag-gr" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#C8192E" stop-opacity="0.05" />
+                        <stop offset="100%" stop-color="#C8192E" stop-opacity="0.6" />
+                    </linearGradient>
+                </defs>
+
+                <!-- Dashed Dividers -->
+                <line x1="40" y1="280" x2="1400" y2="280" stroke="#DDD" stroke-width="1.2" stroke-dasharray="10,6" />
+                <line x1="40" y1="535" x2="1400" y2="535" stroke="#DDD" stroke-width="1.2" stroke-dasharray="10,6" />
+
+                <!-- ISSUE Arrows -->
+                <path d="M 152 280 L 186 280 L 186 540 L 169 565 L 152 540 Z" fill="url(#flag-gr)" opacity="0.4" />
+                <path d="M 465 535 L 499 535 L 499 560 L 482 585 L 465 560 Z" fill="url(#flag-gr)" opacity="0.4" />
+                <path d="M 545 280 L 579 280 L 579 540 L 562 565 L 545 540 Z" fill="url(#flag-gr)" opacity="0.4" />
+                <path d="M 685 280 L 719 280 L 719 540 L 702 565 L 685 540 Z" fill="url(#flag-gr)" opacity="0.4" />
+                <path d="M 1150 280 L 1184 280 L 1184 540 L 1167 565 L 1150 540 Z" fill="url(#flag-gr)" opacity="0.4" />
+
+                <!-- BLUE Pathway -->
+                <line x1="165" y1="180" x2="200" y2="180" stroke="#666" marker-end="url(#arr-99)" />
+                <line x1="274" y1="180" x2="305" y2="180" stroke="#666" />
+                <path d="M 305 180 L 305 130 L 335 130" stroke="#666" fill="none" marker-end="url(#arr-99)" />
+                <path d="M 305 180 L 335 180" stroke="#666" fill="none" marker-end="url(#arr-99)" />
+                <path d="M 305 180 L 305 230 L 335 230" stroke="#666" fill="none" marker-end="url(#arr-99)" />
+                <path d="M 409 130 L 430 130 L 430 180 L 450 180" stroke="#666" fill="none" marker-end="url(#arr-99)" />
+                <path d="M 409 180 L 450 180" stroke="#666" fill="none" />
+                <path d="M 409 230 L 430 230 L 430 180" stroke="#666" fill="none" />
+
+                <!-- STATUS Pathway -->
+                <line x1="524" y1="230" x2="570" y2="230" stroke="#666" marker-end="url(#arr-99)" />
+                <line x1="618" y1="230" x2="710" y2="230" stroke="#666" />
+                <line x1="960" y1="230" x2="1010" y2="230" stroke="#666" marker-end="url(#arr-99)" />
+
+                <!-- GREEN Pathway Backbone -->
+                <path d="M 590 375 L 590 320 L 960 320" stroke="#666" fill="none" stroke-width="1" />
+                <line x1="660" y1="320" x2="660" y2="355" stroke="#666" stroke-width="1" marker-end="url(#arr-99)" />
+                <line x1="770" y1="320" x2="770" y2="355" stroke="#666" stroke-width="1" marker-end="url(#arr-99)" />
+                <line x1="880" y1="320" x2="880" y2="355" stroke="#666" stroke-width="1" marker-end="url(#arr-99)" />
+                <line x1="960" y1="320" x2="960" y2="355" stroke="#666" stroke-width="1" marker-end="url(#arr-99)" />
+            </svg>
+
+            <!-- Row 1 Nodes -->
+            <div style="position:absolute; top:110px; left:40px; text-align:center;">
+                <div style="font-size:26px;">👥</div>
+                <div style="background:#333; color:#fff; font-size:8px; padding:3px 10px; border-radius:4px; font-weight:900;">고객</div>
+            </div>
+            <div class="box-v9 b-lfmall" style="top:162px; left:125px;">상품 목록</div>
+            <div class="box-v9 b-lfmall" style="top:162px; left:200px;">상품 상세</div>
+            <div class="box-v9 b-lfmall" style="top:112px; left:335px;">원클릭 결제</div>
+            <div class="box-v9 b-lfmall" style="top:162px; left:335px;">쇼핑백</div>
+            <div class="box-v9 b-lfmall" style="top:212px; left:335px;">주문서</div>
+            <div class="box-v9 b-lfmall" style="top:162px; left:450px;">주문완료</div>
+            <div class="box-v9 b-lfmall" style="top:212px; left:450px;">주문생성</div>
+            
+            <div class="b-status-v9" style="top:207px; left:570px;">결제<br>완료</div>
+            <div class="b-pill-v9" style="top:212px; left:710px;">자동결품배치 (알림톡) 정책</div>
+            <div class="b-status-v9" style="top:207px; left:1010px; background:#555;">상품<br>준비중</div>
+            <div class="b-status-v9" style="top:207px; left:1110px;">배송중</div>
+            <div class="b-status-v9" style="top:207px; left:1210px;">배송완료</div>
+
+            <!-- Row 2 Nodes -->
+            <div class="box-v9 b-oms" style="top:355px; left:420px; width:90px;">주문수집</div>
+            <div class="diamond-v9" style="top:345px; left:535px;"><div class="diamond-inner">매장상품<br>배송</div></div>
+            
+            <div class="box-v9 b-oms" style="top:358px; left:620px;">출고처지정</div>
+            <div class="box-v9 b-oms" style="top:358px; left:730px;">입고확정</div>
+            <div class="box-v9 b-oms" style="top:358px; left:840px;">송장출력</div>
+            <div class="box-v9 b-oms" style="top:358px; left:950px; background:#EEE; font-size:7.5px;">CJ대한통운<br>배송완료</div>
+        </div>
+
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div style="font-size:10px; color:#555; font-weight:bold;">5</div>
+        </div>
+    </div>
+</body>
+</html>

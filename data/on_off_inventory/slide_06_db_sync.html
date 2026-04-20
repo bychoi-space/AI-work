@@ -4,77 +4,85 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .db-sync-hf {
-            padding: 100px 110px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 140px;
-            position: relative;
+        .db-sync-v9 { padding: 80px 100px; height: 100%; position: relative; display: flex; flex-direction: column; background: #fff; }
+        .sys-flow-v9 { flex: 1; display: flex; align-items: center; justify-content: center; gap: 120px; position: relative; }
+        
+        .db-cylinder-v9 {
+            width: 120px; height: 140px; border: 2px solid #555; position: relative;
+            background: #fff; border-radius: 50% / 15%; z-index: 10;
+            display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px;
+        }
+        .db-cylinder-v9::after {
+            content: ""; position: absolute; top: -1px; left: -2px; width: 100%; height: 36px;
+            border: 2px solid #555; border-radius: 50%; background: #F8F9FA; box-sizing: content-box;
+        }
+        .db-sap { background: #E2EFDA; }
+        .db-lfmall { background: #E9EDF4; }
+
+        .highlight-overlay-v9 {
+            position: absolute; top: 120px; left: 620px; width: 160px; height: 180px;
+            background: rgba(255, 255, 0, 0.15); border: 2px dashed #FFD966; border-radius: 12px;
+            z-index: 5; pointer-events: none;
         }
 
-        .sys-card-hf {
-            width: 280px;
-            background: #fff;
-            border: 1px solid var(--node-border);
-            box-shadow: var(--ppt-shadow);
-            padding: 40px;
-            text-align: center;
-            border-radius: 8px;
-            position: relative;
-            z-index: 10;
-        }
-        .card-sap { background: var(--node-oms-sap-bg); border-color: #10B981; }
-        .card-lfmall { background: var(--node-lfmall-bg); border-color: #2E5BFF; }
-
-        .batch-pill-hf {
-            position: absolute; top: 120px; left: 50%; transform: translateX(-50%);
-            background: #fff; border: 1.5px solid var(--lf-red); color: var(--lf-red);
-            padding: 5px 20px; border-radius: 30px; font-size: 12px; font-weight: 800;
-            z-index: 20; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        .batch-pill-v9 {
+            position: absolute; top: 175px; left: 395px; width: 110px; height: 32px;
+            background: #fff; border: 1.5px solid #C8192E; color: #C8192E;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 20px; font-size: 11px; font-weight: 900; z-index: 20;
         }
 
-        .summary-box-hf {
-            margin: 0 110px; padding: 35px; background: #F4F6F9; border-radius: 12px;
+        .summary-box-v9 {
+            margin-top: 30px; padding: 30px; background: #F4F6F9; border-radius: 10px;
+            border-top: 3px solid #333;
         }
-        .summary-box-hf li { font-size: 14.5px; margin-bottom: 12px; list-style: none; display: flex; gap: 15px; align-items: flex-start; }
-        .summary-box-hf b { color: var(--lf-red); min-width: 100px; }
+        .summary-box-v9 li { font-size: 14px; margin-bottom: 12px; list-style: none; display: flex; align-items: flex-start; gap: 15px; }
+        .summary-box-v9 b { color: #C8192E; min-width: 90px; flex-shrink: 0; }
+        .summary-box-v9 span { color: #444; font-weight: 700; line-height: 1.5; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">06. 재고 DB 구조 및 동기화 로직</header>
+        <header class="ppt-header">06. 재고 DB 구조 및 동기화 로직 (Data Interface)</header>
 
-        <div class="db-sync-hf">
-            <div class="sys-card-hf card-sap">
-                <h3 style="color:#065F46; font-size:24px; margin-bottom:15px;">SAP ERP</h3>
-                <code style="font-size:12px; color:#555;">T-Code: ZSDT510</code>
+        <div class="db-sync-v9">
+            <div class="sys-flow-v9">
+                <!-- Highlight Overlay -->
+                <div class="highlight-overlay-v9"></div>
+                
+                <div style="text-align:center;">
+                    <div class="db-cylinder-v9 db-sap">SAP ERP</div>
+                    <div style="margin-top:15px; font-size:11px; font-weight:900; color:#666;">ZSDT510 (Real-stock)</div>
+                </div>
+
+                <div class="batch-pill-v9">10 MIN BATCH</div>
+
+                <svg style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none;">
+                    <defs>
+                        <marker id="arr-v9" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#C8192E" />
+                        </marker>
+                    </defs>
+                    <line x1="280" y1="210" x2="620" y2="210" stroke="#C8192E" stroke-width="3" marker-end="url(#arr-v9)" />
+                </svg>
+
+                <div style="text-align:center;">
+                    <div class="db-cylinder-v9 db-lfmall">LFmall</div>
+                    <div style="margin-top:15px; font-size:11px; font-weight:900; color:#666;">STB_STOCK (Buffer)</div>
+                </div>
             </div>
 
-            <div class="batch-pill-hf">10 MIN BATCH</div>
-
-            <svg class="svg-flow-layer" style="width:100%; height:100%;">
-                <defs>
-                    <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                        <polygon points="0 0, 10 3.5, 0 7" fill="#C8192E" />
-                    </marker>
-                </defs>
-                <line x1="420" y1="210" x2="680" y2="210" stroke="#C8192E" stroke-width="3" marker-end="url(#arrow-red)" />
-            </svg>
-
-            <div class="sys-card-hf card-lfmall">
-                <h3 style="color:#1E3A8A; font-size:24px; margin-bottom:15px;">LFmall</h3>
-                <code style="font-size:12px; color:#555;">STB_STOCK_BASE</code>
+            <div class="summary-box-v9">
+                <li><b>재고 원지</b> <span>SAP ERP의 매장별 실재고 데이터를 마스터(Master)로 규정함</span></li>
+                <li><b>Buffer 정책</b> <span>안전재고(Safety Stock) 및 예약재고 차감을 통해 고객 노출 가용 재고 산출</span></li>
+                <li><b>동기화</b> <span>실시간 인터페이스와 10분 단위 배치를 병행하여 데이터 정합성 유지</span></li>
             </div>
         </div>
 
-        <div class="summary-box-hf">
-            <li><b>재고 원지</b> <span>SAP ERP의 매장별 실재고 데이터를 절대 마스터(Master) 재고로 규정함</span></li>
-            <li><b>산출 로직</b> <span>총 재고 - (안전재고 + 예약재고) = 최종 가용 재고(Available) 노출</span></li>
-            <li><b>예약 재고</b> <span>결제 대기 및 배정 완료 후 미발송 분에 대한 물리적 가집계 관리</span></li>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div style="font-size:10px; color:#555; font-weight:bold;">6</div>
         </div>
-
-        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>
