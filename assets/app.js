@@ -80,11 +80,6 @@ function encodeBase64(str) {
         return btoa(unescape(encodeURIComponent(str)));
     }
 }
-            console.error("[Base64] Full fallback failed:", e2);
-            return "";
-        }
-    }
-}
 
 async function listContents(path = '') {
     try {
@@ -381,19 +376,28 @@ async function fetchProjectMetadata(project) {
             const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
             const res = await fetch(url, {
                 headers: { 
-                    'Authorization': `token ${ghConfig.token}`,
-                    'Accept': 'application/vnd.github.v3.raw' 
+                    'Authorization': `token ${ghConfig.token}`
                 },
-                cache: 'reload' // Force bypass browser cache
+                cache: 'reload'
             });
             
             if (res.status === 401) {
                 console.error("[Hybrid] API Error: Unauthorized (401)");
-                ghConfig.isReadOnly = true; // Temporary disable
+                ghConfig.isReadOnly = true;
             }
-            if (res.ok) return await res.json();
+            if (res.ok) {
+                const data = await res.json();
+                // If it's a content API response, it has 'content' (base64)
+                if (data.content && data.encoding === 'base64') {
+                    // Robust UTF-8 Base64 decoding
+                    const binary = atob(data.content.replace(/\s/g, ''));
+                    const bytes = new Uint8Array(binary.length);
+                    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                    return JSON.parse(new TextDecoder().decode(bytes));
+                }
+                return data;
+            }
             if (res.status === 404) {
-                console.log(`[Hybrid] Metadata 404 for ${project}. Returning default.`);
                 return { screens: {}, title: project || 'Default Project' };
             }
         } catch (e) {

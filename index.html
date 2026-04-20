@@ -154,7 +154,7 @@
         </div>
     </div>
 
-    <script src="assets/app.js?v=20240420_v3"></script>
+    <script src="assets/app.js?v=20240420_v4"></script>
     <script>
         const state = {
             projects: []
@@ -249,6 +249,9 @@
                 
                 // 3. Fetch data/ directory for project listing
                 const dataItems = await listContents('');
+                if (!Array.isArray(dataItems)) {
+                    throw new Error("Could not fetch project list (invalid response)");
+                }
                 const folders = dataItems.filter(i => i.type === 'dir' && i.name !== 'assets');
 
                 // Update loading text if migration starts
@@ -408,6 +411,7 @@
                 openEditProjectModal(projectName);
                 return;
             }
+
 
             if (delBtn) {
                 e.preventDefault();
