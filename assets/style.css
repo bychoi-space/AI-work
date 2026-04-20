@@ -406,15 +406,24 @@ body {
 }
 
 .placeholder-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: rgba(30, 30, 35, 0.6);
-    border: 1px dashed rgba(255,255,255,0.15);
+    border: 1px dashed var(--accent);
     border-radius: 12px;
-    padding: 40px 60px;
+    padding: 60px 80px;
     text-align: center;
     backdrop-filter: blur(8px);
     color: var(--text-secondary);
     box-shadow: 0 4px 24px rgba(0,0,0,0.2);
     transition: all 0.2s ease;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
 }
 .placeholder-card:hover { background: rgba(40, 40, 45, 0.6); }
 .placeholder-card i { font-size: 48px; margin-bottom: 20px; color: var(--text-primary); opacity: 0.8; }
@@ -952,6 +961,18 @@ body.drag-active #drop-overlay {
 }
 @keyframes intro-loading-bar {
     to { left: 100%; }
+}
+
+@keyframes pulse-attention {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.4); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(0, 229, 255, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
+}
+
+.pulse-attention {
+    animation: pulse-attention 1.5s infinite;
+    background: rgba(0, 229, 255, 0.2) !important;
+    color: var(--accent) !important;
 }
 
 /* ----------------------------------------------------

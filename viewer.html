@@ -210,8 +210,8 @@
                         <iframe id="main-iframe" class="artboard-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
                         <div class="pins-layer" id="pins-layer"></div>
                         <div class="placeholder-card" id="placeholder">
-                            <i class="material-icons-outlined">sync</i>
-                            <h3 id="placeholder-text">GitHub에서 파일을 불러오는 중...</h3>
+                            <i class="material-icons-outlined" style="font-size: 64px; color: var(--accent); margin-bottom: 0;">add_to_photos</i>
+                            <h3 id="placeholder-text" style="font-weight: 700; color: #fff; margin: 0;">프로젝트 스크린을 추가해주세요.</h3>
                         </div>
                     </div>
                 </div>
@@ -411,7 +411,10 @@
             if (fileName) {
                 await loadScreen(fileName);
             } else {
-                DOM.placeholderTxt.innerText = "이 프로젝트에 화면이 없습니다. 대시보드로 돌아가서 추가해주세요.";
+                DOM.placeholderTxt.innerText = "프로젝트 스크린을 추가해주세요.";
+                // Add attention motion to the sidebar add button
+                const btnAdd = document.getElementById('btn-add-screen');
+                if (btnAdd) btnAdd.classList.add('pulse-attention');
             }
 
             updateProperties(); // Project Meta
