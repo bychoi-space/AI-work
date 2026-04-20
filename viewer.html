@@ -446,9 +446,30 @@
                     overlay.remove();
                     centerView(); // Always center even for empty projects
                 }, 500);
-            } else {
-                setTimeout(centerView, 150);
             }
+
+            // Handle Browser Back/Forward (SPA)
+            window.addEventListener('popstate', () => {
+                const p = new URLSearchParams(window.location.search);
+                const f = p.get('file');
+                if (f) {
+                    loadScreen(f);
+                    updateActiveScreenInUI(f);
+                }
+            });
+        }
+
+        function updateActiveScreenInUI(activeName) {
+            const items = document.querySelectorAll('.screen-item');
+            items.forEach(item => {
+                const name = item.querySelector('.screen-name').title;
+                if (name === activeName) {
+                    item.classList.add('active');
+                    item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    item.classList.remove('active');
+                }
+            });
         }
 
         /**
@@ -488,6 +509,8 @@
 
         function renderScreenList(screens, activeName) {
             DOM.screensList.innerHTML = '';
+            let activeItem = null;
+            
             screens.forEach(s => {
                 const item = document.createElement('div');
                 item.className = `screen-item ${s.name === activeName ? 'active' : ''}`;
@@ -499,15 +522,32 @@
                     </button>
                 `;
                 
+                if (s.name === activeName) activeItem = item;
+
                 item.onclick = (e) => {
                     if (e.target.closest('.screen-delete-btn')) {
                         handleDeleteScreen(s.name, s.sha);
                         return;
                     }
-                    window.location.href = `viewer.html?project=${state.currentProject}&file=${s.name}`;
+                    
+                    // SPA Navigation: Push state and load without reload
+                    const url = `viewer.html?project=${state.currentProject}&file=${s.name}`;
+                    history.pushState(null, '', url);
+                    loadScreen(s.name);
+                    
+                    // Update active class manually
+                    document.querySelectorAll('.screen-item').forEach(el => el.classList.remove('active'));
+                    item.classList.add('active');
                 };
                 DOM.screensList.appendChild(item);
             });
+
+            // Focus active item on initial render
+            if (activeItem) {
+                setTimeout(() => {
+                    activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 800); // Wait for loading overlay to clear
+            }
         }
 
         async function handleDeleteScreen(fileName, sha) {
