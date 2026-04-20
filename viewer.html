@@ -163,15 +163,16 @@
         </div>
 
         <div class="actions">
-            <span class="zoom-level" id="zoom-txt">100%</span>
+            <!-- Zoom Controls -->
+            <div class="zoom-controls">
+                <button class="tool-btn" onclick="adjustZoom(-0.1)" title="Zoom Out"><span class="material-icons-outlined">remove_circle_outline</span></button>
+                <span class="zoom-level" id="zoom-txt">100%</span>
+                <button class="tool-btn" onclick="adjustZoom(0.1)" title="Zoom In"><span class="material-icons-outlined">add_circle_outline</span></button>
+            </div>
+
+            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
             <button class="tool-btn" onclick="centerView()" title="가운데 맞춤"><span class="material-icons-outlined">center_focus_strong</span></button>
-            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
-            <button class="tool-btn tool-btn-danger" id="btn-delete" title="파일 삭제"><span class="material-icons-outlined">close</span></button>
-            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
-            <button id="btn-global-save" class="btn-primary" style="height:32px; padding:0 20px; font-size:12px; margin-right:8px; display:flex; align-items:center; gap:6px;">
-                <span class="material-icons-outlined" style="font-size:16px;">save</span>
-                전체 저장
-            </button>
+            
             <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
             <button id="btn-show-auth" class="tool-btn" style="width:auto; height:32px; font-size:12px; padding:0 12px; background: rgba(255,255,255,0.05);">
                 <span class="material-icons-outlined" style="font-size:16px; margin-right:6px;">key</span>
@@ -218,17 +219,26 @@
             </main>
 
             <footer class="bottom-bar">
-                <div class="bottom-item" id="bottom-filename">
-                    <i class="material-icons-outlined">description</i>
-                    <span>-</span>
+                <div class="bottom-info-group">
+                    <div class="bottom-item" id="bottom-filename">
+                        <i class="material-icons-outlined">description</i>
+                        <span>-</span>
+                    </div>
+                    <div class="bottom-item" id="bottom-size">
+                        <i class="material-icons-outlined">data_usage</i>
+                        <span>-</span>
+                    </div>
+                    <div class="bottom-item" id="bottom-updated">
+                        <i class="material-icons-outlined">history</i>
+                        <span>-</span>
+                    </div>
                 </div>
-                <div class="bottom-item" id="bottom-size">
-                    <i class="material-icons-outlined">data_usage</i>
-                    <span>-</span>
-                </div>
-                <div class="bottom-item" id="bottom-updated">
-                    <i class="material-icons-outlined">history</i>
-                    <span>-</span>
+
+                <div class="bottom-actions">
+                    <button id="btn-global-save" class="btn-primary" style="height:32px; padding:0 30px; font-size:13px; font-weight:700; border-radius: 6px; display:flex; align-items:center; gap:8px;">
+                        <span class="material-icons-outlined" style="font-size:18px;">save</span>
+                        전체 저장
+                    </button>
                 </div>
             </footer>
         </div>
@@ -358,7 +368,6 @@
             // Buttons
             btnSelect: document.getElementById('btn-select'),
             btnHand: document.getElementById('btn-hand'),
-            btnDelete: document.getElementById('btn-delete'),
             btnToggleLeft: document.getElementById('btn-toggle-left'),
             btnToggleRight: document.getElementById('btn-toggle-right'),
             btnGlobalSave: document.getElementById('btn-global-save'),
@@ -1002,6 +1011,20 @@
             DOM.iframe.style.height = h + 'px';
             
             setTimeout(() => centerView(), 100);
+        }
+
+        function adjustZoom(delta) {
+            let s = state.transform.scale + delta;
+            s = Math.max(0.1, Math.min(s, 3));
+            state.transform.scale = s;
+            updateTransform();
+        }
+
+        function adjustZoom(delta) {
+            let s = state.transform.scale + delta;
+            s = Math.max(0.1, Math.min(s, 3));
+            state.transform.scale = s;
+            updateTransform();
         }
 
         function centerView() {
