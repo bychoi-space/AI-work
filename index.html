@@ -154,7 +154,7 @@
         </div>
     </div>
 
-    <script src="assets/app.js?v=20240416_v4"></script>
+    <script src="assets/app.js?v=20240420_v2"></script>
     <script>
         const state = {
             projects: []
@@ -403,6 +403,7 @@
             if (editBtn) {
                 e.preventDefault();
                 e.stopPropagation();
+                if (ghConfig.isReadOnly) return showAuthModal();
                 const projectName = editBtn.dataset.project;
                 openEditProjectModal(projectName);
                 return;
@@ -509,16 +510,6 @@
             });
         }
 
-        document.addEventListener('click', async (e) => {
-            const editBtn = e.target.closest('.edit-btn-card');
-            if (editBtn) {
-                e.preventDefault(); e.stopPropagation();
-                if (ghConfig.isReadOnly) return showAuthModal();
-                const projectName = editBtn.dataset.project;
-                openEditProjectModal(projectName);
-                return;
-            }
-        });
 
         DOM.btnModalClose.onclick = () => DOM.modal.classList.remove('active');
 
@@ -530,7 +521,11 @@
 
             const projectName = context.isCreateMode ? DOM.metaProjectId.value.trim() : context.currentEditingProject;
             const originalText = DOM.btnModalSave.innerText;
+            
+            // 1. UI Lock to prevent double-clicks
             DOM.btnModalSave.innerText = '저장 중...';
+            DOM.btnModalSave.disabled = true;
+            DOM.btnModalSave.style.opacity = '0.7';
             
             const data = {
                 projectMeta: {
@@ -543,18 +538,35 @@
                 }
             };
 
-            const success = await updateScreenMetadata(projectName, null, data, (msg, color) => {
-                DOM.btnModalSave.innerText = msg;
-                DOM.btnModalSave.style.background = color;
-                if (color === '#4ade80') {
-                    setTimeout(() => {
-                        DOM.modal.classList.remove('active');
-                        DOM.btnModalSave.innerText = originalText;
-                        DOM.btnModalSave.style.background = '';
-                        refreshFileList();
-                    }, context.isCreateMode ? 1500 : 1000); // More time for project creation API sync
+            try {
+                const success = await updateScreenMetadata(projectName, null, data, (msg, color) => {
+                    DOM.btnModalSave.innerText = msg;
+                    DOM.btnModalSave.style.background = color;
+                    
+                    if (color === '#4ade80') {
+                        setTimeout(() => {
+                            DOM.modal.classList.remove('active');
+                            DOM.btnModalSave.innerText = originalText;
+                            DOM.btnModalSave.disabled = false;
+                            DOM.btnModalSave.style.opacity = '';
+                            DOM.btnModalSave.style.background = '';
+                            refreshFileList();
+                        }, context.isCreateMode ? 2000 : 1000); // More time for project creation
+                    }
+                });
+
+                if (!success) {
+                    DOM.btnModalSave.disabled = false;
+                    DOM.btnModalSave.style.opacity = '';
                 }
-            });
+            } catch (err) {
+                console.error("[ModalSave] Error:", err);
+                DOM.btnModalSave.innerText = "에러 발생 ❌";
+                DOM.btnModalSave.style.background = "#ef4444";
+                DOM.btnModalSave.disabled = false;
+                DOM.btnModalSave.style.opacity = '';
+                alert(`저장 중 오류가 발생했습니다: ${err.message}`);
+            }
         };
 
         // Upload Logic (Refactored for Project Support)

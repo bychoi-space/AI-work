@@ -70,19 +70,16 @@ function slugify(text) {
  * Robust UTF-8 to Base64 (Modern browser approach)
  */
 function encodeBase64(str) {
+    if (!str) return "";
     try {
-        // Use TextEncoder to get UTF-8 bytes, then convert to binary string for btoa
         const bytes = new TextEncoder().encode(str);
-        let binary = '';
-        for (let i = 0; i < bytes.byteLength; i++) {
-            binary += String.fromCharCode(bytes[i]);
-        }
+        const binary = Array.from(bytes, byte => String.fromCharCode(byte)).join("");
         return btoa(binary);
     } catch (e) {
-        console.error("[Base64] Modern encoding failed, falling back:", e);
-        try {
-            return btoa(unescape(encodeURIComponent(str)));
-        } catch (e2) {
+        console.error("[Base64] Encoding failed:", e);
+        return btoa(unescape(encodeURIComponent(str)));
+    }
+}
             console.error("[Base64] Full fallback failed:", e2);
             return "";
         }
@@ -362,19 +359,26 @@ async function fetchProjectMetadata(project) {
                     'Authorization': `token ${ghConfig.token}`,
                     'Accept': 'application/vnd.github.v3.raw' 
                 },
-                cache: 'no-store'
+                cache: 'reload' // Force bypass browser cache
             });
-            if (res.status === 401) { 
-                ghConfig.handleAuthError(); 
-                return { screens: {}, title: project || 'Default Project' }; 
+            
+            if (res.status === 401) {
+                console.error("[Hybrid] API Error: Unauthorized (401)");
+                ghConfig.isReadOnly = true; // Temporary disable
             }
             if (res.ok) return await res.json();
-        } catch (e) { console.warn("[API] Fetch failed, falling back to local:", e); }
+            if (res.status === 404) {
+                console.log(`[Hybrid] Metadata 404 for ${project}. Returning default.`);
+                return { screens: {}, title: project || 'Default Project' };
+            }
+        } catch (e) {
+            console.error("[Hybrid] API Metadata fetch failed:", e);
+        }
     }
 
-    // 2. Fallback to direct fetch (Relative local path)
+    // 2. Fallback to direct fetch (useful for GitHub Pages or if API limit reached)
     try {
-        const res = await fetch(relativePath, { cache: 'no-store' });
+        const res = await fetch(relativePath, { cache: 'reload' });
         if (res.status === 404) return { screens: {}, title: project || 'Default Project' };
         if (res.ok) return await res.json();
     } catch (e) {

@@ -315,7 +315,7 @@
         </div>
     </div>
 
-    <script src="assets/app.js?v=20240416_v4"></script>
+    <script src="assets/app.js?v=20240420_v2"></script>
     <script>
         const state = {
             currentProject: null,
@@ -560,13 +560,24 @@
             DOM.btnSubmitAdd.innerText = "생성 중...";
             DOM.btnSubmitAdd.disabled = true;
 
-            const success = await createScreenFromTemplate(state.currentProject, screenName, template, (msg, color) => {
-                DOM.placeholderTxt.innerText = msg;
-            });
+            try {
+                const success = await createScreenFromTemplate(state.currentProject, screenName, template, (msg, color) => {
+                    DOM.placeholderTxt.innerText = msg;
+                    if (color === '#ef4444') { // Error state from callback
+                         DOM.btnSubmitAdd.innerText = "다시 시도";
+                         DOM.btnSubmitAdd.disabled = false;
+                    }
+                });
 
-            if (success) {
-                location.reload();
-            } else {
+                if (success) {
+                    location.reload();
+                } else {
+                    DOM.btnSubmitAdd.innerText = "화면 생성하기";
+                    DOM.btnSubmitAdd.disabled = false;
+                }
+            } catch (err) {
+                console.error("[SubmitAdd] Error:", err);
+                alert(`화면 생성 중 오류가 발생했습니다: ${err.message}`);
                 DOM.btnSubmitAdd.innerText = "화면 생성하기";
                 DOM.btnSubmitAdd.disabled = false;
             }
