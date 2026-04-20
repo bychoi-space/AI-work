@@ -286,16 +286,18 @@
 
                 <div class="modal-section-title">에셋 템플릿 선택</div>
                 <div class="template-grid" id="template-list">
-                    <div class="template-card" data-template="lfmall_mobile_base.html">
+                    <div class="template-card" data-template="lfmall_mobile_base.html" data-default-name="lfmall_mobile_screen">
                         <div class="template-thumb">
                             <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">smartphone</span>
+                            <div class="template-check"><span class="material-icons">check_circle</span></div>
                         </div>
                         <div class="template-name">LFmall 모바일 기획서</div>
                         <div class="template-badge">LFmall</div>
                     </div>
-                    <div class="template-card" data-template="lfmall_pc_base.html">
+                    <div class="template-card" data-template="lfmall_pc_base.html" data-default-name="lfmall_pc_screen">
                         <div class="template-thumb">
                             <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">desktop_windows</span>
+                            <div class="template-check"><span class="material-icons">check_circle</span></div>
                         </div>
                         <div class="template-name">LFmall PC 기획서</div>
                         <div class="template-badge">LFmall</div>
@@ -541,9 +543,11 @@
                 card.classList.add('active');
                 context.selectedTemplate = card.dataset.template;
                 
-                // Auto-fill name if empty
-                if (!DOM.newScreenName.value) {
-                    DOM.newScreenName.value = slugify(card.querySelector('.template-name').innerText) + "_1";
+                // Auto-fill name if empty (using smart default)
+                if (!DOM.newScreenName.value.trim()) {
+                    const defaultName = card.dataset.defaultName;
+                    const timestamp = new Date().getTime().toString().slice(-4);
+                    DOM.newScreenName.value = `${defaultName}_${timestamp}`;
                 }
             };
         });
@@ -557,6 +561,10 @@
             const screenName = DOM.newScreenName.value.trim();
             const template = context.selectedTemplate;
             
+            // UI Feedback: Show generating state on card
+            const activeCard = document.querySelector('.template-card.active');
+            if (activeCard) activeCard.classList.add('generating');
+            
             DOM.btnSubmitAdd.innerText = "생성 중...";
             DOM.btnSubmitAdd.disabled = true;
 
@@ -566,20 +574,24 @@
                     if (color === '#ef4444') { // Error state from callback
                          DOM.btnSubmitAdd.innerText = "다시 시도";
                          DOM.btnSubmitAdd.disabled = false;
+                         if (activeCard) activeCard.classList.remove('generating');
                     }
                 });
 
                 if (success) {
+                    // Update metadata and reload to show new screen
                     location.reload();
                 } else {
                     DOM.btnSubmitAdd.innerText = "화면 생성하기";
                     DOM.btnSubmitAdd.disabled = false;
+                    if (activeCard) activeCard.classList.remove('generating');
                 }
             } catch (err) {
                 console.error("[SubmitAdd] Error:", err);
                 alert(`화면 생성 중 오류가 발생했습니다: ${err.message}`);
                 DOM.btnSubmitAdd.innerText = "화면 생성하기";
                 DOM.btnSubmitAdd.disabled = false;
+                if (activeCard) activeCard.classList.remove('generating');
             }
         };
 
