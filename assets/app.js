@@ -264,30 +264,55 @@ async function fetchFileContent(filename, isRoot = false) {
 }
 
 /**
- * GitHub API Helper: Sync file list
+ * GitHub API Helper: Sync file list (Legacy)
  */
 async function syncFilesFromGitHub(callback) {
+    const data = await listContents('');
+    const systemFiles = ['index.html', 'viewer.html', 'style.css', 'app.js', 'stitch_ui_viewer.html'];
+    const htmlFiles = data.filter(item => 
+        (item.name.endsWith('.html') || item.name.endsWith('.htm')) && 
+        !systemFiles.includes(item.name)
+    );
+    if (callback) callback(htmlFiles);
+    return htmlFiles;
+}
+
+/**
+ * Generic GitHub Content Listing
+ */
+async function listContents(path) {
     try {
-        const encodedPath = encodeURIComponent(`${ghConfig.dataDir}`).replace(/%2F/g, '/');
+        const fullPath = `${ghConfig.dataDir}${path}`;
+        const encodedPath = encodeURIComponent(fullPath).replace(/%2F/g, '/');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodedPath}`;
         
         const headers = {};
         if (ghConfig.token) headers['Authorization'] = `token ${ghConfig.token}`;
 
-        const res = await fetch(url, { headers: headers, cache: 'no-store' });
-        if (!res.ok) throw new Error(`Sync failed: ${res.statusText}`);
+        const res = await fetch(url, { headers, cache: 'reload' });
+        if (!res.ok) return [];
+        return await res.json();
+    } catch (e) {
+        console.error("listContents error:", e);
+        return [];
+    }
+}
+
+/**
+ * List Repository Root (Explicitly bypasses dataDir)
+ */
+async function listRepoRoot() {
+    try {
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/`;
         
-        const data = await res.json();
-        const systemFiles = ['index.html', 'viewer.html', 'style.css', 'app.js', 'stitch_ui_viewer.html'];
-        const htmlFiles = data.filter(item => 
-            (item.name.endsWith('.html') || item.name.endsWith('.htm')) && 
-            !systemFiles.includes(item.name)
-        );
-        
-        if (callback) callback(htmlFiles);
-        return htmlFiles;
-    } catch (err) {
-        console.error(err);
+        const headers = {};
+        if (ghConfig.token) headers['Authorization'] = `token ${ghConfig.token}`;
+
+        const res = await fetch(url, { headers, cache: 'reload' });
+        if (!res.ok) return [];
+        return await res.json();
+    } catch (e) {
+        console.error("listRepoRoot error:", e);
         return [];
     }
 }
