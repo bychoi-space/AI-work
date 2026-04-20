@@ -206,8 +206,8 @@
         <div class="center-content">
             <main class="canvas" id="canvas">
                 <div class="stage" id="stage">
-                    <div class="artboard-wrapper">
-                        <iframe id="main-iframe" class="artboard-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+                    <div class="artboard-wrapper" id="artboard-wrapper">
+                        <iframe id="main-iframe" class="artboard-iframe" style="width: 1440px; height: 900px;" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
                         <div class="pins-layer" id="pins-layer"></div>
                         <div class="placeholder-card" id="placeholder">
                             <i class="material-icons-outlined" style="font-size: 64px; color: var(--accent); margin-bottom: 0;">add_to_photos</i>
@@ -334,6 +334,7 @@
 
         const DOM = {
             iframe: document.getElementById('main-iframe'),
+            artboardWrapper: document.getElementById('artboard-wrapper'),
             placeholder: document.getElementById('placeholder'),
             placeholderTxt: document.getElementById('placeholder-text'),
             canvas: document.getElementById('canvas'),
@@ -419,6 +420,9 @@
 
             updateProperties(); // Project Meta
             
+            // Prime the viewport (Desktop default)
+            setDeviceViewport('desktop', 1440, 900);
+
             // Update Auth Button UI
             const btnAuthText = document.getElementById('auth-btn-text');
             const btnAuth = document.getElementById('btn-show-auth');
@@ -989,8 +993,14 @@
             else if(type === 'tablet') document.querySelector('.tools .tool-btn[onclick*="tablet"]').classList.add('active');
             else document.getElementById('btn-desktop').classList.add('active');
 
+            // Sync Wrapper and Iframe (CRITICAL for child centering)
+            if (DOM.artboardWrapper) {
+                DOM.artboardWrapper.style.width = w + 'px';
+                DOM.artboardWrapper.style.height = h + 'px';
+            }
             DOM.iframe.style.width = w + 'px';
             DOM.iframe.style.height = h + 'px';
+            
             setTimeout(() => centerView(), 100);
         }
 
