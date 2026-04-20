@@ -3,15 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .policy-area-hf { padding: 80px 100px; }
+        .p-item-hf { margin-bottom: 40px; display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start; }
+        .p-label-hf { background: #252830; color: #fff; padding: 10px 20px; font-weight: 700; border-radius: 4px; text-align: center; }
+        .p-content-hf { border-left: 3px solid #D9D9D9; padding-left: 30px; }
+    </style>
 </head>
 <body>
-    <div class="header"><h2 class="page-title">18. 비직송매장 재고 물량 이동 지시 정책</h2></div>
-    <div class="content" style="padding:40px;">
-        <ul class="logic-list">
-            <li><b>이동 트리거</b>: 거점 매장 재고 5개 미만 시 인근 대리점 물량 이동 지시</li>
-            <li><b>운송 주체</b>: 본사 계약 택배사 활용 (익일 입고 원칙)</li>
-            <li><b>정산 정책</b>: 대리점 → 본사 매출 취소 및 거점 매장 입고 처리</li>
-        </ul>
+    <div class="slide-canvas">
+        <header class="ppt-header">18. 비직송매장 재고 물량 이동 지시 정책</header>
+
+        <div class="policy-area-hf">
+            <div class="p-item-hf">
+                <div class="p-label-hf">이동 트리거 (Trigger)</div>
+                <div class="p-content-hf">
+                    <p style="font-size:16px; font-weight:800; margin-bottom:10px;">거점 매장 재고 5 EA 미만 시</p>
+                    <p style="font-size:13px; color:#666;">인근 대리점 또는 비물류 거점 매장의 재고를 거점 매장으로 자동 이동 지시(RT) 생성</p>
+                </div>
+            </div>
+            <div class="p-item-hf">
+                <div class="p-label-hf">물류 운송 (Logic)</div>
+                <div class="p-content-hf">
+                    <p style="font-size:16px; font-weight:800; margin-bottom:10px;">본사 지정 순회 물류 활용</p>
+                    <p style="font-size:13px; color:#666;">별도 택배비 발생 억제를 위해 본사 주간 비기 물류망을 최우선적으로 활용하여 익일 입고 원칙</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

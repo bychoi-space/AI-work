@@ -4,37 +4,96 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
-        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
-        .content { padding: 40px; display: flex; justify-content: center; }
-        .iphone { width: 320px; height: 600px; border: 10px solid #222; border-radius: 30px; background: #fff; overflow: hidden; position: relative; }
+        .iphone-center { display: flex; justify-content: center; padding: 60px; }
+        .iphone-frame-hf {
+            width: 340px;
+            height: 700px;
+            background: #000;
+            border-radius: 50px;
+            padding: 12px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .iphone-screen-hf {
+            background: #F8F9FA;
+            width: 100%;
+            height: 100%;
+            border-radius: 38px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-header-hf {
+            height: 60px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            border-bottom: 1px solid #EEE;
+        }
+
+        .cart-item-hf {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 15px;
+        }
+        .cart-img-hf { width: 70px; height: 90px; background: #eee; border-radius: 4px; }
+        
+        .total-bar-hf {
+            margin-top: auto;
+            background: #fff;
+            padding: 25px;
+            border-top: 1px solid #EEE;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2 class="page-title">25. [UI] 쇼핑백</h2>
-        <p style="color:#64748B; font-size:14px;">장바구니 내 일반배송/매장배송 상품 그룹화 및 안내 문구 홍보</p>
-    </div>
-    <div class="content">
-        <div class="iphone">
-            <div style="padding:15px; border-bottom:1px solid #eee; font-weight:700;">SHOPPING BAG (2)</div>
-            <div style="padding:15px; border-bottom:1px solid #eee;">
-                <span class="badge badge-red">매장상품배송</span>
-                <div style="font-size:13px; margin-top:5px;">HAZZYS 티셔츠</div>
-                <div style="font-size:14px; font-weight:700; margin-top:5px;">89,000원</div>
-            </div>
-            <div style="padding:15px; border-bottom:1px solid #eee;">
-                <span class="badge" style="background:#eee; color:#666;">일반배송</span>
-                <div style="font-size:13px; margin-top:5px;">DAKS 셔츠</div>
-                <div style="font-size:14px; font-weight:700; margin-top:5px;">120,000원</div>
-            </div>
-            <div style="position:absolute; bottom:0; width:100%; padding:15px; background:#f8fafc; border-top:1px solid #eee;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;">
-                    <span>총 결제금액</span> <b style="color:var(--lf-red);">209,000원</b>
+    <div class="slide-canvas">
+        <header class="ppt-header">25. [UI] 쇼핑백 (장바구니)</header>
+
+        <div class="iphone-center">
+            <div class="iphone-frame-hf">
+                <div class="iphone-screen-hf">
+                    <div class="app-header-hf">쇼핑백 (2)</div>
+                    
+                    <div style="flex:1; overflow-y:auto; padding:15px;">
+                        <div class="cart-item-hf">
+                            <div class="cart-img-hf"></div>
+                            <div style="flex:1;">
+                                <span class="admin-badge" style="background:var(--lf-red); color:#fff;">매장상품배송</span>
+                                <div style="font-size:14px; font-weight:700; margin-top:6px;">HAZZYS 기모 티셔츠</div>
+                                <div style="font-size:12px; color:#999; margin-top:2px;">Navy / 100</div>
+                                <div style="font-size:15px; font-weight:900; margin-top:10px;">89,000원</div>
+                            </div>
+                        </div>
+
+                        <div class="cart-item-hf" style="opacity:0.7;">
+                            <div class="cart-img-hf"></div>
+                            <div style="flex:1;">
+                                <span class="admin-badge" style="background:#666; color:#fff;">일반배송</span>
+                                <div style="font-size:14px; font-weight:700; margin-top:6px;">DAKS 소가죽 지갑</div>
+                                <div style="font-size:15px; font-weight:900; margin-top:10px;">140,000원</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="total-bar-hf">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                            <span style="font-size:15px; color:#666;">결제 예상 금액</span>
+                            <b style="font-size:18px; color:var(--lf-red);">229,000원</b>
+                        </div>
+                        <button class="btn-lf" style="width:100%; height:54px; font-size:16px;">주문하기</button>
+                    </div>
                 </div>
-                <button class="btn-lf" style="width:100%; height:44px;">주문하기</button>
             </div>
         </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

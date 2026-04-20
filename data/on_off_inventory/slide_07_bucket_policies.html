@@ -4,114 +4,108 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
-        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
-        .sub-desc { color: #64748B; margin-top: 8px; font-size: 14px; }
+        .table-area { padding: 60px 100px; }
         
-        .policy-container { padding: 40px; }
-
-        .logic-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 2fr;
-            gap: 2px;
-            background: var(--admin-border);
-            border: 1px solid var(--admin-border);
-            border-radius: 12px;
-            overflow: hidden;
+        .ppt-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #333;
         }
 
-        .grid-header {
-            background: var(--admin-table-head);
-            padding: 16px;
-            font-weight: 700;
+        .ppt-table th {
+            background: #404040;
+            color: #fff;
+            padding: 15px;
             font-size: 14px;
-            text-align: center;
+            border: 1px solid #555;
         }
 
-        .grid-cell {
-            background: #fff;
+        .ppt-table td {
             padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border: 1px solid #D9D9D9;
+            text-align: center;
             font-size: 14px;
         }
 
-        .badge-ui {
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-weight: 700;
-            font-size: 12px;
-        }
-        .ui-normal { background: #E2E8F0; color: #475569; }
-        .ui-store { background: var(--lf-red); color: #fff; }
-        .ui-soldout { background: #000; color: #fff; }
+        .ppt-table tr:nth-child(even) { background: #F8F9FA; }
 
-        .bucket-desc {
-            margin-top: 40px;
+        .ui-badge-lg {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 13px;
+        }
+        .ui-badge-red { background: var(--lf-red); color: #fff; }
+        .ui-badge-gray { background: #E0E0E0; color: #666; }
+        .ui-badge-black { background: #000; color: #fff; }
+
+        .bucket-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+            gap: 20px;
+            margin: 0 100px;
         }
-        .bucket-card {
-            padding: 24px;
+        .b-card {
             background: #fff;
-            border: 1px solid var(--admin-border);
-            border-radius: 12px;
+            border: 1px solid #DDD;
+            padding: 20px;
+            border-top: 4px solid #AAA;
+            border-radius: 4px;
         }
-        .bucket-title { font-weight: 800; font-size: 16px; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .bucket-point { width: 12px; height: 12px; border-radius: 50%; }
+        .b-card.highlight { border-top-color: var(--lf-red); }
+        .b-card h4 { font-size: 15px; margin-bottom: 8px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2 class="page-title">07. 매장상품배송 표현 정책</h2>
-        <p class="sub-desc">온라인/오프라인 재고 상태에 따른 고객용 UI 노출 로직 정의</p>
-    </div>
+    <div class="slide-canvas">
+        <header class="ppt-header">07. 매장상품배송 표현 정책</header>
 
-    <div class="policy-container">
-        <div class="logic-grid">
-            <!-- Header -->
-            <div class="grid-header">온라인 재고 (Center)</div>
-            <div class="grid-header">오프라인 재고 (Store)</div>
-            <div class="grid-header">사용자 UI 표현 (Frontend)</div>
+        <div class="table-area">
+            <table class="ppt-table">
+                <thead>
+                    <tr>
+                        <th>Center Stock (온라인)</th>
+                        <th>Store Stock (매장)</th>
+                        <th>User UI Presentation (뱃지/안내)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Available (> 0)</b></td>
+                        <td>Any</td>
+                        <td><span class="ui-badge-lg ui-badge-gray">일반 택배 배송</span></td>
+                    </tr>
+                    <tr>
+                        <td style="color:var(--lf-red)"><b>Out of Stock (= 0)</b></td>
+                        <td style="color:#059669"><b>Available (> 0)</b></td>
+                        <td><span class="ui-badge-lg ui-badge-red">매장상품배송</span></td>
+                    </tr>
+                    <tr>
+                        <td>Out of Stock (= 0)</td>
+                        <td>Out of Stock (= 0)</td>
+                        <td><span class="ui-badge-lg ui-badge-black">SOLDOUT (품절)</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-            <!-- Row 1 -->
-            <div class="grid-cell">가용 (Stock > 0)</div>
-            <div class="grid-cell">무관</div>
-            <div class="grid-cell">
-                <span class="badge-ui ui-normal">일반 택배 배송</span>
+        <div class="bucket-cards">
+            <div class="b-card highlight">
+                <h4>가용 재고 (Available)</h4>
+                <p style="font-size:12px; color:#666;">실제 주문이 가능한 원장상의 수량</p>
             </div>
-
-            <!-- Row 2 -->
-            <div class="grid-cell" style="background:#F8FAFC">품절 (Stock = 0)</div>
-            <div class="grid-cell" style="background:#F8FAFC">가용 (Stock > 0)</div>
-            <div class="grid-cell" style="background:#F8FAFC">
-                <span class="badge-ui ui-store">매장상품배송</span>
+            <div class="b-card">
+                <h4>안전 재고 (Safety)</h4>
+                <p style="font-size:12px; color:#666;">결품 방지를 위해 설정하는 차감분</p>
             </div>
-
-            <!-- Row 3 -->
-            <div class="grid-cell">품절 (Stock = 0)</div>
-            <div class="grid-cell">품절 (Stock = 0)</div>
-            <div class="grid-cell">
-                <span class="badge-ui ui-soldout">SOLDOUT (품절)</span>
+            <div class="b-card">
+                <h4>예약 재고 (Buffer)</h4>
+                <p style="font-size:12px; color:#666;">결제 단계 및 논리적 홀딩 수량</p>
             </div>
         </div>
 
-        <div class="bucket-desc">
-            <div class="bucket-card">
-                <div class="bucket-title"><div class="bucket-point" style="background:#10B981"></div>가용 재고 (Available)</div>
-                <p style="font-size:13px; color:#64748B;">즉시 주문 및 발송이 가능한 실제 물리적 재고</p>
-            </div>
-            <div class="bucket-card">
-                <div class="bucket-title"><div class="bucket-point" style="background:#F59E0B"></div>안전 재고 (Safety)</div>
-                <p style="font-size:13px; color:#64748B;">동시 주문 시 결품 방지를 위해 제외하는 예비 재고</p>
-            </div>
-            <div class="bucket-card">
-                <div class="bucket-title"><div class="bucket-point" style="background:#EF4444"></div>예약 재고 (Buffer)</div>
-                <p style="font-size:13px; color:#64748B;">결제 진행 중이거나 반품 대기 중인 논리적 재고</p>
-            </div>
-        </div>
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

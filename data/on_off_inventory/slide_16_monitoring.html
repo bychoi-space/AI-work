@@ -5,13 +5,32 @@
     <link rel="stylesheet" href="system-ui.css">
 </head>
 <body>
-    <div class="header"><h2 class="page-title">16. 비직송매장 RT 현황 관리 주체</h2></div>
-    <div class="content" style="padding:40px;">
-        <div class="arch-map">
-            <div class="flow-node" style="top:50px; left:50px;">영업 부서</div>
-            <div class="flow-node" style="top:50px; left:300px;">매장 재고 모니터링</div>
-            <div class="flow-node" style="top:150px; left:300px;">이동 지시 (RT)</div>
+    <div class="slide-canvas">
+        <header class="ppt-header">16. 비직송매장 RT 현황 관리 주체 및 채널</header>
+
+        <div class="db-flow" style="padding:100px;">
+            <div class="db-box sap" style="width:200px; background:#DEEAF6; border-color:#2E5BFF;">
+                <h3 style="color:#1E40AF">영업 기획</h3>
+                <div style="font-size:11px;">Monitor & Command</div>
+            </div>
+
+            <div class="sync-connector">
+                <span class="batch-badge">Stock Movement (RT)</span>
+                <div class="sync-arrow"></div>
+            </div>
+
+            <div class="db-box" style="width:200px; background:#FFF2CC; border-color:#D9AE3B;">
+                <h3 style="color:#D97706">대리점/비직송</h3>
+                <div style="font-size:11px;">Inventory Level Check</div>
+            </div>
         </div>
+
+        <div class="logic-summary">
+            <p style="font-size:14px; line-height:1.6;">• <b>관리 채널</b>: 매장 ERP 및 모바일 MD 도구를 통한 실시간 재고 대시보드 제공</p>
+            <p style="font-size:14px; line-height:1.6; margin-top:10px;">• <b>관리 주체</b>: 각 브랜드 영업 MD가 매일 오전 거점 매장 재고 부족분 확인 및 이동 지시</p>
+        </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

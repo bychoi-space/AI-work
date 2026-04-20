@@ -4,29 +4,77 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
-        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
-        .sub-desc { color: #64748B; margin-top: 8px; font-size: 14px; }
-        .content { padding: 40px; }
-        .flow-graphic { background: #f8fafc; border: 1px dashed #cbd5e1; height: 150px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; border-radius: 8px; font-size: 14px; color: #64748B; }
+        .lt-flow {
+            margin: 60px 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .lt-step {
+            text-align: center;
+            flex: 1;
+        }
+        .lt-circle {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: #F1F3F5;
+            border: 2px solid #D9D9D9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .lt-circle.active { background: var(--node-lfmall-bg); border-color: #2E5BFF; }
+
+        .lt-arrow { flex: 1; height: 2px; background: #D9D9D9; position: relative; top: -20px; }
+        
+        .policy-table-area { padding: 0 100px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2 class="page-title">11. 배송 LT 및 자동결품 정책</h2>
-        <p class="sub-desc">주문 배정 후 매장 상품 준비 리드타임(LT) 관리 및 미처리시 자동 결품 로직</p>
-    </div>
-    <div class="content">
-        <div class="flow-graphic">[배송 LT 흐름도: 배정 → 상품준비(48h) → 배송시작 → 수령]</div>
-        <table class="data-table">
-            <thead>
-                <tr><th>구분</th><th>LT 설정</th><th>자동결품 시점</th><th>비고</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>직영점</td><td>24시간</td><td>배정 후 48시간</td><td>영업일 기준</td></tr>
-                <tr><td>대리점</td><td>48시간</td><td>배정 후 72시간</td><td>관리자 확인 필수</td></tr>
-            </tbody>
-        </table>
+    <div class="slide-canvas">
+        <header class="ppt-header">11. 배송 LT 및 자동결품 정책</header>
+
+        <div class="lt-flow">
+            <div class="lt-step"><div class="lt-circle active">주문배정</div><p style="font-size:11px;">Day 0</p></div>
+            <div class="lt-arrow"></div>
+            <div class="lt-step"><div class="lt-circle">상품준비</div><p style="font-size:11px;">Day 1 (24h)</p></div>
+            <div class="lt-arrow"></div>
+            <div class="lt-step"><div class="lt-circle">택배발송</div><p style="font-size:11px;">Day 2 (48h)</p></div>
+            <div class="lt-arrow"></div>
+            <div class="lt-step" style="opacity:0.5;"><div class="lt-circle">자동결품</div><p style="font-size:11px;">Day 3 (72h)</p></div>
+        </div>
+
+        <div class="policy-table-area">
+            <table class="ppt-table">
+                <thead>
+                    <tr>
+                        <th style="width:20%;">매장 구분</th>
+                        <th style="width:30%;">상품 준비 기한 (LT)</th>
+                        <th>자동결품 처리 시점</th>
+                        <th>비고</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="background:#F8FAFC; font-weight:700;">직영점</td>
+                        <td>주문 배정 후 24시간 이내</td>
+                        <td style="color:var(--lf-red); font-weight:800;">D+2일 (48시간) 경과 시</td>
+                        <td style="text-align:left; font-size:12px;">영업일 기준 (휴무일 제외)</td>
+                    </tr>
+                    <tr>
+                        <td style="background:#F8FAFC; font-weight:700;">대리점</td>
+                        <td>주문 배정 후 48시간 이내</td>
+                        <td style="color:var(--lf-red); font-weight:800;">D+3일 (72시간) 경과 시</td>
+                        <td style="text-align:left; font-size:12px;">점주 확인 프로세스 포함</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

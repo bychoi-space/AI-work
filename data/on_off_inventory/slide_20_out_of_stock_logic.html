@@ -3,18 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .flow-decision-canvas {
+            padding: 80px 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .step-pill {
+            width: 250px;
+            padding: 15px;
+            background: #fff;
+            border: 1.5px solid #333;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .decision-diamond {
+            width: 140px;
+            height: 140px;
+            background: #FFF2CC;
+            border: 1.5px solid #D9AE3B;
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 40px 0;
+            position: relative;
+        }
+        .diamond-text {
+            transform: rotate(-45deg);
+            font-size: 12px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .flow-v-line {
+            width: 2px;
+            height: 40px;
+            background: #333;
+        }
+    </style>
 </head>
 <body>
-    <div class="header">
-        <h2 class="page-title">20. 자동결품 로직 정의</h2>
-    </div>
-    <div class="content" style="padding:40px;">
-        <div class="arch-map">
-            <div class="flow-node highlight" style="top:50px; left:50px;">주문 배정</div>
-            <div class="flow-node" style="top:50px; left:250px;">매장 확인 (48h)</div>
-            <div class="flow-node node-red" style="top:150px; left:250px; border-color:var(--lf-red);">미처리 시 자동결품</div>
-            <div class="flow-node" style="top:150px; left:50px;">고객 알림 송신</div>
+    <div class="slide-canvas">
+        <header class="ppt-header">20. 자동결품 로직 고도화 안</header>
+
+        <div class="flow-decision-canvas">
+            <div class="step-pill">주문 배정 (매장 1순위)</div>
+            <div class="flow-v-line"></div>
+            <div class="decision-diamond"><div class="diamond-text">48시간 내<br>상품준비 완료?</div></div>
+            
+            <div style="display:flex; gap:100px; margin-top:-20px;">
+                <div style="text-align:center;">
+                    <div style="color:#059669; font-weight:900; margin-bottom:10px;">YES</div>
+                    <div class="step-pill" style="border-color:#059669;">배송 처리 (송장입력)</div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="color:var(--lf-red); font-weight:900; margin-bottom:10px;">NO (Time-out)</div>
+                    <div class="step-pill" style="border-color:var(--lf-red); background:#FFF5F5;">자동 결품 및 재배정</div>
+                </div>
+            </div>
         </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

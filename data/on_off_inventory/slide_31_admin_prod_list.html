@@ -3,19 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .admin-view-hf {
+            padding: 30px 40px; margin-left: 240px; background: #F5F6F8; height: calc(100% - 48px);
+        }
+    </style>
 </head>
 <body>
-    <div class="page-header"><h1 class="page-title">31. [어드민] 상품 관리 목록</h1></div>
-    <div class="content" style="padding:30px;">
-        <div class="filter-panel">
-            <div class="filter-item"><span class="filter-label">상품명</span> <input type="text" class="form-input"></div>
-            <div class="filter-item"><span class="filter-label">브랜드</span> <select class="form-input"><option>전체</option></select></div>
-            <button class="btn-lf">검색</button>
+    <div class="slide-canvas">
+        <header class="ppt-header">31. [어드민] 상품 관리 목록</header>
+
+        <!-- Sidebar placeholder -->
+        <div style="width:240px; background:#252830; height:100%; position:absolute; top:48px; left:0; padding:20px;">
+            <div style="color:#FFF; opacity:0.3; font-size:10px;">DASHBOARD</div>
+            <div style="color:#FFF; margin-top:20px; font-size:13px;">→ 상품 목록 관리</div>
         </div>
-        <table class="data-table">
-            <thead><tr><th>상품명</th><th>상품코드</th><th>브랜드</th><th>재고상태</th></tr></thead>
-            <tbody><tr><td>HAZZYS 기모티</td><td>HZM01</td><td>HAZZYS</td><td>가용</td></tr></tbody>
-        </table>
+
+        <div class="admin-view-hf">
+            <div class="filter-grid" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="filter-cell"><b>상품코드</b> <input type="text" placeholder="HZM12345"></div>
+                <div class="filter-cell"><b>상품명</b> <input type="text"></div>
+                <div class="filter-cell"><b>매송대상</b> <select><option>전체</option><option>Y</option></select></div>
+                <button class="btn-lf" style="height:32px;">조회</button>
+            </div>
+
+            <table class="ppt-data-table">
+                <thead>
+                    <tr><th>NO</th><th>이미지</th><th>상품코드</th><th>상품명</th><th>브랜드</th><th>판매가</th><th>매송여부</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><div style="width:30px; height:40px; background:#EEE; margin:0 auto;"></div></td>
+                        <td style="color:#2E5BFF;">HZM22A123</td>
+                        <td>HAZZYS 기모 티셔츠</td>
+                        <td>HAZZYS</td>
+                        <td>89,000</td>
+                        <td><span class="admin-badge" style="background:#FFEBEB; color:var(--lf-red);">Y</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

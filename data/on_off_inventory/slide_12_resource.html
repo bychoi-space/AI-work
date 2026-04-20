@@ -4,27 +4,63 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
-        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
-        .content { padding: 40px; }
+        .resource-content { padding: 60px 100px; }
+        
+        .ppt-table-resource {
+            width: 100%;
+            border-collapse: collapse;
+            border-top: 3px solid #333;
+        }
+        .ppt-table-resource th {
+            background: #F1F3F5;
+            padding: 20px;
+            text-align: left;
+            border-bottom: 2px solid #D9D9D9;
+            font-size: 15px;
+            font-weight: 800;
+        }
+        .ppt-table-resource td {
+            padding: 20px;
+            border-bottom: 1px solid #EEE;
+            font-size: 14px;
+        }
+        .ppt-table-resource tr:hover { background: #F8FAFC; }
+        
+        .total-summary {
+            margin-top: 40px;
+            background: #252830;
+            color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2 class="page-title">12. 리소스 산출</h2>
-        <p style="color:#64748B; font-size:14px;">매장배송 활성화에 따른 브랜드/물류 부서별 추가 투입 리소스 분석</p>
-    </div>
-    <div class="content">
-        <table class="data-table">
-            <thead>
-                <tr><th>영역</th><th>업무 내용</th><th>비중</th><th>리소스(M/D)</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>기획/디자인</td><td>정책 수립 및 어드민 고도화</td><td>30%</td><td>45</td></tr>
-                <tr><td>개발</td><td>SAP/OMS/LFM 연동 개발</td><td>50%</td><td>120</td></tr>
-                <tr><td>운영</td><td>매장 교육 및 현장 모니터링</td><td>20%</td><td>30</td></tr>
-            </tbody>
-        </table>
+    <div class="slide-canvas">
+        <header class="ppt-header">12. 리소스 산출 및 투입 안</header>
+
+        <div class="resource-content">
+            <table class="ppt-table-resource">
+                <thead>
+                    <tr><th>구분</th><th>주요 업무 내용</th><th>투입 공수 (M/D)</th><th>비중</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><b>기획/설계</b></td><td>서비스 시나리오 정의 및 어드민 UI 설계</td><td>45</td><td>30%</td></tr>
+                    <tr><td><b>시스템 연동</b></td><td>SAP RFC 개발 및 OMS 배정 엔진 고도화</td><td style="color:var(--lf-red); font-weight:700;">85</td><td>50%</td></tr>
+                    <tr><td><b>운영/테스트</b></td><td>매장 교육 매뉴얼 제작 및 통합 QA</td><td>30</td><td>20%</td></tr>
+                </tbody>
+            </table>
+
+            <div class="total-summary">
+                <span style="font-size:18px; font-weight:700;">총 예상 투입 공수</span>
+                <span style="font-size:32px; font-weight:900; color:var(--lf-red);">160 M/D</span>
+            </div>
+        </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

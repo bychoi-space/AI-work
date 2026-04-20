@@ -3,19 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
-    <style>
-        .iphone { width: 320px; height: 600px; border: 10px solid #222; border-radius: 30px; background: #fff; margin: 40px auto; overflow: hidden; }
-    </style>
 </head>
 <body>
-    <div class="header"><h2 class="page-title">27. [UI] 마이페이지 목록</h2></div>
-    <div class="iphone">
-        <div style="padding:15px; border-bottom:1px solid #eee; font-weight:700;">MY ORDERS</div>
-        <div style="padding:15px; border-bottom:1px solid #eee;">
-            <div style="font-size:11px; color:#999;">2026.04.20</div>
-            <div style="margin-top:5px; font-weight:700;">HAZZYS 기모 티셔츠 외 1건</div>
-            <span class="badge badge-red" style="margin-top:5px;">매장배송 준비중</span>
+    <div class="slide-canvas">
+        <header class="ppt-header">27. [UI] 마이페이지 - 주문내역 목록</header>
+
+        <div style="display:flex; justify-content:center; padding:40px;">
+            <div style="width:340px; height:700px; background:#000; border-radius:50px; padding:12px; box-shadow: 0 40px 100px rgba(0,0,0,0.2);">
+                <div style="background:#F8F9FA; width:100%; height:100%; border-radius:38px; overflow-y:auto;">
+                    <div style="background:#FFF; padding:20px; border-bottom:1px solid #EEE; text-align:center; font-weight:800;">마이페이지</div>
+                    
+                    <div style="padding:15px;">
+                        <h5 style="margin-bottom:15px; font-size:14px;">최근 주문내역</h5>
+                        
+                        <div style="background:#FFF; padding:20px; border-radius:12px; margin-bottom:12px; border:1px solid #EEE;">
+                            <div style="display:flex; justify-content:space-between; font-size:11px; color:#999; margin-bottom:12px;">
+                                <span>2026.04.20</span>
+                                <span style="text-decoration:underline;">주문상세 ></span>
+                            </div>
+                            <div style="display:flex; gap:12px;">
+                                <div style="width:50px; height:70px; background:#EEE;"></div>
+                                <div>
+                                    <div style="font-size:13px; font-weight:700;">HAZZYS 기모 티셔츠</div>
+                                    <div style="font-size:11px; color:#666; margin-top:4px;">옵션: Navy / 100</div>
+                                    <div style="font-size:14px; font-weight:900; color:var(--lf-red); margin-top:10px;">매장배송 준비중</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

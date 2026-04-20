@@ -4,25 +4,64 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .iphone { width: 320px; height: 600px; border: 10px solid #222; border-radius: 30px; background: #fff; margin: 40px auto; overflow: hidden; }
+        .iphone-center { display: flex; justify-content: center; padding: 40px; }
+        .iphone-frame-hf {
+            width: 340px;
+            height: 700px;
+            background: #000;
+            border-radius: 50px;
+            padding: 12px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        .iphone-screen-hf {
+            background: #FFF;
+            width: 100%;
+            height: 100%;
+            border-radius: 38px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .track-dot { width: 10px; height: 10px; background: #DDD; border-radius: 50%; position: relative; }
+        .track-dot.active { background: var(--lf-red); box-shadow: 0 0 10px rgba(200, 25, 46, 0.4); }
+        .track-dot.active::after { content: ''; position: absolute; top: -5px; left: -5px; width: 20px; height: 20px; border: 1px solid var(--lf-red); border-radius: 50%; }
     </style>
 </head>
 <body>
-    <div class="header"><h2 class="page-title">28. [UI] 주문/배송 조회</h2></div>
-    <div class="iphone">
-        <div style="padding:15px; border-bottom:1px solid #eee; font-weight:700;">TRACKING</div>
-        <div style="padding:24px;">
-            <div style="font-size:16px; font-weight:700;">배송현황</div>
-            <div style="margin-top:20px; border-left:2px solid var(--lf-red); padding-left:20px; position:relative;">
-                <div style="margin-bottom:20px;">
-                    <b>배송중</b><br>
-                    <span style="font-size:11px; color:#666;">2026.04.20 14:00 (강남본점 발송)</span>
-                </div>
-                <div>
-                    <span style="color:#999;">상품 준비중</span>
+    <div class="slide-canvas">
+        <header class="ppt-header">28. [UI] 주문/배송 조회 (Tracking)</header>
+
+        <div class="iphone-center">
+            <div class="iphone-frame-hf">
+                <div class="iphone-screen-hf">
+                    <div style="padding:25px; border-bottom:1px solid #EEE; font-weight:800; text-align:center;">주문/배송 조회</div>
+                    <div style="padding:24px;">
+                        <h4 style="font-size:16px; margin-bottom:20px;">배송상태 상세</h4>
+                        
+                        <div style="display:flex; flex-direction:column; gap:40px; border-left:1px solid #EEE; margin-left:10px; padding-left:25px; position:relative;">
+                            <div>
+                                <div class="track-dot active" style="position:absolute; left:-6px;"></div>
+                                <b style="font-size:14px; color:var(--lf-red);">배송중</b>
+                                <p style="font-size:11px; color:#666; margin-top:4px;">[로젠택배] 1234-5678-90<br>2026.04.20 14:00 (강남본점 발송)</p>
+                            </div>
+                            <div>
+                                <div class="track-dot" style="position:absolute; left:-6px;"></div>
+                                <b style="font-size:14px; color:#555;">상품준비완료</b>
+                                <p style="font-size:11px; color:#999; margin-top:4px;">매장에서 상품을 포장하고 택배사로 전달했습니다.</p>
+                            </div>
+                            <div>
+                                <div class="track-dot" style="position:absolute; left:-6px;"></div>
+                                <b style="font-size:14px; color:#555;">주문접수</b>
+                                <p style="font-size:11px; color:#999; margin-top:4px;">고객님의 주문이 매장으로 배정되었습니다.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

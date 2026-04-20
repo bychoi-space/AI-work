@@ -3,17 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .policy-area-hf { padding: 80px 100px; }
+        .policy-row-hf { display: grid; grid-template-columns: 200px 1fr 1fr; gap: 20px; border-bottom: 1px solid #EEE; padding: 20px 0; align-items: center; }
+        .policy-label { font-size: 14px; font-weight: 800; color: #333; }
+        .ui-preview-hf { background: #f8fafc; border: 1px dashed #cbd5e1; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #666; }
+    </style>
 </head>
 <body>
-    <div class="header">
-        <h2 class="page-title">09. 주문서 UI 정책</h2>
-    </div>
-    <div class="content" style="padding:40px;">
-        <div class="logic-grid">
-            <div class="grid-header">구분</div><div class="grid-header">표현 영역</div><div class="grid-header">표현 방식</div>
-            <div class="grid-cell">주문서</div><div class="grid-cell">배송지 하단</div><div class="grid-cell">"매장배송 상품이 포함되어 있습니다"</div>
-            <div class="grid-cell">결제완료</div><div class="grid-cell">상품명 접두어</div><div class="grid-cell">"[매장배송] 상품명"</div>
+    <div class="slide-canvas">
+        <header class="ppt-header">09. 주문서 및 주문완료 UI 정책</header>
+
+        <div class="policy-area-hf">
+            <div class="policy-row-hf" style="background:#F1F3F5; border-top:2px solid #333;">
+                <b>구분</b> <b>표현 영역 및 내역</b> <b>UI 프리뷰</b>
+            </div>
+            <div class="policy-row-hf">
+                <div class="policy-label">주문서 (Checkout)</div>
+                <div style="font-size:13px;">배송지 정보 하단에 "매장배송" 안내 문구 노출 및 배송 요청사항 고정</div>
+                <div class="ui-preview-hf">"해당 주문에는 <b>매장배송</b> 상품이 포함되어 있습니다."</div>
+            </div>
+            <div class="policy-row-hf">
+                <div class="policy-label">결제완료 (Success)</div>
+                <div style="font-size:13px;">상품명 상단 또는 앞에 "[매장상품]" 텍스트 접두어 강제 노출</div>
+                <div class="ui-preview-hf"><b>[매장상품]</b> HAZZYS 기모 티셔츠외 1건</div>
+            </div>
         </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

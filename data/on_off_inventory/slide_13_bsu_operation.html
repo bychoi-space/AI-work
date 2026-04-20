@@ -3,22 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
-    <style>
-        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
-        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
-        .content { padding: 40px; }
-    </style>
 </head>
 <body>
-    <div class="header">
-        <h2 class="page-title">13. 물류 BSU 오퍼레이션 이슈</h2>
-    </div>
-    <div class="content">
-        <div class="arch-map">
-            <div class="flow-node" style="top:50px; left:50px;">물류센터</div>
-            <div class="flow-node" style="top:50px; left:300px;">매장 RT 발송</div>
-            <div class="flow-node node-red" style="top:150px; left:300px; border-color:var(--lf-red);">오피킹/미배정 이슈 발생</div>
+    <div class="slide-canvas">
+        <header class="ppt-header">13. 물류 BSU 오퍼레이션 프로세스 및 이슈</header>
+
+        <div class="db-flow" style="padding:100px;">
+            <div class="db-box" style="width:200px; background:#F8F9FA;">
+                <h3 style="color:#333;">물류 센터</h3>
+                <div style="font-size:11px;">WMS 연동</div>
+            </div>
+
+            <div class="sync-connector">
+                <div class="sync-arrow"></div>
+                <span class="batch-badge" style="border-color:#666; color:#666;">RT 발송 지시</span>
+            </div>
+
+            <div class="db-box" style="width:200px; background:#DEEAF6; border-color:#2E5BFF;">
+                <h3 style="color:#1E40AF">거점 매장</h3>
+                <div style="font-size:11px;">수령 및 재고 입고</div>
+            </div>
         </div>
+
+        <div class="logic-summary" style="background:#FFF5F5; border:1px solid #FFEBEB;">
+            <p style="font-size:14px; color:var(--lf-red); font-weight:800;">⚠️ 주요 개선 필요 사항</p>
+            <p style="font-size:13px; color:#333; margin-top:10px; line-height:1.6;">
+                - 센터 → 매장 RT 발송 시 패킹 리스트와 실제 입고 수량 불일치 이슈 빈번<br>
+                - 매장 내 RT 전용 적치 공간 부족으로 인한 상품 손상 방지 대책 수립 필요
+            </p>
+        </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

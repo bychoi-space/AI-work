@@ -3,17 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .checklist-canvas { padding: 60px 100px; }
+        .checklist-item {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px;
+            align-items: center;
+            background: #fff;
+            margin-bottom: 12px;
+            padding: 20px;
+            border: 1.5px solid #EEE;
+            border-radius: 8px;
+        }
+        .check-icon { font-size: 20px; color: var(--lf-red); font-weight: 900; }
+        .check-status { font-size: 13px; font-weight: 700; text-align: center; }
+    </style>
 </head>
 <body>
-    <div class="header"><h2 class="page-title">19. 세부 실무 결정 사항</h2></div>
-    <div class="content" style="padding:40px;">
-        <table class="data-table">
-            <thead><tr><th>항목</th><th>결정 내용</th><th>상태</th></tr></thead>
-            <tbody>
-                <tr><td>배송비 정산</td><td>매장 매출 차감 후 본사 비용 처리</td><td>확정</td></tr>
-                <tr><td>고객 문의</td><td>CS 센터 통합 운영</td><td>확정</td></tr>
-            </tbody>
-        </table>
+    <div class="slide-canvas">
+        <header class="ppt-header">19. 세부 실무 결정 사항 리스트</header>
+
+        <div class="checklist-canvas">
+            <div class="checklist-item" style="border-left: 5px solid var(--lf-red);">
+                <div class="check-icon">✓</div>
+                <div>
+                    <h5 style="font-size:15px;">매장별 발송 한도(Cap) 설정</h5>
+                    <p style="font-size:12px; color:#666; margin-top:4px;">매장 운영 리소스를 고려하여 일일 최대 10건으로 배정 한도 설정</p>
+                </div>
+                <div class="check-status" style="color:var(--lf-red);">COMPLETED</div>
+            </div>
+            <div class="checklist-item">
+                <div class="check-icon">✓</div>
+                <div>
+                    <h5 style="font-size:15px;">취소 주문 처리 프로세스</h5>
+                    <p style="font-size:12px; color:#666; margin-top:4px;">상품 발송 전 취소 시 매장에 즉시 알림 송출 및 재고 복원</p>
+                </div>
+                <div class="check-status" style="color:var(--lf-red);">COMPLETED</div>
+            </div>
+            <div class="checklist-item" style="opacity:0.6;">
+                <div class="check-icon" style="color:#BBB;">-</div>
+                <div>
+                    <h5 style="font-size:15px;">배송 불가 도서산간 지역 처리</h5>
+                    <p style="font-size:12px; color:#666; margin-top:4px;">제주 및 도서 전문 택배 연동 여부 검토 중 (런칭 후 2차 반영)</p>
+                </div>
+                <div class="check-status" style="color:#999;">PENDING</div>
+            </div>
+        </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

@@ -4,121 +4,118 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
-        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
-        
-        .mockup-container {
+        .mock-split {
             display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 40px;
-            padding: 40px;
+            grid-template-columns: 400px 1fr;
+            gap: 60px;
+            padding: 60px 100px;
         }
 
-        /* 1. Mobile PDP Mockup */
-        .phone-frame {
-            width: 350px;
-            height: 700px;
+        /* High-Fidelity Phone Frame */
+        .iphone-frame {
+            width: 320px;
+            height: 650px;
+            background: #000;
+            border-radius: 50px;
+            padding: 12px;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        }
+        .iphone-screen {
             background: #fff;
-            border: 12px solid #222;
-            border-radius: 40px;
+            width: 100%;
+            height: 100%;
+            border-radius: 38px;
             overflow: hidden;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.2);
             position: relative;
         }
-        .phone-content { height: 100%; display: flex; flex-direction: column; }
-        .pdp-img { background: #eee; height: 350px; width: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #aaa; }
-        .pdp-info { padding: 20px; flex: 1; border-top: 1px solid #eee; }
-        .pdp-brand { font-size: 12px; color: #666; font-weight: 700; }
-        .pdp-name { font-size: 18px; font-weight: 500; margin: 4px 0 12px; }
-        .pdp-price { font-size: 20px; font-weight: 800; color: #222; }
 
-        .store-badge-lg {
+        .store-badge-premium {
             background: var(--lf-red);
             color: #fff;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 13px;
+            padding: 6px 12px;
+            font-size: 12px;
             font-weight: 800;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 12px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 8px;
         }
 
-        /* 2. Web Basket Mockup */
+        /* Web Frame */
         .web-frame {
             background: #fff;
-            border: 1px solid var(--admin-border);
-            border-radius: 12px;
+            border: 1px solid #DDD;
+            border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
         }
-        .web-header { background: #F8FAFC; padding: 15px 20px; border-bottom: 1px solid #eee; font-weight: 700; }
-        .basket-item { padding: 20px; border-bottom: 1px solid #eee; display: flex; gap: 15px; align-items: center; }
-        .item-thumb { width: 80px; height: 100px; background: #eee; border-radius: 4px; }
-        .item-detail { flex: 1; }
+        .web-bar { background: #EEE; height: 35px; border-bottom: 1px solid #DDD; display: flex; align-items: center; padding-left: 15px; gap: 6px; }
+        .web-dot { width: 8px; height: 8px; border-radius: 50%; opacity: 0.5; }
+        
+        .basket-list { padding: 30px; }
+        .basket-item {
+            display: flex;
+            gap: 20px;
+            border-bottom: 1px solid #EEE;
+            padding-bottom: 25px;
+            margin-bottom: 25px;
+        }
+        .item-img { width: 80px; height: 110px; background: #F1F3F5; border-radius: 4px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2 class="page-title">08. UI 표현 정책 상세 (PDP/BASKET)</h2>
-    </div>
+    <div class="slide-canvas">
+        <header class="ppt-header">08. UI 표현 정책 상세 (PDP/BASKET)</header>
 
-    <div class="mockup-container">
-        <!-- Mobile PDP -->
-        <div class="phone-frame">
-            <div class="phone-content">
-                <div class="pdp-img">PRODUCT IMAGE</div>
-                <div class="pdp-info">
-                    <div class="store-badge-lg">
-                        <span class="material-icons-outlined" style="font-size: 16px;">local_shipping</span>
-                        매장상품배송
+        <div class="mock-split">
+            <!-- PDP Mockup -->
+            <div class="iphone-frame">
+                <div class="iphone-screen">
+                    <div style="height:320px; background:#F1F3F5;"></div>
+                    <div style="padding:24px;">
+                        <span class="store-badge-premium">매장상품배송</span>
+                        <h4 style="font-size:18px; margin-bottom:10px;">HAZZYS [매장상품] <br>네이비 면혼방 기본 반팔티</h4>
+                        <div style="font-size:22px; font-weight:900;">69,000원</div>
+                        <hr style="margin:20px 0; border:none; border-top:1px solid #EEE;">
+                        <p style="font-size:12px; color:#666; line-height:1.6;">• 강남본점 발송 (무료배송)<br>• 1~2일 내 도착 예정</p>
                     </div>
-                    <div class="pdp-brand">HAZZYS MEN</div>
-                    <div class="pdp-name">[매장상품] 네이비 면혼방 기본 반팔티셔츠</div>
-                    <div class="pdp-price">69,000원</div>
-                    
-                    <p style="font-size:12px; color:#666; margin-top:20px; line-height:1.6;">
-                        • 이 상품은 <b>강남본점</b>에서 직접 발송됩니다.<br>
-                        • 일반 택배보다 1~2일 정도 더 소요될 수 있습니다.
-                    </p>
+                    <div style="position:absolute; bottom:0; width:100%; border-top:1px solid #EEE; padding:15px; background:#fff;">
+                        <button class="btn-lf" style="width:100%; height:50px; font-size:16px;">구매하기</button>
+                    </div>
                 </div>
-                <div style="padding: 20px; background: #fff; border-top:1px solid #eee;">
-                    <button class="btn-lf" style="width:100%; height:50px; font-size:16px;">구매하기</button>
+            </div>
+
+            <!-- Web Basket -->
+            <div class="web-frame">
+                <div class="web-bar">
+                    <div class="web-dot" style="background:#FF5F56;"></div>
+                    <div class="web-dot" style="background:#FFBD2E;"></div>
+                    <div class="web-dot" style="background:#27C93F;"></div>
+                </div>
+                <div class="basket-list">
+                    <h3 style="margin-bottom:25px;">장바구니 (2개)</h3>
+                    <div class="basket-item">
+                        <div class="item-img"></div>
+                        <div style="flex:1;">
+                            <span class="admin-badge" style="background:var(--lf-red); color:#fff; padding:2px 8px;">매장배송</span>
+                            <div style="font-size:14px; font-weight:700; margin-top:8px;">[매장상품] HAZZYS 기모 티셔츠</div>
+                            <div style="font-size:13px; color:#999; margin-top:4px;">옵션: Navy / 100</div>
+                        </div>
+                        <div style="font-weight:900; font-size:16px;">69,000원</div>
+                    </div>
+                    <div class="basket-item" style="opacity:0.6;">
+                        <div class="item-img"></div>
+                        <div style="flex:1;">
+                            <span class="admin-badge" style="background:#666; color:#fff; padding:2px 8px;">일반배송</span>
+                            <div style="font-size:14px; font-weight:700; margin-top:8px;">DAKS 베이직 셔츠</div>
+                        </div>
+                        <div style="font-weight:900; font-size:16px;">120,000원</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Web Basket -->
-        <div class="web-frame">
-            <div class="web-header">장바구니 (2)</div>
-            <div class="basket-item">
-                <div class="item-thumb"></div>
-                <div class="item-detail">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div>
-                            <span class="badge badge-red">매장상품배송</span>
-                            <div style="font-weight:700; margin-top:6px;">HAZZYS [매장상품] 반팔 티셔츠</div>
-                            <div style="font-size:12px; color:#666; margin-top:4px;">옵션: Navy / 100 / 1개</div>
-                        </div>
-                        <div style="font-weight:800;">69,000원</div>
-                    </div>
-                </div>
-            </div>
-            <div class="basket-item">
-                <div class="item-thumb"></div>
-                <div class="item-detail">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div>
-                            <span class="badge" style="background:#eee; color:#666;">일반배송</span>
-                            <div style="font-weight:700; margin-top:6px;">DAKS 넥타이</div>
-                            <div style="font-size:12px; color:#666; margin-top:4px;">옵션: Wine / FREE / 1개</div>
-                        </div>
-                        <div style="font-weight:800;">120,000원</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

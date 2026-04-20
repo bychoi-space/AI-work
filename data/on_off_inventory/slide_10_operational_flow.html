@@ -4,100 +4,109 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
-        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
-        .sub-desc { color: #64748B; margin-top: 8px; font-size: 14px; }
-        
-        .flow-container {
-            padding: 40px;
+        .talk-stage {
             display: flex;
-            gap: 20px;
-            overflow-x: auto;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px;
+            padding: 100px;
         }
 
-        .kakao-card {
-            width: 250px;
-            background: #FFEB3B; /* Kakao Yellow */
-            border-radius: 12px;
-            padding: 16px;
+        .kakao-card-hf {
+            width: 280px;
+            background: #FFEB3B;
+            border-radius: 18px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             position: relative;
         }
 
-        .kakao-header { font-size: 12px; font-weight: 800; color: #3E2723; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 8px; }
-        .kakao-msg {
+        .kakao-logo-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1.5px solid rgba(0,0,0,0.1);
+            padding-bottom: 10px;
+        }
+        .kakao-logo-bar b { font-size: 13px; color: #4E342E; }
+
+        .bubble-msg {
             background: #fff;
-            padding: 12px;
-            border-radius: 4px;
-            font-size: 11px;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 12px;
             line-height: 1.6;
             color: #333;
         }
-        .kakao-btn {
-            background: #F8F9FA;
-            padding: 8px;
+        .bubble-msg b { color: var(--lf-red); }
+
+        .kakao-btn-hf {
+            background: #f8f9fa;
+            border: 1px solid #DDD;
+            padding: 10px;
             text-align: center;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
-            border-radius: 4px;
-            border: 1px solid #ddd;
+            border-radius: 6px;
         }
 
-        .flow-arrow-right {
-            display: flex;
-            align-items: center;
-            color: #CBD5E1;
+        .flow-next {
+            align-self: center;
+            position: relative;
+        }
+        .flow-next::after {
+            content: '▶';
+            font-size: 24px;
+            color: #D9D9D9;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2 class="page-title">10. 매장상품배송 알림톡 서비스</h2>
-        <p class="sub-desc">주문 접수부터 배송 시작까지, 고객에게 전달되는 단계별 안내 메시지 정책</p>
-    </div>
+    <div class="slide-canvas">
+        <header class="ppt-header">10. 매장상품배송 알림톡 서비스</header>
 
-    <div class="flow-container">
-        <!-- Message 1 -->
-        <div class="kakao-card">
-            <div class="kakao-header">알림톡 [주문접수]</div>
-            <div class="kakao-msg">
-                <b>[LFmall] 주문이 접수되었습니다.</b><br><br>
-                고객님이 주문하신 상품은 <b>강남본점</b>에서 정성껏 준비하여 발송될 예정입니다.
+        <div class="talk-stage">
+            <div class="kakao-card-hf">
+                <div class="kakao-logo-bar"><b>알림톡 [주문완료]</b></div>
+                <div class="bubble-msg">
+                    <b>[LFmall]</b><br>
+                    고객님의 주문이 접수되었습니다.<br><br>
+                    주문한 상품은 <b>강남본점</b>에서 <br>직접 발송해 드릴 예정입니다.
+                </div>
+                <div class="kakao-btn-hf">주문내역 확인</div>
             </div>
-            <div class="kakao-btn">주문상세 보기</div>
-        </div>
 
-        <div class="flow-arrow-right">
-            <span class="material-icons-outlined" style="font-size: 32px;">arrow_forward</span>
-        </div>
+            <div class="flow-next"></div>
 
-        <!-- Message 2 -->
-        <div class="kakao-card">
-            <div class="kakao-header">알림톡 [재고확인]</div>
-            <div class="kakao-msg">
-                <b>[LFmall] 상품 준비 중입니다.</b><br><br>
-                매장에서 상품 검수 및 포장을 진행하고 있습니다. 곧 발송 안내를 드리겠습니다.
+            <div class="kakao-card-hf">
+                <div class="kakao-logo-bar"><b>알림톡 [배송시작]</b></div>
+                <div class="bubble-msg">
+                    <b>[LFmall]</b><br>
+                    상품 배송이 시작되었습니다!<br><br>
+                    - 상품명: HAZZYS 티셔츠<br>
+                    - 발송매장: 강남본점<br>
+                    - 송장: [로젠] 123456789
+                </div>
+                <div class="kakao-btn-hf">배송조회 하기</div>
             </div>
-            <div class="kakao-btn">매장 정보 확인</div>
-        </div>
 
-        <div class="flow-arrow-right">
-            <span class="material-icons-outlined" style="font-size: 32px;">arrow_forward</span>
-        </div>
+            <div class="flow-next"></div>
 
-        <!-- Message 3 -->
-        <div class="kakao-card" style="background:#fff; border: 2px solid #FFEB3B;">
-            <div class="kakao-header">알림톡 [발송완료]</div>
-            <div class="kakao-msg">
-                <b>[LFmall] 배송이 시작되었습니다!</b><br><br>
-                매장에서 택배사에 전달되었습니다.<br>
-                운송장: 1234-5678-90
+            <div class="kakao-card-hf" style="background:#E0E0E0; opacity:0.6;">
+                <div class="kakao-logo-bar"><b>알림톡 [배송완료]</b></div>
+                <div class="bubble-msg">
+                    <b>[LFmall]</b><br>
+                    상품이 무사히 도착했나요?<br><br>
+                    지금 리뷰를 작성하시면 <br>L-Point를 적립해 드립니다.
+                </div>
+                <div class="kakao-btn-hf">리뷰 작성하기</div>
             </div>
-            <div class="kakao-btn">배송추적 하기</div>
         </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

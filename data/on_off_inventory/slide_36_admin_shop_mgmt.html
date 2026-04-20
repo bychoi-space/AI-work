@@ -4,29 +4,75 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .page-header { background: #fff; padding: 20px 30px; border-bottom: 1px solid var(--admin-border); }
-        .page-title { font-size: 20px; font-weight: 700; }
-        .content { padding: 30px; }
+        .admin-content-hf {
+            padding: 30px 40px;
+            margin-left: 240px;
+            background: #F5F6F8;
+            height: calc(100% - 48px);
+        }
+        .header-action-row { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
+        
+        .toggle-on { color: #059669; font-weight: 800; }
+        .toggle-off { color: #BBB; }
     </style>
 </head>
 <body>
-    <div class="page-header">
-        <h1 class="page-title">36. [어드민] 매장 마스터 관리</h1>
-    </div>
-    <div class="content">
-        <div class="action-bar" style="margin-bottom:20px;">
-            <button class="btn-lf">신규 매장 등록</button>
+    <div class="slide-canvas">
+        <header class="ppt-header">36. [어드민] 매장 마스터 관리</header>
+
+        <!-- Sidebar placeholder -->
+        <div style="width:240px; background:#252830; height:100%; position:absolute; top:48px; left:0; padding:20px;">
+            <div style="color:#FFF; opacity:0.3; font-size:10px;">DASHBOARD</div>
+            <div style="color:#FFF; margin-top:20px; font-size:13px;">→ 매장 마스터 관리</div>
         </div>
-        <table class="data-table">
-            <thead>
-                <tr><th>매장코드</th><th>매장명</th><th>구분</th><th>매장배송여부</th><th>안전재고수량</th><th>운영현황</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>S001</td><td>강남본점</td><td>직영</td><td>Y (활성)</td><td>5</td><td>운영중</td></tr>
-                <tr><td>S002</td><td>명동스타일</td><td>직영</td><td>Y (활성)</td><td>3</td><td>운영중</td></tr>
-                <tr><td>S003</td><td>대구영업소</td><td>대리점</td><td>N (비활성)</td><td>0</td><td>중단</td></tr>
-            </tbody>
-        </table>
+
+        <div class="admin-content-hf">
+            <div class="header-action-row">
+                <h2 style="font-size:20px; font-weight:800;">매송상품배송 매장 설정</h2>
+                <button class="btn-lf" style="height:36px; padding:0 20px;">신규 매장 등록</button>
+            </div>
+
+            <table class="ppt-data-table">
+                <thead>
+                    <tr>
+                        <th style="width:100px;">매장코드</th>
+                        <th>매장명</th>
+                        <th style="width:100px;">매장구분</th>
+                        <th style="width:120px;">서비스여부</th>
+                        <th style="width:120px;">안전재고(Cap)</th>
+                        <th>운영 상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight:700;">S001</td>
+                        <td>강남본점 (HAZZYS)</td>
+                        <td>직영점</td>
+                        <td class="toggle-on">● 활성화</td>
+                        <td>5 EA</td>
+                        <td><span class="admin-badge" style="background:#E2EFDA; color:#059669;">운영중</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:700;">S002</td>
+                        <td>명동스타일 (DAKS)</td>
+                        <td>직영점</td>
+                        <td class="toggle-on">● 활성화</td>
+                        <td>3 EA</td>
+                        <td><span class="admin-badge" style="background:#E2EFDA; color:#059669;">운영중</span></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:700;">S003</td>
+                        <td>부산광복소 (MAESTRO)</td>
+                        <td>대리점</td>
+                        <td class="toggle-off">○ 비활성화</td>
+                        <td>0 EA</td>
+                        <td><span class="admin-badge" style="background:#F1F3F5; color:#999;">중단/폐점</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

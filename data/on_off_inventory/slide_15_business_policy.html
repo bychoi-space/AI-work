@@ -3,17 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .policy-grid {
+            padding: 60px 100px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .policy-item {
+            background: #fff;
+            border: 1px solid #D9D9D9;
+            padding: 30px;
+            border-radius: 8px;
+            position: relative;
+        }
+        .status-badge {
+            position: absolute;
+            top: 20px; right: 20px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+        .badge-done { background: #E2EFDA; color: #059669; }
+        .badge-pending { background: #FFF2CC; color: #D97706; }
+    </style>
 </head>
 <body>
-    <div class="header"><h2 class="page-title">15. 현업(e-영업) 정책 결정 사항</h2></div>
-    <div class="content" style="padding:40px;">
-        <table class="data-table">
-            <thead><tr><th>항목</th><th>정책 내용</th><th>결정 상태</th></tr></thead>
-            <tbody>
-                <tr><td>배송비 정책</td><td>매장배송 시에도 무료배송 유지 여부</td><td><span class="badge badge-red">협의중</span></td></tr>
-                <tr><td>포장 패키지</td><td>브랜드별 박스 vs 센터 통합 박스</td><td>확정</td></tr>
-            </tbody>
-        </table>
+    <div class="slide-canvas">
+        <header class="ppt-header">15. 현업(e-영업) 정책 결정 사항</header>
+
+        <div class="policy-grid">
+            <div class="policy-item">
+                <span class="status-badge badge-done">확정</span>
+                <h4 style="margin-bottom:12px; font-size:16px;">무료 배송 정책</h4>
+                <p style="font-size:13px; color:#666;">매장배송 서비스 런칭 시점부터 6개월간 전 지역 '무료 배송' 이벤트를 진행하여 고객 인지도를 확보함</p>
+            </div>
+            <div class="policy-item">
+                <span class="status-badge badge-pending">협의중</span>
+                <h4 style="margin-bottom:12px; font-size:16px;">포장 패키지 표준화</h4>
+                <p style="font-size:13px; color:#666;">브랜드별 고급 전전용 박스 사용 여부와 물류 효율화를 위한 통합 박스 사용 안 비교 검토 중</p>
+            </div>
+            <div class="policy-item">
+                <span class="status-badge badge-done">확정</span>
+                <h4 style="margin-bottom:12px; font-size:16px;">반품 프로세스</h4>
+                <p style="font-size:13px; color:#666;">매장배송 상품의 반품은 거점 매장이 아닌 '물류 센터'로 회수하여 검수 후 재배정하는 프로세스로 확정</p>
+            </div>
+            <div class="policy-item">
+                <span class="status-badge badge-pending">협의중</span>
+                <h4 style="margin-bottom:12px; font-size:16px;">매장 인센티브제</h4>
+                <p style="font-size:13px; color:#666;">매장배송 건당 일정 수준의 핸들링 피(Handling Fee) 지급을 통한 매장 참여도 제고 방안 수립 중</p>
+            </div>
+        </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

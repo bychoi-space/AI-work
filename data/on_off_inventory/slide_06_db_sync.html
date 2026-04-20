@@ -4,106 +4,101 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
-        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
-        .sub-desc { color: #64748B; margin-top: 8px; font-size: 14px; }
-        
-        .db-container {
+        .db-flow {
+            padding: 100px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 60px;
-            padding: 60px;
+            justify-content: center;
+            gap: 120px;
         }
 
-        .db-node {
-            width: 200px;
-            padding: 30px 20px;
+        .db-box {
+            width: 250px;
             background: #fff;
-            border: 2px solid #CBD5E1;
-            border-radius: 16px;
+            border: 1px solid #B7B7B7;
+            padding: 30px;
             text-align: center;
+            border-radius: 12px;
             position: relative;
         }
+        .db-box.lfmall { background: var(--node-lfmall-bg); border-color: #2E5BFF; }
+        .db-box.sap { background: var(--node-oms-sap-bg); border-color: #10B981; }
 
-        .db-node h3 { font-size: 18px; margin-bottom: 12px; }
-        .db-table { font-size: 11px; font-family: monospace; color: #64748B; background: #F8FAFC; padding: 4px; border-radius: 4px; }
+        .db-box h3 { font-size: 20px; margin-bottom: 15px; font-weight: 800; }
+        .db-table-info { font-family: 'Courier New', Courier, monospace; font-size: 11px; color: #555; background: rgba(255,255,255,0.5); padding: 8px; border-radius: 4px; }
 
-        .sync-pipe {
+        .sync-connector {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
-
-        .pipe-arrow {
-            width: 100px;
-            height: 4px;
+        .batch-badge {
+            background: #fff;
+            border: 1px solid var(--lf-red);
+            color: var(--lf-red);
+            padding: 4px 14px;
+            font-size: 11px;
+            font-weight: 800;
+            border-radius: 20px;
+        }
+        .sync-arrow {
+            width: 150px;
+            height: 3px;
             background: var(--lf-red);
             position: relative;
         }
-        .pipe-arrow::after {
+        .sync-arrow::after {
             content: '';
             position: absolute;
             right: -10px; top: -6px;
             border-top: 8px solid transparent;
             border-bottom: 8px solid transparent;
-            border-left: 12px solid var(--lf-red);
+            border-left: 14px solid var(--lf-red);
         }
 
-        .sync-label {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--lf-red);
-            background: #fff;
-            padding: 4px 12px;
-            border: 1px solid var(--lf-red);
-            border-radius: 20px;
-        }
-
-        .logic-panel {
-            margin: 0 40px 40px;
+        .logic-summary {
+            margin: 0 100px;
+            background: #F1F3F5;
             padding: 30px;
-            background: #fff;
-            border: 1px solid var(--admin-border);
-            border-radius: 12px;
+            border-radius: 8px;
         }
-
-        .logic-list { list-style: none; }
-        .logic-list li { margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 14px; }
-        .logic-list li::before { content: '✓'; position: absolute; left: 0; color: var(--lf-red); font-weight: 800; }
+        .logic-summary ul { list-style: none; }
+        .logic-summary li { font-size: 14px; margin-bottom: 8px; padding-left: 20px; position: relative; }
+        .logic-summary li::before { content: '■'; position: absolute; left: 0; color: var(--lf-red); font-size: 10px; top: 2px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2 class="page-title">06. 재고 DB 구조 및 동기화 로직</h2>
-        <p class="sub-desc">SAP ERP와 LFmall 간의 원장 재고 및 매장 가용 재고 동기화 방식</p>
-    </div>
+    <div class="slide-canvas">
+        <header class="ppt-header">06. 재고 DB 구조 및 동기화 로직</header>
 
-    <div class="db-container">
-        <div class="db-node">
-            <h3 style="color:#1E40AF">SAP (ERP)</h3>
-            <div class="db-table">ZSDT510 (Store Stock)</div>
+        <div class="db-flow">
+            <div class="db-box sap">
+                <h3 style="color:#059669">SAP ERP</h3>
+                <div class="db-table-info">Table: ZSDT510 (Master)</div>
+            </div>
+
+            <div class="sync-connector">
+                <span class="batch-badge">10min Batch Sync</span>
+                <div class="sync-arrow"></div>
+            </div>
+
+            <div class="db-box lfmall">
+                <h3 style="color:#1E40AF">LFmall DB</h3>
+                <div class="db-table-info">Table: STB_STOCK_BASE</div>
+            </div>
         </div>
 
-        <div class="sync-pipe">
-            <span class="sync-label">10min BATCH</span>
-            <div class="pipe-arrow"></div>
+        <div class="logic-summary">
+            <ul>
+                <li><b>재고 원치 관리</b>: SAP ERP의 매장별 재고 원장을 절대 마스터로 활용</li>
+                <li><b>동기화 프로세스</b>: 10분 주기 배치를 통해 SAP 재고 변동분을 LFmall DB에 반영</li>
+                <li><b>가용 재고 산출</b>: 총 재고 - (안전재고 + 예약재고) 로직을 통해 최종 판매 가능 수량 노출</li>
+                <li><b>데이터 무결성</b>: 일 배치를 통한 정합성 체크 및 필요 시 실시간 RFC 수동 동기화 지원</li>
+            </ul>
         </div>
 
-        <div class="db-node" style="border-color: var(--lf-red)">
-            <h3 style="color:var(--lf-red)">LFmall DB</h3>
-            <div class="db-table">STB_STOCK_RES_BASE</div>
-        </div>
-    </div>
-
-    <div class="logic-panel">
-        <ul class="logic-list">
-            <li><b>기준 테이블</b>: SAP의 매장별 재고 원장(ZSDT510)을 마스터로 관리</li>
-            <li><b>동기화 주기</b>: 10분 단위의 Batch 연동을 통해 LFmall 가용 재고 테이블 업데이트</li>
-            <li><b>실시간 예약</b>: 고객 주문 시 즉시 STB_STOCK_RES_BASE에 예약(Reservation) 레코드 생성</li>
-            <li><b>차이 관리</b>: Batch 수행 시 실제 재고와 예약 재고 간의 차이분 자동 보정 로직 적용</li>
-        </ul>
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

@@ -3,24 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .toc-stage { padding: 60px 100px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+        .toc-section { margin-bottom: 40px; }
+        .toc-section h3 { font-size: 18px; color: var(--lf-red); margin-bottom: 15px; border-bottom: 2px solid var(--lf-red); display: inline-block; }
+        .toc-list { list-style: none; }
+        .toc-list li { margin-bottom: 10px; font-size: 14px; display: flex; justify-content: space-between; border-bottom: 1px dashed #EEE; padding-bottom: 4px; }
+        .toc-page { color: #999; font-weight: 700; width: 40px; text-align: right; }
+    </style>
 </head>
 <body>
-    <div class="header">
-        <h2 class="page-title">02. 목차 (Table of Contents)</h2>
-    </div>
-    <div class="content" style="padding:40px; columns: 2;">
-        <ul style="list-style:none; line-height:2;">
-            <li><b>I. 프로젝트 개요</b></li>
-            <li>01. 표지 / 02. 목차 / 03. 아키텍처</li>
-            <li style="margin-top:10px;"><b>II. 서비스 전략 및 운영 정책</b></li>
-            <li>04-10. 명칭, 이슈, DB, Bucket, UI</li>
-            <li style="margin-top:10px;"><b>III. 상세 설계 및 로직</b></li>
-            <li>11-20. LT, 리소스, 연동, 일정, 결품로직</li>
-            <li style="margin-top:10px;"><b>IV. UI 설계 (Consumer)</b></li>
-            <li>21-30. PDP, 쇼핑백, 주문서, 마이페이지</li>
-            <li style="margin-top:10px;"><b>V. UI 설계 (Admin)</b></li>
-            <li>31-38. 상품관리, 주문관리, 매장관리</li>
-        </ul>
+    <div class="slide-canvas">
+        <header class="ppt-header">02. 목차 (Table of Contents)</header>
+
+        <div class="toc-stage">
+            <div>
+                <div class="toc-section">
+                    <h3>I. 프로젝트 개요</h3>
+                    <ul class="toc-list">
+                        <li><span>• 프로젝트 기본 정보</span> <span class="toc-page">01</span></li>
+                        <li><span>• 상세 목차</span> <span class="toc-page">02</span></li>
+                        <li><span>• 전체 시스템 아키텍처</span> <span class="toc-page">03</span></li>
+                    </ul>
+                </div>
+                <div class="toc-section">
+                    <h3>II. 서비스 전략 및 운영 정책</h3>
+                    <ul class="toc-list">
+                        <li><span>• 서비스 명칭 및 전략</span> <span class="toc-page">04</span></li>
+                        <li><span>• 전체 프로세스 맵</span> <span class="toc-page">05</span></li>
+                        <li><span>• 재고 동기화 로직</span> <span class="toc-page">06</span></li>
+                        <li><span>• Stock Bucket 정의</span> <span class="toc-page">07</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div>
+                <div class="toc-section">
+                    <h3>III. UI 설계 안 (Front/Admin)</h3>
+                    <ul class="toc-list">
+                        <li><span>• 모바일 기획 (PDP/Basket)</span> <span class="toc-page">21</span></li>
+                        <li><span>• 주문서 및 마이페이지</span> <span class="toc-page">25</span></li>
+                        <li><span>• 어드민 재고 조회</span> <span class="toc-page">30</span></li>
+                        <li><span>• 매장 마스터 관리</span> <span class="toc-page">36</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

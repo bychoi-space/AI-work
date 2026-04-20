@@ -4,90 +4,77 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
-        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
-        .sub-desc { color: #64748B; margin-top: 8px; font-size: 14px; }
+        .branding-title { font-size: 28px; font-weight: 800; color: var(--lf-red); margin: 60px 100px 20px; }
+        .branding-desc { font-size: 16px; color: #666; margin: 0 100px 60px; line-height: 1.6; }
         
-        .content-container {
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .candidates-list {
+        .vote-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
-            width: 100%;
-            max-width: 800px;
-            margin-bottom: 40px;
+            padding: 0 100px;
         }
 
-        .candidate-item {
-            padding: 20px;
+        .vote-card {
             background: #fff;
-            border: 1px solid var(--admin-border);
-            border-radius: 8px;
+            border: 2px solid #EEE;
+            border-radius: 12px;
+            padding: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s;
         }
 
-        .candidate-item.selected {
-            border: 2px solid var(--lf-red);
-            background: rgba(200, 25, 46, 0.05);
+        .vote-card.selected {
+            border-color: var(--lf-red);
+            background: rgba(200, 25, 46, 0.02);
+            box-shadow: 0 10px 30px rgba(200, 25, 46, 0.1);
         }
 
-        .candidate-name { font-weight: 700; font-size: 16px; }
-        .candidate-status { font-size: 12px; color: var(--lf-red); font-weight: 800; }
+        .vote-card h3 { font-size: 22px; font-weight: 700; color: #333; }
+        .vote-card.selected h3 { color: var(--lf-red); }
 
-        .selected-box {
-            background: var(--admin-sidebar);
+        .selected-badge {
+            background: var(--lf-red);
             color: #fff;
-            padding: 40px;
-            border-radius: 12px;
-            text-align: center;
-            width: 100%;
-            max-width: 800px;
-            box-shadow: var(--box-shadow);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 800;
         }
 
-        .selected-label { font-size: 14px; color: var(--lf-red); font-weight: 700; margin-bottom: 12px; }
-        .selected-value { font-size: 36px; font-weight: 800; letter-spacing: -1px; }
+        .final-hero {
+            margin: 60px 100px;
+            background: #252830;
+            border-radius: 20px;
+            padding: 60px;
+            text-align: center;
+            color: #fff;
+        }
+        .hero-label { color: var(--lf-red); font-size: 14px; font-weight: 800; margin-bottom: 12px; letter-spacing: 2px; }
+        .hero-name { font-size: 48px; font-weight: 900; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2 class="page-title">04. 서비스 명칭 선정</h2>
-        <p class="sub-desc">브랜드별 유관 부서 및 고객 인지도 조사를 통한 서비스 명칭 확정</p>
-    </div>
+    <div class="slide-canvas">
+        <header class="ppt-header">04. 서비스 명칭 선정</header>
 
-    <div class="content-container">
-        <div class="candidates-list">
-            <div class="candidate-item">
-                <span class="candidate-name">매장 합포 배송</span>
-                <span style="color:#94a3b8">Drop</span>
-            </div>
-            <div class="candidate-item">
-                <span class="candidate-name">하이퍼 로컬 배송</span>
-                <span style="color:#94a3b8">Drop</span>
-            </div>
-            <div class="candidate-item selected">
-                <span class="candidate-name">매장 상품 배송</span>
-                <span class="candidate-status">SELECTED ✓</span>
-            </div>
-            <div class="candidate-item">
-                <span class="candidate-name">옴니 채널 배송</span>
-                <span style="color:#94a3b8">Drop</span>
-            </div>
+        <h1 class="branding-title">매장 내 상품을 직접 배송하는 가치 전달</h1>
+        <p class="branding-desc">네이밍 후보군 중 브랜드 실무자 조사를 통해 최적의 명칭을 선정하였습니다.</p>
+
+        <div class="vote-container">
+            <div class="vote-card"><h3>매장 합포 배송</h3><span style="color:#CCC;">Drop</span></div>
+            <div class="vote-card"><h3>하이퍼 로컬 배송</h3><span style="color:#CCC;">Drop</span></div>
+            <div class="vote-card selected"><h3>매장 상품 배송</h3><span class="selected-badge">SELECTED ✓</span></div>
+            <div class="vote-card"><h3>옴니 채널 배송</h3><span style="color:#CCC;">Drop</span></div>
         </div>
 
-        <div class="selected-box">
-            <div class="selected-label">FINAL SERVICE NAME</div>
-            <div class="selected-value">매장상품배송</div>
-            <p style="margin-top:20px; font-size:14px; opacity:0.6;">매장 내 가용 재고를 기반으로 고객에게 직접 배송하는 서비스의 가치를 직관적으로 전달</p>
+        <div class="final-hero">
+            <div class="hero-label">FINAL SELECTION</div>
+            <div class="hero-name">매장상품배송</div>
         </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

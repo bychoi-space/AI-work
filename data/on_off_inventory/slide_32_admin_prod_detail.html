@@ -4,19 +4,40 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .page-header { background: #fff; padding: 20px 30px; border-bottom: 1px solid var(--admin-border); }
-        .content { padding: 30px; }
+        .admin-view-hf {
+            padding: 30px 40px; margin-left: 240px; background: #F5F6F8; height: calc(100% - 48px);
+        }
+        .detail-card { background: #fff; padding: 30px; border: 1px solid #DDD; border-radius: 8px; display: grid; grid-template-columns: 200px 1fr; gap: 40px; }
     </style>
 </head>
 <body>
-    <div class="page-header"><h1 class="page-title">32. [어드민] 자사상품 상세</h1></div>
-    <div class="content">
-        <div class="filter-panel" style="grid-template-columns: 1fr;">
-            <h3>기본 정보</h3>
-            <div class="filter-item"><span class="filter-label">상품명</span> <input type="text" class="form-input" value="HAZZYS 기모 티셔츠"></div>
-            <div class="filter-item"><span class="filter-label">상품코드</span> <input type="text" class="form-input" value="HZM01" disabled></div>
-            <div class="filter-item"><span class="filter-label">판매가</span> <input type="text" class="form-input" value="89,000"></div>
+    <div class="slide-canvas">
+        <header class="ppt-header">32. [어드민] 자사상품 상세 (기본정보)</header>
+
+        <!-- Sidebar placeholder -->
+        <div style="width:240px; background:#252830; height:100%; position:absolute; top:48px; left:0; padding:20px;">
+            <div style="color:#FFF; opacity:0.3; font-size:10px;">DASHBOARD</div>
+            <div style="color:#FFF; margin-top:20px; font-size:13px;">→ 상품 마스터 관리</div>
         </div>
+
+        <div class="admin-view-hf">
+            <div class="detail-card">
+                <div style="width:100%; height:250px; background:#f1f3f5; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#adb5bd;">PRODUCT_IMG</div>
+                <div>
+                    <h3 style="margin-bottom:20px;">상품 마스터 정보</h3>
+                    <div style="display:grid; grid-template-columns: 100px 1fr; gap:15px; font-size:13px;">
+                        <b>상품코드</b> <span>HZM12345A1</span>
+                        <b>상품명</b> <span style="font-weight:800;">HAZZYS [매장상품] 기모 티셔츠</span>
+                        <b>브랜드</b> <span>HAZZYS</span>
+                        <b>판매가</b> <span>89,000 원</span>
+                        <b>매송여부</b> <span style="color:var(--lf-red); font-weight:900;">Y (매장배송 대상)</span>
+                    </div>
+                    <button class="btn-lf" style="margin-top:30px; height:40px; padding:0 30px;">정보 수정</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>
