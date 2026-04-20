@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .branding-stage-v4 { padding: 60px 110px; }
+        .branding-title-v4 { font-size: 24px; font-weight: 900; margin-bottom: 25px; border-left: 6px solid var(--lf-red); padding-left: 20px; }
+        
+        .name-grid-v4 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 40px; }
+        .name-card-v4 {
+            background: #fff; border: 1px solid #CCC; padding: 40px; border-radius: 4px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .name-card-v4.selected { border: 2px solid var(--lf-red); background: rgba(200, 25, 46, 0.02); }
+        .name-card-v4 h3 { font-size: 22px; font-weight: 900; }
+        .name-card-v4.selected h3 { color: var(--lf-red); }
+
+        .selected-badge-v4 { background: var(--lf-red); color: #fff; padding: 4px 12px; font-size: 11px; font-weight: 900; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="slide-canvas">
+        <header class="ppt-header-strategy">06. 서비스 명칭 선정 및 지향점 (Service Identity)</header>
+        
+        <div class="branding-stage-v4">
+            <h2 class="branding-title-v4">고객 직관성 및 LF 브랜드 정체성 강화</h2>
+            <p style="font-size:15px; color:#555;">총 4가지 후보군 중 유관부서 선호도 및 마케팅 적합도가 가장 높은 명칭을 최종 선정함.</p>
+
+            <div class="name-grid-v4">
+                <div class="name-card-v4"><span>하이퍼로컬 배송</span> <small style="color:#999;">Drop</small></div>
+                <div class="name-card-v4 selected"><h3>매장상품배송</h3> <span class="selected-badge-v4">SELECTED</span></div>
+                <div class="name-card-v4"><span>LF 익스프레스</span> <small style="color:#999;">Drop</small></div>
+                <div class="name-card-v4"><span>온오프 통합 배송</span> <small style="color:#999;">Drop</small></div>
+            </div>
+
+            <div style="margin-top:60px; background:#252830; padding:50px; text-align:center; border-radius:12px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);">
+                <div style="color:var(--lf-red); font-size:14px; font-weight:900; margin-bottom:15px; letter-spacing:2px;">CONFIRMED IDENTITY</div>
+                <div style="color:#fff; font-size:54px; font-weight:900;">매장상품배송</div>
+            </div>
+        </div>
+
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 06</div>
+        </div>
+    </div>
+</body>
+</html>

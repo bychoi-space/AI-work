@@ -4,41 +4,40 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .admin-main-hf { position: absolute; top: 52px; left: 260px; right: 0; bottom: 0; background: #F4F6F9; padding: 40px; }
-        .master-card-hf { background: #fff; padding: 40px; border: 1px solid #CCC; border-radius: 8px; box-shadow: var(--ppt-shadow); display: grid; grid-template-columns: 240px 1fr; gap: 45px; }
+        .master-card-v4 { background: #fff; padding: 40px; border: 1px solid #CCC; border-radius: 8px; box-shadow: var(--ppt-shadow); display: grid; grid-template-columns: 240px 1fr; gap: 40px; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">32. [어드민] 자사상품 상세 (기본정보 Master)</header>
-
-        <div class="admin-sidebar-hf">
-            <div style="font-size:10px; opacity:0.4; letter-spacing:1px; margin-bottom:20px;">SYSTEM MENU</div>
+        <div class="admin-sidebar-v4">
+            <div style="font-size:10px; opacity:0.4; margin-bottom:20px;">SYSTEM MONITOR</div>
             <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
-            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 상품 정보 조회</div>
+            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 상품 상세 정보</div>
         </div>
 
-        <div class="admin-main-hf">
-            <div class="master-card-hf">
-                <div style="width:240px; height:300px; background:#F1F3F5; border:1px solid #DDD; display:flex; align-items:center; justify-content:center; color:#adb5bd; font-weight:900;">PRODUCT_IMAGE</div>
+        <div class="admin-stage-v4">
+            <header style="margin-bottom:30px;">
+                <h2 style="font-size:22px; font-weight:900;">상품 마스터 고유 정보 관리</h2>
+            </header>
+
+            <div class="master-card-v4">
+                <div style="width:240px; height:300px; background:#F1F3F5; border:1px solid #DDD; display:flex; align-items:center; justify-content:center; color:#AAA;">PRODUCT_IMG</div>
                 <div>
-                    <h3 style="font-size:20px; font-weight:900; margin-bottom:30px; border-bottom:1.5px solid #333; padding-bottom:15px;">상품 핵심 관리 정보</h3>
+                    <h3 style="font-size:20px; font-weight:900; margin-bottom:25px; border-bottom:1.5px solid #333; padding-bottom:15px;">핵심 관리 항목</h3>
                     <div style="display:grid; grid-template-columns:120px 1fr; gap:18px; font-size:14.5px;">
-                        <b style="color:#777;">상품코드</b> <span>HZM12345A1</span>
-                        <b style="color:#777;">상품명</b> <span style="font-weight:900;">HAZZYS [매장상품] 네이비 티셔츠</span>
-                        <b style="color:#777;">브랜드</b> <span>HAZZYS</span>
+                        <b style="color:#777;">상품코드</b> <span>HZM22A123 (HAZZYS)</span>
                         <b style="color:#777;">판매가</b> <span>89,000 원</span>
-                        <b style="color:#777;">매송대상</b> <span style="color:var(--lf-red); font-weight:900;">Y (매장배송 운영 대상)</span>
-                    </div>
-                    <div style="margin-top:40px; display:flex; gap:12px;">
-                        <button style="background:var(--ppt-header-bg); color:#fff; border:none; padding:12px 30px; font-weight:900; border-radius:4px;">정보 수정</button>
-                        <button style="background:#FFF; border:1px solid #CCC; padding:12px 30px; font-weight:bold; border-radius:4px;">연동 로그</button>
+                        <b style="color:#777;">매송여부</b> <span style="color:var(--lf-red); font-weight:900;">Y (운영대상)</span>
+                        <b style="color:#777;">연동상태</b> <span>정상 (Last sync: 10:45)</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 32</div>
+        </div>
     </div>
 </body>
 </html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .bucket-stage-v4 { padding: 60px 110px; }
+        .v4-policy-table { width: 100%; border-collapse: collapse; border: 2px solid #333; box-shadow: var(--ppt-shadow); }
+        .v4-policy-table th { background: #333; color: #fff; padding: 18px; font-size: 15px; border: 1px solid #444; }
+        .v4-policy-table td { padding: 25px; border: 1px solid #CCC; text-align: center; font-size: 15px; }
+
+        .v4-logic-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 50px; }
+        .v4-logic-card { background: #fff; border: 1px solid #D9D9D9; border-top: 5px solid #666; padding: 25px; box-shadow: var(--ppt-shadow); }
+        .v4-logic-card.red { border-top-color: var(--lf-red); }
+    </style>
+</head>
+<body>
+    <div class="slide-canvas">
+        <header class="ppt-header-strategy">09. 매장상품배송 가용 재고 산출 정책 (Bucket Policy)</header>
+        
+        <div class="bucket-stage-v4">
+            <table class="v4-policy-table">
+                <thead>
+                    <tr><th>온라인 가용 재고</th><th>매장 실재고</th><th>최종 서비스 가용 여부</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><b>있음 (> 0)</b></td><td>Any</td><td style="color:#666;">일반 배송 (Center)</td></tr>
+                    <tr style="background:#FFF5F5;"><td><b>없음 (= 0)</b></td><td style="color:var(--lf-red); font-weight:800;">있음 (> 0)</td><td><b style="color:var(--lf-red);">매장상품배송 (Store)</b></td></tr>
+                    <tr style="background:#F8F9FA;"><td>없음 (= 0)</td><td>없음 (= 0)</td><td style="color:#999; font-weight:900;">품절 (Sold out)</td></tr>
+                </tbody>
+            </table>
+
+            <div class="v4-logic-grid">
+                <div class="v4-logic-card red">
+                    <h4 style="color:var(--lf-red); margin-bottom:10px;">가용 재고 (Available)</h4>
+                    <p style="font-size:12px; color:#555;">실주문이 가능한 최종 판매 수량</p>
+                </div>
+                <div class="v4-logic-card">
+                    <h4 style="margin-bottom:10px;">안전 재고 (Safety)</h4>
+                    <p style="font-size:12px; color:#555;">결품 방지를 위한 매장 홀딩 수량 (기본 2ea)</p>
+                </div>
+                <div class="v4-logic-card">
+                    <h4 style="margin-bottom:10px;">예약 재고 (Buffer)</h4>
+                    <p style="font-size:12px; color:#555;">결제 대기 및 배정 완료된 물리적 재고</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 09</div>
+        </div>
+    </div>
+</body>
+</html>

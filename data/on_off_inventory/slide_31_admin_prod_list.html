@@ -6,51 +6,39 @@
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">31. [어드민] 상품 관리 목록 (Product Administration)</header>
-
-        <div class="admin-sidebar-hf">
-            <div style="font-size:10px; opacity:0.4; letter-spacing:1px; margin-bottom:20px;">SYSTEM MENU</div>
+        <div class="admin-sidebar-v4">
+            <div style="font-size:10px; opacity:0.4; margin-bottom:20px;">SYSTEM MONITOR</div>
             <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
             <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 상품 목록 관리</div>
-            <div style="margin-left:15px; font-size:13px; opacity:0.8;">- 상품 마스터</div>
         </div>
 
-        <div class="admin-main-hf">
-            <div class="ppt-filter-panel-hf" style="grid-template-columns: repeat(4, 1fr); align-items: end;">
-                <div class="filter-item-hf">브랜드 <select class="form-input-hf" style="width:100%;"><option>전체</option></select></div>
-                <div class="filter-item-hf">상품 코드 <input type="text" class="form-input-hf" style="width:100%;"></div>
-                <div class="filter-item-hf">매송 여부 <select class="form-input-hf" style="width:100%;"><option>Y</option></select></div>
-                <button style="background:var(--ppt-header-bg); color:#fff; border:none; padding:10px 20px; font-weight:bold; height:38px;">SEARCH</button>
+        <div class="admin-stage-v4">
+            <header style="margin-bottom:30px;">
+                <h2 style="font-size:22px; font-weight:900;">전사 통합 상품 마스터 조회</h2>
+            </header>
+
+            <div style="background:#fff; border:1px solid #CCC; padding:20px; display:grid; grid-template-columns: repeat(4, 1fr); gap:15px; margin-bottom:25px;">
+                <div><b>카테고리</b> <select class="form-input-hf" style="width:100%;"><option>전체</option></select></div>
+                <div><b>상품코드</b> <input type="text" class="form-input-hf" style="width:100%;"></div>
+                <div><b>매송여부</b> <select class="form-input-hf" style="width:100%;"><option>Y / N</option></select></div>
+                <div style="display:flex; align-items:flex-end;"><button style="background:var(--ppt-header-bg); color:#fff; border:none; padding:8px 25px; font-weight:bold;">SEARCH</button></div>
             </div>
 
-            <table class="data-table-hf">
+            <table class="data-grid-v4">
                 <thead>
-                    <tr><th>NO</th><th>IMG</th><th>상품코드</th><th>상품명</th><th>브랜드</th><th>판매가</th><th>매송여부</th></tr>
+                    <tr><th>NO</th><th>IMG</th><th>상품코드</th><th>상품명</th><th>매송대상</th><th>최종가</th></tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td><div style="width:30px; height:40px; background:#EEE; margin:0 auto;"></div></td>
-                        <td style="color:#2E5BFF; font-weight:900;">HZM22A123</td>
-                        <td style="font-weight:bold;">HAZZYS 기모 티셔츠</td>
-                        <td>HAZZYS</td>
-                        <td style="text-align:right;">89,000</td>
-                        <td style="text-align:center;"><span class="status-pill-hf" style="background:#FFEBEB; color:var(--lf-red);">Active (Y)</span></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td><div style="width:30px; height:40px; background:#EEE; margin:0 auto;"></div></td>
-                        <td style="color:#2E5BFF; font-weight:900;">DKS22X998</td>
-                        <td style="font-weight:bold;">DAKS 소가죽 지갑</td>
-                        <td>DAKS</td>
-                        <td style="text-align:right;">142,000</td>
-                        <td style="text-align:center;"><span class="status-pill-hf" style="background:#FFEBEB; color:var(--lf-red);">Active (Y)</span></td>
-                    </tr>
+                    <tr><td>1</td><td><div style="width:30px; height:40px; background:#EEE; margin:0 auto;"></div></td><td style="color:#2E5BFF; font-weight:bold;">HZM22A123</td><td>헤지스 피케 티셔츠</td><td><span style="color:var(--lf-red); font-weight:900;">Y</span></td><td style="text-align:right;">89,000</td></tr>
+                    <tr><td>2</td><td><div style="width:30px; height:40px; background:#EEE; margin:0 auto;"></div></td><td style="color:#2E5BFF; font-weight:bold;">DKS11X442</td><td>닥스 가죽 벨트</td><td><span style="color:#999; font-weight:bold;">N</span></td><td style="text-align:right;">124,000</td></tr>
                 </tbody>
             </table>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 31</div>
+        </div>
     </div>
 </body>
 </html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+</head>
+<body>
+    <div class="slide-canvas">
+        <header class="ppt-header-strategy">12. 리소스 산출 및 투입 안 (Project Resource Plan)</header>
+        
+        <div style="padding: 60px 110px;">
+            <table class="data-grid-v4" style="width:100%;">
+                <thead>
+                    <tr><th style="width:150px;">영역(Domain)</th><th>핵심 과업 (Major Task)</th><th style="width:100px;">M/D</th><th style="width:100px;">비중</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td style="font-weight:900;">전략/기획</td><td>프로세스 통합 설계 및 전장 UI 기획서 작성</td><td style="text-align:right;">40</td><td>25%</td></tr>
+                    <tr style="background:#FFF5F5;">
+                        <td style="font-weight:900;">시스템 연동</td>
+                        <td style="color:var(--lf-red); font-weight:bold;">SAP/OMS/LFM API 인터페이스 개발 및 테스트</td>
+                        <td style="text-align:right; font-weight:900; color:var(--lf-red);">85</td>
+                        <td>53%</td>
+                    </tr>
+                    <tr><td style="font-weight:900;">인프라</td><td>서버 튜닝 및 DB 인덱스 고도화</td><td style="text-align:right;">15</td><td>9%</td></tr>
+                    <tr><td style="font-weight:900;">안정화</td><td>통합 QA 및 현업 교육 매뉴얼 제작</td><td style="text-align:right;">20</td><td>13%</td></tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top:50px; background:#F8FAFC; padding:40px; border-radius:8px; border:1.5px solid #EEE; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h3 style="font-size:18px; font-weight:900;">총 투입 공수 (Total MD)</h3>
+                    <p style="font-size:13px; color:#666; margin-top:5px;">프로젝트 착수일로부터 예상 총 가용 리소스</p>
+                </div>
+                <div style="font-size:48px; font-weight:900; color:var(--lf-red);">160 M/D</div>
+            </div>
+        </div>
+
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 12</div>
+        </div>
+    </div>
+</body>
+</html>

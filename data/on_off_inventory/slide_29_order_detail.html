@@ -3,45 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .ui-stage-v4 { padding: 30px 45px; }
+        .iphone-center-v4 { display: flex; justify-content: center; margin-top: 10px; }
+        .iphone-shell-v4 {
+            width: 320px; height: 600px; background: #000; border-radius: 40px;
+            padding: 10px; box-shadow: 0 40px 80px rgba(0,0,0,0.3); border: 2.5px solid #222;
+        }
+        .iphone-screen-v4 { background: #fff; width: 100%; height: 100%; border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; }
+        
+        .tracking-box-v4 { background: #F8FAFC; border: 1px solid #E9ECEF; padding: 20px; border-radius: 10px; margin: 20px; }
+        .anno-box-v4 { position: absolute; right: 80px; top: 120px; width: 340px; background: #F8F9FA; border: 1px solid #DDD; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">29. [UI] 주문 상세 내역 (Post-Purchase Detail)</header>
+        <table class="ppt-metadata-table">
+            <tr>
+                <td class="label">Project</td><td class="val" colspan="3">온오프 재고 효율화 고도화</td>
+                <td class="label">Step</td><td class="val">[UI] 주문상세 - 배송추적</td>
+                <td class="label">Date</td><td class="val">2026.04.14</td>
+            </tr>
+            <tr>
+                <td class="label">Focus</td><td class="val">발송 매장 정보 명시</td>
+                <td class="label">Modifier</td><td class="val">Architect</td>
+                <td class="label">Version</td><td class="val">v0.8</td>
+                <td class="label">Page No.</td><td class="val">29</td>
+            </tr>
+        </table>
+        
+        <header class="ppt-header-strategy" style="background:#888;">29. UI Wireframe - 주문 상세/배송 추적 (Order Detail)</header>
 
-        <div style="display:flex; justify-content:center; padding:40px;">
-            <div class="phone-frame-hf">
-                <div class="phone-screen-ins">
-                    <div style="background:#fff; height:60px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; border-bottom:1.5px solid #EEE;">주문 상세 조회</div>
-                    
-                    <div style="padding:25px; overflow-y:auto; flex:1;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                            <span style="font-size:12px; color:#999; font-weight:bold;">2026.04.20 | No.20260420-9981</span>
-                        </div>
-
-                        <div style="display:flex; gap:20px; align-items:flex-start; margin-bottom:30px;">
-                            <div style="width:80px; height:110px; background:#F1F3F5; border-radius:6px;"></div>
-                            <div style="flex:1;">
-                                <div style="font-size:14.5px; font-weight:900; line-height:1.4;">HAZZYS [매장상품] <br>기모 네이비 티셔츠</div>
-                                <div style="font-size:18px; font-weight:900; margin-top:10px;">89,000원</div>
-                            </div>
-                        </div>
-
-                        <div style="background:#F8FAFC; border:1px solid #E9ECEF; border-radius:12px; padding:25px;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #EEE; padding-bottom:15px;">
-                                <span style="font-size:13px; color:#666;">배송 상태</span> 
-                                <b style="color:var(--lf-red); font-size:15px;">발송완료</b>
-                            </div>
-                            <div style="font-size:12px; line-height:1.8; color:#444;">
-                                📦 이 상품은 <b>강남본점</b>에서 직접 발송되었습니다.<br>
-                                🚚 로젠택배 : <span style="text-decoration:underline; font-weight:bold;">1234567890</span>
+        <div class="ui-stage-v4">
+            <div class="iphone-center-v4">
+                <div class="iphone-shell-v4">
+                    <div class="iphone-screen-v4">
+                        <div style="background:#fff; height:50px; display:flex; align-items:center; justify-content:center; border-bottom:1px solid #EEE;"><b>주문 상세</b></div>
+                        <div class="tracking-box-v4">
+                            <h5 style="font-size:13px; color:var(--lf-red); font-weight:900; margin-bottom:12px;">현황: 발송완료</h5>
+                            <div style="font-size:11px; line-height:1.7;">
+                                📦 이 상품은 <b>강남본점</b>에서 택배로 발송되었습니다.<br>
+                                🚚 로젠택배 : 123456789 (추적가능)
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="anno-box-v4">
+                <div class="anno-item-v4">
+                    <div class="anno-num-v4">1</div>
+                    <div><b>직전 정보</b>: MyPage 상세에서 결제/배송/반품의 전 과정을 '매장발송' 특이사항을 포함하여 투명하게 고지</div>
+                </div>
+            </div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 29</div>
+        </div>
     </div>
 </body>
 </html>

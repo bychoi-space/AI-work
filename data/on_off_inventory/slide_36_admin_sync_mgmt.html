@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+</head>
+<body>
+    <div class="slide-canvas">
+        <div class="admin-sidebar-v4">
+            <div style="font-size:10px; opacity:0.4; margin-bottom:20px;">SYSTEM MONITOR</div>
+            <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
+            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 데이터 연동 로그</div>
+        </div>
+
+        <div class="admin-stage-v4">
+            <header style="margin-bottom:30px;">
+                <h2 style="font-size:22px; font-weight:900;">실시간 시스템 인터페이스 로그 (EAI/IF)</h2>
+            </header>
+
+            <table class="data-grid-v4">
+                <thead>
+                    <tr><th>연동시간</th><th>IF ID</th><th>인터페이스명</th><th>처리수</th><th>상태</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>14:30:11</td><td>IF-STK-001</td><td>SAP 실재고 배치 (Sync)</td><td>1,244건</td><td><span style="color:#059669; font-weight:bold;">SUCCESS</span></td></tr>
+                    <tr><td>14:20:05</td><td>IF-ORD-022</td><td>매장 발송 정보 동기화</td><td>1건</td><td><span style="color:#059669; font-weight:bold;">SUCCESS</span></td></tr>
+                    <tr style="background:rgba(200, 25, 46, 0.05);"><td>14:10:00</td><td>IF-STK-001</td><td>SAP 실재고 배치 (Sync)</td><td>0건</td><td><span style="color:var(--lf-red); font-weight:bold;">ERROR (Timeout)</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 36</div>
+        </div>
+    </div>
+</body>
+</html>

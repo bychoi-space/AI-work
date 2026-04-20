@@ -4,67 +4,41 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .roadmap-stage-hf { padding: 80px 110px; }
+        .roadmap-stage-v4 { padding: 80px 110px; }
+        .gantt-table-v4 { width:100%; border-collapse: collapse; border: 1px solid #CCC; table-layout: fixed; }
+        .gantt-table-v4 th { background: #EEE; border: 1px solid #CCC; padding: 10px; font-size: 13px; text-align: center; }
+        .gantt-table-v4 td { border: 1px solid #DDD; height: 50px; padding: 0 10px; position: relative; }
         
-        .timeline-ruler-hf {
-            display: grid; grid-template-columns: repeat(4, 1fr);
-            border-bottom: 3px solid #333; padding-bottom: 12px; margin-bottom: 35px;
+        .gantt-bar-v4 {
+            position: absolute; top: 12px; bottom: 12px; border-radius: 20px;
+            background: #444; color: #fff; font-size: 10px; font-weight: 800;
+            display: flex; align-items: center; justify-content: center; box-shadow: var(--ppt-shadow);
         }
-        .q-text-hf { font-size: 22px; font-weight: 900; color: #1e1e1e; font-style: italic; }
-
-        .gantt-row-hf { display: grid; grid-template-columns: 180px 1fr; margin-bottom: 30px; align-items: center; }
-        .gantt-label-hf { font-size: 15px; font-weight: 800; color: #555; }
-        
-        .gantt-track-hf { height: 40px; background: #F1F3F5; border-radius: 4px; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
-        .gantt-bar-hf {
-            height: 100%; position: absolute; border-radius: 4px; border: 1.5px solid #CCC;
-            display: flex; align-items: center; padding-left: 15px; font-size: 13px; font-weight: bold;
-            box-shadow: var(--ppt-shadow);
-        }
-        .bar-blue { background: var(--node-lfmall-bg); border-color: #BDD7EE; color: #1E3A8A; }
-        .bar-green { background: var(--node-oms-sap-bg); border-color: #A9D18E; color: #065F46; }
-        .bar-red { background: rgba(200, 25, 46, 0.1); border-color: var(--lf-red); color: var(--lf-red); }
+        .gantt-bar-v4.red { background: var(--lf-red); }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">17. 개발 및 런칭 로드맵 (Project Roadmap)</header>
-
-        <div class="roadmap-stage-hf">
-            <div class="timeline-ruler-hf">
-                <div class="q-text-hf">1Q</div><div class="q-text-hf">2Q</div><div class="q-text-hf">3Q</div><div class="q-text-hf">4Q</div>
-            </div>
-
-            <div class="gantt-row-hf">
-                <div class="gantt-label-hf">전략 및 요건</div>
-                <div class="gantt-track-hf">
-                    <div class="gantt-bar-hf bar-blue" style="width: 25%;">프로세스 설계 및 아키텍처 확정</div>
-                </div>
-            </div>
-
-            <div class="gantt-row-hf">
-                <div class="gantt-label-hf">인터페이스 개발</div>
-                <div class="gantt-track-hf">
-                    <div class="gantt-bar-hf bar-blue" style="width: 35%; left: 20%;">SAP ↔ OMS ↔ LFM 연동 API</div>
-                </div>
-            </div>
-
-            <div class="gantt-row-hf">
-                <div class="gantt-label-hf">화면 고도화</div>
-                <div class="gantt-track-hf">
-                    <div class="gantt-bar-hf bar-green" style="width: 30%; left: 35%;">어드민 및 프론트 UI 완성</div>
-                </div>
-            </div>
-
-            <div class="gantt-row-hf">
-                <div class="gantt-label-hf">GRAND OPEN</div>
-                <div class="gantt-track-hf">
-                    <div class="gantt-bar-hf bar-red" style="width: 22%; left: 63%;">★ 서비스 런칭 (6월 4주)</div>
-                </div>
-            </div>
+        <header class="ppt-header-strategy">17. 향후 주요 추진 일정 (Project Roadmap)</header>
+        
+        <div class="roadmap-stage-v4">
+            <table class="gantt-table-v4">
+                <thead>
+                    <tr><th style="width:120px;">Task</th><th>4월 2주</th><th>4월 3주</th><th>4월 4주</th><th>5월 1주</th><th>5월 2주</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td style="font-weight:900;">기획/설계</td><td><div class="gantt-bar-v4" style="left:10px; right:-10px;">Process Fix</div></td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td style="font-weight:900;">시스템 개발</td><td></td><td><div class="gantt-bar-v4 red" style="left:5px; right:-10px; width:450px;">Interface / UI Development</div></td><td></td><td></td><td></td></tr>
+                    <tr><td style="font-weight:900;">통합 테스트</td><td></td><td></td><td></td><td><div class="gantt-bar-v4" style="left:5px; right:5px;">Beta Test</div></td><td></td></tr>
+                    <tr><td style="font-weight:900;">안정화/오픈</td><td></td><td></td><td></td><td></td><td><div class="gantt-bar-v4" style="left:5px; right:5px; background:#059669;">Go-Live</div></td></tr>
+                </tbody>
+            </table>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 17</div>
+        </div>
     </div>
 </body>
 </html>

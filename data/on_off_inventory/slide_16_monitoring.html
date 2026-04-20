@@ -6,34 +6,38 @@
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">16. 비직송매장 RT 현황 관리 주체 및 채널</header>
+        <header class="ppt-header-strategy">16. 비직송매장 RT 현황 관리 주체 및 채널 (Monitoring)</header>
+        
+        <div style="padding: 100px 110px; position: relative;">
+            <svg class="svg-layer-v4">
+                <defs>
+                    <marker id="arrow-v4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="#AAA" />
+                    </marker>
+                </defs>
+                <line x1="330" y1="140" x2="520" y2="140" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" />
+                <line x1="520" y1="160" x2="330" y2="160" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" />
+            </svg>
 
-        <div class="db-flow" style="padding:100px 110px;">
-            <div class="sys-card-hf" style="width:220px; background:#DEEAF6; border-color:#2E5BFF;">
-                <h3 style="color:#1E3A8A; font-size:21px; margin-bottom:12px;">현업 영업기획</h3>
-                <div style="font-size:11px; color:#555;">Dashboard Monitor</div>
+            <div class="ppt-node-v4" style="top:100px; left:120px; width:220px; height:100px; background:#DEEAF6; border-color:#2E5BFF;">
+                브랜드 영업 MD<br><span style="font-size:11px; font-weight:normal;">(Dashboard 관리)</span>
+            </div>
+            
+            <div class="ppt-node-v4" style="top:100px; left:520px; width:220px; height:100px; background:#FFF2CC; border-color:#D9AE3B;">
+                거점/대리점 매장<br><span style="font-size:11px; font-weight:normal;">(실물 이동 처리)</span>
             </div>
 
-            <div class="sync-connector">
-                <span class="batch-badge" style="border-color:#2E5BFF; color:#2E5BFF;">RT Command</span>
-                <div class="sync-arrow" style="background:#2E5BFF;"></div>
-            </div>
-
-            <div class="sys-card-hf" style="width:220px; background:#FFF2CC; border-color:#D9AE3B;">
-                <h3 style="color:#B45309; font-size:21px; margin-bottom:12px;">대리점/비직송</h3>
-                <div style="font-size:11px; color:#555;">Stock Response</div>
+            <div style="margin-top:140px; padding:35px; border:1px solid #EEE; border-radius:8px; line-height:1.7; font-size:14px; background:#fff;">
+                <p><b>• 관리 채널</b>: 영업 MD용 태블릿 대시보드 및 카카오 비즈톡 알림톡 연동</p>
+                <p><b>• 관리 주기</b>: 매일 오전 10시(전일 실판매 재고 수급분) 및 오후 4시(당일 급구분)</p>
+                <p><b>• 프로세스</b>: MD 이동 지시(Command) → 매장 실물 준비 → 본사 순회 물류 입고</p>
             </div>
         </div>
 
-        <div class="summary-box-hf" style="background:#F8FAFC; border-left:6px solid #2E5BFF;">
-            <p style="font-size:15px; color:#1E3A8A; font-weight:900; margin-bottom:12px;">📊 운영 모니터링 체계 (Monitoring Framework)</p>
-            <p style="font-size:13.5px; color:#1e1e1e; line-height:1.7;">
-                • <b>관리 채널</b>: 매장 ERP 및 모바일 MD 도구를 통한 권역별 가용 재고 대시보드 실시간 제공.<br>
-                • <b>관리 주체</b>: 브랜드 영업 담당 MD가 매일 오전 거점 매장 재고 부족분(Safety 미만) 확인 및 이동 지시(RT) 확정.
-            </p>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 16</div>
         </div>
-
-        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

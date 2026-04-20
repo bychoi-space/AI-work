@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .logic-stage-v4 { padding: 60px 110px; }
+        .logic-formula-box-v4 { background: #252830; color: #fff; padding: 40px; border-radius: 12px; margin-bottom: 50px; font-size: 32px; font-weight: 900; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        .logic-detail-grid-v4 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .logic-item-card-v4 { background: #fff; border: 1px solid #DDD; padding: 25px; border-radius: 8px; box-shadow: var(--ppt-shadow); border-top: 5px solid #666; }
+        .logic-item-card-v4.red { border-top-color: var(--lf-red); }
+    </style>
+</head>
+<body>
+    <div class="slide-canvas">
+        <header class="ppt-header-strategy">11. 재고 산출 핵심 로직 (Stock Calculation Logic)</header>
+        
+        <div class="logic-stage-v4">
+            <div class="logic-formula-box-v4">
+                Total Stock - (Safety + Buffer) = <span style="color:var(--lf-red);">Available</span>
+            </div>
+
+            <div class="logic-detail-grid-v4">
+                <div class="logic-item-card-v4">
+                    <h4 style="font-size:16px; margin-bottom:10px;">Total Stock (실재고)</h4>
+                    <p style="font-size:12px; color:#555; line-height:1.6;">SAP ERP 마스터에 등록된 매장별 물리적 재량 재고 총량</p>
+                </div>
+                <div class="logic-item-card-v4">
+                    <h4 style="font-size:16px; margin-bottom:10px;">Safety (안전재고)</h4>
+                    <p style="font-size:12px; color:#555; line-height:1.6;">결품 방지 및 매장 전시용으로 판매 제외되는 최소 보호 수량(2ea)</p>
+                </div>
+                <div class="logic-item-card-v4 red">
+                    <h4 style="font-size:16px; margin-bottom:10px; color:var(--lf-red);">Buffer (예약재고)</h4>
+                    <p style="font-size:12px; color:#555; line-height:1.6;">온라인 결제 완료 후 매장 발송 전까지 시스템상 차감되는 가상 재고</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 11</div>
+        </div>
+    </div>
+</body>
+</html>

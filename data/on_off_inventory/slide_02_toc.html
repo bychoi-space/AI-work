@@ -4,55 +4,52 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .toc-stage-hf { padding: 80px 110px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; }
-        .toc-section-hf h3 { font-size: 20px; font-weight: 900; color: var(--lf-red); margin-bottom: 25px; border-bottom: 3px solid var(--lf-red); display: inline-block; }
-        .toc-list-hf { list-style: none; }
-        .toc-list-hf li { margin-bottom: 12px; font-size: 15px; display: flex; justify-content: space-between; border-bottom: 1px dotted #CCC; padding-bottom: 6px; }
-        .toc-page-hf { color: #888; font-weight: 900; width: 40px; text-align: right; }
+        .toc-grid-v4 { padding: 80px 110px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 100px; }
+        .toc-section-unit { margin-bottom: 45px; }
+        .toc-section-unit h3 { font-size: 19px; font-weight: 900; color: var(--lf-red); margin-bottom: 25px; border-bottom: 2px solid var(--lf-red); display: inline-block; }
+        .toc-item-list { list-style: none; }
+        .toc-item-list li { display: flex; justify-content: space-between; font-size: 14.5px; border-bottom: 1px dotted #CCC; padding-bottom: 8px; margin-bottom: 12px; }
+        .toc-page { color: #888; font-weight: 900; width: 40px; text-align: right; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">02. 목차 (Table of Contents)</header>
-
-        <div class="toc-stage-hf">
+        <header class="ppt-header-strategy">02. 목차 (Table of Contents)</header>
+        
+        <div class="toc-grid-v4">
             <div>
-                <div class="toc-section-hf">
-                    <h3>I. 프로젝트 개요</h3>
-                    <ul class="toc-list-hf">
-                        <li><span>• 프로젝트 현황 및 개요</span> <span class="toc-page-hf">01</span></li>
-                        <li><span>• 상세 아키텍처 (Pass 3)</span> <span class="toc-page-hf">03</span></li>
+                <div class="toc-section-unit">
+                    <h3>I. 프로젝트 개요 및 전략</h3>
+                    <ul class="toc-item-list">
+                        <li><span>• 프로젝트 현황 및 소비자보호법 준수</span> <span class="toc-page">01</span></li>
+                        <li><span>• 시스템 아키텍처 및 데이터 흐름</span> <span class="toc-page">04</span></li>
+                        <li><span>• 서비스 명칭 및 주요 페인포인트</span> <span class="toc-page">06</span></li>
                     </ul>
                 </div>
-                <div class="toc-section-hf">
-                    <h3>II. 서비스 운영 전략</h3>
-                    <ul class="toc-list-hf">
-                        <li><span>• 서비스 명칭 및 전략</span> <span class="toc-page-hf">04</span></li>
-                        <li><span>• 프로세스 및 페인포인트</span> <span class="toc-page-hf">05</span></li>
-                        <li><span>• 재고 동기화 고도화 안</span> <span class="toc-page-hf">06</span></li>
-                        <li><span>• 가용 재고 산출 정책</span> <span class="toc-page-hf">07</span></li>
+                <div class="toc-section-unit">
+                    <h3>II. 서비스 운영 정책</h3>
+                    <ul class="toc-item-list">
+                        <li><span>• 가용 재고 산출 및 배송 LT 정책</span> <span class="toc-page">09</span></li>
+                        <li><span>• 물류 프로세스 및 모니터링 체계</span> <span class="toc-page">13</span></li>
                     </ul>
                 </div>
             </div>
             <div>
-                <div class="toc-section-hf">
-                    <h3>III. 서비스 UI 구축 (Mobile/Web)</h3>
-                    <ul class="toc-list-hf">
-                        <li><span>• 상품상세 (PDP) 고도화</span> <span class="toc-page-hf">21</span></li>
-                        <li><span>• 주문서 및 마이페이지</span> <span class="toc-page-hf">25</span></li>
-                    </ul>
-                </div>
-                <div class="toc-section-hf">
-                    <h3>IV. 어드민 및 운영 도구</h3>
-                    <ul class="toc-list-hf">
-                        <li><span>• 실시간 재고 대시보드</span> <span class="toc-page-hf">30</span></li>
-                        <li><span>• 주문 이행 및 매장 관리</span> <span class="toc-page-hf">34</span></li>
+                <div class="toc-section-unit">
+                    <h3>III. 서비스 UI 구축 및 어드민</h3>
+                    <ul class="toc-item-list">
+                        <li><span>• 상세페이지(PDP) 및 주문 UI</span> <span class="toc-page">21</span></li>
+                        <li><span>• 마이페이지 및 배송 추적</span> <span class="toc-page">28</span></li>
+                        <li><span>• 어드민 대시보드 및 운영 도구</span> <span class="toc-page">30</span></li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 02</div>
+        </div>
     </div>
 </body>
 </html>

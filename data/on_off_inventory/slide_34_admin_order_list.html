@@ -3,82 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
-    <style>
-        .admin-sidebar-hf {
-            width: 260px; height: 100%;
-            background: #2D3139;
-            position: absolute; top: 52px; left: 0;
-            padding: 30px;
-            color: #fff;
-            border-right: 1px solid #000;
-        }
-        .main-stage-hf {
-            position: absolute; top: 52px; left: 260px; right: 0; bottom: 0;
-            background: #F4F6F9;
-            padding: 40px;
-        }
-        
-        .status-pill-hf {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-    </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">34. [어드민] 주문 관리 목록 (매장배송 건)</header>
-
-        <div class="admin-sidebar-hf">
-            <div style="font-size:10px; opacity:0.4; letter-spacing:1px; margin-bottom:20px;">SYSTEM MENU</div>
+        <div class="admin-sidebar-v4">
+            <div style="font-size:10px; opacity:0.4; margin-bottom:20px;">SYSTEM MONITOR</div>
             <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
-            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 주문 관리</div>
-            <div style="margin-left:15px; font-size:13px; opacity:0.8; margin-bottom:10px;">- 매장 주문 내역</div>
-            <div style="margin-left:15px; font-size:13px; opacity:0.8;">- 결품 관리</div>
+            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 주문 배정 관리</div>
         </div>
 
-        <div class="main-stage-hf">
-            <div class="ppt-filter-panel-hf">
-                <div class="filter-item-hf">주문기간 <input type="date" class="form-input-hf"></div>
-                <div class="filter-item-hf">주문상태 <select class="form-input-hf"><option>전체</option><option>배정완료</option></select></div>
-                <button style="background:var(--ppt-header-bg); color:#fff; border:none; padding:8px 20px; font-weight:bold; cursor:pointer;">SEARCH</button>
+        <div class="admin-stage-v4">
+            <header style="margin-bottom:30px;">
+                <h2 style="font-size:22px; font-weight:900;">실시간 매장 배정 주문 현황</h2>
+            </header>
+
+            <div style="background:#fff; border:1px solid #CCC; padding:20px; display:grid; grid-template-columns: repeat(4, 1fr); gap:12px; margin-bottom:25px;">
+                <div><b>주문번호</b> <input type="text" class="form-input-hf" style="width:100%;"></div>
+                <div><b>배정상태</b> <select class="form-input-hf" style="width:100%;"><option>전체</option></select></div>
+                <div><b>기간</b> <input type="date" class="form-input-hf" style="width:100%;"></div>
+                <div style="display:flex; align-items:flex-end;"><button style="background:var(--ppt-header-bg); color:#fff; border:none; padding:8px 25px; font-weight:bold;">조회</button></div>
             </div>
 
-            <table class="data-table-hf">
+            <table class="data-grid-v4">
                 <thead>
-                    <tr>
-                        <th style="width:120px;">주문일자</th>
-                        <th>주문번호</th>
-                        <th>상품명 (옵션)</th>
-                        <th style="width:120px;">배정매장</th>
-                        <th style="width:100px;">상태</th>
-                        <th style="width:140px;">송장번호</th>
-                    </tr>
+                    <tr><th>주문일시</th><th>주문번호</th><th>상품명</th><th>배정매장</th><th>배송사</th><th>상태</th></tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>2026-04-20</td>
-                        <td style="color:#2E5BFF; font-weight:bold;">20260420-9912</td>
-                        <td>[매장상품] 헤지스 티셔츠 (Navy/100)</td>
-                        <td>강남본점</td>
-                        <td><span class="status-pill-hf" style="background:#EBF3FF; color:#01579B;">배정완료</span></td>
-                        <td style="color:#999;">입력대기</td>
-                    </tr>
-                    <tr>
-                        <td>2026-04-20</td>
-                        <td style="color:#2E5BFF; font-weight:bold;">20260420-9911</td>
-                        <td>[매장상품] 헤지스 자켓 (Black/105)</td>
-                        <td>명동스타일</td>
-                        <td><span class="status-pill-hf" style="background:#E2EFDA; color:#059669;">발송처리</span></td>
-                        <td>로젠택배 12345...</td>
-                    </tr>
+                    <tr><td>13:45</td><td style="color:#2E5BFF; font-weight:bold;">2026-0420-99</td><td>헤지스 티셔츠</td><td>강남본점</td><td>로젠택배</td><td><span style="background:var(--lf-red); color:#fff; padding:2px 8px; font-size:10px;">배정완료</span></td></tr>
+                    <tr><td>12:20</td><td style="color:#2E5BFF; font-weight:bold;">2026-0420-98</td><td>닥스 벨트</td><td>명동스타일</td><td>-</td><td><span style="background:#888; color:#fff; padding:2px 8px; font-size:10px;">결품</span></td></tr>
                 </tbody>
             </table>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 34</div>
+        </div>
     </div>
 </body>
 </html>

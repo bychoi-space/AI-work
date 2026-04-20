@@ -3,37 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .bsu-stage-v4 { padding: 100px 110px; position: relative; }
+        .bsu-node-v4 { width: 220px; height: 110px; border-radius: 8px; font-weight: 900; background: #fff; border: 1.5px solid #DDD; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 16px; box-shadow: var(--ppt-shadow); }
+        .bsu-connector-v4 { position: absolute; top: 155px; left: 340px; width: 140px; height: 2px; background: #999; }
+        .bsu-connector-v4::after { content: ''; position: absolute; right: -8px; top: -6px; border-left: 10px solid #999; border-top: 7px solid transparent; border-bottom: 7px solid transparent; }
+    </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">13. 물류 BSU 오퍼레이션 프로세스 및 이슈</header>
-
-        <div class="db-flow" style="padding:100px 110px;">
-            <div class="sys-card-hf" style="width:220px; background:#F8FAFC;">
-                <h3 style="color:#333; font-size:20px; margin-bottom:12px;">물류 센터</h3>
-                <div style="font-size:11px; color:#666;">WMS / TMS</div>
+        <header class="ppt-header-strategy">13. 물류 BSU 오퍼레이션 프로세스 및 이슈</header>
+        
+        <div class="bsu-stage-v4">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="bsu-node-v4" style="background:#F1F3F5;">물류 센터<br><span style="font-size:11px; font-weight:normal; color:#666;">(WMS / TMS)</span></div>
+                <div class="bsu-connector-v4"></div>
+                <div class="bsu-node-v4" style="border-color:var(--lf-red); color:var(--lf-red);">전국 거점 매장<br><span style="font-size:11px; font-weight:normal;">(Stock In-bound)</span></div>
             </div>
 
-            <div class="sync-connector">
-                <span class="batch-badge" style="border-color:#333; color:#333;">RT 발송 (Batch)</span>
-                <div class="sync-arrow" style="background:#333;"></div>
-            </div>
-
-            <div class="sys-card-hf card-lfmall" style="width:220px;">
-                <h3 style="color:#1E3A8A; font-size:20px; margin-bottom:12px;">전국 거점 매장</h3>
-                <div style="font-size:11px; color:#555;">Stock In-bound</div>
+            <div style="margin-top:80px; padding:40px; background:#FFF5F5; border:1px solid #FFEBEB; border-left:6px solid var(--lf-red); border-radius:4px;">
+                <h4 style="font-size:16px; color:var(--lf-red); margin-bottom:15px; font-weight:900;">🔎 주요 개선 필요 사항</h4>
+                <div style="font-size:14px; line-height:1.8; color:#333;">
+                    • <b>물류 차량 스케줄 최적화</b>: 센터 → 매장 입고 시점과 온라인 주문 배정 시점의 동기화 고도화<br>
+                    • <b>입고 확인 프로세스</b>: POS 입고 확정 후 10분 이내 LFmall 재고 가동률 100% 확보
+                </div>
             </div>
         </div>
 
-        <div class="summary-box-hf" style="background:#FFF5F5; border:1px solid #FFEBEB; border-left:6px solid var(--lf-red);">
-            <p style="font-size:15px; color:var(--lf-red); font-weight:900; margin-bottom:12px;">🔎 주요 개선 필요 사항 (Operation Pain-points)</p>
-            <p style="font-size:13.5px; color:#1e1e1e; line-height:1.7;">
-                • <b>입고 지연</b>: 센터 → 매장 배송 시 물류 차량 스케줄 불일치로 인한 판매 중단 발생 가능성<br>
-                • <b>데이터 시차</b>: 물리적 수령 완료 시점과 시스템 입고(POS) 시점의 GAP으로 인한 품절 오류 해결 필요
-            </p>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 13</div>
         </div>
-
-        <div class="ppt-footer-logo">LF</div>
     </div>
 </body>
 </html>

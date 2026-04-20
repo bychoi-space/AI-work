@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .process-stage-v4 { padding: 80px 110px; display: flex; justify-content: center; gap: 40px; position: relative; }
+        .p-step-v4 {
+            width: 200px; padding: 25px; background: #fff; border: 1px solid #CCC;
+            text-align: center; border-radius: 8px; box-shadow: var(--ppt-shadow);
+            position: relative; z-index: 10;
+        }
+        .p-step-v4 h4 { font-size: 16px; margin-bottom: 8px; color: var(--lf-red); }
+        .p-step-v4 p { font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="slide-canvas">
+        <header class="ppt-header-strategy">07. 전체 서비스 프로세스 및 지향점 (Service Flow)</header>
+        
+        <div class="process-stage-v4">
+            <svg class="svg-layer-v4" style="top: 100px;">
+                <defs>
+                    <marker id="arrow-v4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="#DDD" />
+                    </marker>
+                </defs>
+                <line x1="330" y1="65" x2="380" y2="65" stroke="#DDD" stroke-width="2" marker-end="url(#arrow-v4)" />
+                <line x1="580" y1="65" x2="630" y2="65" stroke="#DDD" stroke-width="2" marker-end="url(#arrow-v4)" />
+                <line x1="830" y1="65" x2="880" y2="65" stroke="#DDD" stroke-width="2" marker-end="url(#arrow-v4)" />
+            </svg>
+
+            <div class="p-step-v4"><h4>STEP 01</h4><p>고객 주문 접수<br>(LFmall)</p></div>
+            <div class="p-step-v4"><h4>STEP 02</h4><p>지능형 주문 배정<br>(OMS/SAP)</p></div>
+            <div class="p-step-v4"><h4>STEP 03</h4><p>매장 발송 준비<br>(직영/대리점)</p></div>
+            <div class="p-step-v4"><h4>STEP 04</h4><p>배송 완료 및 사후관리<br>(배송추적/반품)</p></div>
+        </div>
+
+        <div style="margin: 0 110px; border-top: 1px solid #EEE; padding-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px;">
+            <div style="font-size:13.5px; line-height:1.6;">
+                <b style="color:var(--lf-red);">• 데이터 통합</b><br>매장 실재고와 온라인 결제 데이터의 실시간 동기화를 통한 결품 제로화
+            </div>
+            <div style="font-size:13.5px; line-height:1.6;">
+                <b style="color:var(--lf-red);">• 운영 효율화</b><br>물류 센터 부하 분산 및 매장 유휴 자원의 전략적 활용
+            </div>
+            <div style="font-size:13.5px; line-height:1.6;">
+                <b style="color:var(--lf-red);">• 고객 경험 개선</b><br>인근 매장 배송을 통한 신속한 서비스 체감 및 브랜딩 강화
+            </div>
+        </div>
+
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 07</div>
+        </div>
+    </div>
+</body>
+</html>

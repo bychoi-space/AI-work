@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .ui-stage-v4 { padding: 30px 45px; }
+        .iphone-center-v4 { display: flex; justify-content: center; margin-top: 20px; }
+        .iphone-shell-v4 {
+            width: 320px; height: 600px; background: #000; border-radius: 40px;
+            padding: 10px; box-shadow: 0 40px 80px rgba(0,0,0,0.3); border: 2.5px solid #222;
+        }
+        .iphone-screen-v4 { background: #fff; width: 100%; height: 100%; border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; }
+        
+        .map-mock-v4 { width:100%; height:180px; background:#E9ECEF; position:relative; display:flex; align-items:center; justify-content:center; color:#adb5bd; font-size:11px; }
+        .pin-v4 { width:24px; height:24px; background:var(--lf-red); border-radius:50% 50% 50% 0; transform: rotate(-45deg); display:flex; align-items:center; justify-content:center; color:#fff; font-size:10px; box-shadow: 0 4px 10px rgba(200,25,46,0.3); }
+        .anno-box-v4 { position: absolute; right: 80px; top: 120px; width: 340px; background: #F8F9FA; border: 1px solid #DDD; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+    <div class="slide-canvas">
+        <table class="ppt-metadata-table">
+            <tr>
+                <td class="label">Project</td><td class="val" colspan="3">온오프 재고 효율화 고도화</td>
+                <td class="label">Step</td><td class="val">[UI] 상품상세 - 매장정보</td>
+                <td class="label">Date</td><td class="val">2026.04.14</td>
+            </tr>
+            <tr>
+                <td class="label">Focus</td><td class="val">카카오맵 API 연동 가이드</td>
+                <td class="label">Modifier</td><td class="val">Architect</td>
+                <td class="label">Version</td><td class="val">v0.8</td>
+                <td class="label">Page No.</td><td class="val">24</td>
+            </tr>
+        </table>
+        
+        <header class="ppt-header-strategy" style="background:#888;">24. UI Wireframe - 상품 상세 - 매장 위치 (PDP Map)</header>
+
+        <div class="ui-stage-v4">
+            <div class="iphone-center-v4">
+                <div class="iphone-shell-v4">
+                    <div class="iphone-screen-v4">
+                        <div style="background:#fff; padding:15px; border-bottom:1px solid #EEE; display:flex; align-items:center; gap:10px;">
+                            <span style="font-size:18px;">←</span> <b>매장 안내</b>
+                        </div>
+                        <div class="map-mock-v4">
+                            <div class="pin-v4"><span style="transform: rotate(45deg);">L</span></div>
+                            <div style="position:absolute; bottom:15px; left:15px; right:15px; background:#fff; padding:12px; border-radius:6px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                <b style="font-size:13px;">LF 헤지스 강남본점</b><br>
+                                <span style="font-size:11px; color:#666;">서울 강남구 언주로 870...</span>
+                            </div>
+                        </div>
+                        <div style="padding:20px;">
+                            <div style="font-size:12px; color:#333; margin-bottom:15px;">운영시간: 10:30 ~ 20:00 (월~일)</div>
+                            <button style="width:100%; height:46px; border:1px solid #CCC; background:#fff; font-weight:bold; font-size:13px; border-radius:4px;">전화하기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="anno-box-v4">
+                <div class="anno-item-v4">
+                    <div class="anno-num-v4">1</div>
+                    <div><b>지도 연동</b>: 상품 발송 주체인 거점 매장의 위치를 지도 API로 직관적 노출</div>
+                </div>
+                <div class="anno-item-v4">
+                    <div class="anno-num-v4">2</div>
+                    <div><b>운영 정보</b>: 매장의 실제 운영 시간 및 연락처 정보를 DB에서 로드하여 표기</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 24</div>
+        </div>
+    </div>
+</body>
+</html>

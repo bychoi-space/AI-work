@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .if-stage-v4 { padding: 100px 110px; position: relative; }
+        .if-label-v4 { font-size: 11px; font-weight: 800; background: #fff; border: 1.5px solid #EEE; padding: 4px 12px; border-radius: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.04); z-index: 20; position: absolute; }
+    </style>
+</head>
+<body>
+    <div class="slide-canvas">
+        <header class="ppt-header-strategy">14. 시스템간 데이터 연동 맵 (Interface Map)</header>
+        
+        <div class="if-stage-v4">
+            <svg class="svg-layer-v4">
+                <defs>
+                    <marker id="arrow-v4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="#AAA" />
+                    </marker>
+                </defs>
+                <line x1="280" y1="180" x2="440" y2="180" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" />
+                <line x1="440" y1="200" x2="280" y2="200" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" />
+                <line x1="530" y1="250" x2="530" y2="350" stroke="#AAA" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrow-v4)" />
+                <line x1="210" y1="350" x2="210" y2="250" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" />
+            </svg>
+
+            <div class="ppt-node-v4" style="top:140px; left:120px; width:160px; height:90px; border-color:#2E5BFF;">LFmall (Front)</div>
+            <div class="ppt-node-v4" style="top:140px; left:450px; width:160px; height:90px; border-color:#059669;">OMS (Order)</div>
+            <div class="ppt-node-v4" style="top:360px; left:450px; width:160px; height:90px; border-color:#D97706;">SAP ERP</div>
+            <div class="ppt-node-v4" style="top:360px; left:120px; width:160px; height:90px; border-color:#6366F1;">POS / Tablet</div>
+
+            <div class="if-label-v4" style="top:178px; left:330px; color:#2E5BFF;">API 연동</div>
+            <div class="if-label-v4" style="top:285px; left:540px; color:#D97706;">BATCH</div>
+            <div class="if-label-v4" style="top:285px; left:140px; color:#6366F1;">RFC / EAI</div>
+        </div>
+
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 14</div>
+        </div>
+    </div>
+</body>
+</html>

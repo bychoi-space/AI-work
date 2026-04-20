@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .lt-stage-v4 { padding: 80px 110px; display: flex; flex-direction: column; align-items: center; }
+        .v4-timeline { display: flex; gap: 40px; align-items: center; margin-bottom: 60px; }
+        .v4-time-unit { width: 140px; text-align: center; }
+        .v4-time-circle { width: 70px; height: 70px; border-radius: 50%; background: #fff; border: 2px solid #DDD; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-weight: 900; font-size: 14px; box-shadow: var(--ppt-shadow); }
+        .v4-time-circle.active { border-color: var(--lf-red); color: var(--lf-red); }
+        .v4-time-line { width: 60px; height: 2px; background: #DDD; margin-top: -25px; }
+    </style>
+</head>
+<body>
+    <div class="slide-canvas">
+        <header class="ppt-header-strategy">10. 배송 LT 및 자동결품 정책 (Delivery Policy)</header>
+        
+        <div class="lt-stage-v4">
+            <div class="v4-timeline">
+                <div class="v4-time-unit"><div class="v4-time-circle active">D + 0</div><p style="font-size:12px; font-weight:bold;">시스템 배정</p></div>
+                <div class="v4-time-line"></div>
+                <div class="v4-time-unit"><div class="v4-time-circle active">D + 1</div><p style="font-size:12px; font-weight:bold;">상품 준비</p></div>
+                <div class="v4-time-line"></div>
+                <div class="v4-time-unit"><div class="v4-time-circle">D + 2</div><p style="font-size:12px;">택배 발송</p></div>
+                <div class="v4-time-line"></div>
+                <div class="v4-time-unit" style="opacity:0.4;"><div class="v4-time-circle">D + 3</div><p style="font-size:12px;">자동결품</p></div>
+            </div>
+
+            <table class="data-grid-v4" style="width:100%;">
+                <thead>
+                    <tr><th style="background:#333; color:#fff; width:180px;">매장 유형</th><th>상품준비 기한 (LT)</th><th>자동결품 시점</th><th>패널티 정책</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td style="font-weight:900; background:#F8FAFC;">백화점/직영</td><td>배정 후 24시간 이내</td><td style="color:var(--lf-red); font-weight:900;">D+2일 자정</td><td>결품률 5% 초과 시 배정 정지</td></tr>
+                    <tr><td style="font-weight:900; background:#F8FAFC;">대리점</td><td>배정 후 48시간 이내</td><td style="color:var(--lf-red); font-weight:900;">D+3일 자정</td><td>점주 수동 컨펌 필수</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 10</div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .decision-stage-v4 { padding: 60px 110px; }
+        .check-table-v4 { width:100%; border-collapse: collapse; }
+        .check-table-v4 th { background: #333; color: #fff; padding: 15px; text-align: left; font-size: 14px; }
+        .check-table-v4 td { border-bottom: 1.5px solid #EEE; padding: 25px 15px; font-size: 14.5px; }
+        .badge-v4 { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 900; }
+        .badge-ok { background: #E2EFDA; color: #059669; }
+        .badge-yet { background: #FFF2CC; color: #D97706; }
+    </style>
+</head>
+<body>
+    <div class="slide-canvas">
+        <header class="ppt-header-strategy">15. 오픈 전 주요 의사결정 및 점검 항목 (Decision List)</header>
+        
+        <div class="decision-stage-v4">
+            <table class="check-table-v4">
+                <thead>
+                    <tr><th style="width:160px;">구분</th><th>점검 항목 및 결정 사항</th><th style="width:100px;">상태</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td style="font-weight:900;">영업 정책</td><td>매장별 일일 배정 Cap 수량 (최소 5ea ~ 최대 20ea) 확정</td><td><span class="badge-v4 badge-ok">CONFIRMED</span></td></tr>
+                    <tr><td style="font-weight:900;">시스템 연동</td><td>SAP 재고 수급 배치 주기 (10분) 부하 테스트 완료 여부</td><td><span class="badge-v4 badge-ok">CONFIRMED</span></td></tr>
+                    <tr><td style="font-weight:900;">물류 협의</td><td style="color:var(--lf-red); font-weight:bold;">매장 택배비(2.5천원) 정산 주체 및 브랜드별 분담 비율</td><td><span class="badge-v4 badge-yet">DISCUSSION</span></td></tr>
+                    <tr><td style="font-weight:900;">UI/UX</td><td>LFmall 상품상세 내 매장상품배송 전용 뱃지 가이드 배포</td><td><span class="badge-v4 badge-ok">CONFIRMED</span></td></tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top:40px; font-size:12px; color:#777; line-height:1.6;">
+                ※ 물류 정산 주체(브랜드 vs 본사)에 대한 최종 협의는 4월 4주차 운영위원회에서 확정 예정임.
+            </div>
+        </div>
+
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 15</div>
+        </div>
+    </div>
+</body>
+</html>

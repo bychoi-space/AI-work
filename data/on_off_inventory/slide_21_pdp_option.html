@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .ui-stage-v4 { padding: 30px 45px; }
+        .iphone-center-v4 { display: flex; justify-content: center; margin-top: 20px; }
+        .iphone-shell-v4 {
+            width: 320px; height: 600px; background: #000; border-radius: 40px;
+            padding: 10px; box-shadow: 0 40px 80px rgba(0,0,0,0.3); border: 2.5px solid #222;
+        }
+        .iphone-screen-v4 { background: #fff; width: 100%; height: 100%; border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+        
+        .option-bottom-v4 {
+            position: absolute; bottom: 0; width: 100%; height: 380px;
+            background: #fff; border-top: 1.5px solid #DDD; box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+            border-radius: 30px 30px 0 0; padding: 25px;
+        }
+        .anno-box-v4 { position: absolute; right: 80px; top: 120px; width: 340px; background: #F8F9FA; border: 1px solid #DDD; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+    <div class="slide-canvas">
+        <table class="ppt-metadata-table">
+            <tr>
+                <td class="label">Project</td><td class="val" colspan="3">온오프 재고 효율화 고도화</td>
+                <td class="label">Step</td><td class="val">[UI] 상품상세 - 옵션선택</td>
+                <td class="label">Date</td><td class="val">2026.04.14</td>
+            </tr>
+            <tr>
+                <td class="label">Focus</td><td class="val">재고 상태별 텍스트 노출</td>
+                <td class="label">Modifier</td><td class="val">Architect</td>
+                <td class="label">Version</td><td class="val">v0.8</td>
+                <td class="label">Page No.</td><td class="val">21</td>
+            </tr>
+        </table>
+        
+        <header class="ppt-header-strategy" style="background:#888;">21. UI Wireframe - 상품 상세 - 옵션 선택 (PDP Option)</header>
+
+        <div class="ui-stage-v4">
+            <div class="iphone-center-v4">
+                <div class="iphone-shell-v4">
+                    <div class="iphone-screen-v4">
+                        <div style="height:250px; background:#f1f3f5; opacity:0.3;"></div>
+                        <div class="option-bottom-v4">
+                            <h4 style="font-size:16px; font-weight:900; margin-bottom:20px;">색상/사이즈</h4>
+                            <div style="padding:15px; border:1.5px solid var(--lf-red); border-radius:8px; margin-bottom:10px; display:flex; justify-content:space-between; background:rgba(200, 25, 46, 0.02);">
+                                <span style="font-size:13px; font-weight:bold;">Navy / 100</span>
+                                <b style="color:var(--lf-red); font-size:11px;">[매장재고 5개]</b>
+                            </div>
+                            <div style="padding:15px; border:1px solid #EEE; border-radius:8px; display:flex; justify-content:space-between; opacity:0.5;">
+                                <span style="font-size:13px; color:#999;">Navy / 105</span>
+                                <b style="color:#999; font-size:11px;">품절</b>
+                            </div>
+                            <button style="width:100%; height:50px; background:var(--ppt-header-bg); color:#fff; border:none; border-radius:8px; font-weight:900; margin-top:25px;">장바구니 담기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="anno-box-v4">
+                <div class="anno-item-v4">
+                    <div class="anno-num-v4">1</div>
+                    <div><b>재고 상태 표기</b>: 물리적 거점 매장에만 재고가 있는 경우 <span style="color:var(--lf-red); font-weight:bold;">[매장재고 N개]</span> 텍스트 노출</div>
+                </div>
+                <div class="anno-item-v4">
+                    <div class="anno-num-v4">2</div>
+                    <div><b>품절 처리</b>: 전체 재고(센터+매장)가 0인 옵션은 선택 불가(Disabled) 처리</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 21</div>
+        </div>
+    </div>
+</body>
+</html>

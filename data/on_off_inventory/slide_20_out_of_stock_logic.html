@@ -3,70 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
-    <style>
-        .decision-stage-hf { padding: 100px 110px; display: flex; flex-direction: column; align-items: center; position: relative; }
-        
-        .logic-pill-hf {
-            width: 280px; padding: 18px;
-            background: #fff; border: 2px solid #333;
-            border-radius: 50px; text-align: center;
-            font-size: 15px; font-weight: 900;
-            box-shadow: var(--ppt-shadow);
-            z-index: 10;
-        }
-
-        .logic-diamond-hf {
-            width: 160px; height: 160px;
-            background: #FFF2CC; border: 2px solid #D9AE3B;
-            transform: rotate(45deg);
-            display: flex; align-items: center; justify-content: center;
-            margin: 60px 0; box-shadow: var(--ppt-shadow);
-            position: relative; z-index: 10;
-        }
-        .diamond-inner { transform: rotate(-45deg); font-size: 13px; font-weight: 900; text-align: center; }
-
-        .logic-label-hf { font-size: 14px; font-weight: 900; margin-bottom: 15px; }
-    </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">20. 자동결품 로직 고도화 안 (Logic Flow)</header>
-
-        <div class="decision-stage-hf">
-            <svg class="svg-flow-layer" style="width:100%; height:100%;">
+        <header class="ppt-header-strategy">20. 매장 결품 발생 시 주문 처리 로직 (Out of Stock)</header>
+        
+        <div style="padding: 60px 110px; position: relative; height: 100%;">
+            <svg class="svg-layer-v4">
                 <defs>
-                    <marker id="arrow-black" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                        <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+                    <marker id="arrow-v4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                        <polygon points="0 0, 8 3, 0 6" fill="#AAA" />
                     </marker>
                 </defs>
-                <line x1="720" y1="160" x2="720" y2="220" stroke="#333" stroke-width="2" marker-end="url(#arrow-black)" />
-                <line x1="720" y1="410" x2="720" y2="480" stroke="#333" stroke-width="2" marker-end="url(#arrow-black)" />
-                
-                <!-- Yes Branch -->
-                <path d="M 820 540 L 950 540" stroke="#059669" stroke-width="2" marker-end="url(#arrow-black)" fill="none" />
-                <!-- No Branch -->
-                <path d="M 620 540 L 490 540" stroke="#C8192E" stroke-width="2" marker-end="url(#arrow-black)" fill="none" />
+                <line x1="280" y1="120" x2="400" y2="120" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" />
+                <line x1="560" y1="120" x2="680" y2="120" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" />
+                <path d="M 480 155 L 480 250" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" fill="none" />
+                <path d="M 480 320 L 480 400" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" fill="none" />
             </svg>
 
-            <div class="logic-pill-hf">매장 주문 배정 (Order Assigned)</div>
+            <div class="ppt-node-v4" style="top:80px; left:80px; width:200px; height:80px; background:#F8F9FA;">결품 발생 (매장)</div>
             
-            <div class="logic-diamond-hf">
-                <div class="diamond-inner">48시간 내<br>패킹 완료?</div>
+            <div class="ppt-node-v4" style="top:70px; left:400px; width:160px; height:100px; border-radius:10px; background:#FFEBEB; border:2px solid var(--lf-red); transform: rotate(0deg); display:flex; justify-content:center; align-items:center;">
+                <div style="font-weight:900;">가용 재고<br>재조회</div>
             </div>
 
-            <div style="display:flex; gap:200px;">
-                <div style="text-align:center;">
-                    <div class="logic-label-hf" style="color:#059669;">YES (Success)</div>
-                    <div class="logic-pill-hf" style="border-color:#059669; width:220px;">송장 입력 및 발송</div>
-                </div>
-                <div style="text-align:center;">
-                    <div class="logic-label-hf" style="color:var(--lf-red);">NO (Time-out)</div>
-                    <div class="logic-pill-hf" style="border-color:var(--lf-red); color:var(--lf-red); width:220px;">자동 결품 / 재배정</div>
-                </div>
-            </div>
+            <div class="ppt-node-v4" style="top:80px; left:680px; width:200px; height:80px; background:#E2EFDA;">인근 매장<br>재배정</div>
+
+            <div class="ppt-node-v4" style="top:250px; left:380px; width:200px; height:80px; background:#F1F3F5;">상태값: 결품<br>(OMS)</div>
+
+            <div class="ppt-node-v4" style="top:400px; left:380px; width:200px; height:80px; background:var(--lf-red); color:#fff; border:none;">주문 취소 및<br>품절 통보</div>
+
+            <div style="position:absolute; top:125px; left:580px; font-size:11px; font-weight:bold; color:#059669;">[Y] 타매장 재유</div>
+            <div style="position:absolute; top:200px; left:490px; font-size:11px; font-weight:bold; color:var(--lf-red);">[N] 전점 품절</div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div>PAGE 20</div>
+        </div>
     </div>
 </body>
 </html>
