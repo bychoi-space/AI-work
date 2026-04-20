@@ -428,9 +428,13 @@
             // Hide Loading Overlay
             const overlay = document.getElementById('loading-overlay');
             if (overlay) {
+                overlay.style.opacity = '0';
                 setTimeout(() => {
-                    overlay.classList.add('fade-out');
-                }, 300); // Slight delay for smooth feel
+                    overlay.remove();
+                    centerView(); // Always center even for empty projects
+                }, 500);
+            } else {
+                setTimeout(centerView, 150);
             }
         }
 
