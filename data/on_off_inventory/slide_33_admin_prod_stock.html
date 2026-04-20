@@ -3,33 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .admin-main-hf { position: absolute; top: 52px; left: 260px; right: 0; bottom: 0; background: #F4F6F9; padding: 40px; }
+        .prod-panel-hf {
+            background: #fff; padding: 25px; border: 1px solid #CCC; margin-bottom: 25px;
+            display: flex; gap: 30px; align-items: center; box-shadow: var(--ppt-shadow);
+        }
+    </style>
 </head>
 <body>
     <div class="slide-canvas">
         <header class="ppt-header">33. [어드민] 자사상품 상세 - 매장별 재고 정보</header>
 
-        <div style="width:240px; background:#252830; height:100%; position:absolute; top:48px; left:0; padding:20px;">
-            <div style="color:#FFF; opacity:0.3; font-size:10px;">DASHBOARD</div>
-            <div style="color:#FFF; margin-top:20px; font-size:13px;">→ 재고 정보 상세</div>
+        <div class="admin-sidebar-hf">
+            <div style="font-size:10px; opacity:0.4; letter-spacing:1px; margin-bottom:20px;">SYSTEM MENU</div>
+            <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
+            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 재고 상세 현황</div>
         </div>
 
-        <div style="margin-left:240px; padding:30px 40px; background: #F5F6F8; height: calc(100% - 48px);">
-            <div style="background:#fff; padding:20px; border:1px solid #ddd; margin-bottom:20px; display:flex; gap:30px; align-items:center;">
-                <div style="width:60px; height:80px; background:#EEE;"></div>
+        <div class="admin-main-hf">
+            <div class="prod-panel-hf">
+                <div style="width:70px; height:90px; background:#F1F3F5; border-radius:4px;"></div>
                 <div>
-                    <h3 style="font-size:16px;">HAZZYS 기모 티셔츠 (HZM12345)</h3>
-                    <p style="font-size:12px; color:#666; margin-top:4px;">현재 총 가용 재고: <b style="color:var(--lf-red);">124 EA</b></p>
+                    <h3 style="font-size:18px; font-weight:900;">HAZZYS 기모 티셔츠 (HZM12345)</h3>
+                    <div style="font-size:14px; color:#555; margin-top:5px;">총 가용 재고: <b style="color:var(--lf-red); font-size:20px;">124</b> EA</div>
                 </div>
             </div>
 
-            <table class="ppt-data-table">
+            <table class="data-table-hf">
                 <thead>
-                    <tr><th>NO</th><th>매장코드</th><th>매장명</th><th>가용재고</th><th>안전재고</th><th>예약재고</th><th>연동시간</th></tr>
+                    <tr><th>NO</th><th>매장코드</th><th>매장명 (유형)</th><th>가용재고</th><th>안전재고</th><th>예약재고</th><th>연동시간</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td>1</td><td>S001</td><td>강남본점</td><td>24</td><td>5</td><td>2</td><td>14:30</td></tr>
-                    <tr><td>2</td><td>S002</td><td>명동스타일</td><td>12</td><td>3</td><td>0</td><td>14:30</td></tr>
-                    <tr><td>3</td><td>S008</td><td>광교갤러리아</td><td>5</td><td>1</td><td>1</td><td>14:28</td></tr>
+                    <tr><td>1</td><td>S001</td><td style="font-weight:bold;">강남본점 (직영)</td><td style="text-align:right;">24</td><td style="text-align:right;">5</td><td style="text-align:right;">2</td><td>14:30</td></tr>
+                    <tr><td>2</td><td>S002</td><td style="font-weight:bold;">명동스타일 (직영)</td><td style="text-align:right;">12</td><td style="text-align:right;">3</td><td style="text-align:right;">0</td><td>14:30</td></tr>
+                    <tr style="background:rgba(200, 25, 46, 0.05);"><td>3</td><td>S008</td><td style="font-weight:bold;">광교갤러리아 (대리점)</td><td style="text-align:right; color:var(--lf-red); font-weight:900;">5</td><td style="text-align:right;">1</td><td style="text-align:right;">1</td><td>14:28</td></tr>
                 </tbody>
             </table>
         </div>

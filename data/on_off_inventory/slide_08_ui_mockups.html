@@ -4,112 +4,61 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .mock-split {
-            display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 60px;
-            padding: 60px 100px;
-        }
-
-        /* High-Fidelity Phone Frame */
-        .iphone-frame {
-            width: 320px;
-            height: 650px;
-            background: #000;
-            border-radius: 50px;
-            padding: 12px;
-            position: relative;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-        }
-        .iphone-screen {
-            background: #fff;
-            width: 100%;
-            height: 100%;
-            border-radius: 38px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .store-badge-premium {
-            background: var(--lf-red);
-            color: #fff;
-            padding: 6px 12px;
-            font-size: 12px;
-            font-weight: 800;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 8px;
-        }
-
-        /* Web Frame */
-        .web-frame {
-            background: #fff;
-            border: 1px solid #DDD;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-        }
-        .web-bar { background: #EEE; height: 35px; border-bottom: 1px solid #DDD; display: flex; align-items: center; padding-left: 15px; gap: 6px; }
-        .web-dot { width: 8px; height: 8px; border-radius: 50%; opacity: 0.5; }
+        .split-view-hf { display: grid; grid-template-columns: 440px 1fr; gap: 60px; padding: 60px 110px; }
         
-        .basket-list { padding: 30px; }
-        .basket-item {
-            display: flex;
-            gap: 20px;
-            border-bottom: 1px solid #EEE;
-            padding-bottom: 25px;
-            margin-bottom: 25px;
+        /* Premium iPhone Frame */
+        .phone-frame-hf {
+            width: 330px; height: 670px;
+            background: #111; border-radius: 45px;
+            padding: 12px; position: relative;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4);
         }
-        .item-img { width: 80px; height: 110px; background: #F1F3F5; border-radius: 4px; }
+        .phone-screen-hf {
+            background: #fff; width: 100%; height: 100%;
+            border-radius: 35px; overflow: hidden;
+            position: relative;
+        }
+
+        .ppt-web-window-hf {
+            background: #fff; border: 1px solid #CCC;
+            border-radius: 10px; overflow: hidden;
+            box-shadow: var(--ppt-shadow);
+        }
+        .web-header-hf { background: #F1F3F5; height: 40px; border-bottom: 1px solid #CCC; display: flex; align-items: center; padding-left: 15px; gap: 8px; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">08. UI 표현 정책 상세 (PDP/BASKET)</header>
+        <header class="ppt-header">08. UI 표현 정책 상세 (PDP / Shopping Bag)</header>
 
-        <div class="mock-split">
-            <!-- PDP Mockup -->
-            <div class="iphone-frame">
-                <div class="iphone-screen">
-                    <div style="height:320px; background:#F1F3F5;"></div>
-                    <div style="padding:24px;">
-                        <span class="store-badge-premium">매장상품배송</span>
-                        <h4 style="font-size:18px; margin-bottom:10px;">HAZZYS [매장상품] <br>네이비 면혼방 기본 반팔티</h4>
-                        <div style="font-size:22px; font-weight:900;">69,000원</div>
-                        <hr style="margin:20px 0; border:none; border-top:1px solid #EEE;">
-                        <p style="font-size:12px; color:#666; line-height:1.6;">• 강남본점 발송 (무료배송)<br>• 1~2일 내 도착 예정</p>
-                    </div>
-                    <div style="position:absolute; bottom:0; width:100%; border-top:1px solid #EEE; padding:15px; background:#fff;">
-                        <button class="btn-lf" style="width:100%; height:50px; font-size:16px;">구매하기</button>
+        <div class="split-view-hf">
+            <div class="phone-frame-hf">
+                <div class="phone-screen-hf">
+                    <div style="height:350px; background:#F8FAFC; display:flex; align-items:center; justify-content:center; color:#AAA;">PRODUCT_IMG</div>
+                    <div style="padding:25px;">
+                        <span class="admin-badge" style="background:var(--lf-red); color:#fff; padding:4px 12px; font-size:12px;">매장상품배송</span>
+                        <h4 style="font-size:18px; margin-top:12px; font-weight:900;">[매장상품] <br>헤지스 기모 베이직 티셔츠</h4>
+                        <div style="font-size:22px; font-weight:900; margin-top:10px;">89,000 원</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Web Basket -->
-            <div class="web-frame">
-                <div class="web-bar">
-                    <div class="web-dot" style="background:#FF5F56;"></div>
-                    <div class="web-dot" style="background:#FFBD2E;"></div>
-                    <div class="web-dot" style="background:#27C93F;"></div>
+            <div class="ppt-web-window-hf">
+                <div class="web-header-hf">
+                    <div style="width:10px; height:10px; background:#FF5F56; border-radius:50%;"></div>
+                    <div style="width:10px; height:10px; background:#FFBD2E; border-radius:50%;"></div>
+                    <div style="width:10px; height:10px; background:#27C93F; border-radius:50%;"></div>
                 </div>
-                <div class="basket-list">
-                    <h3 style="margin-bottom:25px;">장바구니 (2개)</h3>
-                    <div class="basket-item">
-                        <div class="item-img"></div>
+                <div style="padding:40px;">
+                    <h3 style="font-size:20px; font-weight:900; margin-bottom:30px;">장바구니</h3>
+                    <div style="border-top:2px solid #333; padding:20px 0; display:flex; gap:20px; align-items:center;">
+                        <input type="checkbox" checked>
+                        <div style="width:70px; height:90px; background:#F1F3F5;"></div>
                         <div style="flex:1;">
-                            <span class="admin-badge" style="background:var(--lf-red); color:#fff; padding:2px 8px;">매장배송</span>
-                            <div style="font-size:14px; font-weight:700; margin-top:8px;">[매장상품] HAZZYS 기모 티셔츠</div>
-                            <div style="font-size:13px; color:#999; margin-top:4px;">옵션: Navy / 100</div>
+                            <span style="background:var(--lf-red); color:#fff; font-size:10px; padding:2px 6px;">매장배송</span>
+                            <div style="font-size:14px; font-weight:bold; margin-top:5px;">HAZZYS 기모 티셔츠 (Navy)</div>
                         </div>
-                        <div style="font-weight:900; font-size:16px;">69,000원</div>
-                    </div>
-                    <div class="basket-item" style="opacity:0.6;">
-                        <div class="item-img"></div>
-                        <div style="flex:1;">
-                            <span class="admin-badge" style="background:#666; color:#fff; padding:2px 8px;">일반배송</span>
-                            <div style="font-size:14px; font-weight:700; margin-top:8px;">DAKS 베이직 셔츠</div>
-                        </div>
-                        <div style="font-weight:900; font-size:16px;">120,000원</div>
+                        <b style="font-size:18px;">89,000원</b>
                     </div>
                 </div>
             </div>

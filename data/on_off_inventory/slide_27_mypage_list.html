@@ -6,27 +6,40 @@
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">27. [UI] 마이페이지 - 주문내역 목록</header>
+        <header class="ppt-header">27. [UI] 마이페이지 - 주문내역 목록 (My Order List)</header>
 
         <div style="display:flex; justify-content:center; padding:40px;">
-            <div style="width:340px; height:700px; background:#000; border-radius:50px; padding:12px; box-shadow: 0 40px 100px rgba(0,0,0,0.2);">
-                <div style="background:#F8F9FA; width:100%; height:100%; border-radius:38px; overflow-y:auto;">
-                    <div style="background:#FFF; padding:20px; border-bottom:1px solid #EEE; text-align:center; font-weight:800;">마이페이지</div>
+            <div class="phone-frame-hf">
+                <div class="phone-screen-ins">
+                    <div style="background:#fff; height:60px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; border-bottom:1.5px solid #EEE;">주문 내역</div>
                     
-                    <div style="padding:15px;">
-                        <h5 style="margin-bottom:15px; font-size:14px;">최근 주문내역</h5>
+                    <div style="padding:20px; overflow-y:auto; flex:1; background:#F8F9FA;">
+                        <h5 style="font-size:14px; margin-bottom:15px; font-weight:900;">2026.04 주문내역</h5>
                         
-                        <div style="background:#FFF; padding:20px; border-radius:12px; margin-bottom:12px; border:1px solid #EEE;">
-                            <div style="display:flex; justify-content:space-between; font-size:11px; color:#999; margin-bottom:12px;">
-                                <span>2026.04.20</span>
-                                <span style="text-decoration:underline;">주문상세 ></span>
+                        <div style="background:#fff; border-radius:12px; border:1px solid #EEE; padding:20px; margin-bottom:12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                                <span style="font-size:12px; color:#999; font-weight:bold;">2026.04.20 | No.20260420-9912</span>
+                                <span style="font-size:11px; text-decoration:underline; font-weight:bold; color:#666;">상세보기 ></span>
                             </div>
-                            <div style="display:flex; gap:12px;">
-                                <div style="width:50px; height:70px; background:#EEE;"></div>
+                            <div style="display:flex; gap:15px;">
+                                <div style="width:60px; height:80px; background:#F1F3F5; border-radius:4px;"></div>
                                 <div>
-                                    <div style="font-size:13px; font-weight:700;">HAZZYS 기모 티셔츠</div>
-                                    <div style="font-size:11px; color:#666; margin-top:4px;">옵션: Navy / 100</div>
-                                    <div style="font-size:14px; font-weight:900; color:var(--lf-red); margin-top:10px;">매장배송 준비중</div>
+                                    <div style="font-size:13.5px; font-weight:bold;">HAZZYS 기모 티셔츠</div>
+                                    <div style="font-size:11px; color:#999; margin-top:3px;">Navy / 100 / 1개</div>
+                                    <div style="font-size:15px; font-weight:900; margin-top:8px; color:var(--lf-red);">매장배송 준비중</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background:#fff; border-radius:12px; border:1px solid #EEE; padding:20px; opacity:0.6;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                                <span style="font-size:12px; color:#999; font-weight:bold;">2026.04.18 | No.20260418-8812</span>
+                            </div>
+                            <div style="display:flex; gap:15px;">
+                                <div style="width:60px; height:80px; background:#F1F3F5; border-radius:4px;"></div>
+                                <div>
+                                    <div style="font-size:13.5px; font-weight:bold;">DAKS 가죽 스니커즈</div>
+                                    <div style="font-size:15px; font-weight:900; margin-top:8px;">배송완료</div>
                                 </div>
                             </div>
                         </div>

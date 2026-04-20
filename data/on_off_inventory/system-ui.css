@@ -1,70 +1,76 @@
 /* 
-   Inventory Optimization System High-Fidelity Design System
-   Matches PPT Style Audit (v0.8)
+   Inventory Optimization System Pass 3: Extreme Detail (Pixel-Perfect)
+   Refined from microscopy audit of Google Slides source.
 */
 
 :root {
-    /* PPT Original Palette */
+    /* Precise PPT Palette */
     --ppt-bg: #FFFFFF;
     --ppt-header-bg: #333333;
-    --ppt-gray-text: #333333;
-    --ppt-gray-sub: #7F7F7F;
-    --ppt-border: #D9D9D9;
+    --ppt-frame-border: #CCCCCC;
+    --ppt-gray-text: #1E1E1E; /* Deeper black for titles */
+    --ppt-gray-sub: #595959;
     
-    /* System Node Colors */
+    /* System & UI Tokens */
     --node-lfmall-bg: #DEEAF6;
     --node-oms-sap-bg: #E2EFDA;
     --node-pos-bg: #FFF2CC;
-    --node-border: #B7B7B7;
+    --node-border: #999999;
+    
+    /* Micro-Detail Shadows (Precise PPT Blur) */
+    --ppt-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     
     /* Branding */
     --lf-red: #C8192E;
-    --lf-gray: #7F7F7F;
+    --lf-red-hover: #b01628;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    background: #e9ecef; /* Background outside the slide for contrast */
-    font-family: 'Inter', 'Nanum Gothic', Arial, sans-serif;
+    background: #515659; /* Standard PDF/Presentation viewer background */
+    font-family: 'Malgun Gothic', 'Nanum Gothic', 'Segoe UI', sans-serif;
     color: var(--ppt-gray-text);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    overflow: hidden;
 }
 
-/* 16:9 Slide Canvas */
+/* 16:9 Slide Canvas with Frame Detail */
 .slide-canvas {
     width: 1440px;
     height: 810px;
     background: var(--ppt-bg);
     position: relative;
-    box-shadow: 0 20px 80px rgba(0,0,0,0.15);
-    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    border: 1px solid var(--ppt-frame-border); /* Slide edge detail */
+    transform: scale(0.65); /* Scaling for standard dashboard viewing */
     transform-origin: center center;
 }
 
-/* PPT Header Bar */
+/* PPT Header with Micro-Border */
 .ppt-header {
     width: 100%;
-    height: 48px;
+    height: 52px;
     background: var(--ppt-header-bg);
     display: flex;
     align-items: center;
-    padding: 0 40px;
+    padding: 0 45px;
     color: #fff;
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 21px;
+    font-weight: bold;
+    border-bottom: 1px solid #000;
 }
 
-/* LF Logo Positioning (Bottom Left) */
+/* LF Logo with Exact Padding (25px) */
 .ppt-footer-logo {
     position: absolute;
-    bottom: 24px;
-    left: 40px;
-    width: 32px;
-    height: 32px;
+    bottom: 25px;
+    left: 45px;
+    width: 34px;
+    height: 34px;
     background: var(--lf-red);
     color: #fff;
     display: flex;
@@ -73,26 +79,38 @@ body {
     font-weight: 900;
     font-size: 14px;
     border-radius: 2px;
+    z-index: 100;
 }
 
-/* Shared PPT Components */
-.ppt-node {
-    background: #fff;
-    border: 1px solid var(--node-border);
-    padding: 10px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
+/* PASS 3 Node Styling (with precise shadow) */
+.ppt-node-hf {
     position: absolute;
+    border: 1px solid var(--node-border);
+    box-shadow: var(--ppt-shadow);
+    padding: 12px 20px;
+    font-size: 13.5px;
+    font-weight: bold;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
 }
 
-.ppt-arrow-solid { position: absolute; height: 1.5px; background: var(--ppt-gray-sub); }
-.ppt-arrow-dashed { border-top: 1.5px dashed var(--ppt-gray-sub); position: absolute; height: 0; }
+/* SVG Arrow Container Utility */
+.svg-flow-layer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
 
-/* Dashboard Card Specifics */
-.admin-badge {
-    padding: 2px 6px;
-    border-radius: 2px;
-    font-size: 10px;
-    font-weight: 800;
+/* Form Styles for Admin */
+.form-input-hf {
+    border: 1px solid var(--ppt-frame-border);
+    padding: 8px 12px;
+    font-size: 13px;
+    border-radius: 4px;
+    outline-color: var(--lf-red);
 }

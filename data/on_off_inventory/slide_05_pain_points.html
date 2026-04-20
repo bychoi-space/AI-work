@@ -4,109 +4,84 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .flow-stage {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 80px 100px;
-            position: relative;
+        .flow-v-layer {
+            position: absolute; top: 120px; left: 0; width: 100%; height: 300px;
+            display: flex; justify-content: center; align-items: center; gap: 80px; padding: 0 110px;
         }
         
-        .flow-box {
-            width: 180px;
-            height: 120px;
+        .step-box-hf {
+            width: 200px; height: 130px;
             background: #fff;
-            border: 1.5px solid #D9D9D9;
-            border-radius: 8px;
+            border: 1px solid #D9D9D9;
+            box-shadow: var(--ppt-shadow);
+            border-radius: 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 10px;
             position: relative;
             z-index: 10;
         }
+        .step-box-hf h4 { font-size: 16px; margin-bottom: 6px; }
+        .step-box-hf p { font-size: 11px; color: #666; }
 
-        .flow-box h4 { font-size: 15px; margin-bottom: 5px; }
-        .flow-box p { font-size: 11px; color: #666; }
-
-        .flow-line {
-            flex: 1;
-            height: 2px;
-            background: #D9D9D9;
-            margin: 0 -5px;
+        .tag-issue-ball {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            background: var(--lf-red); color: #fff; padding: 3px 10px; font-size: 11px; font-weight: 800; border-radius: 20px;
         }
-
-        .tag-issue {
-            position: absolute;
-            top: -15px;
-            background: var(--lf-red);
-            color: #fff;
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 800;
-        }
-
-        .bottom-analysis {
-            margin: 0 100px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-        .analysis-card {
-            padding: 25px;
-            background: #F8F9FA;
-            border-left: 5px solid var(--lf-red);
-            border-radius: 4px;
-        }
-        .analysis-card h5 { font-size: 16px; margin-bottom: 10px; color: var(--lf-red); }
-        .analysis-card p { font-size: 12px; line-height: 1.6; color: #555; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
         <header class="ppt-header">05. 전체 프로세스 및 핵심 이슈</header>
 
-        <div class="flow-stage">
-            <div class="flow-box shadow">
-                <span class="tag-issue">ISSUE 1</span>
+        <svg class="svg-flow-layer" style="top: 120px;">
+            <defs>
+                <marker id="arrowhead-gray" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#D9D9D9" />
+                </marker>
+            </defs>
+            <line x1="310" y1="65" x2="390" y2="65" stroke="#D9D9D9" stroke-width="2" marker-end="url(#arrowhead-gray)" />
+            <line x1="590" y1="65" x2="670" y2="65" stroke="#D9D9D9" stroke-width="2" marker-end="url(#arrowhead-gray)" />
+            <line x1="870" y1="65" x2="950" y2="65" stroke="#D9D9D9" stroke-width="2" marker-end="url(#arrowhead-gray)" />
+        </svg>
+
+        <div class="flow-v-layer">
+            <div class="step-box-hf">
+                <span class="tag-issue-ball">ISSUE 1</span>
                 <h4>고객 주문</h4>
-                <p>LFmall APP/WEB</p>
+                <p>LFmall APP / WEB</p>
             </div>
-            <div class="flow-line"></div>
-            <div class="flow-box shadow">
-                <span class="tag-issue">ISSUE 2</span>
+            <div class="step-box-hf">
+                <span class="tag-issue-ball">ISSUE 2</span>
                 <h4>주문 배정</h4>
                 <p>OMS / SAP</p>
             </div>
-            <div class="flow-line"></div>
-            <div class="flow-box shadow">
-                <span class="tag-issue">ISSUE 3</span>
-                <h4>상품 준비</h4>
-                <p>전국 직영/대리점</p>
+            <div class="step-box-hf">
+                <span class="tag-issue-ball">ISSUE 3</span>
+                <h4>상품 준비 / 발송</h4>
+                <p>전국 직영 및 대리점</p>
             </div>
-            <div class="flow-line"></div>
-            <div class="flow-box shadow">
-                <span class="tag-issue">ISSUE 4</span>
-                <h4>택배 발송</h4>
-                <p>로젠/CJ 연동</p>
+            <div class="step-box-hf">
+                <span class="tag-issue-ball">ISSUE 4</span>
+                <h4>배송 처리</h4>
+                <p>택배사 연동 (E-mail/API)</p>
             </div>
         </div>
 
-        <div class="bottom-analysis">
-            <div class="analysis-card">
-                <h5>재고 실시간성</h5>
-                <p>매장 실재고와 온라인 가용 재고 간의 시차 발생으로 인한 예약 관리 자동화 필요</p>
+        <div style="position:absolute; bottom:120px; left:110px; right:110px; display:grid; grid-template-columns:repeat(3, 1fr); gap:30px;">
+            <div style="background:#F8F9FA; padding:25px; border-left:6px solid var(--lf-red); border-radius:4px; box-shadow: var(--ppt-shadow);">
+                <b style="color:var(--lf-red); font-size:16px;">가용 재고 산출</b>
+                <p style="font-size:12px; color:#555; margin-top:8px; line-height:1.6;">SAP ERP의 실재고와 온라인 예약 재고를 실시간 합산하여 최종 판매 수량 노출</p>
             </div>
-            <div class="analysis-card">
-                <h5>배정 정책 고도화</h5>
-                <p>매장 거리, 재고 수량, 정산 조건을 고려한 최적의 배정 엔진(Engine) 개발</p>
+            <div style="background:#F8F9FA; padding:25px; border-left:6px solid var(--lf-red); border-radius:4px; box-shadow: var(--ppt-shadow);">
+                <b style="color:var(--lf-red); font-size:16px;">매장 우선 배정</b>
+                <p style="font-size:12px; color:#555; margin-top:8px; line-height:1.6;">물류비용 최소화 및 매장 리드타임을 고려한 지능형 배정 엔진 최적화</p>
             </div>
-            <div class="analysis-card">
-                <h5>결품 대응 로직</h5>
-                <p>매장에서 상품 준비 불가 시, 즉각적인 타 매장 재배정 및 고객 안내 자동화</p>
+            <div style="background:#F8F9FA; padding:25px; border-left:6px solid var(--lf-red); border-radius:4px; box-shadow: var(--ppt-shadow);">
+                <b style="color:var(--lf-red); font-size:16px;">실시간 연동</b>
+                <p style="font-size:12px; color:#555; margin-top:8px; line-height:1.6;">주문 발생 즉시 매장 POS/Tablet으로 알림을 송출하여 준비 지연 최소화</p>
             </div>
         </div>
 

@@ -4,79 +4,76 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .arch-title {
-            font-size: 24px;
-            font-weight: 700;
-            padding: 30px 40px;
-            border-bottom: 3.5px solid var(--lf-red);
-            display: inline-block;
-            margin-left: 40px;
-        }
-        
-        .node-lfmall { background: #DEEAF6; top: 150px; left: 150px; width: 140px; }
-        .node-oms { background: #E2EFDA; top: 150px; left: 450px; width: 140px; }
-        .node-sap { background: #E2EFDA; top: 350px; left: 450px; width: 140px; }
-        .node-pos { background: #FFF2CC; top: 350px; left: 150px; width: 140px; }
-        
-        /* Dashed Line style */
-        .line-dashed {
-            border-bottom: 2px dashed #999;
+        .issue-ball {
             position: absolute;
-        }
-
-        .issue-marker {
-            position: absolute;
-            background: #FF0000;
+            width: 26px; height: 26px;
+            background: linear-gradient(135deg, #FF6B6B, #E60000);
             color: #fff;
-            width: 24px; height: 24px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 900;
+            box-shadow: 0 4px 8px rgba(230, 0, 0, 0.3);
+            border: 1px solid #C8192E;
+            z-index: 20;
         }
-
-        .issue-legend {
+        
+        .legend-grid-hf {
             position: absolute;
-            bottom: 80px; left: 40px; right: 40px;
+            bottom: 85px; left: 45px; right: 45px;
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
+            gap: 12px;
+            background: #F8F9FA;
+            padding: 15px;
+            border: 1px solid #EEE;
+            border-radius: 8px;
         }
-        .legend-item {
-            font-size: 11px;
-            display: flex;
-            gap: 6px;
-        }
+        .legend-item-hf { font-size: 11.5px; color: #444; line-height: 1.4; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
         <header class="ppt-header">
-            03. 시스템 아키텍처
+            03. 시스템 아키텍처 (System Architecture)
         </header>
 
-        <div class="ppt-node node-lfmall" style="top: 150px; left: 150px;">LFmall</div>
-        <div class="ppt-node node-oms" style="top: 150px; left: 450px;">OMS</div>
-        <div class="ppt-node node-sap" style="top: 320px; left: 450px;">SAP ERP</div>
-        <div class="ppt-node node-pos" style="top: 320px; left: 150px;">Store POS</div>
+        <!-- SVG Flow Layer -->
+        <svg class="svg-flow-layer">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#595959" />
+                </marker>
+            </defs>
+            <!-- Lfmall -> OMS -->
+            <line x1="290" y1="210" x2="430" y2="210" stroke="#595959" stroke-width="2" marker-end="url(#arrowhead)" />
+            <!-- OMS -> SAP (Batch) -->
+            <path d="M 525 255 L 525 350" stroke="#595959" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrowhead)" fill="none" />
+            <!-- SAP -> POS -->
+            <line x1="440" y1="390" x2="300" y2="390" stroke="#595959" stroke-width="2" marker-end="url(#arrowhead)" />
+        </svg>
 
-        <!-- Arrows -->
-        <div class="ppt-arrow-solid" style="top: 175px; left: 290px; width: 160px;"></div>
-        <div class="ppt-arrow-dashed" style="top: 185px; left: 450px; height: 135px; width: 0; border-left: 2px dashed #999;"></div>
+        <!-- Nodes -->
+        <div class="ppt-node-hf" style="top: 170px; left: 130px; width: 160px; height: 80px; background: var(--node-lfmall-bg);">LFmall</div>
+        <div class="ppt-node-hf" style="top: 170px; left: 440px; width: 160px; height: 80px; background: var(--node-oms-sap-bg);">OMS</div>
+        <div class="ppt-node-hf" style="top: 360px; left: 440px; width: 160px; height: 80px; background: var(--node-oms-sap-bg);">SAP ERP</div>
+        <div class="ppt-node-hf" style="top: 360px; left: 130px; width: 160px; height: 80px; background: var(--node-pos-bg);">Store POS</div>
 
         <!-- Issue Markers -->
-        <div class="issue-marker" style="top: 165px; left: 350px;">1</div>
-        <div class="issue-marker" style="top: 135px; left: 520px;">2</div>
-        <div class="issue-marker" style="top: 310px; left: 450px;">3</div>
+        <div class="issue-ball" style="top: 155px; left: 350px;">1</div>
+        <div class="issue-ball" style="top: 155px; left: 585px;">2</div>
+        <div class="issue-ball" style="top: 345px; left: 585px;">3</div>
+        <div class="issue-ball" style="top: 345px; left: 275px;">4</div>
+        <div class="issue-ball" style="top: 345px; left: 115px;">5</div>
 
-        <div class="issue-legend">
-            <div class="legend-item"><b style="color:red;">①</b> 재고 데이터 연동 지연</div>
-            <div class="legend-item"><b style="color:red;">②</b> 주문 배정 로직 부하</div>
-            <div class="legend-item"><b style="color:red;">③</b> SAP 배치 안정성</div>
-            <div class="legend-item"><b style="color:red;">④</b> 자동 결품 감지 고도화</div>
-            <div class="legend-item"><b style="color:red;">⑤</b> 통합 정산 프로세스</div>
+        <div class="legend-grid-hf">
+            <div class="legend-item-hf"><b>①</b> 재고 데이터 연동 주차/지연</div>
+            <div class="legend-item-hf"><b>②</b> 주문 배정 로직/정책 부하</div>
+            <div class="legend-item-hf"><b>③</b> SAP 원장 정합성/배치</div>
+            <div class="legend-item-hf"><b>④</b> 가용 재고 산출(Bucket)</div>
+            <div class="legend-item-hf"><b>⑤</b> 실시간 매장 취소 알림</div>
         </div>
 
         <div class="ppt-footer-logo">LF</div>

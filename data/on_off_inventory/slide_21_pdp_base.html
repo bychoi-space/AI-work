@@ -4,48 +4,53 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .iphone-center { display: flex; justify-content: center; padding: 40px; }
-        .iphone-frame-hf {
-            width: 340px;
-            height: 700px;
-            background: #000;
-            border-radius: 50px;
-            padding: 12px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+        .iphone-center-hf { display: flex; justify-content: center; padding: 40px; }
+        .iphone-shell-hf {
+            width: 350px; height: 720px; background: #0c0c0c; border-radius: 54px;
+            padding: 14px; box-shadow: 0 50px 100px rgba(0,0,0,0.4); border: 2px solid #333;
             position: relative;
         }
-        .iphone-screen-hf {
-            background: #FFF;
-            width: 100%;
-            height: 100%;
-            border-radius: 38px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+        .iphone-screen-ins {
+            background: #fff; width: 100%; height: 100%; border-radius: 40px;
+            overflow: hidden; display: flex; flex-direction: column; position: relative;
+        }
+        
+        .pdp-badge-hf {
+            background: var(--lf-red); color: #fff; font-size: 13px; font-weight: 900;
+            padding: 4px 12px; border-radius: 4px; display: inline-block;
         }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">21. [UI] 상품상세 - 기본 (PDP)</header>
+        <header class="ppt-header">21. [UI] 상품상세 - 기본 (PDP Layout)</header>
 
-        <div class="iphone-center">
-            <div class="iphone-frame-hf">
-                <div class="iphone-screen-hf">
-                    <div style="height:320px; background:#F1F3F5; display:flex; align-items:center; justify-content:center; color:#adb5bd;">MAIN_PRODUCT_IMG</div>
-                    <div style="padding:24px;">
-                        <span class="admin-badge" style="background:var(--lf-red); color:#fff; font-size:12px; padding:4px 10px;">매장상품배송</span>
-                        <div style="margin-top:10px; font-size:12px; color:#666; font-weight:700;">HAZZYS MEN</div>
-                        <h4 style="font-size:17px; margin-top:4px;">[매장상품] 네이비 기모 티셔츠</h4>
-                        <div style="font-size:22px; font-weight:900; margin-top:12px;">89,000원</div>
+        <div class="iphone-center-hf">
+            <div class="iphone-shell-hf">
+                <div class="iphone-screen-ins">
+                    <!-- Status Bar -->
+                    <div style="height:44px; padding:0 25px; display:flex; justify-content:space-between; align-items:center; font-size:12px; font-weight:bold;">
+                        <span>09:41</span>
+                        <div style="display:flex; gap:5px;"><span>📶</span><span>🔋</span></div>
+                    </div>
+
+                    <div style="height:340px; background:#F1F3F5; display:flex; align-items:center; justify-content:center; color:#adb5bd; font-size:11px;">MAIN_PRODUCT_IMG</div>
+                    
+                    <div style="padding:25px;">
+                        <span class="pdp-badge-hf">매장상품배송</span>
+                        <div style="margin-top:12px; font-size:13px; color:#666; font-weight:bold;">HAZZYS MEN</div>
+                        <h4 style="font-size:19px; font-weight:900; margin-top:5px; line-height:1.4;">[매장상품] 헤지스 남성 베이직 <br>네이비 피케 티셔츠</h4>
+                        <div style="font-size:24px; font-weight:900; margin-top:12px;">89,000 원</div>
                         
-                        <div style="margin-top:30px; background:#F8FAFC; padding:15px; border-radius:8px; border:1px solid #E9ECEF;">
-                            <p style="font-size:11px; color:#555;">• <b>강남본점</b>에서 직접 발송됩니다.</p>
-                            <p style="font-size:11px; color:#555; margin-top:4px;">• 오늘 주문 시 모레 도착 예정 (평균 1.5일)</p>
+                        <div style="margin-top:35px; background:#F8FAFC; padding:18px; border-radius:10px; border:1.1px solid #E9ECEF; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                            <p style="font-size:12px; color:#444; line-height:1.6;">• <b>강남본점</b>에서 직접 발송하는 상품입니다.</p>
+                            <p style="font-size:12px; color:#444; margin-top:6px;">• 무료배송 (런칭 이벤트 대상)</p>
                         </div>
                     </div>
-                    <div style="margin-top:auto; padding:20px; border-top:1px solid #EEE;">
-                        <button class="btn-lf" style="width:100%; height:50px;">구매하기</button>
+
+                    <div style="margin-top:auto; padding:20px; border-top:1px solid #EEE; display:flex; gap:10px;">
+                        <div style="width:50px; height:50px; border:1.5px solid #EEE; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:20px;">♡</div>
+                        <button style="flex:1; background:var(--ppt-header-bg); color:#fff; border:none; border-radius:8px; font-weight:900; font-size:16px;">구매하기</button>
                     </div>
                 </div>
             </div>

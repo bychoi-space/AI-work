@@ -4,74 +4,65 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .branding-title { font-size: 28px; font-weight: 800; color: var(--lf-red); margin: 60px 100px 20px; }
-        .branding-desc { font-size: 16px; color: #666; margin: 0 100px 60px; line-height: 1.6; }
+        .branding-stage-hf { padding: 60px 110px; }
+        .branding-title-hf { font-size: 30px; font-weight: 900; margin-bottom: 20px; border-left: 6px solid var(--lf-red); padding-left: 20px; }
         
-        .vote-container {
+        .name-grid-hf {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            padding: 0 100px;
+            gap: 25px;
+            margin-top: 40px;
         }
-
-        .vote-card {
+        .name-card-hf {
             background: #fff;
-            border: 2px solid #EEE;
-            border-radius: 12px;
-            padding: 30px;
+            border: 1px solid #D9D9D9;
+            box-shadow: var(--ppt-shadow);
+            padding: 35px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s;
-        }
-
-        .vote-card.selected {
-            border-color: var(--lf-red);
-            background: rgba(200, 25, 46, 0.02);
-            box-shadow: 0 10px 30px rgba(200, 25, 46, 0.1);
-        }
-
-        .vote-card h3 { font-size: 22px; font-weight: 700; color: #333; }
-        .vote-card.selected h3 { color: var(--lf-red); }
-
-        .selected-badge {
-            background: var(--lf-red);
-            color: #fff;
-            padding: 6px 12px;
             border-radius: 4px;
-            font-size: 13px;
-            font-weight: 800;
         }
+        .name-card-hf.selected {
+            border: 2px solid var(--lf-red);
+            background: rgba(200, 25, 46, 0.02);
+        }
+        .name-card-hf h3 { font-size: 24px; font-weight: 800; color: #333; }
+        .name-card-hf.selected h3 { color: var(--lf-red); }
 
-        .final-hero {
-            margin: 60px 100px;
+        .tag-hf { font-size: 13px; font-weight: 900; padding: 6px 12px; border-radius: 4px; }
+        .tag-drop { background: #EEE; color: #999; }
+        .tag-selected { background: var(--lf-red); color: #fff; }
+
+        .final-box-hf {
+            margin-top: 50px;
             background: #252830;
-            border-radius: 20px;
             padding: 60px;
             text-align: center;
-            color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
-        .hero-label { color: var(--lf-red); font-size: 14px; font-weight: 800; margin-bottom: 12px; letter-spacing: 2px; }
-        .hero-name { font-size: 48px; font-weight: 900; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">04. 서비스 명칭 선정</header>
+        <header class="ppt-header">04. 서비스 명칭 선정 (Naming Strategy)</header>
 
-        <h1 class="branding-title">매장 내 상품을 직접 배송하는 가치 전달</h1>
-        <p class="branding-desc">네이밍 후보군 중 브랜드 실무자 조사를 통해 최적의 명칭을 선정하였습니다.</p>
+        <div class="branding-stage-hf">
+            <h1 class="branding-title-hf">내부 실무진 선호도 1위 명칭 확정</h1>
+            <p style="font-size:16px; color:#595959;">고객 직관성과 브랜드 아이덴티티를 고려하여 최종 명칭을 선정하였습니다.</p>
 
-        <div class="vote-container">
-            <div class="vote-card"><h3>매장 합포 배송</h3><span style="color:#CCC;">Drop</span></div>
-            <div class="vote-card"><h3>하이퍼 로컬 배송</h3><span style="color:#CCC;">Drop</span></div>
-            <div class="vote-card selected"><h3>매장 상품 배송</h3><span class="selected-badge">SELECTED ✓</span></div>
-            <div class="vote-card"><h3>옴니 채널 배송</h3><span style="color:#CCC;">Drop</span></div>
-        </div>
+            <div class="name-grid-hf">
+                <div class="name-card-hf"><h3>하이퍼로컬 배송</h3> <span class="tag-hf tag-drop">Drop</span></div>
+                <div class="name-card-hf"><h3>매장 합포 배송</h3> <span class="tag-hf tag-drop">Drop</span></div>
+                <div class="name-card-hf selected"><h3>매장상품배송</h3> <span class="tag-hf tag-selected">SELECTED</span></div>
+                <div class="name-card-hf"><h3>옴니채널 익스프레스</h3> <span class="tag-hf tag-drop">Drop</span></div>
+            </div>
 
-        <div class="final-hero">
-            <div class="hero-label">FINAL SELECTION</div>
-            <div class="hero-name">매장상품배송</div>
+            <div class="final-box-hf">
+                <div style="color:var(--lf-red); font-size:15px; font-weight:900; letter-spacing:3px; margin-bottom:15px;">FINAL BRAND NAME</div>
+                <div style="color:#fff; font-size:62px; font-weight:900;">매장상품배송</div>
+            </div>
         </div>
 
         <div class="ppt-footer-logo">LF</div>

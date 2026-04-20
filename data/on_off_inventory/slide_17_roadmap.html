@@ -4,86 +4,62 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .roadmap-stage {
-            padding: 80px 100px;
-        }
-
-        .timeline-header {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            border-bottom: 2px solid #333;
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-        }
-        .q-mark { font-size: 18px; font-weight: 900; color: #333; }
-
-        .phase-row {
-            display: grid;
-            grid-template-columns: 180px 1fr;
-            margin-bottom: 25px;
-            align-items: center;
-        }
-        .phase-label { font-size: 14px; font-weight: 700; color: #555; }
+        .roadmap-stage-hf { padding: 80px 110px; }
         
-        .gantt-bar {
-            height: 35px;
-            background: #F1F3F5;
-            border-radius: 4px;
-            position: relative;
-            overflow: hidden;
+        .timeline-ruler-hf {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            border-bottom: 3px solid #333; padding-bottom: 12px; margin-bottom: 35px;
         }
-        .gantt-fill {
-            height: 100%;
-            position: absolute;
-            background: #DEEAF6;
-            border: 1px solid #BDD7EE;
-            display: flex;
-            align-items: center;
-            padding-left: 15px;
-            font-size: 12px;
-            font-weight: 700;
+        .q-text-hf { font-size: 22px; font-weight: 900; color: #1e1e1e; font-style: italic; }
+
+        .gantt-row-hf { display: grid; grid-template-columns: 180px 1fr; margin-bottom: 30px; align-items: center; }
+        .gantt-label-hf { font-size: 15px; font-weight: 800; color: #555; }
+        
+        .gantt-track-hf { height: 40px; background: #F1F3F5; border-radius: 4px; position: relative; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        .gantt-bar-hf {
+            height: 100%; position: absolute; border-radius: 4px; border: 1.5px solid #CCC;
+            display: flex; align-items: center; padding-left: 15px; font-size: 13px; font-weight: bold;
+            box-shadow: var(--ppt-shadow);
         }
-        .gantt-fill.active { background: var(--node-lfmall-bg); border-color: #2E5BFF; box-shadow: 0 4px 10px rgba(46, 91, 255, 0.2); }
-        .gantt-fill.red { background: rgba(200, 25, 46, 0.1); border-color: var(--lf-red); color: var(--lf-red); }
+        .bar-blue { background: var(--node-lfmall-bg); border-color: #BDD7EE; color: #1E3A8A; }
+        .bar-green { background: var(--node-oms-sap-bg); border-color: #A9D18E; color: #065F46; }
+        .bar-red { background: rgba(200, 25, 46, 0.1); border-color: var(--lf-red); color: var(--lf-red); }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">17. 개발 및 런칭 로드맵</header>
+        <header class="ppt-header">17. 개발 및 런칭 로드맵 (Project Roadmap)</header>
 
-        <div class="roadmap-stage">
-            <div class="timeline-header">
-                <div class="q-mark">1Q</div>
-                <div class="q-mark">2Q</div>
-                <div class="q-mark">3Q</div>
-                <div class="q-mark">4Q</div>
+        <div class="roadmap-stage-hf">
+            <div class="timeline-ruler-hf">
+                <div class="q-text-hf">1Q</div><div class="q-text-hf">2Q</div><div class="q-text-hf">3Q</div><div class="q-text-hf">4Q</div>
             </div>
 
-            <div class="phase-row">
-                <div class="phase-label">기획/기반</div>
-                <div class="gantt-bar">
-                    <div class="gantt-fill" style="width: 25%;">프로세스 설계 및 요건 정의</div>
+            <div class="gantt-row-hf">
+                <div class="gantt-label-hf">전략 및 요건</div>
+                <div class="gantt-track-hf">
+                    <div class="gantt-bar-hf bar-blue" style="width: 25%;">프로세스 설계 및 아키텍처 확정</div>
                 </div>
             </div>
 
-            <div class="phase-row">
-                <div class="phase-label">인터페이스</div>
-                <div class="gantt-bar">
-                    <div class="gantt-fill" style="width: 35%; left: 20%;">SAP ↔ OMS ↔ LFM 연동 개발</div>
+            <div class="gantt-row-hf">
+                <div class="gantt-label-hf">인터페이스 개발</div>
+                <div class="gantt-track-hf">
+                    <div class="gantt-bar-hf bar-blue" style="width: 35%; left: 20%;">SAP ↔ OMS ↔ LFM 연동 API</div>
                 </div>
             </div>
 
-            <div class="phase-row">
-                <div class="phase-label">프론트/어드민</div>
-                <div class="gantt-bar">
-                    <div class="gantt-fill active" style="width: 30%; left: 35%;">UI 고도화 및 운영 도구 구축</div>
+            <div class="gantt-row-hf">
+                <div class="gantt-label-hf">화면 고도화</div>
+                <div class="gantt-track-hf">
+                    <div class="gantt-bar-hf bar-green" style="width: 30%; left: 35%;">어드민 및 프론트 UI 완성</div>
                 </div>
             </div>
 
-            <div class="phase-row">
-                <div class="phase-label">안정화/오픈</div>
-                <div class="gantt-bar">
-                    <div class="gantt-fill red" style="width: 20%; left: 60%; font-weight:900;">★ GRAND OPEN (June)</div>
+            <div class="gantt-row-hf">
+                <div class="gantt-label-hf">GRAND OPEN</div>
+                <div class="gantt-track-hf">
+                    <div class="gantt-bar-hf bar-red" style="width: 22%; left: 63%;">★ 서비스 런칭 (6월 4주)</div>
                 </div>
             </div>
         </div>

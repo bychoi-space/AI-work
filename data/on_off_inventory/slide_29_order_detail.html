@@ -6,30 +6,34 @@
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">29. [UI] 주문 상세 내역 (Detail)</header>
+        <header class="ppt-header">29. [UI] 주문 상세 내역 (Post-Purchase Detail)</header>
 
         <div style="display:flex; justify-content:center; padding:40px;">
-            <div style="width:340px; height:700px; background:#000; border-radius:50px; padding:12px; box-shadow: 0 40px 100px rgba(0,0,0,0.2);">
-                <div style="background:#FFF; width:100%; height:100%; border-radius:38px; overflow-y:auto;">
-                    <div style="padding:20px; border-bottom:1px solid #eee; text-align:center; font-weight:800;">주문 상세</div>
+            <div class="phone-frame-hf">
+                <div class="phone-screen-ins">
+                    <div style="background:#fff; height:60px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; border-bottom:1.5px solid #EEE;">주문 상세 조회</div>
                     
-                    <div style="padding:20px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-                            <span style="font-size:12px; color:#999;">2026.04.20 | No.20260420-9981</span>
+                    <div style="padding:25px; overflow-y:auto; flex:1;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                            <span style="font-size:12px; color:#999; font-weight:bold;">2026.04.20 | No.20260420-9981</span>
                         </div>
-                        <div style="display:flex; gap:15px; margin-bottom:20px;">
-                            <div style="width:80px; height:100px; background:#EEE;"></div>
+
+                        <div style="display:flex; gap:20px; align-items:flex-start; margin-bottom:30px;">
+                            <div style="width:80px; height:110px; background:#F1F3F5; border-radius:6px;"></div>
                             <div style="flex:1;">
-                                <div style="font-size:14px; font-weight:700;">HAZZYS [매장상품] 기모 티셔츠</div>
-                                <div style="font-size:16px; font-weight:900; margin-top:8px;">89,000원</div>
+                                <div style="font-size:14.5px; font-weight:900; line-height:1.4;">HAZZYS [매장상품] <br>기모 네이비 티셔츠</div>
+                                <div style="font-size:18px; font-weight:900; margin-top:10px;">89,000원</div>
                             </div>
                         </div>
-                        <div style="background:#F8FAFC; padding:15px; border-radius:8px;">
-                            <div style="display:flex; justify-content:space-between; font-size:13px;">
-                                <span>배송 상태</span> <b style="color:var(--lf-red);">발송완료 (강남본점)</b>
+
+                        <div style="background:#F8FAFC; border:1px solid #E9ECEF; border-radius:12px; padding:25px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #EEE; padding-bottom:15px;">
+                                <span style="font-size:13px; color:#666;">배송 상태</span> 
+                                <b style="color:var(--lf-red); font-size:15px;">발송완료</b>
                             </div>
-                            <div style="display:flex; justify-content:space-between; font-size:13px; margin-top:10px;">
-                                <span>인기 운송장</span> <span style="text-decoration:underline;">[로젠] 123456789</span>
+                            <div style="font-size:12px; line-height:1.8; color:#444;">
+                                📦 이 상품은 <b>강남본점</b>에서 직접 발송되었습니다.<br>
+                                🚚 로젠택배 : <span style="text-decoration:underline; font-weight:bold;">1234567890</span>
                             </div>
                         </div>
                     </div>

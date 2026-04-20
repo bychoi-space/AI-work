@@ -4,52 +4,52 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .admin-view-hf {
-            padding: 30px 40px; margin-left: 240px; background: #F5F6F8; height: calc(100% - 48px);
-            display: grid; grid-template-columns: 2fr 1fr; gap: 20px;
-        }
-        .detail-card-hf { background: #fff; padding: 25px; border: 1px solid #DDD; border-radius: 8px; }
+        .admin-main-hf { position: absolute; top: 52px; left: 260px; right: 0; bottom: 0; background: #F4F6F9; padding: 40px; display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+        .detail-card-hf { background: #fff; padding: 30px; border: 1px solid #CCC; border-radius: 8px; box-shadow: var(--ppt-shadow); }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">35. [어드민] 주문 정보 상세 조회</header>
+        <header class="ppt-header">35. [어드민] 주문 정보 상세 조회 (Order Detail)</header>
 
-        <!-- Sidebar placeholder -->
-        <div style="width:240px; background:#252830; height:100%; position:absolute; top:48px; left:0; padding:20px;">
-            <div style="color:#FFF; opacity:0.3; font-size:10px;">DASHBOARD</div>
-            <div style="color:#FFF; margin-top:20px; font-size:13px;">→ 주문 상세 조회</div>
+        <div class="admin-sidebar-hf">
+            <div style="font-size:10px; opacity:0.4; letter-spacing:1px; margin-bottom:20px;">SYSTEM MENU</div>
+            <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
+            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 주문 상세 조회</div>
         </div>
 
-        <div class="admin-view-hf">
+        <div class="admin-main-hf">
             <div class="detail-card-hf">
-                <h4 style="margin-bottom:20px;">주문 정보 (20260420-9981)</h4>
-                <div style="display:grid; grid-template-columns: 100px 1fr; gap:15px; font-size:13px;">
-                    <b>주문일시</b> <span>2026.04.20 13:45:12</span>
-                    <b>주문자</b> <span>홍길동 (010-1234-****)</span>
-                    <b>배송지</b> <span>서울시 강남구 언주로 123...</span>
+                <h4 style="font-size:18px; font-weight:900; margin-bottom:25px; border-bottom:2px solid #333; padding-bottom:15px;">주문 기본 정보</h4>
+                <div style="display:grid; grid-template-columns:100px 1fr; gap:15px; font-size:13.5px;">
+                    <b style="color:#777;">주문번호</b> <span>20260420-9981</span>
+                    <b style="color:#777;">주문일시</b> <span>2026.04.20 13:45</span>
+                    <b style="color:#777;">주문자</b> <span>홍길동 (010-****-5678)</span>
+                    <b style="color:#777;">배송지</b> <span>서울시 강남구 언주로 123...</span>
                 </div>
-                <hr style="margin:20px 0; border:none; border-top:1px solid #EEE;">
-                <h4 style="margin-bottom:15px;">주문 상품</h4>
-                <div style="display:flex; gap:15px; background:#F8FAFC; padding:15px; border-radius:4px;">
-                    <div style="width:50px; height:70px; background:#EEE;"></div>
-                    <div>
-                        <span class="admin-badge" style="background:var(--lf-red); color:#fff;">매장배송</span>
-                        <div style="font-weight:700; margin-top:4px;">HAZZYS 기모 티셔츠</div>
-                        <div style="font-size:12px; color:#666;">배정 매장: <b>강남본점</b></div>
+
+                <h4 style="font-size:18px; font-weight:900; margin-top:45px; margin-bottom:20px;">배정 상품 내역</h4>
+                <div style="background:#F8FAFC; padding:20px; border:1px solid #EEE; display:flex; gap:20px; align-items:center;">
+                    <div style="width:60px; height:80px; background:#fff; border:1px solid #DDD;"></div>
+                    <div style="flex:1;">
+                        <span class="status-pill-hf" style="background:var(--lf-red); color:#fff; margin-bottom:8px;">매장상품배송</span>
+                        <div style="font-weight:900; font-size:15px;">HAZZYS 기모 티셔츠 (Navy/100)</div>
+                        <div style="font-size:12px; color:#555; margin-top:4px;">배정매장 : <b style="color:var(--lf-red);">강남본점</b></div>
                     </div>
                 </div>
             </div>
 
-            <div class="detail-card-hf" style="border-top:5px solid var(--lf-red);">
-                <h4>배송 처리</h4>
+            <div class="detail-card-hf" style="border-top:6px solid var(--lf-red);">
+                <h4 style="font-size:18px; font-weight:900; margin-bottom:25px;">배송 처리 프로세스</h4>
                 <div style="margin-top:20px;">
-                    <label style="font-size:12px; display:block; margin-bottom:5px;">배송사</label>
-                    <select class="form-input" style="width:100%;"><option>로젠택배</option></select>
-                    <label style="font-size:12px; display:block; margin-top:15px; margin-bottom:5px;">운송장 번호</label>
-                    <input type="text" class="form-input" style="width:100%;" placeholder="- 제외 입력">
-                    <button class="btn-lf" style="width:100%; margin-top:20px; height:45px;">발송 처리</button>
-                    <button class="btn-lf" style="width:100%; margin-top:10px; height:45px; background:#475569;">매정 변경/결품</button>
+                    <label style="font-size:12px; color:#666; font-weight:bold; display:block; margin-bottom:8px;">배송사 선택</label>
+                    <select class="form-input-hf" style="width:100%;"><option>로젠택배</option></select>
+                    
+                    <label style="font-size:12px; color:#666; font-weight:bold; display:block; margin-top:20px; margin-bottom:8px;">운송장 번호 입력</label>
+                    <input type="text" class="form-input-hf" style="width:100%;" placeholder="- 없이 입력">
+                    
+                    <button class="btn-lf" style="width:100%; height:52px; margin-top:35px; background:var(--lf-red); color:#fff; border:none; font-weight:900; border-radius:4px;">발송 처리 (Confirm)</button>
+                    <button class="btn-lf" style="width:100%; height:52px; margin-top:12px; background:#475569; color:#fff; border:none; font-weight:900; border-radius:4px;">매장 변경 / 결품</button>
                 </div>
             </div>
         </div>

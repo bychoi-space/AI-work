@@ -4,72 +4,46 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .lt-flow {
-            margin: 60px 100px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .lt-step {
-            text-align: center;
-            flex: 1;
-        }
-        .lt-circle {
-            width: 80px; height: 80px;
-            border-radius: 50%;
-            background: #F1F3F5;
-            border: 2px solid #D9D9D9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 10px;
-            font-weight: 700;
-            font-size: 13px;
-        }
-        .lt-circle.active { background: var(--node-lfmall-bg); border-color: #2E5BFF; }
-
-        .lt-arrow { flex: 1; height: 2px; background: #D9D9D9; position: relative; top: -20px; }
+        .lt-stage-hf { padding: 80px 110px; display: flex; flex-direction: column; align-items: center; }
         
-        .policy-table-area { padding: 0 100px; }
+        .timeline-box-hf {
+            display: flex; gap: 40px; align-items: center; margin-bottom: 60px;
+        }
+        .time-pill-hf {
+            width: 140px; text-align: center;
+        }
+        .time-circle-hf {
+            width: 70px; height: 70px; border-radius: 50%; background: #fff;
+            border: 2px solid #DDD; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 12px; font-weight: 900; font-size: 14px; box-shadow: var(--ppt-shadow);
+        }
+        .time-circle-hf.active { border-color: var(--lf-red); color: var(--lf-red); }
+        
+        .timeline-line-hf { width: 60px; height: 2px; background: #DDD; margin-top: -25px; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">11. 배송 LT 및 자동결품 정책</header>
+        <header class="ppt-header">11. 배송 LT 및 자동결품 정책 (Delivery Policy)</header>
 
-        <div class="lt-flow">
-            <div class="lt-step"><div class="lt-circle active">주문배정</div><p style="font-size:11px;">Day 0</p></div>
-            <div class="lt-arrow"></div>
-            <div class="lt-step"><div class="lt-circle">상품준비</div><p style="font-size:11px;">Day 1 (24h)</p></div>
-            <div class="lt-arrow"></div>
-            <div class="lt-step"><div class="lt-circle">택배발송</div><p style="font-size:11px;">Day 2 (48h)</p></div>
-            <div class="lt-arrow"></div>
-            <div class="lt-step" style="opacity:0.5;"><div class="lt-circle">자동결품</div><p style="font-size:11px;">Day 3 (72h)</p></div>
-        </div>
+        <div class="lt-stage-hf">
+            <div class="timeline-box-hf">
+                <div class="time-pill-hf"><div class="time-circle-hf active">D + 0</div><p style="font-size:12px; font-weight:bold;">시스템 배정</p></div>
+                <div class="timeline-line-hf"></div>
+                <div class="time-pill-hf"><div class="time-circle-hf active">D + 1</div><p style="font-size:12px; font-weight:bold;">상품 준비</p></div>
+                <div class="timeline-line-hf"></div>
+                <div class="time-pill-hf"><div class="time-circle-hf">D + 2</div><p style="font-size:12px;">택배 발송</p></div>
+                <div class="timeline-line-hf"></div>
+                <div class="time-pill-hf" style="opacity:0.4;"><div class="time-circle-hf">D + 3</div><p style="font-size:12px;">자동결품</p></div>
+            </div>
 
-        <div class="policy-table-area">
-            <table class="ppt-table">
+            <table class="data-table-hf">
                 <thead>
-                    <tr>
-                        <th style="width:20%;">매장 구분</th>
-                        <th style="width:30%;">상품 준비 기한 (LT)</th>
-                        <th>자동결품 처리 시점</th>
-                        <th>비고</th>
-                    </tr>
+                    <tr><th style="background:#333; color:#fff; width:150px;">매장 유형</th><th>상품준비 기한 (LT)</th><th>자동결품 시점</th><th>패널티 정책</th></tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td style="background:#F8FAFC; font-weight:700;">직영점</td>
-                        <td>주문 배정 후 24시간 이내</td>
-                        <td style="color:var(--lf-red); font-weight:800;">D+2일 (48시간) 경과 시</td>
-                        <td style="text-align:left; font-size:12px;">영업일 기준 (휴무일 제외)</td>
-                    </tr>
-                    <tr>
-                        <td style="background:#F8FAFC; font-weight:700;">대리점</td>
-                        <td>주문 배정 후 48시간 이내</td>
-                        <td style="color:var(--lf-red); font-weight:800;">D+3일 (72시간) 경과 시</td>
-                        <td style="text-align:left; font-size:12px;">점주 확인 프로세스 포함</td>
-                    </tr>
+                    <tr><td style="font-weight:900; background:#F8FAFC;">백화점/직영</td><td>배정 후 24시간 이내</td><td style="color:var(--lf-red); font-weight:900;">D+2일 자정</td><td>결품률 5% 초과 시 배정 정지</td></tr>
+                    <tr><td style="font-weight:900; background:#F8FAFC;">대리점</td><td>배정 후 48시간 이내</td><td style="color:var(--lf-red); font-weight:900;">D+3일 자정</td><td>점주 수동 컨펌 필수</td></tr>
                 </tbody>
             </table>
         </div>

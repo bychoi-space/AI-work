@@ -4,114 +4,104 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .admin-sidebar {
-            width: 240px;
-            background: #252830;
-            height: 100%;
-            position: absolute;
-            left: 0; top: 48px;
-            padding: 20px;
-            color: #fff;
-        }
-        .main-view {
-            position: absolute;
-            left: 240px; right: 0; top: 48px; bottom: 0;
-            background: #F5F6F8;
+        .admin-sidebar-hf {
+            width: 260px; height: 100%;
+            background: #2D3139;
+            position: absolute; top: 52px; left: 0;
             padding: 30px;
+            color: #fff;
+            border-right: 1px solid #000;
+            z-index: 50;
         }
-        .breadcrumb { font-size: 11px; color: #999; margin-bottom: 20px; }
-        .page-header-row { display: flex; justify-content: space-between; margin-bottom: 25px; }
-        
-        .filter-grid {
+        .main-stage-hf {
+            position: absolute; top: 52px; left: 260px; right: 0; bottom: 0;
+            background: #F4F6F9;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        .ppt-filter-panel-hf {
             background: #fff;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            border: 1px solid #D1D1D1;
+            padding: 24px;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .filter-cell { display: flex; align-items: center; gap: 10px; font-size: 12px; }
-        .filter-cell input, .filter-cell select { flex: 1; padding: 6px; border: 1px solid #ccc; font-size: 11px; }
-
-        .ppt-data-table {
+        .filter-item-hf { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: bold; }
+        
+        .data-table-hf {
             width: 100%;
             background: #fff;
             border-collapse: collapse;
-            font-size: 11px;
-            border: 1px solid #ddd;
+            font-size: 12px;
+            border: 1px solid #CCC;
         }
-        .ppt-data-table th {
-            background: #F1F3F5;
-            padding: 10px;
+        .data-table-hf th {
+            background: #E9ECEF;
+            border: 1px solid #CCC;
+            padding: 12px;
             text-align: left;
-            border: 1px solid #ddd;
-            color: #555;
+            color: #333;
+            font-weight: 900;
         }
-        .ppt-data-table td {
-            padding: 10px;
-            border: 1px solid #ddd;
+        .data-table-hf td {
+            border: 1px solid #CCC;
+            padding: 12px;
         }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">
-            30. [어드민] 온오프 재고 현황 조회
-        </header>
+        <header class="ppt-header">30. [어드민] 온오프 재고 현황 조회</header>
 
-        <div class="admin-sidebar">
-            <div style="opacity:0.3; font-size:10px;">DASHBOARD</div>
-            <div style="margin-top:10px; font-size:13px; font-weight:700;">재고 관리</div>
-            <div style="margin-top:20px; font-size:13px; color:var(--lf-red);">→ 재고 조회</div>
-            <div style="margin-top:10px; font-size:13px; opacity:0.6;">매장 마스터</div>
-            <div style="margin-top:10px; font-size:13px; opacity:0.6;">연동 모니터링</div>
+        <div class="admin-sidebar-hf">
+            <div style="font-size:10px; opacity:0.4; letter-spacing:1px; margin-bottom:20px;">SYSTEM MENU</div>
+            <div style="font-size:14px; margin-bottom:15px; font-weight:bold;">Dashboard</div>
+            <div style="font-size:14px; margin-bottom:15px; color:var(--lf-red); font-weight:bold;">▶ 재고 관리</div>
+            <div style="margin-left:15px; font-size:13px; opacity:0.8; margin-bottom:10px;">- 재고 현황 (LFM)</div>
+            <div style="margin-left:15px; font-size:13px; opacity:0.8;">- 매장별 안전재고</div>
         </div>
 
-        <div class="main-view">
-            <div class="breadcrumb">Home > 재고 관리 > 재고 현황 조회</div>
-            
-            <div class="page-header-row">
-                <h2 style="font-size:18px;">재고 현황 상세</h2>
+        <div class="main-stage-hf">
+            <div style="font-size:12px; color:#999; margin-bottom:15px;">운영지원 > 재고 관리 > 재고 현황</div>
+            <h2 style="font-size:22px; margin-bottom:25px; font-weight:900;">실시간 매장 가용 재고 현황</h2>
+
+            <div class="ppt-filter-panel-hf">
+                <div class="filter-item-hf">브랜드 <select class="form-input-hf" style="width:100%;"><option>HAZZYS</option></select></div>
+                <div class="filter-item-hf">매장명 <input type="text" class="form-input-hf" style="width:100%;" placeholder="강남본점"></div>
+                <div class="filter-item-hf">상품코드 <input type="text" class="form-input-hf" style="width:100%;" placeholder="HZM12345"></div>
             </div>
 
-            <div class="filter-grid">
-                <div class="filter-cell"><b>상품코드</b> <input type="text" placeholder="HZM12345"></div>
-                <div class="filter-cell"><b>브랜드</b> <select><option>HAZZYS</option></select></div>
-                <div class="filter-cell"><b>매장명</b> <input type="text" placeholder="강남본점"></div>
-            </div>
-
-            <table class="ppt-data-table">
+            <table class="data-table-hf">
                 <thead>
                     <tr>
-                        <th>NO</th>
+                        <th style="width:50px;">NO</th>
                         <th>상품코드 (SKU)</th>
-                        <th>브랜드</th>
-                        <th>매장명</th>
-                        <th>가용재고</th>
-                        <th>안전재고</th>
-                        <th>상태</th>
+                        <th>상세 품명</th>
+                        <th style="width:100px;">가용재고</th>
+                        <th style="width:100px;">안전재고</th>
+                        <th style="width:120px;">연동시간</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>1</td>
-                        <td style="color:#2E5BFF; font-weight:700;">HZM22A123-BK</td>
-                        <td>HAZZYS</td>
-                        <td>강남본점</td>
-                        <td style="background:#EBF3FF;">45</td>
-                        <td>5</td>
-                        <td><span class="admin-badge" style="background:#E1F5FE; color:#01579B;">정상</span></td>
+                        <td style="color:#2E5BFF; font-weight:bold; text-decoration:underline;">HZM22A101-BK</td>
+                        <td>[매장상품] 헤지스 남성 베이직 티셔츠</td>
+                        <td style="background:rgba(46, 91, 255, 0.05); text-align:center;"><b>42</b></td>
+                        <td style="text-align:center;">5</td>
+                        <td>2026-04-20 14:12</td>
                     </tr>
                     <tr>
                         <td>2</td>
-                        <td style="color:#2E5BFF; font-weight:700;">DKS11B999-NY</td>
-                        <td>DAKS</td>
-                        <td>명동스타일</td>
-                        <td style="background:#FFF3E0;">3</td>
-                        <td>2</td>
-                        <td><span class="admin-badge" style="background:#FFF3E0; color:#E65100;">부족</span></td>
+                        <td style="color:#2E5BFF; font-weight:bold; text-decoration:underline;">HZM22A102-NY</td>
+                        <td>[매장상품] 헤지스 남성 스트라이프 셔츠</td>
+                        <td style="background:rgba(200, 25, 46, 0.05); text-align:center;"><b style="color:var(--lf-red);">2</b></td>
+                        <td style="text-align:center;">3</td>
+                        <td>2026-04-20 14:10</td>
                     </tr>
                 </tbody>
             </table>

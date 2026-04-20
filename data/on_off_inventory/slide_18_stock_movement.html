@@ -4,29 +4,35 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .policy-area-hf { padding: 80px 100px; }
-        .p-item-hf { margin-bottom: 40px; display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start; }
-        .p-label-hf { background: #252830; color: #fff; padding: 10px 20px; font-weight: 700; border-radius: 4px; text-align: center; }
-        .p-content-hf { border-left: 3px solid #D9D9D9; padding-left: 30px; }
+        .policy-area-hf { padding: 80px 110px; }
+        .p-item-hf { margin-bottom: 50px; display: grid; grid-template-columns: 220px 1fr; gap: 50px; border-bottom: 1px dotted #CCC; padding-bottom: 40px; }
+        .p-label-hf { background: #252830; color: #fff; padding: 12px 25px; font-weight: 900; border-radius: 4px; text-align: center; font-size: 14px; box-shadow: var(--ppt-shadow); }
+        .p-content-hf { border-left: 4px solid var(--lf-red); padding-left: 35px; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">18. 비직송매장 재고 물량 이동 지시 정책</header>
+        <header class="ppt-header">18. 비직송매장 재고 물량 이동 지시 정책 (RT Policy)</header>
 
         <div class="policy-area-hf">
             <div class="p-item-hf">
                 <div class="p-label-hf">이동 트리거 (Trigger)</div>
                 <div class="p-content-hf">
-                    <p style="font-size:16px; font-weight:800; margin-bottom:10px;">거점 매장 재고 5 EA 미만 시</p>
-                    <p style="font-size:13px; color:#666;">인근 대리점 또는 비물류 거점 매장의 재고를 거점 매장으로 자동 이동 지시(RT) 생성</p>
+                    <p style="font-size:18px; font-weight:900; margin-bottom:12px; color:var(--lf-red);">거점 매장 재고 5 EA 미만 시 전환</p>
+                    <p style="font-size:14px; color:#444; line-height:1.7;">
+                        인근 대리점 또는 비물류 거점 매장의 재고를 거점 매장으로 자동 이동 지시(RT) 생성.<br>
+                        시스템상 '매장배송 가능' 상태 유지를 위한 최우선 재고 보충 로직임.
+                    </p>
                 </div>
             </div>
-            <div class="p-item-hf">
-                <div class="p-label-hf">물류 운송 (Logic)</div>
-                <div class="p-content-hf">
-                    <p style="font-size:16px; font-weight:800; margin-bottom:10px;">본사 지정 순회 물류 활용</p>
-                    <p style="font-size:13px; color:#666;">별도 택배비 발생 억제를 위해 본사 주간 비기 물류망을 최우선적으로 활용하여 익일 입고 원칙</p>
+            <div class="p-item-hf" style="border-bottom:none;">
+                <div class="p-label-hf" style="background:#555;">물류 운송 (Transport)</div>
+                <div class="p-content-hf" style="border-left-color:#555;">
+                    <p style="font-size:18px; font-weight:900; margin-bottom:12px;">본사 지정 순회 물류망 최우선 활용</p>
+                    <p style="font-size:14px; color:#444; line-height:1.7;">
+                        별도 택배비 발생 억제를 위해 본사 주간 정기 순회 물류망을 활용하여 익일 오전 입고 원칙.<br>
+                        긴급 건의 경우에 한해 '퀵 배송' 또는 '매장 간 자차 이동' 예외 허용.
+                    </p>
                 </div>
             </div>
         </div>

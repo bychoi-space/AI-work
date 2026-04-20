@@ -4,98 +4,74 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .db-flow {
-            padding: 100px;
+        .db-sync-hf {
+            padding: 100px 110px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 120px;
+            gap: 140px;
+            position: relative;
         }
 
-        .db-box {
-            width: 250px;
+        .sys-card-hf {
+            width: 280px;
             background: #fff;
-            border: 1px solid #B7B7B7;
-            padding: 30px;
+            border: 1px solid var(--node-border);
+            box-shadow: var(--ppt-shadow);
+            padding: 40px;
             text-align: center;
-            border-radius: 12px;
-            position: relative;
-        }
-        .db-box.lfmall { background: var(--node-lfmall-bg); border-color: #2E5BFF; }
-        .db-box.sap { background: var(--node-oms-sap-bg); border-color: #10B981; }
-
-        .db-box h3 { font-size: 20px; margin-bottom: 15px; font-weight: 800; }
-        .db-table-info { font-family: 'Courier New', Courier, monospace; font-size: 11px; color: #555; background: rgba(255,255,255,0.5); padding: 8px; border-radius: 4px; }
-
-        .sync-connector {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-        .batch-badge {
-            background: #fff;
-            border: 1px solid var(--lf-red);
-            color: var(--lf-red);
-            padding: 4px 14px;
-            font-size: 11px;
-            font-weight: 800;
-            border-radius: 20px;
-        }
-        .sync-arrow {
-            width: 150px;
-            height: 3px;
-            background: var(--lf-red);
-            position: relative;
-        }
-        .sync-arrow::after {
-            content: '';
-            position: absolute;
-            right: -10px; top: -6px;
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
-            border-left: 14px solid var(--lf-red);
-        }
-
-        .logic-summary {
-            margin: 0 100px;
-            background: #F1F3F5;
-            padding: 30px;
             border-radius: 8px;
+            position: relative;
+            z-index: 10;
         }
-        .logic-summary ul { list-style: none; }
-        .logic-summary li { font-size: 14px; margin-bottom: 8px; padding-left: 20px; position: relative; }
-        .logic-summary li::before { content: '■'; position: absolute; left: 0; color: var(--lf-red); font-size: 10px; top: 2px; }
+        .card-sap { background: var(--node-oms-sap-bg); border-color: #10B981; }
+        .card-lfmall { background: var(--node-lfmall-bg); border-color: #2E5BFF; }
+
+        .batch-pill-hf {
+            position: absolute; top: 120px; left: 50%; transform: translateX(-50%);
+            background: #fff; border: 1.5px solid var(--lf-red); color: var(--lf-red);
+            padding: 5px 20px; border-radius: 30px; font-size: 12px; font-weight: 800;
+            z-index: 20; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .summary-box-hf {
+            margin: 0 110px; padding: 35px; background: #F4F6F9; border-radius: 12px;
+        }
+        .summary-box-hf li { font-size: 14.5px; margin-bottom: 12px; list-style: none; display: flex; gap: 15px; align-items: flex-start; }
+        .summary-box-hf b { color: var(--lf-red); min-width: 100px; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
         <header class="ppt-header">06. 재고 DB 구조 및 동기화 로직</header>
 
-        <div class="db-flow">
-            <div class="db-box sap">
-                <h3 style="color:#059669">SAP ERP</h3>
-                <div class="db-table-info">Table: ZSDT510 (Master)</div>
+        <div class="db-sync-hf">
+            <div class="sys-card-hf card-sap">
+                <h3 style="color:#065F46; font-size:24px; margin-bottom:15px;">SAP ERP</h3>
+                <code style="font-size:12px; color:#555;">T-Code: ZSDT510</code>
             </div>
 
-            <div class="sync-connector">
-                <span class="batch-badge">10min Batch Sync</span>
-                <div class="sync-arrow"></div>
-            </div>
+            <div class="batch-pill-hf">10 MIN BATCH</div>
 
-            <div class="db-box lfmall">
-                <h3 style="color:#1E40AF">LFmall DB</h3>
-                <div class="db-table-info">Table: STB_STOCK_BASE</div>
+            <svg class="svg-flow-layer" style="width:100%; height:100%;">
+                <defs>
+                    <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#C8192E" />
+                    </marker>
+                </defs>
+                <line x1="420" y1="210" x2="680" y2="210" stroke="#C8192E" stroke-width="3" marker-end="url(#arrow-red)" />
+            </svg>
+
+            <div class="sys-card-hf card-lfmall">
+                <h3 style="color:#1E3A8A; font-size:24px; margin-bottom:15px;">LFmall</h3>
+                <code style="font-size:12px; color:#555;">STB_STOCK_BASE</code>
             </div>
         </div>
 
-        <div class="logic-summary">
-            <ul>
-                <li><b>재고 원치 관리</b>: SAP ERP의 매장별 재고 원장을 절대 마스터로 활용</li>
-                <li><b>동기화 프로세스</b>: 10분 주기 배치를 통해 SAP 재고 변동분을 LFmall DB에 반영</li>
-                <li><b>가용 재고 산출</b>: 총 재고 - (안전재고 + 예약재고) 로직을 통해 최종 판매 가능 수량 노출</li>
-                <li><b>데이터 무결성</b>: 일 배치를 통한 정합성 체크 및 필요 시 실시간 RFC 수동 동기화 지원</li>
-            </ul>
+        <div class="summary-box-hf">
+            <li><b>재고 원지</b> <span>SAP ERP의 매장별 실재고 데이터를 절대 마스터(Master) 재고로 규정함</span></li>
+            <li><b>산출 로직</b> <span>총 재고 - (안전재고 + 예약재고) = 최종 가용 재고(Available) 노출</span></li>
+            <li><b>예약 재고</b> <span>결제 대기 및 배정 완료 후 미발송 분에 대한 물리적 가집계 관리</span></li>
         </div>
 
         <div class="ppt-footer-logo">LF</div>
