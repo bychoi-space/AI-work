@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
+        .sub-desc { color: #64748B; margin-top: 8px; font-size: 14px; }
+        
+        .flow-container {
+            padding: 40px;
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+        }
+
+        .kakao-card {
+            width: 250px;
+            background: #FFEB3B; /* Kakao Yellow */
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .kakao-header { font-size: 12px; font-weight: 800; color: #3E2723; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 8px; }
+        .kakao-msg {
+            background: #fff;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .kakao-btn {
+            background: #F8F9FA;
+            padding: 8px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .flow-arrow-right {
+            display: flex;
+            align-items: center;
+            color: #CBD5E1;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 class="page-title">10. 매장상품배송 알림톡 서비스</h2>
+        <p class="sub-desc">주문 접수부터 배송 시작까지, 고객에게 전달되는 단계별 안내 메시지 정책</p>
+    </div>
+
+    <div class="flow-container">
+        <!-- Message 1 -->
+        <div class="kakao-card">
+            <div class="kakao-header">알림톡 [주문접수]</div>
+            <div class="kakao-msg">
+                <b>[LFmall] 주문이 접수되었습니다.</b><br><br>
+                고객님이 주문하신 상품은 <b>강남본점</b>에서 정성껏 준비하여 발송될 예정입니다.
+            </div>
+            <div class="kakao-btn">주문상세 보기</div>
+        </div>
+
+        <div class="flow-arrow-right">
+            <span class="material-icons-outlined" style="font-size: 32px;">arrow_forward</span>
+        </div>
+
+        <!-- Message 2 -->
+        <div class="kakao-card">
+            <div class="kakao-header">알림톡 [재고확인]</div>
+            <div class="kakao-msg">
+                <b>[LFmall] 상품 준비 중입니다.</b><br><br>
+                매장에서 상품 검수 및 포장을 진행하고 있습니다. 곧 발송 안내를 드리겠습니다.
+            </div>
+            <div class="kakao-btn">매장 정보 확인</div>
+        </div>
+
+        <div class="flow-arrow-right">
+            <span class="material-icons-outlined" style="font-size: 32px;">arrow_forward</span>
+        </div>
+
+        <!-- Message 3 -->
+        <div class="kakao-card" style="background:#fff; border: 2px solid #FFEB3B;">
+            <div class="kakao-header">알림톡 [발송완료]</div>
+            <div class="kakao-msg">
+                <b>[LFmall] 배송이 시작되었습니다!</b><br><br>
+                매장에서 택배사에 전달되었습니다.<br>
+                운송장: 1234-5678-90
+            </div>
+            <div class="kakao-btn">배송추적 하기</div>
+        </div>
+    </div>
+</body>
+</html>

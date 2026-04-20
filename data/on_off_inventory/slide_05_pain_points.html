@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
+        .sub-desc { color: #64748B; margin-top: 8px; font-size: 14px; }
+        
+        .process-flow {
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .process-step {
+            width: 140px;
+            height: 100px;
+            background: #fff;
+            border: 1px solid var(--admin-border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-label { font-size: 12px; color: #64748B; margin-bottom: 4px; }
+        .step-title { font-size: 14px; font-weight: 700; }
+
+        .flow-connector {
+            flex-grow: 1;
+            height: 2px;
+            background: #CBD5E1;
+            margin: 0 -10px;
+            position: relative;
+        }
+
+        /* Issue Tags */
+        .issue-tag {
+            position: absolute;
+            background: var(--lf-red);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(200, 25, 46, 0.3);
+            cursor: help;
+        }
+
+        .issues-grid {
+            margin: 40px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .issue-card {
+            padding: 20px;
+            background: #fff;
+            border: 1px solid var(--admin-border);
+            border-left: 4px solid var(--lf-red);
+            border-radius: 8px;
+        }
+
+        .issue-card h4 { font-size: 15px; margin-bottom: 8px; color: var(--lf-red); }
+        .issue-card p { font-size: 13px; color: #475569; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 class="page-title">05. 전체 프로세스 및 핵심 이슈</h2>
+        <p class="sub-desc">주문부터 배송까지의 엔드-투-엔드 흐름 내 정책 결정 필요 사항</p>
+    </div>
+
+    <div class="process-flow">
+        <div class="process-step">
+            <span class="step-label">Step 1</span>
+            <span class="step-title">고객 주문</span>
+            <div class="issue-tag">Issue 1: 재고 표현</div>
+        </div>
+        <div class="flow-connector"></div>
+        <div class="process-step">
+            <span class="step-label">Step 2</span>
+            <span class="step-title">주문 배정 (OMS)</span>
+            <div class="issue-tag">Issue 2: 승인 시스템</div>
+        </div>
+        <div class="flow-connector"></div>
+        <div class="process-step">
+            <span class="step-label">Step 3</span>
+            <span class="step-title">상품 준비 (매장)</span>
+            <div class="issue-tag">Issue 3: 자동 품절</div>
+        </div>
+        <div class="flow-connector"></div>
+        <div class="process-step">
+            <span class="step-label">Step 4</span>
+            <span class="step-title">택배 발송</span>
+            <div class="issue-tag">Issue 4: 취소 정책</div>
+        </div>
+        <div class="flow-connector"></div>
+        <div class="process-step">
+            <span class="step-label">Step 5</span>
+            <span class="step-title">고객 수령</span>
+            <div class="issue-tag">Issue 5: 반품/교환</div>
+        </div>
+    </div>
+
+    <div class="issues-grid">
+        <div class="issue-card">
+            <h4>#1 재고 표현 방식</h4>
+            <p>매장 재고 존재 시 '매장배송' 태그 노출 기준 및 품절 임계치 설정</p>
+        </div>
+        <div class="issue-card">
+            <h4>#2 비직영점 승인</h4>
+            <p>대리점 등 비직영 매장 주문 시 본사/점주 간 정산 및 발송 승인 프로세스</p>
+        </div>
+        <div class="issue-card">
+            <h4>#3 실시간 품절 대응</h4>
+            <p>매장 결제와 온라인 주문 동시 발생 시 우선 순위 및 자동 결품 처리</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .page-header { background: #fff; padding: 20px 30px; border-bottom: 1px solid var(--admin-border); }
+        .page-title { font-size: 20px; font-weight: 700; }
+        .content { padding: 30px; }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h1 class="page-title">36. [어드민] 매장 마스터 관리</h1>
+    </div>
+    <div class="content">
+        <div class="action-bar" style="margin-bottom:20px;">
+            <button class="btn-lf">신규 매장 등록</button>
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr><th>매장코드</th><th>매장명</th><th>구분</th><th>매장배송여부</th><th>안전재고수량</th><th>운영현황</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>S001</td><td>강남본점</td><td>직영</td><td>Y (활성)</td><td>5</td><td>운영중</td></tr>
+                <tr><td>S002</td><td>명동스타일</td><td>직영</td><td>Y (활성)</td><td>3</td><td>운영중</td></tr>
+                <tr><td>S003</td><td>대구영업소</td><td>대리점</td><td>N (비활성)</td><td>0</td><td>중단</td></tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

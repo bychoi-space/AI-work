@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
+        .content { padding: 40px; display: flex; justify-content: center; }
+        .iphone { width: 320px; height: 600px; border: 10px solid #222; border-radius: 30px; background: #fff; overflow-y: auto; position: relative; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 class="page-title">26. [UI] 주문서/주문완료</h2>
+    </div>
+    <div class="content">
+        <div class="iphone">
+            <div style="padding:15px; border-bottom:1px solid #eee; font-weight:700;">ORDER / PAYMENT</div>
+            <div style="padding:20px; border-bottom:8px solid #f1f3f5;">
+                <h4 style="margin-bottom:10px;">배송지 정보</h4>
+                <p style="font-size:13px; color:#333;">서울시 강남구 언주로 123...<br>홍길동 (010-1234-5678)</p>
+            </div>
+            <div style="padding:20px;">
+                <h4 style="margin-bottom:10px;">결제 수단</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div style="border:1px solid var(--lf-red); color:var(--lf-red); padding:10px; text-align:center; border-radius:4px; font-size:12px;">신용카드</div>
+                    <div style="border:1px solid #eee; padding:10px; text-align:center; border-radius:4px; font-size:12px;">LF Pay</div>
+                </div>
+            </div>
+            <div style="padding:20px; background:#fff;">
+                <button class="btn-lf" style="width:100%; height:44px;">209,000원 결제하기</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

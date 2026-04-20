@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
+        .content { padding: 40px; }
+        .roadmap { display: flex; gap: 10px; height: 100px; align-items: flex-end; }
+        .roadmap-step { flex: 1; background: var(--admin-table-head); border-top: 4px solid #cbd5e1; padding: 15px; position: relative; }
+        .roadmap-step.active { background: rgba(200, 25, 46, 0.05); border-color: var(--lf-red); }
+        .step-date { font-size: 11px; color: #64748B; font-weight: 700; }
+        .step-name { font-size: 14px; font-weight: 700; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 class="page-title">17. 개발 및 런칭 로드맵</h2>
+        <p style="color:#64748B; font-size:14px;">기획부터 안정화까지의 전체 프로젝트 마일스톤</p>
+    </div>
+    <div class="content">
+        <div class="roadmap">
+            <div class="roadmap-step">
+                <div class="step-date">Feb ~ Mar</div>
+                <div class="step-name">기획 및 요건 정의</div>
+            </div>
+            <div class="roadmap-step">
+                <div class="step-date">Apr</div>
+                <div class="step-name">시스템 설계 & UI 디자인</div>
+            </div>
+            <div class="roadmap-step active">
+                <div class="step-date">May</div>
+                <div class="step-name">개발 및 연동 테스트</div>
+            </div>
+            <div class="roadmap-step">
+                <div class="step-date">Jun</div>
+                <div class="step-name">QA 및 그랜드 오픈</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

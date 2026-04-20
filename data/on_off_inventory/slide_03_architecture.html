@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
+        .sub-desc { color: #64748B; margin-top: 8px; font-size: 14px; }
+        
+        .arch-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: #fff;
+            margin: 0 40px;
+            border: 1px solid var(--admin-border);
+            border-radius: 12px;
+            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Positions */
+        #node-lfmall { top: 50px; left: 100px; }
+        #node-oms { top: 50px; left: 450px; }
+        #node-sap { top: 300px; left: 450px; }
+        #node-pos { top: 300px; left: 100px; }
+
+        /* Lines (Simplified for now) */
+        .line-h { position: absolute; height: 2px; background: #94a3b8; }
+        .line-v { position: absolute; width: 2px; background: #94a3b8; }
+
+        #line-mall-oms { top: 75px; left: 240px; width: 210px; }
+        #line-oms-sap { top: 94px; left: 510px; height: 206px; }
+
+        .issue-box {
+            position: absolute;
+            top: 250px; left: 650px;
+            width: 250px; padding: 20px;
+            border: 2px dashed #f87171;
+            background: #fff5f5;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 class="page-title">03. 시스템 아키텍처</h2>
+        <p class="sub-desc">LFmall, OMS, SAP, POS 간의 실시간 재고 인터페이스 흐름도</p>
+    </div>
+
+    <div class="arch-container">
+        <!-- Nodes -->
+        <div id="node-lfmall" class="flow-node node-lfmall highlight">LFmall (Front)</div>
+        <div id="node-oms" class="flow-node node-oms">OMS (Order System)</div>
+        <div id="node-sap" class="flow-node node-sap">SAP (ERP)</div>
+        <div id="node-pos" class="flow-node node-pos">POS (Store)</div>
+
+        <!-- Connection Lines -->
+        <div id="line-mall-oms" class="line-h"></div>
+        <div id="line-oms-sap" class="line-v"></div>
+
+        <!-- Issue Callout -->
+        <div class="issue-box">
+            <strong>⚠️ 핵심 개선 포인트</strong><br>
+            매장 재고 연동 시 인터페이스 지연 발생 (최대 10분). <br>
+            → 실시간 API 연동 방식으로 전환 필요.
+        </div>
+    </div>
+</body>
+</html>

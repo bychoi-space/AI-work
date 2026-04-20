@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
+        .content { padding: 40px; }
+        .arch-map { background: #fff; border: 1px solid var(--admin-border); height: 400px; display: flex; align-items: center; justify-content: center; position: relative; border-radius: 12px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 class="page-title">14. 시스템간 데이터 연동 상세</h2>
+        <p style="color:#64748B; font-size:14px;">SAP ↔ OMS ↔ LFmall 실시간/배치 연동 인터페이스 정의</p>
+    </div>
+    <div class="content">
+        <div class="arch-map">
+            <div class="flow-node highlight" style="top:50px; left:100px;">LFmall</div>
+            <div class="flow-node" style="top:50px; left:400px;">OMS (Order)</div>
+            <div class="flow-node" style="top:250px; left:400px;">SAP (ERP)</div>
+            <p style="position:absolute; top:40px; left:220px; font-size:11px; color:var(--lf-red);">RFC (Real-time)</p>
+            <p style="position:absolute; top:180px; left:410px; font-size:11px; color:#666;">BATCH (10min)</p>
+        </div>
+    </div>
+</body>
+</html>

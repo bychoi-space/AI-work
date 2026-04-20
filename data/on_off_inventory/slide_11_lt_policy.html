@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
+        .sub-desc { color: #64748B; margin-top: 8px; font-size: 14px; }
+        .content { padding: 40px; }
+        .flow-graphic { background: #f8fafc; border: 1px dashed #cbd5e1; height: 150px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; border-radius: 8px; font-size: 14px; color: #64748B; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 class="page-title">11. 배송 LT 및 자동결품 정책</h2>
+        <p class="sub-desc">주문 배정 후 매장 상품 준비 리드타임(LT) 관리 및 미처리시 자동 결품 로직</p>
+    </div>
+    <div class="content">
+        <div class="flow-graphic">[배송 LT 흐름도: 배정 → 상품준비(48h) → 배송시작 → 수령]</div>
+        <table class="data-table">
+            <thead>
+                <tr><th>구분</th><th>LT 설정</th><th>자동결품 시점</th><th>비고</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>직영점</td><td>24시간</td><td>배정 후 48시간</td><td>영업일 기준</td></tr>
+                <tr><td>대리점</td><td>48시간</td><td>배정 후 72시간</td><td>관리자 확인 필수</td></tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

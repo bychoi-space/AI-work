@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
+        .sub-desc { color: #64748B; margin-top: 8px; font-size: 14px; }
+        
+        .policy-container { padding: 40px; }
+
+        .logic-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 2fr;
+            gap: 2px;
+            background: var(--admin-border);
+            border: 1px solid var(--admin-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .grid-header {
+            background: var(--admin-table-head);
+            padding: 16px;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .grid-cell {
+            background: #fff;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .badge-ui {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        .ui-normal { background: #E2E8F0; color: #475569; }
+        .ui-store { background: var(--lf-red); color: #fff; }
+        .ui-soldout { background: #000; color: #fff; }
+
+        .bucket-desc {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .bucket-card {
+            padding: 24px;
+            background: #fff;
+            border: 1px solid var(--admin-border);
+            border-radius: 12px;
+        }
+        .bucket-title { font-weight: 800; font-size: 16px; color: #1e293b; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .bucket-point { width: 12px; height: 12px; border-radius: 50%; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 class="page-title">07. 매장상품배송 표현 정책</h2>
+        <p class="sub-desc">온라인/오프라인 재고 상태에 따른 고객용 UI 노출 로직 정의</p>
+    </div>
+
+    <div class="policy-container">
+        <div class="logic-grid">
+            <!-- Header -->
+            <div class="grid-header">온라인 재고 (Center)</div>
+            <div class="grid-header">오프라인 재고 (Store)</div>
+            <div class="grid-header">사용자 UI 표현 (Frontend)</div>
+
+            <!-- Row 1 -->
+            <div class="grid-cell">가용 (Stock > 0)</div>
+            <div class="grid-cell">무관</div>
+            <div class="grid-cell">
+                <span class="badge-ui ui-normal">일반 택배 배송</span>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="grid-cell" style="background:#F8FAFC">품절 (Stock = 0)</div>
+            <div class="grid-cell" style="background:#F8FAFC">가용 (Stock > 0)</div>
+            <div class="grid-cell" style="background:#F8FAFC">
+                <span class="badge-ui ui-store">매장상품배송</span>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="grid-cell">품절 (Stock = 0)</div>
+            <div class="grid-cell">품절 (Stock = 0)</div>
+            <div class="grid-cell">
+                <span class="badge-ui ui-soldout">SOLDOUT (품절)</span>
+            </div>
+        </div>
+
+        <div class="bucket-desc">
+            <div class="bucket-card">
+                <div class="bucket-title"><div class="bucket-point" style="background:#10B981"></div>가용 재고 (Available)</div>
+                <p style="font-size:13px; color:#64748B;">즉시 주문 및 발송이 가능한 실제 물리적 재고</p>
+            </div>
+            <div class="bucket-card">
+                <div class="bucket-title"><div class="bucket-point" style="background:#F59E0B"></div>안전 재고 (Safety)</div>
+                <p style="font-size:13px; color:#64748B;">동시 주문 시 결품 방지를 위해 제외하는 예비 재고</p>
+            </div>
+            <div class="bucket-card">
+                <div class="bucket-title"><div class="bucket-point" style="background:#EF4444"></div>예약 재고 (Buffer)</div>
+                <p style="font-size:13px; color:#64748B;">결제 진행 중이거나 반품 대기 중인 논리적 재고</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+/* 
+   Inventory Optimization System Design System 
+   Branding: LF Red (#C8192E)
+*/
+
+:root {
+    --lf-red: #C8192E;
+    --lf-red-hover: #A51425;
+    --admin-bg: #F5F6F8;
+    --admin-sidebar: #252830;
+    --admin-border: #E0E3E8;
+    --admin-text: #333333;
+    --admin-table-head: #F1F3F5;
+}
+
+body {
+    background: var(--admin-bg);
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--admin-text);
+}
+
+/* ----------------------------------------------------
+   1. Architecture Components (PPT Slide 3)
+   ---------------------------------------------------- */
+.canvas-flow {
+    width: 100%; height: 100%;
+    position: relative;
+    padding: 40px;
+}
+
+.flow-node {
+    padding: 12px 20px;
+    background: #fff;
+    border: 2px solid var(--admin-border);
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+    position: absolute;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.flow-node.highlight {
+    border-color: var(--lf-red);
+    box-shadow: 0 0 15px rgba(200, 25, 46, 0.2);
+}
+
+.node-oms { border-color: #10B981; } /* OMS: Green */
+.node-pos { border-color: #FACC15; } /* POS: Yellow */
+.node-lfmall { border-color: #1E40AF; } /* LFmall: Blue */
+
+/* Flow Arrows & Labels */
+.flow-arrow {
+    position: absolute;
+    height: 2px;
+    background: #CBD5E1;
+}
+
+/* ----------------------------------------------------
+   2. Admin UI Components (PPT Slides 30-38)
+   ---------------------------------------------------- */
+.admin-container {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+}
+
+.filter-panel {
+    background: #fff;
+    border: 1px solid var(--admin-border);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.filter-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-label {
+    width: 80px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #64748B;
+}
+
+/* Data Table */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.data-table th {
+    background: var(--admin-table-head);
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #475569;
+    border-bottom: 2px solid var(--admin-border);
+}
+
+.data-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--admin-border);
+    font-size: 13px;
+}
+
+.data-table tr:hover { background: #F8FAFC; }
+
+/* Status Badges */
+.badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+.badge-red { background: rgba(200, 25, 46, 0.1); color: var(--lf-red); }
+
+/* Buttons */
+.btn-lf {
+    background: var(--lf-red);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-lf:hover { background: var(--lf-red-hover); }

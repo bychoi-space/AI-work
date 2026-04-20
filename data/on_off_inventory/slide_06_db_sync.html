@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .header { padding: 40px 40px 0; border-bottom: 2px solid var(--admin-border); margin-bottom: 20px; }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--lf-red); }
+        .sub-desc { color: #64748B; margin-top: 8px; font-size: 14px; }
+        
+        .db-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            padding: 60px;
+        }
+
+        .db-node {
+            width: 200px;
+            padding: 30px 20px;
+            background: #fff;
+            border: 2px solid #CBD5E1;
+            border-radius: 16px;
+            text-align: center;
+            position: relative;
+        }
+
+        .db-node h3 { font-size: 18px; margin-bottom: 12px; }
+        .db-table { font-size: 11px; font-family: monospace; color: #64748B; background: #F8FAFC; padding: 4px; border-radius: 4px; }
+
+        .sync-pipe {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pipe-arrow {
+            width: 100px;
+            height: 4px;
+            background: var(--lf-red);
+            position: relative;
+        }
+        .pipe-arrow::after {
+            content: '';
+            position: absolute;
+            right: -10px; top: -6px;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 12px solid var(--lf-red);
+        }
+
+        .sync-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--lf-red);
+            background: #fff;
+            padding: 4px 12px;
+            border: 1px solid var(--lf-red);
+            border-radius: 20px;
+        }
+
+        .logic-panel {
+            margin: 0 40px 40px;
+            padding: 30px;
+            background: #fff;
+            border: 1px solid var(--admin-border);
+            border-radius: 12px;
+        }
+
+        .logic-list { list-style: none; }
+        .logic-list li { margin-bottom: 12px; padding-left: 24px; position: relative; font-size: 14px; }
+        .logic-list li::before { content: '✓'; position: absolute; left: 0; color: var(--lf-red); font-weight: 800; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 class="page-title">06. 재고 DB 구조 및 동기화 로직</h2>
+        <p class="sub-desc">SAP ERP와 LFmall 간의 원장 재고 및 매장 가용 재고 동기화 방식</p>
+    </div>
+
+    <div class="db-container">
+        <div class="db-node">
+            <h3 style="color:#1E40AF">SAP (ERP)</h3>
+            <div class="db-table">ZSDT510 (Store Stock)</div>
+        </div>
+
+        <div class="sync-pipe">
+            <span class="sync-label">10min BATCH</span>
+            <div class="pipe-arrow"></div>
+        </div>
+
+        <div class="db-node" style="border-color: var(--lf-red)">
+            <h3 style="color:var(--lf-red)">LFmall DB</h3>
+            <div class="db-table">STB_STOCK_RES_BASE</div>
+        </div>
+    </div>
+
+    <div class="logic-panel">
+        <ul class="logic-list">
+            <li><b>기준 테이블</b>: SAP의 매장별 재고 원장(ZSDT510)을 마스터로 관리</li>
+            <li><b>동기화 주기</b>: 10분 단위의 Batch 연동을 통해 LFmall 가용 재고 테이블 업데이트</li>
+            <li><b>실시간 예약</b>: 고객 주문 시 즉시 STB_STOCK_RES_BASE에 예약(Reservation) 레코드 생성</li>
+            <li><b>차이 관리</b>: Batch 수행 시 실제 재고와 예약 재고 간의 차이분 자동 보정 로직 적용</li>
+        </ul>
+    </div>
+</body>
+</html>

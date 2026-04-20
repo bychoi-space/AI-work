@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="system-ui.css">
+</head>
+<body>
+    <div class="header">
+        <h2 class="page-title">20. 자동결품 로직 정의</h2>
+    </div>
+    <div class="content" style="padding:40px;">
+        <div class="arch-map">
+            <div class="flow-node highlight" style="top:50px; left:50px;">주문 배정</div>
+            <div class="flow-node" style="top:50px; left:250px;">매장 확인 (48h)</div>
+            <div class="flow-node node-red" style="top:150px; left:250px; border-color:var(--lf-red);">미처리 시 자동결품</div>
+            <div class="flow-node" style="top:150px; left:50px;">고객 알림 송신</div>
+        </div>
+    </div>
+</body>
+</html>
