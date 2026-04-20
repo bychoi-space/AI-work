@@ -4,6 +4,10 @@
     "lfmall_mobile_screen_4105.html": {
       "updatedAt": "2026-04-20T02:32:56.910Z",
       "template": "lfmall_mobile_base.html"
+    },
+    "lfmall_pc_screen_1703.html": {
+      "updatedAt": "2026-04-20T02:33:14.802Z",
+      "template": "lfmall_pc_base.html"
     }
   },
   "createdAt": "2026-04-16T08:07:34.411Z"
