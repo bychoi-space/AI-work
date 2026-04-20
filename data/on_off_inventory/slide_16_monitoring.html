@@ -3,40 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .mon-stage-v9 { padding: 40px 60px; height: 100%; position: relative; background: #fff; }
+        .mon-box-v9 { border: 1.5px solid #DDD; border-radius: 12px; padding: 25px; background: #F8F9FA; margin-bottom: 30px; position: relative; }
+        
+        .mon-grid-v9 { display: flex; align-items: center; justify-content: space-between; position: relative; padding: 0 20px; margin-top: 40px; }
+        .mon-dot-v9 { 
+            width: 80px; height: 80px; border: 2px solid #333; border-radius: 50%; background: #fff; 
+            display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900;
+            text-align: center; color: #222; position: relative; z-index: 10;
+        }
+        .mon-line-v9 { position: absolute; top: 40px; left: 60px; right: 60px; height: 2px; background: #DDD; z-index: 5; }
+        
+        .sys-label-v9 { position: absolute; left: -100px; top: 32px; font-size: 12px; font-weight: 900; color: #666; }
+        
+        .marker-impossible-v9 {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            background: rgba(200, 25, 46, 0.1); border: 2px solid #C8192E; color: #C8192E;
+            padding: 2px 10px; border-radius: 4px; font-size: 9px; font-weight: 900; z-index: 20; 
+            box-shadow: 0 4px 8px rgba(200, 25, 46, 0.15);
+        }
+    </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header-strategy">16. 비직송매장 RT 현황 관리 주체 및 채널 (Monitoring)</header>
-        
-        <div style="padding: 100px 110px; position: relative;">
-            <svg class="svg-layer-v4">
-                <defs>
-                    <marker id="arrow-v4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                        <polygon points="0 0, 8 3, 0 6" fill="#AAA" />
-                    </marker>
-                </defs>
-                <line x1="330" y1="140" x2="520" y2="140" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" />
-                <line x1="520" y1="160" x2="330" y2="160" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" />
-            </svg>
+        <header class="ppt-header">16. 시스템별 주문 상해 코드 매핑 및 모니터링 (Monitoring)</header>
 
-            <div class="ppt-node-v4" style="top:100px; left:120px; width:220px; height:100px; background:#DEEAF6; border-color:#2E5BFF;">
-                브랜드 영업 MD<br><span style="font-size:11px; font-weight:normal;">(Dashboard 관리)</span>
-            </div>
-            
-            <div class="ppt-node-v4" style="top:100px; left:520px; width:220px; height:100px; background:#FFF2CC; border-color:#D9AE3B;">
-                거점/대리점 매장<br><span style="font-size:11px; font-weight:normal;">(실물 이동 처리)</span>
+        <div class="mon-stage-v9">
+            <h2 style="font-size:22px; font-weight:900; margin-bottom:30px; color:#222;">Cross-System Status Alignment (LFmall ↔ OMS)</h2>
+
+            <!-- Row 1: LFmall -->
+            <div class="mon-box-v9">
+                <div class="sys-label-v9" style="left:20px; top:15px; color:#2E5BFF;">LFmall</div>
+                <div class="mon-grid-v9">
+                    <div class="mon-line-v9"></div>
+                    <div class="mon-dot-v9">결제완료<br>(10)</div>
+                    <div class="mon-dot-v9">주문배정<br>(20)</div>
+                    <div class="mon-dot-v9">상품준비<br>(30)
+                        <div class="marker-impossible-v9">모니터링 불가</div>
+                    </div>
+                    <div class="mon-dot-v9">배송중<br>(40)</div>
+                    <div class="mon-dot-v9">배송완료<br>(50)</div>
+                </div>
             </div>
 
-            <div style="margin-top:140px; padding:35px; border:1px solid #EEE; border-radius:8px; line-height:1.7; font-size:14px; background:#fff;">
-                <p><b>• 관리 채널</b>: 영업 MD용 태블릿 대시보드 및 카카오 비즈톡 알림톡 연동</p>
-                <p><b>• 관리 주기</b>: 매일 오전 10시(전일 실판매 재고 수급분) 및 오후 4시(당일 급구분)</p>
-                <p><b>• 프로세스</b>: MD 이동 지시(Command) → 매장 실물 준비 → 본사 순회 물류 입고</p>
+            <!-- Row 2: OMS -->
+            <div class="mon-box-v9" style="background:#E2EFDA; border-color:#A9D18E;">
+                <div class="sys-label-v9" style="left:20px; top:15px; color:#375623;">OMS</div>
+                <div class="mon-grid-v9" style="margin-top:20px;">
+                    <div class="mon-line-v9" style="background:#A9D18E;"></div>
+                    <div class="mon-dot-v9" style="border-color:#A9D18E;">주문수집<br>(I01)</div>
+                    <div class="mon-dot-v9" style="border-color:#A9D18E;">참조완료<br>(I02)</div>
+                    <div class="mon-dot-v9" style="border-color:#A9D18E; background:#FFF2CC;">이동지시<br>(I03)</div>
+                    <div class="mon-dot-v9" style="border-color:#A9D18E;">송장출력<br>(I04)</div>
+                    <div class="mon-dot-v9" style="border-color:#A9D18E;">출고완료<br>(I05)</div>
+                </div>
+            </div>
+
+            <div style="margin-top:20px; padding:15px; border-radius:8px; background:#F4F6F9; border-left:4px solid #C8192E;">
+                <p style="font-size:12px; color:#444; font-weight:700;">• <b>모니터링 불가</b>: 매장 내 물리적 피킹(Picking) 단계는 시스템 연동 한계로 인해 '상품준비중' 통합 노출</p>
+                <p style="font-size:12px; color:#444; font-weight:700;">• OMS의 '이동지시' 코드는 매장 배송 특화 상태값으로 LFmall '상품준비'와 동기화됨</p>
             </div>
         </div>
 
         <div class="ppt-footer">
             <div class="ppt-logo-box">LF</div>
-            <div>PAGE 16</div>
+            <div style="font-size:12px; font-weight:900; color:#444;">16</div>
         </div>
     </div>
 </body>

@@ -4,40 +4,78 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .roadmap-stage-v4 { padding: 80px 110px; }
-        .gantt-table-v4 { width:100%; border-collapse: collapse; border: 1px solid #CCC; table-layout: fixed; }
-        .gantt-table-v4 th { background: #EEE; border: 1px solid #CCC; padding: 10px; font-size: 13px; text-align: center; }
-        .gantt-table-v4 td { border: 1px solid #DDD; height: 50px; padding: 0 10px; position: relative; }
+        .map-stage-v9 { padding: 40px 60px; height: 100%; position: relative; background: #fff; }
+        .gantt-v9 { width: 100%; border-collapse: collapse; margin-top: 30px; table-layout: fixed; }
+        .gantt-v9 th { background: #333; color: #fff; padding: 12px; border: 1px solid #222; font-size: 11px; font-weight: 900; }
+        .gantt-v9 td { border: 1px solid #EEE; height: 45px; position: relative; padding: 0; }
         
-        .gantt-bar-v4 {
-            position: absolute; top: 12px; bottom: 12px; border-radius: 20px;
-            background: #444; color: #fff; font-size: 10px; font-weight: 800;
-            display: flex; align-items: center; justify-content: center; box-shadow: var(--ppt-shadow);
+        .bar-v9 { 
+            position: absolute; top: 12px; height: 20px; border-radius: 10px; 
+            font-size: 9px; font-weight: 900; color: #fff; display: flex; align-items: center; padding: 0 12px;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
-        .gantt-bar-v4.red { background: var(--lf-red); }
+        .bar-analyze { background: #C8192E; width: 150px; left: 0; }
+        .bar-dev { background: #2E5BFF; width: 350px; left: 100px; }
+        .bar-test { background: #FFBD2E; width: 180px; left: 400px; color: #333; }
+        .bar-launch { background: #10B981; width: 80px; left: 580px; }
+
+        .milestone-v9 { position: absolute; right: 0; top: -35px; text-align: center; width: 80px; }
+        .milestone-v9 span { display: block; font-size: 24px; color: #C8192E; }
+        .milestone-v9 b { font-size: 10px; font-weight: 900; color: #C8192E; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header-strategy">17. 향후 주요 추진 일정 (Project Roadmap)</header>
-        
-        <div class="roadmap-stage-v4">
-            <table class="gantt-table-v4">
+        <header class="ppt-header">17. 개발 전체 일정 (Master Roadmap)</header>
+
+        <div class="map-stage-v9">
+            <h2 style="font-size:24px; font-weight:900; margin-bottom:10px;">Project Milestone & Phase Timeline</h2>
+            <div style="font-size:13px; color:#666; margin-bottom:40px;">전체 일정: 2025.12 ~ 2026.05 (6개월)</div>
+
+            <table class="gantt-v9">
                 <thead>
-                    <tr><th style="width:120px;">Task</th><th>4월 2주</th><th>4월 3주</th><th>4월 4주</th><th>5월 1주</th><th>5월 2주</th></tr>
+                    <tr>
+                        <th style="width:150px;">영역</th>
+                        <th>12월</th><th>1월</th><th>2월</th><th>3월</th><th>4월</th><th>5월</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td style="font-weight:900;">기획/설계</td><td><div class="gantt-bar-v4" style="left:10px; right:-10px;">Process Fix</div></td><td></td><td></td><td></td><td></td></tr>
-                    <tr><td style="font-weight:900;">시스템 개발</td><td></td><td><div class="gantt-bar-v4 red" style="left:5px; right:-10px; width:450px;">Interface / UI Development</div></td><td></td><td></td><td></td></tr>
-                    <tr><td style="font-weight:900;">통합 테스트</td><td></td><td></td><td></td><td><div class="gantt-bar-v4" style="left:5px; right:5px;">Beta Test</div></td><td></td></tr>
-                    <tr><td style="font-weight:900;">안정화/오픈</td><td></td><td></td><td></td><td></td><td><div class="gantt-bar-v4" style="left:5px; right:5px; background:#059669;">Go-Live</div></td></tr>
+                    <tr>
+                        <td style="background:#F1F3F5; font-weight:900; text-align:center;">Analyze</td>
+                        <td colspan="6"><div class="bar-v9 bar-analyze">요건 분석 및 아키텍처 설계</div></td>
+                    </tr>
+                    <tr>
+                        <td style="background:#F1F3F5; font-weight:900; text-align:center;">Development</td>
+                        <td colspan="6"><div class="bar-v9 bar-dev">Front/Back-end 기능 구현 및 IF 연동</div></td>
+                    </tr>
+                    <tr>
+                        <td style="background:#F1F3F5; font-weight:900; text-align:center;">Test/QA</td>
+                        <td colspan="6"><div class="bar-v9 bar-test">통합 테스트 및 사용자 검수 (UAT)</div></td>
+                    </tr>
+                    <tr>
+                        <td style="background:#F1F3F5; font-weight:900; text-align:center;">Launch</td>
+                        <td colspan="6">
+                            <div class="bar-v9 bar-launch">GO-LIVE</div>
+                            <div class="milestone-v9">
+                                <span>🚩</span>
+                                <b>Grand Open</b>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
+
+            <div style="margin-top:60px; padding:25px; background:#F8FAFC; border-radius:12px; border:1px dashed #DDD;">
+                <p style="font-size:14px; font-weight:900; color:#333; margin-bottom:10px;">★ 주요 마일스톤</p>
+                <p style="font-size:12px; color:#555; font-weight:700;">• 12월 말: 핵심 비즈니스 정책 및 시스템 아키텍처 확정</p>
+                <p style="font-size:12px; color:#555; font-weight:700;">• 03월 중순: 인터페이스 연동 시스템 통합 테스트 개시</p>
+                <p style="font-size:12px; color:#555; font-weight:700;">• 05월 초: 신규 시스템 Grand Open 및 매장 배포 안정화기</p>
+            </div>
         </div>
 
         <div class="ppt-footer">
             <div class="ppt-logo-box">LF</div>
-            <div>PAGE 17</div>
+            <div style="font-size:12px; font-weight:900; color:#444;">17</div>
         </div>
     </div>
 </body>

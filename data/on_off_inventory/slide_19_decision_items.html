@@ -4,50 +4,57 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .check-stage-hf { padding: 60px 110px; }
-        .check-row-hf { display: grid; grid-template-columns: 200px 1fr 120px; gap: 20px; border-bottom: 1.5px solid #EEE; padding: 25px 0; align-items: center; }
-        .check-row-hf.header { background: #333; color: #fff; padding: 15px 25px; border-radius: 4px; box-shadow: var(--ppt-shadow); border-bottom: none; }
+        .dec-stage-v9 { padding: 40px 60px; height: 100%; position: relative; background: #fff; }
+        .dec-table-v9 { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .dec-table-v9 th { background: #333; color: #fff; padding: 10px; border: 1px solid #222; font-size: 11px; font-weight: 900; }
+        .dec-table-v9 td { border: 1px solid #DDD; padding: 8px 12px; font-size: 10.5px; font-weight: 700; color: #444; }
         
-        .c-icon-hf { width: 32px; height: 32px; border-radius: 50%; border: 2.5px solid #CCC; display: flex; align-items: center; justify-content: center; font-weight: 900; margin: 0 auto; }
-        .c-icon-hf.v { border-color: #059669; color: #059669; background: rgba(5, 150, 105, 0.05); }
-        .c-icon-hf.x { border-color: var(--lf-red); color: var(--lf-red); background: rgba(200, 25, 46, 0.05); }
+        .cat-v9 { background: #F1F3F5 !important; font-weight: 900 !important; color: #111 !important; text-align: center; width: 100px; }
+        .status-v9 { font-weight: 900; text-align: center; width: 80px; }
+        .st-ok { color: #10B981; }
+        .st-ing { color: #FFBD2E; }
+        .st-deny { color: #C8192E; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">19. 오픈 전 주요 의사결정 및 점검 항목</header>
+        <header class="ppt-header">19. 세부 실무 결정 사항 및 점검 리스트 (Decision Matrix)</header>
 
-        <div class="check-stage-hf">
-            <div class="check-row-hf header">
-                <b>의사결정 그룹</b> <b>핵심 점검 및 결정 사항</b> <b style="text-align:center;">상태</b>
-            </div>
-
-            <div class="check-row-hf">
-                <div style="font-weight:900;">영업 정책</div>
-                <div style="font-size:14px; color:#444;">매장별 일일 배정 Cap 수량 확정 및 런칭 매장 리스트업</div>
-                <div class="c-icon-hf v">V</div>
-            </div>
-
-            <div class="check-row-hf">
-                <div style="font-weight:900;">시스템 인터페이스</div>
-                <div style="font-size:14px; color:#444;">SAP ↔ OMS 가용 재고 동기화 배치 주기 (10분) 최종 검증</div>
-                <div class="c-icon-hf v">V</div>
-            </div>
-
-            <div class="check-row-hf">
-                <div style="font-weight:900;">물류/정산</div>
-                <div style="font-size:14px; color:#444;">매장 택배비(2.5천원) 정산 방식 및 인센티브 지급 로직 확정</div>
-                <div class="c-icon-hf x">?</div>
-            </div>
+        <div class="dec-stage-v9">
+            <h2 style="font-size:22px; font-weight:900; margin-bottom:20px;">영업/물류/시스템 분야별 의사결정 내역</h2>
             
-            <div class="check-row-hf" style="border-bottom:none; margin-top:20px; background:#F8FAFC; padding:25px;">
-                <p style="font-size:14px; line-height:1.6; color:#666;">
-                    • <b>Note</b>: 물류 정산 방식의 경우 브랜드별 현업 MD와 최종 시뮬레이션 후 4월 4주차까지 확정 예정임
-                </p>
-            </div>
+            <table class="dec-table-v9">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>항목</th>
+                        <th>상세 결정 내용</th>
+                        <th>상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td rowspan="4" class="cat-v9">영업 정책</td><td>대상 브랜드</td><td>HAZZYS, DAKS, JILLSTUART 등 핵심 5대 브랜드 우선 적용</td><td class="status-v9 st-ok">완료</td></tr>
+                    <tr><td>대상 매장</td><td>A급 상권 가두 매장 및 백화점 비직송 매장 (총 85개소)</td><td class="status-v9 st-ok">완료</td></tr>
+                    <tr><td>품목 제한</td><td>의류/잡화 전 품목 (ACC 일부 제외)</td><td class="status-v9 st-ing">진행중</td></tr>
+                    <tr><td>할인율 적용</td><td>LFmall 판매가 기준 동일 적용 (매장 단독 할인 제외)</td><td class="status-v9 st-ok">완료</td></tr>
+                    
+                    <tr><td rowspan="4" class="cat-v9">물류/배송</td><td>택배사 선정</td><td>CJ대한통운 통합 계약 사용 (Enterprise 요금제)</td><td class="status-v9 st-ok">완료</td></tr>
+                    <tr><td>이동 비용</td><td>BSU 회송 비용 센터 부담, 매장-고객 택배비 매장 선지불</td><td class="status-v9 st-ok">완료</td></tr>
+                    <tr><td>박스 규격</td><td>LFmall 전용 박스 (S/M/L) 매장별 정기 배포</td><td class="status-v9 st-ing">검토중</td></tr>
+                    <tr><td>반품 프로세스</td><td>매장 입고 확인 후 SAP 반품 수동 처리 (1단계)</td><td class="status-v9 st-ok">완료</td></tr>
+
+                    <tr><td rowspan="4" class="cat-v9">시스템 연동</td><td>동기화 주기</td><td>SAP ↔ OMS 실시간 (HTTP), OMS ↔ LFmall 10분 Batch</td><td class="status-v9 st-ok">완료</td></tr>
+                    <tr><td>자동 결품</td><td>D+5일 미출고 시 시스템 자동 주문 취소 로직 적용</td><td class="status-v9 st-ok">완료</td></tr>
+                    <tr><td>알림톡 발송</td><td>주문배정/발송시작 2단계 발송 (이동 시 3단계)</td><td class="status-v9 st-ok">완료</td></tr>
+                    <tr><td>권한 관리</td><td>매장 관리자 ID/PW 발급 및 POS 연동 모듈 배포</td><td class="status-v9 st-deny">N.A.</td></tr>
+                </tbody>
+            </table>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#444;">19</div>
+        </div>
     </div>
 </body>
 </html>

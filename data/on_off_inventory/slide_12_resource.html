@@ -4,43 +4,76 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .res-stage-hf { padding: 80px 110px; }
-        .summary-banner-hf {
-            background: #252830; color: #fff; padding: 40px; border-radius: 12px;
-            display: flex; justify-content: space-between; align-items: center; margin-top: 50px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        .res-stage-v9 { padding: 40px 100px; height: 100%; position: relative; background: #fff; }
+        .res-table-v9 { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        .res-table-v9 th { background: #385623; color: #fff; padding: 15px; border: 1.2px solid #222; font-size: 14px; font-weight: 900; }
+        .res-table-v9 td { border: 1px solid #CCC; padding: 15px; text-align: center; font-size: 14px; font-weight: 700; color: #333; }
+        .sys-col-v9 { background: #E2EFDA !important; font-weight: 900 !important; color: #375623 !important; width: 180px; }
+        
+        .total-card-v9 { 
+            margin-top: 50px; background: #385623; padding: 30px; border-radius: 12px; 
+            display: flex; justify-content: space-between; align-items: center; color: #fff;
+            box-shadow: 0 15px 30px rgba(56,86,35,0.2);
         }
+        .total-val-v9 { font-size: 42px; font-weight: 900; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">12. 리소스 산출 및 투입 안 (Project Resources)</header>
+        <header class="ppt-header">12. 시스템별 리소스 산출 및 개발 범위 (Resource Estimation)</header>
 
-        <div class="res-stage-hf">
-            <table class="data-table-hf">
+        <div class="res-stage-v9">
+            <h2 style="font-size:24px; font-weight:900; color:#385623; border-bottom:3px solid #385623; display:inline-block; padding-bottom:10px;">전체 개발 대상 화면 및 인터페이스</h2>
+
+            <table class="res-table-v9">
                 <thead>
-                    <tr><th style="background:#F1F3F5;">구분</th><th>주요 과업 (Task)</th><th>M/D</th><th>비중</th></tr>
+                    <tr>
+                        <th>시스템 (System)</th>
+                        <th>영역 (Domain)</th>
+                        <th>개발 수량 (Screen/IF Count)</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr><td><b>기획/설계</b></td><td>프로세스 정의 및 전장 UI 기획</td><td style="text-align:right;">40</td><td>25%</td></tr>
-                    <tr><td><b>시스템 연동</b></td><td>SAP/OMS/LFM 인터페이스 개발</td><td style="text-align:right; color:var(--lf-red); font-weight:900;">85</td><td>53%</td></tr>
-                    <tr><td><b>인프라/보안</b></td><td>DB 튜닝 및 보안 취약점 점검</td><td style="text-align:right;">15</td><td>9%</td></tr>
-                    <tr><td><b>QA/안정화</b></td><td>통합 테스트 및 현업 교육</td><td style="text-align:right;">20</td><td>13%</td></tr>
+                    <tr>
+                        <td class="sys-col-v9">LFmall (Front)</td>
+                        <td>PDP / Basket / Order</td>
+                        <td>12 Screens</td>
+                    </tr>
+                    <tr>
+                        <td class="sys-col-v9">Admin (Back-end)</td>
+                        <td>Master / Policy / Monitoring</td>
+                        <td>18 Screens</td>
+                    </tr>
+                    <tr>
+                        <td class="sys-col-v9">Interface (API/Batch)</td>
+                        <td>SAP-OMS-LFmall Loop</td>
+                        <td>24 Interfaces</td>
+                    </tr>
+                    <tr>
+                        <td class="sys-col-v9">Operational (Push)</td>
+                        <td>AlimTalk / CS Agent</td>
+                        <td>6 Templates</td>
+                    </tr>
                 </tbody>
             </table>
 
-            <div class="summary-banner-hf">
+            <div class="total-card-v9">
                 <div>
-                    <div style="font-size:14px; opacity:0.6; margin-bottom:10px; font-weight:800; letter-spacing:1px;">TOTAL PROJECT RESOURCE</div>
-                    <div style="font-size:16px;">본 프로젝트 완수를 위한 최적 가용 공수</div>
+                    <div style="font-size:14px; font-weight:800; opacity:0.8; margin-bottom:5px;">TOTAL ESTIMATED RESOURCES</div>
+                    <div style="font-size:18px; font-weight:900;">전체 프로젝트 투입 공수 산출</div>
                 </div>
                 <div style="text-align:right;">
-                    <div style="font-size:52px; font-weight:900; color:var(--lf-red);">160 M/D</div>
+                    <span style="font-size:16px; margin-right:15px; font-weight:800;">총 개발 대상</span>
+                    <span class="total-val-v9">60+</span>
+                    <span style="font-size:20px; font-weight:900; margin-left:5px;">개소</span>
                 </div>
             </div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#444;">12</div>
+        </div>
     </div>
 </body>
 </html>

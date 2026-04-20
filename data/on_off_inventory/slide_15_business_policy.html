@@ -4,45 +4,97 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
     <style>
-        .policy-grid-hf { padding: 60px 110px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        .policy-card-hf {
-            background: #fff; border: 1px solid #D9D9D9; padding: 30px; border-radius: 8px;
-            box-shadow: var(--ppt-shadow); position: relative; border-left: 6px solid #CCC;
-        }
-        .policy-card-hf.active-p { border-left-color: var(--lf-red); }
-        .status-tag-hf { position: absolute; top: 25px; right: 25px; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 4px; }
-        .tag-ok { background: #E2EFDA; color: #065F46; }
-        .tag-yet { background: #FFF2CC; color: #D97706; }
+        .admin-stage-v9 { padding: 40px; height: 100%; background: #F4F6F9; border: 1px solid #CCC; position: relative; }
+        .admin-panel-v9 { background: #fff; border: 1.5px solid #333; border-radius: 8px; box-shadow: 6px 6px 0 rgba(0,0,0,0.1); display: flex; flex-direction: column; overflow: hidden; }
+        .admin-header-v9 { background: #333; color: #fff; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .filter-bar-v9 { padding: 20px; border-bottom: 1px solid #EEE; display: flex; gap: 15px; background: #F8FAFC; }
+        .filter-input { border: 1px solid #DDD; padding: 8px 12px; font-size: 12px; border-radius: 4px; }
+        
+        .admin-table-v9 { width: 100%; border-collapse: collapse; }
+        .admin-table-v9 th { background: #F1F3F5; padding: 12px; border-bottom: 2px solid #333; font-size: 11px; font-weight: 900; text-align: center; }
+        .admin-table-v9 td { padding: 12px; border-bottom: 1px solid #EEE; font-size: 11px; font-weight: 700; text-align: center; }
+        
+        .toggle-on-v9 { width: 36px; height: 18px; background: #C8192E; border-radius: 20px; position: relative; cursor: pointer; }
+        .toggle-on-v9::after { content: ""; position: absolute; right: 2px; top: 2px; width: 14px; height: 14px; background: #fff; border-radius: 50%; }
+        
+        .badge-brand-v9 { background: #E9EDF4; color: #2E5BFF; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 900; }
     </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header">15. 현업(e-영업) 정책 결정 사항 (Business Policy)</header>
+        <header class="ppt-header">15. 현업 정책 운영 시스템 (Admin Manual Management)</header>
 
-        <div class="policy-grid-hf">
-            <div class="policy-card-hf active-p">
-                <span class="status-tag-hf tag-ok">FIXED / 확정</span>
-                <h4 style="font-size:18px; margin-bottom:12px;">무료 배송 프로모션</h4>
-                <p style="font-size:13px; color:#555; line-height:1.6;">런칭 후 6개월간 매장상품배송 구매 시 조건 없이 무료 배송 혜택을 제공하여 신규 서비스 인지도를 강화함 (마케팅 예산 편성 완료)</p>
+        <div class="admin-stage-v9">
+            <h2 style="font-size:22px; font-weight:900; margin-bottom:20px; color:#222;">매장상품배송 운영 대상 설정 (Brand/Item Unit)</h2>
+            
+            <div class="admin-panel-v9">
+                <div class="admin-header-v9">
+                    <span style="font-size:14px; font-weight:900;">운영 매장 조회 및 대상 설정</span>
+                    <button style="background:#C8192E; color:#fff; border:none; padding:6px 15px; border-radius:4px; font-size:11px; font-weight:900; cursor:pointer;">저장 (Save)</button>
+                </div>
+                
+                <div class="filter-bar-v9">
+                    <select class="filter-input"><option>브랜드 전체</option><option>HAZZYS</option></select>
+                    <input type="text" class="filter-input" placeholder="매장코드/명 입력">
+                    <input type="text" class="filter-input" placeholder="상품코드 입력">
+                </div>
+
+                <table class="admin-table-v9">
+                    <thead>
+                        <tr>
+                            <th>브랜드</th>
+                            <th>매장코드</th>
+                            <th>매장명</th>
+                            <th>배송 주체</th>
+                            <th>운영 상태</th>
+                            <th>RT 보정</th>
+                            <th>수동 On/Off</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge-brand-v9">HAZZYS</span></td>
+                            <td>10024</td>
+                            <td>명동본점</td>
+                            <td>매장직송</td>
+                            <td style="color:#2E5BFF;">운영중</td>
+                            <td>+1일</td>
+                            <td><div class="toggle-on-v9" style="margin:0 auto;"></div></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge-brand-v9">DAKS</span></td>
+                            <td>10058</td>
+                            <td>강남백화점</td>
+                            <td>매장직송</td>
+                            <td style="color:#2E5BFF;">운영중</td>
+                            <td>-</td>
+                            <td><div class="toggle-on-v9" style="margin:0 auto;"></div></td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge-brand-v9">ATHE</span></td>
+                            <td>10099</td>
+                            <td>판교점</td>
+                            <td>물량이동</td>
+                            <td style="color:#888;">중지</td>
+                            <td>-</td>
+                            <td><div class="toggle-on-v9" style="margin:0 auto; background:#CCC;"></div></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="policy-card-hf">
-                <span class="status-tag-hf tag-yet">PENDING / 협의중</span>
-                <h4 style="font-size:18px; margin-bottom:12px;">포장 패키지 일원화</h4>
-                <p style="font-size:13px; color:#555; line-height:1.6;">가로수길 익스프레스점 등 플래그십 매장의 경우 전용 프리미엄 박스 사용 여부에 대한 물류 원가 검토 및 현업 협의 중</p>
-            </div>
-            <div class="policy-card-hf active-p">
-                <span class="status-tag-hf tag-ok">FIXED / 확정</span>
-                <h4 style="font-size:18px; margin-bottom:12px;">반품 거점 센터 지정</h4>
-                <p style="font-size:13px; color:#555; line-height:1.6;">매장 발송 상품이라도 고객 반품은 물류 센터(WMS)로 통합 회수하여 검수 후 가용 재고로 환원하는 단일 프로세스 확정</p>
-            </div>
-            <div class="policy-card-hf">
-                <span class="status-tag-hf tag-yet">PENDING / 협의중</span>
-                <h4 style="font-size:18px; margin-bottom:12px;">매장 인센티브 지급 안</h4>
-                <p style="font-size:13px; color:#555; line-height:1.6;">매장 직원의 업무 로드를 고려하여 건당 고정 수수료 또는 월별 목표 달성 시 인센티브를 지급하는 보상안 설계 중</p>
+
+            <div style="margin-top:30px; padding:20px; background:#FFEBEB; border:1px solid #FFCDCD; border-radius:8px;">
+                <p style="font-size:12px; font-weight:900; color:#C8192E; margin-bottom:5px;">[운영 주의 사항]</p>
+                <p style="font-size:11px; color:#555; font-weight:700;">• 수동 Off 처리 시, 해당 매장 재고는 즉시 가용 재고(Available)에서 제외되어 품절 처리됨</p>
+                <p style="font-size:11px; color:#555; font-weight:700;">• RT 보정은 물류 환경 변화에 따라 현업 담당자가 직접 실무 배송 기간을 조정할 수 있음</p>
             </div>
         </div>
 
-        <div class="ppt-footer-logo">LF</div>
+        <div class="ppt-footer">
+            <div class="ppt-logo-box">LF</div>
+            <div style="font-size:12px; font-weight:900; color:#444;">15</div>
+        </div>
     </div>
 </body>
 </html>

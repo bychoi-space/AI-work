@@ -3,43 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="system-ui.css">
+    <style>
+        .logic-stage-v9 { padding: 40px 60px; height: 100%; position: relative; background: #fff; overflow: hidden; }
+        
+        .axis-v9 { position: absolute; top: 40px; left: 160px; right: 60px; height: 30px; display: flex; border-bottom: 2px solid #555; }
+        .axis-tick { flex: 1; border-left: 1.5px solid #CCC; padding-top: 10px; font-size: 11px; font-weight: 900; color: #666; text-align: center; }
+        
+        .swimlane-v9 { position: absolute; left: 60px; right: 60px; height: 100px; display: flex; align-items: center; border-bottom: 1px dotted #DDD; }
+        .lane-label { width: 100px; font-size: 13px; font-weight: 900; color: #222; flex-shrink: 0; }
+        
+        .event-v9 { 
+            position: absolute; padding: 6px 12px; background: #fff; border: 1.5px solid #333; 
+            border-radius: 4px; font-size: 10px; font-weight: 900; z-index: 10;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+        }
+        .event-cancel { background: #FFEBEB; border-color: #C8192E; color: #C8192E; }
+        .event-sync { background: #E9EDF4; border-color: #2E5BFF; color: #2E5BFF; }
+    </style>
 </head>
 <body>
     <div class="slide-canvas">
-        <header class="ppt-header-strategy">20. 매장 결품 발생 시 주문 처리 로직 (Out of Stock)</header>
-        
-        <div style="padding: 60px 110px; position: relative; height: 100%;">
-            <svg class="svg-layer-v4">
-                <defs>
-                    <marker id="arrow-v4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-                        <polygon points="0 0, 8 3, 0 6" fill="#AAA" />
-                    </marker>
-                </defs>
-                <line x1="280" y1="120" x2="400" y2="120" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" />
-                <line x1="560" y1="120" x2="680" y2="120" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" />
-                <path d="M 480 155 L 480 250" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" fill="none" />
-                <path d="M 480 320 L 480 400" stroke="#AAA" stroke-width="2" marker-end="url(#arrow-v4)" fill="none" />
-            </svg>
+        <header class="ppt-header">20. 자동 결품 처리 로직 및 시간별 제어 흐름 (Out of Stock Logic)</header>
 
-            <div class="ppt-node-v4" style="top:80px; left:80px; width:200px; height:80px; background:#F8F9FA;">결품 발생 (매장)</div>
-            
-            <div class="ppt-node-v4" style="top:70px; left:400px; width:160px; height:100px; border-radius:10px; background:#FFEBEB; border:2px solid var(--lf-red); transform: rotate(0deg); display:flex; justify-content:center; align-items:center;">
-                <div style="font-weight:900;">가용 재고<br>재조회</div>
+        <div class="logic-stage-v9">
+            <!-- Time Axis -->
+            <div class="axis-v9">
+                <div class="axis-tick">D + 0 (Order)</div>
+                <div class="axis-tick">D + 1 (Fulfillment)</div>
+                <div class="axis-tick">D + 2 (Stock Out Check)</div>
+                <div class="axis-tick" style="border-right:1.5px solid #CCC;">D + 3 (Final Cancellation)</div>
             </div>
 
-            <div class="ppt-node-v4" style="top:80px; left:680px; width:200px; height:80px; background:#E2EFDA;">인근 매장<br>재배정</div>
+            <!-- Swimlanes -->
+            <div class="swimlane-v9" style="top:100px;">
+                <div class="lane-label">LFmall</div>
+                <div class="event-v9" style="left:160px;">주문생성</div>
+                <div class="event-v9 event-cancel" style="left:780px;">자동 주문 취소</div>
+            </div>
 
-            <div class="ppt-node-v4" style="top:250px; left:380px; width:200px; height:80px; background:#F1F3F5;">상태값: 결품<br>(OMS)</div>
+            <div class="swimlane-v9" style="top:200px;">
+                <div class="lane-label">OMS</div>
+                <div class="event-v9" style="left:180px;">배정/이동지시</div>
+                <div class="event-v9 event-sync" style="left:380px;">미입고 트래킹</div>
+                <div class="event-v9 event-cancel" style="left:780px;">결품코드 연동</div>
+            </div>
 
-            <div class="ppt-node-v4" style="top:400px; left:380px; width:200px; height:80px; background:var(--lf-red); color:#fff; border:none;">주문 취소 및<br>품절 통보</div>
+            <div class="swimlane-v9" style="top:300px;">
+                <div class="lane-label">SAP</div>
+                <div class="event-v9" style="left:160px;">재고 수불 발생</div>
+                <div class="event-v9 event-sync" style="left:580px;">실재고 차감 업데이트</div>
+            </div>
 
-            <div style="position:absolute; top:125px; left:580px; font-size:11px; font-weight:bold; color:#059669;">[Y] 타매장 재유</div>
-            <div style="position:absolute; top:200px; left:490px; font-size:11px; font-weight:bold; color:var(--lf-red);">[N] 전점 품절</div>
+            <div class="swimlane-v9" style="top:400px; border-bottom:none;">
+                <div class="lane-label">Staff POS</div>
+                <div class="event-v9" style="left:250px;">매장 입고 확정</div>
+                <div class="event-v9" style="left:450px;">송장 출력</div>
+                <div class="event-v9" style="left:650px;">배송출발</div>
+            </div>
+
+            <!-- Connecting Lines -->
+            <svg style="position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none;">
+                <line x1="840" y1="210" x2="840" y2="120" stroke="#C8192E" stroke-width="1.5" stroke-dasharray="4,2" />
+            </svg>
         </div>
 
         <div class="ppt-footer">
             <div class="ppt-logo-box">LF</div>
-            <div>PAGE 20</div>
+            <div style="font-size:12px; font-weight:900; color:#444;">20</div>
         </div>
     </div>
 </body>
