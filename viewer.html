@@ -689,39 +689,7 @@
             setTimeout(() => centerView(), 150);
         }
 
-        DOM.btnDelete.onclick = async () => {
-            if (state.isReadOnly) return showAuthModal();
-            const fileName = state.activeFile?.name;
-            if (!fileName) return;
 
-            if (confirm(`'${fileName}' 파일을 정말 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
-                const project = state.currentProject;
-                
-                // For Editor mode, we need SHA
-                const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${project}/${fileName}`;
-                const res = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
-                if (!res.ok) {
-                    alert("파일 정보를 가져오지 못했습니다. (이미 삭제되었거나 권한 부족)");
-                    return;
-                }
-                const data = await res.json();
-                
-                const success = await deleteFileFromGitHub(`${project}/${fileName}`, data.sha, false, (msg, color) => {
-                    DOM.placeholderTxt.innerText = msg;
-                    DOM.placeholderTxt.style.color = color;
-                });
-
-                if (success) {
-                    // Update project list
-                    const meta = await fetchProjectMetadata(project);
-                    if (meta.screens) delete meta.screens[fileName];
-                    await saveProjectMetadata(project, meta);
-                    
-                    alert("성공적으로 삭제되었습니다.");
-                    window.location.href = 'index.html';
-                }
-            }
-        };
 
         function updateProperties() {
             if (!state.activeFile || !state.projectMetadata) return;
