@@ -966,14 +966,7 @@
         DOM.btnToggleLeft.onclick = () => toggleSidebar('left');
         DOM.btnToggleRight.onclick = () => toggleSidebar('right');
 
-        // Screen Addition Listeners
-        if (DOM.btnAddScreen) {
-            DOM.btnAddScreen.onclick = (e) => {
-                e.stopPropagation();
-                if (state.isReadOnly) return showAuthModal();
-                DOM.addScreenUpload.click();
-            };
-        }
+        // Screen Addition (Uploader) - Only keep the onchange handler for local uploads
         if (DOM.addScreenUpload) {
             DOM.addScreenUpload.onchange = (e) => {
                 handleAddScreen(e.target.files);
