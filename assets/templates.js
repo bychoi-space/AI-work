@@ -1,0 +1,270 @@
+/**
+ * LFmall Design Studio - Embedded Templates
+ * This file contains the HTML structure of the templates to ensure 
+ * they can be loaded reliably without fetch() restrictions.
+ */
+
+window.LF_TEMPLATES = {
+    'lfmall_mobile_base.html': `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LFmall Mobile Wireframe - {{PROJECT_NAME}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        :root {
+            --lfmall-black: #000000;
+            --lfmall-gray: #f2f2f2;
+            --lfmall-text: #333333;
+            --lfmall-border: #eeeeee;
+            --accent: #00E5FF;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; padding: 0; 
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: #fff;
+            color: var(--lfmall-text);
+            line-height: 1.4;
+        }
+
+        /* LFmall Header */
+        header {
+            position: sticky; top: 0;
+            background: #fff; border-bottom: 1px solid var(--lfmall-border);
+            height: 54px; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; z-index: 100;
+        }
+        .header-logo { font-weight: 900; font-size: 20px; letter-spacing: -1px; }
+        .header-icons { display: flex; gap: 16px; }
+
+        /* Navigation Tabs */
+        nav {
+            display: flex; gap: 20px; padding: 0 16px; height: 44px;
+            align-items: center; border-bottom: 1px solid var(--lfmall-border);
+            overflow-x: auto; white-space: nowrap; font-size: 14px; font-weight: 600;
+        }
+        nav div.active { color: var(--lfmall-black); border-bottom: 2px solid var(--lfmall-black); height: 44px; line-height: 44px; }
+        nav div { color: #888; }
+
+        /* Main Content */
+        main { padding-bottom: 80px; }
+        
+        .section-title { padding: 20px 16px 10px; font-size: 18px; font-weight: 600; }
+        
+        /* Wireframe Blocks */
+        .placeholder {
+            background: var(--lfmall-gray);
+            border: 1px dashed #ccc;
+            display: flex; align-items: center; justify-content: center;
+            color: #999; font-size: 12px; margin: 0 16px 16px;
+        }
+        
+        .hero { height: 400px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px; }
+        .product-card { height: 250px; background: #fafafa; border: 1px solid var(--lfmall-border); }
+
+        /* Floating Actions or Footer */
+        footer {
+            padding: 40px 16px; background: #fafafa; border-top: 1px solid var(--lfmall-border);
+            font-size: 11px; color: #999;
+        }
+        
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            height: 56px; background: #fff; border-top: 1px solid var(--lfmall-border);
+            display: flex; align-items: center; justify-content: space-around;
+            z-index: 100;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #666; }
+        .nav-item span { font-size: 24px; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="material-icons-outlined">menu</div>
+        <div class="header-logo">LFmall: {{SCREEN_NAME}}</div>
+        <div class="header-icons">
+            <span class="material-icons-outlined">search</span>
+            <span class="material-icons-outlined">shopping_bag</span>
+        </div>
+    </header>
+
+    <nav>
+        <div class="active">홈</div>
+        <div>베스트</div>
+        <div>스토어</div>
+        <div>특가</div>
+        <div>브랜드</div>
+    </nav>
+
+    <main>
+        <div class="placeholder hero">Hero Banner Placeholder</div>
+        
+        <div class="section-title">New Arrivals</div>
+        <div class="grid">
+            <div class="placeholder product-card">Product 1</div>
+            <div class="placeholder product-card">Product 2</div>
+            <div class="placeholder product-card">Product 3</div>
+            <div class="placeholder product-card">Product 4</div>
+        </div>
+
+        <div class="section-title">Best Sellers</div>
+        <div class="placeholder" style="height: 200px;">Content Block</div>
+    </main>
+
+    <footer>
+        (주) LF | 서울특별시 강남구 언주로 870<br>
+        고객센터 1544-5114
+    </footer>
+
+    <div class="bottom-nav">
+        <div class="nav-item"><span class="material-icons-outlined">home</span>홈</div>
+        <div class="nav-item"><span class="material-icons-outlined">category</span>카테고리</div>
+        <div class="nav-item"><span class="material-icons-outlined">favorite_border</span>찜</div>
+        <div class="nav-item"><span class="material-icons-outlined">person_outline</span>마이</div>
+    </div>
+</body>
+</html>`,
+
+    'lfmall_pc_base.html': `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LFmall PC Wireframe - {{PROJECT_NAME}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        :root {
+            --lfmall-black: #000000;
+            --lfmall-gray: #f2f2f2;
+            --lfmall-border: #eeeeee;
+            --content-width: 1200px;
+        }
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; padding: 0; 
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+            color: #333;
+        }
+
+        /* Top Header */
+        .top-utility {
+            height: 32px; border-bottom: 1px solid var(--lfmall-border);
+            font-size: 11px; color: #888;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .container { width: var(--content-width); margin: 0 auto; display: flex; align-items: center; }
+
+        /* Main Header */
+        header {
+            height: 100px; border-bottom: 1px solid var(--lfmall-border);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .header-main { display: flex; align-items: center; width: var(--content-width); justify-content: space-between; }
+        .logo { font-size: 32px; font-weight: 900; letter-spacing: -2px; cursor: pointer; }
+        
+        .search-container {
+            width: 400px; height: 44px; border: 2px solid var(--lfmall-black);
+            display: flex; align-items: center; padding: 0 16px; border-radius: 22px;
+        }
+        .search-input { flex: 1; border: none; outline: none; font-size: 14px; }
+
+        .header-icons { display: flex; gap: 24px; }
+        .icon-item { text-align: center; font-size: 11px; cursor: pointer; }
+        .icon-item span { display: block; font-size: 28px; margin-bottom: 2px; }
+
+        /* Navigation */
+        nav {
+            height: 50px; border-bottom: 1px solid var(--lfmall-border);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-inner { width: var(--content-width); display: flex; gap: 40px; font-size: 16px; font-weight: 700; }
+        .nav-inner div { cursor: pointer; }
+        .nav-inner div:hover { color: #6366f1; }
+
+        /* Main Content */
+        main { padding: 40px 0; display: flex; flex-direction: column; align-items: center; }
+        
+        .placeholder {
+            background: var(--lfmall-gray);
+            border: 1px dashed #ccc;
+            display: flex; align-items: center; justify-content: center;
+            color: #999; font-size: 14px;
+        }
+
+        .hero-banner { width: var(--content-width); height: 500px; margin-bottom: 60px; }
+        
+        .section-title { width: var(--content-width); font-size: 24px; font-weight: 700; margin-bottom: 24px; }
+        .grid { width: var(--content-width); display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .product-card { height: 400px; }
+
+        /* Footer */
+        footer {
+            background: #fafafa; border-top: 1px solid var(--lfmall-border);
+            padding: 60px 0; display: flex; justify-content: center;
+        }
+        .footer-inner { width: var(--content-width); font-size: 12px; color: #666; line-height: 2; }
+    </style>
+</head>
+<body>
+    <div class="top-utility">
+        <div class="container" style="justify-content: flex-end; gap: 20px;">
+            <span>로그인</span>
+            <span>회원가입</span>
+            <span>마이페이지</span>
+            <span>주문배송</span>
+        </div>
+    </div>
+
+    <header>
+        <div class="header-main">
+            <div class="logo">LFmall: {{SCREEN_NAME}}</div>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="검색어를 입력하세요">
+                <span class="material-icons-outlined">search</span>
+            </div>
+            <div class="header-icons">
+                <div class="icon-item"><span class="material-icons-outlined">favorite_border</span>찜</div>
+                <div class="icon-item"><span class="material-icons-outlined">shopping_bag</span>장바구니</div>
+                <div class="icon-item"><span class="material-icons-outlined">person_outline</span>마이</div>
+            </div>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-inner">
+            <div style="color:red">SALE</div>
+            <div>NEW</div>
+            <div>BEST</div>
+            <div>BRAND</div>
+            <div>OUTLET</div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="placeholder hero-banner">Main Visual Slider Placeholder (1200x500)</div>
+        
+        <div class="section-title">Exclusive Products</div>
+        <div class="grid">
+            <div class="placeholder product-card">Item 1</div>
+            <div class="placeholder product-card">Item 2</div>
+            <div class="placeholder product-card">Item 3</div>
+            <div class="placeholder product-card">Item 4</div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-inner">
+            <b>(주) LF</b> | 주소: 서울특별시 강남구 언주로 870 (신사동) | 대표이사: 오규식, 김상균<br>
+            사업자등록번호: 211-87-96931 | 통신판매업신고: 제2010-서울강남-00066호 | 고객센터: 1544-5114<br>
+            COPYRIGHT © 2024 LF CORP. ALL RIGHTS RESERVED.
+        </div>
+    </footer>
+</body>
+</html>`
+};
