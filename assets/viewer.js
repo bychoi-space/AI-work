@@ -550,11 +550,14 @@ function renderDescriptionList() {
 
         // GSAP Draggable for Pins - Initialize AFTER appending to DOM
         if (typeof Draggable !== 'undefined') {
+            let startX, startY;
             Draggable.create(pin, {
                 type: "x,y",
                 bounds: DOM.pinsLayer,
                 onPress: function() {
                     if (state.isReadOnly) return this.disable();
+                    startX = item.x;
+                    startY = item.y;
                     gsap.to(pin, { scale: 1.3, boxShadow: "0 10px 20px rgba(0,0,0,0.4)", duration: 0.2, zIndex: 100 });
                     highlight(true);
                 },
@@ -564,13 +567,12 @@ function renderDescriptionList() {
                 },
                 onDrag: function() {
                     const r = DOM.pinsLayer.getBoundingClientRect();
-                    const startX = (item.x / 100) * r.width;
-                    const startY = (item.y / 100) * r.height;
-                    const currentX = startX + this.x;
-                    const currentY = startY + this.y;
+                    // Use start position + CURRENT accumulated delta (this.x)
+                    const currentXPx = (startX / 100) * r.width + this.x;
+                    const currentYPx = (startY / 100) * r.height + this.y;
                     
-                    item.x = Math.max(0, Math.min((currentX / r.width) * 100, 100));
-                    item.y = Math.max(0, Math.min((currentY / r.height) * 100, 100));
+                    item.x = Math.max(0, Math.min((currentXPx / r.width) * 100, 100));
+                    item.y = Math.max(0, Math.min((currentYPx / r.height) * 100, 100));
                 }
             });
         }
