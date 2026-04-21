@@ -3,7 +3,7 @@
     "00_Cover_2855.html": {
       "title": "00_Cover_2855",
       "type": "cover",
-      "updatedAt": "2026-04-21T07:01:28.329Z",
+      "updatedAt": "2026-04-21T07:06:16.337Z",
       "template": "template_cover.html",
       "description": [
         {
@@ -80,5 +80,10 @@
       "template": "template_front_ui.html"
     }
   },
-  "title": "원스피어 관리자 권한"
+  "title": "원스피어 관리자 권한",
+  "assignee": "최범열",
+  "period": "2026.04.01(수) ~ 2026.04.30(목)",
+  "jira": "123",
+  "figmaUrl": "456",
+  "pubUrl": "789ㅁ"
 }
