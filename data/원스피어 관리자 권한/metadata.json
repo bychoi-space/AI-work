@@ -1,4 +1,9 @@
 {
-  "screens": {},
+  "screens": {
+    "00_Cover_3809.html": {
+      "updatedAt": "2026-04-21T02:37:47.760Z",
+      "template": "template_cover.html"
+    }
+  },
   "title": "원스피어 관리자 권한"
 }
