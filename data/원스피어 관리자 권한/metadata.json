@@ -1,16 +1,5 @@
 {
   "screens": {
-    "00_Cover_3809.html": {
-      "updatedAt": "2026-04-21T04:43:59.503Z",
-      "template": "template_cover.html",
-      "description": [
-        {
-          "text": "123",
-          "x": 100,
-          "y": 0
-        }
-      ]
-    },
     "02_Plan_4593.html": {
       "updatedAt": "2026-04-21T04:22:33.741Z",
       "template": "template_plan.html",
@@ -36,7 +25,8 @@
       "title": "00_Cover_2855",
       "type": "cover",
       "updatedAt": "2026-04-21T04:51:36.320Z",
-      "template": "template_cover.html"
+      "template": "template_cover.html",
+      "description": []
     }
   },
   "title": "원스피어 관리자 권한"
