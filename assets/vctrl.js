@@ -80,7 +80,7 @@ async function toggleEditMode() {
     DOM.editorControls.style.display = state.editMode ? 'flex' : 'none';
 
     if (state.editMode) {
-        setTool('select'); // Force select tool for editing
+        setTool('select');
         injectEditorUI();
     } else {
         removeEditorUI();
@@ -93,93 +93,200 @@ function injectEditorUI() {
     const doc = DOM.iframe.contentDocument;
     if (!doc) return;
 
-    // 1. Inject Styles
     if (!doc.getElementById('editor-studio-styles')) {
         const style = doc.createElement('style');
         style.id = 'editor-studio-styles';
         style.innerHTML = `
-            .editor-editable:hover { outline: 2px solid #22d3ee !important; cursor: pointer !important; }
-            .editor-editable.active { outline: 2px solid #6366f1 !important; box-shadow: 0 0 10px rgba(99,102,241,0.3) !important; }
-            [contenteditable="true"]:focus { outline: none !important; background: rgba(99,102,241,0.05) !important; }
+            .studio-block-wrapper { position: relative !important; margin: 10px 0 !important; transition: all 0.2s; }
+            .studio-block-wrapper:hover { outline: 2px solid #22d3ee !important; }
+            .studio-drag-handle { 
+                position: absolute; left: -32px; top: 0; width: 24px; height: 24px; 
+                background: #6366f1; color: #fff; border-radius: 4px; display: flex; 
+                align-items: center; justify-content: center; cursor: grab; opacity: 0; transition: opacity 0.2s; z-index: 100;
+            }
+            .studio-block-wrapper:hover .studio-drag-handle { opacity: 1; }
+            .editor-editable:focus { outline: none !important; background: rgba(99,102,241,0.05) !important; }
+            .studio-drop-indicator { height: 4px; background: #22d3ee; margin: 4px 0; display: none; border-radius: 2px; }
+            .studio-drop-indicator.active { display: block; }
         `;
         doc.head.appendChild(style);
     }
 
-    // 2. Scan & Make Editable
-    // Target common text elements first
-    doc.querySelectorAll('div, p, span, h1, h2, h3, h4, h5, h6, td, th').forEach(el => {
+    // Wrap elements into Studio Blocks (Phase 2)
+    const container = doc.querySelector('.page') || doc.querySelector('.modern-main') || doc.body;
+    const blocks = Array.from(container.children).filter(el => !el.classList.contains('studio-block-wrapper') && el.tagName !== 'STYLE' && el.tagName !== 'SCRIPT');
+    
+    blocks.forEach(el => {
+        const wrapper = doc.createElement('div');
+        wrapper.className = 'studio-block-wrapper';
+        wrapper.draggable = true;
+        
+        const handle = doc.createElement('div');
+        handle.className = 'studio-drag-handle';
+        handle.innerHTML = '<span style="font-size:16px; font-family: Material Icons Outlined">drag_indicator</span>';
+        
+        el.parentNode.insertBefore(wrapper, el);
+        wrapper.appendChild(handle);
+        wrapper.appendChild(el);
+        
+        // DND Listeners
+        wrapper.ondragstart = (e) => {
+            wrapper.classList.add('studio-block-dragging');
+            e.dataTransfer.setData('text/plain', 'block');
+            state.activeElement = wrapper;
+        };
+        wrapper.ondragend = () => {
+            wrapper.classList.remove('studio-block-dragging');
+            doc.querySelectorAll('.studio-drop-indicator').forEach(i => i.classList.remove('active'));
+        };
+        wrapper.ondragover = (e) => {
+            e.preventDefault();
+            const indicator = wrapper.querySelector('.studio-drop-indicator') || doc.createElement('div');
+            indicator.className = 'studio-drop-indicator active';
+            wrapper.prepend(indicator);
+        };
+        wrapper.ondragleave = () => {
+            wrapper.querySelector('.studio-drop-indicator')?.classList.remove('active');
+        };
+        wrapper.ondrop = (e) => {
+            e.preventDefault();
+            if (state.activeElement && state.activeElement !== wrapper) {
+                wrapper.parentNode.insertBefore(state.activeElement, wrapper);
+                markAsDirty();
+            }
+        };
+    });
+
+    // Make content editable
+    doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, td, th, div:not(.studio-block-wrapper):not(.studio-drag-handle)').forEach(el => {
         if (el.children.length === 0 || (el.children.length === 1 && el.children[0].tagName === 'BR')) {
-            el.classList.add('editor-editable');
             el.contentEditable = "true";
-            
-            el.addEventListener('focus', () => {
-                state.activeElement = el;
-                showFloatingToolbar(el);
-            });
-            el.addEventListener('input', () => markAsDirty());
+            el.classList.add('editor-editable');
+            el.onclick = (e) => { e.stopPropagation(); state.activeElement = el; showFloatingToolbar(el); };
+            el.oninput = () => markAsDirty();
         }
     });
 
-    // 3. Block selection for non-text
-    doc.querySelectorAll('img, table, .gantt-container').forEach(el => {
-        el.classList.add('editor-editable');
-        el.style.pointerEvents = 'auto';
-        el.addEventListener('click', (e) => {
+    // Image Upload Hook
+    doc.querySelectorAll('img').forEach(img => {
+        img.style.cursor = 'pointer';
+        img.title = '클릭하여 이미지 교체';
+        img.onclick = (e) => {
             e.stopPropagation();
-            state.activeElement = el;
-            showFloatingToolbar(el);
-        });
+            state.editingImage = img;
+            DOM.editorImageUpload.click();
+        };
     });
 }
 
 function removeEditorUI() {
     const doc = DOM.iframe.contentDocument;
     if (!doc) return;
-    doc.querySelectorAll('.editor-editable').forEach(el => {
-        el.classList.remove('editor-editable', 'active');
-        el.contentEditable = "false";
+    
+    // Unwrap blocks
+    doc.querySelectorAll('.studio-block-wrapper').forEach(wrapper => {
+        const handle = wrapper.querySelector('.studio-drag-handle');
+        if (handle) handle.remove();
+        const indicator = wrapper.querySelector('.studio-drop-indicator');
+        if (indicator) indicator.remove();
+        
+        while (wrapper.firstChild) {
+            wrapper.parentNode.insertBefore(wrapper.firstChild, wrapper);
+        }
+        wrapper.remove();
     });
+
+    doc.querySelectorAll('[contenteditable]').forEach(el => el.contentEditable = "false");
     const s = doc.getElementById('editor-studio-styles');
     if (s) s.remove();
     hideFloatingToolbar();
 }
 
+/**
+ * Phase 2 - Block & Image Operations
+ */
+async function addBlock(type) {
+    if (!state.editMode) return;
+    const doc = DOM.iframe.contentDocument;
+    const container = doc.querySelector('.page') || doc.querySelector('.modern-main') || doc.body;
+    
+    const div = doc.createElement('div');
+    div.innerHTML = blockSnippets[type] || '';
+    const newBlock = div.firstChild;
+    
+    container.appendChild(newBlock);
+    removeEditorUI(); // Refresh UI to wrap new block
+    injectEditorUI();
+    markAsDirty();
+}
+
 function showFloatingToolbar(el) {
     const rect = el.getBoundingClientRect();
     const iframeRect = DOM.iframe.getBoundingClientRect();
-    
-    // Position toolbar above the element
     const top = iframeRect.top + rect.top - 50;
     const left = iframeRect.left + rect.left + (rect.width/2);
-    
     DOM.floatingToolbar.style.top = `${top}px`;
     DOM.floatingToolbar.style.left = `${left}px`;
-    DOM.floatingToolbar.style.transform = `translate(-50%, ${state.editMode ? 0 : 10}px)`;
     DOM.floatingToolbar.classList.add('active');
     DOM.floatingToolbar.style.display = 'flex';
 }
 
 function hideFloatingToolbar() {
     DOM.floatingToolbar.classList.remove('active');
-    setTimeout(() => {
-        if (!DOM.floatingToolbar.classList.contains('active')) {
-            DOM.floatingToolbar.style.display = 'none';
+    setTimeout(() => { if (!DOM.floatingToolbar.classList.contains('active')) DOM.floatingToolbar.style.display = 'none'; }, 200);
+}
+
+async function handleImageUpload(file) {
+    if (!state.editingImage || !file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        const base64 = e.target.result.split(',')[1];
+        const filename = `img_${Date.now()}_${file.name}`;
+        
+        // Show loading in-place
+        const originalSrc = state.editingImage.src;
+        state.editingImage.style.opacity = '0.5';
+        
+        const success = await uploadToProject(state.currentProject, `_assets/${filename}`, base64, (msg) => {
+            console.log(`[Upload] ${msg}`);
+        }, true); // isBinary = true
+        
+        if (success) {
+            const rawUrl = `https://raw.githubusercontent.com/${ghConfig.owner}/${ghConfig.repo}/main/${ghConfig.dataDir}${state.currentProject}/_assets/${filename}`;
+            state.editingImage.src = rawUrl;
+            state.editingImage.style.opacity = '1';
+            markAsDirty();
+        } else {
+            state.editingImage.src = originalSrc;
+            state.editingImage.style.opacity = '1';
+            Notification.alert('이미지 업로드에 실패했습니다.', '오류');
         }
-    }, 200);
+    };
+    reader.readAsDataURL(file);
 }
 
 function serializeIframeContent() {
     const doc = DOM.iframe.contentDocument;
     if (!doc) return null;
     
-    // Clone document to clean it
     const clone = doc.documentElement.cloneNode(true);
     
-    // Cleanup editor artifacts
-    clone.querySelectorAll('.editor-editable').forEach(el => {
-        el.classList.remove('editor-editable', 'active');
-        el.removeAttribute('contenteditable');
+    // Hard Cleanup
+    clone.querySelectorAll('.studio-block-wrapper').forEach(wrapper => {
+        const handle = wrapper.querySelector('.studio-drag-handle');
+        if (handle) handle.remove();
+        const indicator = wrapper.querySelector('.studio-drop-indicator');
+        if (indicator) indicator.remove();
+        while (wrapper.firstChild) { wrapper.parentNode.insertBefore(wrapper.firstChild, wrapper); }
+        wrapper.remove();
     });
+    
+    clone.querySelectorAll('[contenteditable]').forEach(el => {
+        el.removeAttribute('contenteditable');
+        el.classList.remove('editor-editable', 'active');
+    });
+    
     const s = clone.querySelector('#editor-studio-styles');
     if (s) s.remove();
     
@@ -249,8 +356,42 @@ const DOM = {
     tokenInput: document.getElementById('modal-gh-token'),
     authStatus: document.getElementById('modal-auth-status'),
     btnAuthSubmit: document.getElementById('modal-auth-submit'),
-    btnAuthClose: document.getElementById('modal-auth-close'),
-    btnShowAuth: document.getElementById('btn-show-auth')
+    btnAuthClose: document.getElementById('btn-modal-auth-cancel'),
+    btnShowAuth: document.getElementById('btn-show-auth'),
+
+    // Editor Phase 2
+    editorImageUpload: document.getElementById('editor-image-upload'),
+    blockMenu: document.getElementById('block-menu')
+};
+
+const blockSnippets = {
+    text: `<div class="studio-section" style="padding:20px 0;">
+        <p style="font-size:14px; line-height:1.6; color:#333;">여기에 새로운 텍스트 내용을 입력하세요. 단락을 자유롭게 편집할 수 있습니다.</p>
+    </div>`,
+    image: `<div class="studio-section" style="padding:20px 0; text-align:center;">
+        <img src="https://via.placeholder.com/800x400/f3f4f6/6366f1?text=Image+Placeholder" style="max-width:100%; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+        <p style="font-size:12px; color:#888; margin-top:10px;">이미지를 클릭하여 로컬 파일로 교체할 수 있습니다.</p>
+    </div>`,
+    table: `<div class="studio-section" style="padding:20px 0;">
+        <table style="width:100%; border-collapse:collapse; border:1px solid #ddd; font-size:13px;">
+            <thead><tr style="background:#f8f9fa;">
+                <th style="border:1px solid #ddd; padding:10px;">항목</th>
+                <th style="border:1px solid #ddd; padding:10px;">상세 내용</th>
+                <th style="border:1px solid #ddd; padding:10px;">비고</th>
+            </tr></thead>
+            <tbody>
+                <tr><td style="border:1px solid #ddd; padding:10px;">데이터 1</td><td style="border:1px solid #ddd; padding:10px;">설명 1</td><td style="border:1px solid #ddd; padding:10px;">-</td></tr>
+                <tr><td style="border:1px solid #ddd; padding:10px;">데이터 2</td><td style="border:1px solid #ddd; padding:10px;">설명 2</td><td style="border:1px solid #ddd; padding:10px;">-</td></tr>
+            </tbody>
+        </table>
+    </div>`,
+    grid: `<div class="studio-section" style="padding:20px 0; display:flex; gap:20px;">
+        <div style="flex:1; padding:20px; background:#f8f9fa; border-radius:8px; border:1px dashed #ccc; text-align:center;">왼쪽 그리드</div>
+        <div style="flex:1; padding:20px; background:#f8f9fa; border-radius:8px; border:1px dashed #ccc; text-align:center;">오른쪽 그리드</div>
+    </div>`,
+    diagram: `<div class="studio-section studio-diagram-canvas" style="padding:20px 0; height:400px; background:#fafafa; border:1px solid #eee; position:relative; overflow:hidden;">
+        <div style="position:absolute; top:20px; left:20px; padding:10px 20px; background:#fff; border:2px solid #6366f1; border-radius:4px; font-weight:bold; box-shadow:0 4px 6px rgba(0,0,0,0.05);">Start Component</div>
+    </div>`
 };
 
 const context = {
@@ -1081,6 +1222,11 @@ if (DOM.tokenInput) DOM.tokenInput.onkeyup = (e) => { if(e.key==='Enter') handle
 if (DOM.btnCancelEdit) DOM.btnCancelEdit.onclick = () => DOM.editScreenModal?.classList.remove('active');
 
 if (DOM.btnEditMode) DOM.btnEditMode.onclick = toggleEditMode;
+if (DOM.editorImageUpload) DOM.editorImageUpload.onchange = (e) => handleImageUpload(e.target.files[0]);
+if (DOM.blockMenu) DOM.blockMenu.querySelectorAll('a').forEach(link => {
+    link.onclick = (e) => { e.preventDefault(); addBlock(link.dataset.type); };
+});
+
 if (DOM.ftBtnBold) DOM.ftBtnBold.onclick = () => { document.execCommand('bold', false); markAsDirty(); };
 if (DOM.ftBtnItalic) DOM.ftBtnItalic.onclick = () => { document.execCommand('italic', false); markAsDirty(); };
 if (DOM.ftBtnColor) DOM.ftBtnColor.onclick = () => { document.execCommand('foreColor', false, '#e60012'); markAsDirty(); };

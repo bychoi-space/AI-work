@@ -174,14 +174,25 @@
             <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
             <button class="tool-btn" onclick="centerView()" title="가운데 맞춤"><span class="material-icons-outlined">center_focus_strong</span></button>
             
-            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
             <button class="tool-btn" id="btn-edit-mode" title="에디터 모드 전환 (E)">
                 <span class="material-icons-outlined">edit_note</span>
                 <span class="tool-label">에디터</span>
             </button>
-            <div id="editor-controls" class="editor-controls-group" style="display:none; gap:8px;">
-                <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
-                <!-- Future blocks menu -->
+            <div id="editor-controls" class="editor-controls-group" style="display:none; gap:6px; align-items: center;">
+                <div style="width: 1px; background: var(--border-color); height: 20px; margin: 0 4px;"></div>
+                <div class="dropdown">
+                    <button class="tool-btn" id="btn-add-block" style="width:auto; padding:0 12px; gap:6px;" title="새 블록 추가">
+                        <span class="material-icons-outlined" style="font-size:18px;">add_box</span>
+                        <span style="font-size:11px; font-weight:700;">블록 추가</span>
+                    </button>
+                    <div class="dropdown-content" id="block-menu">
+                        <a href="#" data-type="text"><span class="material-icons-outlined">subject</span> 텍스트 블록</a>
+                        <a href="#" data-type="image"><span class="material-icons-outlined">image</span> 이미지 블록</a>
+                        <a href="#" data-type="table"><span class="material-icons-outlined">table_chart</span> 테이블 블록</a>
+                        <a href="#" data-type="grid"><span class="material-icons-outlined">grid_view</span> 그리드 레이아웃</a>
+                        <a href="#" data-type="diagram"><span class="material-icons-outlined">polyline</span> 다이어그램 캔버스</a>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -260,7 +271,10 @@
         </aside>
     </div>
 
-    <!-- Auth Modal -->
+    <!-- Hidden Inputs for Editor -->
+    <input type="file" id="editor-image-upload" style="display:none" accept="image/*">
+
+    <!-- Modals -->
     <div id="auth-modal" class="modal-overlay">
         <div class="modal-card" style="max-width: 400px;">
             <div class="modal-header">
