@@ -3,6 +3,11 @@
  * Handles canvas interaction, screen switching, metadata management, and pins.
  */
 
+/**
+ * vctrl.js - Core Viewer Engine (Vanilla V3)
+ * [VANILLA ENGINE V3 LOADED]
+ */
+console.log("%c [VANILLA ENGINE V3 LOADED] ", "background: #00e5ff; color: #000; font-weight: bold; padding: 4px; border-radius: 4px;");
 const state = {
     currentProject: null,
     activeFile: null,
