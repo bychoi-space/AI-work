@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan - 원스피어 관리자 권한</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; background: #333; }
+        .page { width: 1440px; height: 900px; background: #fff; margin: 0 auto; position: relative; padding: 0; box-sizing: border-box; }
+        .header-bar { height: 40px; background: #3c3c3c; color: #fff; display: flex; align-items: center; padding: 0 20px; font-size: 14px; }
+        .screen-title-overlay { margin: 20px 40px; background: #4b4b4b; color: #fff; display: inline-block; padding: 10px 40px; border-radius: 6px; font-size: 15px; font-weight: bold; }
+        
+        .gantt-container { margin: 0 40px; border: 1px solid #ccc; font-size: 12px; border-collapse: collapse; width: calc(100% - 80px); }
+        .gantt-container th, .gantt-container td { border: 1px solid #ccc; height: 32px; padding: 0; }
+        .bg-gray { background: #888; color: #fff; font-weight: bold; }
+        .bg-light-gray { background: #f8f9fa; }
+        
+        .task-list { width: 160px; text-align: center; font-weight: bold; }
+        .month-header { background: #666; color: #fff; text-align: center; }
+        .week-header { width: 30px; text-align: center; background: #f0f0f0; font-size: 10px; }
+        
+        .bar-area { position: relative; }
+        .bar { position: absolute; height: 14px; border-radius: 7px; top: 9px; opacity: 0.85; }
+        .bar.gray { background: #444; }
+        .bar.green { background: #5ea432; }
+        .bar.light-green { background: #b7d8a6; }
+        .bar.blue { background: #2f5597; }
+        .bar.orange { background: #ed7d31; }
+        .bar.yellow { background: #ffc000; }
+        
+        .label-text { position: absolute; font-size: 11px; white-space: nowrap; font-weight: bold; }
+        .footer { position: absolute; bottom: 0; left:0; right:0; height: 40px; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-symbol { width: 20px; height: 20px; background: #e60012; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); color: #fff; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-weight: 900; font-size: 16px; color: #1a1a1a; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header-bar">Plan</div>
+        <div class="screen-title-overlay">사업 진행 일정</div>
+        
+        <table class="gantt-container">
+            <thead>
+                <tr class="bg-gray">
+                    <th rowspan="2" class="task-list">Task</th>
+                    <th colspan="5" class="month-header">12월</th>
+                    <th colspan="4" class="month-header">1월</th>
+                    <th colspan="4" class="month-header">2월</th>
+                    <th colspan="4" class="month-header">3월</th>
+                    <th colspan="5" class="month-header">4월</th>
+                </tr>
+                <tr>
+                    <th class="week-header">1W</th><th class="week-header">2W</th><th class="week-header">3W</th><th class="week-header">4W</th><th class="week-header">5W</th>
+                    <th class="week-header">1W</th><th class="week-header">2W</th><th class="week-header">3W</th><th class="week-header">4W</th>
+                    <th class="week-header">1W</th><th class="week-header">2W</th><th class="week-header">3W</th><th class="week-header">4W</th>
+                    <th class="week-header">1W</th><th class="week-header">2W</th><th class="week-header">3W</th><th class="week-header">4W</th>
+                    <th class="week-header">1W</th><th class="week-header">2W</th><th class="week-header">3W</th><th class="week-header">4W</th><th class="week-header">5W</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="bg-light-gray" style="text-align:center;">분석/설계</td><td colspan="22" class="bar-area"><div class="bar gray" style="left:5px; width:150px;"></div></td></tr>
+                <tr><td class="bg-light-gray" style="text-align:center; background:#e2efda;">기획서</td><td colspan="22" class="bar-area"><div class="bar green" style="left:35px; width:120px;"></div><div class="bar light-green" style="left:155px; width:120px;"></div></td></tr>
+                <tr><td class="bg-light-gray" style="text-align:center; background:#e2efda;">디자인</td><td colspan="22" class="bar-area"><div class="bar light-green" style="left:155px; width:100px;"></div><div class="bar green" style="left:255px; width:120px;"></div><div class="bar light-green" style="left:375px; width:30px;"></div></td></tr>
+                <tr><td class="bg-light-gray" style="text-align:center; background:#e2efda;">퍼블리싱</td><td colspan="22" class="bar-area"><div class="bar light-green" style="left:215px; width:100px;"></div><div class="bar green" style="left:315px; width:120px;"></div><div class="bar light-green" style="left:435px; width:40px;"></div></td></tr>
+                <tr><td class="bg-light-gray" style="text-align:center; background:#d9e1f2;">개발</td><td colspan="22" class="bar-area"><div class="bar blue" style="left:245px; width:360px;"></div><div class="label-text" style="left:550px; top: -15px; color:#2f5597;">개발 완료 : 4월 24일</div></td></tr>
+                <tr><td class="bg-light-gray" style="text-align:center; background:#fff2cc;">테스트</td><td colspan="22" class="bar-area"><div class="bar yellow" style="left:580px; width:100px;"></div></td></tr>
+            </tbody>
+        </table>
+
+        <div class="footer">
+            <div class="logo-area"><div class="logo-symbol">LF</div><div class="logo-text">LF</div></div>
+            <div class="page-num">3</div>
+        </div>
+    </div>
+</body>
+</html>
