@@ -69,7 +69,7 @@ async function checkUnsavedChanges() {
 }
 
 /**
- * LF Editor Studio - Core Logic
+ * LF Editor Studio - Core Logic (Pivot V2: Ghost Engine)
  */
 async function toggleEditMode() {
     if (state.isReadOnly) return showAuthModal();
@@ -77,7 +77,6 @@ async function toggleEditMode() {
 
     state.editMode = !state.editMode;
     DOM.btnEditMode.classList.toggle('active', state.editMode);
-    DOM.editorControls.style.display = state.editMode ? 'flex' : 'none';
 
     if (state.editMode) {
         setTool('select');
@@ -85,151 +84,95 @@ async function toggleEditMode() {
     } else {
         removeEditorUI();
     }
+}
+
+function createGhostHighlighter() {
+    if (document.getElementById('studio-ghost')) return;
+    const ghost = document.createElement('div');
+    ghost.id = 'studio-ghost';
+    ghost.className = 'studio-ghost-outline';
+    ghost.innerHTML = '<div class="studio-ghost-label">SELECTED</div>';
+    document.getElementById('artboard-wrapper').appendChild(ghost);
+}
+
+function updateGhostPosition(el) {
+    const ghost = document.getElementById('studio-ghost');
+    if (!ghost || !el) return;
     
-    console.log(`[Editor] Studio Mode: ${state.editMode ? 'ENABLED' : 'DISABLED'}`);
+    // Element position relative to Iframe viewport
+    const rect = el.getBoundingClientRect();
+    ghost.style.display = 'block';
+    ghost.style.width = `${rect.width}px`;
+    ghost.style.height = `${rect.height}px`;
+    ghost.style.left = `${rect.left}px`;
+    ghost.style.top = `${rect.top}px`;
 }
 
 function injectEditorUI() {
     const doc = DOM.iframe.contentDocument;
     if (!doc) return;
 
-    if (!doc.getElementById('editor-studio-styles')) {
-        const style = doc.createElement('style');
-        style.id = 'editor-studio-styles';
-        style.innerHTML = `
-            .studio-block-wrapper { position: relative !important; margin: 10px 0 !important; transition: all 0.2s; }
-            .studio-block-wrapper:hover { outline: 2px solid #22d3ee !important; }
-            .studio-drag-handle { 
-                position: absolute; left: -32px; top: 0; width: 24px; height: 24px; 
-                background: #6366f1; color: #fff; border-radius: 4px; display: flex; 
-                align-items: center; justify-content: center; cursor: grab; opacity: 0; transition: opacity 0.2s; z-index: 100;
-            }
-            .studio-block-wrapper:hover .studio-drag-handle { opacity: 1; }
-            .editor-editable:focus { outline: none !important; background: rgba(99,102,241,0.05) !important; }
-            .studio-drop-indicator { height: 4px; background: #22d3ee; margin: 4px 0; display: none; border-radius: 2px; }
-            .studio-drop-indicator.active { display: block; }
-        `;
-        doc.head.appendChild(style);
-    }
+    createGhostHighlighter();
 
-    // Wrap elements into Studio Blocks (Phase 2)
-    const container = doc.querySelector('.page') || doc.querySelector('.modern-main') || doc.body;
-    const blocks = Array.from(container.children).filter(el => !el.classList.contains('studio-block-wrapper') && el.tagName !== 'STYLE' && el.tagName !== 'SCRIPT');
-    
-    blocks.forEach(el => {
-        const wrapper = doc.createElement('div');
-        wrapper.className = 'studio-block-wrapper';
-        wrapper.draggable = true;
-        
-        const handle = doc.createElement('div');
-        handle.className = 'studio-drag-handle';
-        handle.innerHTML = '<span style="font-size:16px; font-family: Material Icons Outlined">drag_indicator</span>';
-        
-        el.parentNode.insertBefore(wrapper, el);
-        wrapper.appendChild(handle);
-        wrapper.appendChild(el);
-        
-        // DND Listeners
-        wrapper.ondragstart = (e) => {
-            wrapper.classList.add('studio-block-dragging');
-            e.dataTransfer.setData('text/plain', 'block');
-            state.activeElement = wrapper;
-        };
-        wrapper.ondragend = () => {
-            wrapper.classList.remove('studio-block-dragging');
-            doc.querySelectorAll('.studio-drop-indicator').forEach(i => i.classList.remove('active'));
-        };
-        wrapper.ondragover = (e) => {
-            e.preventDefault();
-            const indicator = wrapper.querySelector('.studio-drop-indicator') || doc.createElement('div');
-            indicator.className = 'studio-drop-indicator active';
-            wrapper.prepend(indicator);
-        };
-        wrapper.ondragleave = () => {
-            wrapper.querySelector('.studio-drop-indicator')?.classList.remove('active');
-        };
-        wrapper.ondrop = (e) => {
-            e.preventDefault();
-            if (state.activeElement && state.activeElement !== wrapper) {
-                wrapper.parentNode.insertBefore(state.activeElement, wrapper);
-                markAsDirty();
-            }
+    // Palette Drag Support (From Sidebar)
+    document.querySelectorAll('.palette-item').forEach(item => {
+        item.onclick = () => {
+            if (!state.editMode) { Notification.show("에디터 모드를 먼저 활성화해주세요.", "info"); return; }
+            const type = item.dataset.type;
+            const content = getTemplateForBlock(type);
+            doc.body.insertAdjacentHTML('beforeend', content);
+            markAsDirty();
+            Notification.show(`${type} 블록이 추가되었습니다.`, 'success');
         };
     });
 
-    // Make content editable
-    doc.querySelectorAll('p, span, h1, h2, h3, h4, h5, h6, td, th, div:not(.studio-block-wrapper):not(.studio-drag-handle)').forEach(el => {
-        if (el.children.length === 0 || (el.children.length === 1 && el.children[0].tagName === 'BR')) {
+    // Capture clicks in Iframe for selection
+    doc.onclick = (e) => {
+        if (!state.editMode) return;
+        const el = e.target;
+        if (el === doc.body || el === doc.documentElement) return;
+        
+        state.activeElement = el;
+        updateGhostPosition(el);
+        showInspector(el);
+        
+        // Inline Edit for text
+        if (['P', 'SPAN', 'H1', 'H2', 'H3', 'TD', 'LI', 'A'].includes(el.tagName)) {
             el.contentEditable = "true";
-            el.classList.add('editor-editable');
-            el.onclick = (e) => { e.stopPropagation(); state.activeElement = el; showFloatingToolbar(el); };
-            el.oninput = () => markAsDirty();
+            el.oninput = () => { markAsDirty(); updateGhostPosition(el); };
         }
-    });
+    };
+}
 
-    // Image Upload Hook
-    doc.querySelectorAll('img').forEach(img => {
-        img.style.cursor = 'pointer';
-        img.title = '클릭하여 이미지 교체';
-        img.onclick = (e) => { e.stopPropagation(); state.editingImage = img; DOM.editorImageUpload.click(); };
-    });
+function removeEditorUI() {
+    const doc = DOM.iframe.contentDocument;
+    if (doc) {
+        doc.querySelectorAll('[contenteditable]').forEach(el => el.contentEditable = "false");
+    }
+    const ghost = document.getElementById('studio-ghost');
+    if (ghost) ghost.style.display = 'none';
+    if (DOM.inspectorEmpty) DOM.inspectorEmpty.style.display = 'block';
+    if (DOM.inspectorControls) DOM.inspectorControls.style.display = 'none';
+}
 
-    // Phase 3 - Diagram Canvas Interactivity
-    doc.querySelectorAll('.studio-diagram-canvas').forEach(canvas => {
-        canvas.querySelectorAll('div').forEach(el => {
-            el.classList.add('diagram-element');
-            el.style.left = el.style.left || '20px';
-            el.style.top = el.style.top || '20px';
-            
-            el.onmousedown = (e) => {
-                if (e.button !== 0) return;
-                e.stopPropagation();
-                const startX = e.clientX, startY = e.clientY;
-                const rect = el.getBoundingClientRect();
-                const containerRect = canvas.getBoundingClientRect();
-                const startL = (rect.left - containerRect.left), startT = (rect.top - containerRect.top);
-                
-                const onMouseMove = (me) => {
-                    const dx = me.clientX - startX, dy = me.clientY - startY;
-                    el.style.left = `${startL + dx}px`;
-                    el.style.top = `${startT + dy}px`;
-                    markAsDirty();
-                };
-                const onMouseUp = () => {
-                    doc.removeEventListener('mousemove', onMouseMove);
-                    doc.removeEventListener('mouseup', onMouseUp);
-                };
-                doc.addEventListener('mousemove', onMouseMove);
-                doc.addEventListener('mouseup', onMouseUp);
-            };
-        });
-    });
+function showInspector(el) {
+    if (DOM.inspectorEmpty) DOM.inspectorEmpty.style.display = 'none';
+    if (DOM.inspectorControls) DOM.inspectorControls.style.display = 'flex';
+    
+    // Sync values
+    const s = el.style;
+    if (DOM.ftInputBg) DOM.ftInputBg.value = rgbToHex(s.backgroundColor) || "#ffffff";
+    if (DOM.ftInputColor) DOM.ftInputColor.value = rgbToHex(s.color) || "#000000";
+    if (DOM.ftInputBorder) DOM.ftInputBorder.value = parseInt(s.borderWidth) || 0;
+    if (DOM.ftInputRadius) DOM.ftInputRadius.value = parseInt(s.borderRadius) || 0;
+    if (DOM.ftBtnShadow) DOM.ftBtnShadow.classList.toggle('active', !!s.boxShadow);
+}
 
-    // Phase 3 - Table Utilities
-    doc.querySelectorAll('table').forEach(table => {
-        table.style.position = 'relative';
-        table.onmouseenter = () => {
-             if (!state.editMode) return;
-             if (table.querySelector('.table-tool-add')) return;
-             const btn = doc.createElement('button');
-             btn.className = 'table-tool-add';
-             btn.innerHTML = '<span style="font-family:Material Icons Outlined; font-size:16px;">add</span> 행 추가';
-             btn.style = 'position:absolute; bottom:-25px; left:0; background:#6366f1; color:#fff; border:none; padding:2px 8px; border-radius:4px; font-size:11px; cursor:pointer; z-index:100;';
-             btn.onclick = (e) => {
-                 e.stopPropagation();
-                 const row = table.insertRow(-1);
-                 for(let i=0; i<table.rows[0].cells.length; i++) {
-                     const cell = row.insertCell(i);
-                     cell.innerHTML = '새 셀';
-                     cell.style = "border:1px solid #ddd; padding:10px;";
-                 }
-                 removeEditorUI(); injectEditorUI(); // Refresh state
-                 markAsDirty();
-             };
-             table.appendChild(btn);
-        };
-        table.onmouseleave = () => setTimeout(() => table.querySelector('.table-tool-add')?.remove(), 500);
-    });
+function rgbToHex(rgb) {
+    if (!rgb || rgb === 'transparent') return '';
+    const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+    if (!match) return '';
+    return "#" + ((1 << 24) + (parseInt(match[1]) << 16) + (parseInt(match[2]) << 8) + parseInt(match[3])).toString(16).slice(1);
 }
 
 function removeEditorUI() {
@@ -388,6 +331,13 @@ const DOM = {
     ftInputBorder: document.getElementById('ft-input-border'),
     ftInputRadius: document.getElementById('ft-input-radius'),
     ftBtnShadow: document.getElementById('ft-btn-shadow'),
+    
+    // UI Pivot V2
+    descriptionDrawer: document.getElementById('description-drawer'),
+    btnToggleDrawer: document.getElementById('btn-toggle-drawer'),
+    drawerArrow: document.getElementById('drawer-arrow'),
+    inspectorControls: document.getElementById('inspector-controls'),
+    inspectorEmpty: document.querySelector('.inspector-empty'),
     
     // Screen Management
     btnAddScreen: document.getElementById('btn-add-screen'),
@@ -1295,22 +1245,29 @@ if (DOM.ftBtnDelete) DOM.ftBtnDelete.onclick = async () => { if (state.activeEle
 /**
  * Phase 3 - Advanced Styling
  */
-function applyStyle(prop, val) {
+function applyStyleToActive(prop, val) {
     if (!state.activeElement) return;
     state.activeElement.style[prop] = val;
+    updateGhostPosition(state.activeElement);
     markAsDirty();
 }
 
-if (DOM.ftInputBg) DOM.ftInputBg.oninput = (e) => applyStyle('backgroundColor', e.target.value);
-if (DOM.ftInputColor) DOM.ftInputColor.oninput = (e) => applyStyle('color', e.target.value);
-if (DOM.ftInputBorder) DOM.ftInputBorder.oninput = (e) => applyStyle('border', `${e.target.value}px solid currentColor`);
-if (DOM.ftInputRadius) DOM.ftInputRadius.oninput = (e) => applyStyle('borderRadius', `${e.target.value}px`);
+if (DOM.ftInputBg) DOM.ftInputBg.oninput = (e) => applyStyleToActive('backgroundColor', e.target.value);
+if (DOM.ftInputColor) DOM.ftInputColor.oninput = (e) => applyStyleToActive('color', e.target.value);
+if (DOM.ftInputBorder) DOM.ftInputBorder.oninput = (e) => applyStyleToActive('border', `${e.target.value}px solid currentColor`);
+if (DOM.ftInputRadius) DOM.ftInputRadius.oninput = (e) => applyStyleToActive('borderRadius', `${e.target.value}px`);
 if (DOM.ftBtnShadow) DOM.ftBtnShadow.onclick = () => {
     if (!state.activeElement) return;
     const s = state.activeElement.style.boxShadow;
     state.activeElement.style.boxShadow = s ? '' : '0 10px 30px rgba(0,0,0,0.15)';
     DOM.ftBtnShadow.classList.toggle('active', !s);
     markAsDirty();
+};
+
+// Drawer Toggle Logic
+if (DOM.btnToggleDrawer) DOM.btnToggleDrawer.onclick = () => {
+    const isActive = DOM.descriptionDrawer.classList.toggle('active');
+    DOM.drawerArrow.innerText = isActive ? 'expand_more' : 'expand_less';
 };
 
 window.addEventListener('keydown', async e => {
