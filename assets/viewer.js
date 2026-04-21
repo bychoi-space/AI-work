@@ -144,12 +144,6 @@ async function handleAuthSubmit() {
  */
 async function init() {
     try {
-        if (typeof gsap !== 'undefined' && typeof Draggable !== 'undefined') {
-            gsap.registerPlugin(Draggable);
-            console.log("GSAP Draggable registered successfully.");
-        } else {
-            console.warn("GSAP or Draggable not found. Falling back to basic interaction.");
-        }
         checkEnvironment();
 
         const params = new URLSearchParams(window.location.search);
@@ -548,35 +542,79 @@ function renderDescriptionList() {
             y: 0
         });
 
-        // GSAP Draggable for Pins - Initialize AFTER appending to DOM
-        if (typeof Draggable !== 'undefined') {
-            let startX, startY;
-            Draggable.create(pin, {
-                type: "x,y",
-                bounds: DOM.pinsLayer,
-                onPress: function() {
-                    // Allow dragging even in ReadOnly mode for testing/demo
-                    // (Actual saving will be blocked by the handleGlobalSave logic)
-                    startX = item.x;
-                    startY = item.y;
-                    gsap.to(pin, { scale: 1.3, boxShadow: "0 10px 20px rgba(0,0,0,0.4)", duration: 0.2, zIndex: 100 });
-                    highlight(true);
-                },
-                onRelease: function() {
-                    gsap.to(pin, { scale: 1, boxShadow: "0 4px 10px rgba(0,0,0,0.3)", duration: 0.2, zIndex: 10 });
-                    highlight(false);
-                },
-                onDrag: function() {
-                    const r = DOM.pinsLayer.getBoundingClientRect();
-                    // Use start position + CURRENT accumulated delta (this.x)
-                    const currentXPx = (startX / 100) * r.width + this.x;
-                    const currentYPx = (startY / 100) * r.height + this.y;
-                    
-                    item.x = Math.max(0, Math.min((currentXPx / r.width) * 100, 100));
-                    item.y = Math.max(0, Math.min((currentYPx / r.height) * 100, 100));
-                }
-            });
-        }
+        // Robust Vanilla JS Dragging Implementation
+        pin.style.cursor = 'grab';
+        pin.onmousedown = (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // Prevent board panning
+            
+            const startX = e.clientX;
+            const startY = e.clientY;
+            const initialItemX = item.x || 0;
+            const initialItemY = item.y || 0;
+            const r = DOM.pinsLayer.getBoundingClientRect();
+
+            pin.style.cursor = 'grabbing';
+            pin.style.transition = 'none'; // Instant response during drag
+            pin.style.zIndex = '1000';
+            pin.classList.add('active');
+            highlight(true);
+
+            const onMouseMove = (moveEvent) => {
+                const dx = moveEvent.clientX - startX;
+                const dy = moveEvent.clientY - startY;
+                
+                // Calculate new percentage based on original + pixel delta
+                item.x = Math.max(0, Math.min(initialItemX + (dx / r.width) * 100, 100));
+                item.y = Math.max(0, Math.min(initialItemY + (dy / r.height) * 100, 100));
+                
+                pin.style.left = item.x + "%";
+                pin.style.top = item.y + "%";
+            };
+
+            const onMouseUp = () => {
+                pin.style.cursor = 'grab';
+                pin.style.transition = ''; 
+                pin.style.zIndex = '10';
+                pin.classList.remove('active');
+                window.removeEventListener('mousemove', onMouseMove);
+                window.removeEventListener('mouseup', onMouseUp);
+                highlight(false);
+            };
+
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('mouseup', onMouseUp);
+        };
+
+        // Touch support
+        pin.ontouchstart = (e) => {
+            const touch = e.touches[0];
+            const startX = touch.clientX;
+            const startY = touch.clientY;
+            const initialItemX = item.x || 0;
+            const initialItemY = item.y || 0;
+            const r = DOM.pinsLayer.getBoundingClientRect();
+            highlight(true);
+
+            const onTouchMove = (moveEvent) => {
+                const t = moveEvent.touches[0];
+                const dx = t.clientX - startX;
+                const dy = t.clientY - startY;
+                item.x = Math.max(0, Math.min(initialItemX + (dx / r.width) * 100, 100));
+                item.y = Math.max(0, Math.min(initialItemY + (dy / r.height) * 100, 100));
+                pin.style.left = item.x + "%";
+                pin.style.top = item.y + "%";
+            };
+
+            const onTouchEnd = () => {
+                window.removeEventListener('touchmove', onTouchMove);
+                window.removeEventListener('touchend', onTouchEnd);
+                highlight(false);
+            };
+
+            window.addEventListener('touchmove', onTouchMove, { passive: false });
+            window.addEventListener('touchend', onTouchEnd);
+        };
 
         const input = row.querySelector('.desc-input');
         input.oninput = () => { item.text = input.value; autoResize(input); };
