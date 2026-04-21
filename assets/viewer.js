@@ -532,15 +532,10 @@ function renderDescriptionList() {
         DOM.descriptionList.appendChild(row);
         DOM.pinsLayer.appendChild(pin);
         
-        // Initial Position via GSAP (centered) - MUST BE IN DOM FIRST
-        gsap.set(pin, { 
-            xPercent: -50, 
-            yPercent: -50, 
-            left: (item.x || 0) + "%", 
-            top: (item.y || 0) + "%",
-            x: 0,
-            y: 0
-        });
+        // Initial Position via Vanilla (centered) - MUST BE IN DOM FIRST
+        pin.style.left = (item.x || 0) + "%";
+        pin.style.top = (item.y || 0) + "%";
+        // transform: translate(-50%, -50%) is handled in CSS for better performance
 
         // Robust Vanilla JS Dragging Implementation
         pin.style.cursor = 'grab';
