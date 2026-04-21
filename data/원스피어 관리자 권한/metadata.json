@@ -1,9 +1,5 @@
 {
   "screens": {
-    "04_Admin_NBOS_0890.html": {
-      "updatedAt": "2026-04-21T04:22:13.171Z",
-      "template": "template_nbos.html"
-    },
     "05_Admin_Onesphere_4465.html": {
       "updatedAt": "2026-04-21T04:22:26.839Z",
       "template": "template_onesphere.html"
