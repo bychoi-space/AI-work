@@ -19,8 +19,34 @@ const state = {
     dragLayerRect: null,
     startX: 0, startY: 0,
     screens: [], /* Current ordered screens */
-    get isReadOnly() { return ghConfig.isReadOnly; }
+    get isReadOnly() { return ghConfig.isReadOnly; },
+    hasUnsavedChanges: false
 };
+
+// State Change Helpers
+function markAsDirty() {
+    if (state.hasUnsavedChanges) return;
+    state.hasUnsavedChanges = true;
+    console.log("[Status] Unsaved changes detected.");
+    if (DOM.btnGlobalSave) {
+        DOM.btnGlobalSave.style.boxShadow = "0 0 20px rgba(0, 229, 255, 0.6)";
+    }
+}
+
+function markAsClean() {
+    state.hasUnsavedChanges = false;
+    if (DOM.btnGlobalSave) {
+        DOM.btnGlobalSave.style.boxShadow = "";
+    }
+}
+
+// Exit Protection Logic
+window.addEventListener('beforeunload', (e) => {
+    if (state.hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = ''; // Required for most browsers
+    }
+});
 
 const DOM = {
     iframe: document.getElementById('main-iframe'),
@@ -478,6 +504,13 @@ function updateProperties() {
         <div class="form-group-inline"><label class="form-label">PUB</label><input type="text" id="viewer-meta-pub" class="form-input" value="${pm.pubUrl || ''}" ${state.isReadOnly ? 'disabled' : ''}>${pm.pubUrl ? `<a href="${pm.pubUrl}" target="_blank" style="margin-left:4px; font-size:12px; color:var(--accent);">[열기]</a>` : ''}</div>
     `;
 
+    // Metadata Input Listeners
+    if (!state.isReadOnly) {
+        DOM.metadataPanel.querySelectorAll('input').forEach(input => {
+            input.oninput = () => markAsDirty();
+        });
+    }
+
     const periodInput = document.getElementById('viewer-meta-period');
     if (!state.isReadOnly && periodInput) {
         flatpickr(periodInput, {
@@ -488,6 +521,7 @@ function updateProperties() {
                     const days = ['일', '월', '화', '수', '목', '금', '토'];
                     const format = d => `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}(${days[d.getDay()]})`;
                     periodInput.value = `${format(selectedDates[0])} ~ ${format(selectedDates[1])}`;
+                    markAsDirty();
                 }
             }
         });
@@ -585,6 +619,11 @@ function renderDescriptionList() {
                 window.removeEventListener('mousemove', onMouseMove);
                 window.removeEventListener('mouseup', onMouseUp);
                 highlight(false);
+                
+                // Track change
+                if (initialItemX !== item.x || initialItemY !== item.y) {
+                    markAsDirty();
+                }
             };
 
             window.addEventListener('mousemove', onMouseMove);
@@ -622,7 +661,11 @@ function renderDescriptionList() {
         };
 
         const input = row.querySelector('.desc-input');
-        input.oninput = () => { item.text = input.value; autoResize(input); };
+        input.oninput = () => { 
+            item.text = input.value; 
+            autoResize(input); 
+            markAsDirty();
+        };
         const autoResize = (el) => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; };
         
         row.ondragstart = (e) => {
@@ -649,6 +692,7 @@ function renderDescriptionList() {
             if (state.isReadOnly) return showAuthModal();
             if (await Notification.confirm("이 설명을 삭제하시겠습니까?", "설명 삭제")) {
                 list.splice(index, 1);
+                markAsDirty();
                 renderDescriptionList();
             }
         };
@@ -683,6 +727,7 @@ async function handleGlobalSave() {
     });
 
     if (success) {
+        markAsClean();
         // Sync project level meta
         Object.assign(state.projectMetadata, projectMeta);
         
@@ -747,6 +792,7 @@ DOM.pinsLayer.onclick = (e) => {
     if (state.isReadOnly || !state.activeFile || state.tool !== 'select' || e.target !== DOM.pinsLayer) return;
     const r = DOM.pinsLayer.getBoundingClientRect();
     state.activeFile.meta.description.push({ text: '', x: Math.max(0, Math.min(((e.clientX - r.left)/r.width)*100, 100)), y: Math.max(0, Math.min(((e.clientY - r.top)/r.height)*100, 100)) });
+    markAsDirty();
     renderDescriptionList();
     setTimeout(() => DOM.descriptionList.querySelectorAll('.desc-input').slice(-1)[0]?.focus(), 50);
 };
