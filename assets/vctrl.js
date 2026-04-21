@@ -546,7 +546,7 @@ function renderDescriptionList() {
         pin.style.cursor = 'grab';
         pin.onmousedown = (e) => {
             e.preventDefault();
-            e.stopPropagation(); // Prevent board panning
+            e.stopPropagation(); 
             
             const startX = e.clientX;
             const startY = e.clientY;
@@ -554,8 +554,12 @@ function renderDescriptionList() {
             const initialItemY = item.y || 0;
             const r = DOM.pinsLayer.getBoundingClientRect();
 
+            // Event Shield: Prevent iframe from stealing focus during drag
+            if (DOM.iframe) DOM.iframe.style.pointerEvents = 'none';
+            document.body.style.cursor = 'grabbing';
+
             pin.style.cursor = 'grabbing';
-            pin.style.transition = 'none'; // Instant response during drag
+            pin.style.transition = 'none'; 
             pin.style.zIndex = '1000';
             pin.classList.add('active');
             highlight(true);
@@ -564,7 +568,6 @@ function renderDescriptionList() {
                 const dx = moveEvent.clientX - startX;
                 const dy = moveEvent.clientY - startY;
                 
-                // Calculate new percentage based on original + pixel delta
                 item.x = Math.max(0, Math.min(initialItemX + (dx / r.width) * 100, 100));
                 item.y = Math.max(0, Math.min(initialItemY + (dy / r.height) * 100, 100));
                 
@@ -573,6 +576,10 @@ function renderDescriptionList() {
             };
 
             const onMouseUp = () => {
+                // Restore interaction
+                if (DOM.iframe) DOM.iframe.style.pointerEvents = (state.tool === 'hand') ? 'none' : 'auto';
+                document.body.style.cursor = '';
+
                 pin.style.cursor = 'grab';
                 pin.style.transition = ''; 
                 pin.style.zIndex = '10';
