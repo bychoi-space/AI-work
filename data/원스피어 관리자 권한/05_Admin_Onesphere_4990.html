@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Onesphere - 원스피어 관리자 권한</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Malgun Gothic', '-apple-system', sans-serif; background: #f4f6f8; color: #202223; }
+        .meta-table { width: 100%; border-collapse: collapse; background: #fff; font-size: 12px; border-bottom: 2px solid #6366f1; }
+        .meta-table th, .meta-table td { border: 1px solid #e1e3e5; height: 32px; padding: 0 12px; }
+        .meta-table th { background: #f6f6f7; color: #6d7175; width: 100px; text-align: left; }
+        
+        .modern-layout { display: flex; min-height: calc(100vh - 100px); }
+        .modern-sidebar { width: 240px; background: #1c2536; color: #eee; padding: 20px 0; }
+        .sidebar-item { padding: 12px 24px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.08); }
+        .sidebar-item.active { background: #6366f1; color: #fff; }
+        
+        .modern-main { flex: 1; padding: 32px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .page-title { font-size: 24px; font-weight: bold; }
+        
+        .card { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 24px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 32px; }
+        .stat-card { padding: 20px; border-radius: 8px; border: 1px solid #e1e3e5; background: #fff; }
+        .stat-label { font-size: 13px; color: #6d7175; margin-bottom: 8px; }
+        .stat-value { font-size: 28px; font-weight: bold; color: #6366f1; }
+        
+        .table-modern { width: 100%; border-collapse: collapse; }
+        .table-modern th { text-align: left; padding: 12px; border-bottom: 2px solid #f4f6f8; color: #6d7175; font-size: 13px; }
+        .table-modern td { padding: 16px 12px; border-bottom: 1px solid #f4f6f8; font-size: 14px; }
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .badge-success { background: #e3f9e5; color: #007f5f; }
+    </style>
+</head>
+<body>
+    <table class="meta-table">
+        <tr>
+            <th>화면 구분</th><td class="value">OneSphere (Cloud)</td>
+            <th>화면 명칭</th><td class="value">05_Admin_Onesphere_4990</td>
+            <th>작성자</th><td class="value">담당자 미정</td>
+            <th>작성 일자</th><td class="value">2026.4.21</td>
+        </tr>
+        <tr>
+            <th>화면 코드</th><td class="value">OS-PRD-01</td>
+            <th>화면 경로</th><td class="value" style="color:#6366f1">https://m.lfmall.co.kr/app/05_Admin_Onesphere_4990</td>
+            <th>문서 버전</th><td class="value">v1.0</td>
+            <th>기타</th><td class="value">JIRA: -</td>
+        </tr>
+    </table>
+
+    <div class="modern-layout">
+        <aside class="modern-sidebar">
+            <div class="sidebar-item active">Dashboard</div>
+            <div class="sidebar-item">Products Management</div>
+            <div class="sidebar-item">Orders Status</div>
+            <div class="sidebar-item">Inventory Tracking</div>
+            <div class="sidebar-item">Cloud Metrics</div>
+        </aside>
+        
+        <main class="modern-main">
+            <div class="page-header">
+                <h1 class="page-title">05_Admin_Onesphere_4990 Overview</h1>
+                <button style="background:#6366f1; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">Update Status</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-label">Total Screens</div><div class="stat-value">48</div></div>
+                <div class="stat-card"><div class="stat-label">Updated Today</div><div class="stat-value">12</div></div>
+                <div class="stat-card"><div class="stat-label">System Health</div><div class="stat-value">99%</div></div>
+                <div class="stat-card"><div class="stat-label">Sync Status</div><div class="stat-value">LIVE</div></div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-top:0;">Recent Updates</h3>
+                <table class="table-modern">
+                    <thead><tr><th>Version</th><th>Description</th><th>Status</th><th>Updated By</th></tr></thead>
+                    <tbody>
+                        <tr><td>v2.1</td><td>Implementation of new global save button</td><td><span class="badge badge-success">Done</span></td><td>최범열</td></tr>
+                        <tr><td>v2.0</td><td>Advanced template system expansion</td><td><span class="badge badge-success">Active</span></td><td>LF AI Agent</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
