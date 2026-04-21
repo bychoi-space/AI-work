@@ -341,12 +341,105 @@ body {
     filter: brightness(1.1);
 }
 
-#btn-global-save:active {
-    transform: translateY(0);
+
+/* ----------------------------------------------------
+   10. LF Editor Studio - Foundation
+   ---------------------------------------------------- */
+#btn-edit-mode {
+    width: auto;
+    padding: 0 12px;
+    gap: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#btn-edit-mode.active {
+    background: var(--accent);
+    color: #000;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+}
+#btn-edit-mode .tool-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.bottom-item i { font-size: 14px; opacity: 0.7; }
+.floating-toolbar {
+    position: fixed;
+    z-index: 10000;
+    background: rgba(20, 22, 26, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    pointer-events: auto;
+    transition: opacity 0.2s, transform 0.2s;
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+}
+.floating-toolbar.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
 
+.ft-group {
+    display: flex;
+    gap: 2px;
+}
+.ft-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+.ft-btn:hover {
+    background: rgba(255,255,255,0.1);
+}
+.ft-btn.active {
+    background: var(--accent);
+    color: #000;
+}
+.ft-btn.ft-danger:hover {
+    background: #e60012;
+}
+.ft-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(255,255,255,0.1);
+    margin: 0 4px;
+}
+
+/* Editor Injected Highlighter (Used across iframe) */
+.editor-highlighter {
+    outline: 2px solid var(--accent-nav) !important;
+    outline-offset: -2px !important;
+    cursor: pointer !important;
+    position: relative !important;
+}
+.editor-highlighter::after {
+    content: "EDIT";
+    position: absolute;
+    top: -20px;
+    right: 0;
+    background: var(--accent-nav);
+    color: #000;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 2px 6px;
+    border-radius: 2px 2px 0 0;
+    pointer-events: none;
+}
 .panel-header {
     padding: 18px 20px;
     font-size: 11px;

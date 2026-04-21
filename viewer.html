@@ -175,10 +175,14 @@
             <button class="tool-btn" onclick="centerView()" title="가운데 맞춤"><span class="material-icons-outlined">center_focus_strong</span></button>
             
             <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
-            <button id="btn-show-auth" class="tool-btn" style="width:auto; height:32px; font-size:12px; padding:0 12px; background: rgba(255,255,255,0.05);">
-                <span class="material-icons-outlined" style="font-size:16px; margin-right:6px;">key</span>
-                <span id="auth-btn-text">에디터 인증</span>
+            <button class="tool-btn" id="btn-edit-mode" title="에디터 모드 전환 (E)">
+                <span class="material-icons-outlined">edit_note</span>
+                <span class="tool-label">에디터</span>
             </button>
+            <div id="editor-controls" class="editor-controls-group" style="display:none; gap:8px;">
+                <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+                <!-- Future blocks menu -->
+            </div>
         </div>
     </header>
 

@@ -143,7 +143,17 @@ async function updateScreenMetadata(project, screenFilename, data, statusCallbac
         metadata.screens[screenFilename].description = data.description;
         metadata.screens[screenFilename].updatedAt = new Date().toISOString();
     }
-    return await saveProjectMetadata(project, metadata, statusCallback);
+    
+    // Save metadata
+    const metaSuccess = await saveProjectMetadata(project, metadata, statusCallback);
+    
+    // Phase 1: Overwrite HTML if content provided
+    if (metaSuccess && data.htmlContent) {
+        if (statusCallback) statusCallback('Saving Design...', '#facc15');
+        return await uploadToProject(project, screenFilename, data.htmlContent, statusCallback);
+    }
+    
+    return metaSuccess;
 }
 
 async function createScreenFromTemplate(project, screenName, templateName, injectData = {}, statusCallback) {

@@ -20,7 +20,9 @@ const state = {
     startX: 0, startY: 0,
     screens: [], /* Current ordered screens */
     get isReadOnly() { return ghConfig.isReadOnly; },
-    hasUnsavedChanges: false
+    hasUnsavedChanges: false,
+    editMode: false,
+    activeElement: null
 };
 
 // State Change Helpers
@@ -66,6 +68,124 @@ async function checkUnsavedChanges() {
     return false;
 }
 
+/**
+ * LF Editor Studio - Core Logic
+ */
+async function toggleEditMode() {
+    if (state.isReadOnly) return showAuthModal();
+    if (!state.activeFile) return;
+
+    state.editMode = !state.editMode;
+    DOM.btnEditMode.classList.toggle('active', state.editMode);
+    DOM.editorControls.style.display = state.editMode ? 'flex' : 'none';
+
+    if (state.editMode) {
+        setTool('select'); // Force select tool for editing
+        injectEditorUI();
+    } else {
+        removeEditorUI();
+    }
+    
+    console.log(`[Editor] Studio Mode: ${state.editMode ? 'ENABLED' : 'DISABLED'}`);
+}
+
+function injectEditorUI() {
+    const doc = DOM.iframe.contentDocument;
+    if (!doc) return;
+
+    // 1. Inject Styles
+    if (!doc.getElementById('editor-studio-styles')) {
+        const style = doc.createElement('style');
+        style.id = 'editor-studio-styles';
+        style.innerHTML = `
+            .editor-editable:hover { outline: 2px solid #22d3ee !important; cursor: pointer !important; }
+            .editor-editable.active { outline: 2px solid #6366f1 !important; box-shadow: 0 0 10px rgba(99,102,241,0.3) !important; }
+            [contenteditable="true"]:focus { outline: none !important; background: rgba(99,102,241,0.05) !important; }
+        `;
+        doc.head.appendChild(style);
+    }
+
+    // 2. Scan & Make Editable
+    // Target common text elements first
+    doc.querySelectorAll('div, p, span, h1, h2, h3, h4, h5, h6, td, th').forEach(el => {
+        if (el.children.length === 0 || (el.children.length === 1 && el.children[0].tagName === 'BR')) {
+            el.classList.add('editor-editable');
+            el.contentEditable = "true";
+            
+            el.addEventListener('focus', () => {
+                state.activeElement = el;
+                showFloatingToolbar(el);
+            });
+            el.addEventListener('input', () => markAsDirty());
+        }
+    });
+
+    // 3. Block selection for non-text
+    doc.querySelectorAll('img, table, .gantt-container').forEach(el => {
+        el.classList.add('editor-editable');
+        el.style.pointerEvents = 'auto';
+        el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            state.activeElement = el;
+            showFloatingToolbar(el);
+        });
+    });
+}
+
+function removeEditorUI() {
+    const doc = DOM.iframe.contentDocument;
+    if (!doc) return;
+    doc.querySelectorAll('.editor-editable').forEach(el => {
+        el.classList.remove('editor-editable', 'active');
+        el.contentEditable = "false";
+    });
+    const s = doc.getElementById('editor-studio-styles');
+    if (s) s.remove();
+    hideFloatingToolbar();
+}
+
+function showFloatingToolbar(el) {
+    const rect = el.getBoundingClientRect();
+    const iframeRect = DOM.iframe.getBoundingClientRect();
+    
+    // Position toolbar above the element
+    const top = iframeRect.top + rect.top - 50;
+    const left = iframeRect.left + rect.left + (rect.width/2);
+    
+    DOM.floatingToolbar.style.top = `${top}px`;
+    DOM.floatingToolbar.style.left = `${left}px`;
+    DOM.floatingToolbar.style.transform = `translate(-50%, ${state.editMode ? 0 : 10}px)`;
+    DOM.floatingToolbar.classList.add('active');
+    DOM.floatingToolbar.style.display = 'flex';
+}
+
+function hideFloatingToolbar() {
+    DOM.floatingToolbar.classList.remove('active');
+    setTimeout(() => {
+        if (!DOM.floatingToolbar.classList.contains('active')) {
+            DOM.floatingToolbar.style.display = 'none';
+        }
+    }, 200);
+}
+
+function serializeIframeContent() {
+    const doc = DOM.iframe.contentDocument;
+    if (!doc) return null;
+    
+    // Clone document to clean it
+    const clone = doc.documentElement.cloneNode(true);
+    
+    // Cleanup editor artifacts
+    clone.querySelectorAll('.editor-editable').forEach(el => {
+        el.classList.remove('editor-editable', 'active');
+        el.removeAttribute('contenteditable');
+    });
+    const s = clone.querySelector('#editor-studio-styles');
+    if (s) s.remove();
+    
+    return "<!DOCTYPE html>\n" + clone.outerHTML;
+}
+    
 const DOM = {
     iframe: document.getElementById('main-iframe'),
     artboardWrapper: document.getElementById('artboard-wrapper'),
@@ -94,6 +214,13 @@ const DOM = {
     btnToggleLeft: document.getElementById('btn-toggle-left'),
     btnToggleRight: document.getElementById('btn-toggle-right'),
     btnGlobalSave: document.getElementById('btn-global-save'),
+    btnEditMode: document.getElementById('btn-edit-mode'),
+    editorControls: document.getElementById('editor-controls'),
+    floatingToolbar: document.getElementById('floating-toolbar'),
+    ftBtnBold: document.getElementById('ft-btn-bold'),
+    ftBtnItalic: document.getElementById('ft-btn-italic'),
+    ftBtnColor: document.getElementById('ft-btn-color'),
+    ftBtnDelete: document.getElementById('ft-btn-delete'),
     
     // Screen Management
     btnAddScreen: document.getElementById('btn-add-screen'),
@@ -121,8 +248,8 @@ const DOM = {
     authModal: document.getElementById('auth-modal'),
     tokenInput: document.getElementById('modal-gh-token'),
     authStatus: document.getElementById('modal-auth-status'),
-    btnAuthSubmit: document.getElementById('btn-modal-auth-submit'),
-    btnAuthClose: document.getElementById('btn-modal-auth-cancel'),
+    btnAuthSubmit: document.getElementById('modal-auth-submit'),
+    btnAuthClose: document.getElementById('modal-auth-close'),
     btnShowAuth: document.getElementById('btn-show-auth')
 };
 
@@ -742,7 +869,14 @@ async function handleGlobalSave() {
         pubUrl: document.getElementById('viewer-meta-pub')?.value || ''
     };
 
-    const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, { projectMeta, description: state.activeFile.meta.description }, (msg, color) => {
+    // Phase 1: Serialized HTML Save
+    const htmlContent = state.editMode ? serializeIframeContent() : null;
+    
+    const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, { 
+        projectMeta, 
+        description: state.activeFile.meta.description,
+        htmlContent // Pass the serialized HTML if in edit mode
+    }, (msg, color) => {
         btn.innerHTML = `<span class="material-icons-outlined" style="font-size:16px;">${color === '#4ade80' ? 'check_circle' : 'error'}</span> ${msg}`;
         btn.style.background = color || ''; btn.style.opacity = '1';
         if (color === '#4ade80') setTimeout(() => { btn.innerHTML = originalText; btn.style.background = ''; }, 2000);
@@ -946,9 +1080,17 @@ if (DOM.btnAuthClose) DOM.btnAuthClose.onclick = hideAuthModal;
 if (DOM.tokenInput) DOM.tokenInput.onkeyup = (e) => { if(e.key==='Enter') handleAuthSubmit(); };
 if (DOM.btnCancelEdit) DOM.btnCancelEdit.onclick = () => DOM.editScreenModal?.classList.remove('active');
 
+if (DOM.btnEditMode) DOM.btnEditMode.onclick = toggleEditMode;
+if (DOM.ftBtnBold) DOM.ftBtnBold.onclick = () => { document.execCommand('bold', false); markAsDirty(); };
+if (DOM.ftBtnItalic) DOM.ftBtnItalic.onclick = () => { document.execCommand('italic', false); markAsDirty(); };
+if (DOM.ftBtnColor) DOM.ftBtnColor.onclick = () => { document.execCommand('foreColor', false, '#e60012'); markAsDirty(); };
+if (DOM.ftBtnDelete) DOM.ftBtnDelete.onclick = async () => { if (state.activeElement && await Notification.confirm("이 요소를 영구적으로 삭제하시겠습니까?", "요소 삭제")) { state.activeElement.remove(); hideFloatingToolbar(); markAsDirty(); } };
+
 window.addEventListener('keydown', async e => {
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+    if(e.code === 'KeyE') { e.preventDefault(); toggleEditMode(); }
     if(e.key === 'Escape') {
+        if (state.editMode) return toggleEditMode();
         if (await checkUnsavedChanges()) {
             window.location.href = 'index.html';
         }
