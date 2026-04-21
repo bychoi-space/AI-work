@@ -44,9 +44,27 @@ function markAsClean() {
 window.addEventListener('beforeunload', (e) => {
     if (state.hasUnsavedChanges) {
         e.preventDefault();
-        e.returnValue = ''; // Required for most browsers
+        e.returnValue = ''; // Required for browser level exit
     }
 });
+
+/**
+ * Custom Modal Navigation Guard
+ * Returns true if navigation is safe, false if cancelled
+ */
+async function checkUnsavedChanges() {
+    if (!state.hasUnsavedChanges) return true;
+    const confirmed = await Notification.confirm(
+        "저장되지 않은 수정사항이 있습니다. 무시하고 이동하시겠습니까?", 
+        "알림", 
+        "warning"
+    );
+    if (confirmed) {
+        markAsClean(); // Clear flag so next move is safe
+        return true;
+    }
+    return false;
+}
 
 const DOM = {
     iframe: document.getElementById('main-iframe'),
@@ -57,6 +75,7 @@ const DOM = {
     stage: document.getElementById('stage'),
     zoomTxt: document.getElementById('zoom-txt'),
     fileName: document.getElementById('file-name-display'),
+    btnBack: document.getElementById('btn-back'),
     
     // Panels
     metadataPanel: document.getElementById('top-metadata-panel'),
@@ -302,6 +321,9 @@ function renderScreenList(screens, activeName) {
                 handleEditScreen(s.name);
                 return;
             }
+            
+            // App-level navigation guard
+            if (!(await checkUnsavedChanges())) return;
             
             const url = `viewer.html?project=${state.currentProject}&file=${s.name}`;
             history.pushState(null, '', url);
@@ -905,7 +927,16 @@ DOM.btnSubmitAdd.onclick = async () => {
     }
 };
 
-if (DOM.btnAddDescription) DOM.btnAddDescription.onclick = () => { if (state.isReadOnly) return showAuthModal(); if (!state.activeFile) return Notification.alert("스크린을 선택해주세요.", "알림", "warning"); state.activeFile.meta.description.push({ text: '', x: 50, y: 50 }); renderDescriptionList(); setTimeout(() => DOM.descriptionList?.querySelectorAll('.desc-input').slice(-1)[0]?.focus(), 50); };
+if (DOM.btnBack) {
+    DOM.btnBack.onclick = async (e) => {
+        e.preventDefault();
+        if (await checkUnsavedChanges()) {
+            window.location.href = 'index.html';
+        }
+    };
+}
+
+if (DOM.btnAddDescription) DOM.btnAddDescription.onclick = () => { if (state.isReadOnly) return showAuthModal(); if (!state.activeFile) return Notification.alert("스크린을 선택해주세요.", "알림", "warning"); state.activeFile.meta.description.push({ text: '', x: 50, y: 50 }); markAsDirty(); renderDescriptionList(); setTimeout(() => DOM.descriptionList?.querySelectorAll('.desc-input').slice(-1)[0]?.focus(), 50); };
 if (DOM.btnGlobalSave) DOM.btnGlobalSave.onclick = handleGlobalSave;
 if (DOM.btnSelect) DOM.btnSelect.onclick = () => setTool('select');
 if (DOM.btnHand) DOM.btnHand.onclick = () => setTool('hand');
@@ -915,9 +946,13 @@ if (DOM.btnAuthClose) DOM.btnAuthClose.onclick = hideAuthModal;
 if (DOM.tokenInput) DOM.tokenInput.onkeyup = (e) => { if(e.key==='Enter') handleAuthSubmit(); };
 if (DOM.btnCancelEdit) DOM.btnCancelEdit.onclick = () => DOM.editScreenModal?.classList.remove('active');
 
-window.addEventListener('keydown', e => {
+window.addEventListener('keydown', async e => {
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
-    if(e.key === 'Escape') window.location.href = 'index.html';
+    if(e.key === 'Escape') {
+        if (await checkUnsavedChanges()) {
+            window.location.href = 'index.html';
+        }
+    }
     if(e.code === 'Space' && state.tool !== 'hand') { DOM.canvas.classList.add('hand-active'); DOM.iframe.style.pointerEvents = 'none'; }
     if(e.code === 'KeyV') setTool('select');
     if(e.code === 'KeyH') setTool('hand');
