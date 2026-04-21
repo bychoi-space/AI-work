@@ -28,8 +28,15 @@
     "01_Architecture_4304.html": {
       "title": "01_Architecture_4304",
       "type": "architecture",
-      "updatedAt": "2026-04-21T05:02:46.930Z",
-      "template": "template_architecture.html"
+      "updatedAt": "2026-04-21T06:49:58.321Z",
+      "template": "template_architecture.html",
+      "description": [
+        {
+          "text": "여기에 이런 설명을 넣으면 어떨까?",
+          "x": 2.949068745362105,
+          "y": 9.15160971636871
+        }
+      ]
     },
     "03_UI_Screen_4984.html": {
       "title": "03_UI_Screen_4984",
