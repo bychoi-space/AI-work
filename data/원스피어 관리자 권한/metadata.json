@@ -12,6 +12,12 @@
       "type": "plan",
       "updatedAt": "2026-04-21T04:54:12.657Z",
       "template": "template_plan.html"
+    },
+    "02_Plan_5700.html": {
+      "title": "02_Plan_5700",
+      "type": "plan",
+      "updatedAt": "2026-04-21T05:02:28.519Z",
+      "template": "template_plan.html"
     }
   },
   "title": "원스피어 관리자 권한"
