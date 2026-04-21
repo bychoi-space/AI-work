@@ -24,6 +24,12 @@
       "type": "architecture",
       "updatedAt": "2026-04-21T05:02:46.930Z",
       "template": "template_architecture.html"
+    },
+    "03_UI_Screen_4984.html": {
+      "title": "03_UI_Screen_4984",
+      "type": "ui",
+      "updatedAt": "2026-04-21T05:02:57.756Z",
+      "template": "template_front_ui.html"
     }
   },
   "title": "원스피어 관리자 권한"
