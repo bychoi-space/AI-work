@@ -454,10 +454,10 @@ async function handleDeleteScreen(fileName, sha) {
             }
             await saveProjectMetadata(state.currentProject, state.projectMetadata);
             
-            if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = "데이터 삭제 동기화 중 (1.5s)...";
+            if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = "데이터 삭제 최종 동기화 중 (2.0s)...";
             setTimeout(() => {
                 window.location.href = `viewer.html?project=${state.currentProject}`;
-            }, 1500);
+            }, 2000);
         } else {
             await Notification.alert("파일 삭제에 실패했습니다.", "오류", "error");
         }
@@ -803,8 +803,8 @@ DOM.btnSubmitAdd.onclick = async () => {
     };
 
     if (await createScreenFromTemplate(state.currentProject, screenName, context.selectedTemplate, injectData, msg => DOM.placeholderTxt.innerText = msg)) {
-        if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = "데이터 동기화 중 (1.5s)...";
-        setTimeout(() => location.reload(), 1500);
+        if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = "데이터 생성 최종 동기화 중 (2.0s)...";
+        setTimeout(() => location.reload(), 2000);
     } else { 
         DOM.btnSubmitAdd.innerText = "화면 생성하기"; 
         DOM.btnSubmitAdd.disabled = false; 

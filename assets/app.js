@@ -15,14 +15,14 @@ const ghConfig = {
 };
 
 async function listContents(path) {
-    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${path}`;
+    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${path}?t=${Date.now()}`;
     const headers = ghConfig.token ? { 'Authorization': `token ${ghConfig.token}` } : {};
     const res = await fetch(url, { headers });
     return res.ok ? await res.json() : [];
 }
 
 async function listRepoRoot() {
-    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/`;
+    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/?t=${Date.now()}`;
     const headers = ghConfig.token ? { 'Authorization': `token ${ghConfig.token}` } : {};
     const res = await fetch(url, { headers });
     return res.ok ? await res.json() : [];
@@ -30,7 +30,7 @@ async function listRepoRoot() {
 
 async function fetchFileContent(path, isRoot = false) {
     const fullPath = isRoot ? path : `${ghConfig.dataDir}${path}`;
-    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${fullPath}`;
+    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${fullPath}?t=${Date.now()}`;
     const headers = ghConfig.token ? { 'Authorization': `token ${ghConfig.token}` } : {};
     const res = await fetch(url, { headers });
     if (!res.ok) return null;
@@ -62,7 +62,7 @@ async function uploadToProject(project, filename, content, statusCallback) {
     try {
         if (statusCallback) statusCallback('Saving...', '#facc15');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${path}`;
-        const getRes = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
+        const getRes = await fetch(url + `?t=${Date.now()}`, { headers: { 'Authorization': `token ${ghConfig.token}` }});
         let sha = null;
         if (getRes.ok) {
             const getData = await getRes.json();
