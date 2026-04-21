@@ -7,6 +7,10 @@
     "02_Plan_4593.html": {
       "updatedAt": "2026-04-21T04:11:47.763Z",
       "template": "template_plan.html"
+    },
+    "01_Architecture_1966.html": {
+      "updatedAt": "2026-04-21T04:12:04.535Z",
+      "template": "template_architecture.html"
     }
   },
   "title": "원스피어 관리자 권한"
