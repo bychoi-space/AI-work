@@ -435,6 +435,7 @@ async function handleDeleteScreen(fileName, sha) {
     if (state.isReadOnly) return showAuthModal();
     const confirmed = await Notification.confirm(`'${fileName}' 화면을 정말 삭제하시겠습니까?`, "화면 삭제");
     if (confirmed) {
+        showLoading("화면 삭제 처리 중...");
         let targetSha = sha;
         if (!targetSha) {
             const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${state.currentProject}/${fileName}`;
