@@ -7,7 +7,19 @@
   "screens": {
     "slide_01_cover.html": {
       "title": "01. 프로젝트 표지",
-      "description": "온오프 재고 효율화 마스터 플랜 v0.7"
+      "description": [
+        {
+          "text": "온오프 재고 효율화 마스터 플랜 v0.7",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "text": "123",
+          "x": 50,
+          "y": 50
+        }
+      ],
+      "updatedAt": "2026-04-21T01:51:31.526Z"
     },
     "slide_02_toc.html": {
       "title": "02. Index",
