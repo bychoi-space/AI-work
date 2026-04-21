@@ -1,10 +1,5 @@
 {
   "screens": {
-    "02_Plan_4593.html": {
-      "updatedAt": "2026-04-21T04:22:33.741Z",
-      "template": "template_plan.html",
-      "description": []
-    },
     "03_UI_Screen_9941.html": {
       "updatedAt": "2026-04-21T04:22:03.204Z",
       "template": "template_front_ui.html"
