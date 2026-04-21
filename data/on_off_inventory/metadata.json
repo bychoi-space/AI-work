@@ -22,14 +22,10 @@
       "updatedAt": "2026-04-21T01:51:31.526Z"
     },
     "slide_02_toc.html": {
-      "title": "02. Index",
-      "description": [
-        {
-          "text": "전체 프로세스 구성",
-          "x": 0,
-          "y": 0
-        }
-      ]
+      "title": "목차",
+      "description": "[object Object]",
+      "type": "cover",
+      "updatedAt": "2026-04-21T02:00:06.049Z"
     },
     "slide_04_selection.html": {
       "title": "04. 재고 선정 로직",
@@ -163,7 +159,13 @@
     },
     "slide_35_admin_order_detail.html": {
       "title": "35. [어드민] 주문 정보 상세",
-      "description": "주문 처리 상세"
+      "description": [
+        {
+          "text": "주문 처리 상세",
+          "x": 0,
+          "y": 0
+        }
+      ]
     },
     "slide_36_admin_shop_mgmt.html": {
       "title": "36. [어드민] 매장 마스터 관리",
