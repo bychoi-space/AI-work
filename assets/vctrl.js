@@ -40,8 +40,6 @@ const DOM = {
     sidebarRight: document.getElementById('sidebar-right'),
     
     // Bottom Bar
-    bottomFilename: document.getElementById('bottom-filename')?.querySelector('span'),
-    bottomSize: document.getElementById('bottom-size')?.querySelector('span'),
     bottomUpdated: document.getElementById('bottom-updated')?.querySelector('span'),
     pinsLayer: document.getElementById('pins-layer'),
     
@@ -383,7 +381,6 @@ async function loadScreen(fileName) {
     };
     
     DOM.fileName.innerText = state.projectMetadata.title || state.currentProject;
-    if (DOM.bottomFilename) DOM.bottomFilename.innerText = fileName;
     
     renderDescriptionList();
     setTimeout(() => centerView(), 150);
@@ -497,8 +494,9 @@ function updateProperties() {
     }
 
     renderDescriptionList();
-    if (DOM.bottomSize) DOM.bottomSize.innerText = state.activeFile.size;
-    if (DOM.bottomUpdated) DOM.bottomUpdated.innerText = m.updatedAt ? new Date(m.updatedAt).toLocaleString() : '-';
+    if (DOM.bottomUpdated) {
+        DOM.bottomUpdated.innerText = m.updatedAt ? `최종 업데이트: ${new Date(m.updatedAt).toLocaleString()}` : '최종 업데이트: -';
+    }
 }
 
 /**
