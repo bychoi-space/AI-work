@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/theme.css">
     <!-- Flatpickr (Date Picker) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -194,8 +195,8 @@
             </div>
             <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <span>PROJECT SCREENS</span>
-                <button class="tool-btn" id="btn-add-screen" title="새 화면 추가" style="width: 24px; height: 24px;">
-                    <span class="material-icons-outlined" style="font-size: 18px;">add_circle</span>
+                <button class="btn-add-action" id="btn-add-screen" title="새 화면 추가">
+                    <span class="material-icons-outlined">add_circle</span>
                 </button>
             </div>
             <div id="screens-list" style="flex: 1; overflow-y: auto; padding: 12px;">
@@ -235,11 +236,12 @@
                 </div>
 
                 <div class="bottom-actions">
-                    <button id="btn-global-save" class="btn-primary" style="height:32px; padding:0 30px; font-size:13px; font-weight:700; border-radius: 6px; display:flex; align-items:center; gap:8px;">
+                    <button id="btn-global-save" class="btn-primary">
                         <span class="material-icons-outlined" style="font-size:18px;">save</span>
                         전체 저장
                     </button>
                 </div>
+                <div class="bottom-right-spacer"></div>
             </footer>
         </div>
 
@@ -248,16 +250,21 @@
             <div class="sidebar-handle handle-right" id="btn-toggle-right" title="Toggle Description (R)">
                 <span class="material-icons-outlined">chevron_right</span>
             </div>
-            <div class="panel-header">Description</div>
-            <div class="description-container" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-                <div id="description-list" style="flex: 1; overflow-y: auto; padding: 16px;">
+            <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Description</span>
+                <button class="btn-add-action" id="btn-add-description" title="새 행 추가 (화면 클릭)">
+                    <span class="material-icons-outlined">add_circle</span>
+                </button>
+            </div>
+            <div class="description-container">
+                <div id="description-list">
                     <!-- Dynamic rows here -->
                 </div>
             </div>
         </aside>
     </div>
 
-    <!-- Auth Modal (NEW) -->
+    <!-- Auth Modal -->
     <div id="auth-modal" class="modal-overlay">
         <div class="modal-card" style="max-width: 400px;">
             <div class="modal-header">
@@ -278,12 +285,48 @@
         </div>
     </div>
     
+    <!-- Edit Screen Modal -->
+    <div id="edit-screen-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3 class="modal-title">스크린 속성 편집</h3>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;" id="edit-screen-filename">-</p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">스크린 명칭 (Display Title)</label>
+                    <input type="text" id="edit-screen-title" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">스크린 유형 (Type)</label>
+                    <select id="edit-screen-type" class="form-input">
+                        <option value="default">미분류</option>
+                        <option value="cover">1. Cover</option>
+                        <option value="architecture">2. Architecture</option>
+                        <option value="plan">3. Plan</option>
+                        <option value="ui">4. Front UI</option>
+                        <option value="admin-nbos">5. Admin (NBOS)</option>
+                        <option value="admin-onesphere">6. Admin (Onesphere)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">설명 (Description)</label>
+                    <textarea id="edit-screen-desc" class="form-input" style="height: 80px; resize: none;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-edit-screen-cancel" class="btn-secondary">취소</button>
+                <button id="btn-edit-screen-submit" class="btn-primary">변경사항 저장</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Hidden File Input for Adding Screens -->
     <input type="file" id="add-screen-upload" style="display:none;" multiple accept=".html,.htm">
 
-    <!-- Add Screen Modal (NEW: Template support) -->
+    <!-- Add Screen Modal -->
     <div id="add-screen-modal" class="modal-overlay">
-        <div class="modal-card" style="max-width: 520px;">
+        <div class="modal-card" style="max-width: 1100px;">
             <div class="modal-header">
                 <h3 class="modal-title">새 화면 추가</h3>
                 <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">프로젝트에 새로운 화면을 추가합니다.</p>
@@ -296,21 +339,53 @@
 
                 <div class="modal-section-title">에셋 템플릿 선택</div>
                 <div class="template-grid" id="template-list">
-                    <div class="template-card" data-template="lfmall_mobile_base.html" data-default-name="lfmall_mobile_screen">
+                    <div class="template-card" data-template="template_cover.html" data-default-name="00_Cover">
+                        <div class="template-thumb">
+                            <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">auto_stories</span>
+                            <div class="template-check"><span class="material-icons">check_circle</span></div>
+                        </div>
+                        <div class="template-name">프로젝트 커버</div>
+                        <div class="template-badge">Cover</div>
+                    </div>
+                    <div class="template-card" data-template="template_architecture.html" data-default-name="01_Architecture">
+                        <div class="template-thumb">
+                            <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">account_tree</span>
+                            <div class="template-check"><span class="material-icons">check_circle</span></div>
+                        </div>
+                        <div class="template-name">아키텍처/정보설계</div>
+                        <div class="template-badge">Arch</div>
+                    </div>
+                    <div class="template-card" data-template="template_plan.html" data-default-name="02_Plan">
+                        <div class="template-thumb">
+                            <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">event_note</span>
+                            <div class="template-check"><span class="material-icons">check_circle</span></div>
+                        </div>
+                        <div class="template-name">사업 진행 일정</div>
+                        <div class="template-badge">Plan</div>
+                    </div>
+                    <div class="template-card" data-template="template_front_ui.html" data-default-name="03_UI_Screen">
                         <div class="template-thumb">
                             <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">smartphone</span>
                             <div class="template-check"><span class="material-icons">check_circle</span></div>
                         </div>
-                        <div class="template-name">LFmall 모바일 기획서</div>
-                        <div class="template-badge">LFmall</div>
+                        <div class="template-name">Front UI (Mobile)</div>
+                        <div class="template-badge">UI</div>
                     </div>
-                    <div class="template-card" data-template="lfmall_pc_base.html" data-default-name="lfmall_pc_screen">
+                    <div class="template-card" data-template="template_nbos.html" data-default-name="04_Admin_NBOS">
                         <div class="template-thumb">
                             <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">desktop_windows</span>
                             <div class="template-check"><span class="material-icons">check_circle</span></div>
                         </div>
-                        <div class="template-name">LFmall PC 기획서</div>
-                        <div class="template-badge">LFmall</div>
+                        <div class="template-name">Admin (nBOS)</div>
+                        <div class="template-badge">Admin</div>
+                    </div>
+                    <div class="template-card" data-template="template_onesphere.html" data-default-name="05_Admin_Onesphere">
+                        <div class="template-thumb">
+                            <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">cloud_queue</span>
+                            <div class="template-check"><span class="material-icons">check_circle</span></div>
+                        </div>
+                        <div class="template-name">Admin (OneSphere)</div>
+                        <div class="template-badge">Modern</div>
                     </div>
                 </div>
 
@@ -327,841 +402,11 @@
         </div>
     </div>
 
-    <script src="assets/templates.js?v=20240420_v1"></script>
-    <script src="assets/app.js?v=20240420_v5"></script>
-    <script>
-        const state = {
-            currentProject: null,
-            activeFile: null,
-            projectMetadata: null,
-            tool: 'select',
-            transform: { x: 0, y: 0, scale: 1 },
-            isDragging: false,
-            draggingPinIndex: null,
-            startX: 0, startY: 0,
-            get isReadOnly() { return ghConfig.isReadOnly; }
-        };
-
-        const DOM = {
-            iframe: document.getElementById('main-iframe'),
-            artboardWrapper: document.getElementById('artboard-wrapper'),
-            placeholder: document.getElementById('placeholder'),
-            placeholderTxt: document.getElementById('placeholder-text'),
-            canvas: document.getElementById('canvas'),
-            stage: document.getElementById('stage'),
-            zoomTxt: document.getElementById('zoom-txt'),
-            fileName: document.getElementById('file-name-display'),
-            
-            // Panels
-            metadataPanel: document.getElementById('top-metadata-panel'),
-            screensList: document.getElementById('screens-list'),
-            descriptionList: document.getElementById('description-list'),
-            sidebarLeft: document.getElementById('sidebar-left'),
-            sidebarRight: document.getElementById('sidebar-right'),
-            
-            // Bottom Bar
-            bottomFilename: document.getElementById('bottom-filename').querySelector('span'),
-            bottomSize: document.getElementById('bottom-size').querySelector('span'),
-            bottomUpdated: document.getElementById('bottom-updated').querySelector('span'),
-            pinsLayer: document.getElementById('pins-layer'),
-            
-            // Buttons
-            btnSelect: document.getElementById('btn-select'),
-            btnHand: document.getElementById('btn-hand'),
-            btnToggleLeft: document.getElementById('btn-toggle-left'),
-            btnToggleRight: document.getElementById('btn-toggle-right'),
-            btnGlobalSave: document.getElementById('btn-global-save'),
-            
-            // Screen Management
-            btnAddScreen: document.getElementById('btn-add-screen'),
-            addScreenUpload: document.getElementById('add-screen-upload'),
-            addScreenModal: document.getElementById('add-screen-modal'),
-            btnCancelAdd: document.getElementById('btn-add-screen-cancel'),
-            btnSubmitAdd: document.getElementById('btn-add-screen-submit'),
-            btnUploadLocal: document.getElementById('btn-upload-local'),
-            newScreenName: document.getElementById('new-screen-name'),
-            templateCards: document.querySelectorAll('.template-card'),
-            
-            // Auth Modal DOM
-            authModal: document.getElementById('auth-modal'),
-            btnAuthClose: document.getElementById('btn-modal-auth-cancel'),
-            btnAuthSubmit: document.getElementById('btn-modal-auth-submit'),
-            tokenInput: document.getElementById('modal-gh-token')
-        };
-
-        const context = {
-            selectedTemplate: null
-        };
-
-        // 1. Initial Load & URL Parsing
-        async function init() {
-            const params = new URLSearchParams(window.location.search);
-            const project = params.get('project') || 'Default_Project';
-            let fileName = params.get('file');
-
-            state.currentProject = project;
-
-            // Fetch screens and metadata in parallel
-            const [contents, metadata] = await Promise.all([
-                listContents(project),
-                fetchProjectMetadata(project)
-            ]);
-
-            state.projectMetadata = metadata;
-            
-            // Render Screen List
-            const screens = contents.filter(i => i.type === 'file' && i.name.endsWith('.html'));
-            renderScreenList(screens, fileName);
-
-            // If no fileName, pick first one or stay on loading
-            if (!fileName && screens.length > 0) {
-                fileName = screens[0].name;
-            }
-
-            if (fileName) {
-                await loadScreen(fileName);
-            } else {
-                DOM.placeholderTxt.innerText = "프로젝트 스크린을 추가해주세요.";
-                // Add attention motion to the sidebar add button
-                const btnAdd = document.getElementById('btn-add-screen');
-                if (btnAdd) btnAdd.classList.add('pulse-attention');
-            }
-
-            updateProperties(); // Project Meta
-            
-            // Prime the viewport (Desktop default)
-            setDeviceViewport('desktop', 1440, 900);
-
-            // Update Auth Button UI
-            const btnAuthText = document.getElementById('auth-btn-text');
-            const btnAuth = document.getElementById('btn-show-auth');
-            if (btnAuthText) btnAuthText.innerText = state.isReadOnly ? '에디터 인증' : '에디터 모드';
-            if (btnAuth) btnAuth.style.color = state.isReadOnly ? '#fff' : 'var(--accent)';
-
-            // Hide Loading Overlay (Fade out instead of remove for reuse)
-            hideLoading();
-
-            // Handle Browser Back/Forward (SPA)
-            window.addEventListener('popstate', () => {
-                const p = new URLSearchParams(window.location.search);
-                const f = p.get('file');
-                if (f) {
-                    loadScreen(f);
-                    updateActiveScreenInUI(f);
-                }
-            });
-        }
-
-        function showLoading(text = "Loading Screen") {
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) {
-                const txt = overlay.querySelector('.loading-text');
-                if (txt) txt.innerText = text;
-                overlay.classList.remove('fade-out');
-            }
-        }
-
-        function hideLoading() {
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) {
-                overlay.classList.add('fade-out');
-            }
-            setTimeout(centerView, 600);
-        }
-
-        function updateActiveScreenInUI(activeName) {
-            const items = document.querySelectorAll('.screen-item');
-            items.forEach(item => {
-                const name = item.querySelector('.screen-name').title;
-                if (name === activeName) {
-                    item.classList.add('active');
-                    item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-        }
-
-        /**
-         * Auth Modal Logic
-         */
-        function showAuthModal() {
-            if (DOM.authModal) DOM.authModal.classList.add('active');
-        }
-        function hideAuthModal() {
-            if (DOM.authModal) DOM.authModal.classList.remove('active');
-            const status = document.getElementById('modal-auth-status');
-            if (status) status.innerText = "";
-        }
-        async function handleAuthSubmit() {
-            const tokenInput = document.getElementById('modal-gh-token');
-            const status = document.getElementById('modal-auth-status');
-            const token = tokenInput.value.trim();
-            
-            if (!token) {
-                status.innerText = "토큰을 입력해주세요.";
-                status.style.color = "#f87171";
-                return;
-            }
-
-            const success = await verifyAndSaveToken(token, (msg, color) => {
-                status.innerText = msg;
-                status.style.color = color;
-            });
-
-            if (success) {
-                setTimeout(() => {
-                    hideAuthModal();
-                    location.reload(); 
-                }, 1000);
-            }
-        }
-
-        function renderScreenList(screens, activeName) {
-            DOM.screensList.innerHTML = '';
-            let activeItem = null;
-            
-            screens.forEach(s => {
-                const item = document.createElement('div');
-                item.className = `screen-item ${s.name === activeName ? 'active' : ''}`;
-                item.innerHTML = `
-                    <span class="material-icons-outlined" style="font-size:16px;">description</span>
-                    <span class="screen-name" title="${s.name}">${s.name}</span>
-                    <button class="screen-delete-btn" title="화면 삭제" data-filename="${s.name}">
-                        <span class="material-icons-outlined" style="font-size:16px;">delete</span>
-                    </button>
-                `;
-                
-                if (s.name === activeName) activeItem = item;
-
-                item.onclick = (e) => {
-                    if (e.target.closest('.screen-delete-btn')) {
-                        handleDeleteScreen(s.name, s.sha);
-                        return;
-                    }
-                    
-                    // SPA Navigation: Push state and load without reload
-                    const url = `viewer.html?project=${state.currentProject}&file=${s.name}`;
-                    history.pushState(null, '', url);
-                    loadScreen(s.name);
-                    
-                    // Update active class manually
-                    document.querySelectorAll('.screen-item').forEach(el => el.classList.remove('active'));
-                    item.classList.add('active');
-                };
-                DOM.screensList.appendChild(item);
-            });
-
-            // Focus active item on initial render
-            if (activeItem) {
-                setTimeout(() => {
-                    activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }, 800); // Wait for loading overlay to clear
-            }
-        }
-
-        async function handleDeleteScreen(fileName, sha) {
-            if (state.isReadOnly) return showAuthModal();
-            
-            if (confirm(`'${fileName}' 화면을 정말 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
-                // If sha is missing (happens when listing via metadata), fetch it
-                let targetSha = sha;
-                if (!targetSha) {
-                    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${state.currentProject}/${fileName}`;
-                    const res = await fetch(url, { headers: { 'Authorization': `token ${ghConfig.token}` }});
-                    if (res.ok) {
-                        const data = await res.json();
-                        targetSha = data.sha;
-                    }
-                }
-
-                if (!targetSha) {
-                    alert("파일 정보를 가져오지 못했습니다.");
-                    return;
-                }
-
-                const success = await deleteFileFromGitHub(`${state.currentProject}/${fileName}`, targetSha, false, (msg, color) => {
-                    DOM.placeholderTxt.innerText = msg;
-                });
-
-                if (success) {
-                    // Update project metadata
-                    const meta = state.projectMetadata;
-                    if (meta.screens) delete meta.screens[fileName];
-                    await saveProjectMetadata(state.currentProject, meta);
-                    
-                    alert("성공적으로 삭제되었습니다.");
-                    // Move to another screen or dashboard
-                    window.location.href = `viewer.html?project=${state.currentProject}`;
-                }
-            }
-        }
-
-        // Screen Management UI logic
-        DOM.btnAddScreen.onclick = () => {
-            if (state.isReadOnly) return showAuthModal();
-            DOM.addScreenModal.classList.add('active');
-            DOM.newScreenName.value = "";
-            context.selectedTemplate = null;
-            DOM.templateCards.forEach(c => c.classList.remove('active'));
-        };
-
-        DOM.btnCancelAdd.onclick = () => DOM.addScreenModal.classList.remove('active');
-
-        DOM.templateCards.forEach(card => {
-            card.onclick = () => {
-                DOM.templateCards.forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
-                context.selectedTemplate = card.dataset.template;
-                
-                // Auto-fill name if empty (using smart default)
-                if (!DOM.newScreenName.value.trim()) {
-                    const defaultName = card.dataset.defaultName;
-                    const timestamp = new Date().getTime().toString().slice(-4);
-                    DOM.newScreenName.value = `${defaultName}_${timestamp}`;
-                }
-            };
-        });
-
-        DOM.btnUploadLocal.onclick = () => DOM.addScreenUpload.click();
-
-        DOM.btnSubmitAdd.onclick = async () => {
-            if (!DOM.newScreenName.value.trim()) return alert("화면 파일명을 입력해주세요.");
-            if (!context.selectedTemplate) return alert("사용할 에셋 템플릿을 선택해주세요.");
-
-            const screenName = DOM.newScreenName.value.trim();
-            const template = context.selectedTemplate;
-            
-            // UI Feedback: Show generating state on card
-            const activeCard = document.querySelector('.template-card.active');
-            if (activeCard) activeCard.classList.add('generating');
-            
-            DOM.btnSubmitAdd.innerText = "생성 중...";
-            DOM.btnSubmitAdd.disabled = true;
-
-            try {
-                const success = await createScreenFromTemplate(state.currentProject, screenName, template, (msg, color) => {
-                    DOM.placeholderTxt.innerText = msg;
-                    if (color === '#ef4444') { // Error state from callback
-                         DOM.btnSubmitAdd.innerText = "다시 시도";
-                         DOM.btnSubmitAdd.disabled = false;
-                         if (activeCard) activeCard.classList.remove('generating');
-                    }
-                });
-
-                if (success) {
-                    location.reload();
-                } else {
-                    // Specific error message is usually updated via callback above
-                    alert("화면 생성에 실패했습니다. 입력한 파일명이 이미 존재하거나 권한이 부족할 수 있습니다.\n콘솔 로그를 확인하거나 다시 시도해주세요.");
-                    DOM.btnSubmitAdd.innerText = "화면 생성하기";
-                    DOM.btnSubmitAdd.disabled = false;
-                    if (activeCard) activeCard.classList.remove('generating');
-                }
-            } catch (err) {
-                console.error("[SubmitAdd] Error:", err);
-                alert(`오류 발생: ${err.message}`);
-                DOM.btnSubmitAdd.innerText = "화면 생성하기";
-                DOM.btnSubmitAdd.disabled = false;
-                if (activeCard) activeCard.classList.remove('generating');
-            }
-        };
-
-        async function handleAddScreen(files) {
-            if (state.isReadOnly) return showAuthModal();
-            const newFiles = Array.from(files).filter(f => f.name.endsWith('.html') || f.name.endsWith('.htm'));
-            if (newFiles.length === 0) return;
-
-            DOM.addScreenModal.classList.remove('active');
-            DOM.placeholder.style.display = 'flex';
-            DOM.placeholderTxt.innerText = "화면 추가 중...";
-
-            for (const file of newFiles) {
-                const reader = new FileReader();
-                await new Promise((resolve) => {
-                    reader.onload = async (ev) => {
-                        const content = ev.target.result;
-                        const success = await uploadToProject(state.currentProject, file.name, content, (msg) => {
-                            DOM.placeholderTxt.innerText = msg;
-                        });
-                        if (success) {
-                            // Update project screens list in metadata
-                            state.projectMetadata.screens = state.projectMetadata.screens || {};
-                            state.projectMetadata.screens[file.name] = { updatedAt: new Date().toISOString() };
-                            await saveProjectMetadata(state.currentProject, state.projectMetadata);
-                        }
-                        resolve();
-                    };
-                    reader.readAsText(file);
-                });
-            }
-            
-            location.reload();
-        }
-
-        async function loadScreen(fileName) {
-            showLoading("Loading: " + fileName);
-            DOM.placeholder.style.display = 'none';
-            
-            const content = await fetchProjectFileContent(state.currentProject, fileName);
-            if (!content) {
-                hideLoading();
-                DOM.placeholder.style.display = 'flex';
-                DOM.placeholderTxt.innerText = "파일을 불러오지 못했습니다.";
-                return;
-            }
-
-            const blob = new Blob([content], {type: 'text/html;charset=utf-8'});
-            const url = URL.createObjectURL(blob);
-            
-            // Wait for iframe to actually load before hiding overlay
-            DOM.iframe.onload = () => {
-                hideLoading();
-                DOM.iframe.onload = null; // Prevent double trigger
-            };
-
-            DOM.iframe.src = url;
-            DOM.iframe.style.display = 'block';
-
-            // Local Screen Metadata (Descriptions/Pins)
-            let scMeta = (state.projectMetadata.screens || {})[fileName] || {};
-            
-            // Normalize descriptions
-            if (!scMeta.description) {
-                scMeta.description = [];
-            } else if (typeof scMeta.description === 'string') {
-                scMeta.description = scMeta.description.trim() ? [{ text: scMeta.description, x: 0, y: 0 }] : [];
-            }
-
-            state.activeFile = { 
-                name: fileName, 
-                size: (content.length / 1024).toFixed(1) + ' KB',
-                meta: scMeta
-            };
-            
-            DOM.fileName.innerText = state.projectMetadata.title || state.currentProject;
-            DOM.bottomFilename.innerText = fileName;
-            
-            renderDescriptionList();
-            setTimeout(() => centerView(), 150);
-        }
-
-
-
-        function updateProperties() {
-            if (!state.activeFile || !state.projectMetadata) return;
-            const pm = state.projectMetadata;
-            const m = state.activeFile.meta || {};
-
-            // 1. Top Bar: Project Meta
-            DOM.metadataPanel.innerHTML = `
-                <div class="form-group-inline">
-                    <label class="form-label">프로젝트명</label>
-                    <input type="text" id="viewer-meta-title" class="form-input" value="${pm.title || ''}" placeholder="제목 입력" ${state.isReadOnly ? 'disabled' : ''}>
-                </div>
-                <div class="form-group-inline">
-                    <label class="form-label">담당자</label>
-                    <input type="text" id="viewer-meta-assignee" class="form-input" value="${pm.assignee || ''}" placeholder="담당자 입력" ${state.isReadOnly ? 'disabled' : ''}>
-                </div>
-                <div class="form-group-inline">
-                    <label class="form-label">기간</label>
-                    <input type="text" id="viewer-meta-period" class="form-input" value="${pm.period || ''}" placeholder="기간 입력" ${state.isReadOnly ? 'disabled' : ''}>
-                </div>
-                <div class="form-group-inline">
-                    <label class="form-label">JIRA</label>
-                    <input type="text" id="viewer-meta-jira" class="form-input" value="${pm.jira || ''}" placeholder="JIRA 번호 입력" ${state.isReadOnly ? 'disabled' : ''}>
-                </div>
-                <div class="form-group-inline">
-                    <label class="form-label">FIGMA</label>
-                    <input type="text" id="viewer-meta-figma" class="form-input" value="${pm.figmaUrl || ''}" placeholder="피그마 주소" ${state.isReadOnly ? 'disabled' : ''}>
-                    ${pm.figmaUrl ? `<a href="${pm.figmaUrl}" target="_blank" style="margin-left:4px; font-size:12px; color:var(--accent);">[열기]</a>` : ''}
-                </div>
-                <div class="form-group-inline">
-                    <label class="form-label">PUB</label>
-                    <input type="text" id="viewer-meta-pub" class="form-input" value="${pm.pubUrl || ''}" placeholder="퍼블리싱 주소" ${state.isReadOnly ? 'disabled' : ''}>
-                    ${pm.pubUrl ? `<a href="${pm.pubUrl}" target="_blank" style="margin-left:4px; font-size:12px; color:var(--accent);">[열기]</a>` : ''}
-                </div>
-            `;
-
-            // Initialize Events
-            const periodInput = document.getElementById('viewer-meta-period');
-            if (!state.isReadOnly) {
-                flatpickr(periodInput, {
-                    mode: "range",
-                    locale: "ko",
-                    dateFormat: "Y.m.d",
-                    defaultDate: pm.period ? pm.period.split(' ~ ') : null,
-                    onChange: (selectedDates) => {
-                        if (selectedDates.length === 2) {
-                            const days = ['일', '월', '화', '수', '목', '금', '토'];
-                            const format = (d) => {
-                                const year = d.getFullYear();
-                                const month = String(d.getMonth() + 1).padStart(2, '0');
-                                const date = String(d.getDate()).padStart(2, '0');
-                                const day = days[d.getDay()];
-                                return `${year}.${month}.${date}(${day})`;
-                            };
-                            periodInput.value = `${format(selectedDates[0])} ~ ${format(selectedDates[1])}`;
-                        }
-                    }
-                });
-            }
-
-            // 2. Right Sidebar: Description (List)
-            renderDescriptionList();
-
-            // 3. Bottom Bar: Stats
-            DOM.bottomFilename.innerText = state.activeFile.name;
-            DOM.bottomSize.innerText = state.activeFile.size;
-            DOM.bottomUpdated.innerText = m.updatedAt ? new Date(m.updatedAt).toLocaleString() : '-';
-        }
-
-        async function handleGlobalSave() {
-            if (state.isReadOnly) return showAuthModal();
-            if (!state.activeFile) return;
-
-            const btn = DOM.btnGlobalSave;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="material-icons-outlined" style="font-size:16px;">sync</span> 저장 중...';
-            btn.style.opacity = '0.7';
-
-            // Collect Project Meta
-            const projectMeta = {
-                title: document.getElementById('viewer-meta-title')?.value || '',
-                assignee: document.getElementById('viewer-meta-assignee')?.value || '',
-                period: document.getElementById('viewer-meta-period')?.value || '',
-                jira: document.getElementById('viewer-meta-jira')?.value || '',
-                figmaUrl: document.getElementById('viewer-meta-figma')?.value || '',
-                pubUrl: document.getElementById('viewer-meta-pub')?.value || ''
-            };
-
-            // Collect Screen Data
-            const data = {
-                projectMeta,
-                description: state.activeFile.meta.description
-            };
-
-            const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, data, (msg, color) => {
-                btn.innerHTML = `<span class="material-icons-outlined" style="font-size:16px;">${color === '#4ade80' ? 'check_circle' : 'error'}</span> ${msg}`;
-                btn.style.background = color || '';
-                btn.style.opacity = '1';
-                
-                if (color === '#4ade80') {
-                    setTimeout(() => {
-                        btn.innerHTML = originalText;
-                        btn.style.background = '';
-                    }, 2000);
-                }
-            });
-
-            if (success) {
-                // Update local state and title display
-                Object.assign(state.projectMetadata, projectMeta);
-                if (projectMeta.title) DOM.fileName.innerText = projectMeta.title;
-            }
-        }
-
-        DOM.btnGlobalSave.onclick = handleGlobalSave;
-
-        function renderDescriptionList() {
-            if (!state.activeFile) return;
-            const list = state.activeFile.meta.description;
-            DOM.descriptionList.innerHTML = '';
-            DOM.pinsLayer.innerHTML = '';
-
-            list.forEach((item, index) => {
-                // 1. Create Sidebar Row
-                const row = document.createElement('div');
-                row.className = 'desc-row';
-                row.draggable = !state.isReadOnly;
-                row.dataset.index = index;
-                row.innerHTML = `
-                    <div class="desc-index">${index + 1}</div>
-                    <textarea class="desc-input" rows="1" placeholder="설명을 입력하세요..." ${state.isReadOnly ? 'disabled' : ''}>${item.text || ''}</textarea>
-                    <div class="desc-actions">
-                        <button class="desc-btn desc-btn-del" data-index="${index}" title="삭제"><span class="material-icons-outlined">remove_circle_outline</span></button>
-                    </div>
-                `;
-
-                // 2. Create Canvas Pin
-                const pin = document.createElement('div');
-                pin.className = 'pin-marker';
-                pin.dataset.index = index;
-                pin.innerText = index + 1;
-                pin.style.left = (item.x || 0) + '%';
-                pin.style.top = (item.y || 0) + '%';
-                
-                // Pin Interaction: Highlight Sync
-                const highlight = (active) => {
-                    pin.classList.toggle('highlight', active);
-                    row.classList.toggle('highlight', active);
-                };
-                pin.onmouseenter = () => highlight(true);
-                pin.onmouseleave = () => highlight(false);
-                row.onmouseenter = () => highlight(true);
-                row.onmouseleave = () => highlight(false);
-
-                // Pin Dragging Start
-                pin.onmousedown = (e) => {
-                    if (state.isReadOnly) return;
-                    e.stopPropagation();
-                    e.preventDefault();
-                    state.draggingPinIndex = index;
-                    highlight(true);
-                };
-
-                // Row Text Input Persistence
-                const input = row.querySelector('.desc-input');
-                input.oninput = () => {
-                    item.text = input.value;
-                    autoResize(input);
-                };
-                
-                // Auto resize on show
-                const autoResize = (el) => {
-                    el.style.height = 'auto';
-                    el.style.height = el.scrollHeight + 'px';
-                };
-
-                // Drag & Drop for reordering
-                row.ontoolstart = (e) => e.dataTransfer.setData('text/plain', index);
-                row.ondragstart = (e) => e.dataTransfer.setData('text/plain', index);
-                row.ondragend = () => document.querySelectorAll('.desc-row').forEach(r => r.classList.remove('drag-over'));
-                row.ondragover = (e) => { e.preventDefault(); row.classList.add('drag-over'); };
-                row.ondragleave = () => row.classList.remove('drag-over');
-                row.ondrop = (e) => {
-                    e.preventDefault();
-                    const fromIndex = parseInt(e.dataTransfer.getData('text/plain'));
-                    const toIndex = parseInt(row.dataset.index);
-                    if (fromIndex !== toIndex) {
-                        const [movedItem] = list.splice(fromIndex, 1);
-                        list.splice(toIndex, 0, movedItem);
-                        renderDescriptionList();
-                    }
-                };
-
-                DOM.descriptionList.appendChild(row);
-                DOM.pinsLayer.appendChild(pin);
-                autoResize(input);
-
-                // Delete Row Button
-                const delBtn = row.querySelector('.desc-btn-del');
-                delBtn.onclick = () => {
-                    if (state.isReadOnly) return showAuthModal();
-                    list.splice(index, 1);
-                    renderDescriptionList();
-                };
-            });
-
-            // Add Row Button
-            const addBtn = document.createElement('button');
-            addBtn.className = 'add-row-btn';
-            addBtn.style.margin = '16px 0';
-            addBtn.style.width = '100%';
-            addBtn.innerHTML = '<span class="material-icons-outlined">add_circle_outline</span> 새 행 추가 (화면 클릭)';
-            addBtn.onclick = () => {
-                if (state.isReadOnly) return showAuthModal();
-                if (!state.activeFile) return;
-                state.activeFile.meta.description = state.activeFile.meta.description || [];
-                state.activeFile.meta.description.push({ text: '', x: 50, y: 50 });
-                renderDescriptionList();
-                setTimeout(() => {
-                    const inputs = DOM.descriptionList.querySelectorAll('.desc-input');
-                    inputs[inputs.length - 1]?.focus();
-                }, 50);
-            };
-            DOM.descriptionList.appendChild(addBtn);
-        }
-
-        // --- Canvas Click to Place Pin ---
-        DOM.pinsLayer.onclick = (e) => {
-            if (state.isReadOnly || !state.activeFile) return;
-            if (state.tool !== 'select') return;
-            // Only if clicking on the layer itself, not an existing pin
-            if (e.target === DOM.pinsLayer) {
-                const r = DOM.pinsLayer.getBoundingClientRect();
-                const px = ((e.clientX - r.left) / r.width) * 100;
-                const py = ((e.clientY - r.top) / r.height) * 100;
-                
-                state.activeFile.meta.description.push({ 
-                    text: '', 
-                    x: Math.max(0, Math.min(px, 100)), 
-                    y: Math.max(0, Math.min(py, 100)) 
-                });
-                renderDescriptionList();
-                
-                // Focus the new input
-                setTimeout(() => {
-                    const inputs = DOM.descriptionList.querySelectorAll('.desc-input');
-                    inputs[inputs.length - 1]?.focus();
-                }, 50);
-            }
-        };
-
-        // --- Layout & Panel Handlers ---
-        function toggleSidebar(side) {
-            if (side === 'left') {
-                const collapsed = DOM.sidebarLeft.classList.toggle('collapsed');
-                DOM.btnToggleLeft.querySelector('span').innerText = collapsed ? 'chevron_right' : 'chevron_left';
-            } else {
-                const collapsed = DOM.sidebarRight.classList.toggle('collapsed');
-                DOM.btnToggleRight.querySelector('span').innerText = collapsed ? 'chevron_left' : 'chevron_right';
-            }
-            setTimeout(() => centerView(), 300);
-        }
-
-        DOM.btnToggleLeft.onclick = () => toggleSidebar('left');
-        DOM.btnToggleRight.onclick = () => toggleSidebar('right');
-
-        // Screen Addition (Uploader) - Only keep the onchange handler for local uploads
-        if (DOM.addScreenUpload) {
-            DOM.addScreenUpload.onchange = (e) => {
-                handleAddScreen(e.target.files);
-                e.target.value = '';
-            };
-        }
-
-        function setDeviceViewport(type, w, h) {
-            document.querySelectorAll('.tools .device-btn').forEach(btn => btn.classList.remove('active'));
-            if(type === 'mobile') document.querySelector('.tools .tool-btn[onclick*="mobile"]').classList.add('active');
-            else if(type === 'tablet') document.querySelector('.tools .tool-btn[onclick*="tablet"]').classList.add('active');
-            else document.getElementById('btn-desktop').classList.add('active');
-
-            // Sync Wrapper and Iframe (CRITICAL for child centering)
-            if (DOM.artboardWrapper) {
-                DOM.artboardWrapper.style.width = w + 'px';
-                DOM.artboardWrapper.style.height = h + 'px';
-            }
-            DOM.iframe.style.width = w + 'px';
-            DOM.iframe.style.height = h + 'px';
-            
-            setTimeout(() => centerView(), 100);
-        }
-
-        function adjustZoom(delta) {
-            let s = state.transform.scale + delta;
-            s = Math.max(0.1, Math.min(s, 3));
-            state.transform.scale = s;
-            updateTransform();
-        }
-
-        function adjustZoom(delta) {
-            let s = state.transform.scale + delta;
-            s = Math.max(0.1, Math.min(s, 3));
-            state.transform.scale = s;
-            updateTransform();
-        }
-
-        function centerView() {
-            if (!DOM.canvas || !DOM.iframe) return;
-            const iw = parseInt(DOM.iframe.style.width) || 1440;
-            const ih = parseInt(DOM.iframe.style.height) || 900;
-            const cw = DOM.canvas.clientWidth;
-            const ch = DOM.canvas.clientHeight;
-            let s = Math.min((cw * 0.95) / iw, (ch * 0.95) / ih, 1);
-            if (s > 0.98) s = 0.98;
-            
-            state.transform = {
-                x: (cw - (iw * s)) / 2,
-                y: (ch - (ih * s)) / 2,
-                scale: s
-            };
-            updateTransform();
-        }
-
-        function updateTransform() {
-            DOM.stage.style.transform = `translate(${state.transform.x}px, ${state.transform.y}px) scale(${state.transform.scale})`;
-            DOM.zoomTxt.innerText = Math.round(state.transform.scale * 100) + '%';
-        }
-
-        // --- Tools & Inputs ---
-        function setTool(t) {
-            state.tool = t;
-            DOM.btnSelect.classList.toggle('active', t === 'select');
-            DOM.btnHand.classList.toggle('active', t === 'hand');
-            DOM.canvas.classList.toggle('hand-active', t === 'hand');
-            DOM.iframe.style.pointerEvents = t === 'hand' ? 'none' : 'auto';
-        }
-        DOM.btnSelect.onclick = () => setTool('select');
-        DOM.btnHand.onclick = () => setTool('hand');
-
-        // Keyboard Shortcuts
-        window.addEventListener('keydown', e => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-            if(e.key === 'Escape') window.location.href = 'index.html';
-            if(e.code === 'Space' && state.tool !== 'hand') {
-                DOM.canvas.classList.add('hand-active');
-                DOM.iframe.style.pointerEvents = 'none';
-            }
-            if(e.code === 'KeyV') setTool('select');
-            if(e.code === 'KeyH') setTool('hand');
-            if(e.code === 'KeyL') toggleSidebar('left');
-            if(e.code === 'KeyR') toggleSidebar('right');
-        });
-        window.addEventListener('keyup', e => {
-            if(e.code === 'Space' && state.tool !== 'hand') {
-                DOM.canvas.classList.remove('hand-active');
-                DOM.iframe.style.pointerEvents = 'auto';
-            }
-        });
-
-        // Mouse Interactivity
-        DOM.canvas.addEventListener('wheel', e => {
-            e.preventDefault();
-            const s = state.transform.scale;
-            const delta = e.deltaY > 0 ? -0.1 : 0.1;
-            const ns = Math.max(0.1, Math.min(s * (1 + delta), 20));
-            const r = DOM.canvas.getBoundingClientRect();
-            const mx = e.clientX - r.left;
-            const my = e.clientY - r.top;
-            state.transform.x = mx - (mx - state.transform.x) * (ns / s);
-            state.transform.y = my - (my - state.transform.y) * (ns / s);
-            state.transform.scale = ns;
-            updateTransform();
-        }, {passive: false});
-
-        DOM.canvas.addEventListener('mousedown', e => {
-            const isHand = state.tool === 'hand' || e.button === 1 || DOM.canvas.classList.contains('hand-active');
-            if(isHand) {
-                state.isDragging = true;
-                state.startX = e.clientX - state.transform.x;
-                state.startY = e.clientY - state.transform.y;
-                e.preventDefault();
-            }
-        });
-
-        window.addEventListener('mousemove', e => {
-            if (state.isDragging) {
-                state.transform.x = e.clientX - state.startX;
-                state.transform.y = e.clientY - state.startY;
-                updateTransform();
-            }
-            if (state.draggingPinIndex !== null) {
-                const r = DOM.pinsLayer.getBoundingClientRect();
-                let px = Math.max(0, Math.min(((e.clientX - r.left) / r.width) * 100, 100));
-                let py = Math.max(0, Math.min(((e.clientY - r.top) / r.height) * 100, 100));
-                const item = state.activeFile.meta.description[state.draggingPinIndex];
-                if (item) {
-                    item.x = px;
-                    item.y = py;
-                    const pin = DOM.pinsLayer.querySelector(`.pin-marker[data-index="${state.draggingPinIndex}"]`);
-                    if (pin) { pin.style.left = px + '%'; pin.style.top = py + '%'; }
-                }
-            }
-        });
-
-        window.addEventListener('mouseup', () => {
-            state.isDragging = false;
-            state.draggingPinIndex = null;
-        });
-        // Event for Auth Modal
-        if (DOM.btnShowAuth) DOM.btnShowAuth.onclick = () => showAuthModal();
-        if (DOM.btnAuthSubmit) DOM.btnAuthSubmit.onclick = handleAuthSubmit;
-        if (DOM.btnAuthClose) DOM.btnAuthClose.onclick = hideAuthModal;
-        if (DOM.tokenInput) DOM.tokenInput.onkeyup = (e) => { if(e.key==='Enter') handleAuthSubmit(); };
-
-        // 8. Start App
-        init();
-    </script>
+    <!-- Script modularization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Draggable.min.js"></script>
+    <script src="assets/templates.js?v=20240421_v1"></script>
+    <script src="assets/app.js?v=20240421_v1"></script>
+    <script src="assets/viewer.js?v=20240421_v10"></script>
 </body>
 </html>

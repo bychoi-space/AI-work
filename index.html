@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/theme.css">
     <!-- Flatpickr (Date Picker) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -47,7 +48,6 @@
             <span style="font-weight: 600; letter-spacing: 0.5px;">bychoi workspace</span>
         </a>
         
-        <!-- Right Actions (Sign In / Status) -->
         <div class="actions">
              <div style="display:flex; align-items:center; gap:8px;">
                 <span id="gh-status" style="font-size:10px; color:var(--text-secondary); margin-right:4px;"></span>
@@ -67,13 +67,7 @@
                 <span class="material-icons-outlined" style="margin-right: 6px;">create_new_folder</span> New Project
             </button>
         </div>
-        <div class="card-grid" id="file-list">
-            <!-- Loading state -->
-            <div id="loading-state" class="empty-text" style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 60px 0;">
-                <div class="intro-loader" style="width: 32px; height: 32px; border-width: 3px;"></div>
-                <div style="opacity: 0.6;">GitHub에서 파일을 동기화 중입니다...</div>
-            </div>
-        </div>
+        <div class="card-grid" id="file-list"></div>
     </div>
 
 
@@ -93,28 +87,16 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">프로젝트명 / 제목</label>
+                    <label class="form-label">프로젝트명 / 제목 <span style="color: #f87171;">*</span></label>
                     <input type="text" id="meta-title" class="form-input" placeholder="예: 메인 페이지 개편안">
                 </div>
                 <div class="form-group">
                     <label class="form-label">기간</label>
-                    <input type="text" id="meta-period" class="form-input" placeholder="예: 2024.04.10 - 2024.04.20">
+                    <input type="text" id="meta-period" class="form-input" placeholder="예: 2024.04.10 ~ 2024.04.20">
                 </div>
                 <div class="form-group">
                     <label class="form-label">담당자</label>
                     <input type="text" id="meta-assignee" class="form-input" placeholder="예: 홍길동">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">JIRA 번호</label>
-                    <input type="text" id="meta-jira" class="form-input" placeholder="예: LFML-138562">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">FIGMA (디자인산출물)</label>
-                    <input type="text" id="meta-figma" class="form-input" placeholder="피그마 링크 주소">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">퍼블리싱 산출물</label>
-                    <input type="text" id="meta-pub" class="form-input" placeholder="퍼블리싱 링크 주소">
                 </div>
             </div>
             <div class="modal-footer">
@@ -124,7 +106,7 @@
         </div>
     </div>
 
-    <!-- Auth Modal (NEW) -->
+    <!-- Auth Modal -->
     <div id="auth-modal" class="modal-overlay">
         <div class="modal-card" style="max-width: 400px;">
             <div class="modal-header">
@@ -153,497 +135,18 @@
             </div>
         </div>
     </div>
+    
+    <!-- Global Loading Progress Overlay -->
+    <div id="global-loader">
+        <div class="loader-content">
+            <div class="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            <div class="loader-status" id="loader-status">Fetching project data...</div>
+        </div>
+    </div>
 
-    <script src="assets/app.js?v=20240420_v4"></script>
-    <script>
-        const state = {
-            projects: []
-        };
-
-        const DOM = {
-            list: document.getElementById('file-list'),
-            ghStatus: document.getElementById('gh-status'),
-            btnShowAuth: document.getElementById('btn-show-auth'),
-            authBtnText: document.getElementById('auth-btn-text'),
-            btnCreateProject: document.getElementById('btn-create-project'),
-            uploadTop: document.getElementById('file-upload-top'),
-            
-            // Modal DOM
-            modal: document.getElementById('metadata-modal'),
-            modalMainTitle: document.getElementById('modal-main-title'),
-            groupIdField: document.getElementById('group-project-id'),
-            metaProjectId: document.getElementById('meta-project-id'),
-            modalFilenameDisplay: document.getElementById('modal-filename'),
-            metaTitle: document.getElementById('meta-title'),
-            metaPeriod: document.getElementById('meta-period'),
-            metaAssignee: document.getElementById('meta-assignee'),
-            metaJira: document.getElementById('meta-jira'),
-            metaFigma: document.getElementById('meta-figma'),
-            metaPub: document.getElementById('meta-pub'),
-            btnModalClose: document.getElementById('btn-modal-close'),
-            btnModalSave: document.getElementById('btn-modal-save'),
-            
-            // Auth Modal DOM
-            authModal: document.getElementById('auth-modal'),
-            btnAuthClose: document.getElementById('btn-modal-auth-cancel'),
-            btnAuthSubmit: document.getElementById('btn-modal-auth-submit'),
-            btnAuthTest: document.getElementById('btn-modal-auth-test'),
-            tokenInput: document.getElementById('modal-gh-token'),
-            ownerInput: document.getElementById('modal-gh-owner'),
-            repoInput: document.getElementById('modal-gh-repo'),
-            authStatus: document.getElementById('modal-auth-status')
-        };
-
-        const context = {
-            currentEditingProject: null,
-            isCreateMode: false
-        };
-
-        // Initialize GitHub Status
-        function updateStatusUI(text, color) {
-            const repoInfo = ` [${ghConfig.owner}/${ghConfig.repo}]`;
-            DOM.ghStatus.innerText = text + (text.includes('에러') || text.includes('실패') ? repoInfo : '');
-            if (color) DOM.ghStatus.style.color = color;
-        }
-
-        function checkEnvironment() {
-            if (window.location.protocol === 'file:') {
-                console.warn("[Env] Running on file:// protocol. This may cause CORS issues.");
-                const warn = document.createElement('div');
-                warn.style.cssText = 'position:fixed; top:0; left:0; width:100%; background:#ef4444; color:white; padding:4px; text-align:center; font-size:11px; z-index:9999;';
-                warn.innerHTML = '<b>주의:</b> 브라우저 보안 정책으로 인해 로컬 파일 실행 시 프로젝트 생성이 제한될 수 있습니다. (Live Server 권장)';
-                document.body.prepend(warn);
-            }
-            console.log(`[Config] Target Repo: ${ghConfig.owner}/${ghConfig.repo}`);
-        }
-        checkEnvironment();
-
-        // Project List Rendering
-        async function refreshFileList() {
-            const isGuest = ghConfig.isReadOnly;
-            
-            // Update Auth Button UI (IMMEDIATELY)
-            if (DOM.authBtnText) DOM.authBtnText.innerText = isGuest ? '에디터 인증' : '에디터 모드 (관리 중)';
-            if (DOM.btnShowAuth) {
-                DOM.btnShowAuth.style.background = isGuest ? 'rgba(255,255,255,0.05)' : 'rgba(0, 229, 255, 0.1)';
-                DOM.btnShowAuth.style.color = isGuest ? '#fff' : 'var(--accent)';
-            }
-
-            if (isGuest) {
-                updateStatusUI('게스트 모드 (읽기 전용) 👥', '#94a3b8');
-            } else {
-                updateStatusUI('동기화 중... 🔄', '#facc15');
-            }
-            
-            try {
-                // 1. Fetch Repository Root for Migration check
-                const rootItems = await listRepoRoot();
-                
-                // 2. Identify Legacy Files (HTML files in root NOT being index.html or viewer.html)
-                const systemFiles = ['index.html', 'viewer.html', 'stitch_ui_viewer.html'];
-                const legacies = (Array.isArray(rootItems) ? rootItems : []).filter(i => 
-                    i.type === 'file' && 
-                    (i.name.endsWith('.html') || i.name.endsWith('.htm')) &&
-                    !systemFiles.includes(i.name.toLowerCase())
-                );
-                
-                // 3. Fetch data/ directory for project listing
-                const dataItems = await listContents('');
-                if (!Array.isArray(dataItems)) {
-                    throw new Error("Could not fetch project list (invalid response)");
-                }
-                const folders = dataItems.filter(i => i.type === 'dir' && i.name !== 'assets');
-
-                // Update loading text if migration starts
-                const loadingText = document.querySelector('#loading-state div:last-child');
-
-                if (legacies.length > 0) {
-                    console.log("[Migration] Found legacy files in root. Moving to Default_Project...");
-                    updateStatusUI('기존 파일 마이그레이션 중... ⏳', '#facc15');
-                    if (loadingText) loadingText.innerText = "기존 파일을 프로젝트로 옮기는 중입니다 (수 분 소요될 수 있음)...";
-                    
-                    const defaultMeta = await fetchProjectMetadata('Default_Project');
-                    let count = 0;
-                    for (const f of legacies) {
-                        count++;
-                        if (loadingText) loadingText.innerText = `마이그레이션 중... (${count}/${legacies.length})`;
-                        try {
-                            const content = await fetchFileContent(f.name, true);
-                            if (content) {
-                                defaultMeta.screens = defaultMeta.screens || {};
-                                defaultMeta.screens[f.name] = { updatedAt: new Date().toISOString() };
-                                await uploadToProject('Default_Project', f.name, content);
-                                await deleteFileFromGitHub(f.name, f.sha, true);
-                            }
-                        } catch (e) { console.error("Migration failed for:", f.name, e); }
-                    }
-                    await saveProjectMetadata('Default_Project', defaultMeta);
-                    if (!folders.find(fol => fol.name === 'Default_Project')) {
-                        folders.push({ name: 'Default_Project', type: 'dir' });
-                    }
-                }
-
-                if (loadingText) loadingText.innerText = "프로젝트 정보를 불러오는 중...";
-
-                // 4. Force inject Default_Project if not found but exists in metadata
-                if (folders.length === 0 || !folders.find(f => f.name === 'Default_Project')) {
-                    folders.unshift({ name: 'Default_Project', type: 'dir' });
-                }
-
-                // 5. Fetch metadata for each project in parallel
-                const projectData = await Promise.all(folders.map(async (folder) => {
-                    const meta = await fetchProjectMetadata(folder.name);
-                    const screens = meta.screens || meta.files || {};
-                    return {
-                        name: folder.name,
-                        meta: meta,
-                        screens: Object.keys(screens).length
-                    };
-                }));
-                state.projects = projectData;
-                renderList();
-                updateStatusUI(isGuest ? '게스트 모드 (읽기 전용) 👥' : '가동 중🟢', isGuest ? '#94a3b8' : '#4ade80');
-            } catch (err) {
-                console.error("refreshFileList error:", err);
-                updateStatusUI('동기화 오류 ❌', '#ef4444');
-                DOM.list.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">동기화 오류가 발생했습니다. (토큰 또는 네트워크 확인)</div>`;
-            } finally {
-                const loading = document.getElementById('loading-state');
-                if (loading) loading.style.display = 'none';
-            }
-        }
-
-        /**
-         * Auth Modal Logic
-         */
-        function showAuthModal() {
-            if (DOM.ownerInput) DOM.ownerInput.value = ghConfig.owner;
-            if (DOM.repoInput) DOM.repoInput.value = ghConfig.repo;
-            if (DOM.tokenInput) DOM.tokenInput.value = ghConfig.token || '';
-            if (DOM.authModal) DOM.authModal.classList.add('active');
-        }
-        function hideAuthModal() {
-            if (DOM.authModal) DOM.authModal.classList.remove('active');
-            if (DOM.authStatus) DOM.authStatus.innerText = "";
-        }
-        async function handleAuthSubmit() {
-            const config = {
-                token: DOM.tokenInput.value.trim(),
-                owner: DOM.ownerInput.value.trim(),
-                repo: DOM.repoInput.value.trim()
-            };
-
-            const success = await verifyConnection(config, (msg, color) => {
-                DOM.authStatus.innerText = msg;
-                DOM.authStatus.style.color = color;
-            });
-
-            if (success) {
-                ghConfig.owner = config.owner;
-                ghConfig.repo = config.repo;
-                ghConfig.token = config.token;
-                
-                setTimeout(() => {
-                    hideAuthModal();
-                    location.reload(); 
-                }, 1000);
-            }
-        }
-
-        async function handleAuthTest() {
-            const config = {
-                token: DOM.tokenInput.value.trim(),
-                owner: DOM.ownerInput.value.trim(),
-                repo: DOM.repoInput.value.trim()
-            };
-            await verifyConnection(config, (msg, color) => {
-                DOM.authStatus.innerText = msg;
-                DOM.authStatus.style.color = color;
-            });
-        }
-
-        async function renderList() {
-            if (state.projects.length === 0) {
-                DOM.list.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">프로젝트가 없습니다.</div>`;
-                return;
-            }
-
-            DOM.list.innerHTML = '';
-            for (const p of state.projects) {
-                const card = document.createElement('a');
-                card.className = 'file-card';
-                // Find first screen to open by default, or just open project
-                const firstScreen = Object.keys(p.meta.screens || {})[0] || '';
-                card.href = `viewer.html?project=${encodeURIComponent(p.name)}${firstScreen ? '&file='+encodeURIComponent(firstScreen) : ''}`;
-                
-                const m = p.meta;
-                const mainTitle = m.title || p.name;
-                const subInfo = `${p.screens} screens • ${p.name}`;
-
-                card.innerHTML = `
-                    <div class="edit-btn-card" data-project="${p.name}" title="정보 수정">
-                        <span class="material-icons-outlined">edit</span>
-                    </div>
-                    <div class="delete-btn-card" data-project="${p.name}" title="프로젝트 삭제">
-                        <span class="material-icons-outlined">delete_outline</span>
-                    </div>
-                    <div class="thumbnail-wrapper" style="background: linear-gradient(135deg, #1e293b, #0f172a);">
-                        <div class="icon-wrapper" style="width: 100%; height: 100%;">
-                            <span class="material-icons-outlined" style="font-size: 48px; opacity: 0.6; color: var(--accent);">folder</span>
-                        </div>
-                    </div>
-                    <div class="card-info">
-                        <div class="card-name" title="${mainTitle}">${mainTitle}</div>
-                        <div class="card-meta">${subInfo}</div>
-                    </div>
-                `;
-                DOM.list.appendChild(card);
-            }
-        }
-
-        // Deletion & Edition Logic (Event Delegation)
-        document.addEventListener('click', async (e) => {
-            const delBtn = e.target.closest('.delete-btn-card');
-            const editBtn = e.target.closest('.edit-btn-card');
-
-            if (editBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (ghConfig.isReadOnly) return showAuthModal();
-                const projectName = editBtn.dataset.project;
-                openEditProjectModal(projectName);
-                return;
-            }
-
-
-            if (delBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (ghConfig.isReadOnly) return showAuthModal();
-                const projectName = delBtn.dataset.project;
-                
-                if (confirm(`'${projectName}' 프로젝트와 모든 관련 파일을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
-                    const success = await deleteProjectWithContents(projectName, updateStatusUI);
-                    if (success) {
-                        state.projects = state.projects.filter(p => p.name !== projectName);
-                        renderList();
-                        setTimeout(() => refreshFileList(), 1500);
-                    }
-                }
-            }
-        });
-
-        // Helper for Date Formatting
-        function formatKODateRange(selectedDates) {
-            if (selectedDates.length !== 2) return '';
-            const days = ['일', '월', '화', '수', '목', '금', '토'];
-            const format = (d) => {
-                const year = d.getFullYear();
-                const month = String(d.getMonth() + 1).padStart(2, '0');
-                const date = String(d.getDate()).padStart(2, '0');
-                const day = days[d.getDay()];
-                return `${year}.${month}.${date}(${day})`;
-            };
-            return `${format(selectedDates[0])} ~ ${format(selectedDates[1])}`;
-        }
-
-        // Project Modal & Events
-        DOM.btnCreateProject.onclick = async () => {
-            if (ghConfig.isReadOnly) return showAuthModal();
-            
-            context.isCreateMode = true;
-            context.currentEditingProject = null;
-            
-            // Reset Modal Fields
-            DOM.modalMainTitle.innerText = "새 프로젝트 생성";
-            DOM.groupIdField.style.display = "none"; // Hide ID field as requested for 'Title only' experience
-            DOM.modalFilenameDisplay.innerText = "새로운 프로젝트를 생성합니다. 제목을 입력하면 ID가 자동 생성됩니다.";
-            
-            DOM.metaProjectId.value = "";
-            DOM.metaTitle.value = "";
-            DOM.metaPeriod.value = "";
-            DOM.metaAssignee.value = "";
-            DOM.metaJira.value = "";
-            DOM.metaFigma.value = "";
-            DOM.metaPub.value = "";
-            
-            DOM.modal.classList.add('active');
-
-            // Auto-ID Logic (Always update in background for Create Mode)
-            DOM.metaTitle.oninput = () => {
-                if (context.isCreateMode) {
-                    DOM.metaProjectId.value = slugify(DOM.metaTitle.value);
-                }
-            };
-        };
-
-        async function openEditProjectModal(projectName) {
-            context.isCreateMode = false;
-            context.currentEditingProject = projectName;
-            
-            DOM.modalMainTitle.innerText = "프로젝트 정보 수정";
-            DOM.groupIdField.style.display = "none";
-            
-            updateStatusUI('메타데이터 로딩 중... ⏳', '#facc15');
-            const m = await fetchProjectMetadata(projectName);
-            DOM.modalFilenameDisplay.innerText = `Project: ${projectName}`;
-            DOM.metaTitle.value = m.title || '';
-            DOM.metaPeriod.value = m.period || '';
-            DOM.metaAssignee.value = m.assignee || '';
-            DOM.metaJira.value = m.jira || '';
-            DOM.metaFigma.value = m.figmaUrl || '';
-            DOM.metaPub.value = m.pubUrl || '';
-            
-            DOM.modal.classList.add('active');
-            updateStatusUI('가동 중🟢', '#4ade80');
-            
-            // Initialization of Period Picker (Flatpickr)
-            flatpickr(DOM.metaPeriod, {
-                mode: "range",
-                locale: "ko",
-                dateFormat: "Y.m.d",
-                defaultDate: m.period ? m.period.split(' ~ ') : null,
-                onChange: (selectedDates) => {
-                    if (selectedDates.length === 2) {
-                        DOM.metaPeriod.value = formatKODateRange(selectedDates);
-                    }
-                }
-            });
-        }
-
-
-        DOM.btnModalClose.onclick = () => DOM.modal.classList.remove('active');
-
-        DOM.btnModalSave.onclick = async () => {
-            if (context.isCreateMode && !DOM.metaProjectId.value.trim()) {
-                alert("프로젝트 ID를 입력해주세요.");
-                return;
-            }
-
-            const projectName = context.isCreateMode ? DOM.metaProjectId.value.trim() : context.currentEditingProject;
-            const originalText = DOM.btnModalSave.innerText;
-            
-            // 1. UI Lock to prevent double-clicks
-            DOM.btnModalSave.innerText = '저장 중...';
-            DOM.btnModalSave.disabled = true;
-            DOM.btnModalSave.style.opacity = '0.7';
-            
-            const data = {
-                projectMeta: {
-                    title: DOM.metaTitle.value.trim(),
-                    period: DOM.metaPeriod.value.trim(),
-                    assignee: DOM.metaAssignee.value.trim(),
-                    jira: DOM.metaJira.value.trim(),
-                    figmaUrl: DOM.metaFigma.value.trim(),
-                    pubUrl: DOM.metaPub.value.trim()
-                }
-            };
-
-            try {
-                const success = await updateScreenMetadata(projectName, null, data, (msg, color) => {
-                    DOM.btnModalSave.innerText = msg;
-                    DOM.btnModalSave.style.background = color;
-                    
-                    if (color === '#4ade80') {
-                        setTimeout(() => {
-                            DOM.modal.classList.remove('active');
-                            DOM.btnModalSave.innerText = originalText;
-                            DOM.btnModalSave.disabled = false;
-                            DOM.btnModalSave.style.opacity = '';
-                            DOM.btnModalSave.style.background = '';
-                            refreshFileList();
-                        }, context.isCreateMode ? 2000 : 1000); // More time for project creation
-                    }
-                });
-
-                if (!success) {
-                    DOM.btnModalSave.disabled = false;
-                    DOM.btnModalSave.style.opacity = '';
-                }
-            } catch (err) {
-                console.error("[ModalSave] Error:", err);
-                DOM.btnModalSave.innerText = "에러 발생 ❌";
-                DOM.btnModalSave.style.background = "#ef4444";
-                DOM.btnModalSave.disabled = false;
-                DOM.btnModalSave.style.opacity = '';
-                alert(`저장 중 오류가 발생했습니다: ${err.message}`);
-            }
-        };
-
-        // Upload Logic (Refactored for Project Support)
-        async function handleFiles(fileList) {
-            const newFiles = Array.from(fileList).filter(f => f.name.endsWith('.html') || f.name.endsWith('.htm'));
-            if (newFiles.length === 0) return;
-
-            const targetProject = prompt("파일을 업로드할 프로젝트 이름을 입력하세요 (없으면 'Default_Project'에 저장):", "Default_Project") || "Default_Project";
-
-            for (const file of newFiles) {
-                const reader = new FileReader();
-                reader.onload = async (ev) => {
-                    const content = ev.target.result;
-                    const success = await uploadToProject(targetProject, file.name, content, updateStatusUI);
-                    if (success) {
-                        // Update project screens list in metadata
-                        const meta = await fetchProjectMetadata(targetProject);
-                        meta.screens = meta.screens || {};
-                        meta.screens[file.name] = { updatedAt: new Date().toISOString() };
-                        await saveProjectMetadata(targetProject, meta);
-                        refreshFileList();
-                    }
-                };
-                reader.readAsText(file);
-            }
-        }
-
-        if (DOM.uploadTop) {
-            DOM.uploadTop.addEventListener('change', async (e) => {
-                if (ghConfig.isReadOnly) {
-                    e.preventDefault();
-                    showAuthModal();
-                    e.target.value = '';
-                    return;
-                }
-                await handleFiles(e.target.files);
-                e.target.value = '';
-            });
-        }
-
-        // Event for Auth Modal
-        if (DOM.btnShowAuth) DOM.btnShowAuth.onclick = () => showAuthModal();
-        if (DOM.btnAuthSubmit) DOM.btnAuthSubmit.onclick = handleAuthSubmit;
-        if (DOM.btnAuthTest) DOM.btnAuthTest.onclick = handleAuthTest;
-        if (DOM.btnAuthClose) DOM.btnAuthClose.onclick = hideAuthModal;
-        if (DOM.tokenInput) DOM.tokenInput.onkeyup = (e) => { if(e.key==='Enter') handleAuthSubmit(); };
-
-        // Drag & Drop Handling
-        window.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            if (ghConfig.isReadOnly) return;
-            document.body.classList.add('drag-active');
-        });
-
-        window.addEventListener('dragleave', (e) => {
-            // Check if leaving to outside the window
-            if (e.relatedTarget === null) {
-                document.body.classList.remove('drag-active');
-            }
-        });
-
-        window.addEventListener('drop', async (e) => {
-            e.preventDefault();
-            document.body.classList.remove('drag-active');
-            if (e.dataTransfer.files) {
-                await handleFiles(e.dataTransfer.files);
-            }
-        });
-
-        // 8. Intro (Splash) Handler
-        // (Moved to separate script block above for reliability)
-
-        // Initial Load
-        refreshFileList();
-    </script>
-    <!-- Splash Screen (Intro) - Relocated to bottom for reliability -->
+    <!-- Splash Screen (Intro) -->
     <div id="intro-overlay" class="intro-overlay">
         <div class="intro-content">
             <img src="assets/logo.svg" class="intro-logo-img" alt="Logo">
@@ -651,30 +154,8 @@
             <div class="intro-loader"></div>
         </div>
     </div>
-    <script>
-        // Extreme Reliability Intro Killer
-        (function() {
-            const intro = document.getElementById('intro-overlay');
-            if (!intro) return;
-            
-            const dismiss = () => {
-                intro.style.opacity = '0';
-                intro.style.pointerEvents = 'none';
-                setTimeout(() => {
-                    if (intro.parentNode) intro.remove();
-                    document.body.style.overflow = 'auto'; // Re-enable scroll if disabled
-                }, 1000);
-            };
 
-            // Main Trigger (Accelerated for faster intro)
-            setTimeout(dismiss, 800);
-
-            // Emergency Fallback
-            window.addEventListener('load', () => setTimeout(dismiss, 1200));
-            
-            // Allow clicking to skip
-            intro.addEventListener('click', dismiss);
-        })();
-    </script>
+    <script src="assets/app.js?v=20240420_v4"></script>
+    <script src="assets/dashboard.js"></script>
 </body>
 </html>

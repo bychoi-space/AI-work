@@ -5,266 +5,423 @@
  */
 
 window.LF_TEMPLATES = {
-    'lfmall_mobile_base.html': `<!DOCTYPE html>
+    // 1. Cover Template
+    'template_cover.html': `<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LFmall Mobile Wireframe - {{PROJECT_NAME}}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <title>Cover - {{PROJECT_NAME}}</title>
     <style>
-        :root {
-            --lfmall-black: #000000;
-            --lfmall-gray: #f2f2f2;
-            --lfmall-text: #333333;
-            --lfmall-border: #eeeeee;
-            --accent: #00E5FF;
-        }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            margin: 0; padding: 0; 
-            font-family: 'Inter', -apple-system, sans-serif;
-            background-color: #fff;
-            color: var(--lfmall-text);
-            line-height: 1.4;
-        }
-
-        /* LFmall Header */
-        header {
-            position: sticky; top: 0;
-            background: #fff; border-bottom: 1px solid var(--lfmall-border);
-            height: 54px; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 16px; z-index: 100;
-        }
-        .header-logo { font-weight: 900; font-size: 20px; letter-spacing: -1px; }
-        .header-icons { display: flex; gap: 16px; }
-
-        /* Navigation Tabs */
-        nav {
-            display: flex; gap: 20px; padding: 0 16px; height: 44px;
-            align-items: center; border-bottom: 1px solid var(--lfmall-border);
-            overflow-x: auto; white-space: nowrap; font-size: 14px; font-weight: 600;
-        }
-        nav div.active { color: var(--lfmall-black); border-bottom: 2px solid var(--lfmall-black); height: 44px; line-height: 44px; }
-        nav div { color: #888; }
-
-        /* Main Content */
-        main { padding-bottom: 80px; }
-        
-        .section-title { padding: 20px 16px 10px; font-size: 18px; font-weight: 600; }
-        
-        /* Wireframe Blocks */
-        .placeholder {
-            background: var(--lfmall-gray);
-            border: 1px dashed #ccc;
-            display: flex; align-items: center; justify-content: center;
-            color: #999; font-size: 12px; margin: 0 16px 16px;
-        }
-        
-        .hero { height: 400px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px; }
-        .product-card { height: 250px; background: #fafafa; border: 1px solid var(--lfmall-border); }
-
-        /* Floating Actions or Footer */
-        footer {
-            padding: 40px 16px; background: #fafafa; border-top: 1px solid var(--lfmall-border);
-            font-size: 11px; color: #999;
-        }
-        
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            height: 56px; background: #fff; border-top: 1px solid var(--lfmall-border);
-            display: flex; align-items: center; justify-content: space-around;
-            z-index: 100;
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #666; }
-        .nav-item span { font-size: 24px; margin-bottom: 2px; }
+        body { margin: 0; padding: 0; font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #fff; overflow: hidden; }
+        .page { width: 1440px; height: 900px; position: relative; padding: 80px; box-sizing: border-box; }
+        .logo-area { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .logo-symbol { width: 40px; height: 40px; background: #e60012; position: relative; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 18px; }
+        .logo-text { font-size: 28px; font-weight: 900; color: #1a1a1a; letter-spacing: -1px; }
+        .sub-title { font-size: 18px; color: #666; margin-bottom: 80px; }
+        .main-title { font-size: 56px; font-weight: 900; color: #000; margin-bottom: 20px; margin-top: 100px; }
+        .version-title { font-size: 28px; color: #333; margin-bottom: 40px; border-top: 1px solid #1a1a1a; padding-top: 20px; display: inline-block; min-width: 400px; }
+        .jira-code { position: absolute; right: 80px; top: 400px; font-size: 18px; color: #333; font-weight: bold; }
+        .info-table { position: absolute; right: 80px; bottom: 80px; border-collapse: collapse; width: 600px; }
+        .info-table td { border: 1px solid #ccc; padding: 12px 20px; font-size: 14px; color: #333; }
+        .info-table .label { background: #f8f9fa; color: #666; width: 100px; text-align: center; }
+        .info-table .value { background: #fff; width: 200px; }
     </style>
 </head>
 <body>
-    <header>
-        <div class="material-icons-outlined">menu</div>
-        <div class="header-logo">LFmall: {{SCREEN_NAME}}</div>
-        <div class="header-icons">
-            <span class="material-icons-outlined">search</span>
-            <span class="material-icons-outlined">shopping_bag</span>
+    <div class="page">
+        <div class="logo-area">
+            <div class="logo-symbol">LF</div>
+            <div class="logo-text">LF</div>
         </div>
-    </header>
-
-    <nav>
-        <div class="active">홈</div>
-        <div>베스트</div>
-        <div>스토어</div>
-        <div>특가</div>
-        <div>브랜드</div>
-    </nav>
-
-    <main>
-        <div class="placeholder hero">Hero Banner Placeholder</div>
-        
-        <div class="section-title">New Arrivals</div>
-        <div class="grid">
-            <div class="placeholder product-card">Product 1</div>
-            <div class="placeholder product-card">Product 2</div>
-            <div class="placeholder product-card">Product 3</div>
-            <div class="placeholder product-card">Product 4</div>
-        </div>
-
-        <div class="section-title">Best Sellers</div>
-        <div class="placeholder" style="height: 200px;">Content Block</div>
-    </main>
-
-    <footer>
-        (주) LF | 서울특별시 강남구 언주로 870<br>
-        고객센터 1544-5114
-    </footer>
-
-    <div class="bottom-nav">
-        <div class="nav-item"><span class="material-icons-outlined">home</span>홈</div>
-        <div class="nav-item"><span class="material-icons-outlined">category</span>카테고리</div>
-        <div class="nav-item"><span class="material-icons-outlined">favorite_border</span>찜</div>
-        <div class="nav-item"><span class="material-icons-outlined">person_outline</span>마이</div>
+        <div class="sub-title">E-commerce Platform Project</div>
+        <div class="main-title">{{PROJECT_NAME}}</div>
+        <div class="version-title">문서 버전 : {{VERSION}}</div>
+        <div class="jira-code">JIRA 번호 : {{JIRA}}</div>
+        <table class="info-table">
+            <tr>
+                <td class="label">작성자</td>
+                <td class="value">{{AUTHOR}}</td>
+                <td class="label">작성일</td>
+                <td class="value">{{DATE}}</td>
+            </tr>
+        </table>
     </div>
 </body>
 </html>`,
 
-    'lfmall_pc_base.html': `<!DOCTYPE html>
+    // 2. Architecture Template
+    'template_architecture.html': `<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LFmall PC Wireframe - {{PROJECT_NAME}}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <title>Architecture - {{PROJECT_NAME}}</title>
     <style>
-        :root {
-            --lfmall-black: #000000;
-            --lfmall-gray: #f2f2f2;
-            --lfmall-border: #eeeeee;
-            --content-width: 1200px;
-        }
-        * { box-sizing: border-box; }
-        body { 
-            margin: 0; padding: 0; 
-            font-family: 'Inter', sans-serif;
-            background-color: #fff;
-            color: #333;
-        }
-
-        /* Top Header */
-        .top-utility {
-            height: 32px; border-bottom: 1px solid var(--lfmall-border);
-            font-size: 11px; color: #888;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .container { width: var(--content-width); margin: 0 auto; display: flex; align-items: center; }
-
-        /* Main Header */
-        header {
-            height: 100px; border-bottom: 1px solid var(--lfmall-border);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .header-main { display: flex; align-items: center; width: var(--content-width); justify-content: space-between; }
-        .logo { font-size: 32px; font-weight: 900; letter-spacing: -2px; cursor: pointer; }
-        
-        .search-container {
-            width: 400px; height: 44px; border: 2px solid var(--lfmall-black);
-            display: flex; align-items: center; padding: 0 16px; border-radius: 22px;
-        }
-        .search-input { flex: 1; border: none; outline: none; font-size: 14px; }
-
-        .header-icons { display: flex; gap: 24px; }
-        .icon-item { text-align: center; font-size: 11px; cursor: pointer; }
-        .icon-item span { display: block; font-size: 28px; margin-bottom: 2px; }
-
-        /* Navigation */
-        nav {
-            height: 50px; border-bottom: 1px solid var(--lfmall-border);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .nav-inner { width: var(--content-width); display: flex; gap: 40px; font-size: 16px; font-weight: 700; }
-        .nav-inner div { cursor: pointer; }
-        .nav-inner div:hover { color: #6366f1; }
-
-        /* Main Content */
-        main { padding: 40px 0; display: flex; flex-direction: column; align-items: center; }
-        
-        .placeholder {
-            background: var(--lfmall-gray);
-            border: 1px dashed #ccc;
-            display: flex; align-items: center; justify-content: center;
-            color: #999; font-size: 14px;
-        }
-
-        .hero-banner { width: var(--content-width); height: 500px; margin-bottom: 60px; }
-        
-        .section-title { width: var(--content-width); font-size: 24px; font-weight: 700; margin-bottom: 24px; }
-        .grid { width: var(--content-width); display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        .product-card { height: 400px; }
-
-        /* Footer */
-        footer {
-            background: #fafafa; border-top: 1px solid var(--lfmall-border);
-            padding: 60px 0; display: flex; justify-content: center;
-        }
-        .footer-inner { width: var(--content-width); font-size: 12px; color: #666; line-height: 2; }
+        body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; background: #333; }
+        .page { width: 1440px; height: 900px; background: #fff; margin: 0 auto; position: relative; padding: 20px; box-sizing: border-box; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        .header-bar { height: 40px; background: #3c3c3c; color: #fff; display: flex; align-items: center; padding: 0 20px; font-size: 14px; position: absolute; top:0; left:0; right:0; }
+        .screen-title-overlay { position: absolute; top: 60px; left: 40px; background: #4b4b4b; color: #fff; padding: 12px 60px; border-radius: 8px; font-size: 16px; font-weight: bold; border: 1px solid #999; }
+        .footer { position: absolute; bottom: 0; left:0; right:0; height: 40px; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-symbol { width: 20px; height: 20px; background: #e60012; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); color: #fff; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-weight: 900; font-size: 16px; color: #1a1a1a; }
+        .page-num { position: absolute; left: 50%; transform: translateX(-50%); font-size: 12px; color: #888; }
     </style>
 </head>
 <body>
-    <div class="top-utility">
-        <div class="container" style="justify-content: flex-end; gap: 20px;">
-            <span>로그인</span>
-            <span>회원가입</span>
-            <span>마이페이지</span>
-            <span>주문배송</span>
+    <div class="page">
+        <div class="header-bar">Architecture</div>
+        <div class="screen-title-overlay">{{SCREEN_NAME}} 명세</div>
+        
+        <!-- Content Area -->
+        <div style="margin-top: 100px; font-style: italic; color: #ccc; text-align: center; border: 1px dashed #eee; height: 600px; display: flex; align-items: center; justify-content: center;">
+            상세 아키텍처 다이어그램을 여기에 배치하세요.
+        </div>
+
+        <div class="footer">
+            <div class="logo-area"><div class="logo-symbol">LF</div><div class="logo-text">LF</div></div>
+            <div class="page-num">1</div>
         </div>
     </div>
+</body>
+</html>`,
 
-    <header>
-        <div class="header-main">
-            <div class="logo">LFmall: {{SCREEN_NAME}}</div>
-            <div class="search-container">
-                <input type="text" class="search-input" placeholder="검색어를 입력하세요">
-                <span class="material-icons-outlined">search</span>
-            </div>
-            <div class="header-icons">
-                <div class="icon-item"><span class="material-icons-outlined">favorite_border</span>찜</div>
-                <div class="icon-item"><span class="material-icons-outlined">shopping_bag</span>장바구니</div>
-                <div class="icon-item"><span class="material-icons-outlined">person_outline</span>마이</div>
-            </div>
-        </div>
-    </header>
-
-    <nav>
-        <div class="nav-inner">
-            <div style="color:red">SALE</div>
-            <div>NEW</div>
-            <div>BEST</div>
-            <div>BRAND</div>
-            <div>OUTLET</div>
-        </div>
-    </nav>
-
-    <main>
-        <div class="placeholder hero-banner">Main Visual Slider Placeholder (1200x500)</div>
+    // 3. Plan (Gantt) Template
+    'template_plan.html': `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan - {{PROJECT_NAME}}</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; background: #333; }
+        .page { width: 1440px; height: 900px; background: #fff; margin: 0 auto; position: relative; padding: 0; box-sizing: border-box; }
+        .header-bar { height: 40px; background: #3c3c3c; color: #fff; display: flex; align-items: center; padding: 0 20px; font-size: 14px; }
+        .screen-title-overlay { margin: 20px 40px; background: #4b4b4b; color: #fff; display: inline-block; padding: 10px 40px; border-radius: 6px; font-size: 15px; font-weight: bold; }
         
-        <div class="section-title">Exclusive Products</div>
-        <div class="grid">
-            <div class="placeholder product-card">Item 1</div>
-            <div class="placeholder product-card">Item 2</div>
-            <div class="placeholder product-card">Item 3</div>
-            <div class="placeholder product-card">Item 4</div>
-        </div>
-    </main>
+        .gantt-container { margin: 0 40px; border: 1px solid #ccc; font-size: 12px; border-collapse: collapse; width: calc(100% - 80px); }
+        .gantt-container th, .gantt-container td { border: 1px solid #ccc; height: 32px; padding: 0; }
+        .bg-gray { background: #888; color: #fff; font-weight: bold; }
+        .bg-light-gray { background: #f8f9fa; }
+        
+        .task-list { width: 160px; text-align: center; font-weight: bold; }
+        .month-header { background: #666; color: #fff; text-align: center; }
+        .week-header { width: 30px; text-align: center; background: #f0f0f0; font-size: 10px; }
+        
+        .bar-area { position: relative; }
+        .bar { position: absolute; height: 14px; border-radius: 7px; top: 9px; opacity: 0.85; }
+        .bar.gray { background: #444; }
+        .bar.green { background: #5ea432; }
+        .bar.light-green { background: #b7d8a6; }
+        .bar.blue { background: #2f5597; }
+        .bar.orange { background: #ed7d31; }
+        .bar.yellow { background: #ffc000; }
+        
+        .label-text { position: absolute; font-size: 11px; white-space: nowrap; font-weight: bold; }
+        .footer { position: absolute; bottom: 0; left:0; right:0; height: 40px; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-symbol { width: 20px; height: 20px; background: #e60012; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); color: #fff; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-weight: 900; font-size: 16px; color: #1a1a1a; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header-bar">Plan</div>
+        <div class="screen-title-overlay">사업 진행 일정</div>
+        
+        <table class="gantt-container">
+            <thead>
+                <tr class="bg-gray">
+                    <th rowspan="2" class="task-list">Task</th>
+                    <th colspan="5" class="month-header">12월</th>
+                    <th colspan="4" class="month-header">1월</th>
+                    <th colspan="4" class="month-header">2월</th>
+                    <th colspan="4" class="month-header">3월</th>
+                    <th colspan="5" class="month-header">4월</th>
+                </tr>
+                <tr>
+                    <th class="week-header">1W</th><th class="week-header">2W</th><th class="week-header">3W</th><th class="week-header">4W</th><th class="week-header">5W</th>
+                    <th class="week-header">1W</th><th class="week-header">2W</th><th class="week-header">3W</th><th class="week-header">4W</th>
+                    <th class="week-header">1W</th><th class="week-header">2W</th><th class="week-header">3W</th><th class="week-header">4W</th>
+                    <th class="week-header">1W</th><th class="week-header">2W</th><th class="week-header">3W</th><th class="week-header">4W</th>
+                    <th class="week-header">1W</th><th class="week-header">2W</th><th class="week-header">3W</th><th class="week-header">4W</th><th class="week-header">5W</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="bg-light-gray" style="text-align:center;">분석/설계</td><td colspan="22" class="bar-area"><div class="bar gray" style="left:5px; width:150px;"></div></td></tr>
+                <tr><td class="bg-light-gray" style="text-align:center; background:#e2efda;">기획서</td><td colspan="22" class="bar-area"><div class="bar green" style="left:35px; width:120px;"></div><div class="bar light-green" style="left:155px; width:120px;"></div></td></tr>
+                <tr><td class="bg-light-gray" style="text-align:center; background:#e2efda;">디자인</td><td colspan="22" class="bar-area"><div class="bar light-green" style="left:155px; width:100px;"></div><div class="bar green" style="left:255px; width:120px;"></div><div class="bar light-green" style="left:375px; width:30px;"></div></td></tr>
+                <tr><td class="bg-light-gray" style="text-align:center; background:#e2efda;">퍼블리싱</td><td colspan="22" class="bar-area"><div class="bar light-green" style="left:215px; width:100px;"></div><div class="bar green" style="left:315px; width:120px;"></div><div class="bar light-green" style="left:435px; width:40px;"></div></td></tr>
+                <tr><td class="bg-light-gray" style="text-align:center; background:#d9e1f2;">개발</td><td colspan="22" class="bar-area"><div class="bar blue" style="left:245px; width:360px;"></div><div class="label-text" style="left:550px; top: -15px; color:#2f5597;">개발 완료 : 4월 24일</div></td></tr>
+                <tr><td class="bg-light-gray" style="text-align:center; background:#fff2cc;">테스트</td><td colspan="22" class="bar-area"><div class="bar yellow" style="left:580px; width:100px;"></div></td></tr>
+            </tbody>
+        </table>
 
-    <footer>
-        <div class="footer-inner">
-            <b>(주) LF</b> | 주소: 서울특별시 강남구 언주로 870 (신사동) | 대표이사: 오규식, 김상균<br>
-            사업자등록번호: 211-87-96931 | 통신판매업신고: 제2010-서울강남-00066호 | 고객센터: 1544-5114<br>
-            COPYRIGHT © 2024 LF CORP. ALL RIGHTS RESERVED.
+        <div class="footer">
+            <div class="logo-area"><div class="logo-symbol">LF</div><div class="logo-text">LF</div></div>
+            <div class="page-num">3</div>
         </div>
-    </footer>
+    </div>
+</body>
+</html>`,
+
+    // 4. Front UI Template
+    'template_front_ui.html': `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Front UI - {{PROJECT_NAME}}</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; background: #fafafa; }
+        .meta-table { width: 100%; border-collapse: collapse; background: #fff; font-size: 12px; margin-bottom: 20px; border: 1px solid #999; }
+        .meta-table th, .meta-table td { border: 1px solid #999; height: 28px; padding: 0 10px; }
+        .meta-table th { background: #e1e1e1; color: #333; font-weight: normal; width: 100px; text-align: center; }
+        .meta-table .value { width: calc(25% - 100px); color: #000; }
+        .meta-table .highlight { color: #e60012; font-weight: bold; }
+        
+        .main-frame { width: 375px; height: 812px; background: #fff; margin: 40px auto; border: 1px solid #ccc; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .app-header { height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid #eee; }
+        .material-icons-outlined { font-size: 20px; }
+        .bottom-fixed { position: absolute; bottom: 0; left: 0; right: 0; height: 60px; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #888; }
+        
+        .footer { position: fixed; bottom: 0; left:0; right:0; height: 40px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-symbol { width: 20px; height: 20px; background: #e60012; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); color: #fff; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-weight: 900; font-size: 16px; color: #1a1a1a; }
+    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+</head>
+<body>
+    <table class="meta-table">
+        <tr>
+            <th>화면 구분</th><td class="value">Front-End</td>
+            <th>화면 명칭</th><td class="value highlight">{{SCREEN_NAME}}</td>
+            <th>작성자</th><td class="value">{{AUTHOR}}</td>
+            <th>작성 일자</th><td class="value">{{DATE}}</td>
+        </tr>
+        <tr>
+            <th>화면 코드</th><td class="value">-</td>
+            <th>화면 경로</th><td class="value" style="color:#e60012">{{SCREEN_PATH}}</td>
+            <th>문서 버전</th><td class="value">v{{VERSION}}</td>
+            <th>기타</th><td class="value">JIRA: {{JIRA}}</td>
+        </tr>
+    </table>
+
+    <div class="main-frame">
+        <div class="app-header">
+            <span class="material-icons-outlined">chevron_left</span>
+            <span style="font-size: 15px; font-weight: bold;">{{SCREEN_NAME}}</span>
+            <div style="display:flex; gap:12px;">
+                <span class="material-icons-outlined">search</span>
+                <span class="material-icons-outlined">home</span>
+                <span class="material-icons-outlined">shopping_bag</span>
+            </div>
+        </div>
+        <div style="height: 600px; display: flex; align-items: center; justify-content: center; color: #ccc; font-style: italic;">
+            UI WIREFRAME AREA
+        </div>
+        <div class="bottom-fixed">하단 고정 영역</div>
+    </div>
+
+    <div class="footer">
+        <div class="logo-area"><div class="logo-symbol">LF</div><div class="logo-text">LF</div></div>
+        <div class="page-num">4</div>
+    </div>
+</body>
+</html>`,
+
+    // 5. Admin (NBOS) Template
+    'template_nbos.html': `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin NBOS - {{PROJECT_NAME}}</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; background: #fff; }
+        .meta-table { width: 100%; border-collapse: collapse; background: #f9f9f9; font-size: 11px; border: 1px solid #aaa; }
+        .meta-table th, .meta-table td { border: 1px solid #aaa; height: 24px; padding: 0 8px; }
+        .meta-table th { background: #e8e8e8; width: 80px; text-align: center; }
+        .meta-table .value { width: calc(25% - 80px); }
+
+        .admin-header { background: #333; height: 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; color: #fff; font-size: 11px; }
+        .nbos-logo { display:flex; align-items:center; gap:5px; font-weight:900; }
+        .nbos-logo span { color:#e60012; }
+        
+        .admin-nav { background: #555; height: 32px; display: flex; align-items: center; border-bottom: 2px solid #e60012; }
+        .nav-item { padding: 0 20px; color: #fff; font-size: 12px; height: 32px; line-height: 32px; cursor: pointer; }
+        .nav-item.active { background: #e60012; font-weight: bold; }
+
+        .admin-layout { display: flex; height: calc(100vh - 150px); }
+        .admin-sidebar { width: 180px; background: #f2f2f2; border-right: 1px solid #ccc; font-size: 11px; padding: 10px; }
+        .menu-group { margin-bottom: 10px; }
+        .menu-item { padding: 4px 10px; cursor: pointer; color: #444; }
+        .menu-item.active { color: #e60012; font-weight: bold; background: #fff; border: 1px solid #ccc; }
+
+        .admin-content { flex: 1; padding: 15px; }
+        .content-title { font-size: 14px; font-weight: bold; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; }
+        
+        .filter-form { border: 1px solid #ccc; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .filter-row { display: flex; border-bottom: 1px solid #eee; }
+        .filter-row:last-child { border-bottom: none; }
+        .filter-label { width: 120px; background: #f8f8f8; padding: 8px 15px; font-size: 11px; border-right: 1px solid #eee; }
+        .filter-value { flex: 1; padding: 6px 10px; display: flex; align-items: center; gap: 8px; }
+        .filter-input { height: 22px; border: 1px solid #ccc; padding: 0 5px; font-size: 11px; flex: 1; max-width: 200px; }
+        
+        .btn-search { background: #333; color: #fff; border: none; padding: 5px 25px; border-radius: 3px; font-size: 12px; cursor: pointer; margin: 10px auto; display: block; }
+        .grid-header { font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #666; }
+        .data-grid { width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #ccc; }
+        .data-grid th { background: #f0f0f0; border: 1px solid #ccc; padding: 6px; }
+        .data-grid td { border: 1px solid #eee; padding: 6px; text-align: center; }
+    </style>
+</head>
+<body>
+    <table class="meta-table">
+        <tr>
+            <th>화면 구분</th><td class="value">nBOS</td>
+            <th>화면 명칭</th><td class="value">{{SCREEN_NAME}}</td>
+            <th>작성자</th><td class="value">{{AUTHOR}}</td>
+            <th>작성 일자</th><td class="value">{{DATE}}</td>
+        </tr>
+        <tr>
+            <th>화면 코드</th><td class="value">-</td>
+            <th>화면 경로</th><td class="value">{{SCREEN_PATH}}</td>
+            <th>문서 버전</th><td class="value">v{{VERSION}}</td>
+            <th>기타</th><td class="value">JIRA: {{JIRA}}</td>
+        </tr>
+    </table>
+
+    <div class="admin-header">
+        <div class="nbos-logo"><span>l.i:</span>mall Back Office System</div>
+        <div>홍길동 관리자 (administrator) | 🔒 [로그아웃]</div>
+    </div>
+    <div class="admin-nav">
+        <div class="nav-item">홈</div>
+        <div class="nav-item active">상품</div>
+        <div class="nav-item">주문/배송</div>
+        <div class="nav-item">회원/프로모션</div>
+        <div class="nav-item">영업</div>
+    </div>
+
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <div class="menu-group">
+                <div style="font-weight:bold; margin-bottom:5px;">■ 상품관리</div>
+                <div class="menu-item active">단품관리</div>
+                <div class="menu-item">세트상품관리</div>
+                <div class="menu-item">상품그룹관리</div>
+            </div>
+        </div>
+        <div class="admin-content">
+            <div class="content-title">단품관리 <span>🏠 > 상품관리 > 단품관리</span></div>
+            <div class="filter-form">
+                <div class="filter-row">
+                    <div class="filter-label">온라인상품코드</div><div class="filter-value"><input class="filter-input" type="text"></div>
+                    <div class="filter-label">상품명</div><div class="filter-value"><input class="filter-input" type="text" style="max-width:none"></div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-label">상품구분</div><div class="filter-value"><select class="filter-input"><option>[전체]</option></select></div>
+                    <div class="filter-label">브랜드</div><div class="filter-value"><input class="filter-input" type="text"> 🔍</div>
+                </div>
+            </div>
+            <button class="btn-search">조회</button>
+            
+            <div class="grid-header">상품목록 (총 1,234건)</div>
+            <table class="data-grid">
+                <thead>
+                    <tr><th>번호</th><th>상품코드</th><th>상품명</th><th>판매가</th><th>상태</th><th>등록일</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>PRD0001</td><td>LF몰 전용 패키지 A</td><td>99,000</td><td>판매중</td><td>2024-04-20</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>`,
+
+    // 6. Admin (Onesphere) Template - Modern Version
+    'template_onesphere.html': `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Onesphere - {{PROJECT_NAME}}</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Malgun Gothic', '-apple-system', sans-serif; background: #f4f6f8; color: #202223; }
+        .meta-table { width: 100%; border-collapse: collapse; background: #fff; font-size: 12px; border-bottom: 2px solid #6366f1; }
+        .meta-table th, .meta-table td { border: 1px solid #e1e3e5; height: 32px; padding: 0 12px; }
+        .meta-table th { background: #f6f6f7; color: #6d7175; width: 100px; text-align: left; }
+        
+        .modern-layout { display: flex; min-height: calc(100vh - 100px); }
+        .modern-sidebar { width: 240px; background: #1c2536; color: #eee; padding: 20px 0; }
+        .sidebar-item { padding: 12px 24px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.08); }
+        .sidebar-item.active { background: #6366f1; color: #fff; }
+        
+        .modern-main { flex: 1; padding: 32px; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .page-title { font-size: 24px; font-weight: bold; }
+        
+        .card { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 24px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 32px; }
+        .stat-card { padding: 20px; border-radius: 8px; border: 1px solid #e1e3e5; background: #fff; }
+        .stat-label { font-size: 13px; color: #6d7175; margin-bottom: 8px; }
+        .stat-value { font-size: 28px; font-weight: bold; color: #6366f1; }
+        
+        .table-modern { width: 100%; border-collapse: collapse; }
+        .table-modern th { text-align: left; padding: 12px; border-bottom: 2px solid #f4f6f8; color: #6d7175; font-size: 13px; }
+        .table-modern td { padding: 16px 12px; border-bottom: 1px solid #f4f6f8; font-size: 14px; }
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .badge-success { background: #e3f9e5; color: #007f5f; }
+    </style>
+</head>
+<body>
+    <table class="meta-table">
+        <tr>
+            <th>화면 구분</th><td class="value">OneSphere (Cloud)</td>
+            <th>화면 명칭</th><td class="value">{{SCREEN_NAME}}</td>
+            <th>작성자</th><td class="value">{{AUTHOR}}</td>
+            <th>작성 일자</th><td class="value">{{DATE}}</td>
+        </tr>
+        <tr>
+            <th>화면 코드</th><td class="value">OS-PRD-01</td>
+            <th>화면 경로</th><td class="value" style="color:#6366f1">{{SCREEN_PATH}}</td>
+            <th>문서 버전</th><td class="value">v{{VERSION}}</td>
+            <th>기타</th><td class="value">JIRA: {{JIRA}}</td>
+        </tr>
+    </table>
+
+    <div class="modern-layout">
+        <aside class="modern-sidebar">
+            <div class="sidebar-item active">Dashboard</div>
+            <div class="sidebar-item">Products Management</div>
+            <div class="sidebar-item">Orders Status</div>
+            <div class="sidebar-item">Inventory Tracking</div>
+            <div class="sidebar-item">Cloud Metrics</div>
+        </aside>
+        
+        <main class="modern-main">
+            <div class="page-header">
+                <h1 class="page-title">{{SCREEN_NAME}} Overview</h1>
+                <button style="background:#6366f1; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">Update Status</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-label">Total Screens</div><div class="stat-value">48</div></div>
+                <div class="stat-card"><div class="stat-label">Updated Today</div><div class="stat-value">12</div></div>
+                <div class="stat-card"><div class="stat-label">System Health</div><div class="stat-value">99%</div></div>
+                <div class="stat-card"><div class="stat-label">Sync Status</div><div class="stat-value">LIVE</div></div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-top:0;">Recent Updates</h3>
+                <table class="table-modern">
+                    <thead><tr><th>Version</th><th>Description</th><th>Status</th><th>Updated By</th></tr></thead>
+                    <tbody>
+                        <tr><td>v2.1</td><td>Implementation of new global save button</td><td><span class="badge badge-success">Done</span></td><td>최범열</td></tr>
+                        <tr><td>v2.0</td><td>Advanced template system expansion</td><td><span class="badge badge-success">Active</span></td><td>LF AI Agent</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
 </body>
 </html>`
 };
