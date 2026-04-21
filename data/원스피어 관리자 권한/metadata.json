@@ -16,8 +16,15 @@
     "02_Plan_6933.html": {
       "title": "02_Plan_6933",
       "type": "plan",
-      "updatedAt": "2026-04-21T04:54:12.657Z",
-      "template": "template_plan.html"
+      "updatedAt": "2026-04-21T07:00:49.214Z",
+      "template": "template_plan.html",
+      "description": [
+        {
+          "text": "새로운 추가",
+          "x": 16.041501790130916,
+          "y": 39.264205117763574
+        }
+      ]
     },
     "02_Plan_5700.html": {
       "title": "02_Plan_5700",
