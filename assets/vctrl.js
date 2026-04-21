@@ -171,11 +171,64 @@ function injectEditorUI() {
     doc.querySelectorAll('img').forEach(img => {
         img.style.cursor = 'pointer';
         img.title = '클릭하여 이미지 교체';
-        img.onclick = (e) => {
-            e.stopPropagation();
-            state.editingImage = img;
-            DOM.editorImageUpload.click();
+        img.onclick = (e) => { e.stopPropagation(); state.editingImage = img; DOM.editorImageUpload.click(); };
+    });
+
+    // Phase 3 - Diagram Canvas Interactivity
+    doc.querySelectorAll('.studio-diagram-canvas').forEach(canvas => {
+        canvas.querySelectorAll('div').forEach(el => {
+            el.classList.add('diagram-element');
+            el.style.left = el.style.left || '20px';
+            el.style.top = el.style.top || '20px';
+            
+            el.onmousedown = (e) => {
+                if (e.button !== 0) return;
+                e.stopPropagation();
+                const startX = e.clientX, startY = e.clientY;
+                const rect = el.getBoundingClientRect();
+                const containerRect = canvas.getBoundingClientRect();
+                const startL = (rect.left - containerRect.left), startT = (rect.top - containerRect.top);
+                
+                const onMouseMove = (me) => {
+                    const dx = me.clientX - startX, dy = me.clientY - startY;
+                    el.style.left = `${startL + dx}px`;
+                    el.style.top = `${startT + dy}px`;
+                    markAsDirty();
+                };
+                const onMouseUp = () => {
+                    doc.removeEventListener('mousemove', onMouseMove);
+                    doc.removeEventListener('mouseup', onMouseUp);
+                };
+                doc.addEventListener('mousemove', onMouseMove);
+                doc.addEventListener('mouseup', onMouseUp);
+            };
+        });
+    });
+
+    // Phase 3 - Table Utilities
+    doc.querySelectorAll('table').forEach(table => {
+        table.style.position = 'relative';
+        table.onmouseenter = () => {
+             if (!state.editMode) return;
+             if (table.querySelector('.table-tool-add')) return;
+             const btn = doc.createElement('button');
+             btn.className = 'table-tool-add';
+             btn.innerHTML = '<span style="font-family:Material Icons Outlined; font-size:16px;">add</span> 행 추가';
+             btn.style = 'position:absolute; bottom:-25px; left:0; background:#6366f1; color:#fff; border:none; padding:2px 8px; border-radius:4px; font-size:11px; cursor:pointer; z-index:100;';
+             btn.onclick = (e) => {
+                 e.stopPropagation();
+                 const row = table.insertRow(-1);
+                 for(let i=0; i<table.rows[0].cells.length; i++) {
+                     const cell = row.insertCell(i);
+                     cell.innerHTML = '새 셀';
+                     cell.style = "border:1px solid #ddd; padding:10px;";
+                 }
+                 removeEditorUI(); injectEditorUI(); // Refresh state
+                 markAsDirty();
+             };
+             table.appendChild(btn);
         };
+        table.onmouseleave = () => setTimeout(() => table.querySelector('.table-tool-add')?.remove(), 500);
     });
 }
 
@@ -328,6 +381,13 @@ const DOM = {
     ftBtnItalic: document.getElementById('ft-btn-italic'),
     ftBtnColor: document.getElementById('ft-btn-color'),
     ftBtnDelete: document.getElementById('ft-btn-delete'),
+
+    // Editor Phase 3
+    ftInputBg: document.getElementById('ft-input-bg'),
+    ftInputColor: document.getElementById('ft-input-color'),
+    ftInputBorder: document.getElementById('ft-input-border'),
+    ftInputRadius: document.getElementById('ft-input-radius'),
+    ftBtnShadow: document.getElementById('ft-btn-shadow'),
     
     // Screen Management
     btnAddScreen: document.getElementById('btn-add-screen'),
@@ -1231,6 +1291,27 @@ if (DOM.ftBtnBold) DOM.ftBtnBold.onclick = () => { document.execCommand('bold', 
 if (DOM.ftBtnItalic) DOM.ftBtnItalic.onclick = () => { document.execCommand('italic', false); markAsDirty(); };
 if (DOM.ftBtnColor) DOM.ftBtnColor.onclick = () => { document.execCommand('foreColor', false, '#e60012'); markAsDirty(); };
 if (DOM.ftBtnDelete) DOM.ftBtnDelete.onclick = async () => { if (state.activeElement && await Notification.confirm("이 요소를 영구적으로 삭제하시겠습니까?", "요소 삭제")) { state.activeElement.remove(); hideFloatingToolbar(); markAsDirty(); } };
+
+/**
+ * Phase 3 - Advanced Styling
+ */
+function applyStyle(prop, val) {
+    if (!state.activeElement) return;
+    state.activeElement.style[prop] = val;
+    markAsDirty();
+}
+
+if (DOM.ftInputBg) DOM.ftInputBg.oninput = (e) => applyStyle('backgroundColor', e.target.value);
+if (DOM.ftInputColor) DOM.ftInputColor.oninput = (e) => applyStyle('color', e.target.value);
+if (DOM.ftInputBorder) DOM.ftInputBorder.oninput = (e) => applyStyle('border', `${e.target.value}px solid currentColor`);
+if (DOM.ftInputRadius) DOM.ftInputRadius.oninput = (e) => applyStyle('borderRadius', `${e.target.value}px`);
+if (DOM.ftBtnShadow) DOM.ftBtnShadow.onclick = () => {
+    if (!state.activeElement) return;
+    const s = state.activeElement.style.boxShadow;
+    state.activeElement.style.boxShadow = s ? '' : '0 10px 30px rgba(0,0,0,0.15)';
+    DOM.ftBtnShadow.classList.toggle('active', !s);
+    markAsDirty();
+};
 
 window.addEventListener('keydown', async e => {
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;

@@ -412,8 +412,40 @@
         </div>
     </div>
 
+    <!-- Floating Context Toolbar (Parent level for better positioning) -->
+    <div id="floating-toolbar" class="floating-toolbar">
+        <div class="ft-group">
+            <button class="ft-btn" id="ft-btn-bold" title="Bold (B)"><span class="material-icons-outlined">format_bold</span></button>
+            <button class="ft-btn" id="ft-btn-italic" title="Italic (I)"><span class="material-icons-outlined">format_italic</span></button>
+            <div class="ft-divider"></div>
+            <!-- Colors -->
+            <div class="ft-swatch" title="배경색"><input type="color" id="ft-input-bg" value="#ffffff"></div>
+            <div class="ft-swatch" title="글자색"><input type="color" id="ft-input-color" value="#000000"></div>
+        </div>
+        <div class="ft-divider"></div>
+        <!-- Borders & Styles -->
+        <div class="ft-group">
+            <div class="ft-input-group" title="테두리 두께">
+                <span class="material-icons-outlined" style="font-size:14px;">line_weight</span>
+                <input type="number" id="ft-input-border" value="0" min="0" max="20" step="1">
+            </div>
+            <div class="ft-input-group" title="모서리 곡률">
+                <span class="material-icons-outlined" style="font-size:14px;">rounded_corner</span>
+                <input type="number" id="ft-input-radius" value="0" min="0" max="100" step="1">
+            </div>
+            <button class="ft-btn" id="ft-btn-shadow" title="그림자 토글"><span class="material-icons-outlined">layers</span></button>
+        </div>
+        <div class="ft-divider"></div>
+        <div class="ft-group">
+            <button class="ft-btn ft-danger" id="ft-btn-delete" title="요소 삭제"><span class="material-icons-outlined">delete_outline</span></button>
+        </div>
+    </div>
+
+    <!-- Hidden Inputs for Editor -->
+    <input type="file" id="editor-image-upload" style="display:none" accept="image/*">
+
     <!-- Script modularization: Pure Vanilla V3 Migration -->
-    <script src="assets/templates.js?v=V4"></script>
+    <script src="assets/templates.js?v=V5"></script>
     <script src="assets/app.js?v=V4"></script>
     <script src="assets/vctrl.js?v=V4"></script>
 </body>
