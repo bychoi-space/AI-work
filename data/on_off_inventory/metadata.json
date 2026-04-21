@@ -178,6 +178,10 @@
     "slide_38_admin_brand_pop.html": {
       "title": "38. [어드민] 브랜드 조회",
       "description": "브랜드 선택 팝업"
+    },
+    "00_Cover_6906.html": {
+      "updatedAt": "2026-04-21T02:36:59.754Z",
+      "template": "template_cover.html"
     }
   }
 }
