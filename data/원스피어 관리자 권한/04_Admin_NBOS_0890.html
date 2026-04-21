@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin NBOS - 원스피어 관리자 권한</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; background: #fff; }
+        .meta-table { width: 100%; border-collapse: collapse; background: #f9f9f9; font-size: 11px; border: 1px solid #aaa; }
+        .meta-table th, .meta-table td { border: 1px solid #aaa; height: 24px; padding: 0 8px; }
+        .meta-table th { background: #e8e8e8; width: 80px; text-align: center; }
+        .meta-table .value { width: calc(25% - 80px); }
+
+        .admin-header { background: #333; height: 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; color: #fff; font-size: 11px; }
+        .nbos-logo { display:flex; align-items:center; gap:5px; font-weight:900; }
+        .nbos-logo span { color:#e60012; }
+        
+        .admin-nav { background: #555; height: 32px; display: flex; align-items: center; border-bottom: 2px solid #e60012; }
+        .nav-item { padding: 0 20px; color: #fff; font-size: 12px; height: 32px; line-height: 32px; cursor: pointer; }
+        .nav-item.active { background: #e60012; font-weight: bold; }
+
+        .admin-layout { display: flex; height: calc(100vh - 150px); }
+        .admin-sidebar { width: 180px; background: #f2f2f2; border-right: 1px solid #ccc; font-size: 11px; padding: 10px; }
+        .menu-group { margin-bottom: 10px; }
+        .menu-item { padding: 4px 10px; cursor: pointer; color: #444; }
+        .menu-item.active { color: #e60012; font-weight: bold; background: #fff; border: 1px solid #ccc; }
+
+        .admin-content { flex: 1; padding: 15px; }
+        .content-title { font-size: 14px; font-weight: bold; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; }
+        
+        .filter-form { border: 1px solid #ccc; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .filter-row { display: flex; border-bottom: 1px solid #eee; }
+        .filter-row:last-child { border-bottom: none; }
+        .filter-label { width: 120px; background: #f8f8f8; padding: 8px 15px; font-size: 11px; border-right: 1px solid #eee; }
+        .filter-value { flex: 1; padding: 6px 10px; display: flex; align-items: center; gap: 8px; }
+        .filter-input { height: 22px; border: 1px solid #ccc; padding: 0 5px; font-size: 11px; flex: 1; max-width: 200px; }
+        
+        .btn-search { background: #333; color: #fff; border: none; padding: 5px 25px; border-radius: 3px; font-size: 12px; cursor: pointer; margin: 10px auto; display: block; }
+        .grid-header { font-size: 12px; font-weight: bold; margin-bottom: 5px; color: #666; }
+        .data-grid { width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #ccc; }
+        .data-grid th { background: #f0f0f0; border: 1px solid #ccc; padding: 6px; }
+        .data-grid td { border: 1px solid #eee; padding: 6px; text-align: center; }
+    </style>
+</head>
+<body>
+    <table class="meta-table">
+        <tr>
+            <th>화면 구분</th><td class="value">nBOS</td>
+            <th>화면 명칭</th><td class="value">04_Admin_NBOS_0890</td>
+            <th>작성자</th><td class="value">담당자 미정</td>
+            <th>작성 일자</th><td class="value">2026.4.21</td>
+        </tr>
+        <tr>
+            <th>화면 코드</th><td class="value">-</td>
+            <th>화면 경로</th><td class="value">https://m.lfmall.co.kr/app/04_Admin_NBOS_0890</td>
+            <th>문서 버전</th><td class="value">v1.0</td>
+            <th>기타</th><td class="value">JIRA: -</td>
+        </tr>
+    </table>
+
+    <div class="admin-header">
+        <div class="nbos-logo"><span>l.i:</span>mall Back Office System</div>
+        <div>홍길동 관리자 (administrator) | 🔒 [로그아웃]</div>
+    </div>
+    <div class="admin-nav">
+        <div class="nav-item">홈</div>
+        <div class="nav-item active">상품</div>
+        <div class="nav-item">주문/배송</div>
+        <div class="nav-item">회원/프로모션</div>
+        <div class="nav-item">영업</div>
+    </div>
+
+    <div class="admin-layout">
+        <div class="admin-sidebar">
+            <div class="menu-group">
+                <div style="font-weight:bold; margin-bottom:5px;">■ 상품관리</div>
+                <div class="menu-item active">단품관리</div>
+                <div class="menu-item">세트상품관리</div>
+                <div class="menu-item">상품그룹관리</div>
+            </div>
+        </div>
+        <div class="admin-content">
+            <div class="content-title">단품관리 <span>🏠 > 상품관리 > 단품관리</span></div>
+            <div class="filter-form">
+                <div class="filter-row">
+                    <div class="filter-label">온라인상품코드</div><div class="filter-value"><input class="filter-input" type="text"></div>
+                    <div class="filter-label">상품명</div><div class="filter-value"><input class="filter-input" type="text" style="max-width:none"></div>
+                </div>
+                <div class="filter-row">
+                    <div class="filter-label">상품구분</div><div class="filter-value"><select class="filter-input"><option>[전체]</option></select></div>
+                    <div class="filter-label">브랜드</div><div class="filter-value"><input class="filter-input" type="text"> 🔍</div>
+                </div>
+            </div>
+            <button class="btn-search">조회</button>
+            
+            <div class="grid-header">상품목록 (총 1,234건)</div>
+            <table class="data-grid">
+                <thead>
+                    <tr><th>번호</th><th>상품코드</th><th>상품명</th><th>판매가</th><th>상태</th><th>등록일</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>PRD0001</td><td>LF몰 전용 패키지 A</td><td>99,000</td><td>판매중</td><td>2024-04-20</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
