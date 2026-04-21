@@ -3,9 +3,15 @@
     "00_Cover_2855.html": {
       "title": "00_Cover_2855",
       "type": "cover",
-      "updatedAt": "2026-04-21T04:51:36.320Z",
+      "updatedAt": "2026-04-21T06:48:03.738Z",
       "template": "template_cover.html",
-      "description": []
+      "description": [
+        {
+          "text": "디스크립션 입력 111",
+          "x": 48.936239815112536,
+          "y": 52.356637900978725
+        }
+      ]
     },
     "02_Plan_6933.html": {
       "title": "02_Plan_6933",
