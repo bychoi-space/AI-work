@@ -36,6 +36,12 @@
       "type": "admin-nbos",
       "updatedAt": "2026-04-21T05:15:03.656Z",
       "template": "template_nbos.html"
+    },
+    "05_Admin_Onesphere_4990.html": {
+      "title": "05_Admin_Onesphere_4990",
+      "type": "admin-onesphere",
+      "updatedAt": "2026-04-21T05:15:17.883Z",
+      "template": "template_onesphere.html"
     }
   },
   "title": "원스피어 관리자 권한"
