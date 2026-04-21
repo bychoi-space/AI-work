@@ -55,6 +55,12 @@
       "type": "admin-onesphere",
       "updatedAt": "2026-04-21T05:15:17.883Z",
       "template": "template_onesphere.html"
+    },
+    "03_UI_Screen_0933.html": {
+      "title": "03_UI_Screen_0933",
+      "type": "ui",
+      "updatedAt": "2026-04-21T06:59:23.741Z",
+      "template": "template_front_ui.html"
     }
   },
   "title": "원스피어 관리자 권한"
