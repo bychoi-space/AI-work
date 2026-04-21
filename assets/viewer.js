@@ -555,7 +555,8 @@ function renderDescriptionList() {
                 type: "x,y",
                 bounds: DOM.pinsLayer,
                 onPress: function() {
-                    if (state.isReadOnly) return this.disable();
+                    // Allow dragging even in ReadOnly mode for testing/demo
+                    // (Actual saving will be blocked by the handleGlobalSave logic)
                     startX = item.x;
                     startY = item.y;
                     gsap.to(pin, { scale: 1.3, boxShadow: "0 10px 20px rgba(0,0,0,0.4)", duration: 0.2, zIndex: 100 });
