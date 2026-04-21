@@ -449,12 +449,17 @@ async function handleDeleteScreen(fileName, sha) {
         const success = await deleteFileFromGitHub(`${state.currentProject}/${fileName}`, targetSha, false, msg => DOM.placeholderTxt.innerText = msg);
         if (success) {
             if (state.projectMetadata.screens) delete state.projectMetadata.screens[fileName];
-            // Remove from ordered list as well
             if (state.projectMetadata.screenOrder) {
                 state.projectMetadata.screenOrder = state.projectMetadata.screenOrder.filter(name => name !== fileName);
             }
             await saveProjectMetadata(state.currentProject, state.projectMetadata);
-            window.location.href = `viewer.html?project=${state.currentProject}`;
+            
+            if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = "데이터 삭제 동기화 중 (1.5s)...";
+            setTimeout(() => {
+                window.location.href = `viewer.html?project=${state.currentProject}`;
+            }, 1500);
+        } else {
+            await Notification.alert("파일 삭제에 실패했습니다.", "오류", "error");
         }
     }
 }
