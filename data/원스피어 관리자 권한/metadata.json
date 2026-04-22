@@ -162,8 +162,18 @@
     "02_Plan_3199.html": {
       "title": "02_Plan_3199",
       "type": "plan",
-      "updatedAt": "2026-04-22T03:36:25.839Z",
-      "template": "template_plan.html"
+      "updatedAt": "2026-04-22T09:57:28.161Z",
+      "template": "template_plan.html",
+      "description": [
+        {
+          "html": "<p><strong>1231231231</strong></p>",
+          "text": "1231231231",
+          "x": 50,
+          "y": 50,
+          "type": "text",
+          "color": "#000000"
+        }
+      ]
     }
   },
   "title": "원스피어 관리자 권한",
