@@ -3,7 +3,7 @@
     "00_Cover_2855.html": {
       "title": "00_Cover_2855",
       "type": "cover",
-      "updatedAt": "2026-04-22T06:35:58.188Z",
+      "updatedAt": "2026-04-22T06:36:08.131Z",
       "template": "template_cover.html",
       "description": [
         {
@@ -41,8 +41,8 @@
         },
         {
           "text": "가나다라마바사\nABCD!@#!$%%",
-          "x": 50,
-          "y": 50,
+          "x": 38.721805108472864,
+          "y": 64.80624638519376,
           "type": "text",
           "color": "#000000"
         }
