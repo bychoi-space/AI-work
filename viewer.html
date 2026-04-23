@@ -18,12 +18,35 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
     <style>
+        #debug-console {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 999999;
+            background: rgba(239, 68, 68, 0.9); color: #fff; font-family: monospace;
+            font-size: 11px; padding: 4px 12px; display: none; pointer-events: none;
+        }
         /* Fail-safe Modal CSS */
         .modal-overlay.active {
             display: flex !important;
         }
-
-        /* Premium Loading Screen */
+    </style>
+    <script>
+        window.onerror = function(msg, url, line) {
+            const dc = document.getElementById('debug-console');
+            if (dc) { dc.style.display = 'block'; dc.innerText = "[ERROR] " + msg + " (" + line + "행)"; }
+            return false;
+        };
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const loader = document.getElementById('loading-overlay');
+                if (loader && !loader.classList.contains('fade-out')) {
+                    loader.classList.add('fade-out');
+                    console.warn("[FAIL-SAFE] Loader forced hidden");
+                }
+            }, 4000);
+        });
+    </script>
+</head>
+<body class="dark-mode">
+    <div id="debug-console"></div>
         .loading-overlay {
             position: fixed;
             top: 0; left: 0;

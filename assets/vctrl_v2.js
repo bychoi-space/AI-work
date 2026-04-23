@@ -111,82 +111,82 @@ async function checkUnsavedChanges() {
     return false;
 }
 
+// Safe DOM Retrieval Helper to prevent crashes if IDs are missing
+const get = (id) => document.getElementById(id) || { style: {}, classList: { add:() => {}, remove:() => {} }, innerText: '', innerHTML: '', onclick: null, oninput: null };
+
 const DOM = {
-    iframe: document.getElementById('main-iframe'),
-    artboardWrapper: document.getElementById('artboard-wrapper'),
-    placeholder: document.getElementById('placeholder'),
-    placeholderTxt: document.getElementById('placeholder-text'),
-    canvas: document.getElementById('canvas'),
-    stage: document.getElementById('stage'),
-    zoomTxt: document.getElementById('zoom-txt'),
-    fileName: document.getElementById('file-name-display'),
-    btnBack: document.getElementById('btn-back'),
+    iframe: get('main-iframe'),
+    artboardWrapper: get('artboard-wrapper'),
+    placeholder: get('placeholder'),
+    placeholderTxt: get('placeholder-text'),
+    canvas: get('canvas'),
+    stage: get('stage'),
+    zoomTxt: get('zoom-txt'),
+    fileName: get('file-name-display'),
+    btnBack: get('btn-back'),
     
     // Panels
-    metadataPanel: document.getElementById('top-metadata-panel'),
-    screensList: document.getElementById('screens-list'),
-    descriptionList: document.getElementById('description-list'),
-    sidebarLeft: document.getElementById('sidebar-left'),
-    sidebarRight: document.getElementById('sidebar-right'),
+    metadataPanel: get('top-metadata-panel'),
+    screensList: get('screens-list'),
+    descriptionList: get('description-list'),
+    sidebarLeft: get('sidebar-left'),
+    sidebarRight: get('sidebar-right'),
     
     // Bottom Bar
-    bottomUpdated: document.getElementById('bottom-updated')?.querySelector('span'),
-    pinsLayer: document.getElementById('pins-layer'),
+    bottomUpdated: document.getElementById('bottom-updated')?.querySelector('span') || { innerText: '' },
+    pinsLayer: get('pins-layer'),
     
     // Buttons
-    btnSelect: document.getElementById('btn-select'),
-    btnHand: document.getElementById('btn-hand'),
-    btnText: document.getElementById('btn-text'),
-    btnToggleLeft: document.getElementById('btn-toggle-left'),
-    btnToggleRight: document.getElementById('btn-toggle-right'),
-    btnGlobalSave: document.getElementById('btn-global-save'),
+    btnSelect: get('btn-select'),
+    btnHand: get('btn-hand'),
+    btnText: get('btn-text'),
+    btnToggleLeft: get('btn-toggle-left'),
+    btnToggleRight: get('btn-toggle-right'),
+    btnGlobalSave: get('btn-global-save'),
     
     // Screen Management
-    btnAddScreen: document.getElementById('btn-add-screen'),
-    addScreenUpload: document.getElementById('add-screen-upload'),
-    addScreenModal: document.getElementById('add-screen-modal'),
-    btnCancelAdd: document.getElementById('btn-add-screen-cancel'),
-    btnSubmitAdd: document.getElementById('btn-add-screen-submit'),
-    btnSubmitEdit: document.getElementById('btn-edit-screen-submit'),
+    btnAddScreen: get('btn-add-screen'),
+    addScreenUpload: get('add-screen-upload'),
+    addScreenModal: get('add-screen-modal'),
+    btnCancelAdd: get('btn-add-screen-cancel'),
+    btnSubmitAdd: get('btn-add-screen-submit'),
+    btnSubmitEdit: get('btn-edit-screen-submit'),
     
     // Component Tracking
-    compActionsSection: document.getElementById('comp-actions-section'),
-    btnCompDelete: document.getElementById('btn-comp-delete'),
+    compActionsSection: get('comp-actions-section'),
+    btnCompDelete: get('btn-comp-delete'),
 
     // Forms
-    newScreenName: document.getElementById('new-screen-name'),
-    templateList: document.getElementById('template-list'),
+    newScreenName: get('new-screen-name'),
+    templateList: get('template-list'),
     
     // Sidebar Tabs
     tabBtns: document.querySelectorAll('.tab-btn'),
     tabPanes: document.querySelectorAll('.tab-pane'),
     sidebarToolBtns: document.querySelectorAll('.sidebar-tool-btn'),
 
-
-    
     // Edit Screen Modal DOM
-    editScreenModal: document.getElementById('edit-screen-modal'),
-    editScreenTitle: document.getElementById('edit-screen-title'),
-    editScreenType: document.getElementById('edit-screen-type'),
-    editScreenDesc: document.getElementById('edit-screen-desc'),
-    editScreenFilename: document.getElementById('edit-screen-filename'),
-    btnCancelEdit: document.getElementById('btn-edit-screen-cancel'),
-    btnSubmitEdit: document.getElementById('btn-edit-screen-submit'),
+    editScreenModal: get('edit-screen-modal'),
+    editScreenTitle: get('edit-screen-title'),
+    editScreenType: get('edit-screen-type'),
+    editScreenDesc: get('edit-screen-desc'),
+    editScreenFilename: get('edit-screen-filename'),
+    btnCancelEdit: get('btn-edit-screen-cancel'),
     
     // Description
-    btnAddDescription: document.getElementById('btn-add-description'),
+    btnAddDescription: get('btn-add-description'),
 
     // Auth
-    authModal: document.getElementById('auth-modal'),
-    tokenInput: document.getElementById('modal-gh-token'),
-    authStatus: document.getElementById('modal-auth-status'),
-    btnAuthSubmit: document.getElementById('btn-modal-auth-submit'),
-    btnAuthClose: document.getElementById('btn-modal-auth-cancel'),
-    btnShowAuth: document.getElementById('btn-show-auth'),
+    authModal: get('auth-modal'),
+    tokenInput: get('modal-gh-token'),
+    authStatus: get('modal-auth-status'),
+    btnAuthSubmit: get('btn-modal-auth-submit'),
+    btnAuthClose: get('btn-modal-auth-cancel'),
+    btnShowAuth: get('btn-show-auth'),
     
     // Properties Sidebar Additions
-    textPropSection: document.getElementById('text-properties-section'),
-    textColorPicker: document.getElementById('text-color-picker'),
+    textPropSection: get('text-properties-section'),
+    textColorPicker: get('text-color-picker'),
     colorPresets: document.querySelectorAll('.color-preset')
 };
 
