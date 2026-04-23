@@ -2238,3 +2238,25 @@ body.drag-active #drop-overlay {
 .component-item:hover img {
     opacity: 1;
 }
+
+/* LFmall Sprite Icons */
+.lf-icon {
+  background-image: url(" https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png \);
+ background-size: 200px 160px;
+ width: 40px;
+ height: 40px;
+ display: inline-block;
+ background-repeat: no-repeat;
+ pointer-events: none;
+}
+.lf-icon-home { background-position: -80px 0; }
+.lf-icon-category { background-position: 0 0; }
+.lf-icon-my { background-position: -120px 0; }
+.lf-icon-heart { background-position: -160px 0; }
+.lf-icon-search { background-position: -80px -40px; }
+.lf-icon-cart { background-position: -120px -40px; }
+.lf-icon-brand { background-position: -40px 0; }
+.lf-icon-back { background-position: 0 -40px; }
+.lf-icon-bell { background-position: -40px -40px; }
+.lf-icon-share { background-position: -160px -40px; }
+.lf-icon-party { background-position: 0 -120px; }

@@ -1444,6 +1444,25 @@ function injectIframeInteractions(doc) {
         .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer {
             display: block;
         }
+        /* Sprite Icon Base Style inside IFrame */
+        .lf-icon {
+            background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png");
+            background-size: 200px 160px;
+            width: 40px; height: 40px;
+            display: block;
+            background-repeat: no-repeat;
+        }
+        .lf-icon-home     { background-position: -80px 0; }
+        .lf-icon-category { background-position: 0 0; }
+        .lf-icon-my       { background-position: -120px 0; }
+        .lf-icon-heart    { background-position: -160px 0; }
+        .lf-icon-search   { background-position: -80px -40px; }
+        .lf-icon-cart     { background-position: -120px -40px; }
+        .lf-icon-brand    { background-position: -40px 0; }
+        .lf-icon-back     { background-position: 0 -40px; }
+        .lf-icon-bell     { background-position: -40px -40px; }
+        .lf-icon-share    { background-position: -160px -40px; }
+        .lf-icon-party    { background-position: 0 -120px; }
     `;
     doc.head.appendChild(style);
 
@@ -1532,6 +1551,9 @@ function insertAtomicComponent(type, name) {
                     <span style="color:#888;">기획전</span>
                 </div>
             </div>`;
+    } else if (type === 'icon') {
+        const iconClass = name.toLowerCase().split(' ')[0]; // home, category, search, etc.
+        contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="width:100%; height:100%; pointer-events:none;"></div>`;
     }
 
     if (contentHtml) {
@@ -1540,8 +1562,8 @@ function insertAtomicComponent(type, name) {
         comp.className = 'lf-component';
         comp.style.top = name === 'LF GNB' ? '0px' : (name === 'LF LNB' ? '50px' : '150px');
         comp.style.left = (name === 'LF GNB' || name === 'LF LNB') ? '0px' : '100px';
-        comp.style.width = (name === 'LF GNB' || name === 'LF LNB') ? '100%' : (name === 'LF Discount' ? '60px' : '120px');
-        comp.style.height = name === 'LF GNB' ? '50px' : (name === 'LF LNB' ? '48px' : 'auto');
+        comp.style.width = (name === 'LF GNB' || name === 'LF LNB') ? '100%' : (type === 'icon' ? '40px' : (name === 'LF Discount' ? '60px' : '120px'));
+        comp.style.height = name === 'LF GNB' ? '50px' : (name === 'LF LNB' ? '48px' : (type === 'icon' ? '40px' : 'auto'));
         
         comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div>`;
         iframeDoc.body.appendChild(comp);
