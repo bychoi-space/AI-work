@@ -29,21 +29,22 @@ const ghConfig = {
 };
 
 async function listContents(path) {
-    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${path}?t=${Date.now()}`;
+    const safePath = (ghConfig.dataDir + path).split('/').map(segment => encodeURIComponent(segment)).join('/');
+    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${safePath}?t=${Date.now()}`;
+    
     const token = ghConfig.token;
-    const headers = token ? { 'Authorization': `token ${token}` } : {};
+    const headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (token) headers['Authorization'] = `token ${token}`;
+
     let res = await fetch(url, { headers });
     
-    // Auth Fallback: If 401/403, handle token invalidation
     if (!res.ok && (res.status === 401 || res.status === 403)) {
         if (localStorage.getItem('gh_token')) {
-            console.warn("[Auth] Stored token is invalid. Clearing and retrying...");
             localStorage.removeItem('gh_token');
-            // Retry once more without headers
-            res = await fetch(url);
+            console.warn("[Auth] Token invalid. Retrying anonymously...");
+            res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
         } else {
-            console.warn("[Auth] Default token failed or no permission. Retrying anonymously...");
-            res = await fetch(url);
+            res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
         }
     }
     return res.ok ? await res.json() : [];
@@ -66,16 +67,17 @@ async function listRepoRoot() {
 
 async function fetchFileContent(path, isRoot = false) {
     const fullPath = isRoot ? path : `${ghConfig.dataDir}${path}`;
-    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${fullPath}?t=${Date.now()}`;
-    const token = ghConfig.token;
-    const headers = token ? { 'Authorization': `token ${token}` } : {};
-    let res = await fetch(url, { headers });
+    const safePath = fullPath.split('/').map(segment => encodeURIComponent(segment)).join('/');
+    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${safePath}?t=${Date.now()}`;
     
+    const token = ghConfig.token;
+    const headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (token) headers['Authorization'] = `token ${token}`;
+
+    let res = await fetch(url, { headers });
     if (!res.ok && (res.status === 401 || res.status === 403)) {
-        if (localStorage.getItem('gh_token')) {
-            localStorage.removeItem('gh_token');
-        }
-        res = await fetch(url);
+        if (localStorage.getItem('gh_token')) localStorage.removeItem('gh_token');
+        res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
     }
     
     if (!res.ok) return null;
@@ -104,19 +106,20 @@ async function saveProjectMetadata(project, metadata, statusCallback) {
 async function uploadToProject(project, filename, content, statusCallback, isBinary = false) {
     if (ghConfig.isReadOnly) return false;
     try {
-        const path = `${ghConfig.dataDir}${project}/${filename}`;
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodeURIComponent(path).replace(/%2F/g, '/')}`;
+        const fullPath = `${ghConfig.dataDir}${project}/${filename}`;
+        const safePath = fullPath.split('/').map(segment => encodeURIComponent(segment)).join('/');
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${safePath}`;
         let sha = null;
         
         const token = ghConfig.token;
-        const headers = { 'Authorization': `token ${token}` };
+        const headers = { 'Accept': 'application/vnd.github.v3+json' };
+        if (token) headers['Authorization'] = `token ${token}`;
 
         try {
             const res = await fetch(url + `?t=${Date.now()}`, { headers });
             if (res.status === 401 || res.status === 403) {
                 if (localStorage.getItem('gh_token')) {
                     localStorage.removeItem('gh_token');
-                    console.warn("[Auth] Upload failed due to invalid token. Cleared storage.");
                 }
             }
             if (res.ok) { const json = await res.json(); sha = json.sha; }
@@ -128,6 +131,7 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
         const putRes = await fetch(url, {
             method: 'PUT',
             headers: { 
+                'Accept': 'application/vnd.github.v3+json',
                 'Authorization': `token ${ghConfig.token}`, 
                 'Content-Type': 'application/json' 
             },
