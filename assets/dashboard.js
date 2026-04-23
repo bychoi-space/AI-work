@@ -165,7 +165,7 @@ async function refreshFileList() {
         setTimeout(() => {
             if (DOM.globalLoader) DOM.globalLoader.classList.remove('active');
         }, 500);
-        updateStatusUI(isGuest ? '게스트 모드 (읽기 전용) 👥' : '', isGuest ? '#94a3b8' : '#4ade80');
+        updateStatusUI('', '');
     } catch (err) {
         console.error("refreshFileList error:", err);
         updateStatusUI('연결 확인 필요 ⚠️', '#fb923c');
