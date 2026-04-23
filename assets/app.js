@@ -34,7 +34,7 @@ async function listContents(path) {
     
     const token = ghConfig.token;
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
+    if (token) headers['Authorization'] = `token ${token}`;
 
     let res = await fetch(url, { headers, credentials: 'omit' });
     
@@ -53,7 +53,7 @@ async function listRepoRoot() {
     const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/?t=${Date.now()}`;
     const token = ghConfig.token;
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
+    if (token) headers['Authorization'] = `token ${token}`;
 
     let res = await fetch(url, { headers, credentials: 'omit' });
     if (!res.ok && (res.status === 401 || res.status === 403)) {
@@ -70,7 +70,7 @@ async function fetchFileContent(path, isRoot = false) {
     
     const token = ghConfig.token;
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
+    if (token) headers['Authorization'] = `token ${token}`;
 
     let res = await fetch(url, { headers, credentials: 'omit' });
     if (!res.ok && (res.status === 401 || res.status === 403)) {
@@ -111,7 +111,7 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
         
         const token = ghConfig.token;
         const headers = { 'Accept': 'application/vnd.github.v3+json' };
-        if (token) headers['Authorization'] = `Bearer ${token}`;
+        if (token) headers['Authorization'] = `token ${token}`;
 
         try {
             const res = await fetch(url + `?t=${Date.now()}`, { headers, credentials: 'omit' });
@@ -130,7 +130,7 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
             method: 'PUT',
             headers: { 
                 'Accept': 'application/vnd.github.v3+json',
-                'Authorization': `Bearer ${ghConfig.token}`, 
+                'Authorization': `token ${ghConfig.token}`, 
                 'Content-Type': 'application/json' 
             },
             credentials: 'omit',
