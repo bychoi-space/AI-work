@@ -36,17 +36,27 @@ async function listContents(path) {
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
     if (token) headers['Authorization'] = `token ${token}`;
 
-    let res = await fetch(url, { headers, credentials: 'omit' });
+    console.log("[API] Requesting contents for:", path);
     
-    if (!res.ok && (res.status === 401 || res.status === 403)) {
-        if (localStorage.getItem('gh_token')) {
-            localStorage.removeItem('gh_token');
-            res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
-        } else {
-            res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
+    // 5-second Timeout Protection
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    try {
+        let res = await fetch(url, { headers, credentials: 'omit', signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        if (!res.ok && (res.status === 401 || res.status === 403)) {
+            if (localStorage.getItem('gh_token')) {
+                localStorage.removeItem('gh_token');
+                res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
+            }
         }
+        return res.ok ? await res.json() : [];
+    } catch (e) {
+        console.warn("[API] listContents failed or timed out:", e.message);
+        return [];
     }
-    return res.ok ? await res.json() : [];
 }
 
 async function listRepoRoot() {

@@ -85,9 +85,14 @@
         .sidebar-handle span { font-size: 18px; }
     </style>
     <script>
-        window.onerror = function(msg, url, line) {
+        window.onerror = function(msg, url, line, col, error) {
             const dc = document.getElementById('debug-console');
-            if (dc) { dc.style.display = 'block'; dc.innerText = "[ERROR] " + msg + " (" + line + "행)"; }
+            if (dc) { 
+                dc.style.display = 'block'; 
+                const fileName = url ? url.split('/').pop() : 'inline';
+                dc.innerText = `[ERROR] ${msg} (${fileName}:${line}:${col})`;
+                if (error && error.stack) console.error(error.stack);
+            }
             return false;
         };
         document.addEventListener('DOMContentLoaded', function() {
@@ -552,8 +557,8 @@
     </div>
 
     <!-- Script modularization: Pure Vanilla V3 Migration -->
-    <script src="assets/templates.js?v=V100_STABILITY"></script>
-    <script src="assets/app.js?v=V100_STABILITY"></script>
-    <script src="assets/vctrl_v2.js?v=V100_STABILITY"></script>
+    <script src="assets/templates.js?v=V101_STABILITY"></script>
+    <script src="assets/app.js?v=V101_STABILITY"></script>
+    <script src="assets/vctrl_v3.js?v=V101_STABILITY"></script>
 </body>
 </html>
