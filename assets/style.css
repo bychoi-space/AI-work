@@ -2241,13 +2241,13 @@ body.drag-active #drop-overlay {
 
 /* LFmall Sprite Icons */
 .lf-icon {
-  background-image: url(" https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png \);
- background-size: 200px 160px;
- width: 40px;
- height: 40px;
- display: inline-block;
- background-repeat: no-repeat;
- pointer-events: none;
+    background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png");
+    background-size: 200px 160px;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    pointer-events: none;
 }
 .lf-icon-home { background-position: -80px 0; }
 .lf-icon-category { background-position: 0 0; }

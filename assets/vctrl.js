@@ -147,7 +147,13 @@ const DOM = {
     addScreenModal: document.getElementById('add-screen-modal'),
     btnCancelAdd: document.getElementById('btn-add-screen-cancel'),
     btnSubmitAdd: document.getElementById('btn-add-screen-submit'),
-    btnUploadLocal: document.getElementById('btn-upload-local'),
+    btnSubmitEdit: document.getElementById('btn-edit-screen-submit'),
+    
+    // Component Tracking
+    compActionsSection: document.getElementById('comp-actions-section'),
+    btnCompDelete: document.getElementById('btn-comp-delete'),
+
+    // Forms
     newScreenName: document.getElementById('new-screen-name'),
     templateList: document.getElementById('template-list'),
     
@@ -1488,9 +1494,14 @@ function injectIframeInteractions(doc) {
             
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             activeEl.classList.add('selected');
+            
+            // Inform parent about selection
+            window.postMessage({ type: 'LF_COMP_SELECTED', id: activeEl.id }, '*');
+
             e.preventDefault(); e.stopPropagation();
         } else {
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
+            window.postMessage({ type: 'LF_COMP_DESELECTED' }, '*');
         }
     });
 
@@ -1513,6 +1524,18 @@ function injectIframeInteractions(doc) {
         if (activeEl) markAsDirty();
         isMoving = false; isResizing = false; activeEl = null;
     });
+
+    doc.addEventListener('keydown', e => {
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+            const selected = doc.querySelector('.lf-component.selected');
+            if (selected) {
+                selected.remove();
+                markAsDirty();
+                window.postMessage({ type: 'LF_COMP_DESELECTED' }, '*');
+                Notification.toast("컴포넌트가 삭제되었습니다.");
+            }
+        }
+    });
 }
 
 function insertAtomicComponent(type, name) {
@@ -1528,7 +1551,7 @@ function insertAtomicComponent(type, name) {
     const id = `lf-comp-${Date.now()}`;
 
     if (name === 'LF Logo') {
-        contentHtml = `<img src="assets/lf_brand_logo.svg" style="width:100%; height:auto; display:block; pointer-events:none;">`;
+        contentHtml = `<img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width:100%; height:auto; display:block; pointer-events:none;">`;
     } else if (name === 'Primary Button') {
         contentHtml = `<div style="background:#00e5ff; color:#000; border:none; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(0,229,255,0.3); pointer-events:none;">BUTTON</div>`;
     } else if (name === 'LF Discount') {
@@ -1581,5 +1604,25 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 document.querySelectorAll('.component-item').forEach(item => {
     item.onclick = () => insertAtomicComponent(item.dataset.type, item.dataset.name);
 });
+
+// Component Selection & Deletion Handlers
+window.addEventListener('message', e => {
+    if (e.data.type === 'LF_COMP_SELECTED') {
+        DOM.compActionsSection.style.display = 'block';
+    } else if (e.data.type === 'LF_COMP_DESELECTED') {
+        DOM.compActionsSection.style.display = 'none';
+    }
+});
+
+DOM.btnCompDelete.onclick = () => {
+    const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
+    const selected = iframeDoc.querySelector('.lf-component.selected');
+    if (selected) {
+        selected.remove();
+        markAsDirty();
+        DOM.compActionsSection.style.display = 'none';
+        Notification.toast("컴포넌트가 삭제되었습니다.");
+    }
+};
 
 init();
