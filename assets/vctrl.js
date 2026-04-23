@@ -21,9 +21,52 @@ const state = {
     screens: [], /* Current ordered screens */
     get isReadOnly() { return ghConfig.isReadOnly; },
     hasUnsavedChanges: false,
-    editMode: false,
-    activeElement: null
+    isEditing: false,
+    editingIndex: -1
 };
+
+let quillEditor = null; // Global Quill instance
+
+function initQuillEditor() {
+    if (quillEditor) return;
+    const container = document.getElementById('editor-container');
+    if (!container) {
+        console.error("[Quill] 에디터 컨테이너(#editor-container)를 찾을 수 없습니다.");
+        return;
+    }
+
+    // 1. Initialize Quill
+    quillEditor = new Quill('#editor-container', {
+        theme: 'snow',
+        placeholder: '내용을 입력하세요...',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline'],
+                [{ 'color': [] }]
+            ]
+        }
+    });
+
+    // 2. Real-time Live Preview (Sidebar -> Canvas)
+    quillEditor.on('text-change', () => {
+        if (!state.isEditing || state.editingIndex === -1) return;
+        
+        const html = quillEditor.root.innerHTML;
+        const index = state.editingIndex;
+        
+        // Immediate sync to the marker element for "WOW" effect
+        const marker = document.querySelector(`.text-marker[data-index="${index}"]`);
+        if (marker) {
+            marker.innerHTML = (html === '<p><br></p>') ? "" : html;
+            // Deduce and apply color for robustness
+            const color = quillEditor.root.style.color || "#000000";
+            marker.style.setProperty('color', color, 'important');
+        }
+    });
+
+    console.log("[Quill] 에디터 초기화 완료.");
+}
+
 
 // State Change Helpers
 function markAsDirty() {
@@ -68,227 +111,6 @@ async function checkUnsavedChanges() {
     return false;
 }
 
-/**
- * LF Editor Studio - Core Logic (Pivot V2: Ghost Engine)
- */
-async function toggleEditMode() {
-    if (state.isReadOnly) return showAuthModal();
-    if (!state.activeFile) return;
-
-    state.editMode = !state.editMode;
-    DOM.btnEditMode.classList.toggle('active', state.editMode);
-
-    if (state.editMode) {
-        setTool('select');
-        injectEditorUI();
-    } else {
-        removeEditorUI();
-    }
-}
-
-function createGhostHighlighter() {
-    if (document.getElementById('studio-ghost')) return;
-    const ghost = document.createElement('div');
-    ghost.id = 'studio-ghost';
-    ghost.className = 'studio-ghost-outline';
-    ghost.innerHTML = '<div class="studio-ghost-label">SELECTED</div>';
-    document.getElementById('artboard-wrapper').appendChild(ghost);
-}
-
-function updateGhostPosition(el) {
-    const ghost = document.getElementById('studio-ghost');
-    if (!ghost || !el) return;
-    
-    // Element position relative to Iframe viewport
-    const rect = el.getBoundingClientRect();
-    ghost.style.display = 'block';
-    ghost.style.width = `${rect.width}px`;
-    ghost.style.height = `${rect.height}px`;
-    ghost.style.left = `${rect.left}px`;
-    ghost.style.top = `${rect.top}px`;
-}
-
-function injectEditorUI() {
-    const doc = DOM.iframe.contentDocument;
-    if (!doc) return;
-
-    createGhostHighlighter();
-
-    // Palette Drag Support (From Sidebar)
-    document.querySelectorAll('.palette-item').forEach(item => {
-        item.onclick = () => {
-            if (!state.editMode) { Notification.show("에디터 모드를 먼저 활성화해주세요.", "info"); return; }
-            const type = item.dataset.type;
-            const content = getTemplateForBlock(type);
-            doc.body.insertAdjacentHTML('beforeend', content);
-            markAsDirty();
-            Notification.show(`${type} 블록이 추가되었습니다.`, 'success');
-        };
-    });
-
-    // Capture clicks in Iframe for selection
-    doc.onclick = (e) => {
-        if (!state.editMode) return;
-        const el = e.target;
-        if (el === doc.body || el === doc.documentElement) return;
-        
-        state.activeElement = el;
-        updateGhostPosition(el);
-        showInspector(el);
-        
-        // Inline Edit for text
-        if (['P', 'SPAN', 'H1', 'H2', 'H3', 'TD', 'LI', 'A'].includes(el.tagName)) {
-            el.contentEditable = "true";
-            el.oninput = () => { markAsDirty(); updateGhostPosition(el); };
-        }
-    };
-}
-
-function removeEditorUI() {
-    const doc = DOM.iframe.contentDocument;
-    if (doc) {
-        doc.querySelectorAll('[contenteditable]').forEach(el => el.contentEditable = "false");
-    }
-    const ghost = document.getElementById('studio-ghost');
-    if (ghost) ghost.style.display = 'none';
-    if (DOM.inspectorEmpty) DOM.inspectorEmpty.style.display = 'block';
-    if (DOM.inspectorControls) DOM.inspectorControls.style.display = 'none';
-}
-
-function showInspector(el) {
-    if (DOM.inspectorEmpty) DOM.inspectorEmpty.style.display = 'none';
-    if (DOM.inspectorControls) DOM.inspectorControls.style.display = 'flex';
-    
-    // Sync values
-    const s = el.style;
-    if (DOM.ftInputBg) DOM.ftInputBg.value = rgbToHex(s.backgroundColor) || "#ffffff";
-    if (DOM.ftInputColor) DOM.ftInputColor.value = rgbToHex(s.color) || "#000000";
-    if (DOM.ftInputBorder) DOM.ftInputBorder.value = parseInt(s.borderWidth) || 0;
-    if (DOM.ftInputRadius) DOM.ftInputRadius.value = parseInt(s.borderRadius) || 0;
-    if (DOM.ftBtnShadow) DOM.ftBtnShadow.classList.toggle('active', !!s.boxShadow);
-}
-
-function rgbToHex(rgb) {
-    if (!rgb || rgb === 'transparent') return '';
-    const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-    if (!match) return '';
-    return "#" + ((1 << 24) + (parseInt(match[1]) << 16) + (parseInt(match[2]) << 8) + parseInt(match[3])).toString(16).slice(1);
-}
-
-function removeEditorUI() {
-    const doc = DOM.iframe.contentDocument;
-    if (!doc) return;
-    
-    // Unwrap blocks
-    doc.querySelectorAll('.studio-block-wrapper').forEach(wrapper => {
-        const handle = wrapper.querySelector('.studio-drag-handle');
-        if (handle) handle.remove();
-        const indicator = wrapper.querySelector('.studio-drop-indicator');
-        if (indicator) indicator.remove();
-        
-        while (wrapper.firstChild) {
-            wrapper.parentNode.insertBefore(wrapper.firstChild, wrapper);
-        }
-        wrapper.remove();
-    });
-
-    doc.querySelectorAll('[contenteditable]').forEach(el => el.contentEditable = "false");
-    const s = doc.getElementById('editor-studio-styles');
-    if (s) s.remove();
-    hideFloatingToolbar();
-}
-
-/**
- * Phase 2 - Block & Image Operations
- */
-async function addBlock(type) {
-    if (!state.editMode) return;
-    const doc = DOM.iframe.contentDocument;
-    const container = doc.querySelector('.page') || doc.querySelector('.modern-main') || doc.body;
-    
-    const div = doc.createElement('div');
-    div.innerHTML = blockSnippets[type] || '';
-    const newBlock = div.firstChild;
-    
-    container.appendChild(newBlock);
-    removeEditorUI(); // Refresh UI to wrap new block
-    injectEditorUI();
-    markAsDirty();
-}
-
-function showFloatingToolbar(el) {
-    const rect = el.getBoundingClientRect();
-    const iframeRect = DOM.iframe.getBoundingClientRect();
-    const top = iframeRect.top + rect.top - 50;
-    const left = iframeRect.left + rect.left + (rect.width/2);
-    DOM.floatingToolbar.style.top = `${top}px`;
-    DOM.floatingToolbar.style.left = `${left}px`;
-    DOM.floatingToolbar.classList.add('active');
-    DOM.floatingToolbar.style.display = 'flex';
-}
-
-function hideFloatingToolbar() {
-    DOM.floatingToolbar.classList.remove('active');
-    setTimeout(() => { if (!DOM.floatingToolbar.classList.contains('active')) DOM.floatingToolbar.style.display = 'none'; }, 200);
-}
-
-async function handleImageUpload(file) {
-    if (!state.editingImage || !file) return;
-    
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-        const base64 = e.target.result.split(',')[1];
-        const filename = `img_${Date.now()}_${file.name}`;
-        
-        // Show loading in-place
-        const originalSrc = state.editingImage.src;
-        state.editingImage.style.opacity = '0.5';
-        
-        const success = await uploadToProject(state.currentProject, `_assets/${filename}`, base64, (msg) => {
-            console.log(`[Upload] ${msg}`);
-        }, true); // isBinary = true
-        
-        if (success) {
-            const rawUrl = `https://raw.githubusercontent.com/${ghConfig.owner}/${ghConfig.repo}/main/${ghConfig.dataDir}${state.currentProject}/_assets/${filename}`;
-            state.editingImage.src = rawUrl;
-            state.editingImage.style.opacity = '1';
-            markAsDirty();
-        } else {
-            state.editingImage.src = originalSrc;
-            state.editingImage.style.opacity = '1';
-            Notification.alert('이미지 업로드에 실패했습니다.', '오류');
-        }
-    };
-    reader.readAsDataURL(file);
-}
-
-function serializeIframeContent() {
-    const doc = DOM.iframe.contentDocument;
-    if (!doc) return null;
-    
-    const clone = doc.documentElement.cloneNode(true);
-    
-    // Hard Cleanup
-    clone.querySelectorAll('.studio-block-wrapper').forEach(wrapper => {
-        const handle = wrapper.querySelector('.studio-drag-handle');
-        if (handle) handle.remove();
-        const indicator = wrapper.querySelector('.studio-drop-indicator');
-        if (indicator) indicator.remove();
-        while (wrapper.firstChild) { wrapper.parentNode.insertBefore(wrapper.firstChild, wrapper); }
-        wrapper.remove();
-    });
-    
-    clone.querySelectorAll('[contenteditable]').forEach(el => {
-        el.removeAttribute('contenteditable');
-        el.classList.remove('editor-editable', 'active');
-    });
-    
-    const s = clone.querySelector('#editor-studio-styles');
-    if (s) s.remove();
-    
-    return "<!DOCTYPE html>\n" + clone.outerHTML;
-}
-    
 const DOM = {
     iframe: document.getElementById('main-iframe'),
     artboardWrapper: document.getElementById('artboard-wrapper'),
@@ -314,30 +136,10 @@ const DOM = {
     // Buttons
     btnSelect: document.getElementById('btn-select'),
     btnHand: document.getElementById('btn-hand'),
+    btnText: document.getElementById('btn-text'),
     btnToggleLeft: document.getElementById('btn-toggle-left'),
     btnToggleRight: document.getElementById('btn-toggle-right'),
     btnGlobalSave: document.getElementById('btn-global-save'),
-    btnEditMode: document.getElementById('btn-edit-mode'),
-    editorControls: document.getElementById('editor-controls'),
-    floatingToolbar: document.getElementById('floating-toolbar'),
-    ftBtnBold: document.getElementById('ft-btn-bold'),
-    ftBtnItalic: document.getElementById('ft-btn-italic'),
-    ftBtnColor: document.getElementById('ft-btn-color'),
-    ftBtnDelete: document.getElementById('ft-btn-delete'),
-
-    // Editor Phase 3
-    ftInputBg: document.getElementById('ft-input-bg'),
-    ftInputColor: document.getElementById('ft-input-color'),
-    ftInputBorder: document.getElementById('ft-input-border'),
-    ftInputRadius: document.getElementById('ft-input-radius'),
-    ftBtnShadow: document.getElementById('ft-btn-shadow'),
-    
-    // UI Pivot V2
-    descriptionDrawer: document.getElementById('description-drawer'),
-    btnToggleDrawer: document.getElementById('btn-toggle-drawer'),
-    drawerArrow: document.getElementById('drawer-arrow'),
-    inspectorControls: document.getElementById('inspector-controls'),
-    inspectorEmpty: document.querySelector('.inspector-empty'),
     
     // Screen Management
     btnAddScreen: document.getElementById('btn-add-screen'),
@@ -348,6 +150,13 @@ const DOM = {
     btnUploadLocal: document.getElementById('btn-upload-local'),
     newScreenName: document.getElementById('new-screen-name'),
     templateList: document.getElementById('template-list'),
+    
+    // Sidebar Tabs
+    tabBtns: document.querySelectorAll('.tab-btn'),
+    tabPanes: document.querySelectorAll('.tab-pane'),
+    sidebarToolBtns: document.querySelectorAll('.sidebar-tool-btn'),
+
+
     
     // Edit Screen Modal DOM
     editScreenModal: document.getElementById('edit-screen-modal'),
@@ -365,48 +174,14 @@ const DOM = {
     authModal: document.getElementById('auth-modal'),
     tokenInput: document.getElementById('modal-gh-token'),
     authStatus: document.getElementById('modal-auth-status'),
-    btnAuthSubmit: document.getElementById('modal-auth-submit'),
+    btnAuthSubmit: document.getElementById('btn-modal-auth-submit'),
     btnAuthClose: document.getElementById('btn-modal-auth-cancel'),
     btnShowAuth: document.getElementById('btn-show-auth'),
-
+    
     // Properties Sidebar Additions
     textPropSection: document.getElementById('text-properties-section'),
     textColorPicker: document.getElementById('text-color-picker'),
-    colorPresets: document.querySelectorAll('.color-preset'),
-    
-    // Editor Phase 2
-    editorImageUpload: document.getElementById('editor-image-upload'),
-    blockMenu: document.getElementById('block-menu')
-};
-
-const blockSnippets = {
-    text: `<div class="studio-section" style="padding:20px 0;">
-        <p style="font-size:14px; line-height:1.6; color:#333;">여기에 새로운 텍스트 내용을 입력하세요. 단락을 자유롭게 편집할 수 있습니다.</p>
-    </div>`,
-    image: `<div class="studio-section" style="padding:20px 0; text-align:center;">
-        <img src="https://via.placeholder.com/800x400/f3f4f6/6366f1?text=Image+Placeholder" style="max-width:100%; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
-        <p style="font-size:12px; color:#888; margin-top:10px;">이미지를 클릭하여 로컬 파일로 교체할 수 있습니다.</p>
-    </div>`,
-    table: `<div class="studio-section" style="padding:20px 0;">
-        <table style="width:100%; border-collapse:collapse; border:1px solid #ddd; font-size:13px;">
-            <thead><tr style="background:#f8f9fa;">
-                <th style="border:1px solid #ddd; padding:10px;">항목</th>
-                <th style="border:1px solid #ddd; padding:10px;">상세 내용</th>
-                <th style="border:1px solid #ddd; padding:10px;">비고</th>
-            </tr></thead>
-            <tbody>
-                <tr><td style="border:1px solid #ddd; padding:10px;">데이터 1</td><td style="border:1px solid #ddd; padding:10px;">설명 1</td><td style="border:1px solid #ddd; padding:10px;">-</td></tr>
-                <tr><td style="border:1px solid #ddd; padding:10px;">데이터 2</td><td style="border:1px solid #ddd; padding:10px;">설명 2</td><td style="border:1px solid #ddd; padding:10px;">-</td></tr>
-            </tbody>
-        </table>
-    </div>`,
-    grid: `<div class="studio-section" style="padding:20px 0; display:flex; gap:20px;">
-        <div style="flex:1; padding:20px; background:#f8f9fa; border-radius:8px; border:1px dashed #ccc; text-align:center;">왼쪽 그리드</div>
-        <div style="flex:1; padding:20px; background:#f8f9fa; border-radius:8px; border:1px dashed #ccc; text-align:center;">오른쪽 그리드</div>
-    </div>`,
-    diagram: `<div class="studio-section studio-diagram-canvas" style="padding:20px 0; height:400px; background:#fafafa; border:1px solid #eee; position:relative; overflow:hidden;">
-        <div style="position:absolute; top:20px; left:20px; padding:10px 20px; background:#fff; border:2px solid #6366f1; border-radius:4px; font-weight:bold; box-shadow:0 4px 6px rgba(0,0,0,0.05);">Start Component</div>
-    </div>`
+    colorPresets: document.querySelectorAll('.color-preset')
 };
 
 const context = {
@@ -533,10 +308,26 @@ async function init() {
             }
         }
 
+        initQuillEditor();
+
+        // GLOBAL EVENT DELEGATION for Color Presets
+        window.addEventListener('click', (e) => {
+            const btn = e.target.closest('.color-preset');
+            if (btn) {
+                updateActiveTextAnnotationColor(btn.dataset.color);
+            }
+        }, true);
+
+        if (DOM.textColorPicker) {
+            DOM.textColorPicker.oninput = (e) => updateActiveTextAnnotationColor(e.target.value);
+            DOM.textColorPicker.onchange = (e) => updateActiveTextAnnotationColor(e.target.value);
+        }
+
     } catch (err) {
         console.error("Initialization failed:", err);
         if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = "초기화 오류가 발생했습니다. 콘솔을 확인하세요.";
     } finally {
+        // Absolute safety: remove loading bar regardless of success/failure
         hideLoading();
     }
 
@@ -684,6 +475,9 @@ function getCategoryBadge(type) {
  * Screen Content Management
  */
 async function loadScreen(fileName) {
+    if (state.isEditing) {
+        closeActiveEditor(true);
+    }
     showLoading("Loading: " + fileName);
     DOM.placeholder.style.display = 'none';
     
@@ -695,16 +489,22 @@ async function loadScreen(fileName) {
         return;
     }
 
-    const blob = new Blob([content], {type: 'text/html;charset=utf-8'});
-    const url = URL.createObjectURL(blob);
-    
+    // Using srcdoc as a safer alternative to blob URLs for local HTML content
+    // This avoids "Not allowed to load local resource" blob errors
+    DOM.iframe.srcdoc = content;
+    DOM.iframe.style.display = 'block';
+
+    // Fail-safe: dismissal of loading overlay even if iframe onload doesn't fire perfectly
+    const loadTimeout = setTimeout(() => {
+        hideLoading();
+        console.warn("[Load Fail-safe] Forcing hideLoading after 3s timeout");
+    }, 3000);
+
     DOM.iframe.onload = () => {
+        clearTimeout(loadTimeout);
         hideLoading();
         DOM.iframe.onload = null;
     };
-
-    DOM.iframe.src = url;
-    DOM.iframe.style.display = 'block';
 
     let scMeta = (state.projectMetadata.screens || {})[fileName] || {};
     if (!scMeta.description) scMeta.description = [];
@@ -868,9 +668,21 @@ function renderDescriptionList() {
         `;
 
         const pin = document.createElement('div');
-        pin.className = 'pin-marker';
+        if (item.type === 'text') {
+            pin.className = 'text-marker';
+            // Support both HTML (New) and Text (Old)
+            pin.innerHTML = item.html || item.text || '';
+            const markerColor = item.color || "#000000";
+            pin.style.setProperty('color', markerColor, 'important');
+            
+            if (state.isEditing && state.editingIndex === index) {
+                pin.classList.add('editing-active');
+            }
+        } else {
+            pin.className = 'pin-marker';
+            pin.innerText = index + 1;
+        }
         pin.dataset.index = index;
-        pin.innerText = index + 1;
         
         const highlight = (active) => { pin.classList.toggle('highlight', active); row.classList.toggle('highlight', active); };
         pin.onmouseenter = () => highlight(true);
@@ -878,69 +690,97 @@ function renderDescriptionList() {
         row.onmouseenter = () => highlight(true);
         row.onmouseleave = () => highlight(false);
 
+        // Delete Button on Marker
+        if (!state.isReadOnly) {
+            const delBtn = document.createElement('div');
+            delBtn.className = 'marker-delete-btn';
+            delBtn.innerHTML = '<span style="font-family: Arial, sans-serif; font-weight: bold; font-size: 11px;">X</span>';
+            delBtn.title = "삭제";
+            delBtn.onclick = (e) => {
+                e.stopPropagation();
+                deleteAnnotation(index);
+            };
+            pin.appendChild(delBtn);
+        }
+
         DOM.descriptionList.appendChild(row);
         DOM.pinsLayer.appendChild(pin);
         
         // Initial Position via Vanilla (centered) - MUST BE IN DOM FIRST
         pin.style.left = (item.x || 0) + "%";
         pin.style.top = (item.y || 0) + "%";
-        // transform: translate(-50%, -50%) is handled in CSS for better performance
-
-        // Robust Vanilla JS Dragging Implementation
         pin.style.cursor = 'grab';
-        pin.onmousedown = (e) => {
-            e.preventDefault();
-            e.stopPropagation(); 
+
+        // Robust Custom Click Handling
+        let lastClickTime = 0;
+        const doubleClickThreshold = 450; 
+
+        // Block propagation for ALL click-related events to protect pinsLayer
+        const stopProps = (e) => e.stopPropagation();
+        pin.addEventListener('click', stopProps);
+        pin.addEventListener('dblclick', stopProps);
+
+        const handleActivation = (e) => {
+            if (state.isReadOnly) return false;
+            if (e.target.closest('.marker-delete-btn')) return false;
             
+            // Activation will now happen on MouseUp if not moved
+            return false;
+        };
+
+        // Listen on MouseDown to catch it early and handle Drag
+        pin.addEventListener('mousedown', (e) => {
+            if (state.isReadOnly) return;
+            if (e.target.closest('.marker-delete-btn')) return;
+            e.stopPropagation();
+
             const startX = e.clientX;
             const startY = e.clientY;
+            let moved = false;
             const initialItemX = item.x || 0;
             const initialItemY = item.y || 0;
             const r = DOM.pinsLayer.getBoundingClientRect();
 
-            // Event Shield: Prevent iframe from stealing focus during drag
             if (DOM.iframe) DOM.iframe.style.pointerEvents = 'none';
             document.body.style.cursor = 'grabbing';
-
             pin.style.cursor = 'grabbing';
             pin.style.transition = 'none'; 
-            pin.style.zIndex = '1000';
-            pin.classList.add('active');
+            pin.style.zIndex = '1001'; 
+            pin.classList.add('active', 'dragging-now'); // Add dragging class
             highlight(true);
 
             const onMouseMove = (moveEvent) => {
                 const dx = moveEvent.clientX - startX;
                 const dy = moveEvent.clientY - startY;
-                
+                if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
                 item.x = Math.max(0, Math.min(initialItemX + (dx / r.width) * 100, 100));
                 item.y = Math.max(0, Math.min(initialItemY + (dy / r.height) * 100, 100));
-                
                 pin.style.left = item.x + "%";
                 pin.style.top = item.y + "%";
             };
 
             const onMouseUp = () => {
-                // Restore interaction
                 if (DOM.iframe) DOM.iframe.style.pointerEvents = (state.tool === 'hand') ? 'none' : 'auto';
                 document.body.style.cursor = '';
-
                 pin.style.cursor = 'grab';
                 pin.style.transition = ''; 
-                pin.style.zIndex = '10';
-                pin.classList.remove('active');
+                pin.style.zIndex = '100';
+                pin.classList.remove('active', 'dragging-now');
                 window.removeEventListener('mousemove', onMouseMove);
                 window.removeEventListener('mouseup', onMouseUp);
                 highlight(false);
                 
-                // Track change
-                if (initialItemX !== item.x || initialItemY !== item.y) {
+                if (moved) {
                     markAsDirty();
+                } else {
+                    // It was a simple click -> Activate Editor
+                    spawnTextEditor(item.x, item.y, index);
                 }
             };
 
             window.addEventListener('mousemove', onMouseMove);
             window.addEventListener('mouseup', onMouseUp);
-        };
+        });
 
         // Touch support
         pin.ontouchstart = (e) => {
@@ -1032,14 +872,7 @@ async function handleGlobalSave() {
         pubUrl: document.getElementById('viewer-meta-pub')?.value || ''
     };
 
-    // Phase 1: Serialized HTML Save
-    const htmlContent = state.editMode ? serializeIframeContent() : null;
-    
-    const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, { 
-        projectMeta, 
-        description: state.activeFile.meta.description,
-        htmlContent // Pass the serialized HTML if in edit mode
-    }, (msg, color) => {
+    const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, { projectMeta, description: state.activeFile.meta.description }, (msg, color) => {
         btn.innerHTML = `<span class="material-icons-outlined" style="font-size:16px;">${color === '#4ade80' ? 'check_circle' : 'error'}</span> ${msg}`;
         btn.style.background = color || ''; btn.style.opacity = '1';
         if (color === '#4ade80') setTimeout(() => { btn.innerHTML = originalText; btn.style.background = ''; }, 2000);
@@ -1100,24 +933,319 @@ function setTool(t) {
     state.tool = t;
     DOM.btnSelect.classList.toggle('active', t === 'select');
     DOM.btnHand.classList.toggle('active', t === 'hand');
+    if (DOM.btnText) DOM.btnText.classList.toggle('active', t === 'text');
     DOM.canvas.classList.toggle('hand-active', t === 'hand');
+
+    // Sidebar tool sync
+    DOM.sidebarToolBtns?.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tool === t);
+    });
+    
+    // Toggle pointer-events to allow clicking on the artboard for pins
     DOM.iframe.style.pointerEvents = t === 'hand' ? 'none' : 'auto';
+    if (DOM.pinsLayer) {
+        DOM.pinsLayer.style.pointerEvents = (t === 'select') ? 'auto' : 'none';
+    }
 }
 
 /**
  * Event Listeners
  */
+
+// Canvas-click to add pins has been removed per user request.
+// Use Sidebar buttons [Text Creation] or [Add Description] to create annotations.
 DOM.pinsLayer.onclick = (e) => {
-    if (state.isReadOnly || !state.activeFile || state.tool !== 'select' || e.target !== DOM.pinsLayer) return;
-    const r = DOM.pinsLayer.getBoundingClientRect();
-    state.activeFile.meta.description.push({ text: '', x: Math.max(0, Math.min(((e.clientX - r.left)/r.width)*100, 100)), y: Math.max(0, Math.min(((e.clientY - r.top)/r.height)*100, 100)) });
-    markAsDirty();
-    renderDescriptionList();
-    setTimeout(() => DOM.descriptionList.querySelectorAll('.desc-input').slice(-1)[0]?.focus(), 50);
+    // We only prevent default/bubbling here to keep context clean
+    if (e.target !== DOM.pinsLayer) return;
 };
 
-if (DOM.btnToggleLeft) DOM.btnToggleLeft.onclick = () => { const c = DOM.sidebarLeft?.classList.toggle('collapsed'); if (DOM.btnToggleLeft.querySelector('span')) DOM.btnToggleLeft.querySelector('span').innerText = c ? 'chevron_right' : 'chevron_left'; setTimeout(centerView, 300); };
-if (DOM.btnToggleRight) DOM.btnToggleRight.onclick = () => { const c = DOM.sidebarRight?.classList.toggle('collapsed'); if (DOM.btnToggleRight.querySelector('span')) DOM.btnToggleRight.querySelector('span').innerText = c ? 'chevron_left' : 'chevron_right'; setTimeout(centerView, 300); };
+function getCascadedPosition(startX = 50, startY = 50) {
+    let x = startX, y = startY;
+    const step = 3; // 3% offset as suggested
+    const list = state.activeFile?.meta.description || [];
+    
+    let isOccupied = true;
+    let attempts = 0;
+    while (isOccupied && attempts < 15) {
+        isOccupied = list.some(item => 
+            item.type === 'text' && Math.abs(item.x - x) < 1 && Math.abs(item.y - y) < 1
+        );
+        if (isOccupied) {
+            x += step;
+            y += step;
+            attempts++;
+            if (x > 95 || y > 95) { x = startX; y = startY; break; }
+        }
+    }
+    return { x, y };
+}
+
+function handleTextCreation() {
+    if (state.isReadOnly) return showAuthModal();
+    if (!state.activeFile) return Notification.alert("스크린을 선택해주세요.", "알림", "warning");
+    if (state.isEditing) return;
+
+    const x = 50;
+    const y = 50;
+    
+    // 1. Push immediate empty data to enable real-time sync
+    const newIdx = state.activeFile.meta.description.length;
+    state.activeFile.meta.description.push({
+        html: "",
+        text: "",
+        x, y,
+        type: 'text',
+        color: "#000000"
+    });
+
+    // 2. Refresh UI to show the empty marker
+    renderDescriptionList();
+
+    // 3. Open editor for this new marker
+    spawnTextEditor(x, y, newIdx);
+}
+
+/**
+ * Global Editor Controller
+ */
+function closeActiveEditor(save = true) {
+    if (!state.isEditing) return;
+    
+    const editorSection = document.getElementById('text-editor-section');
+    const emptyMsg = document.querySelector('.empty-inspector');
+    
+    const htmlContent = quillEditor ? quillEditor.root.innerHTML : "";
+    const plainText = quillEditor ? quillEditor.getText().trim() : "";
+    const finalColor = quillEditor ? normalizeToHex(quillEditor.root.style.color || "#000000") : "#000000";
+
+    if (save && quillEditor) {
+        if (state.editingIndex !== -1 && state.activeFile) {
+            state.activeFile.meta.description[state.editingIndex].html = htmlContent;
+            state.activeFile.meta.description[state.editingIndex].text = plainText;
+            state.activeFile.meta.description[state.editingIndex].color = finalColor;
+            
+            if (!plainText && (htmlContent === "" || htmlContent === "<p><br></p>")) {
+                state.activeFile.meta.description.splice(state.editingIndex, 1);
+            }
+            markAsDirty();
+        }
+    } else if (!save && state.editingIndex !== -1 && state.activeFile) {
+        const item = state.activeFile.meta.description[state.editingIndex];
+        if (!item.text && (!item.html || item.html === "<p><br></p>")) {
+            state.activeFile.meta.description.splice(state.editingIndex, 1);
+        }
+    }
+
+    state.isEditing = false;
+    state.editingIndex = -1;
+    if (editorSection) editorSection.style.display = 'none';
+    if (emptyMsg) emptyMsg.style.display = 'flex';
+    renderDescriptionList();
+}
+
+function spawnTextEditor(x, y, existingIndex = -1) {
+    // Continuous Editing: If another is open, save it first
+    if (state.isEditing) {
+        closeActiveEditor(true);
+    }
+    state.isEditing = true;
+    state.editingIndex = existingIndex;
+
+    // 1. Prepare UI
+    switchSidebarTab('properties');
+    const editorSection = document.getElementById('text-editor-section');
+    if (editorSection) editorSection.style.display = 'block';
+
+    const emptyMsg = document.querySelector('.empty-inspector');
+    if (emptyMsg) emptyMsg.style.display = 'none';
+    
+    // 2. Visual Highlight
+    const markers = document.querySelectorAll('.text-marker');
+    markers.forEach(m => m.classList.remove('editing-active'));
+    if (existingIndex !== -1) {
+        const activeMarker = document.querySelector(`.text-marker[data-index="${existingIndex}"]`);
+        if (activeMarker) activeMarker.classList.add('editing-active');
+    }
+
+    // 3. Load content into Quill
+    if (quillEditor) {
+        const item = (existingIndex !== -1 && state.activeFile) ? state.activeFile.meta.description[existingIndex] : null;
+        const initialHtml = item ? (item.html || item.text || "") : "";
+        quillEditor.root.innerHTML = initialHtml;
+        quillEditor.focus();
+    }
+
+    // 4. Action Button Handlers
+    const btnApply = document.getElementById('btn-editor-apply');
+    const btnDelete = document.getElementById('btn-editor-delete');
+
+    if (btnApply) {
+        btnApply.onclick = (e) => {
+            e.stopPropagation();
+            closeActiveEditor(true);
+        };
+    }
+
+    if (btnDelete) {
+        btnDelete.onclick = (e) => {
+            e.stopPropagation();
+            deleteAnnotation(state.editingIndex);
+            closeActiveEditor(false); 
+        };
+    }
+
+    const handleGlobalClick = (e) => {
+        if (!state.isEditing) return;
+        if (e.target.closest('#text-editor-section') || 
+            e.target.closest('.text-marker') || 
+            e.target.closest('.sidebar-right') ||
+            e.target.closest('.ql-tooltip')) return;
+        
+        closeActiveEditor(true);
+        window.removeEventListener('mousedown', handleGlobalClick);
+    };
+    
+    setTimeout(() => {
+        window.addEventListener('mousedown', handleGlobalClick);
+    }, 400);
+}
+
+function deleteAnnotation(index) {
+    if (state.isReadOnly || !state.activeFile) return;
+    state.activeFile.meta.description.splice(index, 1);
+    markAsDirty();
+    renderDescriptionList();
+}
+
+/**
+ * Text Property Sidebar Helpers
+ */
+function showTextProperties(index) {
+    if (!DOM.textPropSection) return;
+    DOM.textPropSection.style.display = 'block';
+    
+    // Switch to properties tab automatically
+    switchSidebarTab('properties');
+}
+
+function hideTextProperties() {
+    if (DOM.textPropSection) DOM.textPropSection.style.display = 'none';
+}
+
+function updateActiveTextAnnotationColor(color) {
+    const hex = normalizeToHex(color);
+    
+    // 1. Update Quill Selection if editor is active
+    if (state.isEditing && quillEditor) {
+        // Apply color to current selection or the whole editor if nothing selected
+        const range = quillEditor.getSelection();
+        if (range && range.length > 0) {
+            quillEditor.format('color', hex);
+        } else {
+            // Apply to editor root for better feedback when nothing is selected
+            quillEditor.root.style.color = hex;
+        }
+    }
+
+    // 2. Sync picker and presets UI
+    if (DOM.textColorPicker) DOM.textColorPicker.value = hex;
+    updatePresetActive(hex);
+}
+
+function updatePresetActive(color) {
+    const hex = normalizeToHex(color);
+    DOM.colorPresets?.forEach(btn => {
+        const btnHex = normalizeToHex(btn.dataset.color);
+        btn.classList.toggle('active', btnHex.toLowerCase() === hex.toLowerCase());
+    });
+}
+
+function normalizeToHex(color) {
+    if (!color) return "#000000";
+    if (color.startsWith('#')) return color;
+    
+    // Mapping for common preset names
+    const colorMap = {
+        'black': '#000000',
+        'white': '#ffffff',
+        'red': '#ef4444',
+        'blue': '#3b82f6',
+        'green': '#22c55e',
+        'yellow': '#eab308'
+    };
+    if (colorMap[color.toLowerCase()]) return colorMap[color.toLowerCase()];
+
+    // Convert rgb(r, g, b) to #rrggbb
+    const rgb = color.match(/\d+/g);
+    if (!rgb || rgb.length < 3) return color;
+    
+    const r = parseInt(rgb[0]).toString(16).padStart(2, '0');
+    const g = parseInt(rgb[1]).toString(16).padStart(2, '0');
+    const b = parseInt(rgb[2]).toString(16).padStart(2, '0');
+    return `#${r}${g}${b}`;
+}
+
+
+function toggleSidebar(side, force) {
+    const sidebar = side === 'left' ? DOM.sidebarLeft : DOM.sidebarRight;
+    const handle = side === 'left' ? DOM.btnToggleLeft : DOM.btnToggleRight;
+    if (!sidebar) return;
+
+    const isCurrentlyCollapsed = sidebar.classList.contains('collapsed');
+    const targetCollapsed = force !== undefined ? !force : !isCurrentlyCollapsed;
+
+    sidebar.classList.toggle('collapsed', targetCollapsed);
+    
+    const icon = handle?.querySelector('span');
+    if (icon) {
+        if (side === 'left') icon.innerText = targetCollapsed ? 'chevron_right' : 'chevron_left';
+        else icon.innerText = targetCollapsed ? 'chevron_left' : 'chevron_right';
+    }
+    
+    setTimeout(centerView, 300);
+}
+
+function switchSidebarTab(tabName) {
+    DOM.tabBtns.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabName);
+    });
+    DOM.tabPanes.forEach(pane => {
+        const isActive = pane.id === `tab-${tabName}`;
+        pane.style.display = isActive ? 'flex' : 'none';
+        pane.classList.toggle('active', isActive);
+    });
+    
+    // Auto-open sidebar if switching tab
+    if (DOM.sidebarRight?.classList.contains('collapsed')) {
+        toggleSidebar('right', true);
+    }
+}
+
+function toggleInspector() {
+    // Inspector is now a tab in the right sidebar
+    switchSidebarTab('properties');
+}
+
+if (DOM.btnToggleLeft) DOM.btnToggleLeft.onclick = () => toggleSidebar('left');
+if (DOM.btnToggleRight) DOM.btnToggleRight.onclick = () => toggleSidebar('right');
+
+// Add Tab Button Listeners
+DOM.tabBtns.forEach(btn => {
+    btn.onclick = () => switchSidebarTab(btn.dataset.tab);
+});
+
+// Add Sidebar Tool Listeners
+DOM.sidebarToolBtns?.forEach(btn => {
+    btn.onclick = () => {
+        if (btn.dataset.tool === 'text') {
+            handleTextCreation();
+        } else {
+            setTool(btn.dataset.tool);
+        }
+    };
+});
+
+
 
 if (DOM.btnAddScreen) DOM.btnAddScreen.onclick = () => { 
     if (state.isReadOnly) return showAuthModal(); 
@@ -1237,56 +1365,16 @@ if (DOM.btnAddDescription) DOM.btnAddDescription.onclick = () => { if (state.isR
 if (DOM.btnGlobalSave) DOM.btnGlobalSave.onclick = handleGlobalSave;
 if (DOM.btnSelect) DOM.btnSelect.onclick = () => setTool('select');
 if (DOM.btnHand) DOM.btnHand.onclick = () => setTool('hand');
+if (DOM.btnText) DOM.btnText.onclick = () => setTool('text');
 if (DOM.btnShowAuth) DOM.btnShowAuth.onclick = showAuthModal;
 if (DOM.btnAuthSubmit) DOM.btnAuthSubmit.onclick = handleAuthSubmit;
 if (DOM.btnAuthClose) DOM.btnAuthClose.onclick = hideAuthModal;
 if (DOM.tokenInput) DOM.tokenInput.onkeyup = (e) => { if(e.key==='Enter') handleAuthSubmit(); };
 if (DOM.btnCancelEdit) DOM.btnCancelEdit.onclick = () => DOM.editScreenModal?.classList.remove('active');
 
-if (DOM.btnEditMode) DOM.btnEditMode.onclick = toggleEditMode;
-if (DOM.editorImageUpload) DOM.editorImageUpload.onchange = (e) => handleImageUpload(e.target.files[0]);
-if (DOM.blockMenu) DOM.blockMenu.querySelectorAll('a').forEach(link => {
-    link.onclick = (e) => { e.preventDefault(); addBlock(link.dataset.type); };
-});
-
-if (DOM.ftBtnBold) DOM.ftBtnBold.onclick = () => { document.execCommand('bold', false); markAsDirty(); };
-if (DOM.ftBtnItalic) DOM.ftBtnItalic.onclick = () => { document.execCommand('italic', false); markAsDirty(); };
-if (DOM.ftBtnColor) DOM.ftBtnColor.onclick = () => { document.execCommand('foreColor', false, '#e60012'); markAsDirty(); };
-if (DOM.ftBtnDelete) DOM.ftBtnDelete.onclick = async () => { if (state.activeElement && await Notification.confirm("이 요소를 영구적으로 삭제하시겠습니까?", "요소 삭제")) { state.activeElement.remove(); hideFloatingToolbar(); markAsDirty(); } };
-
-/**
- * Phase 3 - Advanced Styling
- */
-function applyStyleToActive(prop, val) {
-    if (!state.activeElement) return;
-    state.activeElement.style[prop] = val;
-    updateGhostPosition(state.activeElement);
-    markAsDirty();
-}
-
-if (DOM.ftInputBg) DOM.ftInputBg.oninput = (e) => applyStyleToActive('backgroundColor', e.target.value);
-if (DOM.ftInputColor) DOM.ftInputColor.oninput = (e) => applyStyleToActive('color', e.target.value);
-if (DOM.ftInputBorder) DOM.ftInputBorder.oninput = (e) => applyStyleToActive('border', `${e.target.value}px solid currentColor`);
-if (DOM.ftInputRadius) DOM.ftInputRadius.oninput = (e) => applyStyleToActive('borderRadius', `${e.target.value}px`);
-if (DOM.ftBtnShadow) DOM.ftBtnShadow.onclick = () => {
-    if (!state.activeElement) return;
-    const s = state.activeElement.style.boxShadow;
-    state.activeElement.style.boxShadow = s ? '' : '0 10px 30px rgba(0,0,0,0.15)';
-    DOM.ftBtnShadow.classList.toggle('active', !s);
-    markAsDirty();
-};
-
-// Drawer Toggle Logic
-if (DOM.btnToggleDrawer) DOM.btnToggleDrawer.onclick = () => {
-    const isActive = DOM.descriptionDrawer.classList.toggle('active');
-    DOM.drawerArrow.innerText = isActive ? 'expand_more' : 'expand_less';
-};
-
 window.addEventListener('keydown', async e => {
     if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
-    if(e.code === 'KeyE') { e.preventDefault(); toggleEditMode(); }
     if(e.key === 'Escape') {
-        if (state.editMode) return toggleEditMode();
         if (await checkUnsavedChanges()) {
             window.location.href = 'index.html';
         }
@@ -1294,6 +1382,8 @@ window.addEventListener('keydown', async e => {
     if(e.code === 'Space' && state.tool !== 'hand') { DOM.canvas.classList.add('hand-active'); DOM.iframe.style.pointerEvents = 'none'; }
     if(e.code === 'KeyV') setTool('select');
     if(e.code === 'KeyH') setTool('hand');
+    if(e.code === 'KeyT') handleTextCreation();
+    if(e.code === 'KeyI') toggleInspector();
     if(e.code === 'KeyL') toggleSidebar('left');
     if(e.code === 'KeyR') toggleSidebar('right');
 });
