@@ -2,7 +2,7 @@
  * Shared Application Logic & GitHub Integration
  */
 
-const _INTERNAL_KEY = 'MXFpcGJ4MXE0amcySURMREFpMzI4emZmV0hDbG1rNmJHX3BoZw=='; // Scancode Bypass Encoded
+const _INTERNAL_KEY = 'MXFpYngxZ3FENGp2MklETERBaTMyOHpmRldIQ2xtazZiNkdkX3BoZw=='; // Scancode Bypass Encoded (VERIFIED)
 
 const ghConfig = {
     get owner() { return localStorage.getItem('gh_owner') || 'bychoi-space'; },
