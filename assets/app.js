@@ -12,14 +12,20 @@ const ghConfig = {
     dataDir: 'data/', 
     get token() { 
         const stored = localStorage.getItem('gh_token');
-        if (stored && stored.trim()) return stored.trim();
+        if (stored && stored.trim()) {
+            console.log("[Auth] Using token from LocalStorage");
+            return stored.trim();
+        }
         // Default fallback with decode logic
         try {
-            return atob(_INTERNAL_KEY).split('').reverse().join('');
+            const fallback = atob(_INTERNAL_KEY).split('').reverse().join('');
+            console.log("[Auth] Using default Manager Mode token");
+            return fallback;
         } catch(e) { return ''; }
     },
-    set token(val) { localStorage.setItem('gh_token', val.trim()); },
-    get isReadOnly() { return !this.token; }
+    set token(val) { localStorage.setItem('gh_token', (val || '').trim()); },
+    get isReadOnly() { return !this.token; },
+    clearToken() { localStorage.removeItem('gh_token'); location.reload(); }
 };
 
 async function listContents(path) {
@@ -28,10 +34,17 @@ async function listContents(path) {
     const headers = token ? { 'Authorization': `token ${token}` } : {};
     let res = await fetch(url, { headers });
     
-    // Auth Fallback: If 401/403, retry without token (Public access)
+    // Auth Fallback: If 401/403, handle token invalidation
     if (!res.ok && (res.status === 401 || res.status === 403)) {
-        console.warn("[Auth] Token failed or no permission. Retrying anonymously...");
-        res = await fetch(url);
+        if (localStorage.getItem('gh_token')) {
+            console.warn("[Auth] Stored token is invalid. Clearing and retrying...");
+            localStorage.removeItem('gh_token');
+            // Retry once more without headers
+            res = await fetch(url);
+        } else {
+            console.warn("[Auth] Default token failed or no permission. Retrying anonymously...");
+            res = await fetch(url);
+        }
     }
     return res.ok ? await res.json() : [];
 }
@@ -43,6 +56,9 @@ async function listRepoRoot() {
     let res = await fetch(url, { headers });
     
     if (!res.ok && (res.status === 401 || res.status === 403)) {
+        if (localStorage.getItem('gh_token')) {
+            localStorage.removeItem('gh_token');
+        }
         res = await fetch(url);
     }
     return res.ok ? await res.json() : [];
@@ -56,6 +72,9 @@ async function fetchFileContent(path, isRoot = false) {
     let res = await fetch(url, { headers });
     
     if (!res.ok && (res.status === 401 || res.status === 403)) {
+        if (localStorage.getItem('gh_token')) {
+            localStorage.removeItem('gh_token');
+        }
         res = await fetch(url);
     }
     
