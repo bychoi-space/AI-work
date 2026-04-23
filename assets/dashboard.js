@@ -104,7 +104,8 @@ async function refreshFileList() {
         if (!Array.isArray(dataItems)) {
             throw new Error("Could not fetch project list (invalid response)");
         }
-        const folders = dataItems.filter(i => i.type === 'dir' && i.name !== 'assets');
+        let folders = dataItems.filter(i => i.type === 'dir' && i.name !== 'assets');
+        folders = folders.filter(f => !state.deletedProjects.has(f.name));
 
         if (legacies.length > 0) {
             console.log("[Migration] Found legacy files in root. Moving to Default_Project...");
