@@ -292,7 +292,7 @@ const Notification = {
         overlay.id = 'notification-overlay';
         overlay.className = 'dialog-overlay';
         overlay.innerHTML = `<div class="dialog-card">
-                <div id="notification-icon" class="dialog-icon"></div>
+                <div id="notification-icon" class="material-icons-outlined dialog-header-icon"></div>
                 <h3 id="notification-title" class="dialog-title"></h3>
                 <div id="notification-message" class="dialog-message"></div>
                 <div id="notification-input-container"></div>
@@ -312,16 +312,19 @@ const Notification = {
     _show(type, title, message, buttons, hasInput = false, defaultValue = '') {
         this._init();
         this.DOM.title.innerText = title;
-        this.DOM.message.innerText = message;
-        const iconMap = { success: 'check_circle', error: 'error_outline', warning: 'warning_amber', info: 'info' };
-        this.DOM.icon.className = `dialog-icon ${type || 'info'}`;
-        this.DOM.icon.innerText = iconMap[type] || 'info';
+        this.DOM.message.innerHTML = message.replace(/\n/g, '<br>');
+        const iconMap = { success: 'check_circle', error: 'error_outline', warning: 'report_problem', info: 'info_outline' };
+        
+        // Clean up classes
+        this.DOM.icon.className = `material-icons-outlined dialog-header-icon ${type || 'info'}`;
+        this.DOM.icon.innerText = iconMap[type] || 'info_outline';
+        
         this.DOM.inputContainer.innerHTML = hasInput ? `<input type="text" id="notification-prompt-input" class="form-input" style="margin-top:20px; width:100%;" value="${defaultValue}">` : '';
         this.DOM.footer.innerHTML = '';
         return new Promise((resolve) => {
             buttons.forEach(btn => {
                 const el = document.createElement('button');
-                el.className = btn.primary ? 'btn-primary' : 'btn-secondary';
+                el.className = btn.danger ? 'btn-danger' : (btn.primary ? 'btn-primary' : 'btn-secondary');
                 el.innerText = btn.text;
                 el.onclick = () => {
                     let value = true;
@@ -337,12 +340,12 @@ const Notification = {
         });
     },
     alert(message, title = 'Alert', type = 'info') {
-        return this._show(type, title, message, [{ text: 'OK', primary: true }]);
+        return this._show(type, title, message, [{ text: '확인', primary: true }]);
     },
-    confirm(message, title = 'Confirm', type = 'warning') {
+    confirm(message, title = '이 작업을 진행할까요?', type = 'warning') {
         return this._show(type, title, message, [
-            { text: 'Cancel', primary: false, value: false },
-            { text: 'OK', primary: true, value: true }
+            { text: '취소', primary: false, value: false },
+            { text: '네, 진행합니다', primary: true, value: true, danger: type === 'warning' }
         ]);
     },
     prompt(message, defaultValue = '', title = 'Input') {

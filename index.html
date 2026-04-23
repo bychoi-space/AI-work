@@ -75,8 +75,33 @@
             mix-blend-mode: overlay;
         }
         .toolbar { background: rgba(15, 17, 21, 0.6) !important; backdrop-filter: blur(20px) !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
-        .dashboard-header { background: transparent !important; }
-        .card-grid { padding-bottom: 100px; }
+        .card-grid { padding-bottom: 100px; display: grid !important; gap: 24px; }
+        .file-card { 
+            position: relative !important; 
+            overflow: hidden; 
+            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .file-card:hover { transform: translateY(-5px); border-color: var(--accent) !important; background: rgba(255, 255, 255, 0.06) !important; }
+        .edit-btn-card, .delete-btn-card {
+            position: absolute !important;
+            top: 12px;
+            z-index: 20;
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(15, 17, 21, 0.8);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+        .edit-btn-card { right: 52px; color: var(--accent); }
+        .delete-btn-card { right: 12px; color: #f87171; }
+        .file-card:hover .edit-btn-card, .file-card:hover .delete-btn-card { opacity: 1; }
+        
+        /* Ensure no ghost buttons at the top */
+        .dashboard-header .edit-btn-card, .dashboard-header .delete-btn-card { display: none !important; }
     </style>
 </head>
 <body>

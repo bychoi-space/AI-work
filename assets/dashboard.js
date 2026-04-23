@@ -282,13 +282,29 @@ document.addEventListener('click', async (e) => {
         e.preventDefault(); e.stopPropagation();
         if (ghConfig.isReadOnly) return showAuthModal();
         const projectName = delBtn.dataset.project;
-        const confirmed = await Notification.confirm(`'${projectName}' 프로젝트와 모든 관련 파일을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`, "프로젝트 삭제");
+        
+        const confirmed = await Notification.confirm(`'${projectName}' 프로젝트와 모든 관련 파일을 삭제하시겠습니까?\n이 작업은 절대 되돌릴 수 없습니다.`, "프로젝트 영구 삭제");
         if (confirmed) {
+            updateStatusUI('프로젝트 삭제 중... ⏳', '#f87171');
+            if (DOM.globalLoader) {
+                DOM.globalLoader.classList.add('active');
+                DOM.loaderStatus.innerText = `'${projectName}' 삭제 중...`;
+            }
+
             const success = await deleteProjectWithContents(projectName, updateStatusUI);
             if (success) {
+                // UI 즉시 반영
                 state.projects = state.projects.filter(p => p.name !== projectName);
                 renderList();
-                setTimeout(() => refreshFileList(), 1500);
+                updateStatusUI(`'${projectName}' 삭제 완료`, '#4ade80');
+                setTimeout(() => {
+                    if (DOM.globalLoader) DOM.globalLoader.classList.remove('active');
+                    refreshFileList(); // Background refresh to sync with GH
+                }, 1000);
+            } else {
+                updateStatusUI('삭제 실패', '#f87171');
+                if (DOM.globalLoader) DOM.globalLoader.classList.remove('active');
+                Notification.alert("삭제 중 오류가 발생했습니다. 권한을 확인하세요.", "오류", "error");
             }
         }
     }
