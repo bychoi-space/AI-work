@@ -254,6 +254,10 @@
                     <span class="material-icons-outlined">tune</span>
                     Properties
                 </button>
+                <button class="tab-btn" data-tab="components" title="아토믹 컴포넌트 (C)">
+                    <span class="material-icons-outlined">extension</span>
+                    Components
+                </button>
             </div>
 
             <!-- Tab: Description -->
@@ -341,6 +345,41 @@
                     <div class="empty-inspector">
                          <i class="material-icons-outlined">info</i>
                          선택된 요소가 없거나 편집 가능한 기능이 없습니다.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Components (Atomic Design) -->
+            <div id="tab-components" class="tab-pane" style="flex: 1; display: none; flex-direction: column; overflow: hidden;">
+                <div class="panel-header">
+                    <span style="font-size: 10px; opacity: 0.6;">ATOMIC COMPONENTS</span>
+                </div>
+                <div class="components-body" style="padding: 16px; overflow-y: auto; flex: 1;">
+                    <!-- Atoms Section -->
+                    <div class="component-section" style="margin-bottom: 24px;">
+                        <div class="section-label" style="font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 12px; letter-spacing: 1px;">ATOMS</div>
+                        <div class="component-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                            <div class="component-item" data-type="atom" data-name="LF Logo" id="comp-lf-logo" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s;">
+                                <div class="comp-preview" style="height: 60px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                                    <img src="assets/logo.svg" style="width: 100%; height: auto; filter: invert(1);">
+                                </div>
+                                <div class="comp-name" style="font-size: 11px; text-align: center; color: var(--text-secondary);">LF Logo</div>
+                            </div>
+                            <div class="component-item" data-type="atom" data-name="Primary Button" id="comp-btn-primary" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s;">
+                                <div class="comp-preview" style="height: 60px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                                    <div style="background: var(--accent); width: 80%; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #000; font-size: 8px; font-weight: bold;">BUTTON</div>
+                                </div>
+                                <div class="comp-name" style="font-size: 11px; text-align: center; color: var(--text-secondary);">Button</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Molecules Section (Placeholder) -->
+                    <div class="component-section">
+                        <div class="section-label" style="font-size: 11px; font-weight: 600; color: var(--text-dim); margin-bottom: 12px; letter-spacing: 1px;">MOLECULES</div>
+                        <div style="border: 1px dashed var(--border-color); border-radius: 8px; padding: 20px; text-align: center; color: var(--text-dim); font-size: 11px;">
+                            Coming Soon...
+                        </div>
                     </div>
                 </div>
             </div>

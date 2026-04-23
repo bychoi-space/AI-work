@@ -2219,3 +2219,22 @@ body.drag-active #drop-overlay {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
+
+/* Atomic Component Library */
+.component-item:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: var(--accent) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.component-item:active {
+    transform: translateY(0);
+}
+.component-item img {
+    max-width: 60px;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+.component-item:hover img {
+    opacity: 1;
+}

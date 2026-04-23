@@ -1395,4 +1395,58 @@ window.addEventListener('mouseup', () => {
     state.isDragging = false; 
 });
 
+/**
+ * Tab Switching & Atomic Components
+ */
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabId);
+    });
+    document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.style.display = pane.id === `tab-${tabId}` ? 'flex' : 'none';
+        pane.classList.toggle('active', pane.id === `tab-${tabId}`);
+    });
+}
+
+function insertAtomicComponent(type, name) {
+    if (ghConfig.isReadOnly) return showAuthModal();
+    if (!state.activeFile) return Notification.alert("먼저 스크린을 선택해주세요.", "알림", "warning");
+
+    const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
+    if (!iframeDoc) return;
+
+    let html = '';
+    const id = `lf-comp-${Date.now()}`;
+
+    if (name === 'LF Logo') {
+        html = `
+            <div id="${id}" class="lf-component atom-logo" style="position:absolute; top:100px; left:100px; cursor:move; transition: transform 0.2s;" draggable="true">
+                <img src="assets/logo.svg" style="width:120px; height:auto; display:block;">
+            </div>`;
+    } else if (name === 'Primary Button') {
+        html = `
+            <button id="${id}" class="lf-component atom-button" style="position:absolute; top:150px; left:100px; background:#00e5ff; color:#000; border:none; padding:12px 24px; border-radius:8px; font-weight:bold; cursor:move; box-shadow: 0 4px 15px rgba(0,229,255,0.3);" draggable="true">
+                LF PRIMARY BUTTON
+            </button>`;
+    }
+
+    if (html) {
+        const div = iframeDoc.createElement('div');
+        div.innerHTML = html;
+        const element = div.firstElementChild;
+        iframeDoc.body.appendChild(element);
+        Notification.toast(`${name} 컴포넌트가 삽입되었습니다.`);
+        markAsDirty();
+    }
+}
+
+// Global Event Listeners for Tabs and Components
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.onclick = () => switchTab(btn.dataset.tab);
+});
+
+document.querySelectorAll('.component-item').forEach(item => {
+    item.onclick = () => insertAtomicComponent(item.dataset.type, item.dataset.name);
+});
+
 init();
