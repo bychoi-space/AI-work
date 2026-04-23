@@ -35,17 +35,29 @@ function initQuillEditor() {
         return;
     }
 
+    // 0. Register Attributors for Inline Styles (Portability)
+    const Size = Quill.import('attributors/style/size');
+    Size.whitelist = ['12px', '14px', '16px', '18px', '20px', '24px', '30px', '36px', '48px', '64px'];
+    Quill.register(Size, true);
+
+    const Align = Quill.import('attributors/style/align');
+    Quill.register(Align, true);
+
     // 1. Initialize Quill
     quillEditor = new Quill('#editor-container', {
         theme: 'snow',
         placeholder: '내용을 입력하세요...',
         modules: {
             toolbar: [
+                [{ 'size': ['12px', '14px', false, '18px', '20px', '24px', '30px', '36px', '48px', '64px'] }],
                 ['bold', 'italic', 'underline'],
-                [{ 'color': [] }]
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'align': [] }],
+                ['clean']
             ]
         }
     });
+
 
     // 2. Real-time Live Preview (Sidebar -> Canvas)
     quillEditor.on('text-change', () => {
@@ -58,14 +70,13 @@ function initQuillEditor() {
         const marker = document.querySelector(`.text-marker[data-index="${index}"]`);
         if (marker) {
             marker.innerHTML = (html === '<p><br></p>') ? "" : html;
-            // Deduce and apply color for robustness
-            const color = quillEditor.root.style.color || "#000000";
-            marker.style.setProperty('color', color, 'important');
+            // The markers will now inherit inline styles for size/align/color from Quill
         }
     });
 
-    console.log("[Quill] 에디터 초기화 완료.");
+    console.log("[Quill] 에디터 초기화 완료 (인라인 스타일 모드).");
 }
+
 
 
 // State Change Helpers
@@ -118,7 +129,7 @@ const DOM = {
     iframe: get('main-iframe'),
     artboardWrapper: get('artboard-wrapper'),
     placeholder: get('placeholder'),
-    placeholderTxt: get('placeholder-text'),
+    placeholderTxt: get('placeholder-txt'),
     canvas: get('canvas'),
     stage: get('stage'),
     zoomTxt: get('zoom-txt'),
@@ -1386,20 +1397,28 @@ if (DOM.tokenInput) DOM.tokenInput.onkeyup = (e) => { if(e.key==='Enter') handle
 if (DOM.btnCancelEdit) DOM.btnCancelEdit.onclick = () => DOM.editScreenModal?.classList.remove('active');
 
 window.addEventListener('keydown', async e => {
-    if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+    // 1. Input Protection: Ignore shortcuts when typing in inputs or contenteditable (Quill)
+    if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+
     if(e.key === 'Escape') {
         if (await checkUnsavedChanges()) {
             window.location.href = 'index.html';
         }
     }
+    
+    // Global Shortcuts
     if(e.code === 'Space' && state.tool !== 'hand') { DOM.canvas.classList.add('hand-active'); DOM.iframe.style.pointerEvents = 'none'; }
     if(e.code === 'KeyV') setTool('select');
     if(e.code === 'KeyH') setTool('hand');
     if(e.code === 'KeyT') handleTextCreation();
-    if(e.code === 'KeyI') toggleInspector();
+    
+    // Sidebar & Tab Shortcuts
     if(e.code === 'KeyL') toggleSidebar('left');
     if(e.code === 'KeyR') toggleSidebar('right');
+    if(e.code === 'KeyE') switchSidebarTab('editor');
+    if(e.code === 'KeyD') switchSidebarTab('description');
 });
+
 window.addEventListener('keyup', e => { if(e.code === 'Space' && state.tool !== 'hand') { DOM.canvas.classList.remove('hand-active'); DOM.iframe.style.pointerEvents = 'auto'; }});
 
 DOM.canvas.addEventListener('wheel', e => {

@@ -60,6 +60,34 @@
     font-style: normal;
 }
 
+/* Quill Size Picker Numeric Labels */
+.ql-snow .ql-picker.ql-size .ql-picker-label::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item::before {
+  content: '16px'; /* Default label */
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value]::before {
+  content: attr(data-value) !important;
+}
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before { content: '12'; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before { content: '14'; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before { content: '16'; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before { content: '18'; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before { content: '20'; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before { content: '24'; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="30px"]::before { content: '30'; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="36px"]::before { content: '36'; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="48px"]::before { content: '48'; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="64px"]::before { content: '64'; }
+
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value]::before {
+  content: attr(data-value) !important;
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label:not([data-value])::before {
+  content: '16'; /* Default showing '16' when no size is explicitly set */
+}
+
+
 @keyframes fadeInSlideUp {
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
@@ -67,12 +95,12 @@
 
 /* Design System Tokens */
 :root {
-    --bg-base: #1e2128; /* 조금 더 밝은 배경색 */
-    --panel-bg: rgba(35, 38, 45, 0.75); /* Glassmorphism 패널 (조금 더 밝게) */
+    --bg-base: #1e2128; /* 魽國� ??諻吖? 諻國祭??*/
+    --panel-bg: rgba(35, 38, 45, 0.75); /* Glassmorphism ?刺� (魽國� ??諻祢�) */
     --border-color: rgba(255, 255, 255, 0.12);
     --text-primary: #ffffff;
     --text-secondary: #aab2bd;
-    --accent: #6366f1; /* 포인트 컬러: 비비드 인디고 */
+    --accent: #6366f1; /* ?科𥘵??儢禺剳: 赬��???賈�窸?*/
     --accent-nav: #22d3ee;
     --accent-data: #fb7185;
     --accent-hover: #818cf8;
@@ -100,7 +128,7 @@ body {
 }
 
 /* ----------------------------------------------------
-   1. Header Toolbar (상단 바)
+   1. Header Toolbar (?�𡆀 諻?
    ---------------------------------------------------- */
 .toolbar {
     height: 56px;
@@ -159,7 +187,7 @@ body {
 .tool-btn:hover { 
     background: var(--hover-bg); 
     color: var(--text-primary);
-    transform: scale(1.05); /* 호버 시 마이크로 애니메이션 강화 */
+    transform: scale(1.05); /* ?賈� ??諤�𦚯?禺� ?𧙖�諰䇹𦚯??穈𤣿� */
 }
 .tool-btn:active { transform: scale(0.95); }
 .tool-btn.active { background: var(--selected-bg); color: var(--accent); }
@@ -206,7 +234,7 @@ body {
 }
 
 /* ----------------------------------------------------
-   2. Dashboard View & Card Grid (목록 화면)
+   2. Dashboard View & Card Grid (諈拘� ?竾庖)
    ---------------------------------------------------- */
 #dashboard-view {
     flex: 1;
@@ -314,7 +342,7 @@ body {
 }
 
 /* ----------------------------------------------------
-   3. Main Workspace (상세 에디터 화면)
+   3. Main Workspace (?�� ?韒�???竾庖)
    ---------------------------------------------------- */
 #workspace-view {
     display: flex; 
@@ -795,7 +823,7 @@ body {
 }
 
 /* ----------------------------------------------------
-   3. Canvas (도화지 / 중앙 영역)
+   3. Canvas (?��鴔� / 鴗𡢾� ?�𡡒)
    ---------------------------------------------------- */
 .canvas {
     flex: 1;
@@ -836,32 +864,38 @@ body {
 }
 
 .placeholder-card {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(30,30,35, 0.7);
-    border: 1px dashed var(--accent);
-    border-radius: 16px;
+    background: rgba(30, 30, 35, 0.7);
+    border: 2px dashed var(--accent);
+    border-radius: 32px;
     padding: 60px 80px;
     text-align: center;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     color: var(--text-secondary);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    transition: all 0.3s ease;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     min-width: 320px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 16px;
+    z-index: 100;
 }
-.placeholder-card:hover { background: rgba(40, 40, 45, 0.8); border-style: solid; }
-.placeholder-card i { font-size: 64px !important; margin: 0; color: var(--accent); opacity: 1; }
-.placeholder-card h3 { text-align: center; width: 100%; margin: 0; }
+.placeholder-card:hover { 
+    background: rgba(40, 40, 45, 0.85); 
+    border-style: solid;
+    transform: translate(-50%, -52%) scale(1.02);
+}
+
+.placeholder-card i { font-size: 64px !important; margin-bottom: 12px; color: var(--accent); opacity: 1; }
+
+.placeholder-card h2 { text-align: center; width: 100%; margin: 0; font-weight: 700; color: #fff; }
+.placeholder-card p { text-align: center; width: 100%; margin: 8px 0 0 0; color: rgba(255,255,255,0.5); }
+
 
 /* ----------------------------------------------------
-   4. Properties & Upload Zone (우측 패널)
+   4. Properties & Upload Zone (?域腹 ?刺�)
    ---------------------------------------------------- */
 .upload-zone {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -964,10 +998,10 @@ body {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 1000;
-    display: none; /* 초기 숨김 */
+    display: none; /* 黕�萼 ?刷? */
     align-items: center;
     justify-content: center;
-    pointer-events: none; /* 클릭 방해 금지 */
+    pointer-events: none; /* ?渠早 諻拗㟲 篣�? */
     border: 4px dashed var(--accent);
     margin: 0;
 }
@@ -2183,33 +2217,46 @@ body.drag-active #drop-overlay {
 /* Added by Antigravity: Text Annotation Marker */
 .text-marker {
     position: absolute;
-    background: rgba(255, 255, 255, 0.01); /* High hit-testability even when transparent */
-    color: #000;
-    text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 2px #fff;
-    padding: 4px 10px;
-    border-radius: 4px;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
     border: 1px solid transparent;
-    font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap;
+    font-size: 16px;
+    line-height: 1.4;
+    white-space: normal; /* Multi-line support */
     cursor: grab;
     pointer-events: auto;
     user-select: none;
-    z-index: 100; /* Base z-index increased */
+    z-index: 100;
     transform: translate(-50%, -50%);
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s, background 0.2s;
+    min-width: 40px;
+    text-align: left; /* Default alignment */
+}
+
+.text-marker p {
+    margin: 0;
+    padding: 0;
+    text-align: inherit; /* Allow Quill's text-align to take effect */
 }
 
 .text-marker:hover, .text-marker.highlight {
-    transform: translate(-50%, -50%) scale(1.05);
+    transform: translate(-50%, -50%) scale(1.02);
     border-color: var(--accent);
-    border-style: dashed;
-    z-index: 1000; /* Ensure it stays on top during interaction */
+    background: rgba(0, 229, 255, 0.05);
+    z-index: 1000;
+}
+
+.text-marker.active {
+    outline: 2px solid var(--accent);
+    box-shadow: 0 0 15px var(--accent);
+    z-index: 1001;
 }
 
 .text-marker:active {
     cursor: grabbing;
 }
+
 /* Editor Inspector styles removed - functionality moved to sidebar tabs */
 .color-preset:hover {
     transform: scale(1.2);
