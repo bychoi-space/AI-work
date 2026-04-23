@@ -1,11 +1,6 @@
 {
   "title": "원스피어 관리자 권한",
   "screens": {
-    "lfmall_mobile_screen_4105.html": {
-      "updatedAt": "2026-04-21T07:05:12.651Z",
-      "template": "lfmall_mobile_base.html",
-      "description": []
-    },
     "lfmall_pc_screen_1703.html": {
       "updatedAt": "2026-04-20T02:33:14.802Z",
       "template": "lfmall_pc_base.html"
