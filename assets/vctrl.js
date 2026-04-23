@@ -1414,18 +1414,13 @@ function switchTab(tabId) {
     });
 }
 
-// Injects necessary interaction styles into the iframe
 function injectIframeInteractions(doc) {
-    if (doc.getElementById('lf-editor-styles')) return;
     const style = doc.createElement('style');
-    style.id = 'lf-editor-styles';
-    style.innerHTML = `
+    style.textContent = `
         .lf-component {
             position: absolute !important;
-            outline: 2px solid transparent;
-            transition: outline 0.1s;
             box-sizing: border-box !important;
-            min-width: 20px; min-height: 20px;
+            user-select: none;
         }
         .lf-component:hover {
             outline: 2px solid #00e5ff !important;
@@ -1447,10 +1442,6 @@ function injectIframeInteractions(doc) {
             z-index: 10000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
-        .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer {
-            display: block;
-        }
-        /* Direct Delete Button Style */
         .lf-delete-trigger {
             display: none;
             position: absolute;
@@ -1472,7 +1463,6 @@ function injectIframeInteractions(doc) {
         .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger {
             display: flex;
         }
-        /* Sprite Icon Base Style inside IFrame */
         .lf-icon {
             background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png");
             background-size: 200px 160px;
@@ -1494,14 +1484,11 @@ function injectIframeInteractions(doc) {
     `;
     doc.head.appendChild(style);
 
-    // IFrame Interaction Logic
     let isMoving = false, isResizing = false;
     let activeEl = null, startX, startY, startW, startH, startTop, startLeft;
 
     doc.addEventListener('mousedown', e => {
-        // Prevent interaction if in Text mode or Hand mode
         if (state.activeTool !== 'select') return;
-
         const deleteBtn = e.target.closest('.lf-delete-trigger');
         const resizer = e.target.closest('.lf-resizer');
         const comp = e.target.closest('.lf-component');
@@ -1510,29 +1497,21 @@ function injectIframeInteractions(doc) {
             comp.remove();
             markAsDirty();
             window.postMessage({ type: 'LF_COMP_DESELECTED' }, '*');
-            Notification.toast("컴포넌트가 삭제되었습니다.");
             e.preventDefault(); e.stopPropagation();
             return;
         }
-
         if (resizer) {
-            isResizing = true;
-            activeEl = resizer.parentElement;
+            isResizing = true; activeEl = resizer.parentElement;
             startX = e.clientX; startY = e.clientY;
             startW = activeEl.offsetWidth; startH = activeEl.offsetHeight;
             e.preventDefault(); e.stopPropagation();
         } else if (comp) {
-            isMoving = true;
-            activeEl = comp;
+            isMoving = true; activeEl = comp;
             startX = e.clientX; startY = e.clientY;
             startTop = activeEl.offsetTop; startLeft = activeEl.offsetLeft;
-            
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             activeEl.classList.add('selected');
-            
-            // Inform parent about selection
             window.postMessage({ type: 'LF_COMP_SELECTED', id: activeEl.id }, '*');
-
             e.preventDefault(); e.stopPropagation();
         } else {
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
@@ -1543,15 +1522,11 @@ function injectIframeInteractions(doc) {
     doc.addEventListener('mousemove', e => {
         if (!activeEl) return;
         if (isResizing) {
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            activeEl.style.width = `${startW + dx}px`;
-            activeEl.style.height = `${startH + dy}px`;
+            activeEl.style.width = `${startW + (e.clientX - startX)}px`;
+            activeEl.style.height = `${startH + (e.clientY - startY)}px`;
         } else if (isMoving) {
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            activeEl.style.top = `${startTop + dy}px`;
-            activeEl.style.left = `${startLeft + dx}px`;
+            activeEl.style.top = `${startTop + (e.clientY - startY)}px`;
+            activeEl.style.left = `${startLeft + (e.clientX - startX)}px`;
         }
     });
 
@@ -1564,10 +1539,8 @@ function injectIframeInteractions(doc) {
         if (e.key === 'Delete' || e.key === 'Backspace') {
             const selected = doc.querySelector('.lf-component.selected');
             if (selected) {
-                selected.remove();
-                markAsDirty();
+                selected.remove(); markAsDirty();
                 window.postMessage({ type: 'LF_COMP_DESELECTED' }, '*');
-                Notification.toast("컴포넌트가 삭제되었습니다.");
             }
         }
     });
@@ -1575,13 +1548,10 @@ function injectIframeInteractions(doc) {
 
 function insertAtomicComponent(type, name) {
     if (ghConfig.isReadOnly) return showAuthModal();
-    if (!state.activeFile) return Notification.alert("먼저 스크린을 선택해주세요.", "알림", "warning");
-
+    if (!state.activeFile) return Notification.alert("Please select a screen first.", "Notice", "warning");
     const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
     if (!iframeDoc) return;
-
     injectIframeInteractions(iframeDoc);
-
     let contentHtml = '';
     const id = `lf-comp-${Date.now()}`;
 
@@ -1592,56 +1562,23 @@ function insertAtomicComponent(type, name) {
     } else if (name === 'LF Discount') {
         contentHtml = `<div style="color:#E02020; font-size:24px; font-weight:800; font-family:sans-serif; text-align:center; pointer-events:none; line-height:1.2;">20%</div>`;
     } else if (name === 'LF GNB') {
-        contentHtml = `
-            <div style="background:#000; width:100%; height:100%; display:flex; align-items:center; justify-content:space-between; padding:0 16px; pointer-events:none;">
-                <span class="material-icons-outlined" style="color:#fff; font-size:20px;">search</span>
-                <span style="color:#fff; font-size:18px; font-weight:900; letter-spacing:-0.5px; font-family:sans-serif;">l.f:</span>
-                <span class="material-icons-outlined" style="color:#fff; font-size:20px;">home</span>
-            </div>`;
+        contentHtml = `<div style="background:#000; width:100%; height:100%; display:flex; align-items:center; justify-content:space-between; padding:0 16px; pointer-events:none;"><span class="material-icons-outlined" style="color:#fff; font-size:20px;">search</span><span style="color:#fff; font-size:18px; font-weight:900; letter-spacing:-0.5px; font-family:sans-serif;">l.f:</span><span class="material-icons-outlined" style="color:#fff; font-size:20px;">home</span></div>`;
     } else if (name === 'LF LNB') {
-        contentHtml = `
-            <div style="background:#fff; border-bottom:1px solid #f2f2f2; width:100%; height:100%; display:flex; align-items:center; padding:0 16px; pointer-events:none; overflow:hidden;">
-                <div style="display:flex; align-items:center; gap:20px; font-size:14px; font-family:sans-serif;">
-                    <span style="color:#000; font-weight:bold; position:relative;">홈<span style="position:absolute; top:-2px; right:-6px; width:4px; height:4px; background:#E02020; border-radius:50%;"></span></span>
-                    <span style="color:#888;">베스트</span>
-                    <span style="color:#888;">여성</span>
-                    <span style="color:#888;">남성</span>
-                    <span style="color:#888;">기획전</span>
-                </div>
-            </div>`;
+        contentHtml = `<div style="background:#fff; border-bottom:1px solid #f2f2f2; width:100%; height:100%; display:flex; align-items:center; padding:0 16px; pointer-events:none; overflow:hidden;"><div style="display:flex; align-items:center; gap:20px; font-size:14px; font-family:sans-serif;"><span style="color:#000; font-weight:bold; position:relative;">Home<span style="position:absolute; top:-2px; right:-6px; width:4px; height:4px; background:#E02020; border-radius:50%;"></span></span><span style="color:#888;">Best</span><span style="color:#888;">Women</span><span style="color:#888;">Men</span></div></div>`;
     } else if (type === 'icon') {
-        const iconClass = name.toLowerCase().split(' ')[0]; // home, category, search, etc.
+        const iconClass = name.toLowerCase().split(' ')[0];
         contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="width:100%; height:100%; pointer-events:none;"></div>`;
     }
 
     if (contentHtml) {
         const comp = iframeDoc.createElement('div');
-        comp.id = id;
-        comp.className = 'lf-component';
+        comp.id = id; comp.className = 'lf-component';
         comp.style.top = name === 'LF GNB' ? '0px' : (name === 'LF LNB' ? '50px' : '150px');
         comp.style.left = (name === 'LF GNB' || name === 'LF LNB') ? '0px' : '100px';
         comp.style.width = (name === 'LF GNB' || name === 'LF LNB') ? '100%' : (type === 'icon' ? '40px' : (name === 'LF Discount' ? '60px' : '120px'));
         comp.style.height = name === 'LF GNB' ? '50px' : (name === 'LF LNB' ? '48px' : (type === 'icon' ? '40px' : 'auto'));
-        
-        comp.innerHTML = `${contentHtml}
-            <div class="lf-resizer"></div>
-            <div class="lf-delete-trigger">×</div>`;
+        comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>`;
         iframeDoc.body.appendChild(comp);
-        
-        Notification.toast(`${name} 컴포넌트가 삽입되었습니다.`);
-        markAsDirty();
-    }
-}
-
-// Global Event Listeners for Tabs and Components
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.onclick = () => switchTab(btn.dataset.tab);
-});
-
-document.querySelectorAll('.component-item').forEach(item => {
-    item.onclick = () => insertAtomicComponent(item.dataset.type, item.dataset.name);
-});
-
 // Component Selection & Deletion Handlers
 window.addEventListener('message', e => {
     if (e.data.type === 'LF_COMP_SELECTED') {
