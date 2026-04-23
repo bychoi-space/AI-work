@@ -1059,10 +1059,15 @@ function spawnTextEditor(x, y, existingIndex = -1) {
     state.isEditing = true;
     state.editingIndex = existingIndex;
 
-    // 1. Prepare UI
-    switchSidebarTab('editor'); // Fixed from properties to editor
+    // Side-effects
+    initQuillEditor();
+    switchSidebarTab('editor');
     const editorSection = document.getElementById('text-editor-section');
-    if (editorSection) editorSection.style.display = 'block';
+    if (editorSection) {
+        editorSection.style.display = 'block';
+        const editorContainer = document.getElementById('editor-container');
+        if (editorContainer) editorContainer.style.display = 'block';
+    }
 
     const emptyMsg = document.querySelector('.empty-inspector');
     if (emptyMsg) emptyMsg.style.display = 'none';
@@ -1501,7 +1506,7 @@ function injectIframeInteractions(doc) {
     let activeEl = null, startX, startY, startW, startH, startTop, startLeft;
 
     doc.addEventListener('mousedown', e => {
-        if (state.activeTool !== 'select') return;
+        if (state.tool !== 'select') return;
         const deleteBtn = e.target.closest('.lf-delete-trigger');
         const resizer = e.target.closest('.lf-resizer');
         const comp = e.target.closest('.lf-component');
@@ -1708,6 +1713,9 @@ async function init() {
         
         // NEW: Render Atomic Library
         renderAtomicLibrary();
+        
+        // NEW: Initialize Quill Editor
+        initQuillEditor();
 
         if (!fileName && state.screens.length > 0) {
             fileName = state.screens[0].name;
