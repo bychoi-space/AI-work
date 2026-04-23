@@ -36,15 +36,14 @@ async function listContents(path) {
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
     if (token) headers['Authorization'] = `token ${token}`;
 
-    let res = await fetch(url, { headers });
+    let res = await fetch(url, { headers, credentials: 'omit' });
     
     if (!res.ok && (res.status === 401 || res.status === 403)) {
         if (localStorage.getItem('gh_token')) {
             localStorage.removeItem('gh_token');
-            console.warn("[Auth] Token invalid. Retrying anonymously...");
-            res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+            res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
         } else {
-            res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+            res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
         }
     }
     return res.ok ? await res.json() : [];
@@ -53,14 +52,13 @@ async function listContents(path) {
 async function listRepoRoot() {
     const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/?t=${Date.now()}`;
     const token = ghConfig.token;
-    const headers = token ? { 'Authorization': `token ${token}` } : {};
-    let res = await fetch(url, { headers });
-    
+    const headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    let res = await fetch(url, { headers, credentials: 'omit' });
     if (!res.ok && (res.status === 401 || res.status === 403)) {
-        if (localStorage.getItem('gh_token')) {
-            localStorage.removeItem('gh_token');
-        }
-        res = await fetch(url);
+        if (localStorage.getItem('gh_token')) localStorage.removeItem('gh_token');
+        res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
     }
     return res.ok ? await res.json() : [];
 }
@@ -72,12 +70,12 @@ async function fetchFileContent(path, isRoot = false) {
     
     const token = ghConfig.token;
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
-    if (token) headers['Authorization'] = `token ${token}`;
+    if (token) headers['Authorization'] = `Bearer ${token}`;
 
-    let res = await fetch(url, { headers });
+    let res = await fetch(url, { headers, credentials: 'omit' });
     if (!res.ok && (res.status === 401 || res.status === 403)) {
         if (localStorage.getItem('gh_token')) localStorage.removeItem('gh_token');
-        res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+        res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
     }
     
     if (!res.ok) return null;
@@ -113,10 +111,10 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
         
         const token = ghConfig.token;
         const headers = { 'Accept': 'application/vnd.github.v3+json' };
-        if (token) headers['Authorization'] = `token ${token}`;
+        if (token) headers['Authorization'] = `Bearer ${token}`;
 
         try {
-            const res = await fetch(url + `?t=${Date.now()}`, { headers });
+            const res = await fetch(url + `?t=${Date.now()}`, { headers, credentials: 'omit' });
             if (res.status === 401 || res.status === 403) {
                 if (localStorage.getItem('gh_token')) {
                     localStorage.removeItem('gh_token');
@@ -132,9 +130,10 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
             method: 'PUT',
             headers: { 
                 'Accept': 'application/vnd.github.v3+json',
-                'Authorization': `token ${ghConfig.token}`, 
+                'Authorization': `Bearer ${ghConfig.token}`, 
                 'Content-Type': 'application/json' 
             },
+            credentials: 'omit',
             body: JSON.stringify({
                 message: `Update ${filename}`,
                 content: finalContent,
