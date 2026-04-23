@@ -1,18 +1,6 @@
 {
   "title": "원스피어 관리자 권한",
-  "screens": {
-    "lfmall_pc_screen_1703.html": {
-      "updatedAt": "2026-04-23T07:21:07.033Z",
-      "template": "lfmall_pc_base.html",
-      "description": [
-        {
-          "text": "디스크립션 작성",
-          "x": 5.465587044534402,
-          "y": 5.433198380566806
-        }
-      ]
-    }
-  },
+  "screens": {},
   "createdAt": "2026-04-16T08:07:34.411Z",
   "assignee": "최범열",
   "period": "2026.04.21(화) ~ 2026.04.30(목)",
