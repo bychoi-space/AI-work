@@ -256,27 +256,37 @@ async function handleAuthSubmit() {
  */
 async function init() {
     try {
+        console.log("[INIT] Initialization started...");
         checkEnvironment();
 
         const params = new URLSearchParams(window.location.search);
-        const project = params.get('project') || 'Default_Project';
+        let project = 'Default_Project';
+        try {
+            project = params.get('project') || 'Default_Project';
+        } catch(e) {
+            console.error("[INIT] Project name decoding failed, using raw or default.");
+            project = window.location.search.split('project=')[1]?.split('&')[0] || 'Default_Project';
+        }
         let fileName = params.get('file');
 
         state.currentProject = project;
+        console.log("[INIT] Target Project:", project);
 
         // Fetch data
+        console.log("[INIT] Fetching contents & metadata...");
         const [contents, metadata] = await Promise.all([
             listContents(project),
             fetchProjectMetadata(project)
         ]);
+        console.log("[INIT] Data received. Contents:", contents?.length, "Metadata:", metadata ? "Yes" : "No");
 
         state.projectMetadata = metadata || {};
         
         // Sort screens by metadata order
         const repoScreens = (contents || []).filter(i => i.type === 'file' && i.name.endsWith('.html'));
-        const order = state.projectMetadata.screenOrder || [];
+        console.log("[INIT] HTML files found:", repoScreens.length);
         
-        // Sort repoScreens based on order array
+        const order = state.projectMetadata.screenOrder || [];
         const sortedScreens = repoScreens.sort((a,b) => {
             const indexA = order.indexOf(a.name);
             const indexB = order.indexOf(b.name);
@@ -287,6 +297,7 @@ async function init() {
         });
 
         state.screens = sortedScreens;
+        console.log("[INIT] Rendering screen list...");
         renderScreenList(state.screens, fileName);
 
         if (!fileName && state.screens.length > 0) {
@@ -294,8 +305,10 @@ async function init() {
         }
 
         if (fileName) {
+            console.log("[INIT] Loading active screen:", fileName);
             await loadScreen(fileName);
         } else {
+            console.log("[INIT] No screen to load.");
             DOM.placeholderTxt.innerText = "프로젝트 스크린을 추가해주세요.";
             if (DOM.btnAddScreen) DOM.btnAddScreen.classList.add('pulse-attention');
         }

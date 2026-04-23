@@ -326,19 +326,19 @@ const Notification = {
             if (hasInput) setTimeout(() => document.getElementById('notification-prompt-input').focus(), 100);
         });
     },
-    alert(message, title = '알림', type = 'info') {
-        return this._show(type, title, message, [{ text: '확인', primary: true }]);
+    alert(message, title = 'Alert', type = 'info') {
+        return this._show(type, title, message, [{ text: 'OK', primary: true }]);
     },
-    confirm(message, title = '확인', type = 'warning') {
+    confirm(message, title = 'Confirm', type = 'warning') {
         return this._show(type, title, message, [
-            { text: '취소', primary: false, value: false },
-            { text: '확인', primary: true, value: true }
+            { text: 'Cancel', primary: false, value: false },
+            { text: 'OK', primary: true, value: true }
         ]);
     },
-    prompt(message, defaultValue = '', title = '입력') {
+    prompt(message, defaultValue = '', title = 'Input') {
         return this._show('info', title, message, [
-            { text: '취소', primary: false, value: null },
-            { text: '확인', primary: true }
+            { text: 'Cancel', primary: false, value: null },
+            { text: 'OK', primary: true }
         ], true, defaultValue);
     }
 };
