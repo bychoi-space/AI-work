@@ -1060,7 +1060,7 @@ function spawnTextEditor(x, y, existingIndex = -1) {
     state.editingIndex = existingIndex;
 
     // 1. Prepare UI
-    switchSidebarTab('properties');
+    switchSidebarTab('editor'); // Fixed from properties to editor
     const editorSection = document.getElementById('text-editor-section');
     if (editorSection) editorSection.style.display = 'block';
 
@@ -1132,8 +1132,8 @@ function showTextProperties(index) {
     if (!DOM.textPropSection) return;
     DOM.textPropSection.style.display = 'block';
     
-    // Switch to properties tab automatically
-    switchSidebarTab('properties');
+    // Switch to editor tab automatically
+    switchSidebarTab('editor');
 }
 
 function hideTextProperties() {
@@ -1615,5 +1615,116 @@ DOM.btnCompDelete.onclick = () => {
         Notification.toast("Deleted component.");
     }
 };
+
+function renderAtomicLibrary() {
+    const panes = {
+        'atoms': document.getElementById('pane-atoms'),
+        'molecules': document.getElementById('pane-molecules'),
+        'organisms': document.getElementById('pane-organisms')
+    };
+
+    if (!panes.atoms) return;
+
+    // 1. Atoms
+    const atoms = [
+        { name: 'LF Logo', type: 'image' },
+        { name: 'Primary Button', type: 'button' },
+        { name: 'LF Discount', type: 'text' },
+        { name: 'LF GNB', type: 'component' },
+        { name: 'LF LNB', type: 'component' }
+    ];
+
+    panes.atoms.innerHTML = atoms.map(a => `
+        <div class="library-item" onclick="insertAtomicComponent('${a.type}', '${a.name}')">
+            <div class="item-preview">
+                ${a.name === 'LF Logo' ? '<img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width:30px;">' : 
+                  (a.name.includes('Button') ? '<div style="width:30px;height:12px;background:#00e5ff;border-radius:2px;"></div>' : 
+                  '<span class="material-icons-outlined">extension</span>')}
+            </div>
+            <div class="item-name">${a.name}</div>
+        </div>
+    `).join('');
+
+    // 2. Icons
+    const icons = ['Home', 'Category', 'My', 'Heart', 'Search', 'Cart', 'Brand', 'Back', 'Bell', 'Share', 'Party'];
+    const paneIcons = document.getElementById('pane-icons');
+    if (paneIcons) {
+        paneIcons.innerHTML = icons.map(i => `
+            <div class="library-item" onclick="insertAtomicComponent('icon', '${i}')" style="flex: 0 0 calc(25% - 8px); height:60px;">
+                <div class="item-preview">
+                    <div class="lf-icon lf-icon-${i.toLowerCase()}" style="transform: scale(0.6);"></div>
+                </div>
+                <div class="item-name" style="font-size:9px;">${i}</div>
+            </div>
+        `).join('');
+    }
+}
+
+async function init() {
+    try {
+        console.log("[INIT] Initialization started...");
+        checkEnvironment();
+
+        const params = new URLSearchParams(window.location.search);
+        let project = 'Default_Project';
+        try {
+            project = params.get('project') || 'Default_Project';
+        } catch(e) {
+            console.error("[INIT] Project name decoding failed, using raw or default.");
+            project = window.location.search.split('project=')[1]?.split('&')[0] || 'Default_Project';
+        }
+        let fileName = params.get('file');
+
+        state.currentProject = project;
+        console.log("[INIT] Target Project:", project);
+
+        // Fetch data
+        console.log("[INIT] Fetching contents & metadata...");
+        const [contents, metadata] = await Promise.all([
+            listContents(project),
+            fetchProjectMetadata(project)
+        ]);
+        console.log("[INIT] Data received. Contents:", contents?.length, "Metadata:", metadata ? "Yes" : "No");
+
+        state.projectMetadata = metadata || {};
+        
+        // Sort screens by metadata order
+        const repoScreens = (contents || []).filter(i => i.type === 'file' && i.name.endsWith('.html'));
+        console.log("[INIT] HTML files found:", repoScreens.length);
+        
+        const order = state.projectMetadata.screenOrder || [];
+        const sortedScreens = repoScreens.sort((a,b) => {
+            const indexA = order.indexOf(a.name);
+            const indexB = order.indexOf(b.name);
+            if (indexA === -1 && indexB === -1) return 0;
+            if (indexA === -1) return 1;
+            if (indexB === -1) return -1;
+            return indexA - indexB;
+        });
+
+        state.screens = sortedScreens;
+        console.log("[INIT] Rendering screen list...");
+        renderScreenList(state.screens, fileName);
+        
+        // NEW: Render Atomic Library
+        renderAtomicLibrary();
+
+        if (!fileName && state.screens.length > 0) {
+            fileName = state.screens[0].name;
+        }
+
+        if (fileName) {
+            console.log("[INIT] Loading active screen:", fileName);
+            await loadScreen(fileName);
+        } else {
+            console.log("[INIT] No screen to load.");
+            DOM.placeholderTxt.innerText = "프로젝트 스크린을 추가해주세요.";
+            if (DOM.btnAddScreen) DOM.btnAddScreen.classList.add('pulse-attention');
+        }
+    } catch (err) {
+        console.error("Initialization failed:", err);
+        if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = "초기화 오류가 발생했습니다. 콘솔을 확인하세요.";
+    }
+}
 
 init();
