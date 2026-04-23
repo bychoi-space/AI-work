@@ -1,6 +1,13 @@
 {
   "title": "원스피어 관리자 권한",
-  "screens": {},
+  "screens": {
+    "00_Cover_3301.html": {
+      "title": "00_Cover_3301",
+      "type": "cover",
+      "updatedAt": "2026-04-23T08:29:06.354Z",
+      "template": "template_cover.html"
+    }
+  },
   "createdAt": "2026-04-16T08:07:34.411Z",
   "assignee": "최범열",
   "period": "2026.04.21(화) ~ 2026.04.30(목)",
