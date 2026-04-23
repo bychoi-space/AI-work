@@ -6,6 +6,11 @@
     <title>bychoi workspace - Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    
+    <!-- Quill.js Library (Rich Text Editor) -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
     <link rel="stylesheet" href="assets/style.css">
     <link rel="stylesheet" href="assets/theme.css">
     <!-- Flatpickr (Date Picker) -->
@@ -218,6 +223,8 @@
                     </div>
                 </div>
             </main>
+            
+            <!-- Inspector removed from here and moved to sidebar tab -->
 
             <footer class="bottom-bar">
                 <div class="bottom-info-group">
@@ -239,18 +246,107 @@
 
         <!-- Right Sidebar: Description -->
         <aside class="sidebar sidebar-right" id="sidebar-right" style="width: 340px; background: var(--panel-bg); display: flex; flex-direction: column;">
-            <div class="sidebar-handle handle-right" id="btn-toggle-right" title="Toggle Description (R)">
+            <div class="sidebar-handle handle-right" id="btn-toggle-right" title="Toggle Sidebar (R)">
                 <span class="material-icons-outlined">chevron_right</span>
             </div>
-            <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <span>Description</span>
-                <button class="btn-add-action" id="btn-add-description" title="새 행 추가 (화면 클릭)">
-                    <span class="material-icons-outlined">add_circle</span>
+            
+            <div class="sidebar-tabs">
+                <button class="tab-btn active" data-tab="description" title="상세 설명 (D)">
+                    <span class="material-icons-outlined">description</span>
+                    Description
+                </button>
+                <button class="tab-btn" data-tab="properties" title="속성 및 도구 (P)">
+                    <span class="material-icons-outlined">tune</span>
+                    Properties
                 </button>
             </div>
-            <div class="description-container">
-                <div id="description-list">
-                    <!-- Dynamic rows here -->
+
+            <!-- Tab: Description -->
+            <div id="tab-description" class="tab-pane active" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 10px; opacity: 0.6;">SCENE ANNOTATIONS</span>
+                    <button class="btn-add-action" id="btn-add-description" title="새 행 추가 (화면 클릭)">
+                        <span class="material-icons-outlined">add_circle</span>
+                    </button>
+                </div>
+                <div class="description-container">
+                    <div id="description-list">
+                        <!-- Dynamic rows here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Properties (Inspector) -->
+            <div id="tab-properties" class="tab-pane" style="flex: 1; display: none; flex-direction: column; overflow: hidden;">
+                <div class="panel-header">
+                    <span style="font-size: 10px; opacity: 0.6;">EDITOR TOOLS</span>
+                </div>
+                <div class="inspector-body" style="padding: 16px;">
+                    <!-- New Rich Text Editor Section -->
+                    <div id="text-editor-section" style="display: none; margin-bottom: 24px;">
+                        <div class="sidebar-section-title">CONTENT EDITOR</div>
+                        <div id="editor-container" style="height: 200px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px;"></div>
+                        
+                        <!-- New Action Buttons for Organic Flow -->
+                        <div id="editor-action-group" style="display: flex; gap: 8px; margin-top: 12px;">
+                            <button id="btn-editor-apply" class="btn-primary" style="flex: 1; height: 36px; font-size: 13px;">
+                                <span class="material-icons-outlined" style="font-size: 16px; margin-right: 4px; vertical-align: middle;">check_circle</span>
+                                적용하기
+                            </button>
+                            <button id="btn-editor-delete" class="btn-secondary" style="width: 44px; height: 36px; padding: 0; color: #ef4444; border-color: rgba(239, 68, 68, 0.2);">
+                                <span class="material-icons-outlined" style="font-size: 18px; vertical-align: middle;">delete</span>
+                            </button>
+                        </div>
+
+                        <div style="font-size: 11px; color: var(--text-dim); font-style: italic; margin-top: 12px; line-height: 1.4;">
+                            * 캔버스의 마커와 실시간으로 동기화됩니다.<br>
+                            * 바탕을 클릭하면 자동으로 저장됩니다.
+                        </div>
+                    </div>
+
+                    <!-- Premium Tool Palette -->
+                    <div class="tool-palette">
+                        <div class="palette-group">
+                            <span class="palette-label">Annotations</span>
+                            <div class="palette-grid">
+                                <button class="palette-btn sidebar-tool-btn" data-tool="text" title="텍스트 추가 (T)">
+                                    <div class="btn-icon-box">
+                                        <span class="material-icons-outlined">title</span>
+                                    </div>
+                                    <div class="btn-label-box">
+                                        <span class="btn-title">텍스트 작성</span>
+                                        <span class="btn-desc">화면에 설명 추가</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- New Text Properties Section -->
+                        <div id="text-properties-section" class="palette-group" style="margin-top: 24px; display: none;">
+                            <span class="palette-label">Text Style</span>
+                            <div class="prop-card" style="background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px;">
+                                <div class="prop-row" style="margin-bottom: 16px;">
+                                    <span class="prop-label" style="font-size: 11px;">TEXT COLOR</span>
+                                    <input type="color" id="text-color-picker" value="#000000" style="width: 40px; height: 30px; border: none; background: transparent; cursor: pointer;">
+                                </div>
+                                <div class="color-presets" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                    <button class="color-preset" data-color="#000000" style="width: 24px; height: 24px; border-radius: 50%; background: #000000; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;" title="Black"></button>
+                                    <button class="color-preset" data-color="#ffffff" style="width: 24px; height: 24px; border-radius: 50%; background: #ffffff; border: 1px solid rgba(0,0,0,0.2); cursor: pointer;" title="White"></button>
+                                    <button class="color-preset" data-color="#ef4444" style="width: 24px; height: 24px; border-radius: 50%; background: #ef4444; border: none; cursor: pointer;" title="Red"></button>
+                                    <button class="color-preset" data-color="#3b82f6" style="width: 24px; height: 24px; border-radius: 50%; background: #3b82f6; border: none; cursor: pointer;" title="Blue"></button>
+                                    <button class="color-preset" data-color="#22c55e" style="width: 24px; height: 24px; border-radius: 50%; background: #22c55e; border: none; cursor: pointer;" title="Green"></button>
+                                    <button class="color-preset" data-color="#eab308" style="width: 24px; height: 24px; border-radius: 50%; background: #eab308; border: none; cursor: pointer;" title="Yellow"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="height: 1px; background: var(--border-color); margin: 24px 0;"></div>
+
+                    <div class="empty-inspector">
+                         <i class="material-icons-outlined">info</i>
+                         선택된 요소가 없거나 편집 가능한 기능이 없습니다.
+                    </div>
                 </div>
             </div>
         </aside>
@@ -397,6 +493,6 @@
     <!-- Script modularization: Pure Vanilla V3 Migration -->
     <script src="assets/templates.js?v=V4"></script>
     <script src="assets/app.js?v=V4"></script>
-    <script src="assets/vctrl.js?v=V4"></script>
+    <script src="assets/vctrl.js?v=V5_FINAL_STABLE"></script>
 </body>
 </html>

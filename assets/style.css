@@ -3,6 +3,63 @@
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
+@keyframes markerPulse {
+    0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); border-color: var(--accent); }
+    70% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); border-color: #fff; }
+    100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); border-color: var(--accent); }
+}
+
+.text-marker.editing-active {
+    border: 2px solid var(--accent) !important;
+    animation: markerPulse 2s infinite ease-in-out;
+    z-index: 1001;
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.text-marker.dragging-now {
+    animation: none !important;
+    opacity: 0.8;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.authorized-badge {
+    background: rgba(99, 102, 241, 0.15) !important;
+    border: 1px solid var(--accent) !important;
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+}
+
+@keyframes pulseAttention {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+}
+.pulse-attention {
+    animation: pulseAttention 2s infinite;
+}
+
+/* Quill Editor Dark Theme Overrides */
+.ql-toolbar.ql-snow {
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    background: rgba(255,255,255,0.03) !important;
+    border-radius: 8px 8px 0 0;
+}
+.ql-container.ql-snow {
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-top: none !important;
+    border-radius: 0 0 8px 8px;
+    background: rgba(0,0,0,0.2) !important;
+    color: #eee !important;
+    font-family: 'Inter', sans-serif !important;
+    min-height: 150px;
+}
+.ql-editor {
+    color: #eee !important;
+}
+.ql-editor.ql-blank::before {
+    color: rgba(255,255,255,0.3) !important;
+    font-style: normal;
+}
+
 @keyframes fadeInSlideUp {
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
@@ -29,7 +86,6 @@
 
 body {
     background-color: var(--bg-base);
-    /* 애니메이션 효과가 들어간 배경 그래디언트 (톤업) */
     background-image: radial-gradient(circle at 30% 0%, #3a4252 0%, transparent 50%),
                       radial-gradient(circle at 70% 100%, #2c323f 0%, transparent 50%);
     background-size: 200% 200%;
@@ -37,7 +93,8 @@ body {
     color: var(--text-primary);
     font-family: var(--font-main);
     height: 100vh;
-    overflow: hidden;
+    width: 100vw;
+    overflow: hidden !important;
     display: flex;
     flex-direction: column;
 }
@@ -268,7 +325,240 @@ body {
 
 /* Sidebars */
 .sidebar-left { border-right: 1px solid var(--border-color); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s; }
-.sidebar-right { border-left: 1px solid var(--border-color); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s; }
+.sidebar-right { border-left: 1px solid var(--border-color); transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s; position: relative; }
+
+/* Sidebar Tab System */
+.sidebar-tabs {
+    display: flex;
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+.tab-btn {
+    flex: 1;
+    height: 48px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tab-btn:hover {
+    color: var(--text-primary);
+    background: var(--hover-bg);
+}
+.tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: rgba(99, 102, 241, 0.05);
+}
+.tab-btn span {
+    font-size: 16px;
+}
+
+.tab-pane {
+    display: none;
+}
+.tab-pane.active {
+    display: flex !important;
+}
+
+/* Tool Palette in Sidebar */
+.tool-palette {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.palette-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    display: block;
+}
+.palette-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+.palette-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: left;
+    color: var(--text-primary);
+    width: 100%;
+}
+.palette-btn:hover {
+    background: var(--hover-bg);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+.palette-btn.active {
+    background: var(--selected-bg);
+    border-color: var(--accent);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+}
+.btn-icon-box {
+    width: 36px;
+    height: 36px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    transition: all 0.2s;
+}
+.palette-btn:hover .btn-icon-box {
+    background: var(--accent);
+    color: #000;
+}
+.palette-btn.active .btn-icon-box {
+    background: var(--accent);
+    color: #000;
+}
+.btn-label-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.btn-title {
+    font-size: 13px;
+    font-weight: 600;
+}
+.btn-desc {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+/* In-place Text Editor Overlay */
+.text-editor-container {
+    position: absolute;
+    z-index: 1000;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.text-editor-input {
+    background: transparent;
+    border: 1px dashed var(--accent);
+    color: #000;
+    text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 2px #fff; /* White glow for visibility on dark bg */
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--font-main);
+    outline: none;
+    min-width: 140px;
+    max-width: 480px;
+    resize: none;
+    overflow: hidden;
+    line-height: 1.5;
+    text-align: center;
+    display: block;
+    animation: editorAppear 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes editorAppear {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Marker Hover Delete Button */
+.marker-delete-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 22px;
+    height: 22px;
+    background: #ef4444;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid #1e2128;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    z-index: 200;
+    pointer-events: auto;
+}
+.pin-marker:hover .marker-delete-btn,
+.text-marker:hover .marker-delete-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+.marker-delete-btn:hover {
+    background: #f43f5e;
+    transform: scale(1.2) !important;
+}
+
+/* Editor Action Bar */
+.editor-actions {
+    position: absolute;
+    bottom: -44px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    padding: 4px;
+    background: rgba(37, 40, 48, 0.9);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    animation: editorAppear 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.editor-action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+.editor-action-btn:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+.editor-action-btn.del {
+    color: #f87171;
+}
+.editor-action-btn.del:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+}
+
+
+
 
 .sidebar.collapsed {
     width: 0 !important;
@@ -1888,4 +2178,44 @@ body.drag-active #drop-overlay {
 
 .btn-close-banner:hover {
     background: rgba(255, 255, 255, 0.2);
+}
+
+/* Added by Antigravity: Text Annotation Marker */
+.text-marker {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.01); /* High hit-testability even when transparent */
+    color: #000;
+    text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 2px #fff;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: grab;
+    pointer-events: auto;
+    user-select: none;
+    z-index: 100; /* Base z-index increased */
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s;
+}
+
+.text-marker:hover, .text-marker.highlight {
+    transform: translate(-50%, -50%) scale(1.05);
+    border-color: var(--accent);
+    border-style: dashed;
+    z-index: 1000; /* Ensure it stays on top during interaction */
+}
+
+.text-marker:active {
+    cursor: grabbing;
+}
+/* Editor Inspector styles removed - functionality moved to sidebar tabs */
+.color-preset:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.color-preset.active {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
