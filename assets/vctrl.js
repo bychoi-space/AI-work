@@ -1449,6 +1449,7 @@ function injectIframeInteractions(doc) {
         }
         .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer {
             display: block;
+        }
         /* Direct Delete Button Style */
         .lf-delete-trigger {
             display: none;
