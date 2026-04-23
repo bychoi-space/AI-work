@@ -50,25 +50,37 @@
             border-radius: 4px; overflow: hidden; position: relative;
         }
         /* Artboard & Canvas Centering */
+        .canvas {
+            position: relative;
+            flex: 1;
+            background: #0d0f12;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .artboard-wrapper {
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 100%; min-height: 100%;
         }
         .placeholder-card {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             gap: 16px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.03);
+            padding: 50px 80px;
+            background: rgba(255, 255, 255, 0.02);
             border: 2px dashed rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            z-index: 10;
+            border-radius: 32px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
         @keyframes loadingMotion {
             0% { left: -40%; }
@@ -197,11 +209,14 @@
                     <div class="artboard-wrapper" id="artboard-wrapper">
                         <iframe id="main-iframe" class="artboard-iframe" style="width: 1440px; height: 900px; display: none;" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
                         <div class="pins-layer" id="pins-layer"></div>
-                        <div class="placeholder-card" id="placeholder">
-                            <i class="material-icons-outlined" style="font-size: 64px; color: var(--accent); margin-bottom: 0;">add_to_photos</i>
-                            <h3 id="placeholder-txt" style="font-weight: 700; color: #fff; margin: 0;">프로젝트 스크린을 추가해주세요.</h3>
-                        </div>
                     </div>
+                </div>
+
+                <!-- Absolute Centered Placeholder -->
+                <div class="placeholder-card" id="placeholder">
+                    <i class="material-icons-outlined" style="font-size: 64px; color: var(--accent); margin-bottom: 12px;">add_to_photos</i>
+                    <h2 id="placeholder-txt" style="font-weight: 700; color: #fff; margin: 0;">프로젝트 스크린을 추가해주세요.</h2>
+                    <p style="color: rgba(255,255,255,0.4); font-size: 13px; margin: 8px 0 0 0;">왼쪽 프로젝트 스크린 패널에서 '+' 버튼을 눌러 시작하세요.</p>
                 </div>
             </main>
             
