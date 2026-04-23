@@ -1592,6 +1592,10 @@ function insertAtomicComponent(type, name) {
         comp.style.height = name === 'LF GNB' ? '50px' : (name === 'LF LNB' ? '48px' : (type === 'icon' ? '40px' : 'auto'));
         comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>`;
         iframeDoc.body.appendChild(comp);
+        markAsDirty();
+    }
+}
+
 // Component Selection & Deletion Handlers
 window.addEventListener('message', e => {
     if (e.data.type === 'LF_COMP_SELECTED') {
@@ -1608,7 +1612,7 @@ DOM.btnCompDelete.onclick = () => {
         selected.remove();
         markAsDirty();
         DOM.compActionsSection.style.display = 'none';
-        Notification.toast("컴포넌트가 삭제되었습니다.");
+        Notification.toast("Deleted component.");
     }
 };
 
