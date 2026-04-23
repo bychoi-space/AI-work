@@ -49,12 +49,26 @@
             background: rgba(255, 255, 255, 0.05);
             border-radius: 4px; overflow: hidden; position: relative;
         }
-        .loading-bar-progress {
-            width: 40%; height: 100%;
-            background: #6366f1;
-            position: absolute; top: 0; left: -40%;
-            animation: loadingMotion 1.5s infinite ease-in-out;
-            box-shadow: 0 0 12px rgba(99, 102, 241, 0.6);
+        /* Artboard & Canvas Centering */
+        .artboard-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100%; min-height: 100%;
+        }
+        .placeholder-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 16px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            z-index: 10;
         }
         @keyframes loadingMotion {
             0% { left: -40%; }
@@ -181,11 +195,11 @@
             <main class="canvas" id="canvas">
                 <div class="stage" id="stage">
                     <div class="artboard-wrapper" id="artboard-wrapper">
-                        <iframe id="main-iframe" class="artboard-iframe" style="width: 1440px; height: 900px;" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+                        <iframe id="main-iframe" class="artboard-iframe" style="width: 1440px; height: 900px; display: none;" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
                         <div class="pins-layer" id="pins-layer"></div>
                         <div class="placeholder-card" id="placeholder">
                             <i class="material-icons-outlined" style="font-size: 64px; color: var(--accent); margin-bottom: 0;">add_to_photos</i>
-                            <h3 id="placeholder-text" style="font-weight: 700; color: #fff; margin: 0;">프로젝트 스크린을 추가해주세요.</h3>
+                            <h3 id="placeholder-txt" style="font-weight: 700; color: #fff; margin: 0;">프로젝트 스크린을 추가해주세요.</h3>
                         </div>
                     </div>
                 </div>
