@@ -1449,6 +1449,27 @@ function injectIframeInteractions(doc) {
         }
         .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer {
             display: block;
+        /* Direct Delete Button Style */
+        .lf-delete-trigger {
+            display: none;
+            position: absolute;
+            top: -10px; right: -10px;
+            width: 22px; height: 22px;
+            background: #ef4444;
+            color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            align-items: center; justify-content: center;
+            border: 2px solid #fff;
+            z-index: 10001;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer,
+        .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger {
+            display: flex;
         }
         /* Sprite Icon Base Style inside IFrame */
         .lf-icon {
@@ -1477,8 +1498,21 @@ function injectIframeInteractions(doc) {
     let activeEl = null, startX, startY, startW, startH, startTop, startLeft;
 
     doc.addEventListener('mousedown', e => {
+        // Prevent interaction if in Text mode or Hand mode
+        if (state.activeTool !== 'select') return;
+
+        const deleteBtn = e.target.closest('.lf-delete-trigger');
         const resizer = e.target.closest('.lf-resizer');
         const comp = e.target.closest('.lf-component');
+
+        if (deleteBtn) {
+            comp.remove();
+            markAsDirty();
+            window.postMessage({ type: 'LF_COMP_DESELECTED' }, '*');
+            Notification.toast("컴포넌트가 삭제되었습니다.");
+            e.preventDefault(); e.stopPropagation();
+            return;
+        }
 
         if (resizer) {
             isResizing = true;
@@ -1588,7 +1622,9 @@ function insertAtomicComponent(type, name) {
         comp.style.width = (name === 'LF GNB' || name === 'LF LNB') ? '100%' : (type === 'icon' ? '40px' : (name === 'LF Discount' ? '60px' : '120px'));
         comp.style.height = name === 'LF GNB' ? '50px' : (name === 'LF LNB' ? '48px' : (type === 'icon' ? '40px' : 'auto'));
         
-        comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div>`;
+        comp.innerHTML = `${contentHtml}
+            <div class="lf-resizer"></div>
+            <div class="lf-delete-trigger">×</div>`;
         iframeDoc.body.appendChild(comp);
         
         Notification.toast(`${name} 컴포넌트가 삽입되었습니다.`);
