@@ -29,12 +29,12 @@ const ghConfig = {
 };
 
 async function listContents(path) {
-    const safePath = (ghConfig.dataDir + path).split('/').map(segment => encodeURIComponent(segment)).join('/');
+    const safePath = (ghConfig.dataDir + path).split('/').map(segment => encodeURIComponent(segment).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16))).join('/');
     const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${safePath}?t=${Date.now()}`;
     
     const token = ghConfig.token;
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
-    if (token) headers['Authorization'] = `token ${token}`;
+    if (token) headers['Authorization'] = `Bearer ${token}`;
 
     let res = await fetch(url, { headers, credentials: 'omit' });
     
@@ -65,7 +65,7 @@ async function listRepoRoot() {
 
 async function fetchFileContent(path, isRoot = false) {
     const fullPath = isRoot ? path : `${ghConfig.dataDir}${path}`;
-    const safePath = fullPath.split('/').map(segment => encodeURIComponent(segment)).join('/');
+    const safePath = fullPath.split('/').map(segment => encodeURIComponent(segment).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16))).join('/');
     const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${safePath}?t=${Date.now()}`;
     
     const token = ghConfig.token;
@@ -105,7 +105,7 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
     if (ghConfig.isReadOnly) return false;
     try {
         const fullPath = `${ghConfig.dataDir}${project}/${filename}`;
-        const safePath = fullPath.split('/').map(segment => encodeURIComponent(segment)).join('/');
+        const safePath = fullPath.split('/').map(segment => encodeURIComponent(segment).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16))).join('/');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${safePath}`;
         let sha = null;
         
