@@ -88,20 +88,7 @@ function checkEnvironment() {
 
 // Project List Rendering
 async function refreshFileList() {
-    const isGuest = ghConfig.isReadOnly;
-    
-    // Update Auth Button UI (IMMEDIATELY)
-    if (DOM.authBtnText) DOM.authBtnText.innerText = isGuest ? '에디터 인증' : '에디터 모드';
-    if (DOM.btnShowAuth) {
-        DOM.btnShowAuth.style.background = isGuest ? 'rgba(255,255,255,0.05)' : 'rgba(0, 229, 255, 0.1)';
-        DOM.btnShowAuth.style.color = isGuest ? '#fff' : 'var(--accent)';
-    }
-
-    if (isGuest) {
-        updateStatusUI('게스트 모드 (읽기 전용) 👥', '#94a3b8');
-    } else {
-        updateStatusUI('', ''); 
-    }
+    updateStatusUI('', ''); 
     
     try {
         const rootItems = await listRepoRoot();

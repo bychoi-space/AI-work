@@ -297,17 +297,6 @@ async function init() {
         updateProperties(); 
         setDeviceViewport('desktop', 1440, 900);
 
-        const btnAuthText = document.getElementById('auth-btn-text');
-        if (btnAuthText) {
-            btnAuthText.innerText = state.isReadOnly ? '에디터 인증' : '매니저 모드'; // 'Manager Mode' instead of 'Editor Mode'
-        }
-        if (DOM.btnShowAuth) {
-            DOM.btnShowAuth.style.color = state.isReadOnly ? '#fff' : 'var(--accent)';
-            if (!state.isReadOnly) {
-                DOM.btnShowAuth.classList.add('authorized-badge'); // Style as an authorized state
-            }
-        }
-
         initQuillEditor();
 
         // GLOBAL EVENT DELEGATION for Color Presets
