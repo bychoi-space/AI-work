@@ -1512,16 +1512,36 @@ function insertAtomicComponent(type, name) {
         contentHtml = `<img src="assets/logo.svg" style="width:100%; height:auto; display:block; pointer-events:none;">`;
     } else if (name === 'Primary Button') {
         contentHtml = `<div style="background:#00e5ff; color:#000; border:none; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(0,229,255,0.3); pointer-events:none;">BUTTON</div>`;
+    } else if (name === 'LF Discount') {
+        contentHtml = `<div style="color:#E02020; font-size:24px; font-weight:800; font-family:sans-serif; text-align:center; pointer-events:none; line-height:1.2;">20%</div>`;
+    } else if (name === 'LF GNB') {
+        contentHtml = `
+            <div style="background:#000; width:100%; height:100%; display:flex; align-items:center; justify-content:space-between; padding:0 16px; pointer-events:none;">
+                <span class="material-icons-outlined" style="color:#fff; font-size:20px;">search</span>
+                <span style="color:#fff; font-size:18px; font-weight:900; letter-spacing:-0.5px; font-family:sans-serif;">l.f:</span>
+                <span class="material-icons-outlined" style="color:#fff; font-size:20px;">home</span>
+            </div>`;
+    } else if (name === 'LF LNB') {
+        contentHtml = `
+            <div style="background:#fff; border-bottom:1px solid #f2f2f2; width:100%; height:100%; display:flex; align-items:center; padding:0 16px; pointer-events:none; overflow:hidden;">
+                <div style="display:flex; align-items:center; gap:20px; font-size:14px; font-family:sans-serif;">
+                    <span style="color:#000; font-weight:bold; position:relative;">홈<span style="position:absolute; top:-2px; right:-6px; width:4px; height:4px; background:#E02020; border-radius:50%;"></span></span>
+                    <span style="color:#888;">베스트</span>
+                    <span style="color:#888;">여성</span>
+                    <span style="color:#888;">남성</span>
+                    <span style="color:#888;">기획전</span>
+                </div>
+            </div>`;
     }
 
     if (contentHtml) {
         const comp = iframeDoc.createElement('div');
         comp.id = id;
         comp.className = 'lf-component';
-        comp.style.top = '100px';
-        comp.style.left = '100px';
-        comp.style.width = name === 'LF Logo' ? '120px' : '160px';
-        comp.style.height = name === 'LF Logo' ? 'auto' : '48px';
+        comp.style.top = name === 'LF GNB' ? '0px' : (name === 'LF LNB' ? '50px' : '150px');
+        comp.style.left = (name === 'LF GNB' || name === 'LF LNB') ? '0px' : '100px';
+        comp.style.width = (name === 'LF GNB' || name === 'LF LNB') ? '100%' : (name === 'LF Discount' ? '60px' : '120px');
+        comp.style.height = name === 'LF GNB' ? '50px' : (name === 'LF LNB' ? '48px' : 'auto');
         
         comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div>`;
         iframeDoc.body.appendChild(comp);
