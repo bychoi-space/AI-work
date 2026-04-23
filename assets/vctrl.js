@@ -1408,6 +1408,94 @@ function switchTab(tabId) {
     });
 }
 
+// Injects necessary interaction styles into the iframe
+function injectIframeInteractions(doc) {
+    if (doc.getElementById('lf-editor-styles')) return;
+    const style = doc.createElement('style');
+    style.id = 'lf-editor-styles';
+    style.innerHTML = `
+        .lf-component {
+            position: absolute !important;
+            outline: 2px solid transparent;
+            transition: outline 0.1s;
+            box-sizing: border-box !important;
+            min-width: 20px; min-height: 20px;
+        }
+        .lf-component:hover {
+            outline: 2px solid #00e5ff !important;
+            cursor: move !important;
+        }
+        .lf-component.selected {
+            outline: 2px solid #00e5ff !important;
+            z-index: 9999 !important;
+        }
+        .lf-resizer {
+            width: 12px; height: 12px;
+            background: #00e5ff;
+            border: 2px solid #fff;
+            position: absolute;
+            right: -6px; bottom: -6px;
+            cursor: nwse-resize !important;
+            display: none;
+            border-radius: 2px;
+            z-index: 10000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer {
+            display: block;
+        }
+    `;
+    doc.head.appendChild(style);
+
+    // IFrame Interaction Logic
+    let isMoving = false, isResizing = false;
+    let activeEl = null, startX, startY, startW, startH, startTop, startLeft;
+
+    doc.addEventListener('mousedown', e => {
+        const resizer = e.target.closest('.lf-resizer');
+        const comp = e.target.closest('.lf-component');
+
+        if (resizer) {
+            isResizing = true;
+            activeEl = resizer.parentElement;
+            startX = e.clientX; startY = e.clientY;
+            startW = activeEl.offsetWidth; startH = activeEl.offsetHeight;
+            e.preventDefault(); e.stopPropagation();
+        } else if (comp) {
+            isMoving = true;
+            activeEl = comp;
+            startX = e.clientX; startY = e.clientY;
+            startTop = activeEl.offsetTop; startLeft = activeEl.offsetLeft;
+            
+            doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
+            activeEl.classList.add('selected');
+            e.preventDefault(); e.stopPropagation();
+        } else {
+            doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
+        }
+    });
+
+    doc.addEventListener('mousemove', e => {
+        if (!activeEl) return;
+        if (isResizing) {
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            activeEl.style.width = `${startW + dx}px`;
+            activeEl.style.height = `${startH + dy}px`;
+        } else if (isMoving) {
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            activeEl.style.top = `${startTop + dy}px`;
+            activeEl.style.left = `${startLeft + dx}px`;
+        }
+    });
+
+    doc.addEventListener('mouseup', () => {
+        if (activeEl) markAsDirty();
+        isMoving = false; isResizing = false; activeEl = null;
+    });
+}
+
 function insertAtomicComponent(type, name) {
     if (ghConfig.isReadOnly) return showAuthModal();
     if (!state.activeFile) return Notification.alert("먼저 스크린을 선택해주세요.", "알림", "warning");
@@ -1415,26 +1503,29 @@ function insertAtomicComponent(type, name) {
     const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
     if (!iframeDoc) return;
 
-    let html = '';
+    injectIframeInteractions(iframeDoc);
+
+    let contentHtml = '';
     const id = `lf-comp-${Date.now()}`;
 
     if (name === 'LF Logo') {
-        html = `
-            <div id="${id}" class="lf-component atom-logo" style="position:absolute; top:100px; left:100px; cursor:move; transition: transform 0.2s;" draggable="true">
-                <img src="assets/logo.svg" style="width:120px; height:auto; display:block;">
-            </div>`;
+        contentHtml = `<img src="assets/logo.svg" style="width:100%; height:auto; display:block; pointer-events:none;">`;
     } else if (name === 'Primary Button') {
-        html = `
-            <button id="${id}" class="lf-component atom-button" style="position:absolute; top:150px; left:100px; background:#00e5ff; color:#000; border:none; padding:12px 24px; border-radius:8px; font-weight:bold; cursor:move; box-shadow: 0 4px 15px rgba(0,229,255,0.3);" draggable="true">
-                LF PRIMARY BUTTON
-            </button>`;
+        contentHtml = `<div style="background:#00e5ff; color:#000; border:none; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(0,229,255,0.3); pointer-events:none;">BUTTON</div>`;
     }
 
-    if (html) {
-        const div = iframeDoc.createElement('div');
-        div.innerHTML = html;
-        const element = div.firstElementChild;
-        iframeDoc.body.appendChild(element);
+    if (contentHtml) {
+        const comp = iframeDoc.createElement('div');
+        comp.id = id;
+        comp.className = 'lf-component';
+        comp.style.top = '100px';
+        comp.style.left = '100px';
+        comp.style.width = name === 'LF Logo' ? '120px' : '160px';
+        comp.style.height = name === 'LF Logo' ? 'auto' : '48px';
+        
+        comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div>`;
+        iframeDoc.body.appendChild(comp);
+        
         Notification.toast(`${name} 컴포넌트가 삽입되었습니다.`);
         markAsDirty();
     }
