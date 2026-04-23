@@ -4,7 +4,8 @@
  */
 
 const state = {
-    projects: []
+    projects: [],
+    deletedProjects: new Set() // Blacklist for zombie projects
 };
 
 const DOM = {
@@ -159,7 +160,7 @@ async function refreshFileList() {
             }
         }));
 
-        state.projects = projectData;
+        state.projects = projectData.filter(p => !state.deletedProjects.has(p.name));
         renderList();
         
         setTimeout(() => {
@@ -293,14 +294,16 @@ document.addEventListener('click', async (e) => {
 
             const success = await deleteProjectWithContents(projectName, updateStatusUI);
             if (success) {
-                // UI 즉시 반영
+                // UI 즉시 반영 + 블랙리스트 등록
+                state.deletedProjects.add(projectName);
                 state.projects = state.projects.filter(p => p.name !== projectName);
                 renderList();
+                
                 updateStatusUI(`'${projectName}' 삭제 완료`, '#4ade80');
                 setTimeout(() => {
                     if (DOM.globalLoader) DOM.globalLoader.classList.remove('active');
                     refreshFileList(); // Background refresh to sync with GH
-                }, 1000);
+                }, 3000); // 3 seconds to let GH API settle
             } else {
                 updateStatusUI('삭제 실패', '#f87171');
                 if (DOM.globalLoader) DOM.globalLoader.classList.remove('active');
