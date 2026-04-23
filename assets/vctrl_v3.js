@@ -1027,7 +1027,7 @@ function closeActiveEditor(save = true) {
     const finalColor = quillEditor ? normalizeToHex(quillEditor.root.style.color || "#000000") : "#000000";
 
     if (save && quillEditor) {
-        if (state.editingIndex !== -1 && state.activeFile) {
+        if (state.editingIndex !== -1 && state.activeFile && state.activeFile.meta.description[state.editingIndex]) {
             state.activeFile.meta.description[state.editingIndex].html = htmlContent;
             state.activeFile.meta.description[state.editingIndex].text = plainText;
             state.activeFile.meta.description[state.editingIndex].color = finalColor;
@@ -1039,7 +1039,7 @@ function closeActiveEditor(save = true) {
         }
     } else if (!save && state.editingIndex !== -1 && state.activeFile) {
         const item = state.activeFile.meta.description[state.editingIndex];
-        if (!item.text && (!item.html || item.html === "<p><br></p>")) {
+        if (item && !item.text && (!item.html || item.html === "<p><br></p>")) {
             state.activeFile.meta.description.splice(state.editingIndex, 1);
         }
     }
