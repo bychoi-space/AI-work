@@ -1528,7 +1528,7 @@ function insertAtomicComponent(type, name) {
     const id = `lf-comp-${Date.now()}`;
 
     if (name === 'LF Logo') {
-        contentHtml = `<img src="assets/logo.svg" style="width:100%; height:auto; display:block; pointer-events:none;">`;
+        contentHtml = `<img src="assets/lf_brand_logo.svg" style="width:100%; height:auto; display:block; pointer-events:none;">`;
     } else if (name === 'Primary Button') {
         contentHtml = `<div style="background:#00e5ff; color:#000; border:none; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(0,229,255,0.3); pointer-events:none;">BUTTON</div>`;
     } else if (name === 'LF Discount') {
