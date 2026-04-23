@@ -181,8 +181,20 @@ async function refreshFileList() {
         updateStatusUI(isGuest ? '게스트 모드 (읽기 전용) 👥' : '', isGuest ? '#94a3b8' : '#4ade80');
     } catch (err) {
         console.error("refreshFileList error:", err);
-        updateStatusUI('동기화 오류 ❌', '#ef4444');
-        DOM.list.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">동기화 오류가 발생했습니다. (토큰 또는 네트워크 확인)</div>`;
+        updateStatusUI('연결 확인 필요 ⚠️', '#fb923c');
+        DOM.list.innerHTML = `
+            <div class="empty-text" style="grid-column: 1 / -1; padding: 40px; text-align: center;">
+                <div style="font-size: 24px; margin-bottom: 16px; opacity:0.5;">📡</div>
+                <div style="font-weight: 600; margin-bottom: 8px;">데이터를 불러오는 데 어려움이 있습니다.</div>
+                <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 24px; line-height: 1.6;">
+                    원격 저장소에 접근할 수 없거나 토큰 권한이 만료되었을 수 있습니다.<br>
+                    설정을 확인하거나 잠시 후 다시 시도해 주세요.
+                </div>
+                <button onclick="location.reload()" class="btn-secondary" style="width:auto; padding: 0 20px;">
+                    <span class="material-icons-outlined" style="font-size:18px; margin-right:6px;">refresh</span>
+                    새로고침
+                </button>
+            </div>`;
     } finally {
         const loading = document.getElementById('loading-state');
         if (loading) loading.style.display = 'none';

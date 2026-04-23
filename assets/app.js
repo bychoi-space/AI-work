@@ -24,23 +24,41 @@ const ghConfig = {
 
 async function listContents(path) {
     const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.dataDir}${path}?t=${Date.now()}`;
-    const headers = ghConfig.token ? { 'Authorization': `token ${ghConfig.token}` } : {};
-    const res = await fetch(url, { headers });
+    const token = ghConfig.token;
+    const headers = token ? { 'Authorization': `token ${token}` } : {};
+    let res = await fetch(url, { headers });
+    
+    // Auth Fallback: If 401/403, retry without token (Public access)
+    if (!res.ok && (res.status === 401 || res.status === 403)) {
+        console.warn("[Auth] Token failed or no permission. Retrying anonymously...");
+        res = await fetch(url);
+    }
     return res.ok ? await res.json() : [];
 }
 
 async function listRepoRoot() {
     const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/?t=${Date.now()}`;
-    const headers = ghConfig.token ? { 'Authorization': `token ${ghConfig.token}` } : {};
-    const res = await fetch(url, { headers });
+    const token = ghConfig.token;
+    const headers = token ? { 'Authorization': `token ${token}` } : {};
+    let res = await fetch(url, { headers });
+    
+    if (!res.ok && (res.status === 401 || res.status === 403)) {
+        res = await fetch(url);
+    }
     return res.ok ? await res.json() : [];
 }
 
 async function fetchFileContent(path, isRoot = false) {
     const fullPath = isRoot ? path : `${ghConfig.dataDir}${path}`;
     const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${fullPath}?t=${Date.now()}`;
-    const headers = ghConfig.token ? { 'Authorization': `token ${ghConfig.token}` } : {};
-    const res = await fetch(url, { headers });
+    const token = ghConfig.token;
+    const headers = token ? { 'Authorization': `token ${token}` } : {};
+    let res = await fetch(url, { headers });
+    
+    if (!res.ok && (res.status === 401 || res.status === 403)) {
+        res = await fetch(url);
+    }
+    
     if (!res.ok) return null;
     const data = await res.json();
     return decodeURIComponent(escape(atob(data.content)));
