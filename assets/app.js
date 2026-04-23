@@ -105,10 +105,20 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
     if (ghConfig.isReadOnly) return false;
     try {
         const path = `${ghConfig.dataDir}${project}/${filename}`;
-        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${path}`;
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodeURIComponent(path).replace(/%2F/g, '/')}`;
         let sha = null;
+        
+        const token = ghConfig.token;
+        const headers = { 'Authorization': `token ${token}` };
+
         try {
-            const res = await fetch(url + `?t=${Date.now()}`, { headers: { 'Authorization': `token ${ghConfig.token}` }});
+            const res = await fetch(url + `?t=${Date.now()}`, { headers });
+            if (res.status === 401 || res.status === 403) {
+                if (localStorage.getItem('gh_token')) {
+                    localStorage.removeItem('gh_token');
+                    console.warn("[Auth] Upload failed due to invalid token. Cleared storage.");
+                }
+            }
             if (res.ok) { const json = await res.json(); sha = json.sha; }
         } catch(e) {}
 
@@ -117,7 +127,10 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
         if (statusCallback) statusCallback('Saving...', '#facc15');
         const putRes = await fetch(url, {
             method: 'PUT',
-            headers: { 'Authorization': `token ${ghConfig.token}`, 'Content-Type': 'application/json' },
+            headers: { 
+                'Authorization': `token ${ghConfig.token}`, 
+                'Content-Type': 'application/json' 
+            },
             body: JSON.stringify({
                 message: `Update ${filename}`,
                 content: finalContent,
@@ -131,6 +144,7 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
             }
             return true;
         }
+        if (putRes.status === 401) localStorage.removeItem('gh_token');
         return false;
     } catch (err) {
         if (statusCallback) statusCallback('Error', '#f87171');
@@ -141,12 +155,13 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
 async function deleteFileFromGitHub(path, sha, isRoot = false) {
     if (ghConfig.isReadOnly) return false;
     const fullPath = isRoot ? path : `${ghConfig.dataDir}${path}`;
-    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${fullPath}`;
+    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodeURIComponent(fullPath).replace(/%2F/g, '/')}`;
     const res = await fetch(url, {
         method: 'DELETE',
         headers: { 'Authorization': `token ${ghConfig.token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: `Delete ${path}`, sha: sha })
     });
+    if (res.status === 401) localStorage.removeItem('gh_token');
     return res.ok;
 }
 
