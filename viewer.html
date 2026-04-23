@@ -246,22 +246,18 @@
             </div>
             
             <div class="sidebar-tabs">
-                <button class="tab-btn active" data-tab="description" title="상세 설명 (D)">
+                <button class="tab-btn active" data-tab="editor" title="에디터 도구 (E)">
+                    <span class="material-icons-outlined">edit_note</span>
+                    Editor
+                </button>
+                <button class="tab-btn" data-tab="description" title="상세 설명 (D)">
                     <span class="material-icons-outlined">description</span>
                     Description
-                </button>
-                <button class="tab-btn" data-tab="properties" title="속성 및 도구 (P)">
-                    <span class="material-icons-outlined">tune</span>
-                    Properties
-                </button>
-                <button class="tab-btn" data-tab="components" title="아토믹 컴포넌트 (C)">
-                    <span class="material-icons-outlined">extension</span>
-                    Components
                 </button>
             </div>
 
             <!-- Tab: Description -->
-            <div id="tab-description" class="tab-pane active" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+            <div id="tab-description" class="tab-pane" style="flex: 1; display: none; flex-direction: column; overflow: hidden;">
                 <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
                     <span style="font-size: 10px; opacity: 0.6;">SCENE ANNOTATIONS</span>
                     <button class="btn-add-action" id="btn-add-description" title="새 행 추가 (화면 클릭)">
@@ -275,18 +271,42 @@
                 </div>
             </div>
 
-            <!-- Tab: Properties (Inspector) -->
-            <div id="tab-properties" class="tab-pane" style="flex: 1; display: none; flex-direction: column; overflow: hidden;">
+            <!-- Tab: Editor (Combined Components & Properties) -->
+            <div id="tab-editor" class="tab-pane active" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                <!-- Part 1: Atomic Components (Library) -->
                 <div class="panel-header">
-                    <span style="font-size: 10px; opacity: 0.6;">EDITOR TOOLS</span>
+                    <span style="font-size: 10px; opacity: 0.6;">ATOMIC LIBRARY</span>
                 </div>
-                <div class="inspector-body" style="padding: 16px;">
-                    <!-- New Rich Text Editor Section -->
+                <div class="components-body" style="padding: 16px; overflow-y: auto; max-height: 250px; border-bottom: 1px solid var(--border-color);">
+                    <div class="component-section" style="margin-bottom: 0;">
+                        <div class="section-label" style="font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 12px; letter-spacing: 1px;">ATOMS</div>
+                        <div class="component-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                            <div class="component-item" data-type="atom" data-name="LF Logo" id="comp-lf-logo" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s;">
+                                <div class="comp-preview" style="height: 48px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                                    <img src="assets/logo.svg" style="width: 100%; height: auto; filter: invert(1);">
+                                </div>
+                                <div class="comp-name" style="font-size: 11px; text-align: center; color: var(--text-secondary);">LF Logo</div>
+                            </div>
+                            <div class="component-item" data-type="atom" data-name="Primary Button" id="comp-btn-primary" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s;">
+                                <div class="comp-preview" style="height: 48px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                                    <div style="background: var(--accent); width: 80%; height: 20px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #000; font-size: 8px; font-weight: bold;">BUTTON</div>
+                                </div>
+                                <div class="comp-name" style="font-size: 11px; text-align: center; color: var(--text-secondary);">Button</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 2: Selection Properties (Inspector) -->
+                <div class="panel-header">
+                    <span style="font-size: 10px; opacity: 0.6;">SELECTION PROPERTIES</span>
+                </div>
+                <div class="inspector-body" style="padding: 16px; flex: 1; overflow-y: auto;">
+                    <!-- Existing Rich Text Editor Section -->
                     <div id="text-editor-section" style="display: none; margin-bottom: 24px;">
-                        <div class="sidebar-section-title">CONTENT EDITOR</div>
-                        <div id="editor-container" style="height: 200px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px;"></div>
+                        <div class="sidebar-section-title" style="font-size: 11px; color: var(--accent); margin-bottom: 8px;">CONTENT EDITOR</div>
+                        <div id="editor-container" style="height: 150px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px;"></div>
                         
-                        <!-- New Action Buttons for Organic Flow -->
                         <div id="editor-action-group" style="display: flex; gap: 8px; margin-top: 12px;">
                             <button id="btn-editor-apply" class="btn-primary" style="flex: 1; height: 36px; font-size: 13px;">
                                 <span class="material-icons-outlined" style="font-size: 16px; margin-right: 4px; vertical-align: middle;">check_circle</span>
@@ -343,47 +363,12 @@
                     <div style="height: 1px; background: var(--border-color); margin: 24px 0;"></div>
 
                     <div class="empty-inspector">
-                         <i class="material-icons-outlined">info</i>
-                         선택된 요소가 없거나 편집 가능한 기능이 없습니다.
+                         <i class="material-icons-outlined" style="opacity: 0.5;">info</i>
+                         <div style="margin-top: 8px;">선택된 요소가 없습니다.</div>
+                         <div style="font-size: 11px; opacity: 0.6; margin-top: 4px;">상단 라이브러리에서 컴포넌트를 추가하거나<br>마커를 선택하여 편집하세요.</div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Tab: Components (Atomic Design) -->
-            <div id="tab-components" class="tab-pane" style="flex: 1; display: none; flex-direction: column; overflow: hidden;">
-                <div class="panel-header">
-                    <span style="font-size: 10px; opacity: 0.6;">ATOMIC COMPONENTS</span>
-                </div>
-                <div class="components-body" style="padding: 16px; overflow-y: auto; flex: 1;">
-                    <!-- Atoms Section -->
-                    <div class="component-section" style="margin-bottom: 24px;">
-                        <div class="section-label" style="font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 12px; letter-spacing: 1px;">ATOMS</div>
-                        <div class="component-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                            <div class="component-item" data-type="atom" data-name="LF Logo" id="comp-lf-logo" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s;">
-                                <div class="comp-preview" style="height: 60px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                                    <img src="assets/logo.svg" style="width: 100%; height: auto; filter: invert(1);">
-                                </div>
-                                <div class="comp-name" style="font-size: 11px; text-align: center; color: var(--text-secondary);">LF Logo</div>
-                            </div>
-                            <div class="component-item" data-type="atom" data-name="Primary Button" id="comp-btn-primary" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s;">
-                                <div class="comp-preview" style="height: 60px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                                    <div style="background: var(--accent); width: 80%; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #000; font-size: 8px; font-weight: bold;">BUTTON</div>
-                                </div>
-                                <div class="comp-name" style="font-size: 11px; text-align: center; color: var(--text-secondary);">Button</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Molecules Section (Placeholder) -->
-                    <div class="component-section">
-                        <div class="section-label" style="font-size: 11px; font-weight: 600; color: var(--text-dim); margin-bottom: 12px; letter-spacing: 1px;">MOLECULES</div>
-                        <div style="border: 1px dashed var(--border-color); border-radius: 8px; padding: 20px; text-align: center; color: var(--text-dim); font-size: 11px;">
-                            Coming Soon...
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </aside>
+            </div>        </aside>
     </div>
 
     <!-- Auth Modal -->
