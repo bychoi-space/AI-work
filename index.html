@@ -14,68 +14,69 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
     <style>
-        /* Premium Animated Background */
+        /* Premium Animated Background - Mega Boost */
         body {
             margin: 0; padding: 0;
-            background: #0f1115; /* Base dark */
+            background: #020205 !important; /* Total dark base */
+            background-image: none !important; /* Disable legacy style.css gradients */
             overflow-x: hidden;
+            min-height: 100vh;
+            animation: none !important;
+        }
+        #dashboard-view {
+            background: transparent !important;
+            position: relative;
+            z-index: 10;
         }
         .bg-mesh-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; overflow: hidden;
-            background: radial-gradient(circle at 50% 50%, #1e2128 0%, #0f1115 100%);
+            z-index: 1; overflow: hidden;
+            background: #02040a;
         }
-        .bg-blob {
-            position: absolute; width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(0, 229, 255, 0.15) 0%, rgba(0, 229, 255, 0) 70%);
-            filter: blur(80px);
+        /* Top Left - Cyan Pulse */
+        .bg-blob-1 {
+            position: absolute; width: 1200px; height: 1200px;
+            top: -400px; left: -300px;
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.25) 0%, rgba(0, 229, 255, 0) 70%);
+            filter: blur(120px);
             border-radius: 50%;
-            animation: moveBlob 25s infinite alternate ease-in-out;
+            animation: moveBlob 40s infinite alternate ease-in-out;
+            mix-blend-mode: screen;
         }
+        /* Bottom Right - Purple Pulse */
         .bg-blob-2 {
-            width: 800px; height: 800px;
-            background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0) 70%);
-            top: -200px; right: -200px;
-            animation: moveBlob 35s infinite alternate-reverse ease-in-out;
+            position: absolute; width: 1400px; height: 1400px;
+            bottom: -500px; right: -400px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(168, 85, 247, 0) 70%);
+            filter: blur(140px);
+            border-radius: 50%;
+            animation: moveBlob 50s infinite alternate-reverse ease-in-out;
+            mix-blend-mode: screen;
         }
+        /* Middle - Indigo Flow */
         .bg-blob-3 {
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0) 70%);
-            bottom: -100px; left: 10%;
-            animation: moveBlob 30s infinite alternate ease-in-out;
+            position: absolute; width: 900px; height: 900px;
+            top: 40%; left: 30%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0) 70%);
+            filter: blur(110px);
+            border-radius: 50%;
+            animation: moveBlob 60s infinite alternate ease-in-out;
+            opacity: 0.7;
         }
         @keyframes moveBlob {
-            0% { transform: translate(-10%, -10%) scale(1); }
-            50% { transform: translate(10%, 20%) scale(1.1); }
-            100% { transform: translate(-5%, -20%) scale(0.9); }
+            0% { transform: translate(-5%, -5%) scale(1); }
+            50% { transform: translate(10%, 15%) scale(1.2); }
+            100% { transform: translate(-10%, -15%) scale(0.9); }
         }
         .bg-noise {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; opacity: 0.02; pointer-events: none;
+            z-index: 5; opacity: 0.05; pointer-events: none;
             background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+            mix-blend-mode: overlay;
         }
-
-        /* Intro Overlay cleanup */
-        .intro-overlay {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            background: #0f1115 !important;
-            z-index: 10000 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
-            transition: opacity 0.4s ease, visibility 0.4s !important;
-        }
-        .intro-overlay.fade-out {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
-        }
-        .modal-overlay.active { display: flex !important; }
+        .toolbar { background: rgba(15, 17, 21, 0.6) !important; backdrop-filter: blur(20px) !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
+        .dashboard-header { background: transparent !important; }
+        .card-grid { padding-bottom: 100px; }
     </style>
 </head>
 <body>
