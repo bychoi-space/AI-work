@@ -3,7 +3,7 @@
     "00_Cover_2855.html": {
       "title": "00_Cover_2855",
       "type": "cover",
-      "updatedAt": "2026-04-21T07:01:28.329Z",
+      "updatedAt": "2026-04-22T06:47:17.688Z",
       "template": "template_cover.html",
       "description": [
         {
@@ -20,6 +20,39 @@
           "text": "45",
           "x": 61.046740381523676,
           "y": 32.84891305398814
+        },
+        {
+          "text": "123",
+          "x": 25.369860334528685,
+          "y": 16.61429640280135
+        },
+        {
+          "text": "123",
+          "x": 77.37226772112349,
+          "y": 23.530540027441198,
+          "type": "text",
+          "color": "#000000"
+        },
+        {
+          "text": "가나다라마바사\nABCD!@#!$%%",
+          "x": 70.53209839226736,
+          "y": 39.35801041064199,
+          "type": "text",
+          "color": "#000000"
+        },
+        {
+          "text": "가나다라마바사\nABCD!@#!$%%",
+          "x": 38.5772128662738,
+          "y": 64.45922498554079,
+          "type": "text",
+          "color": "#000000"
+        },
+        {
+          "text": "나한테 장난치지?",
+          "x": 83.76228855348188,
+          "y": 70.58993637941006,
+          "type": "text",
+          "color": "#000000"
         }
       ]
     },
@@ -45,13 +78,31 @@
     "01_Architecture_4304.html": {
       "title": "01_Architecture_4304",
       "type": "architecture",
-      "updatedAt": "2026-04-21T06:49:58.321Z",
+      "updatedAt": "2026-04-22T05:12:02.507Z",
       "template": "template_architecture.html",
       "description": [
         {
           "text": "여기에 이런 설명을 넣으면 어떨까?",
           "x": 2.949068745362105,
           "y": 9.15160971636871
+        },
+        {
+          "text": "가나다라마바사",
+          "x": 35.71360268643802,
+          "y": 32.36649791529667,
+          "type": "text"
+        },
+        {
+          "text": "",
+          "x": 83.01479583821344,
+          "y": 45.77410953266952,
+          "type": "pin"
+        },
+        {
+          "text": "d123",
+          "x": 24.428546452258097,
+          "y": 25.451400437844555,
+          "type": "text"
         }
       ]
     },
@@ -78,7 +129,57 @@
       "type": "ui",
       "updatedAt": "2026-04-21T06:59:23.741Z",
       "template": "template_front_ui.html"
+    },
+    "01_Architecture_7157.html": {
+      "title": "01_Architecture_7157",
+      "type": "cover",
+      "updatedAt": "2026-04-22T07:50:20.786Z",
+      "template": "template_cover.html",
+      "description": [
+        {
+          "text": "123",
+          "x": 50,
+          "y": 50,
+          "type": "text",
+          "color": "#000000"
+        },
+        {
+          "text": "123541526",
+          "x": 69.2018858929014,
+          "y": 61.902854292586305,
+          "type": "text",
+          "color": "#000000"
+        },
+        {
+          "text": "ㅁㅇㄻㅎㄹ",
+          "x": 65.98298019663622,
+          "y": 28.89866413874463,
+          "type": "text",
+          "color": "#000000"
+        }
+      ]
+    },
+    "02_Plan_3199.html": {
+      "title": "02_Plan_3199",
+      "type": "plan",
+      "updatedAt": "2026-04-22T09:57:28.161Z",
+      "template": "template_plan.html",
+      "description": [
+        {
+          "html": "<p><strong>1231231231</strong></p>",
+          "text": "1231231231",
+          "x": 50,
+          "y": 50,
+          "type": "text",
+          "color": "#000000"
+        }
+      ]
     }
   },
-  "title": "원스피어 관리자 권한"
+  "title": "원스피어 관리자 권한",
+  "assignee": "최범열",
+  "period": "2026.04.01 ~ 2026.04.30",
+  "jira": "123",
+  "figmaUrl": "456",
+  "pubUrl": "789ㅁ"
 }

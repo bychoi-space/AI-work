@@ -64,24 +64,26 @@ async function saveProjectMetadata(project, metadata, statusCallback) {
     return await uploadToProject(project, 'metadata.json', content, statusCallback);
 }
 
-async function uploadToProject(project, filename, content, statusCallback) {
+async function uploadToProject(project, filename, content, statusCallback, isBinary = false) {
     if (ghConfig.isReadOnly) return false;
-    const path = `${ghConfig.dataDir}${project}/${filename}`;
     try {
-        if (statusCallback) statusCallback('Saving...', '#facc15');
+        const path = `${ghConfig.dataDir}${project}/${filename}`;
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${path}`;
-        const getRes = await fetch(url + `?t=${Date.now()}`, { headers: { 'Authorization': `token ${ghConfig.token}` }});
         let sha = null;
-        if (getRes.ok) {
-            const getData = await getRes.json();
-            sha = getData.sha;
-        }
+        try {
+            const res = await fetch(url + `?t=${Date.now()}`, { headers: { 'Authorization': `token ${ghConfig.token}` }});
+            if (res.ok) { const json = await res.json(); sha = json.sha; }
+        } catch(e) {}
+
+        const finalContent = isBinary ? content : btoa(unescape(encodeURIComponent(content)));
+
+        if (statusCallback) statusCallback('Saving...', '#facc15');
         const putRes = await fetch(url, {
             method: 'PUT',
             headers: { 'Authorization': `token ${ghConfig.token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 message: `Update ${filename}`,
-                content: btoa(unescape(encodeURIComponent(content))),
+                content: finalContent,
                 sha: sha
             })
         });
@@ -151,7 +153,17 @@ async function updateScreenMetadata(project, screenFilename, data, statusCallbac
         metadata.screens[screenFilename].description = data.description;
         metadata.screens[screenFilename].updatedAt = new Date().toISOString();
     }
-    return await saveProjectMetadata(project, metadata, statusCallback);
+    
+    // Save metadata
+    const metaSuccess = await saveProjectMetadata(project, metadata, statusCallback);
+    
+    // Phase 1: Overwrite HTML if content provided
+    if (metaSuccess && data.htmlContent) {
+        if (statusCallback) statusCallback('Saving Design...', '#facc15');
+        return await uploadToProject(project, screenFilename, data.htmlContent, statusCallback);
+    }
+    
+    return metaSuccess;
 }
 
 async function createScreenFromTemplate(project, screenName, templateName, injectData = {}, statusCallback) {
