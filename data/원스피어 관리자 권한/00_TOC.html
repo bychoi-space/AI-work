@@ -3,196 +3,382 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Table of Contents - 원스피어 관리자 권한</title>
+    <title>Project Table of Contents - 원스피어 관리자 권한</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-    <link rel="stylesheet" href="../../enhanced_v4/style_v4.css">
     <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #eef2ff;
+            --text-main: #1e293b;
+            --text-dim: #64748b;
+            --bg-page: #f8fafc;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --accent: #06b6d4;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            background: #0a0b10;
-            color: #f8fafc;
-            font-family: 'Inter', sans-serif;
+            background: var(--bg-page);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, sans-serif;
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
+
         .page-container {
             width: 1440px;
             padding: 60px 80px;
             box-sizing: border-box;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 40px;
+        }
+
+        /* Left Side: Table of Contents */
+        .toc-main {
             display: flex;
             flex-direction: column;
             gap: 40px;
-            animation: v4-fade-in-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        .toc-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 30px;
+
+        .header-section {
+            border-bottom: 2px solid var(--text-main);
+            padding-bottom: 24px;
         }
-        .project-title-group h1 {
-            font-size: 48px;
+
+        .header-section h1 {
+            font-size: 42px;
             font-weight: 800;
             margin: 0;
-            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+            letter-spacing: -1.5px;
+            color: #0f172a;
         }
-        .project-title-group p {
-            font-size: 16px;
-            color: var(--v4-text-dim);
-            margin: 8px 0 0 0;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .meta-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-        .meta-item {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 16px 24px;
-            border-radius: 12px;
-            backdrop-filter: blur(10px);
-        }
-        .meta-label {
-            font-size: 11px;
-            color: var(--v4-primary);
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-        .meta-value {
-            font-size: 15px;
-            font-weight: 500;
-        }
-        .badge {
-            font-size: 10px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .badge-cover { background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
-        .badge-architecture { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .badge-plan { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
-        .badge-ui { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-        .badge-admin { background: rgba(147, 51, 234, 0.2); color: #a78bfa; border: 1px solid rgba(147, 51, 234, 0.3); }
 
-        .toc-list-container {
-            margin-top: 20px;
+        .header-section p {
+            font-size: 14px;
+            color: var(--text-dim);
+            margin: 8px 0 0 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-        .screen-link {
+
+        .toc-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary);
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .screen-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .screen-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
             text-decoration: none;
             color: inherit;
-            display: block;
         }
-        .screen-row:hover {
-            cursor: pointer;
+
+        .screen-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
+            transform: translateY(-2px);
         }
-        .btn-view {
-            padding: 6px 12px;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            font-size: 12px;
+
+        .screen-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .screen-name {
+            font-size: 14px;
             font-weight: 600;
+        }
+
+        .screen-meta {
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        .btn-go {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.2s;
         }
-        .screen-row:hover .btn-view {
-            background: var(--v4-primary);
-            border-color: var(--v4-primary);
+
+        .screen-item:hover .btn-go {
+            background: var(--primary);
             color: #fff;
         }
+
+        /* Right Side: Agile Guide */
+        .agile-sidebar {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            height: fit-content;
+            position: sticky;
+            top: 60px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+        }
+
+        .agile-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .agile-header h2 {
+            font-size: 18px;
+            margin: 0;
+            font-weight: 800;
+        }
+
+        .agile-content {
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--text-dim);
+        }
+
+        .agile-content b {
+            color: var(--text-main);
+            display: block;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        .agile-tip {
+            margin-top: 24px;
+            padding: 16px;
+            background: #f0fdfa;
+            border-left: 4px solid var(--accent);
+            border-radius: 4px;
+            font-size: 12px;
+            color: #0f766e;
+        }
+
+        .badge {
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: inline-block;
+        }
+        .b-overview { background: #fee2e2; color: #b91c1c; }
+        .b-arch { background: #dcfce7; color: #15803d; }
+        .b-plan { background: #fef9c3; color: #a16207; }
+        .b-ui { background: #dbeafe; color: #1d4ed8; }
+        .b-admin { background: #f3e8ff; color: #7e22ce; }
+
     </style>
 </head>
 <body>
     <div class="page-container">
-        <header class="toc-header">
-            <div class="project-title-group">
-                <p>Project Archive / Table of Contents</p>
+        <main class="toc-main">
+            <header class="header-section">
+                <p>Digital Product Archive</p>
                 <h1>원스피어 관리자 권한</h1>
-            </div>
-            <div class="meta-grid">
-                <div class="meta-item">
-                    <div class="meta-label">Assignee</div>
-                    <div class="meta-value">최범열</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Period</div>
-                    <div class="meta-value">2026.04.01 ~ 2026.04.30</div>
-                </div>
-                <div class="meta-item">
-                    <div class="meta-label">Doc Status</div>
-                    <div class="meta-value">Draft v1.0</div>
-                </div>
-            </div>
-        </header>
+            </header>
 
-        <section class="toc-list-container">
-            <table class="v4-premium-table">
-                <thead>
-                    <tr>
-                        <th style="width: 60px;">No.</th>
-                        <th style="width: 150px;">Category</th>
-                        <th>Screen Title</th>
-                        <th style="width: 180px;">Last Updated</th>
-                        <th style="width: 100px; text-align: center;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="screen-row">
-                        <td>01</td>
-                        <td><span class="badge badge-cover">Cover</span></td>
-                        <td style="font-weight: 600;">00_Cover_7736</td>
-                        <td style="color: var(--v4-text-dim); font-size: 12px;">2026-04-24 18:09</td>
-                        <td style="text-align: center;"><div class="btn-view">View</div></td>
-                    </tr>
-                    <tr class="screen-row">
-                        <td>02</td>
-                        <td><span class="badge badge-architecture">Arch</span></td>
-                        <td style="font-weight: 600;">01_Architecture_4304</td>
-                        <td style="color: var(--v4-text-dim); font-size: 12px;">2026-04-22 14:12</td>
-                        <td style="text-align: center;"><div class="btn-view">View</div></td>
-                    </tr>
-                    <tr class="screen-row">
-                        <td>03</td>
-                        <td><span class="badge badge-plan">Plan</span></td>
-                        <td style="font-weight: 600;">02_Plan_3199</td>
-                        <td style="color: var(--v4-text-dim); font-size: 12px;">2026-04-22 18:57</td>
-                        <td style="text-align: center;"><div class="btn-view">View</div></td>
-                    </tr>
-                    <tr class="screen-row">
-                        <td>04</td>
-                        <td><span class="badge badge-ui">Front UI</span></td>
-                        <td style="font-weight: 600;">03_UI_Screen_0933</td>
-                        <td style="color: var(--v4-text-dim); font-size: 12px;">2026-04-21 15:59</td>
-                        <td style="text-align: center;"><div class="btn-view">View</div></td>
-                    </tr>
-                    <tr class="screen-row">
-                        <td>05</td>
-                        <td><span class="badge badge-admin">Admin</span></td>
-                        <td style="font-weight: 600;">05_Admin_Onesphere_4990</td>
-                        <td style="color: var(--v4-text-dim); font-size: 12px;">2026-04-21 14:15</td>
-                        <td style="text-align: center;"><div class="btn-view">View</div></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+            <!-- Group 1: Project Overview -->
+            <section class="toc-section">
+                <div class="section-title">
+                    <span class="material-icons-outlined">dashboard</span>
+                    01. Project Overview
+                </div>
+                <div class="screen-grid">
+                    <a href="00_Cover_2855.html" class="screen-item">
+                        <div class="screen-info">
+                            <span class="badge b-overview">Cover</span>
+                            <span class="screen-name">Main Project Cover</span>
+                            <span class="screen-meta">Ver 1.0 · Updated 2026-04-22</span>
+                        </div>
+                        <div class="btn-go"><span class="material-icons-outlined">arrow_forward</span></div>
+                    </a>
+                    <a href="00_Cover_3482.html" class="screen-item">
+                        <div class="screen-info">
+                            <span class="badge b-overview">Cover</span>
+                            <span class="screen-name">Sub Cover (Type B)</span>
+                            <span class="screen-meta">Ver 1.0 · Updated 2026-04-24</span>
+                        </div>
+                        <div class="btn-go"><span class="material-icons-outlined">arrow_forward</span></div>
+                    </a>
+                </div>
+            </section>
 
-        <footer style="margin-top: auto; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.05); color: var(--v4-text-dim); font-size: 11px; display: flex; justify-content: space-between;">
-            <div>© 2026 LFmall Design Studio. All rights reserved.</div>
-            <div>Confidential / Project OneSphere</div>
-        </footer>
+            <!-- Group 2: Strategy & Arch -->
+            <section class="toc-section">
+                <div class="section-title">
+                    <span class="material-icons-outlined">account_tree</span>
+                    02. Strategy & Architecture
+                </div>
+                <div class="screen-grid">
+                    <a href="01_Architecture_4304.html" class="screen-item">
+                        <div class="screen-info">
+                            <span class="badge b-arch">Arch</span>
+                            <span class="screen-name">Information Architecture</span>
+                            <span class="screen-meta">Ver 1.1 · Updated 2026-04-22</span>
+                        </div>
+                        <div class="btn-go"><span class="material-icons-outlined">arrow_forward</span></div>
+                    </a>
+                    <a href="01_Architecture_7157.html" class="screen-item">
+                        <div class="screen-info">
+                            <span class="badge b-arch">Arch</span>
+                            <span class="screen-name">Service Flowchart</span>
+                            <span class="screen-meta">Ver 1.0 · Updated 2026-04-22</span>
+                        </div>
+                        <div class="btn-go"><span class="material-icons-outlined">arrow_forward</span></div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Group 3: Planning -->
+            <section class="toc-section">
+                <div class="section-title">
+                    <span class="material-icons-outlined">event_note</span>
+                    03. Schedule & Planning
+                </div>
+                <div class="screen-grid">
+                    <a href="02_Plan_3199.html" class="screen-item">
+                        <div class="screen-info">
+                            <span class="badge b-plan">Plan</span>
+                            <span class="screen-name">Development Roadmap</span>
+                            <span class="screen-meta">Ver 1.2 · Updated 2026-04-22</span>
+                        </div>
+                        <div class="btn-go"><span class="material-icons-outlined">arrow_forward</span></div>
+                    </a>
+                    <a href="02_Plan_6933.html" class="screen-item">
+                        <div class="screen-info">
+                            <span class="badge b-plan">Plan</span>
+                            <span class="screen-name">Task Distribution</span>
+                            <span class="screen-meta">Ver 1.0 · Updated 2026-04-21</span>
+                        </div>
+                        <div class="btn-go"><span class="material-icons-outlined">arrow_forward</span></div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Group 4: UI Design -->
+            <section class="toc-section">
+                <div class="section-title">
+                    <span class="material-icons-outlined">smartphone</span>
+                    04. User Interface Design
+                </div>
+                <div class="screen-grid">
+                    <a href="03_UI_Screen_0933.html" class="screen-item">
+                        <div class="screen-info">
+                            <span class="badge b-ui">UI</span>
+                            <span class="screen-name">Main Dashboard (Mobile)</span>
+                            <span class="screen-meta">Ver 1.0 · Updated 2026-04-21</span>
+                        </div>
+                        <div class="btn-go"><span class="material-icons-outlined">arrow_forward</span></div>
+                    </a>
+                    <a href="03_UI_Screen_4984.html" class="screen-item">
+                        <div class="screen-info">
+                            <span class="badge b-ui">UI</span>
+                            <span class="screen-name">Permission Settings UI</span>
+                            <span class="screen-meta">Ver 1.0 · Updated 2026-04-21</span>
+                        </div>
+                        <div class="btn-go"><span class="material-icons-outlined">arrow_forward</span></div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Group 5: Admin -->
+            <section class="toc-section">
+                <div class="section-title">
+                    <span class="material-icons-outlined">admin_panel_settings</span>
+                    05. Admin Systems
+                </div>
+                <div class="screen-grid">
+                    <a href="03_UI_Screen_9534.html" class="screen-item">
+                        <div class="screen-info">
+                            <span class="badge b-admin">Admin</span>
+                            <span class="screen-name">nBOS Management Console</span>
+                            <span class="screen-meta">Ver 1.0 · Updated 2026-04-21</span>
+                        </div>
+                        <div class="btn-go"><span class="material-icons-outlined">arrow_forward</span></div>
+                    </a>
+                    <a href="05_Admin_Onesphere_4990.html" class="screen-item">
+                        <div class="screen-info">
+                            <span class="badge b-admin">Admin</span>
+                            <span class="screen-name">OneSphere Authority Hub</span>
+                            <span class="screen-meta">Ver 2.1 · Updated 2026-04-21</span>
+                        </div>
+                        <div class="btn-go"><span class="material-icons-outlined">arrow_forward</span></div>
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <aside class="agile-sidebar">
+            <div class="agile-header">
+                <span class="material-icons-outlined">lightbulb</span>
+                <h2>Agile Methodology</h2>
+            </div>
+            <div class="agile-content">
+                애자일(Agile)은 변화에 유연하게 대응하고 고객 가치를 빠르게 전달하는 프로젝트 관리 방법론입니다.
+
+                <b>1. 반복적 개발 (Iterative)</b>
+                큰 프로젝트를 작은 단위(Sprint)로 나누어 반복적으로 개발하고 개선합니다.
+
+                <b>2. 고객 중심 (Customer Focus)</b>
+                사용자의 피드백을 실시간으로 반영하여 제품의 방향성을 지속적으로 조정합니다.
+
+                <b>3. 협업과 소통</b>
+                문서보다는 소통을, 프로세스보다는 사람을 중시하여 팀의 효율성을 극대화합니다.
+
+                <div class="agile-tip">
+                    <strong>Pro Tip:</strong><br>
+                    매일 아침 'Daily Stand-up'을 통해 어제의 성과와 오늘의 목표, 장애 요인을 공유하세요!
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px; text-align: center; color: #ccc; font-size: 11px;">
+                © 2026 OneSphere Agile Team
+            </div>
+        </aside>
     </div>
 </body>
 </html>
