@@ -123,7 +123,7 @@ async function checkUnsavedChanges() {
 }
 
 // Safe DOM Retrieval Helper to prevent crashes if IDs are missing
-const get = (id) => document.getElementById(id) || { style: {}, classList: { add:() => {}, remove:() => {} }, innerText: '', innerHTML: '', onclick: null, oninput: null };
+const get = (id) => document.getElementById(id) || { style: {}, classList: { add:() => {}, remove:() => {}, toggle:() => {} }, innerText: '', innerHTML: '', onclick: null, oninput: null, querySelector: () => null, querySelectorAll: () => [] };
 
 const DOM = {
     iframe: get('main-iframe'),
