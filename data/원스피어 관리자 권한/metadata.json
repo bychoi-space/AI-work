@@ -1,5 +1,11 @@
 {
   "screens": {
+    "00_TOC.html": {
+      "title": "00_Table_of_Contents",
+      "type": "cover",
+      "updatedAt": "2026-04-24T12:51:00.000Z",
+      "template": "template_toc.html"
+    },
     "00_Cover_2855.html": {
       "title": "00_Cover_2855",
       "type": "cover",

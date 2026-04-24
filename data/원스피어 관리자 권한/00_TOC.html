@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table of Contents - 원스피어 관리자 권한</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="../../enhanced_v4/style_v4.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0a0b10;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .page-container {
+            width: 1440px;
+            padding: 60px 80px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            animation: v4-fade-in-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .toc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 30px;
+        }
+        .project-title-group h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+        .project-title-group p {
+            font-size: 16px;
+            color: var(--v4-text-dim);
+            margin: 8px 0 0 0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .meta-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 16px 24px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        .meta-label {
+            font-size: 11px;
+            color: var(--v4-primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .meta-value {
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-cover { background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+        .badge-architecture { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-plan { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-ui { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .badge-admin { background: rgba(147, 51, 234, 0.2); color: #a78bfa; border: 1px solid rgba(147, 51, 234, 0.3); }
+
+        .toc-list-container {
+            margin-top: 20px;
+        }
+        .screen-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .screen-row:hover {
+            cursor: pointer;
+        }
+        .btn-view {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .screen-row:hover .btn-view {
+            background: var(--v4-primary);
+            border-color: var(--v4-primary);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <header class="toc-header">
+            <div class="project-title-group">
+                <p>Project Archive / Table of Contents</p>
+                <h1>원스피어 관리자 권한</h1>
+            </div>
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <div class="meta-label">Assignee</div>
+                    <div class="meta-value">최범열</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Period</div>
+                    <div class="meta-value">2026.04.01 ~ 2026.04.30</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Doc Status</div>
+                    <div class="meta-value">Draft v1.0</div>
+                </div>
+            </div>
+        </header>
+
+        <section class="toc-list-container">
+            <table class="v4-premium-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">No.</th>
+                        <th style="width: 150px;">Category</th>
+                        <th>Screen Title</th>
+                        <th style="width: 180px;">Last Updated</th>
+                        <th style="width: 100px; text-align: center;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="screen-row">
+                        <td>01</td>
+                        <td><span class="badge badge-cover">Cover</span></td>
+                        <td style="font-weight: 600;">00_Cover_7736</td>
+                        <td style="color: var(--v4-text-dim); font-size: 12px;">2026-04-24 18:09</td>
+                        <td style="text-align: center;"><div class="btn-view">View</div></td>
+                    </tr>
+                    <tr class="screen-row">
+                        <td>02</td>
+                        <td><span class="badge badge-architecture">Arch</span></td>
+                        <td style="font-weight: 600;">01_Architecture_4304</td>
+                        <td style="color: var(--v4-text-dim); font-size: 12px;">2026-04-22 14:12</td>
+                        <td style="text-align: center;"><div class="btn-view">View</div></td>
+                    </tr>
+                    <tr class="screen-row">
+                        <td>03</td>
+                        <td><span class="badge badge-plan">Plan</span></td>
+                        <td style="font-weight: 600;">02_Plan_3199</td>
+                        <td style="color: var(--v4-text-dim); font-size: 12px;">2026-04-22 18:57</td>
+                        <td style="text-align: center;"><div class="btn-view">View</div></td>
+                    </tr>
+                    <tr class="screen-row">
+                        <td>04</td>
+                        <td><span class="badge badge-ui">Front UI</span></td>
+                        <td style="font-weight: 600;">03_UI_Screen_0933</td>
+                        <td style="color: var(--v4-text-dim); font-size: 12px;">2026-04-21 15:59</td>
+                        <td style="text-align: center;"><div class="btn-view">View</div></td>
+                    </tr>
+                    <tr class="screen-row">
+                        <td>05</td>
+                        <td><span class="badge badge-admin">Admin</span></td>
+                        <td style="font-weight: 600;">05_Admin_Onesphere_4990</td>
+                        <td style="color: var(--v4-text-dim); font-size: 12px;">2026-04-21 14:15</td>
+                        <td style="text-align: center;"><div class="btn-view">View</div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer style="margin-top: auto; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.05); color: var(--v4-text-dim); font-size: 11px; display: flex; justify-content: space-between;">
+            <div>© 2026 LFmall Design Studio. All rights reserved.</div>
+            <div>Confidential / Project OneSphere</div>
+        </footer>
+    </div>
+</body>
+</html>
