@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Cover - 원스피어 관리자 권한</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        :root {
+            --v4-primary: #6366f1;
+            --v4-bg: #0f172a;
+            --v4-glass: rgba(255, 255, 255, 0.03);
+            --v4-border: rgba(255, 255, 255, 0.1);
+        }
+        body { 
+            margin: 0; padding: 0; 
+            font-family: 'Inter', sans-serif; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; background: var(--v4-bg); 
+            overflow: hidden; color: #fff;
+        }
+        .page { 
+            width: 1440px; height: 900px; 
+            position: relative; 
+            background: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 100% 100%, rgba(0, 229, 255, 0.1) 0%, transparent 50%);
+            overflow: hidden;
+        }
+        
+        /* V4 Component Base Styles (Same as library for consistency) */
+        .lf-component { position: absolute !important; box-sizing: border-box !important; transition: outline 0.2s; }
+        .lf-component:hover { outline: 2px solid var(--v4-primary) !important; cursor: move !important; }
+        .lf-component.selected { outline: 2px solid var(--v4-primary) !important; z-index: 9999 !important; }
+        
+        .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; }
+        .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
+        
+        .v4-glass-card {
+            background: var(--v4-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--v4-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .logo-symbol { width: 48px; height: 48px; background: var(--v4-primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+        .logo-text { font-size: 32px; font-weight: 900; letter-spacing: -1px; }
+
+        .v4-editable-cell { outline: none; }
+        .v4-editable-cell:focus { background: rgba(255,255,255,0.05); border-radius: 4px; }
+
+        /* V4 Table Styling */
+        .v4-premium-table { width: 100%; border-collapse: collapse; color: #fff; font-size: 14px; }
+        .v4-premium-table th { background: rgba(255,255,255,0.05); text-align: left; padding: 12px 20px; border: 1px solid var(--v4-border); color: rgba(255,255,255,0.5); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+        .v4-premium-table td { padding: 16px 20px; border: 1px solid var(--v4-border); background: rgba(255,255,255,0.02); }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- Static Background Logo (Non-editable) -->
+        <div style="position: absolute; top: 80px; left: 80px; opacity: 0.8;">
+            <div class="logo-area">
+                <div class="logo-symbol">LF</div>
+                <div class="logo-text">LFmall <span style="font-weight: 400; opacity: 0.5;">Design Studio</span></div>
+            </div>
+        </div>
+
+        <!-- Editable Main Title -->
+        <div id="cover-title" class="lf-component" style="top: 240px; left: 80px; min-width: 600px;">
+            <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
+            <div contenteditable="true" class="v4-editable-cell" style="font-size: 84px; font-weight: 900; line-height: 1.1; letter-spacing: -3px; color: #fff;">원스피어 관리자 권한</div>
+            <div contenteditable="true" class="v4-editable-cell" style="font-size: 24px; color: var(--v4-primary); margin-top: 20px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase;">E-commerce Platform Experience</div>
+        </div>
+
+        <!-- Editable Version Info -->
+        <div id="cover-version" class="lf-component" style="top: 520px; left: 80px;">
+            <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
+            <div style="display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 100px; border: 1px solid var(--v4-border);">
+                <span style="font-size: 12px; font-weight: 800; opacity: 0.5;">VERSION</span>
+                <div contenteditable="true" class="v4-editable-cell" style="font-size: 14px; font-weight: 600;">1.0</div>
+                <div style="width: 1px; height: 12px; background: var(--v4-border);"></div>
+                <span style="font-size: 12px; font-weight: 800; opacity: 0.5;">JIRA</span>
+                <div contenteditable="true" class="v4-editable-cell" style="font-size: 14px; font-weight: 600;">123</div>
+            </div>
+        </div>
+
+        <!-- Editable Project Info Table -->
+        <div id="cover-info-table" class="lf-component v4-glass-card" style="bottom: 80px; right: 80px; width: 500px; padding: 0; overflow: hidden;">
+            <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
+            <table class="v4-premium-table">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Designer / Author</td>
+                        <td contenteditable="true" class="v4-editable-cell">최범열</td>
+                    </tr>
+                    <tr>
+                        <td>Published Date</td>
+                        <td contenteditable="true" class="v4-editable-cell">2026.4.24</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Decorative Element -->
+        <div style="position: absolute; bottom: -100px; left: -100px; width: 400px; height: 400px; background: var(--v4-primary); filter: blur(150px); opacity: 0.2; border-radius: 50%;"></div>
+    </div>
+
+    <!-- V4 Interaction Bridge -->
+    <script src="../../assets/vctrl_v4_iframe.js"></script>
+</body>
+</html>
