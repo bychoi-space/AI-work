@@ -4,14 +4,14 @@
     "00_Cover_3301.html": {
       "title": "00_Cover_3301",
       "type": "cover",
-      "updatedAt": "2026-04-24T08:29:18.114Z",
+      "updatedAt": "2026-04-24T08:31:48.204Z",
       "template": "template_cover.html",
       "description": [
         {
           "html": "<p>ㅁㅇㄴㅁㄴㅇㄹ</p>",
           "text": "ㅁㅇㄴㅁㄴㅇㄹ",
-          "x": 50,
-          "y": 50,
+          "x": 54.93927125506073,
+          "y": 46.890688259109304,
           "type": "text",
           "color": "#000000"
         }
