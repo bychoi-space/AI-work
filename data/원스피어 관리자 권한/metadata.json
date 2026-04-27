@@ -192,6 +192,12 @@
       "type": "cover",
       "updatedAt": "2026-04-24T09:09:30.744Z",
       "template": "template_cover.html"
+    },
+    "00_Cover_2973.html": {
+      "title": "00_Cover_2973",
+      "type": "cover",
+      "updatedAt": "2026-04-27T01:59:15.664Z",
+      "template": "template_cover.html"
     }
   },
   "title": "원스피어 관리자 권한",
