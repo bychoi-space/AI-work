@@ -3,190 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <title>배송안내 - [배송] 26년 5월 연휴 이슈</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --v4-bg: #f8fafc;
+            --v4-bg: #f3f4f6;
             --v4-panel: #ffffff;
             --v4-accent: #6366f1;
-            --v4-text: #1e293b;
-            --v4-border: #e2e8f0;
+            --v4-text: #111827;
+            --v4-border: #d1d5db;
+            
+            /* Table Colors from Image */
+            --header-dark: #374151;
+            --header-blue: #1e3a8a;
+            --header-red: #b91c1c;
+            --cell-peach: #fef2f2;
+            --cell-green: #f0fdf4;
+            --cell-gray: #6b7280;
         }
+
         body {
             margin: 0; padding: 0;
-            background: #525659;
+            background: #2d2d2d;
             font-family: 'Inter', 'Noto Sans KR', sans-serif;
             display: flex; justify-content: center; align-items: flex-start;
-            min-height: 100vh; padding-top: 40px;
+            min-height: 100vh; padding: 60px 0;
         }
+
         .artboard {
             width: 1440px; height: 900px;
             background: #fff;
             position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
             overflow: hidden;
         }
+
+        /* Editor Component Shell */
         .lf-component {
             position: absolute;
-            transition: outline 0.2s;
-            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box;
         }
         .lf-component:hover {
             outline: 2px dashed var(--v4-accent);
+            outline-offset: 2px;
         }
         .lf-component.selected {
             outline: 2px solid var(--v4-accent);
+            z-index: 100;
         }
-        
+
+        /* Editable Text Styles */
+        .v4-editable-cell {
+            outline: none;
+            padding: 4px;
+            transition: background 0.2s;
+        }
+        .v4-editable-cell:focus {
+            background: rgba(99, 102, 241, 0.05);
+            box-shadow: inset 0 0 0 1px var(--v4-accent);
+            border-radius: 2px;
+        }
+
+        /* Shape Styles */
+        .v4-shape-container {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
         /* Table Styles */
         .v4-table {
             width: 100%; border-collapse: collapse;
             font-size: 13px; table-layout: fixed;
-            border: 1px solid #ccc;
+            border: 1px solid #000;
         }
         .v4-table th, .v4-table td {
-            border: 1px solid #ddd; padding: 10px 5px; text-align: center;
-            word-break: break-all;
+            border: 1px solid #bbb;
+            padding: 12px 6px;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 1.4;
         }
-        .v4-table th { background: #f4f4f4; font-weight: 700; color: #333; }
-        .v4-editable-cell { outline: none; }
-        .v4-editable-cell:focus { background: rgba(99, 102, 241, 0.1); }
+        .v4-table th {
+            background: var(--header-dark);
+            color: #fff;
+            font-weight: 800;
+        }
 
         /* Custom Header Colors */
-        .bg-blue { background: #1e40af !important; color: #fff !important; }
-        .bg-red { background: #b91c1c !important; color: #fff !important; }
-        .bg-peach { background: #ffe4e6 !important; }
-        .bg-green-light { background: #dcfce7 !important; }
-        .bg-orange-light { background: #ffedd5 !important; }
+        .h-blue { background: var(--header-blue) !important; }
+        .h-red { background: var(--header-red) !important; }
+        .bg-peach { background: #fee2e2 !important; }
+        .bg-gray-area { background: #888 !important; }
+        .text-red { color: #b91c1c; font-weight: 700; }
+        .text-blue { color: #1e40af; font-weight: 700; }
 
-        /* Shape Styles */
-        .v4-shape {
-            display: flex; align-items: center; justify-content: center;
-            width: 100%; height: 100%; text-align: center;
-        }
-        
-        /* Drag Handle Hidden by default */
-        .lf-drag-handle, .lf-resizer, .lf-delete-trigger { display: none; }
+        /* Scrollbars for table if needed */
+        .table-scroll-wrap { overflow: visible; width: 100%; }
+
     </style>
 </head>
 <body>
-    <div class="artboard" id="artboard">
-        <!-- Top Title Bar -->
-        <div class="lf-component" style="top: 20px; left: 30px; width: 1380px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; padding: 0 20px;">
-            <div class="v4-editable-cell" style="color: #fff; font-weight: 800; font-size: 16px;">26년 5월 연휴 배송안내</div>
-        </div>
-
-        <!-- Header Button Shape -->
-        <div class="lf-component" id="comp-header-btn" style="top: 80px; left: 40px; width: 240px; height: 44px; z-index: 10;">
-            <div class="v4-shape" style="background: #666; color: #fff; border-radius: 8px; font-weight: 700; font-size: 14px; border: 2px solid #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <div class="v4-editable-cell">자사 배송예정일 DB 설정 방법</div>
+    <div class="artboard" id="canvas">
+        
+        <!-- Title Shape -->
+        <div class="lf-component" id="comp-title-shape" style="top: 40px; left: 40px; width: 320px; height: 56px;">
+            <div class="v4-shape-container" style="background: #4b5563; color: #fff; font-size: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                <div class="v4-editable-cell" contenteditable="true">자사 배송예정일 DB 설정</div>
             </div>
         </div>
 
         <!-- Main Data Table -->
-        <div class="lf-component" id="comp-main-table" style="top: 150px; left: 40px; width: 1360px; height: auto; z-index: 5;">
-            <table class="v4-table">
-                <thead>
-                    <tr>
-                        <th style="width: 150px;">YMD</th>
-                        <th style="width: 150px;">일자</th>
-                        <th class="bg-blue">4/30 (목)</th>
-                        <th class="bg-red">5/1 (금)</th>
-                        <th class="bg-red">5/2 (토)</th>
-                        <th class="bg-blue">5/3(일)</th>
-                        <th class="bg-blue">5/4 (월)</th>
-                        <th class="bg-red">5/5 (화)</th>
-                        <th class="bg-blue">5/6 (수)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="background: #eee;">WRHS_GI_YN</td>
-                        <td>안산 출고 여부</td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td class="bg-peach"><div class="v4-editable-cell">N</div></td>
-                        <td class="bg-peach"><div class="v4-editable-cell">N</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                    </tr>
-                    <tr>
-                        <td style="background: #eee;">DLSR_GOFG_YN</td>
-                        <td>택배 집하 여부</td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td class="bg-peach"><div class="v4-editable-cell">N</div></td>
-                        <td class="bg-peach"><div class="v4-editable-cell">N</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                    </tr>
-                    <tr>
-                        <td style="background: #eee;">DLSR_MVMN_YN</td>
-                        <td>택배 배달 여부</td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                        <td><div class="v4-editable-cell">Y</div></td>
-                    </tr>
-                    <tr>
-                        <td style="background: #eee;">GI_CLSN_HR</td>
-                        <td>당일 출고 마감 시간</td>
-                        <td><div class="v4-editable-cell">18</div></td>
-                        <td><div class="v4-editable-cell"></div></td>
-                        <td><div class="v4-editable-cell">18</div></td>
-                        <td><div class="v4-editable-cell">18</div></td>
-                        <td><div class="v4-editable-cell">18</div></td>
-                        <td><div class="v4-editable-cell">18</div></td>
-                        <td><div class="v4-editable-cell">18</div></td>
-                    </tr>
-                    <!-- Green Overlay Row Proxy (for spacing) -->
-                    <tr style="height: 300px;">
-                        <td style="background: #eee; vertical-align: top; padding-top: 20px;">HODY_YN / NM<br>...</td>
-                        <td style="vertical-align: top; padding-top: 20px;">연휴 정보 설정 영역</td>
-                        <td colspan="7" style="background: #f0fdf4;"></td>
-                    </tr>
-                    <!-- Result Section -->
-                    <tr>
-                        <td rowspan="2" style="background: #eee;">RESULT<br>배송예정일</td>
-                        <td>출고 마감 이전</td>
-                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/1(금)</b> 이내<br>도착확률 95%</div></td>
-                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/4(월)</b> 이내<br>도착확률 95%</div></td>
-                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/4(월)</b> 이내<br>도착확률 95%</div></td>
-                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/5(화)</b> 이내<br>도착확률 95%</div></td>
-                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/5(화)</b> 이내<br>도착확률 95%</div></td>
-                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/6(수)</b> 이내<br>도착확률 95%</div></td>
-                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/7(목)</b> 이내<br>도착확률 95%</div></td>
-                    </tr>
-                    <tr>
-                        <td>출고 마감 이후</td>
-                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/4(월)</b> 이내<br>도착확률 95%</div></td>
-                        <td class="bg-peach"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/4(월)</b> 이내<br>도착확률 95%</div></td>
-                        <td class="bg-peach"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/5(화)</b> 이내<br>도착확률 95%</div></td>
-                        <td class="bg-peach"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/5(화)</b> 이내<br>도착확률 95%</div></td>
-                        <td class="bg-peach"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/6(수)</b> 이내<br>도착확률 95%</div></td>
-                        <td class="bg-peach"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/7(목)</b> 이내<br>도착확률 95%</div></td>
-                        <td class="bg-peach"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/8(금)</b> 이내<br>도착확률 95%</div></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <div class="lf-component" id="comp-main-table" style="top: 130px; left: 40px; width: 1360px; height: auto;">
+            <div class="table-scroll-wrap">
+                <table class="v4-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 180px;">YMD</th>
+                            <th style="width: 180px;">일자</th>
+                            <th class="h-blue">4/30 (목)</th>
+                            <th class="h-red">5/1 (금)</th>
+                            <th class="h-red">5/2 (토)</th>
+                            <th class="h-red">5/3 (일)</th>
+                            <th class="h-blue">5/4 (월)</th>
+                            <th class="h-red">5/5 (화)</th>
+                            <th class="h-blue">5/6 (수)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Operational Rows -->
+                        <tr>
+                            <td style="background:#f9fafb;">WRHS_GI_YN</td>
+                            <td>안산 출고 여부</td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td class="bg-peach"><div class="v4-editable-cell" contenteditable="true">N</div></td>
+                            <td class="bg-peach"><div class="v4-editable-cell" contenteditable="true">N</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                        </tr>
+                        <tr>
+                            <td style="background:#f9fafb;">DLSR_GOFG_YN</td>
+                            <td>택배 집하 여부</td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td class="bg-peach"><div class="v4-editable-cell" contenteditable="true">N</div></td>
+                            <td class="bg-peach"><div class="v4-editable-cell" contenteditable="true">N</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                        </tr>
+                        <tr>
+                            <td style="background:#f9fafb;">DLSR_MVMN_YN</td>
+                            <td>택배 배달 여부</td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                        </tr>
+                        <tr>
+                            <td style="background:#f9fafb;">GI_CLSN_HR</td>
+                            <td>당일 출고 마감 시간</td>
+                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
+                        </tr>
 
-        <!-- Green Floating Shape -->
-        <div class="lf-component" id="comp-green-overlay" style="top: 470px; left: 40px; width: 1360px; height: 280px; z-index: 15;">
-            <div class="v4-shape" style="background: rgba(74, 222, 128, 0.2); border: 3px solid #16a34a; border-radius: 12px; color: #166534; font-size: 48px; font-weight: 900; backdrop-filter: blur(2px);">
-                <div class="v4-editable-cell">명절 용도 (이번 연휴 사용하지 않음)</div>
+                        <!-- Gray Placeholder Area (Merged) -->
+                        <tr>
+                            <td style="background:#f9fafb;">HODY_YN</td>
+                            <td>연휴 여부</td>
+                            <td colspan="7" rowspan="6" class="bg-gray-area"></td>
+                        </tr>
+                        <tr><td style="background:#f9fafb;">HODY_NM</td><td>연휴 구분</td></tr>
+                        <tr><td style="background:#f9fafb;">HODY_GDNC_STRT_HR</td><td>연휴 안내 시작 시간</td></tr>
+                        <tr><td style="background:#f9fafb;">HODY_GDNC_END_HR</td><td>연휴 안내 종료 시간</td></tr>
+                        <tr><td style="background:#f9fafb;">HODY_ARVA_PRRN_DD</td><td>연휴 내 도착 예정일</td></tr>
+                        <tr><td style="background:#f9fafb;">HODY_GDNC_DSCR</td><td>연휴 안내 문구</td></tr>
+
+                        <!-- Result Section -->
+                        <tr>
+                            <td rowspan="2" style="background:#e5e7eb; font-weight:800;">RESULT<br>배송예정일</td>
+                            <td style="background:#f3f4f6;">출고 마감 이전</td>
+                            <td style="background:var(--cell-green);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이전 :<br><span class="text-red">5/1(금)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                            <td style="background:var(--cell-green);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이전 :<br><span class="text-red">5/4(월)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                            <td style="background:var(--cell-green);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이전 :<br><span class="text-red">5/4(월)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                            <td style="background:var(--cell-peach);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이전 :<br><span class="text-red">5/5(화)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                            <td style="background:var(--cell-peach);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이전 :<br><span class="text-red">5/5(화)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                            <td style="background:var(--cell-green);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이전 :<br><span class="text-red">5/6(수)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                            <td style="background:var(--cell-green);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이전 :<br><span class="text-red">5/7(목)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="background:#f3f4f6;">출고 마감 이후</td>
+                            <td style="background:var(--cell-green);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이후 :<br><span class="text-blue">5/4(월)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                            <td style="background:var(--cell-green);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이후 :<br><span class="text-blue">5/4(월)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                            <td style="background:var(--cell-green);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이후 :<br><span class="text-red">5/5(화)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                            <td style="background:var(--cell-green);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이후 :<br><span class="text-red">5/5(화)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                            <td style="background:var(--cell-green);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이후 :<br><span class="text-blue">5/6(수)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                            <td style="background:var(--cell-green);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이후 :<br><span class="text-red">5/7(목)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                            <td style="background:var(--cell-green);">
+                                <div class="v4-editable-cell" contenteditable="true">18시 이후 :<br><span class="text-red">5/8(금)</span> 이내<br>도착확률 95%</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <!-- Footer Logo -->
-        <div class="lf-component" style="bottom: 20px; left: 30px;">
-            <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="height: 30px; filter: grayscale(1) opacity(0.5);">
+        <!-- Footer Info -->
+        <div class="lf-component" style="bottom: 30px; left: 40px; color: #999; font-size: 12px; display: flex; align-items: center; gap: 20px;">
+            <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="height: 24px; filter: grayscale(1) opacity(0.4);">
+            <span>© LF Corp. All Rights Reserved.</span>
         </div>
-        <div class="lf-component" style="bottom: 20px; left: 50%; transform: translateX(-50%); color: #999; font-size: 14px;">1</div>
+
     </div>
 </body>
 </html>
