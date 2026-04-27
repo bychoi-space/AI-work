@@ -10,14 +10,15 @@
     "01_Delivery_Notice.html": {
       "title": "01. 연휴 배송안내 및 DB 설정",
       "type": "plan",
-      "updatedAt": "2026-04-27T09:05:10.064Z",
+      "updatedAt": "2026-04-27T09:05:32.860Z",
       "description": [
         {
           "text": "26년 5월 연휴 이슈 대응 가이드",
-          "html": "<p>26년 5월 연휴 이슈 대응 가이드</p>",
-          "x": 20,
-          "y": 20,
-          "type": "text"
+          "html": "<p><span style=\"font-size: 18px; color: rgb(255, 255, 255);\">26년 5월 연휴 이슈 대응 가이드</span></p>",
+          "x": 10.456725542714869,
+          "y": 3.379499740123241,
+          "type": "text",
+          "color": "#000000"
         }
       ]
     }
