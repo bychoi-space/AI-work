@@ -1,6 +1,13 @@
 {
   "title": "[배송] 26년 5월 연휴 이슈",
-  "screens": {},
+  "screens": {
+    "00_Cover_5125.html": {
+      "title": "00_Cover_5125",
+      "type": "cover",
+      "updatedAt": "2026-04-27T07:01:48.397Z",
+      "template": "template_cover.html"
+    }
+  },
   "assignee": "최범열",
   "period": "2026.04.27(월) ~ 2026.05.05(화)"
 }
