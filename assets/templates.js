@@ -80,6 +80,10 @@ window.LF_TEMPLATES = {
             visibility: visible !important;
             opacity: 1 !important;
         }
+        /* HIGH SPECIFICITY COLOR FIX */
+        .v4-premium-table td.v4-editable-cell {
+            color: #1a1c1e !important;
+        }
     </style>
 </head>
 <body>
@@ -134,15 +138,15 @@ window.LF_TEMPLATES = {
                 <tbody>
                     <tr>
                         <td style="font-weight: 600; color: var(--v4-text-sub);">Lead Designer / Author</td>
-                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700;">{{AUTHOR}}</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700; color: #1a1c1e !important;">{{AUTHOR}}</td>
                     </tr>
                     <tr>
                         <td style="font-weight: 600; color: var(--v4-text-sub);">Publication Date</td>
-                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700;">{{DATE}}</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700; color: #1a1c1e !important;">{{DATE}}</td>
                     </tr>
                     <tr>
                         <td style="font-weight: 600; color: var(--v4-text-sub);">System Context</td>
-                        <td contenteditable="true" class="v4-editable-cell">LF E-commerce Platform</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="color: #1a1c1e !important;">LF E-commerce Platform</td>
                     </tr>
                 </tbody>
             </table>
