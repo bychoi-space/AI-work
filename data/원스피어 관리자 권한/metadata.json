@@ -132,13 +132,6 @@
       "updatedAt": "2026-04-24T09:09:30.744Z",
       "template": "template_cover.html",
       "description": []
-    },
-    "00_Cover_7478.html": {
-      "title": "00_Cover_7478",
-      "type": "cover",
-      "updatedAt": "2026-04-27T02:25:10.331Z",
-      "template": "template_cover.html",
-      "description": []
     }
   },
   "title": "원스피어 관리자 권한",
@@ -148,7 +141,6 @@
   "figmaUrl": "456",
   "pubUrl": "789ㅁ",
   "screenOrder": [
-    "00_Cover_7478.html",
     "00_Cover_7736.html",
     "01_Architecture_4304.html",
     "01_Architecture_7157.html",
