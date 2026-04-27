@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>배송안내 - [LFML-138562] 온오프 재고 효율화_v0.7</title>
+    <style>
+        :root {
+            --v4-bg: #f8fafc;
+            --v4-panel: #ffffff;
+            --v4-accent: #6366f1;
+            --v4-text: #1e293b;
+            --v4-border: #e2e8f0;
+        }
+        body {
+            margin: 0; padding: 0;
+            background: #525659;
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            display: flex; justify-content: center; align-items: flex-start;
+            min-height: 100vh; padding-top: 40px;
+        }
+        .artboard {
+            width: 1440px; height: 900px;
+            background: #fff;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .lf-component {
+            position: absolute;
+            transition: outline 0.2s;
+            cursor: pointer;
+        }
+        .lf-component:hover {
+            outline: 2px dashed var(--v4-accent);
+        }
+        .lf-component.selected {
+            outline: 2px solid var(--v4-accent);
+        }
+        
+        /* Table Styles */
+        .v4-table {
+            width: 100%; border-collapse: collapse;
+            font-size: 13px; table-layout: fixed;
+            border: 1px solid #ccc;
+        }
+        .v4-table th, .v4-table td {
+            border: 1px solid #ddd; padding: 10px 5px; text-align: center;
+            word-break: break-all;
+        }
+        .v4-table th { background: #f4f4f4; font-weight: 700; color: #333; }
+        .v4-editable-cell { outline: none; }
+        .v4-editable-cell:focus { background: rgba(99, 102, 241, 0.1); }
+
+        /* Custom Header Colors */
+        .bg-blue { background: #1e40af !important; color: #fff !important; }
+        .bg-red { background: #b91c1c !important; color: #fff !important; }
+        .bg-peach { background: #ffe4e6 !important; }
+        .bg-green-light { background: #dcfce7 !important; }
+        .bg-orange-light { background: #ffedd5 !important; }
+
+        /* Shape Styles */
+        .v4-shape {
+            display: flex; align-items: center; justify-content: center;
+            width: 100%; height: 100%; text-align: center;
+        }
+        
+        /* Drag Handle Hidden by default */
+        .lf-drag-handle, .lf-resizer, .lf-delete-trigger { display: none; }
+    </style>
+</head>
+<body>
+    <div class="artboard" id="artboard">
+        <!-- Top Title Bar -->
+        <div class="lf-component" style="top: 20px; left: 30px; width: 1380px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; padding: 0 20px;">
+            <div class="v4-editable-cell" style="color: #fff; font-weight: 800; font-size: 16px;">26년 5월 연휴 배송안내</div>
+        </div>
+
+        <!-- Header Button Shape -->
+        <div class="lf-component" id="comp-header-btn" style="top: 80px; left: 40px; width: 240px; height: 44px; z-index: 10;">
+            <div class="v4-shape" style="background: #666; color: #fff; border-radius: 8px; font-weight: 700; font-size: 14px; border: 2px solid #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <div class="v4-editable-cell">자사 배송예정일 DB 설정 방법</div>
+            </div>
+        </div>
+
+        <!-- Main Data Table -->
+        <div class="lf-component" id="comp-main-table" style="top: 150px; left: 40px; width: 1360px; height: auto; z-index: 5;">
+            <table class="v4-table">
+                <thead>
+                    <tr>
+                        <th style="width: 150px;">YMD</th>
+                        <th style="width: 150px;">일자</th>
+                        <th class="bg-blue">4/30 (목)</th>
+                        <th class="bg-red">5/1 (금)</th>
+                        <th class="bg-red">5/2 (토)</th>
+                        <th class="bg-blue">5/3(일)</th>
+                        <th class="bg-blue">5/4 (월)</th>
+                        <th class="bg-red">5/5 (화)</th>
+                        <th class="bg-blue">5/6 (수)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="background: #eee;">WRHS_GI_YN</td>
+                        <td>안산 출고 여부</td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td class="bg-peach"><div class="v4-editable-cell">N</div></td>
+                        <td class="bg-peach"><div class="v4-editable-cell">N</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                    </tr>
+                    <tr>
+                        <td style="background: #eee;">DLSR_GOFG_YN</td>
+                        <td>택배 집하 여부</td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td class="bg-peach"><div class="v4-editable-cell">N</div></td>
+                        <td class="bg-peach"><div class="v4-editable-cell">N</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                    </tr>
+                    <tr>
+                        <td style="background: #eee;">DLSR_MVMN_YN</td>
+                        <td>택배 배달 여부</td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                        <td><div class="v4-editable-cell">Y</div></td>
+                    </tr>
+                    <tr>
+                        <td style="background: #eee;">GI_CLSN_HR</td>
+                        <td>당일 출고 마감 시간</td>
+                        <td><div class="v4-editable-cell">18</div></td>
+                        <td><div class="v4-editable-cell"></div></td>
+                        <td><div class="v4-editable-cell">18</div></td>
+                        <td><div class="v4-editable-cell">18</div></td>
+                        <td><div class="v4-editable-cell">18</div></td>
+                        <td><div class="v4-editable-cell">18</div></td>
+                        <td><div class="v4-editable-cell">18</div></td>
+                    </tr>
+                    <!-- Green Overlay Row Proxy (for spacing) -->
+                    <tr style="height: 300px;">
+                        <td style="background: #eee; vertical-align: top; padding-top: 20px;">HODY_YN / NM<br>...</td>
+                        <td style="vertical-align: top; padding-top: 20px;">연휴 정보 설정 영역</td>
+                        <td colspan="7" style="background: #f0fdf4;"></td>
+                    </tr>
+                    <!-- Result Section -->
+                    <tr>
+                        <td rowspan="2" style="background: #eee;">RESULT<br>배송예정일</td>
+                        <td>출고 마감 이전</td>
+                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/1(금)</b> 이내<br>도착확률 95%</div></td>
+                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/4(월)</b> 이내<br>도착확률 95%</div></td>
+                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/4(월)</b> 이내<br>도착확률 95%</div></td>
+                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/5(화)</b> 이내<br>도착확률 95%</div></td>
+                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/5(화)</b> 이내<br>도착확률 95%</div></td>
+                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/6(수)</b> 이내<br>도착확률 95%</div></td>
+                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이전:<br><b>5/7(목)</b> 이내<br>도착확률 95%</div></td>
+                    </tr>
+                    <tr>
+                        <td>출고 마감 이후</td>
+                        <td class="bg-green-light"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/4(월)</b> 이내<br>도착확률 95%</div></td>
+                        <td class="bg-peach"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/4(월)</b> 이내<br>도착확률 95%</div></td>
+                        <td class="bg-peach"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/5(화)</b> 이내<br>도착확률 95%</div></td>
+                        <td class="bg-peach"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/5(화)</b> 이내<br>도착확률 95%</div></td>
+                        <td class="bg-peach"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/6(수)</b> 이내<br>도착확률 95%</div></td>
+                        <td class="bg-peach"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/7(목)</b> 이내<br>도착확률 95%</div></td>
+                        <td class="bg-peach"><div class="v4-editable-cell" style="font-size: 11px;">18시 이후:<br><b>5/8(금)</b> 이내<br>도착확률 95%</div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Green Floating Shape -->
+        <div class="lf-component" id="comp-green-overlay" style="top: 470px; left: 40px; width: 1360px; height: 280px; z-index: 15;">
+            <div class="v4-shape" style="background: rgba(74, 222, 128, 0.2); border: 3px solid #16a34a; border-radius: 12px; color: #166534; font-size: 48px; font-weight: 900; backdrop-filter: blur(2px);">
+                <div class="v4-editable-cell">명절 용도 (이번 연휴 사용하지 않음)</div>
+            </div>
+        </div>
+
+        <!-- Footer Logo -->
+        <div class="lf-component" style="bottom: 20px; left: 30px;">
+            <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="height: 30px; filter: grayscale(1) opacity(0.5);">
+        </div>
+        <div class="lf-component" style="bottom: 20px; left: 50%; transform: translateX(-50%); color: #999; font-size: 14px;">1</div>
+    </div>
+</body>
+</html>
