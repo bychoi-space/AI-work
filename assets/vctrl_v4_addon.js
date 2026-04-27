@@ -40,6 +40,8 @@
         });
     };
 
+    // Dependencies are now pre-injected via vctrl_v3.js loadScreen() for security compliance.
+
     // 2. Inspector Controls (Safe Style Updates)
     const bindStyleUpdate = (inputId, message) => {
         const el = document.getElementById(inputId);

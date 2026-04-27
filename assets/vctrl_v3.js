@@ -508,15 +508,30 @@ async function loadScreen(fileName) {
         return;
     }
 
+    // [V4 INJECTION] Pre-inject dependencies into HTML string to bypass file:// security
+    let finalContent = content;
+    const isFileProtocol = window.location.protocol === 'file:';
+    const viewerPath = window.location.pathname;
+    const rootPath = viewerPath.substring(0, viewerPath.lastIndexOf('/') + 1);
+
+    // 1. Inject Styles
+    if (!finalContent.includes('style_v4.css')) {
+        const styleLink = `<link rel="stylesheet" href="${rootPath}enhanced_v4/style_v4.css">`;
+        finalContent = finalContent.replace('</head>', `${styleLink}\n</head>`);
+    }
+    // 2. Inject Script
+    if (!finalContent.includes('vctrl_v4_iframe.js')) {
+        const scriptTag = `<script src="${rootPath}assets/vctrl_v4_iframe.js"></script>`;
+        finalContent = finalContent.replace('</body>', `${scriptTag}\n</body>`);
+    }
+
     // Using srcdoc as a safer alternative to blob URLs for local HTML content
-    // This avoids "Not allowed to load local resource" blob errors
-    DOM.iframe.srcdoc = content;
+    DOM.iframe.srcdoc = finalContent;
     DOM.iframe.style.display = 'block';
 
-    // Fail-safe: dismissal of loading overlay even if iframe onload doesn't fire perfectly
+    // Fail-safe: dismissal of loading overlay
     const loadTimeout = setTimeout(() => {
         hideLoading();
-        console.warn("[Load Fail-safe] Forcing hideLoading after 3s timeout");
     }, 3000);
 
     DOM.iframe.onload = () => {
