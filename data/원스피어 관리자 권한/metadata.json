@@ -4,7 +4,8 @@
       "title": "00_Table_of_Contents",
       "type": "cover",
       "updatedAt": "2026-04-24T12:51:00.000Z",
-      "template": "template_toc.html"
+      "template": "template_toc.html",
+      "description": []
     },
     "02_Plan_6933.html": {
       "title": "02_Plan_6933",
@@ -145,5 +146,19 @@
   "period": "2026.04.01 ~ 2026.04.30",
   "jira": "123",
   "figmaUrl": "456",
-  "pubUrl": "789ㅁ"
+  "pubUrl": "789ㅁ",
+  "screenOrder": [
+    "00_Cover_7478.html",
+    "00_Cover_7736.html",
+    "01_Architecture_4304.html",
+    "01_Architecture_7157.html",
+    "00_TOC.html",
+    "02_Plan_3199.html",
+    "02_Plan_5700.html",
+    "02_Plan_6933.html",
+    "03_UI_Screen_0933.html",
+    "03_UI_Screen_4984.html",
+    "03_UI_Screen_9534.html",
+    "05_Admin_Onesphere_4990.html"
+  ]
 }
