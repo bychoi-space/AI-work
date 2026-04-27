@@ -94,15 +94,120 @@
             }
         });
 
-        // Handle content save requests from parent (bypasses file:// security)
+        // Safe Message Listeners (Bypass file:// security)
         window.addEventListener('message', e => {
-            if (e.data.type === 'LF_REQUEST_SAVE_CONTENT') {
+            const data = e.data;
+            if (!data) return;
+
+            // 1. Save Request
+            if (data.type === 'LF_REQUEST_SAVE_CONTENT') {
                 const clone = document.documentElement.cloneNode(true);
-                // Clean up UI helpers
                 clone.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
                 clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
                 const html = "<!DOCTYPE html>\n" + clone.outerHTML;
                 notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: html });
+            }
+
+            // 2. Component Insertion Request
+            else if (data.type === 'LF_INSERT_COMPONENT') {
+                const div = document.createElement('div');
+                div.id = data.id || ('v4-comp-' + Date.now());
+                div.className = 'lf-component';
+                div.style.position = 'absolute';
+                div.style.top = '100px';
+                div.style.left = '100px';
+                div.style.zIndex = '1000';
+                if (data.style) Object.assign(div.style, data.style);
+                
+                div.innerHTML = `
+                    <div class="lf-drag-handle">
+                        <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg>
+                    </div>
+                    ${data.html}
+                    <div class="lf-resizer"></div>
+                    <div class="lf-delete-trigger">×</div>
+                `;
+                document.body.appendChild(div);
+                
+                // Select new component
+                document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
+                div.classList.add('selected');
+                
+                notifyParent({ 
+                    type: 'LF_COMP_SELECTED', 
+                    id: div.id, 
+                    isTable: !!div.querySelector('table'), 
+                    isShape: !!div.querySelector('.v4-shape') 
+                });
+                markDirty();
+            }
+
+            // 3. Style Update Request
+            else if (data.type === 'LF_UPDATE_STYLE') {
+                const selected = document.querySelector('.lf-component.selected');
+                if (!selected) return;
+                
+                const target = data.selector ? selected.querySelector(data.selector) : selected;
+                if (!target) return;
+
+                if (data.style) {
+                    Object.assign(target.style, data.style);
+                }
+                if (data.subSelector && data.subStyle) {
+                    target.querySelectorAll(data.subSelector).forEach(el => Object.assign(el.style, data.subStyle));
+                }
+                markDirty();
+            }
+
+            // 4. Table Action Request
+            else if (data.type === 'LF_TABLE_ACTION') {
+                const selected = document.querySelector('.lf-component.selected table');
+                if (!selected) return;
+                
+                if (data.action === 'ADD_ROW') {
+                    const tbody = selected.querySelector('tbody') || selected;
+                    const lastRow = selected.querySelector('tr:last-child');
+                    if (lastRow) {
+                        const newRow = lastRow.cloneNode(true);
+                        newRow.querySelectorAll('td, th').forEach(c => {
+                            c.innerText = "-";
+                            if (data.fontSize) c.style.fontSize = data.fontSize + 'px';
+                        });
+                        tbody.appendChild(newRow);
+                    }
+                } else if (data.action === 'DEL_ROW') {
+                    const rows = selected.querySelectorAll('tr');
+                    if (rows.length > 1) rows[rows.length - 1].remove();
+                } else if (data.action === 'ADD_COL') {
+                    selected.querySelectorAll('tr').forEach(tr => {
+                        const lastCell = tr.querySelector('td:last-child') || tr.querySelector('th:last-child');
+                        if (lastCell) {
+                            const newCell = lastCell.cloneNode(true);
+                            newCell.innerText = "-";
+                            tr.appendChild(newCell);
+                        }
+                    });
+                } else if (data.action === 'DEL_COL') {
+                    selected.querySelectorAll('tr').forEach(tr => {
+                        const cells = tr.querySelectorAll('td, th');
+                        if (cells.length > 1) cells[cells.length - 1].remove();
+                    });
+                }
+                markDirty();
+            }
+
+            // 5. Delete Selected Component
+            else if (data.type === 'LF_DELETE_SELECTED') {
+                const selected = document.querySelector('.lf-component.selected');
+                if (selected) {
+                    selected.remove();
+                    markDirty();
+                }
+            }
+
+            // 6. Cleanup Request
+            else if (data.type === 'LF_DESELECT_ALL') {
+                document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             }
         });
     }

@@ -1706,9 +1706,6 @@ function injectIframeInteractions(doc) {
 function insertAtomicComponent(type, name) {
     if (ghConfig.isReadOnly) return showAuthModal();
     if (!state.activeFile) return Notification.alert("Please select a screen first.", "Notice", "warning");
-    const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
-    if (!iframeDoc) return;
-    injectIframeInteractions(iframeDoc);
     let contentHtml = '';
     const id = `lf-comp-${Date.now()}`;
 
@@ -1727,6 +1724,29 @@ function insertAtomicComponent(type, name) {
         contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="width:100%; height:100%; pointer-events:none;"></div>`;
     }
 
+    // Request insertion via message (Safe for file://)
+    const isFileProtocol = window.location.protocol === 'file:';
+    if (isFileProtocol) {
+        if (DOM.iframe && DOM.iframe.contentWindow) {
+            DOM.iframe.contentWindow.postMessage({ 
+                type: 'LF_INSERT_COMPONENT', 
+                id: id, 
+                html: contentHtml,
+                style: {
+                    top: name === 'LF GNB' ? '0px' : (name === 'LF LNB' ? '50px' : '150px'),
+                    left: (name === 'LF GNB' || name === 'LF LNB') ? '0px' : '100px',
+                    width: (name === 'LF GNB' || name === 'LF LNB') ? '100%' : (type === 'icon' ? '40px' : (name === 'LF Discount' ? '60px' : '120px')),
+                    height: name === 'LF GNB' ? '50px' : (name === 'LF LNB' ? '48px' : (type === 'icon' ? '40px' : 'auto'))
+                }
+            }, '*');
+        }
+        return;
+    }
+
+    const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
+    if (!iframeDoc) return;
+    injectIframeInteractions(iframeDoc);
+    
     if (contentHtml) {
         const comp = iframeDoc.createElement('div');
         comp.id = id; comp.className = 'lf-component';
@@ -1750,6 +1770,12 @@ window.addEventListener('message', e => {
 });
 
 DOM.btnCompDelete.onclick = () => {
+    if (window.location.protocol === 'file:') {
+        if (DOM.iframe && DOM.iframe.contentWindow) {
+            DOM.iframe.contentWindow.postMessage({ type: 'LF_DELETE_SELECTED' }, '*');
+        }
+        return;
+    }
     const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
     const selected = iframeDoc.querySelector('.lf-component.selected');
     if (selected) {
