@@ -152,10 +152,10 @@ function injectIframeInteractions(doc) {
         .lf-delete-trigger { display: none; position: absolute; top: -10px; right: -10px; width: 22px; height: 22px; background: #ef4444; color: #fff; border-radius: 50%; cursor: pointer; align-items: center; justify-content: center; border: 2px solid #fff; z-index: 10001; font-size: 14px; font-weight: bold; }
         .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer, .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
         
-        /* Table Internal Styles */
-        .v4-premium-table { width: 100%; border-collapse: collapse; background: #1e293b; color: #f8fafc; font-family: 'Inter', sans-serif; border-radius: 8px; overflow: hidden; transition: all 0.2s; border: 1px solid #475569; }
+        /* Table Internal Styles - UPDATED: Removed hardcoded dark colors to respect template defaults */
+        .v4-premium-table { width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; border-radius: 8px; overflow: hidden; transition: all 0.2s; border: 1px solid #475569; }
         .v4-premium-table th { background: #4f46e5; padding: 12px; text-align: left; font-size: 12px; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .v4-premium-table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+        .v4-premium-table td { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 13px; }
         .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99,102,241,0.1); }
         
         /* Drag Handle Style Injected */

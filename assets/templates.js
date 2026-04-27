@@ -63,15 +63,15 @@ window.LF_TEMPLATES = {
         .v4-editable-cell { outline: none; transition: background 0.2s; }
         .v4-editable-cell:focus { background: #f0f1f2; border-radius: 4px; }
 
-        /* V4 Table Styling - Modern & Clean */
-        .v4-premium-table { width: 100%; border-collapse: collapse; color: var(--v4-text); font-size: 15px; }
-        .v4-premium-table th { background: #f4f6f8; text-align: left; padding: 14px 24px; border-bottom: 2px solid var(--v4-border); color: var(--v4-text-sub); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .v4-premium-table td { padding: 18px 24px; border-bottom: 1px solid var(--v4-border); background: #fff; line-height: 1.5; color: #1a1c1e !important; }
-        .v4-premium-table tr:last-child td { border-bottom: none; }
+        /* Isolated Table Styling for Cover - Avoids V4 Global Conflicts */
+        .cover-info-premium-table { width: 100%; border-collapse: collapse; font-size: 15px; background: #ffffff !important; }
+        .cover-info-premium-table th { background: #f4f6f8; text-align: left; padding: 14px 24px; border-bottom: 2px solid var(--v4-border); color: #6d7175; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cover-info-premium-table td { padding: 18px 24px; border-bottom: 1px solid var(--v4-border); background: #fff; line-height: 1.5; color: #1a1c1e !important; }
+        .cover-info-premium-table tr:last-child td { border-bottom: none; }
         
         .accent-bar { position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: var(--v4-accent); }
         
-        /* FIXED: Ensure Information Entity table is always visible and clear */
+        /* FORCE VISIBILITY */
         #cover-info-table {
             visibility: visible !important;
             opacity: 1 !important;
@@ -79,10 +79,6 @@ window.LF_TEMPLATES = {
         #cover-info-table td, #cover-info-table th {
             visibility: visible !important;
             opacity: 1 !important;
-        }
-        /* HIGH SPECIFICITY COLOR FIX */
-        .v4-premium-table td.v4-editable-cell {
-            color: #1a1c1e !important;
         }
     </style>
 </head>
@@ -128,7 +124,7 @@ window.LF_TEMPLATES = {
         <!-- Editable Project Info Table - High Legibility -->
         <div id="cover-info-table" class="lf-component v4-card" style="bottom: 80px; right: 80px; width: 540px; padding: 0; overflow: hidden;">
             <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
-            <table class="v4-premium-table">
+            <table class="cover-info-premium-table">
                 <thead>
                     <tr>
                         <th style="width: 40%;">Information Entity</th>
@@ -137,15 +133,15 @@ window.LF_TEMPLATES = {
                 </thead>
                 <tbody>
                     <tr>
-                        <td style="font-weight: 600; color: var(--v4-text-sub);">Lead Designer / Author</td>
+                        <td style="font-weight: 600; color: #6d7175;">Lead Designer / Author</td>
                         <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700; color: #1a1c1e !important;">{{AUTHOR}}</td>
                     </tr>
                     <tr>
-                        <td style="font-weight: 600; color: var(--v4-text-sub);">Publication Date</td>
+                        <td style="font-weight: 600; color: #6d7175;">Publication Date</td>
                         <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700; color: #1a1c1e !important;">{{DATE}}</td>
                     </tr>
                     <tr>
-                        <td style="font-weight: 600; color: var(--v4-text-sub);">System Context</td>
+                        <td style="font-weight: 600; color: #6d7175;">System Context</td>
                         <td contenteditable="true" class="v4-editable-cell" style="color: #1a1c1e !important;">LF E-commerce Platform</td>
                     </tr>
                 </tbody>
