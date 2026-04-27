@@ -1,4 +1,11 @@
 {
   "title": "Test Project",
-  "screens": {}
+  "screens": {
+    "test_screen.html": {
+      "title": "test_screen",
+      "type": "cover",
+      "updatedAt": "2026-04-27T06:53:53.979Z",
+      "template": "template_cover.html"
+    }
+  }
 }
