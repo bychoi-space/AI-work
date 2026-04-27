@@ -75,6 +75,82 @@
 }
 
 /* Micro-animations */
+/* V4 Inspector Enhancements */
+.v4-inspector-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 28px;
+    padding: 0 10px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.v4-inspector-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: var(--accent);
+    color: #fff;
+}
+.v4-inspector-btn.danger {
+    color: #f87171;
+}
+.v4-inspector-btn.danger:hover {
+    background: rgba(248, 113, 113, 0.1);
+    border-color: #f87171;
+}
+.v4-inspector-btn.primary {
+    background: var(--accent);
+    color: #000;
+    border: none;
+}
+.v4-inspector-btn.primary:hover {
+    filter: brightness(1.2);
+}
+
+.v4-tool-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.v4-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+.v4-input-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.v4-color-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,0,0,0.2);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+.v4-input-color-small {
+    width: 24px;
+    height: 18px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
+
 @keyframes v4-fade-in-up {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -144,8 +220,8 @@
 }
 
 .v4-premium-table th {
-    background: rgba(99, 102, 241, 0.1);
-    color: var(--v4-primary);
+    background: #4f46e5;
+    color: #ffffff;
     font-size: 11px;
     font-weight: 800;
     text-transform: uppercase;
@@ -180,4 +256,117 @@
 .v4-editable-cell:focus {
     outline: 2px solid var(--v4-primary);
     background: rgba(99, 102, 241, 0.05) !important;
+}
+
+/* Drag Handle & Selection UI */
+.lf-drag-handle {
+    position: absolute;
+    top: -12px;
+    left: -12px;
+    width: 24px;
+    height: 24px;
+    background: #6366f1;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: move;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    opacity: 0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid #fff;
+}
+.lf-component:hover .lf-drag-handle,
+.text-marker:hover .lf-drag-handle {
+    opacity: 1;
+    top: -16px;
+    left: -16px;
+}
+.lf-drag-handle svg {
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+}
+.lf-drag-handle:hover {
+    background: #4f46e5;
+    transform: scale(1.1);
+}
+
+.lf-delete-trigger {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 24px;
+    height: 24px;
+    background: #ef4444;
+    color: #fff;
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid #fff;
+    z-index: 10001;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+}
+
+.lf-component:hover .lf-delete-trigger, 
+.lf-component.selected .lf-delete-trigger {
+    display: flex;
+}
+
+/* Animations */
+@keyframes v4-fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.v4-inspector-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.v4-inspector-row label {
+    flex: 1;
+    font-size: 11px;
+    color: var(--v4-text-dim);
+}
+
+.v4-input-slider {
+    flex: 2;
+    -webkit-appearance: none;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    outline: none;
+}
+
+.v4-input-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: var(--v4-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--v4-primary-glow);
+}
+
+.v4-input-color {
+    width: 40px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
 }

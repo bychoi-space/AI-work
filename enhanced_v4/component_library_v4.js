@@ -83,6 +83,36 @@ window.V4_COMPONENT_LIBRARY = {
                     </tr>
                 </tbody>
             </table>`
+        },
+        {
+            id: 'v4-shape-rect',
+            name: 'Rectangle',
+            category: 'Shapes',
+            previewHtml: `<div style="width: 40px; height: 30px; background: #334155; border: 1px solid #000; border-radius: 4px;"></div>`,
+            html: `
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #334155; border: 2px solid #000000; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;">Edit Text</div>
+            </div>`
+        },
+        {
+            id: 'v4-shape-circle',
+            name: 'Circle',
+            category: 'Shapes',
+            previewHtml: `<div style="width: 30px; height: 30px; background: #334155; border: 1px solid #000; border-radius: 50%;"></div>`,
+            html: `
+            <div class="v4-shape v4-shape-circle" style="width: 100%; height: 100%; background: #334155; border: 2px solid #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 700; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;">Circle</div>
+            </div>`
+        },
+        {
+            id: 'v4-shape-triangle',
+            name: 'Triangle',
+            category: 'Shapes',
+            previewHtml: `<div style="width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 30px solid #334155;"></div>`,
+            html: `
+            <div class="v4-shape v4-shape-triangle" style="width: 100%; height: 100%; background: #334155; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); display: flex; align-items: flex-end; justify-content: center; color: white; overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 10px; text-align: center; outline: none; font-weight: 600; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;">Triangle</div>
+            </div>`
         }
     ],
     organisms: [

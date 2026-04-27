@@ -213,14 +213,90 @@
                 <div class="panel-header"><span style="color: #6366f1; font-weight: bold;">PREMIUM V4 LIBRARY</span></div>
                 <div class="components-body" style="padding: 16px;">
                     <!-- V4 Table Section -->
-                    <div class="component-section">
+                    <div class="component-section" style="margin-bottom: 16px;">
                         <div class="section-label" style="font-size: 11px; font-weight: 600; color: #6366f1; margin-bottom: 12px;">TABLES & GRIDS</div>
                         <div class="component-grid" style="display: grid; grid-template-columns: 1fr; gap: 12px;">
-                            <div class="component-item v4-card" onclick="insertV4ComponentById('v4-data-table')" style="cursor: pointer; padding: 12px;">
+                            <div class="component-item v4-card" id="v4-table-lib-item" onclick="insertV4ComponentById('v4-data-table')" style="cursor: pointer; padding: 12px; margin-bottom: 0;">
                                 <div class="comp-preview" style="height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 8px;">
                                     <span class="material-icons-outlined" style="font-size: 24px; color: #6366f1;">table_chart</span>
                                 </div>
                                 <div class="comp-name" style="font-size: 11px; text-align: center; color: var(--v4-text-dim); margin-top: 8px;">Glass Data Table</div>
+                            </div>
+                            <!-- Inline Table Inspector ... (kept) -->
+                            <div id="table-inspector-section" style="display: none; background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; padding: 16px; margin-top: -4px; animation: v4-fade-in-up 0.3s ease-out;">
+                                <!-- Table tools here -->
+                                <div class="section-label" style="font-size: 10px; font-weight: 800; color: #818cf8; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
+                                    <span class="material-icons-outlined" style="font-size: 14px;">settings</span> Active Table Editor
+                                </div>
+                                <div class="v4-inspector-row" style="margin-bottom: 16px;">
+                                    <label style="font-size: 10px; font-weight: 700;">Font Size</label>
+                                    <input type="range" id="table-font-size" class="v4-input-slider" min="10" max="32" value="14">
+                                    <span id="txt-font-size" style="font-size: 10px; color: var(--v4-accent); width: 24px; text-align: right; font-weight: 800;">14</span>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+                                    <div class="v4-inspector-col"><label style="font-size: 9px; color: var(--v4-text-dim); display: block; margin-bottom: 4px; font-weight: 700;">Main Text</label><input type="color" id="table-text-color" class="v4-input-color" style="width: 100%; height: 24px;" value="#f8fafc"></div>
+                                    <div class="v4-inspector-col"><label style="font-size: 9px; color: var(--v4-text-dim); display: block; margin-bottom: 4px; font-weight: 700;">Main BG</label><input type="color" id="table-bg-color" class="v4-input-color" style="width: 100%; height: 24px;" value="#1e293b"></div>
+                                    <div class="v4-inspector-col"><label style="font-size: 9px; color: var(--v4-text-dim); display: block; margin-bottom: 4px; font-weight: 700;">Head Text</label><input type="color" id="table-header-text-color" class="v4-input-color" style="width: 100%; height: 24px;" value="#ffffff"></div>
+                                    <div class="v4-inspector-col"><label style="font-size: 9px; color: var(--v4-text-dim); display: block; margin-bottom: 4px; font-weight: 700;">Head BG</label><input type="color" id="table-header-color" class="v4-input-color" style="width: 100%; height: 24px;" value="#4f46e5"></div>
+                                    <div class="v4-inspector-col" style="grid-column: span 2;"><label style="font-size: 9px; color: var(--v4-text-dim); display: block; margin-bottom: 4px; font-weight: 700;">Border Color</label><input type="color" id="table-border-color" class="v4-input-color" style="width: 100%; height: 24px;" value="#475569"></div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;">
+                                    <button id="btn-add-row" class="v4-btn-glass" style="font-size: 9px; padding: 4px; justify-content: center;"><span class="material-icons-outlined" style="font-size: 12px;">add</span> Row</button>
+                                    <button id="btn-del-row" class="v4-btn-glass" style="font-size: 9px; padding: 4px; justify-content: center; color: #f87171;"><span class="material-icons-outlined" style="font-size: 12px;">remove</span> Row</button>
+                                    <button id="btn-add-col" class="v4-btn-glass" style="font-size: 9px; padding: 4px; justify-content: center;"><span class="material-icons-outlined" style="font-size: 12px;">add</span> Col</button>
+                                    <button id="btn-del-col" class="v4-btn-glass" style="font-size: 9px; padding: 4px; justify-content: center; color: #f87171;"><span class="material-icons-outlined" style="font-size: 12px;">remove</span> Col</button>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                                    <button id="btn-toggle-header-mode" class="v4-btn-glass" style="font-size: 9px; padding: 4px; justify-content: center; border-color: #818cf8;"><span class="material-icons-outlined" style="font-size: 12px;">swap_horiz</span> Flip</button>
+                                    <button id="btn-clear-header" class="v4-btn-glass" style="font-size: 9px; padding: 4px; justify-content: center; border-color: #f87171;"><span class="material-icons-outlined" style="font-size: 12px;">no_cell</span> Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- V4 Shapes Section -->
+                    <div class="component-section" style="margin-bottom: 24px;">
+                        <div class="section-label" style="font-size: 11px; font-weight: 600; color: #00e5ff; margin-bottom: 12px;">BASIC SHAPES</div>
+                        <div class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                            <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-rect')" style="cursor: pointer; padding: 10px;">
+                                <div style="height: 32px; width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; margin: 0 auto;"></div>
+                                <div style="font-size: 9px; text-align: center; color: var(--v4-text-dim); margin-top: 6px;">Rect</div>
+                            </div>
+                            <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-circle')" style="cursor: pointer; padding: 10px;">
+                                <div style="height: 32px; width: 32px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; margin: 0 auto;"></div>
+                                <div style="font-size: 9px; text-align: center; color: var(--v4-text-dim); margin-top: 6px;">Circle</div>
+                            </div>
+                            <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-triangle')" style="cursor: pointer; padding: 10px;">
+                                <div style="width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent; border-bottom: 32px solid rgba(255,255,255,0.1); margin: 0 auto; position: relative;">
+                                    <div style="position: absolute; top: 1px; left: -15px; width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 30px solid rgba(255,255,255,0.05); z-index: -1;"></div>
+                                </div>
+                                <div style="font-size: 9px; text-align: center; color: var(--v4-text-dim); margin-top: 6px;">Triangle</div>
+                            </div>
+                        </div>
+
+                        <!-- Inline Shape Inspector -->
+                        <div id="shape-inspector-section" style="display: none; background: rgba(0, 229, 255, 0.08); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 12px; padding: 16px; margin-top: 12px; animation: v4-fade-in-up 0.3s ease-out;">
+                            <div class="section-label" style="font-size: 10px; font-weight: 800; color: #00e5ff; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 1px; display: flex; align-items: center; gap: 6px;">
+                                <span class="material-icons-outlined" style="font-size: 14px;">category</span> Active Shape Editor
+                            </div>
+                            <div class="v4-inspector-row" style="margin-bottom: 16px;">
+                                <label style="font-size: 10px; font-weight: 700;">Font Size</label>
+                                <input type="range" id="shape-font-size" class="v4-input-slider" min="10" max="60" value="16">
+                                <span id="txt-shape-font-size" style="font-size: 10px; color: var(--v4-accent); width: 24px; text-align: right; font-weight: 800;">16</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="v4-inspector-col">
+                                    <label style="font-size: 9px; color: var(--v4-text-dim); display: block; margin-bottom: 4px; font-weight: 700;">Text Color</label>
+                                    <input type="color" id="shape-text-color" class="v4-input-color" style="width: 100%; height: 28px;" value="#ffffff">
+                                </div>
+                                <div class="v4-inspector-col">
+                                    <label style="font-size: 9px; color: var(--v4-text-dim); display: block; margin-bottom: 4px; font-weight: 700;">Shape Color</label>
+                                    <input type="color" id="shape-bg-color" class="v4-input-color" style="width: 100%; height: 28px;" value="#334155">
+                                </div>
+                                <div class="v4-inspector-col" style="grid-column: span 2;">
+                                    <label style="font-size: 9px; color: var(--v4-text-dim); display: block; margin-bottom: 4px; font-weight: 700;">Border Color</label>
+                                    <input type="color" id="shape-border-color" class="v4-input-color" style="width: 100%; height: 28px;" value="#000000">
+                                </div>
                             </div>
                         </div>
                     </div>

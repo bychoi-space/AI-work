@@ -689,8 +689,12 @@ function renderDescriptionList() {
         const pin = document.createElement('div');
         if (item.type === 'text') {
             pin.className = 'text-marker';
-            // Support both HTML (New) and Text (Old)
-            pin.innerHTML = item.html || item.text || '';
+            pin.innerHTML = `
+                <div class="lf-drag-handle">
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg>
+                </div>
+                ${item.html || item.text || ''}
+            `;
             const markerColor = item.color || "#000000";
             pin.style.setProperty('color', markerColor, 'important');
             
@@ -751,6 +755,8 @@ function renderDescriptionList() {
         pin.addEventListener('mousedown', (e) => {
             if (state.isReadOnly) return;
             if (e.target.closest('.marker-delete-btn')) return;
+            
+            const handle = e.target.closest('.lf-drag-handle');
             e.stopPropagation();
 
             const startX = e.clientX;
@@ -760,36 +766,45 @@ function renderDescriptionList() {
             const initialItemY = item.y || 0;
             const r = DOM.pinsLayer.getBoundingClientRect();
 
-            if (DOM.iframe) DOM.iframe.style.pointerEvents = 'none';
-            document.body.style.cursor = 'grabbing';
-            pin.style.cursor = 'grabbing';
-            pin.style.transition = 'none'; 
-            pin.style.zIndex = '1001'; 
-            pin.classList.add('active', 'dragging-now'); // Add dragging class
-            highlight(true);
-
             const onMouseMove = (moveEvent) => {
+                // Unify: Only drag if handle is clicked
+                if (!handle) return;
+
                 const dx = moveEvent.clientX - startX;
                 const dy = moveEvent.clientY - startY;
-                if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
-                item.x = Math.max(0, Math.min(initialItemX + (dx / r.width) * 100, 100));
-                item.y = Math.max(0, Math.min(initialItemY + (dy / r.height) * 100, 100));
-                pin.style.left = item.x + "%";
-                pin.style.top = item.y + "%";
+                if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+                    if (!moved) {
+                        if (DOM.iframe) DOM.iframe.style.pointerEvents = 'none';
+                        document.body.style.cursor = 'grabbing';
+                        pin.style.cursor = 'grabbing';
+                        pin.style.transition = 'none'; 
+                        pin.style.zIndex = '1001'; 
+                        pin.classList.add('active', 'dragging-now');
+                        highlight(true);
+                    }
+                    moved = true;
+                }
+                
+                if (moved) {
+                    item.x = Math.max(0, Math.min(initialItemX + (dx / r.width) * 100, 100));
+                    item.y = Math.max(0, Math.min(initialItemY + (dy / r.height) * 100, 100));
+                    pin.style.left = item.x + "%";
+                    pin.style.top = item.y + "%";
+                }
             };
 
             const onMouseUp = () => {
-                if (DOM.iframe) DOM.iframe.style.pointerEvents = (state.tool === 'hand') ? 'none' : 'auto';
-                document.body.style.cursor = '';
-                pin.style.cursor = 'grab';
-                pin.style.transition = ''; 
-                pin.style.zIndex = '100';
-                pin.classList.remove('active', 'dragging-now');
                 window.removeEventListener('mousemove', onMouseMove);
                 window.removeEventListener('mouseup', onMouseUp);
-                highlight(false);
                 
                 if (moved) {
+                    if (DOM.iframe) DOM.iframe.style.pointerEvents = (state.tool === 'hand') ? 'none' : 'auto';
+                    document.body.style.cursor = '';
+                    pin.style.cursor = 'grab';
+                    pin.style.transition = ''; 
+                    pin.style.zIndex = '100';
+                    pin.classList.remove('active', 'dragging-now');
+                    highlight(false);
                     markAsDirty();
                 } else {
                     // It was a simple click -> Activate Editor
@@ -976,6 +991,29 @@ function setTool(t) {
 DOM.pinsLayer.onclick = (e) => {
     // We only prevent default/bubbling here to keep context clean
     if (e.target !== DOM.pinsLayer) return;
+
+    // 1. Close Text Editor (Legacy)
+    if (state.isEditing) {
+        closeActiveEditor(true);
+    }
+
+    // 2. Hide V4 Inspectors & Clear V4 Selections
+    if (window.closeAllV4Inspectors) {
+        window.closeAllV4Inspectors();
+    } else {
+        const tableSect = document.getElementById('table-inspector-section');
+        const shapeSect = document.getElementById('shape-inspector-section');
+        if (tableSect) tableSect.style.display = 'none';
+        if (shapeSect) shapeSect.style.display = 'none';
+        
+        // Post message to iframe for internal cleanup
+        DOM.iframe.contentWindow.postMessage({ type: 'LF_DESELECT_ALL' }, '*');
+    }
+
+    // 3. Sync UI State
+    state.isEditing = false;
+    state.editingIndex = -1;
+    renderDescriptionList();
 };
 
 function getCascadedPosition(startX = 50, startY = 50) {
@@ -1002,10 +1040,8 @@ function getCascadedPosition(startX = 50, startY = 50) {
 function handleTextCreation() {
     if (state.isReadOnly) return showAuthModal();
     if (!state.activeFile) return Notification.alert("스크린을 선택해주세요.", "알림", "warning");
-    if (state.isEditing) return;
 
-    const x = 50;
-    const y = 50;
+    const { x, y } = getCascadedPosition(50, 50);
     
     // 1. Push immediate empty data to enable real-time sync
     const newIdx = state.activeFile.meta.description.length;
@@ -1018,10 +1054,13 @@ function handleTextCreation() {
     });
 
     // 2. Refresh UI to show the empty marker
+    markAsDirty();
     renderDescriptionList();
 
     // 3. Open editor for this new marker
-    spawnTextEditor(x, y, newIdx);
+    setTimeout(() => {
+        spawnTextEditor(x, y, newIdx);
+    }, 50);
 }
 
 /**
@@ -1063,14 +1102,18 @@ function closeActiveEditor(save = true) {
 }
 
 function spawnTextEditor(x, y, existingIndex = -1) {
-    // Continuous Editing: If another is open, save it first
+    // 1. Continuous Editing: If another is open, save it first
     if (state.isEditing) {
         closeActiveEditor(true);
     }
+    
+    // 2. Hide other V4 inspectors to avoid UI clutter
+    if (window.closeAllV4Inspectors) window.closeAllV4Inspectors();
+
     state.isEditing = true;
     state.editingIndex = existingIndex;
 
-    // Side-effects
+    // 3. Side-effects
     initQuillEditor();
     switchSidebarTab('editor');
     const editorSection = document.getElementById('text-editor-section');
@@ -1385,11 +1428,19 @@ if (DOM.btnBack) {
     };
 }
 
-if (DOM.btnAddDescription) DOM.btnAddDescription.onclick = () => { if (state.isReadOnly) return showAuthModal(); if (!state.activeFile) return Notification.alert("스크린을 선택해주세요.", "알림", "warning"); state.activeFile.meta.description.push({ text: '', x: 50, y: 50 }); markAsDirty(); renderDescriptionList(); setTimeout(() => DOM.descriptionList?.querySelectorAll('.desc-input').slice(-1)[0]?.focus(), 50); };
-if (DOM.btnGlobalSave) DOM.btnGlobalSave.onclick = handleGlobalSave;
-if (DOM.btnSelect) DOM.btnSelect.onclick = () => setTool('select');
-if (DOM.btnHand) DOM.btnHand.onclick = () => setTool('hand');
-if (DOM.btnText) DOM.btnText.onclick = () => setTool('text');
+if (DOM.btnCancelEdit) DOM.btnCancelEdit.onclick = () => DOM.editScreenModal?.classList.remove('active');
+
+// Sidebar Tool Buttons Binding
+DOM.sidebarToolBtns?.forEach(btn => {
+    btn.onclick = () => {
+        const tool = btn.dataset.tool;
+        if (tool === 'text') {
+            handleTextCreation();
+        } else if (tool) {
+            setTool(tool);
+        }
+    };
+});
 if (DOM.btnShowAuth) DOM.btnShowAuth.onclick = showAuthModal;
 if (DOM.btnAuthSubmit) DOM.btnAuthSubmit.onclick = handleAuthSubmit;
 if (DOM.btnAuthClose) DOM.btnAuthClose.onclick = hideAuthModal;

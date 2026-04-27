@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Cover - [LFML-138562] 온오프 재고 효율화_v0.7</title>
+    <title>Cover - 원스피어 관리자 권한</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <style>
@@ -61,6 +61,16 @@
         .v4-premium-table tr:last-child td { border-bottom: none; }
         
         .accent-bar { position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: var(--v4-accent); }
+        
+        /* FIXED: Ensure Information Entity table is always visible and clear */
+        #cover-info-table {
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        #cover-info-table td, #cover-info-table th {
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
     </style>
 </head>
 <body>
@@ -79,7 +89,7 @@
         <!-- Editable Main Title - Balanced Typography -->
         <div id="cover-title" class="lf-component" style="top: 220px; left: 80px; min-width: 800px;">
             <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
-            <div contenteditable="true" class="v4-editable-cell" style="font-size: 72px; font-weight: 900; line-height: 1.15; letter-spacing: -2px; color: var(--v4-text); margin-bottom: 16px;">[LFML-138562] 온오프 재고 효율화_v0.7</div>
+            <div contenteditable="true" class="v4-editable-cell" style="font-size: 72px; font-weight: 900; line-height: 1.15; letter-spacing: -2px; color: var(--v4-text); margin-bottom: 16px;">원스피어 관리자 권한</div>
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div style="width: 40px; height: 3px; background: var(--v4-accent);"></div>
                 <div contenteditable="true" class="v4-editable-cell" style="font-size: 20px; color: var(--v4-text-sub); font-weight: 500; letter-spacing: 1px; text-transform: uppercase;">Technical Design Specification</div>
@@ -97,7 +107,7 @@
                 <div style="width: 1px; height: 40px; background: var(--v4-border);"></div>
                 <div style="display: flex; flex-direction: column; gap: 4px;">
                     <span style="font-size: 11px; font-weight: 800; color: var(--v4-text-sub);">JIRA IDENTIFIER</span>
-                    <div contenteditable="true" class="v4-editable-cell" style="font-size: 22px; font-weight: 800; color: var(--v4-text);">LFML-138562</div>
+                    <div contenteditable="true" class="v4-editable-cell" style="font-size: 22px; font-weight: 800; color: var(--v4-text);">123</div>
                 </div>
             </div>
         </div>
@@ -115,7 +125,7 @@
                 <tbody>
                     <tr>
                         <td style="font-weight: 600; color: var(--v4-text-sub);">Lead Designer / Author</td>
-                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700;">bychoi (Architect)</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700;">최범열</td>
                     </tr>
                     <tr>
                         <td style="font-weight: 600; color: var(--v4-text-sub);">Publication Date</td>
