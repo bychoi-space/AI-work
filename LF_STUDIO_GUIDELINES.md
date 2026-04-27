@@ -40,6 +40,16 @@
   - **System Logic**: `assets/*.js` 등 핵심 로직 파일은 브랜치 간 버전 차이가 발생할 경우, 검증된 `master` 또는 최신 `main`의 파일을 `git checkout <branch> -- <file>` 명령어로 강제 일치시켜 기능 회귀(Regression)를 막는다.
 - **Deployment**: GitHub Pages 배포는 `main` 브랜치를 타겟으로 하며, 병합 후 즉시 라이브 환경에서 기능을 교차 검증한다.
 
+## 6. 🛡️ 보안 및 통신 규칙 (Security & Communication)
+- **File Protocol Compliance**: `file://` 환경에서는 브라우저의 보안 정책상 부모 창과 이프레임 간의 직접적인 DOM 접근(`contentDocument`)이 차단될 수 있다.
+  - 모든 창 간 통신은 반드시 **`postMessage`** API를 통한 비동기 메시지 방식으로 구현한다.
+  - 이프레임 내부에 '비서 스크립트(`vctrl_v4_iframe.js`)'가 상주하여 부모의 명령을 수신하고 내부 DOM을 수정하는 구조를 유지한다.
+- **Dependency Inlining (Self-Containment)**:
+  - `srcdoc`을 사용하는 가상 문서 내에서 외부 CSS/JS 파일을 로드할 때 발생하는 보안 차단 및 경로 오류를 방지하기 위해, 핵심 의존성 코드는 **HTML 문자열 내에 직접 인라인(Inlined)**하여 주입한다.
+- **Logic Integrity**:
+  - **Single Entry Point**: `init()` 함수는 파일 내에서 단 한 번만 정의되어야 한다. 중복 정의 시 나중에 정의된 함수가 이전의 이벤트 리스너 설정을 무력화(Overwrite)할 수 있으므로 극도로 주의한다.
+  - **Explicit Attachment**: 모든 UI 요소(버튼, 탭, 입력창 등)는 초기화 단계에서 명시적으로 리스너를 연결하여 '반응 없는 UI' 이슈를 원천 차단한다.
+
 ---
-**최종 업데이트**: 2026-04-27
+**최종 업데이트**: 2026-04-27 (v1.1 - Security & Logic Integrity 추가)
 **관리**: Antigravity AI Coding Assistant & LF Studio Team
