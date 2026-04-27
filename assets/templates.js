@@ -69,6 +69,16 @@ window.LF_TEMPLATES = {
         .v4-premium-table tr:last-child td { border-bottom: none; }
         
         .accent-bar { position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: var(--v4-accent); }
+        
+        /* FIXED: Ensure Information Entity table is always visible and clear */
+        #cover-info-table {
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        #cover-info-table td, #cover-info-table th {
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
     </style>
 </head>
 <body>
