@@ -5,46 +5,152 @@
  */
 
 window.LF_TEMPLATES = {
-    // 1. Cover Template
+    // 1. Cover Template (V4 Premium Edition - Refined)
     'template_cover.html': `<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>Cover - {{PROJECT_NAME}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <style>
-        body { margin: 0; padding: 0; font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #fff; overflow: hidden; }
-        .page { width: 1440px; height: 900px; position: relative; padding: 80px; box-sizing: border-box; }
-        .logo-area { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-        .logo-symbol { width: 40px; height: 40px; background: #e60012; position: relative; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 18px; }
-        .logo-text { font-size: 28px; font-weight: 900; color: #1a1a1a; letter-spacing: -1px; }
-        .sub-title { font-size: 18px; color: #666; margin-bottom: 80px; }
-        .main-title { font-size: 56px; font-weight: 900; color: #000; margin-bottom: 20px; margin-top: 100px; }
-        .version-title { font-size: 28px; color: #333; margin-bottom: 40px; border-top: 1px solid #1a1a1a; padding-top: 20px; display: inline-block; min-width: 400px; }
-        .jira-code { position: absolute; right: 80px; top: 400px; font-size: 18px; color: #333; font-weight: bold; }
-        .info-table { position: absolute; right: 80px; bottom: 80px; border-collapse: collapse; width: 600px; }
-        .info-table td { border: 1px solid #ccc; padding: 12px 20px; font-size: 14px; color: #333; }
-        .info-table .label { background: #f8f9fa; color: #666; width: 100px; text-align: center; }
-        .info-table .value { background: #fff; width: 200px; }
+        :root {
+            --v4-primary: #1a1a1a;
+            --v4-accent: #e60012;
+            --v4-bg: #ffffff;
+            --v4-surface: #f8f9fa;
+            --v4-border: #e1e3e5;
+            --v4-text: #1a1c1e;
+            --v4-text-sub: #6d7175;
+            --v4-text-main: #1a1c1e; /* Ensure dark text on light background */
+        }
+        body { 
+            margin: 0; padding: 0; 
+            font-family: 'Inter', sans-serif; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; background: var(--v4-surface); 
+            overflow: hidden; color: var(--v4-text);
+        }
+        .page { 
+            width: 1440px; height: 900px; 
+            position: relative; 
+            background: var(--v4-bg);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        /* V4 Component Base Styles */
+        .lf-component { position: absolute !important; box-sizing: border-box !important; transition: outline 0.1s; }
+        .lf-component:hover { outline: 2px solid var(--v4-accent) !important; cursor: move !important; }
+        .lf-component.selected { outline: 2px solid var(--v4-accent) !important; z-index: 9999 !important; }
+        
+        .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; }
+        .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
+        
+        .v4-card {
+            background: #fff;
+            border: 1px solid var(--v4-border);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
+        .logo-area { display: flex; align-items: center; gap: 14px; }
+        .logo-img { height: 32px; width: auto; object-fit: contain; }
+        .logo-text { font-size: 20px; font-weight: 800; color: var(--v4-text); letter-spacing: -0.5px; }
+        .logo-sub { font-size: 14px; font-weight: 500; color: var(--v4-text-sub); margin-left: 4px; }
+
+        .v4-editable-cell { outline: none; transition: background 0.2s; }
+        .v4-editable-cell:focus { background: #f0f1f2; border-radius: 4px; }
+
+        /* Isolated Table Styling for Cover - Avoids V4 Global Conflicts */
+        .cover-info-premium-table { width: 100%; border-collapse: collapse; font-size: 15px; background: #ffffff !important; }
+        .cover-info-premium-table th { background: #f4f6f8; text-align: left; padding: 14px 24px; border-bottom: 2px solid var(--v4-border); color: #6d7175; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cover-info-premium-table td { padding: 18px 24px; border-bottom: 1px solid var(--v4-border); background: #fff; line-height: 1.5; color: #1a1c1e !important; }
+        .cover-info-premium-table tr:last-child td { border-bottom: none; }
+        
+        .accent-bar { position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: var(--v4-accent); }
+        
+        /* FORCE VISIBILITY & CONTRAST */
+        #cover-info-table, 
+        #cover-info-table table,
+        #cover-info-table td, 
+        #cover-info-table th,
+        #cover-info-table .v4-editable-cell {
+            visibility: visible !important;
+            opacity: 1 !important;
+            color: #1a1c1e !important;
+        }
     </style>
 </head>
 <body>
     <div class="page">
-        <div class="logo-area">
-            <div class="logo-symbol">LF</div>
-            <div class="logo-text">LF</div>
+        <div class="accent-bar"></div>
+
+        <!-- Static Header (Non-editable branding) -->
+        <div style="position: absolute; top: 60px; left: 80px;">
+            <div class="logo-area">
+                <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" class="logo-img" alt="LF Logo">
+                <div style="width: 1px; height: 24px; background: #ddd; margin: 0 4px;"></div>
+                <div class="logo-text">LF <span class="logo-sub">Project Management System</span></div>
+            </div>
         </div>
-        <div class="sub-title">E-commerce Platform Project</div>
-        <div class="main-title">{{PROJECT_NAME}}</div>
-        <div class="version-title">문서 버전 : {{VERSION}}</div>
-        <div class="jira-code">JIRA 번호 : {{JIRA}}</div>
-        <table class="info-table">
-            <tr>
-                <td class="label">작성자</td>
-                <td class="value">{{AUTHOR}}</td>
-                <td class="label">작성일</td>
-                <td class="value">{{DATE}}</td>
-            </tr>
-        </table>
+
+        <!-- Editable Main Title - Balanced Typography -->
+        <div id="cover-title" class="lf-component" style="top: 220px; left: 80px; min-width: 800px;">
+            <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
+            <div contenteditable="true" class="v4-editable-cell" style="font-size: 72px; font-weight: 900; line-height: 1.15; letter-spacing: -2px; color: var(--v4-text); margin-bottom: 16px;">{{PROJECT_NAME}}</div>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="width: 40px; height: 3px; background: var(--v4-accent);"></div>
+                <div contenteditable="true" class="v4-editable-cell" style="font-size: 20px; color: var(--v4-text-sub); font-weight: 500; letter-spacing: 1px; text-transform: uppercase;">Technical Design Specification</div>
+            </div>
+        </div>
+
+        <!-- Editable Version Info - Clean Badges -->
+        <div id="cover-version" class="lf-component" style="top: 500px; left: 80px;">
+            <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
+            <div style="display: flex; align-items: center; gap: 24px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 11px; font-weight: 800; color: var(--v4-text-sub);">DOCUMENT VERSION</span>
+                    <div contenteditable="true" class="v4-editable-cell" style="font-size: 22px; font-weight: 800; color: var(--v4-accent);">v{{VERSION}}</div>
+                </div>
+                <div style="width: 1px; height: 40px; background: var(--v4-border);"></div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 11px; font-weight: 800; color: var(--v4-text-sub);">JIRA IDENTIFIER</span>
+                    <div contenteditable="true" class="v4-editable-cell" style="font-size: 22px; font-weight: 800; color: var(--v4-text);">{{JIRA}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editable Project Info Table - High Legibility -->
+        <div id="cover-info-table" class="lf-component v4-card" style="bottom: 80px; right: 80px; width: 540px; padding: 0; overflow: hidden;">
+            <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
+            <table class="cover-info-premium-table">
+                <thead>
+                    <tr>
+                        <th style="width: 40%;">Information Entity</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: 600; color: #6d7175;">Lead Designer / Author</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700; color: #1a1c1e !important;">{{AUTHOR}}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: #6d7175;">Publication Date</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700; color: #1a1c1e !important;">{{DATE}}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: #6d7175;">System Context</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="color: #1a1c1e !important;">LF E-commerce Platform</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Subtle Abstract Decoration (Modern Gray) -->
+        <div style="position: absolute; bottom: -50px; left: -50px; width: 300px; height: 300px; background: #eee; border-radius: 50%; opacity: 0.5;"></div>
     </div>
 </body>
 </html>`,

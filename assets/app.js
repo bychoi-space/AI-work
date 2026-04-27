@@ -2,6 +2,29 @@
  * Shared Application Logic & GitHub Integration
  */
 
+// Utility: Slugify text for IDs/Filenames
+function slugify(text) {
+    if (!text) return `project_${Date.now().toString().slice(-6)}`;
+    
+    // 1. Basic conversion (lowercase, remove special chars)
+    let slug = text.toString().toLowerCase().trim()
+        .replace(/\s+/g, '_')           // Replace spaces with _
+        .replace(/[^\wㄱ-ㅎㅏ-ㅣ가-힣\-]+/g, '') // Remove all non-word chars except Korean
+        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .replace(/^-+/, '')             // Trim - from start of text
+        .replace(/-+$/, '');            // Trim - from end of text
+
+    // 2. Korean handling (if only Korean, use random suffix)
+    const hasKorean = /[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(slug);
+    if (hasKorean) {
+        // Simple mapping or just random if it's all Korean
+        slug = `p_${Math.random().toString(36).substring(2, 7)}`;
+    }
+
+    if (!slug) slug = `project_${Math.random().toString(36).substring(2, 7)}`;
+    return slug;
+}
+
 const _INTERNAL_KEY = 'MXFpYngxZ3FENGp2MklETERBaTMyOHpmRldIQ2xtazZiNkdkX3BoZw=='; // Scancode Bypass Encoded (VERIFIED)
 
 const ghConfig = {
@@ -168,25 +191,59 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
 async function deleteFileFromGitHub(path, sha, isRoot = false) {
     if (ghConfig.isReadOnly) return false;
     const fullPath = isRoot ? path : `${ghConfig.dataDir}${path}`;
-    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${encodeURIComponent(fullPath).replace(/%2F/g, '/')}`;
-    const res = await fetch(url, {
-        method: 'DELETE',
-        headers: { 'Authorization': `token ${ghConfig.token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: `Delete ${path}`, sha: sha })
-    });
-    if (res.status === 401) localStorage.removeItem('gh_token');
-    return res.ok;
+    const safePath = fullPath.split('/').map(segment => encodeURIComponent(segment).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16))).join('/');
+    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${safePath}`;
+    
+    try {
+        const res = await fetch(url, {
+            method: 'DELETE',
+            headers: { 
+                'Authorization': `token ${ghConfig.token}`, 
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({ message: `Delete ${path}`, sha: sha })
+        });
+        if (res.status === 401) localStorage.removeItem('gh_token');
+        return res.ok;
+    } catch (e) {
+        console.error("[API] deleteFileFromGitHub failed:", e);
+        return false;
+    }
 }
 
 async function deleteProjectWithContents(project, statusCallback) {
     if (ghConfig.isReadOnly) return false;
-    try {
-        const items = await listContents(project);
+    
+    async function recursiveDelete(currentPath) {
+        console.log("[Delete] Listing items in:", currentPath);
+        const items = await listContents(currentPath);
+        if (!Array.isArray(items)) return true; // Already gone or empty
+
+        let allSuccess = true;
         for (const item of items) {
-            await deleteFileFromGitHub(`${project}/${item.name}`, item.sha);
+            const itemPath = currentPath ? `${currentPath}/${item.name}` : item.name;
+            if (item.type === 'dir') {
+                const subSuccess = await recursiveDelete(itemPath);
+                if (!subSuccess) allSuccess = false;
+            } else {
+                if (statusCallback) statusCallback(`Deleting ${item.name}...`, '#facc15');
+                const success = await deleteFileFromGitHub(itemPath, item.sha);
+                if (!success) {
+                    console.error("[Delete] Failed to delete file:", itemPath);
+                    allSuccess = false;
+                }
+            }
         }
-        return true;
+        return allSuccess;
+    }
+
+    try {
+        if (statusCallback) statusCallback('Analyzing project structure...', '#facc15');
+        const finalSuccess = await recursiveDelete(project);
+        return finalSuccess;
     } catch (err) {
+        console.error("[Delete] Project deletion failed:", err);
         return false;
     }
 }

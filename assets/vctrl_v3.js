@@ -123,7 +123,7 @@ async function checkUnsavedChanges() {
 }
 
 // Safe DOM Retrieval Helper to prevent crashes if IDs are missing
-const get = (id) => document.getElementById(id) || { style: {}, classList: { add:() => {}, remove:() => {}, toggle:() => {} }, innerText: '', innerHTML: '', onclick: null, oninput: null, querySelector: () => null, querySelectorAll: () => [] };
+const get = (id) => document.getElementById(id) || { style: {}, classList: { add:() => {}, remove:() => {} }, innerText: '', innerHTML: '', onclick: null, oninput: null };
 
 const DOM = {
     iframe: get('main-iframe'),
@@ -540,6 +540,7 @@ async function loadScreen(fileName) {
     DOM.fileName.innerText = state.projectMetadata.title || state.currentProject;
     
     renderDescriptionList();
+    updateProperties(); 
     setTimeout(() => centerView(), 150);
 }
 
@@ -622,17 +623,28 @@ async function handleDeleteScreen(fileName, sha) {
  * Project Properties Bar
  */
 function updateProperties() {
-    if (!state.activeFile || !state.projectMetadata) return;
-    const pm = state.projectMetadata;
-    const m = state.activeFile.meta || {};
+    const pm = state.projectMetadata || { title: state.currentProject || '', assignee: '', period: '', jira: '' };
+    if (!DOM.metadataPanel) return;
 
     DOM.metadataPanel.innerHTML = `
-        <div class="form-group-inline"><label class="form-label">프로젝트명</label><input type="text" id="viewer-meta-title" class="form-input" value="${pm.title || ''}" ${state.isReadOnly ? 'disabled' : ''}></div>
-        <div class="form-group-inline"><label class="form-label">담당자</label><input type="text" id="viewer-meta-assignee" class="form-input" value="${pm.assignee || ''}" ${state.isReadOnly ? 'disabled' : ''}></div>
-        <div class="form-group-inline"><label class="form-label">기간</label><input type="text" id="viewer-meta-period" class="form-input" value="${pm.period || ''}" ${state.isReadOnly ? 'disabled' : ''}></div>
-        <div class="form-group-inline"><label class="form-label">JIRA</label><input type="text" id="viewer-meta-jira" class="form-input" value="${pm.jira || ''}" ${state.isReadOnly ? 'disabled' : ''}></div>
-        <div class="form-group-inline"><label class="form-label">FIGMA</label><input type="text" id="viewer-meta-figma" class="form-input" value="${pm.figmaUrl || ''}" ${state.isReadOnly ? 'disabled' : ''}>${pm.figmaUrl ? `<a href="${pm.figmaUrl}" target="_blank" style="margin-left:4px; font-size:12px; color:var(--accent);">[열기]</a>` : ''}</div>
-        <div class="form-group-inline"><label class="form-label">PUB</label><input type="text" id="viewer-meta-pub" class="form-input" value="${pm.pubUrl || ''}" ${state.isReadOnly ? 'disabled' : ''}>${pm.pubUrl ? `<a href="${pm.pubUrl}" target="_blank" style="margin-left:4px; font-size:12px; color:var(--accent);">[열기]</a>` : ''}</div>
+        <div class="v4-meta-grid">
+            <div class="v4-meta-item">
+                <label>PROJECT TITLE</label>
+                <input type="text" id="viewer-meta-title" value="${pm.title || ''}" placeholder="프로젝트 제목">
+            </div>
+            <div class="v4-meta-item">
+                <label>ASSIGNEE</label>
+                <input type="text" id="viewer-meta-assignee" value="${pm.assignee || ''}" placeholder="담당자">
+            </div>
+            <div class="v4-meta-item">
+                <label>PERIOD</label>
+                <input type="text" id="viewer-meta-period" value="${pm.period || ''}" placeholder="사업 기간">
+            </div>
+            <div class="v4-meta-item">
+                <label>JIRA / LINKS</label>
+                <input type="text" id="viewer-meta-jira" value="${pm.jira || ''}" placeholder="JIRA 티켓 또는 관련 링크">
+            </div>
+        </div>
     `;
 
     // Metadata Input Listeners
@@ -658,11 +670,15 @@ function updateProperties() {
         });
     }
 
-    renderDescriptionList();
-    if (DOM.bottomUpdated) {
-        DOM.bottomUpdated.innerText = m.updatedAt ? `최종 업데이트: ${new Date(m.updatedAt).toLocaleString()}` : '최종 업데이트: -';
+    if (state.activeFile) {
+        renderDescriptionList();
+        const m = state.activeFile.meta || {};
+        if (DOM.bottomUpdated) {
+            DOM.bottomUpdated.innerText = m.updatedAt ? `최종 업데이트: ${new Date(m.updatedAt).toLocaleString()}` : '최종 업데이트: -';
+        }
     }
 }
+
 
 /**
  * Descriptions & Pins
@@ -689,8 +705,12 @@ function renderDescriptionList() {
         const pin = document.createElement('div');
         if (item.type === 'text') {
             pin.className = 'text-marker';
-            // Support both HTML (New) and Text (Old)
-            pin.innerHTML = item.html || item.text || '';
+            pin.innerHTML = `
+                <div class="lf-drag-handle">
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg>
+                </div>
+                ${item.html || item.text || ''}
+            `;
             const markerColor = item.color || "#000000";
             pin.style.setProperty('color', markerColor, 'important');
             
@@ -751,6 +771,8 @@ function renderDescriptionList() {
         pin.addEventListener('mousedown', (e) => {
             if (state.isReadOnly) return;
             if (e.target.closest('.marker-delete-btn')) return;
+            
+            const handle = e.target.closest('.lf-drag-handle');
             e.stopPropagation();
 
             const startX = e.clientX;
@@ -760,36 +782,45 @@ function renderDescriptionList() {
             const initialItemY = item.y || 0;
             const r = DOM.pinsLayer.getBoundingClientRect();
 
-            if (DOM.iframe) DOM.iframe.style.pointerEvents = 'none';
-            document.body.style.cursor = 'grabbing';
-            pin.style.cursor = 'grabbing';
-            pin.style.transition = 'none'; 
-            pin.style.zIndex = '1001'; 
-            pin.classList.add('active', 'dragging-now'); // Add dragging class
-            highlight(true);
-
             const onMouseMove = (moveEvent) => {
+                // Unify: Only drag if handle is clicked
+                if (!handle) return;
+
                 const dx = moveEvent.clientX - startX;
                 const dy = moveEvent.clientY - startY;
-                if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
-                item.x = Math.max(0, Math.min(initialItemX + (dx / r.width) * 100, 100));
-                item.y = Math.max(0, Math.min(initialItemY + (dy / r.height) * 100, 100));
-                pin.style.left = item.x + "%";
-                pin.style.top = item.y + "%";
+                if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+                    if (!moved) {
+                        if (DOM.iframe) DOM.iframe.style.pointerEvents = 'none';
+                        document.body.style.cursor = 'grabbing';
+                        pin.style.cursor = 'grabbing';
+                        pin.style.transition = 'none'; 
+                        pin.style.zIndex = '1001'; 
+                        pin.classList.add('active', 'dragging-now');
+                        highlight(true);
+                    }
+                    moved = true;
+                }
+                
+                if (moved) {
+                    item.x = Math.max(0, Math.min(initialItemX + (dx / r.width) * 100, 100));
+                    item.y = Math.max(0, Math.min(initialItemY + (dy / r.height) * 100, 100));
+                    pin.style.left = item.x + "%";
+                    pin.style.top = item.y + "%";
+                }
             };
 
             const onMouseUp = () => {
-                if (DOM.iframe) DOM.iframe.style.pointerEvents = (state.tool === 'hand') ? 'none' : 'auto';
-                document.body.style.cursor = '';
-                pin.style.cursor = 'grab';
-                pin.style.transition = ''; 
-                pin.style.zIndex = '100';
-                pin.classList.remove('active', 'dragging-now');
                 window.removeEventListener('mousemove', onMouseMove);
                 window.removeEventListener('mouseup', onMouseUp);
-                highlight(false);
                 
                 if (moved) {
+                    if (DOM.iframe) DOM.iframe.style.pointerEvents = (state.tool === 'hand') ? 'none' : 'auto';
+                    document.body.style.cursor = '';
+                    pin.style.cursor = 'grab';
+                    pin.style.transition = ''; 
+                    pin.style.zIndex = '100';
+                    pin.classList.remove('active', 'dragging-now');
+                    highlight(false);
                     markAsDirty();
                 } else {
                     // It was a simple click -> Activate Editor
@@ -870,47 +901,100 @@ function renderDescriptionList() {
     });
 }
 
+async function getIframeHTML() {
+    // If running on file:// protocol, avoid direct access entirely to prevent security warnings
+    const isFileProtocol = window.location.protocol === 'file:';
+    
+    if (!isFileProtocol) {
+        try {
+            if (DOM.iframe && DOM.iframe.contentDocument) {
+                const doc = DOM.iframe.contentDocument;
+                const clone = doc.documentElement.cloneNode(true);
+                clone.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
+                clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+                return "<!DOCTYPE html>\n" + clone.outerHTML;
+            }
+        } catch (e) {
+            console.warn("[Security] Direct iframe access failed, switching to message fallback.");
+        }
+    }
+
+    // Fallback: Request via postMessage (Safe for file:// and cross-origin)
+    console.log("[Save] Requesting content via postMessage...");
+    return new Promise((resolve) => {
+        const handler = (e) => {
+            if (e.data.type === 'LF_SAVE_CONTENT_RESPONSE') {
+                window.removeEventListener('message', handler);
+                console.log("[Save] Content received via postMessage.");
+                resolve(e.data.html);
+            }
+        };
+        window.addEventListener('message', handler);
+        if (DOM.iframe && DOM.iframe.contentWindow) {
+            DOM.iframe.contentWindow.postMessage({ type: 'LF_REQUEST_SAVE_CONTENT' }, '*');
+        } else {
+            window.removeEventListener('message', handler);
+            resolve(null);
+        }
+        // Timeout
+        setTimeout(() => {
+            window.removeEventListener('message', handler);
+            console.warn("[Save] PostMessage content request timed out.");
+            resolve(null);
+        }, 2500);
+    });
+}
+
 /**
  * Global Save
  */
 async function handleGlobalSave() {
-    if (state.isReadOnly) return showAuthModal();
-    if (!state.activeFile) return;
-
-    const btn = DOM.btnGlobalSave;
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<span class="material-icons-outlined" style="font-size:16px;">sync</span> 저장 중...';
-    btn.style.opacity = '0.7';
-
-    const projectMeta = {
-        title: document.getElementById('viewer-meta-title')?.value || '',
-        assignee: document.getElementById('viewer-meta-assignee')?.value || '',
-        period: document.getElementById('viewer-meta-period')?.value || '',
-        jira: document.getElementById('viewer-meta-jira')?.value || '',
-        figmaUrl: document.getElementById('viewer-meta-figma')?.value || '',
-        pubUrl: document.getElementById('viewer-meta-pub')?.value || ''
-    };
-
-    const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, { projectMeta, description: state.activeFile.meta.description }, (msg, color) => {
-        btn.innerHTML = `<span class="material-icons-outlined" style="font-size:16px;">${color === '#4ade80' ? 'check_circle' : 'error'}</span> ${msg}`;
-        btn.style.background = color || ''; btn.style.opacity = '1';
-        if (color === '#4ade80') setTimeout(() => { btn.innerHTML = originalText; btn.style.background = ''; }, 2000);
-    });
-
-    if (success) {
-        markAsClean();
-        // Sync project level meta
-        Object.assign(state.projectMetadata, projectMeta);
+    try {
+        if (state.isReadOnly) return showAuthModal();
         
-        // Sync current screen level meta (descriptions, etc.)
-        if (!state.projectMetadata.screens) state.projectMetadata.screens = {};
-        state.projectMetadata.screens[state.activeFile.name] = {
-            ...state.projectMetadata.screens[state.activeFile.name],
-            description: JSON.parse(JSON.stringify(state.activeFile.meta.description)), // Deep copy to be safe
-            updatedAt: new Date().toISOString()
+        const btn = DOM.btnGlobalSave;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span class="material-icons-outlined" style="font-size:16px;">sync</span> 저장 중...';
+        btn.style.opacity = '0.7';
+
+        const projectMeta = {
+            title: document.getElementById('viewer-meta-title')?.value || '',
+            assignee: document.getElementById('viewer-meta-assignee')?.value || '',
+            period: document.getElementById('viewer-meta-period')?.value || '',
+            jira: document.getElementById('viewer-meta-jira')?.value || ''
         };
-        
-        if (projectMeta.title) DOM.fileName.innerText = projectMeta.title;
+
+        // Get current HTML from iframe
+        const htmlContent = await getIframeHTML();
+        const activeFileName = state.activeFile ? state.activeFile.name : null;
+
+        const success = await updateScreenMetadata(state.currentProject, activeFileName, { 
+            projectMeta, 
+            htmlContent,
+            description: state.activeFile ? state.activeFile.meta.description : []
+        }, (msg, color) => {
+            btn.innerHTML = `<span class="material-icons-outlined" style="font-size:16px;">${color === '#4ade80' ? 'check_circle' : 'error'}</span> ${msg}`;
+            btn.style.background = color || ''; btn.style.opacity = '1';
+            if (color === '#4ade80') {
+                setTimeout(() => { btn.innerHTML = originalText; btn.style.background = ''; }, 2000);
+            }
+        });
+
+        if (success) {
+            markAsClean();
+            Object.assign(state.projectMetadata, projectMeta);
+            if (projectMeta.title) DOM.fileName.innerText = projectMeta.title;
+            console.log("[Save] Global save successful.");
+        } else {
+            throw new Error("GitHub API 반영에 실패했습니다. 토큰이나 네트워크를 확인해주세요.");
+        }
+    } catch (err) {
+        console.error("[Save Error]", err);
+        alert("저장 중 오류가 발생했습니다: " + err.message);
+        const btn = DOM.btnGlobalSave;
+        btn.innerHTML = '<span class="material-icons-outlined">error</span> 저장 실패';
+        btn.style.background = '#f87171';
+        setTimeout(() => { btn.innerHTML = '전체 저장'; btn.style.background = ''; btn.style.opacity = '1'; }, 3000);
     }
 }
 
@@ -976,6 +1060,29 @@ function setTool(t) {
 DOM.pinsLayer.onclick = (e) => {
     // We only prevent default/bubbling here to keep context clean
     if (e.target !== DOM.pinsLayer) return;
+
+    // 1. Close Text Editor (Legacy)
+    if (state.isEditing) {
+        closeActiveEditor(true);
+    }
+
+    // 2. Hide V4 Inspectors & Clear V4 Selections
+    if (window.closeAllV4Inspectors) {
+        window.closeAllV4Inspectors();
+    } else {
+        const tableSect = document.getElementById('table-inspector-section');
+        const shapeSect = document.getElementById('shape-inspector-section');
+        if (tableSect) tableSect.style.display = 'none';
+        if (shapeSect) shapeSect.style.display = 'none';
+        
+        // Post message to iframe for internal cleanup
+        DOM.iframe.contentWindow.postMessage({ type: 'LF_DESELECT_ALL' }, '*');
+    }
+
+    // 3. Sync UI State
+    state.isEditing = false;
+    state.editingIndex = -1;
+    renderDescriptionList();
 };
 
 function getCascadedPosition(startX = 50, startY = 50) {
@@ -1002,10 +1109,8 @@ function getCascadedPosition(startX = 50, startY = 50) {
 function handleTextCreation() {
     if (state.isReadOnly) return showAuthModal();
     if (!state.activeFile) return Notification.alert("스크린을 선택해주세요.", "알림", "warning");
-    if (state.isEditing) return;
 
-    const x = 50;
-    const y = 50;
+    const { x, y } = getCascadedPosition(50, 50);
     
     // 1. Push immediate empty data to enable real-time sync
     const newIdx = state.activeFile.meta.description.length;
@@ -1018,10 +1123,13 @@ function handleTextCreation() {
     });
 
     // 2. Refresh UI to show the empty marker
+    markAsDirty();
     renderDescriptionList();
 
     // 3. Open editor for this new marker
-    spawnTextEditor(x, y, newIdx);
+    setTimeout(() => {
+        spawnTextEditor(x, y, newIdx);
+    }, 50);
 }
 
 /**
@@ -1063,14 +1171,18 @@ function closeActiveEditor(save = true) {
 }
 
 function spawnTextEditor(x, y, existingIndex = -1) {
-    // Continuous Editing: If another is open, save it first
+    // 1. Continuous Editing: If another is open, save it first
     if (state.isEditing) {
         closeActiveEditor(true);
     }
+    
+    // 2. Hide other V4 inspectors to avoid UI clutter
+    if (window.closeAllV4Inspectors) window.closeAllV4Inspectors();
+
     state.isEditing = true;
     state.editingIndex = existingIndex;
 
-    // Side-effects
+    // 3. Side-effects
     initQuillEditor();
     switchSidebarTab('editor');
     const editorSection = document.getElementById('text-editor-section');
@@ -1385,11 +1497,19 @@ if (DOM.btnBack) {
     };
 }
 
-if (DOM.btnAddDescription) DOM.btnAddDescription.onclick = () => { if (state.isReadOnly) return showAuthModal(); if (!state.activeFile) return Notification.alert("스크린을 선택해주세요.", "알림", "warning"); state.activeFile.meta.description.push({ text: '', x: 50, y: 50 }); markAsDirty(); renderDescriptionList(); setTimeout(() => DOM.descriptionList?.querySelectorAll('.desc-input').slice(-1)[0]?.focus(), 50); };
-if (DOM.btnGlobalSave) DOM.btnGlobalSave.onclick = handleGlobalSave;
-if (DOM.btnSelect) DOM.btnSelect.onclick = () => setTool('select');
-if (DOM.btnHand) DOM.btnHand.onclick = () => setTool('hand');
-if (DOM.btnText) DOM.btnText.onclick = () => setTool('text');
+if (DOM.btnCancelEdit) DOM.btnCancelEdit.onclick = () => DOM.editScreenModal?.classList.remove('active');
+
+// Sidebar Tool Buttons Binding
+DOM.sidebarToolBtns?.forEach(btn => {
+    btn.onclick = () => {
+        const tool = btn.dataset.tool;
+        if (tool === 'text') {
+            handleTextCreation();
+        } else if (tool) {
+            setTool(tool);
+        }
+    };
+});
 if (DOM.btnShowAuth) DOM.btnShowAuth.onclick = showAuthModal;
 if (DOM.btnAuthSubmit) DOM.btnAuthSubmit.onclick = handleAuthSubmit;
 if (DOM.btnAuthClose) DOM.btnAuthClose.onclick = hideAuthModal;

@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Cover - [LFML-138562] 온오프 재고 효율화_v0.7</title>
+    <title>Cover - 원스피어 관리자 권한</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <style>
@@ -54,11 +54,11 @@
         .v4-editable-cell { outline: none; transition: background 0.2s; }
         .v4-editable-cell:focus { background: #f0f1f2; border-radius: 4px; }
 
-        /* V4 Table Styling - Modern & Clean */
-        .v4-premium-table { width: 100%; border-collapse: collapse; color: var(--v4-text); font-size: 15px; }
-        .v4-premium-table th { background: #f4f6f8; text-align: left; padding: 14px 24px; border-bottom: 2px solid var(--v4-border); color: var(--v4-text-sub); font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .v4-premium-table td { padding: 18px 24px; border-bottom: 1px solid var(--v4-border); background: #fff; line-height: 1.5; }
-        .v4-premium-table tr:last-child td { border-bottom: none; }
+        /* Isolated Table Styling for Cover - Avoids V4 Global Conflicts */
+        .cover-info-premium-table { width: 100%; border-collapse: collapse; font-size: 15px; background: #ffffff !important; }
+        .cover-info-premium-table th { background: #f4f6f8; text-align: left; padding: 14px 24px; border-bottom: 2px solid var(--v4-border); color: #6d7175; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cover-info-premium-table td { padding: 18px 24px; border-bottom: 1px solid var(--v4-border); background: #fff; line-height: 1.5; color: #1a1c1e !important; }
+        .cover-info-premium-table tr:last-child td { border-bottom: none; }
         
         .accent-bar { position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: var(--v4-accent); }
         
@@ -71,9 +71,6 @@
             visibility: visible !important;
             opacity: 1 !important;
             color: #1a1c1e !important;
-        }
-        #cover-info-table tr:hover td {
-            background: rgba(0, 0, 0, 0.04) !important;
         }
     </style>
 </head>
@@ -93,7 +90,7 @@
         <!-- Editable Main Title - Balanced Typography -->
         <div id="cover-title" class="lf-component" style="top: 220px; left: 80px; min-width: 800px;">
             <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
-            <div contenteditable="true" class="v4-editable-cell" style="font-size: 72px; font-weight: 900; line-height: 1.15; letter-spacing: -2px; color: var(--v4-text); margin-bottom: 16px;">[LFML-138562] 온오프 재고 효율화_v0.7</div>
+            <div contenteditable="true" class="v4-editable-cell" style="font-size: 72px; font-weight: 900; line-height: 1.15; letter-spacing: -2px; color: var(--v4-text); margin-bottom: 16px;">원스피어 관리자 권한</div>
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div style="width: 40px; height: 3px; background: var(--v4-accent);"></div>
                 <div contenteditable="true" class="v4-editable-cell" style="font-size: 20px; color: var(--v4-text-sub); font-weight: 500; letter-spacing: 1px; text-transform: uppercase;">Technical Design Specification</div>
@@ -111,7 +108,7 @@
                 <div style="width: 1px; height: 40px; background: var(--v4-border);"></div>
                 <div style="display: flex; flex-direction: column; gap: 4px;">
                     <span style="font-size: 11px; font-weight: 800; color: var(--v4-text-sub);">JIRA IDENTIFIER</span>
-                    <div contenteditable="true" class="v4-editable-cell" style="font-size: 22px; font-weight: 800; color: var(--v4-text);">LFML-138562</div>
+                    <div contenteditable="true" class="v4-editable-cell" style="font-size: 22px; font-weight: 800; color: var(--v4-text);">123</div>
                 </div>
             </div>
         </div>
@@ -119,7 +116,7 @@
         <!-- Editable Project Info Table - High Legibility -->
         <div id="cover-info-table" class="lf-component v4-card" style="bottom: 80px; right: 80px; width: 540px; padding: 0; overflow: hidden;">
             <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
-            <table class="v4-premium-table">
+            <table class="cover-info-premium-table">
                 <thead>
                     <tr>
                         <th style="width: 40%;">Information Entity</th>
@@ -128,16 +125,16 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td style="font-weight: 600; color: var(--v4-text-sub);">Lead Designer / Author</td>
-                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700;">bychoi (Architect)</td>
+                        <td style="font-weight: 600; color: #6d7175;">Lead Designer / Author</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700; color: #1a1c1e !important;">최범열</td>
                     </tr>
                     <tr>
-                        <td style="font-weight: 600; color: var(--v4-text-sub);">Publication Date</td>
-                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700;">2026.4.21</td>
+                        <td style="font-weight: 600; color: #6d7175;">Publication Date</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700; color: #1a1c1e !important;">2026.4.21</td>
                     </tr>
                     <tr>
-                        <td style="font-weight: 600; color: var(--v4-text-sub);">System Context</td>
-                        <td contenteditable="true" class="v4-editable-cell">LF E-commerce Platform</td>
+                        <td style="font-weight: 600; color: #6d7175;">System Context</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="color: #1a1c1e !important;">LF E-commerce Platform</td>
                     </tr>
                 </tbody>
             </table>

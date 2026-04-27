@@ -152,11 +152,20 @@ function injectIframeInteractions(doc) {
         .lf-delete-trigger { display: none; position: absolute; top: -10px; right: -10px; width: 22px; height: 22px; background: #ef4444; color: #fff; border-radius: 50%; cursor: pointer; align-items: center; justify-content: center; border: 2px solid #fff; z-index: 10001; font-size: 14px; font-weight: bold; }
         .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer, .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
         
-        /* Table Internal Styles */
-        .v4-premium-table { width: 100%; border-collapse: collapse; background: rgba(0,0,0,0.8); color: white; font-family: 'Inter', sans-serif; border-radius: 8px; overflow: hidden; }
-        .v4-premium-table th { background: rgba(99,102,241,0.2); padding: 12px; text-align: left; font-size: 12px; color: #6366f1; }
-        .v4-premium-table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
+        /* Table Internal Styles - UPDATED: Removed hardcoded dark colors to respect template defaults */
+        .v4-premium-table { width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; border-radius: 8px; overflow: hidden; transition: all 0.2s; border: 1px solid #475569; }
+        .v4-premium-table th { background: #4f46e5; padding: 12px; text-align: left; font-size: 12px; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .v4-premium-table td { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 13px; color: #1a1c1e !important; visibility: visible !important; opacity: 1 !important; }
         .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99,102,241,0.1); }
+        
+        /* Drag Handle Style Injected */
+        .lf-drag-handle { position: absolute; top: -28px; left: 0; width: 32px; height: 28px; background: #6366f1; color: #fff; display: none; align-items: center; justify-content: center; cursor: move !important; border-radius: 8px 8px 0 0; z-index: 10001; transition: background 0.2s; }
+        .lf-drag-handle:hover { background: #4f46e5; }
+        .lf-drag-handle svg { width: 16px; height: 16px; fill: currentColor; }
+        .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { display: flex; }
+        
+        .lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10001; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4); }
+        .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
     `;
     doc.head.appendChild(style);
 
@@ -166,29 +175,39 @@ function injectIframeInteractions(doc) {
     doc.addEventListener('mousedown', e => {
         if (state.tool !== 'select') return;
         
-        // If clicking an editable cell, don't start dragging
-        if (e.target.classList.contains('v4-editable-cell')) return;
-
         const deleteBtn = e.target.closest('.lf-delete-trigger');
         const resizer = e.target.closest('.lf-resizer');
+        const handle = e.target.closest('.lf-drag-handle');
         const comp = e.target.closest('.lf-component');
 
         if (deleteBtn) {
             comp.remove(); markAsDirty(); e.preventDefault(); return;
         }
+
         if (resizer) {
             isResizing = true; activeEl = resizer.parentElement;
             startX = e.clientX; startY = e.clientY;
             startW = activeEl.offsetWidth; startH = activeEl.offsetHeight;
             e.preventDefault();
         } else if (comp) {
-            isMoving = true; activeEl = comp;
-            startX = e.clientX; startY = e.clientY;
-            startTop = activeEl.offsetTop; startLeft = activeEl.offsetLeft;
+            // Select the component even if it's an editable cell
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
-            activeEl.classList.add('selected');
-            window.postMessage({ type: 'LF_COMP_SELECTED' }, '*');
-            e.preventDefault();
+            comp.classList.add('selected');
+            
+            window.postMessage({ 
+                type: 'LF_COMP_SELECTED', 
+                id: comp.id,
+                isTable: !!comp.querySelector('table'),
+                isShape: comp.querySelector('.v4-shape') !== null
+            }, '*');
+
+            // Only start moving if it's the handle OR not an editable cell
+            if (handle || !e.target.classList.contains('v4-editable-cell')) {
+                isMoving = true; activeEl = comp;
+                startX = e.clientX; startY = e.clientY;
+                startTop = activeEl.offsetTop; startLeft = activeEl.offsetLeft;
+                e.preventDefault();
+            }
         } else {
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             window.postMessage({ type: 'LF_COMP_DESELECTED' }, '*');
@@ -221,8 +240,59 @@ function insertV4ComponentById(compId) {
     const comp = iframeDoc.createElement('div');
     comp.id = id; comp.className = 'lf-component';
     comp.style.top = '100px'; comp.style.left = '100px';
-    comp.innerHTML = `${item.html}<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>`;
+    
+    // Set initial size for shapes
+    if (item.category === 'Shapes') {
+        comp.style.width = item.id === 'v4-shape-rect' ? '240px' : (item.id === 'v4-shape-circle' ? '180px' : '200px');
+        comp.style.height = item.id === 'v4-shape-rect' ? '140px' : (item.id === 'v4-shape-circle' ? '180px' : '180px');
+    }
+    
+    comp.innerHTML = `
+        <div class="lf-drag-handle">
+            <svg viewBox="0 0 24 24"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg>
+        </div>
+        ${item.html}
+        <div class="lf-resizer"></div>
+        <div class="lf-delete-trigger">×</div>
+    `;
     iframeDoc.body.appendChild(comp);
+
+    // Auto-apply current inspector defaults for new tables/shapes
+    const table = comp.querySelector('table');
+    const shape = comp.querySelector('.v4-shape');
+
+    if (table) {
+        table.style.background = document.getElementById('table-bg-color').value;
+        table.style.color = document.getElementById('table-text-color').value;
+        table.style.borderColor = document.getElementById('table-border-color').value;
+        table.querySelectorAll('th').forEach(th => {
+            th.style.background = document.getElementById('table-header-color').value;
+            th.style.color = document.getElementById('table-header-text-color').value;
+            th.style.borderBottomColor = document.getElementById('table-border-color').value;
+        });
+        table.querySelectorAll('td').forEach(td => {
+            td.style.color = document.getElementById('table-text-color').value;
+            td.style.borderBottomColor = document.getElementById('table-border-color').value;
+            td.style.fontSize = document.getElementById('table-font-size').value + 'px';
+        });
+    } else if (shape) {
+        shape.style.background = document.getElementById('shape-bg-color').value;
+        shape.style.borderColor = document.getElementById('shape-border-color').value;
+        const editCell = shape.querySelector('.v4-editable-cell');
+        if (editCell) {
+            editCell.style.color = document.getElementById('shape-text-color').value;
+            editCell.style.fontSize = document.getElementById('shape-font-size').value + 'px';
+        }
+    }
+
+    // Trigger selection message to parent to show the inspector immediately
+    window.postMessage({ 
+        type: 'LF_COMP_SELECTED', 
+        id: comp.id,
+        isTable: !!table,
+        isShape: !!shape
+    }, '*');
+
     markAsDirty();
 }
 
@@ -279,17 +349,41 @@ function renderDescriptionList() {
 }
 
 function updateProperties() {
-    if (!state.activeFile || !state.projectMetadata) return;
-    const pm = state.projectMetadata;
+    const pm = state.projectMetadata || { title: state.currentProject || '', assignee: '', period: '', jira: '' };
     const metadataPanel = document.getElementById('top-metadata-panel');
     if (!metadataPanel) return;
 
     metadataPanel.innerHTML = `
-        <div class="form-group-inline"><label class="form-label">프로젝트명</label><input type="text" value="${pm.title || ''}" disabled></div>
-        <div class="form-group-inline"><label class="form-label">담당자</label><input type="text" value="${pm.assignee || ''}" disabled></div>
-        <div class="form-group-inline"><label class="form-label">기간</label><input type="text" value="${pm.period || ''}" disabled></div>
-        <div class="form-group-inline"><label class="form-label">JIRA</label><input type="text" value="${pm.jira || ''}" disabled></div>
+        <div class="v4-meta-grid">
+            <div class="v4-meta-item">
+                <label>PROJECT TITLE</label>
+                <input type="text" id="v4-meta-title" value="${pm.title || ''}" placeholder="Enter title...">
+            </div>
+            <div class="v4-meta-item">
+                <label>ASSIGNEE</label>
+                <input type="text" id="v4-meta-assignee" value="${pm.assignee || ''}" placeholder="Name">
+            </div>
+            <div class="v4-meta-item">
+                <label>PERIOD</label>
+                <input type="text" id="v4-meta-period" value="${pm.period || ''}" placeholder="2024.00.00 ~">
+            </div>
+            <div class="v4-meta-item">
+                <label>JIRA / LINK</label>
+                <input type="text" id="v4-meta-jira" value="${pm.jira || ''}" placeholder="Key or URL">
+            </div>
+        </div>
     `;
+
+    // Add event listeners for instant state update
+    ['title', 'assignee', 'period', 'jira'].forEach(key => {
+        const input = document.getElementById(`v4-meta-${key}`);
+        if (input) {
+            input.oninput = (e) => {
+                state.projectMetadata[key] = e.target.value;
+                markAsDirty();
+            };
+        }
+    });
 }
 
 // Legacy Insertion Support
@@ -297,6 +391,281 @@ function insertAtomicComponent(type, name) {
     // Basic support for legacy items
     if (name === 'LF Logo') insertV4ComponentById('lf-logo');
 }
+
+// Selection & Inspector Logic
+window.addEventListener('message', e => {
+    const data = e.data;
+    if (data.type === 'LF_COMP_SELECTED') {
+        if (data.isTable) {
+            document.getElementById('table-inspector-section').style.display = 'block';
+            document.getElementById('shape-inspector-section').style.display = 'none';
+            document.getElementById('text-editor-section').style.display = 'none';
+            const iframeDoc = DOM.iframe.contentDocument;
+            const table = iframeDoc.getElementById(data.id).querySelector('table');
+            if (table) {
+                const currentFontSize = window.getComputedStyle(table.querySelector('td') || table).fontSize;
+                document.getElementById('table-font-size').value = parseInt(currentFontSize);
+                document.getElementById('txt-font-size').innerText = parseInt(currentFontSize);
+            }
+        } else if (data.isShape) {
+            document.getElementById('shape-inspector-section').style.display = 'block';
+            document.getElementById('table-inspector-section').style.display = 'none';
+            document.getElementById('text-editor-section').style.display = 'none';
+        } else {
+            document.getElementById('table-inspector-section').style.display = 'none';
+            document.getElementById('shape-inspector-section').style.display = 'none';
+            document.getElementById('text-editor-section').style.display = 'block';
+        }
+    } else if (data.type === 'LF_COMP_DESELECTED') {
+        document.getElementById('table-inspector-section').style.display = 'none';
+        document.getElementById('shape-inspector-section').style.display = 'none';
+        document.getElementById('text-editor-section').style.display = 'none';
+    }
+});
+
+// Table Inspector Events
+document.getElementById('table-font-size').oninput = function() {
+    const val = this.value;
+    document.getElementById('txt-font-size').innerText = val;
+    const selected = DOM.iframe.contentDocument.querySelector('.lf-component.selected table');
+    if (selected) {
+        selected.querySelectorAll('td, th').forEach(cell => cell.style.fontSize = val + 'px');
+        markAsDirty();
+    }
+};
+
+document.getElementById('table-text-color').oninput = function() {
+    const selected = DOM.iframe.contentDocument.querySelector('.lf-component.selected table');
+    if (selected) {
+        selected.style.color = this.value;
+        selected.querySelectorAll('td, th').forEach(cell => cell.style.color = this.value);
+        markAsDirty();
+    }
+};
+
+document.getElementById('table-bg-color').oninput = function() {
+    const selected = DOM.iframe.contentDocument.querySelector('.lf-component.selected table');
+    if (selected) {
+        selected.style.background = this.value;
+        markAsDirty();
+    }
+};
+
+document.getElementById('table-header-color').oninput = function() {
+    const selected = DOM.iframe.contentDocument.querySelector('.lf-component.selected table');
+    if (selected) {
+        selected.querySelectorAll('th').forEach(th => th.style.background = this.value);
+        markAsDirty();
+    }
+};
+
+document.getElementById('table-header-text-color').oninput = function() {
+    const selected = DOM.iframe.contentDocument.querySelector('.lf-component.selected table');
+    if (selected) {
+        selected.querySelectorAll('th').forEach(th => th.style.color = this.value);
+        markAsDirty();
+    }
+};
+
+document.getElementById('table-border-color').oninput = function() {
+    const selected = DOM.iframe.contentDocument.querySelector('.lf-component.selected table');
+    if (selected) {
+        selected.style.borderColor = this.value;
+        selected.querySelectorAll('th').forEach(th => th.style.borderBottomColor = this.value);
+        selected.querySelectorAll('td').forEach(td => td.style.borderBottomColor = this.value);
+        markAsDirty();
+    }
+};
+
+// Row/Column Actions
+document.getElementById('btn-add-row').onclick = function() {
+    const table = DOM.iframe.contentDocument.querySelector('.lf-component.selected table');
+    if (!table) return;
+    const tbody = table.querySelector('tbody') || table;
+    const colCount = (table.querySelector('tr') || { cells: [] }).cells.length || 3;
+    const tr = document.createElement('tr');
+    for (let i = 0; i < colCount; i++) {
+        const td = document.createElement('td');
+        td.contentEditable = "true";
+        td.className = "v4-editable-cell";
+        td.innerText = "New Cell";
+        // Apply current text color
+        td.style.color = document.getElementById('table-text-color').value;
+        tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+    markAsDirty();
+};
+
+document.getElementById('btn-del-row').onclick = function() {
+    const table = DOM.iframe.contentDocument.querySelector('.lf-component.selected table');
+    if (!table) return;
+    const rows = table.querySelectorAll('tbody tr');
+    if (rows.length > 0) {
+        rows[rows.length - 1].remove();
+        markAsDirty();
+    }
+};
+
+document.getElementById('btn-add-col').onclick = function() {
+    const table = DOM.iframe.contentDocument.querySelector('.lf-component.selected table');
+    if (!table) return;
+    const theadRow = table.querySelector('thead tr') || table.querySelector('tr');
+    if (theadRow) {
+        const th = document.createElement('th');
+        th.contentEditable = "true";
+        th.className = "v4-editable-cell";
+        th.innerText = "Header";
+        th.style.background = document.getElementById('table-header-color').value;
+        th.style.color = document.getElementById('table-header-text-color').value;
+        theadRow.appendChild(th);
+    }
+    table.querySelectorAll('tbody tr').forEach(tr => {
+        const td = document.createElement('td');
+        td.contentEditable = "true";
+        td.className = "v4-editable-cell";
+        td.innerText = "-";
+        td.style.color = document.getElementById('table-text-color').value;
+        tr.appendChild(td);
+    });
+    markAsDirty();
+};
+
+document.getElementById('btn-del-col').onclick = function() {
+    const table = DOM.iframe.contentDocument.querySelector('.lf-component.selected table');
+    if (!table) return;
+    table.querySelectorAll('tr').forEach(tr => {
+        if (tr.cells.length > 1) {
+            tr.cells[tr.cells.length - 1].remove();
+        }
+    });
+    markAsDirty();
+};
+
+document.getElementById('btn-toggle-header-mode').onclick = function() {
+    const table = DOM.iframe.contentDocument.querySelector('.lf-component.selected table');
+    if (!table) return;
+    
+    // Check current state: if thead has cells, it's TOP mode. If not, maybe LEFT mode.
+    const thead = table.querySelector('thead');
+    const hasTopHeader = thead && thead.querySelectorAll('th').length > 0;
+    
+    if (hasTopHeader) {
+        // Switch to LEFT mode: 
+        // 1. Move all th in thead to the first column of each row in tbody
+        const headerCells = Array.from(thead.querySelectorAll('th'));
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+        
+        // Remove thead
+        thead.remove();
+        
+        // Create a new th for each row or convert first td to th
+        rows.forEach((tr, idx) => {
+            const firstCell = tr.cells[0];
+            const newTh = document.createElement('th');
+            newTh.contentEditable = "true";
+            newTh.className = "v4-editable-cell";
+            newTh.innerHTML = firstCell.innerHTML;
+            newTh.style.background = document.getElementById('table-header-color').value;
+            newTh.style.color = document.getElementById('table-header-text-color').value;
+            tr.replaceChild(newTh, firstCell);
+        });
+    } else {
+        // Switch to TOP mode:
+        // 1. Convert first th of each row to td
+        // 2. Add a new thead with th cells
+        const rows = table.querySelectorAll('tbody tr');
+        if (rows.length === 0) return;
+        
+        const newThead = document.createElement('thead');
+        const headerTr = document.createElement('tr');
+        const colCount = rows[0].cells.length;
+        
+        for (let i = 0; i < colCount; i++) {
+            const th = document.createElement('th');
+            th.contentEditable = "true";
+            th.className = "v4-editable-cell";
+            th.innerText = "Header";
+            th.style.background = document.getElementById('table-header-color').value;
+            th.style.color = document.getElementById('table-header-text-color').value;
+            headerTr.appendChild(th);
+        }
+        newThead.appendChild(headerTr);
+        table.prepend(newThead);
+        
+        // Convert any th in tbody to td
+        table.querySelectorAll('tbody th').forEach(th => {
+            const td = document.createElement('td');
+            td.contentEditable = "true";
+            td.className = "v4-editable-cell";
+            td.innerHTML = th.innerHTML;
+            td.style.color = document.getElementById('table-text-color').value;
+            th.parentElement.replaceChild(td, th);
+        });
+    }
+    markAsDirty();
+};
+
+document.getElementById('btn-clear-header').onclick = function() {
+    const table = DOM.iframe.contentDocument.querySelector('.lf-component.selected table');
+    if (!table) return;
+    
+    // Remove thead if exists
+    const thead = table.querySelector('thead');
+    if (thead) thead.remove();
+    
+    // Convert all th to td
+    table.querySelectorAll('th').forEach(th => {
+        const td = document.createElement('td');
+        td.contentEditable = "true";
+        td.className = "v4-editable-cell";
+        td.innerHTML = th.innerHTML;
+        td.style.color = document.getElementById('table-text-color').value;
+        th.parentElement.replaceChild(td, th);
+    });
+    markAsDirty();
+};
+
+// Shape Inspector Logic
+document.getElementById('shape-font-size').oninput = function() {
+    const val = this.value;
+    document.getElementById('txt-shape-font-size').innerText = val;
+    const selected = DOM.iframe.contentDocument.querySelector('.lf-component.selected .v4-shape');
+    if (selected) {
+        const editCell = selected.querySelector('.v4-editable-cell');
+        if (editCell) editCell.style.fontSize = val + 'px';
+        markAsDirty();
+    }
+};
+
+document.getElementById('shape-text-color').oninput = function() {
+    const selected = DOM.iframe.contentDocument.querySelector('.lf-component.selected .v4-shape');
+    if (selected) {
+        const editCell = selected.querySelector('.v4-editable-cell');
+        if (editCell) editCell.style.color = this.value;
+        markAsDirty();
+    }
+};
+
+document.getElementById('shape-bg-color').oninput = function() {
+    const selected = DOM.iframe.contentDocument.querySelector('.lf-component.selected .v4-shape');
+    if (selected) {
+        selected.style.background = this.value;
+        // Special case for triangle
+        if (selected.classList.contains('v4-shape-triangle')) {
+            selected.style.backgroundColor = this.value;
+        }
+        markAsDirty();
+    }
+};
+
+document.getElementById('shape-border-color').oninput = function() {
+    const selected = DOM.iframe.contentDocument.querySelector('.lf-component.selected .v4-shape');
+    if (selected) {
+        selected.style.borderColor = this.value;
+        markAsDirty();
+    }
+};
 
 init();
 window.centerView = centerView;
@@ -307,3 +676,87 @@ window.setDeviceViewport = (type, w, h) => {
 };
 window.insertV4ComponentById = insertV4ComponentById;
 window.insertAtomicComponent = insertAtomicComponent;
+
+/**
+ * Helper to get iframe HTML (handles file:// protocol security)
+ */
+async function getIframeHTML() {
+    try {
+        if (DOM.iframe && DOM.iframe.contentDocument) {
+            const doc = DOM.iframe.contentDocument;
+            const clone = doc.documentElement.cloneNode(true);
+            clone.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
+            clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+            return "<!DOCTYPE html>\n" + clone.outerHTML;
+        }
+    } catch (e) {
+        console.warn("[Security] Direct iframe access blocked, using postMessage fallback.");
+    }
+
+    return new Promise((resolve) => {
+        const handler = (e) => {
+            if (e.data.type === 'LF_SAVE_CONTENT_RESPONSE') {
+                window.removeEventListener('message', handler);
+                resolve(e.data.html);
+            }
+        };
+        window.addEventListener('message', handler);
+        if (DOM.iframe && DOM.iframe.contentWindow) {
+            DOM.iframe.contentWindow.postMessage({ type: 'LF_REQUEST_SAVE_CONTENT' }, '*');
+        } else {
+            window.removeEventListener('message', handler);
+            resolve(null);
+        }
+        setTimeout(() => {
+            window.removeEventListener('message', handler);
+            resolve(null);
+        }, 2000);
+    });
+}
+
+async function handleGlobalSave() {
+    if (state.isReadOnly) return;
+    if (!state.activeFile) return;
+
+    const btn = DOM.btnGlobalSave;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '저장 중...';
+    btn.disabled = true;
+
+    const projectMeta = {
+        title: document.getElementById('v4-meta-title')?.value || '',
+        assignee: document.getElementById('v4-meta-assignee')?.value || '',
+        period: document.getElementById('v4-meta-period')?.value || '',
+        jira: document.getElementById('v4-meta-jira')?.value || ''
+    };
+
+    // Get current HTML from iframe
+    const htmlContent = await getIframeHTML();
+
+    const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, { 
+        projectMeta, 
+        htmlContent,
+        description: state.activeFile.meta.description 
+    }, (msg, color) => {
+        btn.innerHTML = msg;
+        btn.style.background = color || '';
+    });
+
+    if (success) {
+        markAsClean();
+        // Sync local state
+        Object.assign(state.projectMetadata, projectMeta);
+        setTimeout(() => { 
+            btn.innerHTML = originalText; 
+            btn.style.background = ''; 
+            btn.disabled = false;
+        }, 2000);
+    } else {
+        btn.innerHTML = '저장 실패';
+        btn.style.background = '#ef4444';
+        btn.disabled = false;
+        setTimeout(() => { btn.innerHTML = originalText; btn.style.background = ''; }, 3000);
+    }
+}
+
+DOM.btnGlobalSave.onclick = handleGlobalSave;

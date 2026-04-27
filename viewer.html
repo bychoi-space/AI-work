@@ -13,6 +13,7 @@
 
     <link rel="stylesheet" href="assets/style.css">
     <link rel="stylesheet" href="assets/theme.css">
+    <link rel="stylesheet" href="enhanced_v4/style_v4.css">
     <!-- Flatpickr (Date Picker) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -188,8 +189,6 @@
                 </div>
             </main>
             
-            <!-- Inspector removed from here and moved to sidebar tab -->
-
             <footer class="bottom-bar">
                 <div class="bottom-info-group">
                     <div class="bottom-item" id="bottom-updated" style="border-right: none;">
@@ -208,7 +207,7 @@
             </footer>
         </div>
 
-        <!-- Right Sidebar: Description -->
+        <!-- Right Sidebar: Description & Editor -->
         <aside class="sidebar sidebar-right" id="sidebar-right" style="width: 340px; background: var(--panel-bg); display: flex; flex-direction: column;">
             <div class="sidebar-handle handle-right" id="btn-toggle-right" title="Toggle Sidebar (R)">
                 <span class="material-icons-outlined">chevron_right</span>
@@ -240,179 +239,96 @@
                 </div>
             </div>
 
-            <!-- Tab: Editor (Combined Components & Properties) -->
+            <!-- Tab: Editor (V4 + Atomic Library) -->
             <div id="tab-editor" class="tab-pane active" style="flex: 1; display: flex; flex-direction: column; overflow-y: auto;">
-                <!-- Part 1: Atomic Components (Library) -->
-                <div class="panel-header">
+                
+                <!-- Part 1: V4 PREMIUM ADDONS -->
+                <div class="panel-header" style="background: rgba(99, 102, 241, 0.03);">
+                    <span style="font-size: 10px; font-weight: 800; color: #818cf8; letter-spacing: 1.5px;">V4 PREMIUM ADDONS</span>
+                </div>
+                <div class="components-body" style="padding: 12px;">
+                    <div class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
+                        <div class="component-item v4-card sidebar-tool-btn" data-tool="text" title="텍스트 추가" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: var(--accent);">title</span>
+                            <span style="font-size: 11px; font-weight: 600; color: var(--text-secondary);">Text</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-data-table')" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.1); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #818cf8;">table_chart</span>
+                            <span style="font-size: 11px; font-weight: 600; color: var(--text-secondary);">Table</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-rect')" style="background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.1); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #00e5ff;">crop_square</span>
+                            <span style="font-size: 11px; font-weight: 600; color: var(--text-secondary);">Shape</span>
+                        </div>
+                    </div>
+
+                    <!-- V4 Inspectors -->
+                    <div id="text-editor-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--accent); border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: var(--accent);">CONTENT EDITOR</span>
+                            <button id="btn-editor-delete" class="v4-inspector-btn danger" style="width: 24px; height: 24px; padding: 0;"><span class="material-icons-outlined" style="font-size: 14px;">delete</span></button>
+                        </div>
+                        <div id="editor-container" style="height: 120px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 12px;"></div>
+                        <button id="btn-editor-apply" class="v4-inspector-btn primary" style="width: 100%; height: 32px;">APPLY CHANGES</button>
+                    </div>
+
+                    <div id="table-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #818cf8;">TABLE EDITOR</span>
+                        </div>
+                        <div class="v4-tool-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                            <button id="btn-add-row" class="v4-inspector-btn">Row+</button>
+                            <button id="btn-add-col" class="v4-inspector-btn">Col+</button>
+                            <button id="btn-del-row" class="v4-inspector-btn danger">Row-</button>
+                            <button id="btn-del-col" class="v4-inspector-btn danger">Col-</button>
+                        </div>
+                    </div>
+
+                    <div id="shape-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">SHAPE EDITOR</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <input type="color" id="shape-bg-color" value="#334155" style="width:100%;">
+                            <input type="color" id="shape-text-color" value="#ffffff" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 2: ATOMIC LIBRARY -->
+                <div class="panel-header" style="border-top: 1px solid var(--border-color);">
                     <span style="font-size: 10px; opacity: 0.6;">ATOMIC LIBRARY</span>
                 </div>
                 <div class="components-body" style="padding: 16px;">
-                    <div class="component-section" style="margin-bottom: 0;">
-                        <div class="section-label" style="font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 12px; letter-spacing: 1px;">ATOMS</div>
-                        <div class="component-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                            <div class="component-item" onclick="insertAtomicComponent('image', 'LF Logo')" data-type="atom" data-name="LF Logo" id="comp-lf-logo" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s;">
-                                <div class="comp-preview" style="height: 48px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                                    <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width: auto; height: 100%; object-fit: contain;">
-                                </div>
-                                <div class="comp-name" style="font-size: 11px; text-align: center; color: var(--text-secondary);">LF Logo</div>
-                            </div>
-                            <div class="component-item" onclick="insertAtomicComponent('text', 'LF Discount')" data-type="atom" data-name="LF Discount" id="comp-lf-discount" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; transition: all 0.2s;">
-                                <div class="comp-preview" style="height: 48px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                                    <span style="color: #E02020; font-size: 18px; font-weight: 800;">20%</span>
-                                </div>
-                                <div class="comp-name" style="font-size: 11px; text-align: center; color: var(--text-secondary);">LF Discount</div>
-                            </div>
+                    <div class="component-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                        <div class="component-item" onclick="insertAtomicComponent('image', 'LF Logo')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; text-align: center;">
+                            <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width: 100%; height: auto; object-fit: contain;">
+                            <div style="font-size: 10px; margin-top: 4px; color: var(--text-secondary);">LF Logo</div>
                         </div>
-                    </div>
-                    <!-- Atoms: Icons -->
-                    <div class="component-section" style="margin-top: 24px;">
-                        <div class="section-label" style="font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 12px; letter-spacing: 1px;">ICONS</div>
-                        <div class="component-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
-                            <div class="component-item" onclick="insertAtomicComponent('icon', 'Home')" data-type="icon" data-name="Home Icon" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; cursor: pointer;">
-                                <div class="comp-preview" style="height: 32px; display: flex; align-items: center; justify-content: center; background: #333; border-radius: 4px;">
-                                    <div class="lf-icon lf-icon-home" style="transform: scale(0.6);"></div>
-                                </div>
-                            </div>
-                            <div class="component-item" onclick="insertAtomicComponent('icon', 'Category')" data-type="icon" data-name="Category Icon" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; cursor: pointer;">
-                                <div class="comp-preview" style="height: 32px; display: flex; align-items: center; justify-content: center; background: #333; border-radius: 4px;">
-                                    <div class="lf-icon lf-icon-category" style="transform: scale(0.6);"></div>
-                                </div>
-                            </div>
-                            <div class="component-item" onclick="insertAtomicComponent('icon', 'Search')" data-type="icon" data-name="Search Icon" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; cursor: pointer;">
-                                <div class="comp-preview" style="height: 32px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 4px;">
-                                    <div class="lf-icon lf-icon-search" style="transform: scale(0.6);"></div>
-                                </div>
-                            </div>
-                            <div class="component-item" onclick="insertAtomicComponent('icon', 'Cart')" data-type="icon" data-name="Cart Icon" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; cursor: pointer;">
-                                <div class="comp-preview" style="height: 32px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 4px;">
-                                    <div class="lf-icon lf-icon-cart" style="transform: scale(0.6);"></div>
-                                </div>
-                            </div>
-                            <div class="component-item" onclick="insertAtomicComponent('icon', 'My')" data-type="icon" data-name="My Icon" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; cursor: pointer;">
-                                <div class="comp-preview" style="height: 32px; display: flex; align-items: center; justify-content: center; background: #333; border-radius: 4px;">
-                                    <div class="lf-icon lf-icon-my" style="transform: scale(0.6);"></div>
-                                </div>
-                            </div>
-                            <div class="component-item" onclick="insertAtomicComponent('icon', 'Heart')" data-type="icon" data-name="Heart Icon" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; cursor: pointer;">
-                                <div class="comp-preview" style="height: 32px; display: flex; align-items: center; justify-content: center; background: #333; border-radius: 4px;">
-                                    <div class="lf-icon lf-icon-heart" style="transform: scale(0.6);"></div>
-                                </div>
-                            </div>
-                            <div class="component-item" onclick="insertAtomicComponent('icon', 'Back')" data-type="icon" data-name="Back Icon" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; cursor: pointer;">
-                                <div class="comp-preview" style="height: 32px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 4px;">
-                                    <div class="lf-icon lf-icon-back" style="transform: scale(0.6);"></div>
-                                </div>
-                            </div>
-                            <div class="component-item" onclick="insertAtomicComponent('icon', 'Party')" data-type="icon" data-name="Party Icon" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; cursor: pointer;">
-                                <div class="comp-preview" style="height: 32px; display: flex; align-items: center; justify-content: center; background: #f8f8f8; border-radius: 4px;">
-                                    <div class="lf-icon lf-icon-party" style="transform: scale(0.6);"></div>
-                                </div>
-                            </div>
+                        <div class="component-item" onclick="insertAtomicComponent('text', 'LF Discount')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; text-align: center;">
+                            <div style="color: #E02020; font-size: 16px; font-weight: 800; height: 40px; display: flex; align-items: center; justify-content: center;">20%</div>
+                            <div style="font-size: 10px; margin-top: 4px; color: var(--text-secondary);">LF Discount</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Part 2: Molecules (Library) -->
+                <!-- Part 3: LEGACY MOLECULES -->
                 <div class="panel-header" style="border-top: 1px solid var(--border-color);">
-                    <span style="font-size: 10px; opacity: 0.6;">MOLECULES LIBRARY</span>
+                    <span style="font-size: 10px; opacity: 0.3; margin-left: 12px;">LEGACY MOLECULES</span>
                 </div>
-                <div class="components-body" style="padding: 16px;">
-                    <div class="component-section" style="margin-bottom: 0;">
-                        <div class="component-grid" style="display: grid; grid-template-columns: 1fr; gap: 12px;">
-                            <div class="component-item" onclick="insertAtomicComponent('component', 'LF GNB')" data-type="molecule" data-name="LF GNB" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer;">
-                                <div class="comp-preview" style="height: 40px; background: #000; border-radius: 4px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px;">
-                                    <span class="material-icons-outlined" style="color: #fff; font-size: 16px;">search</span>
-                                    <span style="color: #fff; font-size: 12px; font-weight: 900;">l.f:</span>
-                                    <span class="material-icons-outlined" style="color: #fff; font-size: 16px;">home</span>
-                                </div>
-                                <div class="comp-name" style="font-size: 11px; text-align: center; color: var(--text-secondary); margin-top: 8px;">LFmall Black GNB</div>
-                            </div>
-                            <div class="component-item" onclick="insertAtomicComponent('component', 'LF LNB')" data-type="molecule" data-name="LF LNB" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer;">
-                                <div class="comp-preview" style="height: 40px; background: #fff; border-radius: 4px; display: flex; align-items: center; gap: 8px; padding: 0 10px; overflow: hidden;">
-                                    <span style="color: #000; font-size: 10px; font-weight: bold; position: relative;">홈<span style="position: absolute; top: -2px; right: -4px; width: 3px; height: 3px; background: #E02020; border-radius: 50%;"></span></span>
-                                    <span style="color: #888; font-size: 10px;">베스트</span>
-                                    <span style="color: #888; font-size: 10px;">여성</span>
-                                    <span style="color: #888; font-size: 10px;">남성</span>
-                                </div>
-                                <div class="comp-name" style="font-size: 11px; text-align: center; color: var(--text-secondary); margin-top: 8px;">LFmall LNB TabBar</div>
-                            </div>
-                        </div>
+                <div class="components-body" style="padding: 12px;">
+                    <div class="v4-tool-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LF GNB')">GNB</button>
+                        <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LF LNB')">LNB</button>
                     </div>
                 </div>
 
-                <!-- Part 3: Component Actions (Delete) -->
-                <div id="comp-actions-section" style="display: none; padding: 16px; border-top: 1px solid var(--border-color); background: rgba(239, 68, 68, 0.05);">
-                    <div class="panel-label" style="font-size: 11px; color: #ef4444; margin-bottom: 8px; font-weight: bold;">COMPONENT ACTIONS</div>
-                    <button id="btn-comp-delete" class="btn-secondary" style="width: 100%; height: 36px; color: #ef4444; border-color: rgba(239, 68, 68, 0.3); font-size: 13px;">
-                        <span class="material-icons-outlined" style="font-size: 18px; margin-right: 6px; vertical-align: middle;">delete_forever</span>
-                        선택된 컴포넌트 삭제
-                    </button>
+                <!-- Part 4: Delete Selected -->
+                <div id="comp-actions-section" style="display: none; padding: 16px; border-top: 1px solid var(--border-color); margin-top: auto;">
+                    <button id="btn-comp-delete" class="v4-inspector-btn danger" style="width: 100%; height: 32px; font-weight: 800;">DELETE</button>
                 </div>
-
-                <!-- Part 4: Selection Properties (Inspector) -->
-                <div class="panel-header">
-                    <span style="font-size: 10px; opacity: 0.6;">SELECTION PROPERTIES</span>
-                </div>
-                <div class="inspector-body" style="padding: 16px; flex: 1;">
-                    <!-- Existing Rich Text Editor Section -->
-                    <div id="text-editor-section" style="display: none; margin-bottom: 24px;">
-                        <div class="sidebar-section-title" style="font-size: 11px; color: var(--accent); margin-bottom: 8px;">CONTENT EDITOR</div>
-                        <div id="editor-container" style="height: 150px; background: rgba(0,0,0,0.2); border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 8px;"></div>
-                        
-                        <div id="editor-action-group" style="display: flex; gap: 8px; margin-top: 12px;">
-                            <button id="btn-editor-apply" class="btn-primary" style="flex: 1; height: 36px; font-size: 13px;">
-                                <span class="material-icons-outlined" style="font-size: 16px; margin-right: 4px; vertical-align: middle;">check_circle</span>
-                                적용하기
-                            </button>
-                            <button id="btn-editor-delete" class="btn-secondary" style="width: 44px; height: 36px; padding: 0; color: #ef4444; border-color: rgba(239, 68, 68, 0.2);">
-                                <span class="material-icons-outlined" style="font-size: 18px; vertical-align: middle;">delete</span>
-                            </button>
-                        </div>
-
-                        <div style="font-size: 11px; color: var(--text-dim); font-style: italic; margin-top: 12px; line-height: 1.4;">
-                            * 캔버스의 마커와 실시간으로 동기화됩니다.<br>
-                            * 바탕을 클릭하면 자동으로 저장됩니다.
-                        </div>
-                    </div>
-
-                    <!-- Premium Tool Palette -->
-                    <div class="tool-palette">
-                        <div class="palette-group">
-                            <span class="palette-label">Annotations</span>
-                            <div class="palette-grid">
-                                <button class="palette-btn sidebar-tool-btn" data-tool="text" title="텍스트 추가 (T)">
-                                    <div class="btn-icon-box">
-                                        <span class="material-icons-outlined">title</span>
-                                    </div>
-                                    <div class="btn-label-box">
-                                        <span class="btn-title">텍스트 작성</span>
-                                        <span class="btn-desc">화면에 설명 추가</span>
-                                    </div>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- New Text Properties Section -->
-                        <div id="text-properties-section" class="palette-group" style="margin-top: 24px; display: none;">
-                            <span class="palette-label">Text Style</span>
-                            <div class="prop-card" style="background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px;">
-                                <div class="prop-row" style="margin-bottom: 16px;">
-                                    <span class="prop-label" style="font-size: 11px;">TEXT COLOR</span>
-                                    <input type="color" id="text-color-picker" value="#000000" style="width: 40px; height: 30px; border: none; background: transparent; cursor: pointer;">
-                                </div>
-                                <div class="color-presets" style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                    <button class="color-preset" data-color="#000000" style="width: 24px; height: 24px; border-radius: 50%; background: #000000; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;" title="Black"></button>
-                                    <button class="color-preset" data-color="#ffffff" style="width: 24px; height: 24px; border-radius: 50%; background: #ffffff; border: 1px solid rgba(0,0,0,0.2); cursor: pointer;" title="White"></button>
-                                    <button class="color-preset" data-color="#ef4444" style="width: 24px; height: 24px; border-radius: 50%; background: #ef4444; border: none; cursor: pointer;" title="Red"></button>
-                                    <button class="color-preset" data-color="#3b82f6" style="width: 24px; height: 24px; border-radius: 50%; background: #3b82f6; border: none; cursor: pointer;" title="Blue"></button>
-                                    <button class="color-preset" data-color="#22c55e" style="width: 24px; height: 24px; border-radius: 50%; background: #22c55e; border: none; cursor: pointer;" title="Green"></button>
-                                    <button class="color-preset" data-color="#eab308" style="width: 24px; height: 24px; border-radius: 50%; background: #eab308; border: none; cursor: pointer;" title="Yellow"></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>        </aside>
+            </div>
+        </aside>
     </div>
 
     <!-- Auth Modal -->
@@ -556,6 +472,10 @@
     <!-- Script modularization: Pure Vanilla V3 Migration -->
     <script src="assets/templates.js?v=V101_STABILITY"></script>
     <script src="assets/app.js?v=V101_STABILITY"></script>
-    <script src="assets/vctrl_v3.js?v=V101_STABILITY"></script>
+    <script src="assets/vctrl_v3.js?v=V102_PREMIUM_META"></script>
+    
+    <!-- V4 Premium Addons -->
+    <script src="enhanced_v4/component_library_v4.js"></script>
+    <script src="assets/vctrl_v4_addon.js"></script>
 </body>
 </html>
