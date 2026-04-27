@@ -136,12 +136,6 @@
       "title": "00_Cover_7478",
       "type": "cover",
       "updatedAt": "2026-04-27T02:25:10.331Z",
-      "template": "template_cover.html"
-    },
-    "00_Cover_7644.html": {
-      "title": "00_Cover_7644",
-      "type": "cover",
-      "updatedAt": "2026-04-27T02:30:50.827Z",
       "template": "template_cover.html",
       "description": []
     }
