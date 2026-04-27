@@ -6,62 +6,6 @@
       "updatedAt": "2026-04-24T12:51:00.000Z",
       "template": "template_toc.html"
     },
-    "00_Cover_2855.html": {
-      "title": "00_Cover_2855",
-      "type": "cover",
-      "updatedAt": "2026-04-22T06:47:17.688Z",
-      "template": "template_cover.html",
-      "description": [
-        {
-          "text": "디스크립션 입력 111",
-          "x": 48.936239815112536,
-          "y": 52.356637900978725
-        },
-        {
-          "text": "123",
-          "x": 83.71301509027967,
-          "y": 63.61613009454376
-        },
-        {
-          "text": "45",
-          "x": 61.046740381523676,
-          "y": 32.84891305398814
-        },
-        {
-          "text": "123",
-          "x": 25.369860334528685,
-          "y": 16.61429640280135
-        },
-        {
-          "text": "123",
-          "x": 77.37226772112349,
-          "y": 23.530540027441198,
-          "type": "text",
-          "color": "#000000"
-        },
-        {
-          "text": "가나다라마바사\nABCD!@#!$%%",
-          "x": 70.53209839226736,
-          "y": 39.35801041064199,
-          "type": "text",
-          "color": "#000000"
-        },
-        {
-          "text": "가나다라마바사\nABCD!@#!$%%",
-          "x": 38.5772128662738,
-          "y": 64.45922498554079,
-          "type": "text",
-          "color": "#000000"
-        },
-        {
-          "text": "나한테 장난치지?",
-          "x": 83.76228855348188,
-          "y": 70.58993637941006,
-          "type": "text",
-          "color": "#000000"
-        }
-      ]
-    },
     "02_Plan_6933.html": {
       "title": "02_Plan_6933",
       "type": "plan",
@@ -191,7 +135,8 @@
       "title": "00_Cover_7736",
       "type": "cover",
       "updatedAt": "2026-04-24T09:09:30.744Z",
-      "template": "template_cover.html"
+      "template": "template_cover.html",
+      "description": []
     },
     "00_Cover_2973.html": {
       "title": "00_Cover_2973",
@@ -209,7 +154,8 @@
       "title": "00_Cover_7644",
       "type": "cover",
       "updatedAt": "2026-04-27T02:30:50.827Z",
-      "template": "template_cover.html"
+      "template": "template_cover.html",
+      "description": []
     }
   },
   "title": "원스피어 관리자 권한",
