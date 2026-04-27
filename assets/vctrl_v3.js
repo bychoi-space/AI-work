@@ -901,62 +901,100 @@ function renderDescriptionList() {
     });
 }
 
+async function getIframeHTML() {
+    // If running on file:// protocol, avoid direct access entirely to prevent security warnings
+    const isFileProtocol = window.location.protocol === 'file:';
+    
+    if (!isFileProtocol) {
+        try {
+            if (DOM.iframe && DOM.iframe.contentDocument) {
+                const doc = DOM.iframe.contentDocument;
+                const clone = doc.documentElement.cloneNode(true);
+                clone.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
+                clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+                return "<!DOCTYPE html>\n" + clone.outerHTML;
+            }
+        } catch (e) {
+            console.warn("[Security] Direct iframe access failed, switching to message fallback.");
+        }
+    }
+
+    // Fallback: Request via postMessage (Safe for file:// and cross-origin)
+    console.log("[Save] Requesting content via postMessage...");
+    return new Promise((resolve) => {
+        const handler = (e) => {
+            if (e.data.type === 'LF_SAVE_CONTENT_RESPONSE') {
+                window.removeEventListener('message', handler);
+                console.log("[Save] Content received via postMessage.");
+                resolve(e.data.html);
+            }
+        };
+        window.addEventListener('message', handler);
+        if (DOM.iframe && DOM.iframe.contentWindow) {
+            DOM.iframe.contentWindow.postMessage({ type: 'LF_REQUEST_SAVE_CONTENT' }, '*');
+        } else {
+            window.removeEventListener('message', handler);
+            resolve(null);
+        }
+        // Timeout
+        setTimeout(() => {
+            window.removeEventListener('message', handler);
+            console.warn("[Save] PostMessage content request timed out.");
+            resolve(null);
+        }, 2500);
+    });
+}
+
 /**
  * Global Save
  */
 async function handleGlobalSave() {
-    if (state.isReadOnly) return showAuthModal();
-    if (!state.activeFile) return;
-
-    const btn = DOM.btnGlobalSave;
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<span class="material-icons-outlined" style="font-size:16px;">sync</span> 저장 중...';
-    btn.style.opacity = '0.7';
-
-    const projectMeta = {
-        title: document.getElementById('viewer-meta-title')?.value || '',
-        assignee: document.getElementById('viewer-meta-assignee')?.value || '',
-        period: document.getElementById('viewer-meta-period')?.value || '',
-        jira: document.getElementById('viewer-meta-jira')?.value || '',
-        figmaUrl: document.getElementById('viewer-meta-figma')?.value || '',
-        pubUrl: document.getElementById('viewer-meta-pub')?.value || ''
-    };
-
-    // Get current HTML from iframe if V4 components might exist
-    let htmlContent = null;
-    if (DOM.iframe && DOM.iframe.contentDocument) {
-        const doc = DOM.iframe.contentDocument;
-        const clone = doc.documentElement.cloneNode(true);
-        // Clean up UI helpers
-        clone.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
-        clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
-        htmlContent = "<!DOCTYPE html>\n" + clone.outerHTML;
-    }
-
-    const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, { 
-        projectMeta, 
-        htmlContent,
-        description: state.activeFile.meta.description 
-    }, (msg, color) => {
-        btn.innerHTML = `<span class="material-icons-outlined" style="font-size:16px;">${color === '#4ade80' ? 'check_circle' : 'error'}</span> ${msg}`;
-        btn.style.background = color || ''; btn.style.opacity = '1';
-        if (color === '#4ade80') setTimeout(() => { btn.innerHTML = originalText; btn.style.background = ''; }, 2000);
-    });
-
-    if (success) {
-        markAsClean();
-        // Sync project level meta
-        Object.assign(state.projectMetadata, projectMeta);
+    try {
+        if (state.isReadOnly) return showAuthModal();
         
-        // Sync current screen level meta (descriptions, etc.)
-        if (!state.projectMetadata.screens) state.projectMetadata.screens = {};
-        state.projectMetadata.screens[state.activeFile.name] = {
-            ...state.projectMetadata.screens[state.activeFile.name],
-            description: JSON.parse(JSON.stringify(state.activeFile.meta.description)),
-            updatedAt: new Date().toISOString()
+        const btn = DOM.btnGlobalSave;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span class="material-icons-outlined" style="font-size:16px;">sync</span> 저장 중...';
+        btn.style.opacity = '0.7';
+
+        const projectMeta = {
+            title: document.getElementById('viewer-meta-title')?.value || '',
+            assignee: document.getElementById('viewer-meta-assignee')?.value || '',
+            period: document.getElementById('viewer-meta-period')?.value || '',
+            jira: document.getElementById('viewer-meta-jira')?.value || ''
         };
-        
-        if (projectMeta.title) DOM.fileName.innerText = projectMeta.title;
+
+        // Get current HTML from iframe
+        const htmlContent = await getIframeHTML();
+        const activeFileName = state.activeFile ? state.activeFile.name : null;
+
+        const success = await updateScreenMetadata(state.currentProject, activeFileName, { 
+            projectMeta, 
+            htmlContent,
+            description: state.activeFile ? state.activeFile.meta.description : []
+        }, (msg, color) => {
+            btn.innerHTML = `<span class="material-icons-outlined" style="font-size:16px;">${color === '#4ade80' ? 'check_circle' : 'error'}</span> ${msg}`;
+            btn.style.background = color || ''; btn.style.opacity = '1';
+            if (color === '#4ade80') {
+                setTimeout(() => { btn.innerHTML = originalText; btn.style.background = ''; }, 2000);
+            }
+        });
+
+        if (success) {
+            markAsClean();
+            Object.assign(state.projectMetadata, projectMeta);
+            if (projectMeta.title) DOM.fileName.innerText = projectMeta.title;
+            console.log("[Save] Global save successful.");
+        } else {
+            throw new Error("GitHub API 반영에 실패했습니다. 토큰이나 네트워크를 확인해주세요.");
+        }
+    } catch (err) {
+        console.error("[Save Error]", err);
+        alert("저장 중 오류가 발생했습니다: " + err.message);
+        const btn = DOM.btnGlobalSave;
+        btn.innerHTML = '<span class="material-icons-outlined">error</span> 저장 실패';
+        btn.style.background = '#f87171';
+        setTimeout(() => { btn.innerHTML = '전체 저장'; btn.style.background = ''; btn.style.opacity = '1'; }, 3000);
     }
 }
 

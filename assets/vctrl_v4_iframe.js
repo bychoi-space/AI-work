@@ -93,6 +93,18 @@
                 markDirty();
             }
         });
+
+        // Handle content save requests from parent (bypasses file:// security)
+        window.addEventListener('message', e => {
+            if (e.data.type === 'LF_REQUEST_SAVE_CONTENT') {
+                const clone = document.documentElement.cloneNode(true);
+                // Clean up UI helpers
+                clone.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
+                clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+                const html = "<!DOCTYPE html>\n" + clone.outerHTML;
+                notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: html });
+            }
+        });
     }
 
     init();

@@ -677,6 +677,43 @@ window.setDeviceViewport = (type, w, h) => {
 window.insertV4ComponentById = insertV4ComponentById;
 window.insertAtomicComponent = insertAtomicComponent;
 
+/**
+ * Helper to get iframe HTML (handles file:// protocol security)
+ */
+async function getIframeHTML() {
+    try {
+        if (DOM.iframe && DOM.iframe.contentDocument) {
+            const doc = DOM.iframe.contentDocument;
+            const clone = doc.documentElement.cloneNode(true);
+            clone.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
+            clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+            return "<!DOCTYPE html>\n" + clone.outerHTML;
+        }
+    } catch (e) {
+        console.warn("[Security] Direct iframe access blocked, using postMessage fallback.");
+    }
+
+    return new Promise((resolve) => {
+        const handler = (e) => {
+            if (e.data.type === 'LF_SAVE_CONTENT_RESPONSE') {
+                window.removeEventListener('message', handler);
+                resolve(e.data.html);
+            }
+        };
+        window.addEventListener('message', handler);
+        if (DOM.iframe && DOM.iframe.contentWindow) {
+            DOM.iframe.contentWindow.postMessage({ type: 'LF_REQUEST_SAVE_CONTENT' }, '*');
+        } else {
+            window.removeEventListener('message', handler);
+            resolve(null);
+        }
+        setTimeout(() => {
+            window.removeEventListener('message', handler);
+            resolve(null);
+        }, 2000);
+    });
+}
+
 async function handleGlobalSave() {
     if (state.isReadOnly) return;
     if (!state.activeFile) return;
@@ -694,15 +731,7 @@ async function handleGlobalSave() {
     };
 
     // Get current HTML from iframe
-    const iframeDoc = DOM.iframe.contentDocument;
-    let htmlContent = null;
-    if (iframeDoc) {
-        // Clone doc to clean up UI elements before saving
-        const clone = iframeDoc.documentElement.cloneNode(true);
-        clone.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
-        clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
-        htmlContent = "<!DOCTYPE html>\n" + clone.outerHTML;
-    }
+    const htmlContent = await getIframeHTML();
 
     const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, { 
         projectMeta, 
