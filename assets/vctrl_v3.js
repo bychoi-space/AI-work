@@ -265,100 +265,6 @@ async function handleAuthSubmit() {
 /**
  * Initialization
  */
-async function init() {
-    try {
-        console.log("[INIT] Initialization started...");
-        checkEnvironment();
-
-        const params = new URLSearchParams(window.location.search);
-        let project = 'Default_Project';
-        try {
-            project = params.get('project') || 'Default_Project';
-        } catch(e) {
-            console.error("[INIT] Project name decoding failed, using raw or default.");
-            project = window.location.search.split('project=')[1]?.split('&')[0] || 'Default_Project';
-        }
-        let fileName = params.get('file');
-
-        state.currentProject = project;
-        console.log("[INIT] Target Project:", project);
-
-        // Fetch data
-        console.log("[INIT] Fetching contents & metadata...");
-        const [contents, metadata] = await Promise.all([
-            listContents(project),
-            fetchProjectMetadata(project)
-        ]);
-        console.log("[INIT] Data received. Contents:", contents?.length, "Metadata:", metadata ? "Yes" : "No");
-
-        state.projectMetadata = metadata || {};
-        
-        // Sort screens by metadata order
-        const repoScreens = (contents || []).filter(i => i.type === 'file' && i.name.endsWith('.html'));
-        console.log("[INIT] HTML files found:", repoScreens.length);
-        
-        const order = state.projectMetadata.screenOrder || [];
-        const sortedScreens = repoScreens.sort((a,b) => {
-            const indexA = order.indexOf(a.name);
-            const indexB = order.indexOf(b.name);
-            if (indexA === -1 && indexB === -1) return 0;
-            if (indexA === -1) return 1;
-            if (indexB === -1) return -1;
-            return indexA - indexB;
-        });
-
-        state.screens = sortedScreens;
-        console.log("[INIT] Rendering screen list...");
-        renderScreenList(state.screens, fileName);
-
-        if (!fileName && state.screens.length > 0) {
-            fileName = state.screens[0].name;
-        }
-
-        if (fileName) {
-            console.log("[INIT] Loading active screen:", fileName);
-            await loadScreen(fileName);
-        } else {
-            console.log("[INIT] No screen to load.");
-            DOM.placeholderTxt.innerText = "프로젝트 스크린을 추가해주세요.";
-            if (DOM.btnAddScreen) DOM.btnAddScreen.classList.add('pulse-attention');
-        }
-
-        updateProperties(); 
-        setDeviceViewport('desktop', 1440, 900);
-
-        initQuillEditor();
-
-        // GLOBAL EVENT DELEGATION for Color Presets
-        window.addEventListener('click', (e) => {
-            const btn = e.target.closest('.color-preset');
-            if (btn) {
-                updateActiveTextAnnotationColor(btn.dataset.color);
-            }
-        }, true);
-
-        if (DOM.textColorPicker) {
-            DOM.textColorPicker.oninput = (e) => updateActiveTextAnnotationColor(e.target.value);
-            DOM.textColorPicker.onchange = (e) => updateActiveTextAnnotationColor(e.target.value);
-        }
-
-    } catch (err) {
-        console.error("Initialization failed:", err);
-        if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = "초기화 오류가 발생했습니다. 콘솔을 확인하세요.";
-    } finally {
-        // Absolute safety: remove loading bar regardless of success/failure
-        hideLoading();
-    }
-
-    window.addEventListener('popstate', () => {
-        const p = new URLSearchParams(window.location.search);
-        const f = p.get('file');
-        if (f) {
-            loadScreen(f);
-            updateActiveScreenInUI(f);
-        }
-    });
-}
 
 function showLoading(text = "Loading Screen") {
     const overlay = document.getElementById('loading-overlay');
@@ -1935,32 +1841,20 @@ async function init() {
         checkEnvironment();
 
         const params = new URLSearchParams(window.location.search);
-        let project = 'Default_Project';
-        try {
-            project = params.get('project') || 'Default_Project';
-        } catch(e) {
-            console.error("[INIT] Project name decoding failed, using raw or default.");
-            project = window.location.search.split('project=')[1]?.split('&')[0] || 'Default_Project';
-        }
+        let project = params.get('project') || 'Default_Project';
         let fileName = params.get('file');
 
         state.currentProject = project;
         console.log("[INIT] Target Project:", project);
 
         // Fetch data
-        console.log("[INIT] Fetching contents & metadata...");
         const [contents, metadata] = await Promise.all([
             listContents(project),
             fetchProjectMetadata(project)
         ]);
-        console.log("[INIT] Data received. Contents:", contents?.length, "Metadata:", metadata ? "Yes" : "No");
-
         state.projectMetadata = metadata || {};
         
-        // Sort screens by metadata order
         const repoScreens = (contents || []).filter(i => i.type === 'file' && i.name.endsWith('.html'));
-        console.log("[INIT] HTML files found:", repoScreens.length);
-        
         const order = state.projectMetadata.screenOrder || [];
         const sortedScreens = repoScreens.sort((a,b) => {
             const indexA = order.indexOf(a.name);
@@ -1972,13 +1866,8 @@ async function init() {
         });
 
         state.screens = sortedScreens;
-        console.log("[INIT] Rendering screen list...");
         renderScreenList(state.screens, fileName);
-        
-        // NEW: Render Atomic Library
         renderAtomicLibrary();
-        
-        // NEW: Initialize Quill Editor
         initQuillEditor();
 
         if (!fileName && state.screens.length > 0) {
@@ -1986,16 +1875,48 @@ async function init() {
         }
 
         if (fileName) {
-            console.log("[INIT] Loading active screen:", fileName);
             await loadScreen(fileName);
         } else {
-            console.log("[INIT] No screen to load.");
             DOM.placeholderTxt.innerText = "프로젝트 스크린을 추가해주세요.";
             if (DOM.btnAddScreen) DOM.btnAddScreen.classList.add('pulse-attention');
         }
+
+        // --- ATTACH LISTENERS ---
+        console.log("[INIT] Attaching event listeners...");
+        
+        if (DOM.btnGlobalSave) DOM.btnGlobalSave.onclick = handleGlobalSave;
+        
+        if (DOM.btnAddScreen) DOM.btnAddScreen.onclick = () => DOM.addScreenModal.classList.add('active');
+        if (DOM.btnCancelAdd) DOM.btnCancelAdd.onclick = () => DOM.addScreenModal.classList.remove('active');
+        if (DOM.btnSubmitAdd) DOM.btnSubmitAdd.onclick = handleSubmitAddScreen;
+        
+        if (DOM.btnToggleLeft) DOM.btnToggleLeft.onclick = () => {
+            const collapsed = DOM.sidebarLeft.classList.toggle('collapsed');
+            DOM.btnToggleLeft.querySelector('span').innerText = collapsed ? 'chevron_right' : 'chevron_left';
+            setTimeout(centerView, 400);
+        };
+        if (DOM.btnToggleRight) DOM.btnToggleRight.onclick = () => {
+            const collapsed = DOM.sidebarRight.classList.toggle('collapsed');
+            DOM.btnToggleRight.querySelector('span').innerText = collapsed ? 'chevron_left' : 'chevron_right';
+            setTimeout(centerView, 400);
+        };
+
+        DOM.tabBtns.forEach(btn => {
+            btn.onclick = () => switchTab(btn.dataset.tab);
+        });
+
+        // Shortcuts
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); handleGlobalSave(); }
+            if (e.key === 'Escape') {
+                DOM.addScreenModal.classList.remove('active');
+                DOM.editScreenModal.classList.remove('active');
+                hideAuthModal();
+            }
+        });
+
     } catch (err) {
         console.error("Initialization failed:", err);
-        if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = "초기화 오류가 발생했습니다. 콘솔을 확인하세요.";
     }
 }
 
