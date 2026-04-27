@@ -155,7 +155,7 @@ function injectIframeInteractions(doc) {
         /* Table Internal Styles - UPDATED: Removed hardcoded dark colors to respect template defaults */
         .v4-premium-table { width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; border-radius: 8px; overflow: hidden; transition: all 0.2s; border: 1px solid #475569; }
         .v4-premium-table th { background: #4f46e5; padding: 12px; text-align: left; font-size: 12px; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .v4-premium-table td { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 13px; }
+        .v4-premium-table td { padding: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 13px; color: #1a1c1e !important; visibility: visible !important; opacity: 1 !important; }
         .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99,102,241,0.1); }
         
         /* Drag Handle Style Injected */
@@ -349,17 +349,41 @@ function renderDescriptionList() {
 }
 
 function updateProperties() {
-    if (!state.activeFile || !state.projectMetadata) return;
-    const pm = state.projectMetadata;
+    const pm = state.projectMetadata || { title: state.currentProject || '', assignee: '', period: '', jira: '' };
     const metadataPanel = document.getElementById('top-metadata-panel');
     if (!metadataPanel) return;
 
     metadataPanel.innerHTML = `
-        <div class="form-group-inline"><label class="form-label">프로젝트명</label><input type="text" value="${pm.title || ''}" disabled></div>
-        <div class="form-group-inline"><label class="form-label">담당자</label><input type="text" value="${pm.assignee || ''}" disabled></div>
-        <div class="form-group-inline"><label class="form-label">기간</label><input type="text" value="${pm.period || ''}" disabled></div>
-        <div class="form-group-inline"><label class="form-label">JIRA</label><input type="text" value="${pm.jira || ''}" disabled></div>
+        <div class="v4-meta-grid">
+            <div class="v4-meta-item">
+                <label>PROJECT TITLE</label>
+                <input type="text" id="v4-meta-title" value="${pm.title || ''}" placeholder="Enter title...">
+            </div>
+            <div class="v4-meta-item">
+                <label>ASSIGNEE</label>
+                <input type="text" id="v4-meta-assignee" value="${pm.assignee || ''}" placeholder="Name">
+            </div>
+            <div class="v4-meta-item">
+                <label>PERIOD</label>
+                <input type="text" id="v4-meta-period" value="${pm.period || ''}" placeholder="2024.00.00 ~">
+            </div>
+            <div class="v4-meta-item">
+                <label>JIRA / LINK</label>
+                <input type="text" id="v4-meta-jira" value="${pm.jira || ''}" placeholder="Key or URL">
+            </div>
+        </div>
     `;
+
+    // Add event listeners for instant state update
+    ['title', 'assignee', 'period', 'jira'].forEach(key => {
+        const input = document.getElementById(`v4-meta-${key}`);
+        if (input) {
+            input.oninput = (e) => {
+                state.projectMetadata[key] = e.target.value;
+                markAsDirty();
+            };
+        }
+    });
 }
 
 // Legacy Insertion Support
@@ -652,3 +676,58 @@ window.setDeviceViewport = (type, w, h) => {
 };
 window.insertV4ComponentById = insertV4ComponentById;
 window.insertAtomicComponent = insertAtomicComponent;
+
+async function handleGlobalSave() {
+    if (state.isReadOnly) return;
+    if (!state.activeFile) return;
+
+    const btn = DOM.btnGlobalSave;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '저장 중...';
+    btn.disabled = true;
+
+    const projectMeta = {
+        title: document.getElementById('v4-meta-title')?.value || '',
+        assignee: document.getElementById('v4-meta-assignee')?.value || '',
+        period: document.getElementById('v4-meta-period')?.value || '',
+        jira: document.getElementById('v4-meta-jira')?.value || ''
+    };
+
+    // Get current HTML from iframe
+    const iframeDoc = DOM.iframe.contentDocument;
+    let htmlContent = null;
+    if (iframeDoc) {
+        // Clone doc to clean up UI elements before saving
+        const clone = iframeDoc.documentElement.cloneNode(true);
+        clone.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
+        clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+        htmlContent = "<!DOCTYPE html>\n" + clone.outerHTML;
+    }
+
+    const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, { 
+        projectMeta, 
+        htmlContent,
+        description: state.activeFile.meta.description 
+    }, (msg, color) => {
+        btn.innerHTML = msg;
+        btn.style.background = color || '';
+    });
+
+    if (success) {
+        markAsClean();
+        // Sync local state
+        Object.assign(state.projectMetadata, projectMeta);
+        setTimeout(() => { 
+            btn.innerHTML = originalText; 
+            btn.style.background = ''; 
+            btn.disabled = false;
+        }, 2000);
+    } else {
+        btn.innerHTML = '저장 실패';
+        btn.style.background = '#ef4444';
+        btn.disabled = false;
+        setTimeout(() => { btn.innerHTML = originalText; btn.style.background = ''; }, 3000);
+    }
+}
+
+DOM.btnGlobalSave.onclick = handleGlobalSave;

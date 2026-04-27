@@ -234,8 +234,10 @@
 .v4-premium-table td {
     padding: 16px;
     font-size: 14px;
-    color: var(--v4-text-main);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #1a1c1e !important; /* Ensure dark text on light backgrounds by default */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    opacity: 1 !important;
+    visibility: visible !important;
     transition: background 0.2s;
 }
 
@@ -243,9 +245,7 @@
     border-bottom: none;
 }
 
-.v4-premium-table tr:hover td {
-    background: rgba(255, 255, 255, 0.03);
-}
+/* Hover effect removed as per user request */
 
 /* Zebra Style Variation */
 .v4-table-zebra tr:nth-child(even) td {
@@ -369,4 +369,42 @@
     border: none;
     background: none;
     cursor: pointer;
+}
+
+/* Metadata Panel V4 Styles */
+.v4-meta-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.5fr 1.5fr;
+    gap: 20px;
+    padding: 8px 24px;
+    align-items: center;
+}
+.v4-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.v4-meta-item label {
+    font-size: 9px;
+    font-weight: 800;
+    color: #6366f1;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.v4-meta-item input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+    font-size: 13px;
+    padding: 4px 0;
+    transition: border-color 0.2s;
+    width: 100%;
+}
+.v4-meta-item input:focus {
+    outline: none;
+    border-bottom-color: #6366f1;
+}
+.v4-meta-item input::placeholder {
+    color: rgba(255, 255, 255, 0.2);
 }

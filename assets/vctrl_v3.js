@@ -540,6 +540,7 @@ async function loadScreen(fileName) {
     DOM.fileName.innerText = state.projectMetadata.title || state.currentProject;
     
     renderDescriptionList();
+    updateProperties(); 
     setTimeout(() => centerView(), 150);
 }
 
@@ -622,17 +623,28 @@ async function handleDeleteScreen(fileName, sha) {
  * Project Properties Bar
  */
 function updateProperties() {
-    if (!state.activeFile || !state.projectMetadata) return;
-    const pm = state.projectMetadata;
-    const m = state.activeFile.meta || {};
+    const pm = state.projectMetadata || { title: state.currentProject || '', assignee: '', period: '', jira: '' };
+    if (!DOM.metadataPanel) return;
 
     DOM.metadataPanel.innerHTML = `
-        <div class="form-group-inline"><label class="form-label">프로젝트명</label><input type="text" id="viewer-meta-title" class="form-input" value="${pm.title || ''}" ${state.isReadOnly ? 'disabled' : ''}></div>
-        <div class="form-group-inline"><label class="form-label">담당자</label><input type="text" id="viewer-meta-assignee" class="form-input" value="${pm.assignee || ''}" ${state.isReadOnly ? 'disabled' : ''}></div>
-        <div class="form-group-inline"><label class="form-label">기간</label><input type="text" id="viewer-meta-period" class="form-input" value="${pm.period || ''}" ${state.isReadOnly ? 'disabled' : ''}></div>
-        <div class="form-group-inline"><label class="form-label">JIRA</label><input type="text" id="viewer-meta-jira" class="form-input" value="${pm.jira || ''}" ${state.isReadOnly ? 'disabled' : ''}></div>
-        <div class="form-group-inline"><label class="form-label">FIGMA</label><input type="text" id="viewer-meta-figma" class="form-input" value="${pm.figmaUrl || ''}" ${state.isReadOnly ? 'disabled' : ''}>${pm.figmaUrl ? `<a href="${pm.figmaUrl}" target="_blank" style="margin-left:4px; font-size:12px; color:var(--accent);">[열기]</a>` : ''}</div>
-        <div class="form-group-inline"><label class="form-label">PUB</label><input type="text" id="viewer-meta-pub" class="form-input" value="${pm.pubUrl || ''}" ${state.isReadOnly ? 'disabled' : ''}>${pm.pubUrl ? `<a href="${pm.pubUrl}" target="_blank" style="margin-left:4px; font-size:12px; color:var(--accent);">[열기]</a>` : ''}</div>
+        <div class="v4-meta-grid">
+            <div class="v4-meta-item">
+                <label>PROJECT TITLE</label>
+                <input type="text" id="viewer-meta-title" value="${pm.title || ''}" placeholder="프로젝트 제목">
+            </div>
+            <div class="v4-meta-item">
+                <label>ASSIGNEE</label>
+                <input type="text" id="viewer-meta-assignee" value="${pm.assignee || ''}" placeholder="담당자">
+            </div>
+            <div class="v4-meta-item">
+                <label>PERIOD</label>
+                <input type="text" id="viewer-meta-period" value="${pm.period || ''}" placeholder="사업 기간">
+            </div>
+            <div class="v4-meta-item">
+                <label>JIRA / LINKS</label>
+                <input type="text" id="viewer-meta-jira" value="${pm.jira || ''}" placeholder="JIRA 티켓 또는 관련 링크">
+            </div>
+        </div>
     `;
 
     // Metadata Input Listeners
@@ -658,11 +670,15 @@ function updateProperties() {
         });
     }
 
-    renderDescriptionList();
-    if (DOM.bottomUpdated) {
-        DOM.bottomUpdated.innerText = m.updatedAt ? `최종 업데이트: ${new Date(m.updatedAt).toLocaleString()}` : '최종 업데이트: -';
+    if (state.activeFile) {
+        renderDescriptionList();
+        const m = state.activeFile.meta || {};
+        if (DOM.bottomUpdated) {
+            DOM.bottomUpdated.innerText = m.updatedAt ? `최종 업데이트: ${new Date(m.updatedAt).toLocaleString()}` : '최종 업데이트: -';
+        }
     }
 }
+
 
 /**
  * Descriptions & Pins
@@ -906,7 +922,22 @@ async function handleGlobalSave() {
         pubUrl: document.getElementById('viewer-meta-pub')?.value || ''
     };
 
-    const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, { projectMeta, description: state.activeFile.meta.description }, (msg, color) => {
+    // Get current HTML from iframe if V4 components might exist
+    let htmlContent = null;
+    if (DOM.iframe && DOM.iframe.contentDocument) {
+        const doc = DOM.iframe.contentDocument;
+        const clone = doc.documentElement.cloneNode(true);
+        // Clean up UI helpers
+        clone.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
+        clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+        htmlContent = "<!DOCTYPE html>\n" + clone.outerHTML;
+    }
+
+    const success = await updateScreenMetadata(state.currentProject, state.activeFile.name, { 
+        projectMeta, 
+        htmlContent,
+        description: state.activeFile.meta.description 
+    }, (msg, color) => {
         btn.innerHTML = `<span class="material-icons-outlined" style="font-size:16px;">${color === '#4ade80' ? 'check_circle' : 'error'}</span> ${msg}`;
         btn.style.background = color || ''; btn.style.opacity = '1';
         if (color === '#4ade80') setTimeout(() => { btn.innerHTML = originalText; btn.style.background = ''; }, 2000);
@@ -921,7 +952,7 @@ async function handleGlobalSave() {
         if (!state.projectMetadata.screens) state.projectMetadata.screens = {};
         state.projectMetadata.screens[state.activeFile.name] = {
             ...state.projectMetadata.screens[state.activeFile.name],
-            description: JSON.parse(JSON.stringify(state.activeFile.meta.description)), // Deep copy to be safe
+            description: JSON.parse(JSON.stringify(state.activeFile.meta.description)),
             updatedAt: new Date().toISOString()
         };
         

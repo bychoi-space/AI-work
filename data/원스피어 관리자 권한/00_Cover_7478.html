@@ -62,14 +62,15 @@
         
         .accent-bar { position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: var(--v4-accent); }
         
-        /* FORCE VISIBILITY */
-        #cover-info-table {
+        /* FORCE VISIBILITY & CONTRAST */
+        #cover-info-table, 
+        #cover-info-table table,
+        #cover-info-table td, 
+        #cover-info-table th,
+        #cover-info-table .v4-editable-cell {
             visibility: visible !important;
             opacity: 1 !important;
-        }
-        #cover-info-table td, #cover-info-table th {
-            visibility: visible !important;
-            opacity: 1 !important;
+            color: #1a1c1e !important;
         }
     </style>
 </head>

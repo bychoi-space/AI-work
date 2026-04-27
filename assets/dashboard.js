@@ -295,20 +295,22 @@ document.addEventListener('click', async (e) => {
 
             const success = await deleteProjectWithContents(projectName, updateStatusUI);
             if (success) {
-                // UI 즉시 반영 + 블랙리스트 등록
+                // UI 즉시 반영 + 블랙리스트 등록 (UI에서 완전히 제거)
                 state.deletedProjects.add(projectName);
                 state.projects = state.projects.filter(p => p.name !== projectName);
                 renderList();
                 
                 updateStatusUI(`'${projectName}' 삭제 완료`, '#4ade80');
+                
+                // 삭제 직후 5초간은 refreshFileList가 호출되어도 블랙리스트를 엄격히 적용하도록 보장
                 setTimeout(() => {
                     if (DOM.globalLoader) DOM.globalLoader.classList.remove('active');
                     refreshFileList(); // Background refresh to sync with GH
-                }, 3000); // 3 seconds to let GH API settle
+                }, 3000); 
             } else {
-                updateStatusUI('삭제 실패', '#f87171');
+                updateStatusUI('삭제 실패 (일부 파일 잔류 가능)', '#f87171');
                 if (DOM.globalLoader) DOM.globalLoader.classList.remove('active');
-                Notification.alert("삭제 중 오류가 발생했습니다. 권한을 확인하세요.", "오류", "error");
+                Notification.alert("삭제 중 오류가 발생했습니다. 일부 파일이 지워지지 않았을 수 있습니다. 잠시 후 다시 시도하거나 수동으로 삭제해 주세요.", "오류", "error");
             }
         }
     }
@@ -374,11 +376,18 @@ async function openEditProjectModal(projectName) {
 DOM.btnModalClose.onclick = () => DOM.modal.classList.remove('active');
 
 DOM.btnModalSave.onclick = async () => {
-    if (context.isCreateMode && !DOM.metaProjectId.value.trim()) {
-        await Notification.alert("프로젝트 ID를 입력해주세요.", "필수 확인");
+    let projectName = context.isCreateMode ? DOM.metaProjectId.value.trim() : context.currentEditingProject;
+    
+    // Auto-generate ID if missing in Create Mode
+    if (context.isCreateMode && !projectName) {
+        projectName = slugify(DOM.metaTitle.value.trim());
+        DOM.metaProjectId.value = projectName;
+    }
+
+    if (!projectName) {
+        await Notification.alert("프로젝트 제목을 입력해주세요.", "필수 확인");
         return;
     }
-    const projectName = context.isCreateMode ? DOM.metaProjectId.value.trim() : context.currentEditingProject;
     const originalText = DOM.btnModalSave.innerText;
     DOM.btnModalSave.innerText = '저장 중...';
     DOM.btnModalSave.disabled = true;
