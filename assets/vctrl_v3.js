@@ -897,8 +897,8 @@ function renderDescriptionList() {
             const r = DOM.pinsLayer.getBoundingClientRect();
 
             const onMouseMove = (moveEvent) => {
-                // Unify: Only drag if handle is clicked
-                if (!handle) return;
+                // Unify: Only drag if handle is clicked (for text markers)
+                if (item.type === 'text' && !handle) return;
 
                 const dx = moveEvent.clientX - startX;
                 const dy = moveEvent.clientY - startY;
@@ -1573,7 +1573,16 @@ DOM.sidebarToolBtns?.forEach(btn => {
 
 
 
-if (DOM.btnAddDescription) DOM.btnAddDescription.onclick = () => handleTextCreation();
+if (DOM.btnAddDescription) DOM.btnAddDescription.onclick = () => { 
+    if (state.isReadOnly) return showAuthModal(); 
+    if (!state.activeFile) return Notification.alert("스크린을 선택해주세요.", "알림", "warning"); 
+    
+    const { x, y } = getCascadedPosition(50, 50);
+    state.activeFile.meta.description.push({ text: '', x, y }); 
+    markAsDirty(); 
+    renderDescriptionList(); 
+    setTimeout(() => DOM.descriptionList?.querySelectorAll('.desc-input').slice(-1)[0]?.focus(), 50); 
+};
 
 if (DOM.btnAddScreen) DOM.btnAddScreen.onclick = () => { 
     if (state.isReadOnly) return showAuthModal(); 
