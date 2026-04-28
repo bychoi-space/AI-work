@@ -453,7 +453,7 @@ async function loadScreen(fileName) {
         if (c) {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             c.classList.add('selected');
-            notifyParent({ type: 'LF_COMP_SELECTED', id: c.id, isTable: !!c.querySelector('table'), isShape: !!c.querySelector('.v4-shape') });
+            notifyParent({ type: 'LF_COMP_SELECTED', id: c.id, isTable: !!c.querySelector('table'), isShape: !!c.querySelector('.v4-shape'), isIcon: !!c.querySelector('.lf-icon') });
         } else {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             notifyParent({ type: 'LF_DESELECT' });
@@ -480,7 +480,7 @@ async function loadScreen(fileName) {
             v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
             document.body.appendChild(v);
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); v.classList.add('selected');
-            notifyParent({ type: 'LF_COMP_SELECTED', id: v.id, isTable: !!v.querySelector('table'), isShape: !!v.querySelector('.v4-shape') });
+            notifyParent({ type: 'LF_COMP_SELECTED', id: v.id, isTable: !!v.querySelector('table'), isShape: !!v.querySelector('.v4-shape'), isIcon: !!v.querySelector('.lf-icon') });
             markDirty();
         } else if (d.type === 'LF_UPDATE_STYLE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
@@ -1821,7 +1821,7 @@ function injectIframeInteractions(doc) {
             startTop = activeEl.offsetTop; startLeft = activeEl.offsetLeft;
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             activeEl.classList.add('selected');
-            window.postMessage({ type: 'LF_COMP_SELECTED', id: activeEl.id }, '*');
+            window.postMessage({ type: 'LF_COMP_SELECTED', id: activeEl.id, isTable: !!activeEl.querySelector('table'), isShape: !!activeEl.querySelector('.v4-shape'), isIcon: !!activeEl.querySelector('.lf-icon') }, '*');
             e.preventDefault(); e.stopPropagation();
         } else {
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
@@ -1874,7 +1874,7 @@ function insertAtomicComponent(type, name) {
         contentHtml = `<div style="background:#fff; border-bottom:1px solid #f2f2f2; width:100%; height:100%; display:flex; align-items:center; padding:0 16px; pointer-events:none; overflow:hidden;"><div style="display:flex; align-items:center; gap:20px; font-size:14px; font-family:sans-serif;"><span style="color:#000; font-weight:bold; position:relative;">Home<span style="position:absolute; top:-2px; right:-6px; width:4px; height:4px; background:#E02020; border-radius:50%;"></span></span><span style="color:#888;">Best</span><span style="color:#888;">Women</span><span style="color:#888;">Men</span></div></div>`;
     } else if (type === 'icon') {
         const iconClass = name.toLowerCase().split(' ')[0];
-        contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="width:100%; height:100%; pointer-events:none;"></div>`;
+        contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="width:100%; height:100%; pointer-events:none; filter: brightness(0);"></div>`;
     }
 
     // Request insertion via message (Safe for file://)

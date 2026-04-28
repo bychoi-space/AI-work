@@ -131,6 +131,29 @@
     bindAction('btn-layout-h', 'LAYOUT_H');
     bindAction('btn-layout-v', 'LAYOUT_V');
 
+    // --- ICON INSPECTOR BINDINGS ---
+    const btnIconBlack = document.getElementById('btn-icon-black');
+    const btnIconWhite = document.getElementById('btn-icon-white');
+
+    if (btnIconBlack) {
+        btnIconBlack.addEventListener('click', () => {
+            notifyIframe({
+                type: 'LF_UPDATE_STYLE',
+                selector: '.lf-icon',
+                style: { filter: 'brightness(0)' }
+            });
+        });
+    }
+    if (btnIconWhite) {
+        btnIconWhite.addEventListener('click', () => {
+            notifyIframe({
+                type: 'LF_UPDATE_STYLE',
+                selector: '.lf-icon',
+                style: { filter: 'brightness(0) invert(1)' }
+            });
+        });
+    }
+
     // 4. Message Listener (Show/Hide Inspectors)
     window.addEventListener('message', e => {
         const data = e.data;
@@ -144,18 +167,22 @@
             // Show specific inspectors
             const tableSect = document.getElementById('table-inspector-section');
             const shapeSect = document.getElementById('shape-inspector-section');
+            const iconSect = document.getElementById('icon-inspector-section');
             
             if (tableSect) tableSect.style.display = data.isTable ? 'block' : 'none';
             if (shapeSect) shapeSect.style.display = data.isShape ? 'block' : 'none';
+            if (iconSect) iconSect.style.display = data.isIcon ? 'block' : 'none';
         } 
         else if (data.type === 'LF_DESELECT' || data.type === 'LF_COMP_DESELECTED') {
             const actions = document.getElementById('comp-actions-section');
             const tableSect = document.getElementById('table-inspector-section');
             const shapeSect = document.getElementById('shape-inspector-section');
+            const iconSect = document.getElementById('icon-inspector-section');
             
             if (actions) actions.style.display = 'none';
             if (tableSect) tableSect.style.display = 'none';
             if (shapeSect) shapeSect.style.display = 'none';
+            if (iconSect) iconSect.style.display = 'none';
         }
         else if (data.type === 'LF_DIRTY') {
             // Use global markAsDirty from vctrl_v3.js
