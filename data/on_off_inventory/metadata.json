@@ -5,47 +5,233 @@
   "jira": "LFML-138562",
   "figmaUrl": "https://docs.google.com/presentation/d/1d258mtfK2IB0a5ka1X1eOtVHzVn4T1DO/edit",
   "screens": {
-    "slide_01_cover.html": { "title": "01. 프로젝트 표지", "type": "cover", "description": "온오프 재고 효율화 마스터 플랜 v0.7" },
-    "01_Delivery_Notice.html": { "title": "02. 연휴 배송안내 설정", "type": "plan", "description": "26년 5월 연휴 배송안내 및 DB 설정 가이드" },
-    "slide_02_toc.html": { "title": "03. Index", "type": "cover", "description": "전체 프로세스 구성" },
-    "slide_03_legal.html": { "title": "04. 법적 고지", "type": "cover", "description": "기밀 유지 및 저작권 (Legal)" },
-    "slide_04_selection.html": { "title": "05. 재고 선정 로직", "type": "plan", "description": "가용성 정책 (Case 1~5)" },
-    "slide_05_architecture.html": { "title": "06. 아키텍처 및 프로세스 맵", "type": "architecture", "description": "시스템 연동 및 이행 흐름" },
-    "slide_06_db_sync.html": { "title": "06. 데이터 인터페이스", "type": "architecture", "description": "SAP-LFmall 재고 동기화" },
-    "slide_07_global_process.html": { "title": "07. 전체 주문 이행 프로세스", "type": "architecture", "description": "Global Fulfillment Flow" },
-    "slide_08_ui_mockups_pdp.html": { "title": "08. [UI] 상품 상세 (PDP)", "type": "ui", "description": "매장배송 뱃지 및 안내" },
-    "slide_09_ui_mockups_cart.html": { "title": "09. [UI] 장바구니/주문완료", "type": "ui", "description": "배송 리드타임 안내" },
-    "slide_10_operational_flow.html": { "title": "10. 알림톡 서비스 흐름", "type": "architecture", "description": "고객 안내 메시지 정책" },
-    "slide_11_lt_policy.html": { "title": "11. 배송 LT 및 자동결품", "type": "plan", "description": "리드타임 관리 및 결품 대응" },
-    "slide_12_resource.html": { "title": "12. 리소스 산출", "type": "plan", "description": "업무량 및 투입 자원 분석" },
-    "slide_13_bsu_operation.html": { "title": "13. 물류 BSU 오퍼레이션", "type": "plan", "description": "센터/매장 간 업무 프로세스" },
-    "slide_14_data_interface.html": { "title": "14. 시스템간 데이터 연동", "type": "architecture", "description": "SAP/OMS/LFmall 연동 상세" },
-    "slide_15_business_policy.html": { "title": "15. 현업(e-영업) 정책 결정", "type": "plan", "description": "영업 부서 의사결정 사항" },
-    "slide_16_monitoring.html": { "title": "16. RT 현황 관리 주체", "type": "plan", "description": "비직송 매장 관리 운영 안" },
-    "slide_17_roadmap.html": { "title": "17. 개발 전체 일정", "type": "plan", "description": "마일스톤 및 런칭 타임라인" },
-    "slide_18_stock_movement.html": { "title": "18. 재고 이동 지시 정책", "type": "plan", "description": "매장간 물량 이동 프로세스" },
-    "slide_19_decision_items.html": { "title": "19. 세부 실무 결정 사항", "type": "plan", "description": "상상 오퍼레이션 결정 목록" },
-    "slide_20_out_of_stock_logic.html": { "title": "20. 자동결품 로직 정의", "type": "plan", "description": "시스템 자동 결품 상세 로직" },
-    "slide_21_pdp_base.html": { "title": "21. [UI] 상품상세 - 기본", "type": "ui", "description": "PDP 기본 화면 설계" },
-    "slide_22_pdp_option.html": { "title": "22. [UI] 상품상세 - 옵션", "type": "ui", "description": "PDP 옵션 선택 설계" },
-    "slide_23_pdp_benefit.html": { "title": "23. [UI] 상품상세 - 혜택", "type": "ui", "description": "배송 혜택 비교 영역" },
-    "slide_24_pdp_detail.html": { "title": "24. [UI] 상품상세 - 상세", "type": "ui", "description": "배송정보 상세 안내" },
-    "slide_25_basket.html": { "title": "25. [UI] 쇼핑백", "type": "ui", "description": "장바구니 리스트 설계" },
-    "slide_26_order_form.html": { "title": "26. [UI] 주문서/주문완료", "type": "ui", "description": "결제 및 완료 화면" },
-    "slide_27_mypage_list.html": { "title": "27. [UI] 마이페이지 목록", "type": "ui", "description": "주문내역 리스트" },
-    "slide_28_tracking.html": { "title": "28. [UI] 주문/배송 조회", "type": "ui", "description": "배송 추적 UI" },
-    "slide_29_order_detail.html": { "title": "29. [UI] 주문 상세 내역", "type": "ui", "description": "주문 상세 조회 화면" },
-    "slide_30_guide_info.html": { "title": "30. [UI] 배송/교환 안내", "type": "ui", "description": "서비스 가이드 및 안내" },
-    "slide_31_admin_prod_list.html": { "title": "31. [어드민] 상품 목록", "type": "admin-nbos", "description": "운영자 상품 관리 리스트" },
-    "slide_32_admin_prod_detail.html": { "title": "32. [어드민] 자사상품 상세", "type": "admin-nbos", "description": "상품 마스터 상세" },
-    "slide_33_admin_prod_stock.html": { "title": "33. [어드민] 상품 재고 정보", "type": "admin-nbos", "description": "매장별 재고 상세 조회" },
-    "slide_34_admin_order_list.html": { "title": "34. [어드민] 주문 관리 목록", "type": "admin-nbos", "description": "매장 배정 주문 리스트" },
-    "slide_35_admin_order_detail.html": { "title": "35. [어드민] 주문 정보 상세", "type": "admin-nbos", "description": [ { "text": "주문 처리 상세", "x": 0, "y": 0 } ] },
-    "slide_36_admin_shop_mgmt.html": { "title": "36. [어드민] 매장 마스터 관리", "type": "admin-nbos", "description": "매장 정보 및 정책 설정" },
-    "slide_37_admin_sync_mgmt.html": { "title": "37. [어드민] 재고 연동 관리", "type": "admin-nbos", "description": "인터페이스 모니터링" },
-    "slide_38_admin_brand_pop.html": { "title": "38. [어드민] 브랜드 조회", "type": "admin-nbos", "description": "브랜드 선택 팝업" },
-    "00_Cover_6906.html": { "updatedAt": "2026-04-21T02:36:59.754Z", "template": "template_cover.html", "type": "cover" },
-    "01_Architecture_3894.html": { "updatedAt": "2026-04-21T02:37:16.646Z", "template": "template_architecture.html", "type": "architecture" },
-    "slide_03_architecture.html": { "description": [ { "text": "장선익 멍충이", "x": 43.86292450744805, "y": 30.230427496218464 } ], "updatedAt": "2026-04-21T04:27:12.548Z", "type": "architecture" }
+    "slide_01_cover.html": {
+      "title": "01. 프로젝트 표지",
+      "type": "cover",
+      "description": "온오프 재고 효율화 마스터 플랜 v0.7"
+    },
+    "01_Delivery_Notice.html": {
+      "title": "02. 연휴 배송안내 설정",
+      "type": "plan",
+      "description": "26년 5월 연휴 배송안내 및 DB 설정 가이드"
+    },
+    "slide_02_toc.html": {
+      "title": "03. Index",
+      "type": "cover",
+      "description": "전체 프로세스 구성"
+    },
+    "slide_03_legal.html": {
+      "title": "04. 법적 고지",
+      "type": "cover",
+      "description": "기밀 유지 및 저작권 (Legal)"
+    },
+    "slide_04_selection.html": {
+      "title": "05. 재고 선정 로직",
+      "type": "plan",
+      "description": "가용성 정책 (Case 1~5)"
+    },
+    "slide_05_architecture.html": {
+      "title": "06. 아키텍처 및 프로세스 맵",
+      "type": "architecture",
+      "description": "시스템 연동 및 이행 흐름"
+    },
+    "slide_06_db_sync.html": {
+      "title": "06. 데이터 인터페이스",
+      "type": "architecture",
+      "description": "SAP-LFmall 재고 동기화"
+    },
+    "slide_07_global_process.html": {
+      "title": "07. 전체 주문 이행 프로세스",
+      "type": "architecture",
+      "description": "Global Fulfillment Flow"
+    },
+    "slide_08_ui_mockups_pdp.html": {
+      "title": "08. [UI] 상품 상세 (PDP)",
+      "type": "ui",
+      "description": "매장배송 뱃지 및 안내"
+    },
+    "slide_09_ui_mockups_cart.html": {
+      "title": "09. [UI] 장바구니/주문완료",
+      "type": "ui",
+      "description": "배송 리드타임 안내"
+    },
+    "slide_10_operational_flow.html": {
+      "title": "10. 알림톡 서비스 흐름",
+      "type": "architecture",
+      "description": "고객 안내 메시지 정책"
+    },
+    "slide_11_lt_policy.html": {
+      "title": "11. 배송 LT 및 자동결품",
+      "type": "plan",
+      "description": "리드타임 관리 및 결품 대응"
+    },
+    "slide_12_resource.html": {
+      "title": "12. 리소스 산출",
+      "type": "plan",
+      "description": "업무량 및 투입 자원 분석"
+    },
+    "slide_13_bsu_operation.html": {
+      "title": "13. 물류 BSU 오퍼레이션",
+      "type": "plan",
+      "description": "센터/매장 간 업무 프로세스"
+    },
+    "slide_14_data_interface.html": {
+      "title": "14. 시스템간 데이터 연동",
+      "type": "architecture",
+      "description": "SAP/OMS/LFmall 연동 상세"
+    },
+    "slide_15_business_policy.html": {
+      "title": "15. 현업(e-영업) 정책 결정",
+      "type": "plan",
+      "description": "영업 부서 의사결정 사항"
+    },
+    "slide_16_monitoring.html": {
+      "title": "16. RT 현황 관리 주체",
+      "type": "plan",
+      "description": "비직송 매장 관리 운영 안"
+    },
+    "slide_17_roadmap.html": {
+      "title": "17. 개발 전체 일정",
+      "type": "plan",
+      "description": "마일스톤 및 런칭 타임라인"
+    },
+    "slide_18_stock_movement.html": {
+      "title": "18. 재고 이동 지시 정책",
+      "type": "plan",
+      "description": "매장간 물량 이동 프로세스"
+    },
+    "slide_19_decision_items.html": {
+      "title": "19. 세부 실무 결정 사항",
+      "type": "plan",
+      "description": "상상 오퍼레이션 결정 목록"
+    },
+    "slide_20_out_of_stock_logic.html": {
+      "title": "20. 자동결품 로직 정의",
+      "type": "plan",
+      "description": "시스템 자동 결품 상세 로직"
+    },
+    "slide_21_pdp_base.html": {
+      "title": "21. [UI] 상품상세 - 기본",
+      "type": "ui",
+      "description": "PDP 기본 화면 설계"
+    },
+    "slide_22_pdp_option.html": {
+      "title": "22. [UI] 상품상세 - 옵션",
+      "type": "ui",
+      "description": "PDP 옵션 선택 설계"
+    },
+    "slide_23_pdp_benefit.html": {
+      "title": "23. [UI] 상품상세 - 혜택",
+      "type": "ui",
+      "description": "배송 혜택 비교 영역"
+    },
+    "slide_24_pdp_detail.html": {
+      "title": "24. [UI] 상품상세 - 상세",
+      "type": "ui",
+      "description": "배송정보 상세 안내"
+    },
+    "slide_25_basket.html": {
+      "title": "25. [UI] 쇼핑백",
+      "type": "ui",
+      "description": "장바구니 리스트 설계"
+    },
+    "slide_26_order_form.html": {
+      "title": "26. [UI] 주문서/주문완료",
+      "type": "ui",
+      "description": "결제 및 완료 화면"
+    },
+    "slide_27_mypage_list.html": {
+      "title": "27. [UI] 마이페이지 목록",
+      "type": "ui",
+      "description": "주문내역 리스트"
+    },
+    "slide_28_tracking.html": {
+      "title": "28. [UI] 주문/배송 조회",
+      "type": "ui",
+      "description": "배송 추적 UI"
+    },
+    "slide_29_order_detail.html": {
+      "title": "29. [UI] 주문 상세 내역",
+      "type": "ui",
+      "description": "주문 상세 조회 화면"
+    },
+    "slide_30_guide_info.html": {
+      "title": "30. [UI] 배송/교환 안내",
+      "type": "ui",
+      "description": "서비스 가이드 및 안내"
+    },
+    "slide_31_admin_prod_list.html": {
+      "title": "31. [어드민] 상품 목록",
+      "type": "admin-nbos",
+      "description": "운영자 상품 관리 리스트"
+    },
+    "slide_32_admin_prod_detail.html": {
+      "title": "32. [어드민] 자사상품 상세",
+      "type": "admin-nbos",
+      "description": "상품 마스터 상세"
+    },
+    "slide_33_admin_prod_stock.html": {
+      "title": "33. [어드민] 상품 재고 정보",
+      "type": "admin-nbos",
+      "description": "매장별 재고 상세 조회"
+    },
+    "slide_34_admin_order_list.html": {
+      "title": "34. [어드민] 주문 관리 목록",
+      "type": "admin-nbos",
+      "description": "매장 배정 주문 리스트"
+    },
+    "slide_35_admin_order_detail.html": {
+      "title": "35. [어드민] 주문 정보 상세",
+      "type": "admin-nbos",
+      "description": [
+        {
+          "text": "주문 처리 상세",
+          "x": 0,
+          "y": 0
+        }
+      ]
+    },
+    "slide_36_admin_shop_mgmt.html": {
+      "title": "36. [어드민] 매장 마스터 관리",
+      "type": "admin-nbos",
+      "description": "매장 정보 및 정책 설정"
+    },
+    "slide_37_admin_sync_mgmt.html": {
+      "title": "37. [어드민] 재고 연동 관리",
+      "type": "admin-nbos",
+      "description": "인터페이스 모니터링"
+    },
+    "slide_38_admin_brand_pop.html": {
+      "title": "38. [어드민] 브랜드 조회",
+      "type": "admin-nbos",
+      "description": "브랜드 선택 팝업"
+    },
+    "00_Cover_6906.html": {
+      "updatedAt": "2026-04-21T02:36:59.754Z",
+      "template": "template_cover.html",
+      "type": "cover"
+    },
+    "01_Architecture_3894.html": {
+      "updatedAt": "2026-04-21T02:37:16.646Z",
+      "template": "template_architecture.html",
+      "type": "architecture"
+    },
+    "slide_03_architecture.html": {
+      "description": [
+        {
+          "text": "장선익 멍충이",
+          "x": 43.86292450744805,
+          "y": 30.230427496218464
+        }
+      ],
+      "updatedAt": "2026-04-21T04:27:12.548Z",
+      "type": "architecture"
+    },
+    "02_Plan_6177.html": {
+      "title": "02_Plan_6177",
+      "type": "plan-delivery",
+      "updatedAt": "2026-04-28T01:36:29.842Z",
+      "template": "template_plan_delivery.html"
+    }
   }
 }
