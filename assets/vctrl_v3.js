@@ -166,8 +166,6 @@ const DOM = {
     btnSubmitEdit: get('btn-edit-screen-submit'),
     
     // Component Tracking
-    compActionsSection: get('comp-actions-section'),
-    btnCompDelete: get('btn-comp-delete'),
 
     // Forms
     newScreenName: get('new-screen-name'),
@@ -1928,8 +1926,8 @@ function insertAtomicComponent(type, name) {
     const compW = name === 'LFmall Header' ? vw : (type === 'icon' ? 40 : 120);
     const compH = name === 'LFmall Header' ? 50 : (type === 'icon' ? 40 : 100);
     
-    const centerTop = name === 'LFmall Header' ? 0 : Math.max(0, scrollY + (vh - compH) / 2);
-    const centerLeft = name === 'LFmall Header' ? 0 : Math.max(0, scrollX + (vw - compW) / 2);
+    const centerTop = Math.max(0, scrollY + (vh - compH) / 2);
+    const centerLeft = Math.max(0, scrollX + (vw - compW) / 2);
 
     // Request insertion via message (Safe for file://)
     const isFileProtocol = window.location.protocol === 'file:';
@@ -1967,30 +1965,24 @@ function insertAtomicComponent(type, name) {
     }
 }
 
-// Component Selection & Deletion Handlers
-
-DOM.btnCompDelete.onclick = () => {
-    if (window.location.protocol === 'file:') {
-        if (DOM.iframe && DOM.iframe.contentWindow) {
-            DOM.iframe.contentWindow.postMessage({ type: 'LF_DELETE_SELECTED' }, '*');
-        }
-        return;
-    }
-    const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
-    const selected = iframeDoc.querySelector('.lf-component.selected');
-    if (selected) {
-        selected.remove();
-        markAsDirty();
-        DOM.compActionsSection.style.display = 'none';
-        Notification.toast("Deleted component.");
-    }
-};
-
 // Global Delete Keyboard Handler (Parent Window)
 document.addEventListener('keydown', e => {
     if (e.key === 'Delete' || e.key === 'Backspace') {
         if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-        DOM.btnCompDelete.click(); // Trigger the exact same logic as clicking the delete button
+        if (window.location.protocol === 'file:') {
+            if (DOM.iframe && DOM.iframe.contentWindow) {
+                DOM.iframe.contentWindow.postMessage({ type: 'LF_DELETE_SELECTED' }, '*');
+            }
+            return;
+        }
+        const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
+        if (!iframeDoc) return;
+        const selected = iframeDoc.querySelector('.lf-component.selected');
+        if (selected) {
+            selected.remove();
+            markAsDirty();
+            Notification.toast("Deleted component.");
+        }
     }
 });
 
