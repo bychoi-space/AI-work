@@ -192,6 +192,50 @@
                         const cells = tr.querySelectorAll('td, th');
                         if (cells.length > 1) cells[cells.length - 1].remove();
                     });
+                } else if (data.action === 'LAYOUT_H' || data.action === 'LAYOUT_V') {
+                    const isHorizontal = !!selected.querySelector('thead');
+                    if ((data.action === 'LAYOUT_H' && isHorizontal) || (data.action === 'LAYOUT_V' && !isHorizontal)) return;
+                    
+                    let matrix = [];
+                    selected.querySelectorAll('tr').forEach((tr, r) => {
+                        tr.querySelectorAll('th, td').forEach((cell, c) => {
+                            if (!matrix[c]) matrix[c] = [];
+                            matrix[c][r] = cell.innerHTML;
+                        });
+                    });
+                    
+                    selected.innerHTML = '';
+                    if (data.action === 'LAYOUT_H') {
+                        let thead = document.createElement('thead');
+                        let tbody = document.createElement('tbody');
+                        matrix.forEach((row, r) => {
+                            let tr = document.createElement('tr');
+                            row.forEach(html => {
+                                let cell = document.createElement(r === 0 ? 'th' : 'td');
+                                cell.className = 'v4-editable-cell';
+                                cell.setAttribute('contenteditable', 'true');
+                                cell.innerHTML = html;
+                                tr.appendChild(cell);
+                            });
+                            (r === 0 ? thead : tbody).appendChild(tr);
+                        });
+                        selected.appendChild(thead);
+                        selected.appendChild(tbody);
+                    } else {
+                        let tbody = document.createElement('tbody');
+                        matrix.forEach(row => {
+                            let tr = document.createElement('tr');
+                            row.forEach((html, c) => {
+                                let cell = document.createElement(c === 0 ? 'th' : 'td');
+                                cell.className = 'v4-editable-cell';
+                                cell.setAttribute('contenteditable', 'true');
+                                cell.innerHTML = html;
+                                tr.appendChild(cell);
+                            });
+                            tbody.appendChild(tr);
+                        });
+                        selected.appendChild(tbody);
+                    }
                 }
                 markDirty();
             }

@@ -128,6 +128,8 @@
     bindAction('btn-del-row', 'DEL_ROW');
     bindAction('btn-add-col', 'ADD_COL');
     bindAction('btn-del-col', 'DEL_COL');
+    bindAction('btn-layout-h', 'LAYOUT_H');
+    bindAction('btn-layout-v', 'LAYOUT_V');
 
     // 4. Message Listener (Show/Hide Inspectors)
     window.addEventListener('message', e => {
