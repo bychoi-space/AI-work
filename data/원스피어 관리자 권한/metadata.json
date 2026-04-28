@@ -14,10 +14,11 @@
       "template": "template_cover.html"
     },
     "00_Cover_7736.html": {
-      "title": "Project Cover (V4 Premium)",
+      "title": "00_Cover_7736",
       "type": "cover",
-      "updatedAt": "2026-04-27T01:43:00.000Z",
-      "template": "template_cover.html"
+      "updatedAt": "2026-04-24T09:09:30.744Z",
+      "template": "template_cover.html",
+      "description": []
     },
     "00_Cover_2855.html": {
       "title": "00_Cover_2855",
@@ -144,16 +145,9 @@
           "color": "#000000"
         }
       ]
-    },
-    "00_Cover_7736.html": {
-      "title": "00_Cover_7736",
-      "type": "cover",
-      "updatedAt": "2026-04-24T09:09:30.744Z",
-      "template": "template_cover.html",
-      "description": []
     }
   },
-  "title": "원스피어 관리자 권한",
+  "title": "[원스피어] 관리자 권한 개선",
   "assignee": "최범열",
   "period": "2026.04.01 ~ 2026.04.30",
   "jira": "123",
@@ -171,5 +165,6 @@
     "03_UI_Screen_4984.html",
     "03_UI_Screen_9534.html",
     "05_Admin_Onesphere_4990.html"
-  ]
+  ],
+  "developer": ""
 }
