@@ -27,11 +27,6 @@
         }
       ]
     },
-    "01_Delivery_Notice.html": {
-      "title": "02. 연휴 배송안내 설정",
-      "type": "plan",
-      "description": "26년 5월 연휴 배송안내 및 DB 설정 가이드"
-    },
     "slide_02_toc.html": {
       "title": "03. Index",
       "type": "cover",
