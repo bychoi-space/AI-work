@@ -286,9 +286,9 @@
             <!-- Tab: Editor (V4 + Atomic Library) -->
             <div id="tab-editor" class="tab-pane active" style="flex: 1; display: flex; flex-direction: column; overflow-y: auto;">
                 
-                <!-- Part 1: V4 PREMIUM ADDONS -->
+                <!-- Part 1: COMPONENTS -->
                 <div class="panel-header" style="background: rgba(99, 102, 241, 0.03);">
-                    <span style="font-size: 10px; font-weight: 800; color: #818cf8; letter-spacing: 1.5px;">V4 PREMIUM ADDONS</span>
+                    <span style="font-size: 10px; font-weight: 800; color: #818cf8; letter-spacing: 1.5px;">COMPONENTS</span>
                 </div>
                 <div class="components-body" style="padding: 12px;">
                     <div class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
@@ -400,14 +400,42 @@
                     <span style="font-size: 10px; opacity: 0.6;">ATOMIC LIBRARY</span>
                 </div>
                 <div class="components-body" style="padding: 16px;">
-                    <div class="component-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-                        <div class="component-item" onclick="insertAtomicComponent('image', 'LF Logo')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; text-align: center;">
-                            <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width: 100%; height: auto; object-fit: contain;">
-                            <div style="font-size: 10px; margin-top: 4px; color: var(--text-secondary);">LF Logo</div>
+                    <div class="component-item" onclick="insertAtomicComponent('image', 'LF Logo')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; text-align: center; margin-bottom: 12px; transition: background 0.2s;">
+                        <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width: 100%; height: auto; object-fit: contain;">
+                        <div style="font-size: 10px; margin-top: 4px; color: var(--text-secondary);">LF Logo</div>
+                    </div>
+                    <div class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                        <div class="component-item" onclick="insertAtomicComponent('icon', 'search')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: background 0.2s;">
+                            <div class="lf-icon lf-icon-search" style="transform: scale(0.6); margin: -8px 0;"></div>
+                            <div style="font-size: 9px; color: var(--text-secondary); text-align: center; margin-top: 2px;">검색</div>
                         </div>
-                        <div class="component-item" onclick="insertAtomicComponent('text', 'LF Discount')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; cursor: pointer; text-align: center;">
-                            <div style="color: #E02020; font-size: 16px; font-weight: 800; height: 40px; display: flex; align-items: center; justify-content: center;">20%</div>
-                            <div style="font-size: 10px; margin-top: 4px; color: var(--text-secondary);">LF Discount</div>
+                        <div class="component-item" onclick="insertAtomicComponent('icon', 'bell')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: background 0.2s;">
+                            <div class="lf-icon lf-icon-bell" style="transform: scale(0.6); margin: -8px 0;"></div>
+                            <div style="font-size: 9px; color: var(--text-secondary); text-align: center; margin-top: 2px;">알림</div>
+                        </div>
+                        <div class="component-item" onclick="insertAtomicComponent('icon', 'cart')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: background 0.2s;">
+                            <div class="lf-icon lf-icon-cart" style="transform: scale(0.6); margin: -8px 0;"></div>
+                            <div style="font-size: 9px; color: var(--text-secondary); text-align: center; margin-top: 2px;">장바구니</div>
+                        </div>
+                        <div class="component-item" onclick="insertAtomicComponent('icon', 'category')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: background 0.2s;">
+                            <div class="lf-icon lf-icon-category" style="transform: scale(0.6); margin: -8px 0;"></div>
+                            <div style="font-size: 9px; color: var(--text-secondary); text-align: center; margin-top: 2px;">카테고리</div>
+                        </div>
+                        <div class="component-item" onclick="insertAtomicComponent('icon', 'brand')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: background 0.2s;">
+                            <div class="lf-icon lf-icon-brand" style="transform: scale(0.6); margin: -8px 0;"></div>
+                            <div style="font-size: 9px; color: var(--text-secondary); text-align: center; margin-top: 2px;">브랜드</div>
+                        </div>
+                        <div class="component-item" onclick="insertAtomicComponent('icon', 'home')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: background 0.2s;">
+                            <div class="lf-icon lf-icon-home" style="transform: scale(0.6); margin: -8px 0;"></div>
+                            <div style="font-size: 9px; color: var(--text-secondary); text-align: center; margin-top: 2px;">홈</div>
+                        </div>
+                        <div class="component-item" onclick="insertAtomicComponent('icon', 'heart')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: background 0.2s;">
+                            <div class="lf-icon lf-icon-heart" style="transform: scale(0.6); margin: -8px 0;"></div>
+                            <div style="font-size: 9px; color: var(--text-secondary); text-align: center; margin-top: 2px;">위시리스트</div>
+                        </div>
+                        <div class="component-item" onclick="insertAtomicComponent('icon', 'my')" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: background 0.2s;">
+                            <div class="lf-icon lf-icon-my" style="transform: scale(0.6); margin: -8px 0;"></div>
+                            <div style="font-size: 9px; color: var(--text-secondary); text-align: center; margin-top: 2px;">마이페이지</div>
                         </div>
                     </div>
                 </div>
