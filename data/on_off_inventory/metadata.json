@@ -5,17 +5,6 @@
   "jira": "LFML-138562",
   "figmaUrl": "https://docs.google.com/presentation/d/1d258mtfK2IB0a5ka1X1eOtVHzVn4T1DO/edit",
   "screens": {
-    "slide_01_cover.html": {
-      "title": "01. 프로젝트 표지",
-      "type": "cover",
-      "description": [
-        {
-          "text": "온오프 재고 효율화 마스터 플랜 v0.7",
-          "x": 0,
-          "y": 0
-        }
-      ]
-    },
     "01_Global_Process.html": {
       "title": "02. 전체 프로세스",
       "type": "architecture",
