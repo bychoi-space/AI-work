@@ -436,6 +436,15 @@ async function loadScreen(fileName) {
 .v4-premium-table td { padding: 16px; font-size: 14px; color: #1a1c1e !important; border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
 .v4-shape { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border: 2px solid transparent; transition: all 0.3s; overflow: hidden; }
+.lf-icon { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png"); background-size: 200px 160px; width: 40px; height: 40px; display: inline-block; background-repeat: no-repeat; pointer-events: none; }
+.lf-icon-home { background-position: -80px 0; }
+.lf-icon-category { background-position: 0 0; }
+.lf-icon-my { background-position: -120px 0; }
+.lf-icon-heart { background-position: -160px 0; }
+.lf-icon-search { background-position: -80px -40px; }
+.lf-icon-cart { background-position: -120px -40px; }
+.lf-icon-brand { background-position: -40px 0; }
+.lf-icon-bell { background-position: -40px -40px; }
 .v4-shape-rect { border-radius: 8px; }
 .v4-shape-circle { border-radius: 50%; }
 .v4-shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
