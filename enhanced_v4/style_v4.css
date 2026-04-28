@@ -374,15 +374,20 @@
 /* Metadata Panel V4 Styles */
 .v4-meta-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1.5fr 1.5fr;
-    gap: 20px;
-    padding: 8px 24px;
+    grid-template-columns: 1.8fr 1fr 1fr 1.4fr 1.4fr;
+    gap: 10px 16px;
+    padding: 4px 16px;
     align-items: center;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
 }
 .v4-meta-item {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
+    min-width: 0;
+    overflow: hidden;
 }
 .v4-meta-item label {
     font-size: 9px;
@@ -390,20 +395,27 @@
     color: #6366f1;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 .v4-meta-item input {
     background: transparent;
     border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     color: #f8fafc;
-    font-size: 13px;
-    padding: 4px 0;
+    font-size: 12px;
+    padding: 3px 0;
     transition: border-color 0.2s;
     width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .v4-meta-item input:focus {
     outline: none;
     border-bottom-color: #6366f1;
+    white-space: normal;
+    overflow: visible;
 }
 .v4-meta-item input::placeholder {
     color: rgba(255, 255, 255, 0.2);
