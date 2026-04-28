@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>프로젝트 일정(마일스톤)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; background: #f8f9fa; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        .page { width: 1440px; height: 900px; position: relative; background: #ffffff; box-shadow: 0 40px 100px rgba(0,0,0,0.05); overflow: hidden; font-family: 'Inter', sans-serif; }
+        
+        /* Table Styles */
+        .gantt-table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+        .gantt-table th, .gantt-table td { border: 1px solid #d1d5db; box-sizing: border-box; text-align: center; }
+        .gantt-table th { color: white; font-weight: 600; }
+        .th-month { background: #7a7a7a; height: 30px; }
+        .th-week { background: #999999; height: 30px; font-size: 11px; }
+        .td-task { font-weight: 600; color: #4b5563; text-align: left !important; padding-left: 20px; }
+        .gantt-table tbody tr { height: 60px; }
+        
+        /* Task Colors */
+        .bg-gray { background: #f3f4f6; }
+        .bg-green { background: #e8f5e9; }
+        .bg-blue { background: #e3f2fd; }
+        .bg-yellow { background: #fff8e1; }
+
+        /* Gantt Bar Styles */
+        .gantt-bar { border-radius: 10px; height: 16px; position: absolute; top: 0; left: 0; box-shadow: 1px 2px 4px rgba(0,0,0,0.1); }
+        .gantt-bar-inner { position: absolute; height: 100%; border-radius: 10px; }
+    </style>
+</head>
+<body>
+<div class="page lf-canvas">
+
+    <!-- ==================== HEADER & LABELS ==================== -->
+    <div class="lf-component" style="position: absolute; top: 30px; left: 30px; width: 280px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #555555; border: 3px solid #dddddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 800; font-size: 16px;">개발 예상 일정 (마일스톤)</div>
+        </div>
+    </div>
+
+    <!-- Red Notice Text -->
+    <div class="lf-component" style="position: absolute; top: 45px; left: 1150px; width: 260px; height: 20px; z-index: 1000;">
+        <div class="v4-editable-cell" contenteditable="true" style="width: 100%; font-size: 12px; font-weight: 700; color: #d32f2f; text-align: right; outline: none;">※ 상세 개발 일정은 변동될 수 있습니다.</div>
+    </div>
+
+    <!-- ==================== TABLE GRID (Base Layer) ==================== -->
+    <div class="lf-component" style="position: absolute; top: 120px; left: 30px; width: 1380px; height: 600px; z-index: 100;">
+        <table class="gantt-table">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 180px; background: #888888;">Task</th>
+                    <th colspan="5" class="th-month">12월</th>
+                    <th colspan="4" class="th-month">1월</th>
+                    <th colspan="4" class="th-month">2월</th>
+                    <th colspan="4" class="th-month">3월</th>
+                    <th colspan="5" class="th-month">4월</th>
+                    <th colspan="4" class="th-month">5월</th>
+                </tr>
+                <tr>
+                    <!-- 12월 5주 -->
+                    <th class="th-week">1W</th><th class="th-week">2W</th><th class="th-week">3W</th><th class="th-week">4W</th><th class="th-week">5W</th>
+                    <!-- 1월 4주 -->
+                    <th class="th-week">1W</th><th class="th-week">2W</th><th class="th-week">3W</th><th class="th-week">4W</th>
+                    <!-- 2월 4주 -->
+                    <th class="th-week">1W</th><th class="th-week">2W</th><th class="th-week">3W</th><th class="th-week">4W</th>
+                    <!-- 3월 4주 -->
+                    <th class="th-week">1W</th><th class="th-week">2W</th><th class="th-week">3W</th><th class="th-week">4W</th>
+                    <!-- 4월 5주 -->
+                    <th class="th-week">1W</th><th class="th-week">2W</th><th class="th-week">3W</th><th class="th-week">4W</th><th class="th-week">5W</th>
+                    <!-- 5월 4주 -->
+                    <th class="th-week">1W</th><th class="th-week">2W</th><th class="th-week">3W</th><th class="th-week">4W</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Row 0: 분석/설계 -->
+                <tr>
+                    <td class="td-task bg-gray"><div class="v4-editable-cell" contenteditable="true">분석/설계</div></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <!-- Row 1: 기획서 -->
+                <tr>
+                    <td class="td-task bg-green"><div class="v4-editable-cell" contenteditable="true">기획서</div></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <!-- Row 2: 디자인 -->
+                <tr>
+                    <td class="td-task bg-green"><div class="v4-editable-cell" contenteditable="true">디자인</div></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <!-- Row 3: 퍼블리싱 -->
+                <tr>
+                    <td class="td-task bg-green"><div class="v4-editable-cell" contenteditable="true">퍼블리싱</div></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <!-- Row 4: 개발 -->
+                <tr>
+                    <td class="td-task bg-blue"><div class="v4-editable-cell" contenteditable="true">개발</div></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <!-- Row 5: SAP, OMS 개발 -->
+                <tr>
+                    <td class="td-task bg-blue"><div class="v4-editable-cell" contenteditable="true">SAP, OMS 개발<br><span style="font-size: 11px; font-weight: 500;">(ICT)</span></div></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <!-- Row 6: 테스트 -->
+                <tr>
+                    <td class="td-task bg-yellow"><div class="v4-editable-cell" contenteditable="true">테스트</div></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <!-- Row 7: 오픈 -->
+                <tr>
+                    <td class="td-task bg-yellow"><div class="v4-editable-cell" contenteditable="true">오픈</div></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <!-- Row 8: 운영 보수 -->
+                <tr>
+                    <td class="td-task bg-gray"><div class="v4-editable-cell" contenteditable="true">운영 보수</div></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ==================== GANTT CHART BARS (Absolute Float Layer) ==================== -->
+    
+    <!-- 1. 분석/설계 -->
+    <div class="lf-component" style="position: absolute; top: 202px; left: 215px; width: 220px; height: 16px; z-index: 500;">
+        <div class="gantt-bar" style="width: 100%; background: #424242;"></div>
+    </div>
+
+    <!-- 2. 기획서 -->
+    <div class="lf-component" style="position: absolute; top: 262px; left: 260px; width: 350px; height: 16px; z-index: 500;">
+        <div class="gantt-bar" style="width: 100%; background: #c8e6c9;"></div>
+        <!-- Active dark green: left 0%, width 50% -->
+        <div class="gantt-bar-inner" style="left: 0; top: 0; width: 50%; background: #558b2f;"></div>
+    </div>
+
+    <!-- 3. 디자인 -->
+    <div class="lf-component" style="position: absolute; top: 322px; left: 445px; width: 350px; height: 16px; z-index: 500;">
+        <div class="gantt-bar" style="width: 100%; background: #c8e6c9;"></div>
+        <!-- Active dark green: left 38%, width 50% -->
+        <div class="gantt-bar-inner" style="left: 38%; top: 0; width: 50%; background: #558b2f;"></div>
+    </div>
+
+    <!-- 4. 퍼블리싱 -->
+    <div class="lf-component" style="position: absolute; top: 382px; left: 535px; width: 350px; height: 16px; z-index: 500;">
+        <div class="gantt-bar" style="width: 100%; background: #c8e6c9;"></div>
+        <!-- Active dark green: left 38%, width 50% -->
+        <div class="gantt-bar-inner" style="left: 38%; top: 0; width: 50%; background: #558b2f;"></div>
+    </div>
+
+    <!-- 5. 개발 -->
+    <div class="lf-component" style="position: absolute; top: 442px; left: 580px; width: 580px; height: 16px; z-index: 500;">
+        <div class="gantt-bar" style="width: 100%; background: #285496;"></div>
+        <div style="position: absolute; right: 2px; top: 2px; width: 12px; height: 12px; background: #90caf9; border-radius: 50%;"></div>
+    </div>
+    <!-- 개발 라벨 Text -->
+    <div class="lf-component" style="position: absolute; top: 420px; left: 1070px; width: 120px; height: 20px; z-index: 600;">
+        <div class="v4-editable-cell" contenteditable="true" style="width: 100%; font-size: 11px; font-weight: 700; color: #1e3a8a; outline: none; text-align: center;">개발 완료 : 4월 24일</div>
+    </div>
+
+    <!-- 6. SAP, OMS 개발 -->
+    <div class="lf-component" style="position: absolute; top: 502px; left: 580px; width: 580px; height: 16px; z-index: 500;">
+        <div class="gantt-bar" style="width: 100%; background: #285496;"></div>
+    </div>
+
+    <!-- 7. 테스트 -->
+    <div class="lf-component" style="position: absolute; top: 562px; left: 1135px; width: 170px; height: 16px; z-index: 500;">
+        <div class="gantt-bar" style="width: 100%; background: #ffb300;"></div>
+    </div>
+
+    <!-- 8. 오픈 -->
+    <!-- 오렌지 동그라미 -->
+    <div class="lf-component" style="position: absolute; top: 620px; left: 1285px; width: 20px; height: 20px; z-index: 500;">
+        <div style="width: 100%; height: 100%; background: #f57c00; border-radius: 50%; box-shadow: 1px 2px 4px rgba(0,0,0,0.2);"></div>
+    </div>
+    <!-- 오픈 라벨 Text -->
+    <div class="lf-component" style="position: absolute; top: 595px; left: 1250px; width: 100px; height: 20px; z-index: 600;">
+        <div class="v4-editable-cell" contenteditable="true" style="width: 100%; font-size: 11px; font-weight: 700; color: #d32f2f; outline: none; text-align: center;">Target : 5월 21일</div>
+    </div>
+
+    <!-- 9. 운영 보수 -->
+    <!-- On-going Tag -->
+    <div class="lf-component" style="position: absolute; top: 677px; left: 1275px; width: 80px; height: 26px; z-index: 500;">
+        <div class="v4-shape" style="width: 100%; height: 100%; background: #555555; clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%); display: flex; align-items: center; padding-left: 10px; color: white; box-sizing: border-box; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);">
+            <div class="v4-editable-cell" contenteditable="true" style="font-size: 11px; font-weight: 700; outline: none;">On-going</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Initialization Script for Quill and Draggable Events -->
+<script>
+    // V4 library will auto-initialize components
+</script>
+</body>
+</html>
