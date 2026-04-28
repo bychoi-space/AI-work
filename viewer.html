@@ -78,6 +78,61 @@
         .handle-right { left: -20px; border-right: none; border-radius: 8px 0 0 8px; }
         .sidebar-handle span { font-size: 18px; }
 
+        /* ===== Fullscreen Mode ===== */
+        body.fullscreen-mode .toolbar,
+        body.fullscreen-mode .project-info-bar,
+        body.fullscreen-mode .bottom-bar,
+        body.fullscreen-mode .sidebar-left,
+        body.fullscreen-mode .sidebar-right {
+            display: none !important;
+        }
+        body.fullscreen-mode #workspace-view {
+            height: 100vh !important;
+        }
+        body.fullscreen-mode .center-content {
+            flex: 1;
+        }
+        body.fullscreen-mode .canvas {
+            height: 100vh !important;
+        }
+        /* Floating exit button */
+        #btn-fullscreen-exit {
+            display: none;
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 99999;
+            padding: 8px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            background: rgba(30, 33, 40, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: #f8fafc;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            gap: 6px;
+            align-items: center;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(-8px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        #btn-fullscreen-exit span { font-size: 16px; }
+        #btn-fullscreen-exit:hover {
+            background: rgba(99, 102, 241, 0.6);
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-8px) scale(1.04);
+            box-shadow: 0 6px 28px rgba(99, 102, 241, 0.35);
+        }
+        body.fullscreen-mode #btn-fullscreen-exit {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
     </style>
     <script>
         window.onerror = function(msg, url, line, col, error) {
@@ -146,6 +201,10 @@
             <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
             <button class="tool-btn" onclick="centerView()" title="가운데 맞춤"><span class="material-icons-outlined">center_focus_strong</span></button>
             
+            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+            <button class="tool-btn" id="btn-fullscreen-toggle" title="전체보기 (F)">
+                <span class="material-icons-outlined">fullscreen</span>
+            </button>
         </div>
     </header>
 
@@ -330,6 +389,12 @@
             </div>
         </aside>
     </div>
+
+    <!-- Fullscreen Exit Button (floating, visible only in fullscreen mode) -->
+    <button id="btn-fullscreen-exit" title="전체보기 취소 (F / ESC)">
+        <span class="material-icons-outlined">fullscreen_exit</span>
+        전체보기 취소
+    </button>
 
     <!-- Auth Modal -->
     <div id="auth-modal" class="modal-overlay">

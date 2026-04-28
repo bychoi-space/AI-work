@@ -154,6 +154,8 @@ const DOM = {
     btnToggleLeft: get('btn-toggle-left'),
     btnToggleRight: get('btn-toggle-right'),
     btnGlobalSave: get('btn-global-save'),
+    btnFullscreen: get('btn-fullscreen-toggle'),
+    btnFullscreenExit: get('btn-fullscreen-exit'),
     
     // Screen Management
     btnAddScreen: get('btn-add-screen'),
@@ -1346,6 +1348,26 @@ function toggleSidebar(side, force) {
     setTimeout(centerView, 300);
 }
 
+function toggleFullscreen(forceExit) {
+    const isActive = document.body.classList.contains('fullscreen-mode');
+    const shouldExit = forceExit === true || (forceExit === undefined && isActive);
+
+    if (shouldExit) {
+        document.body.classList.remove('fullscreen-mode');
+        if (DOM.btnFullscreen) {
+            DOM.btnFullscreen.querySelector('span').innerText = 'fullscreen';
+            DOM.btnFullscreen.title = '전체보기 (F)';
+        }
+    } else {
+        document.body.classList.add('fullscreen-mode');
+        if (DOM.btnFullscreen) {
+            DOM.btnFullscreen.querySelector('span').innerText = 'fullscreen_exit';
+            DOM.btnFullscreen.title = '전체보기 취소 (F)';
+        }
+    }
+    setTimeout(centerView, 350);
+}
+
 function switchSidebarTab(tabName) {
     DOM.tabBtns.forEach(btn => {
         btn.classList.toggle('active', btn.dataset.tab === tabName);
@@ -1540,6 +1562,7 @@ window.addEventListener('keydown', async e => {
     // Sidebar & Tab Shortcuts
     if(e.code === 'KeyL') toggleSidebar('left');
     if(e.code === 'KeyR') toggleSidebar('right');
+    if(e.code === 'KeyF') toggleFullscreen();
     if(e.code === 'KeyE') switchSidebarTab('editor');
     if(e.code === 'KeyD') switchSidebarTab('description');
 });
@@ -1901,6 +1924,10 @@ async function init() {
             setTimeout(centerView, 400);
         };
 
+        // Fullscreen Toggle
+        if (DOM.btnFullscreen) DOM.btnFullscreen.onclick = () => toggleFullscreen();
+        if (DOM.btnFullscreenExit) DOM.btnFullscreenExit.onclick = () => toggleFullscreen(true);
+
         DOM.tabBtns.forEach(btn => {
             btn.onclick = () => switchTab(btn.dataset.tab);
         });
@@ -1909,6 +1936,11 @@ async function init() {
         window.addEventListener('keydown', (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); handleGlobalSave(); }
             if (e.key === 'Escape') {
+                // Fullscreen exit takes priority
+                if (document.body.classList.contains('fullscreen-mode')) {
+                    toggleFullscreen(true);
+                    return;
+                }
                 DOM.addScreenModal.classList.remove('active');
                 DOM.editScreenModal.classList.remove('active');
                 hideAuthModal();
