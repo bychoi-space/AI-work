@@ -12,7 +12,7 @@
       "type": "cover",
       "updatedAt": "2026-04-28T02:11:23.656Z",
       "template": "template_cover.html",
-      "description": ""
+      "description": []
     }
   },
   "assignee": "최범열",
@@ -20,7 +20,7 @@
   "jira": "LFML-143087",
   "developer": "신소연",
   "screenOrder": [
-    "00_Cover_7528.html",
-    "01_Delivery_Notice.html"
+    "01_Delivery_Notice.html",
+    "00_Cover_7528.html"
   ]
 }
