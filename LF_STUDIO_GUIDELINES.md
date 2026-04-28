@@ -20,6 +20,7 @@
   - 마커 인터랙션은 '드래그를 통한 위치 이동'과 '클릭을 통한 편집 모드 진입'이 논리적으로 완벽히 분리되어야 한다.
 
 ## 3. 📂 프로젝트 관리 규칙
+- **Canvas Size Standard**: 에디터 스크린(`lf-canvas` 또는 `page`)의 가로/세로 크기는 항상 **'프로젝트 표지(Cover)' 스크린의 크기(예: 1440x900)를 기준**으로 완전히 동일하게 설정하여, 화면 전환 시 스크롤 위치 변동이나 여백 불일치가 발생하지 않도록 엄격히 통일한다.
 - **File Management**: 신규 화면 추가 시 `assets/templates.js`의 표준 템플릿을 활용하여 구조적 일관성을 확보한다.
 - **Categorization**: 화면별 성격에 따라 다음 카테고리 태그컬러를 엄격히 준수한다:
   - `Cover`: Lavender / `Architecture`: Mint / `Plan`: Blue / `UI`: Indigo / `Admin`: Orange
