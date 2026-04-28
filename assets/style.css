@@ -1861,6 +1861,36 @@ body.drag-active #drop-overlay {
     opacity: 0.75;
 }
 
+.btn-jira-shortcut {
+    display: none; /* shown by JS when jira value exists */
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    height: 26px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+    color: #a5b4fc;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+}
+.btn-jira-shortcut:hover {
+    background: rgba(99, 102, 241, 0.28);
+    border-color: rgba(99, 102, 241, 0.6);
+    color: #c7d2fe;
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
+    transform: translateY(-1px);
+}
+.btn-jira-shortcut:active {
+    transform: translateY(0);
+}
+
+
 .project-info-bar .form-group-inline {
     display: flex;
     align-items: center;

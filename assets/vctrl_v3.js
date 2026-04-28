@@ -647,9 +647,21 @@ function updateProperties() {
                 <label>PERIOD</label>
                 <input type="text" id="viewer-meta-period" value="${pm.period || ''}" placeholder="사업 기간">
             </div>
-            <div class="v4-meta-item">
+            <div class="v4-meta-item" style="position: relative;">
                 <label>JIRA / LINKS</label>
-                <input type="text" id="viewer-meta-jira" value="${pm.jira || ''}" placeholder="JIRA 티켓 또는 관련 링크">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <input type="text" id="viewer-meta-jira" value="${pm.jira || ''}" placeholder="예) LFML-123456" style="flex: 1;">
+                    <a id="btn-jira-link"
+                       href="${pm.jira ? 'https://jira.lfcorp.com/browse/' + pm.jira.trim() : '#'}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn-jira-shortcut"
+                       style="display: ${pm.jira && pm.jira.trim() ? 'flex' : 'none'};"
+                       title="JIRA 바로가기: ${pm.jira || ''}">
+                        <span class="material-icons-outlined" style="font-size:13px;">open_in_new</span>
+                        바로가기
+                    </a>
+                </div>
             </div>
         </div>
         <div class="v4-meta-actions">
@@ -664,6 +676,7 @@ function updateProperties() {
         </div>
     `;
 
+
     // Re-attach global save listener (element is re-created on every render)
     const btnSave = document.getElementById('btn-global-save');
     if (btnSave) btnSave.onclick = handleGlobalSave;
@@ -676,6 +689,23 @@ function updateProperties() {
             input.oninput = () => markAsDirty();
         });
     }
+
+    // JIRA 바로가기 버튼 실시간 업데이트
+    const jiraInput = document.getElementById('viewer-meta-jira');
+    const jiraBtn   = document.getElementById('btn-jira-link');
+    if (jiraInput && jiraBtn) {
+        jiraInput.addEventListener('input', () => {
+            const val = jiraInput.value.trim();
+            if (val) {
+                jiraBtn.href = 'https://jira.lfcorp.com/browse/' + val;
+                jiraBtn.title = 'JIRA 바로가기: ' + val;
+                jiraBtn.style.display = 'flex';
+            } else {
+                jiraBtn.style.display = 'none';
+            }
+        });
+    }
+
 
     const periodInput = document.getElementById('viewer-meta-period');
     if (!state.isReadOnly && periodInput) {
