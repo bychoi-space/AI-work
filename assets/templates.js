@@ -103,7 +103,7 @@ window.LF_TEMPLATES = {
         <div id="cover-title" class="lf-component" style="top: 220px; left: 80px; min-width: 800px;">
             <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
             <div class="lf-delete-trigger">×</div>
-            <div contenteditable="true" class="v4-editable-cell" style="font-size: 72px; font-weight: 900; line-height: 1.15; letter-spacing: -2px; color: var(--v4-text); margin-bottom: 16px;">{{PROJECT_NAME}}</div>
+            <div contenteditable="true" class="v4-editable-cell" style="font-size: 64px; font-weight: 900; line-height: 1.15; letter-spacing: -2px; color: var(--v4-text); margin-bottom: 28px;">{{PROJECT_NAME}}</div>
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div style="width: 40px; height: 3px; background: var(--v4-accent);"></div>
                 <div contenteditable="true" class="v4-editable-cell" style="font-size: 24px; color: var(--v4-text-sub); font-weight: 500; letter-spacing: 1px; text-transform: uppercase;">Technical Design Specification</div>
