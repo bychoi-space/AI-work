@@ -16,6 +16,12 @@
           "color": "#000000"
         }
       ]
+    },
+    "00_Cover_0943.html": {
+      "title": "00_Cover_0943",
+      "type": "cover",
+      "updatedAt": "2026-04-28T02:09:14.225Z",
+      "template": "template_cover.html"
     }
   },
   "createdAt": "2026-04-16T08:07:34.411Z",
