@@ -1569,6 +1569,15 @@ window.addEventListener('keydown', async e => {
 
 window.addEventListener('keyup', e => { if(e.code === 'Space' && state.tool !== 'hand') { DOM.canvas.classList.remove('hand-active'); DOM.iframe.style.pointerEvents = 'auto'; }});
 
+// Auto re-center on browser/monitor resize (debounced 300ms)
+let _resizeTimer = null;
+window.addEventListener('resize', () => {
+    clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(() => {
+        centerView();
+    }, 300);
+});
+
 DOM.canvas.addEventListener('wheel', e => {
     e.preventDefault();
     const s = state.transform.scale, ns = Math.max(0.1, Math.min(s * (1 + (e.deltaY > 0 ? -0.1 : 0.1)), 20));
