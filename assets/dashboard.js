@@ -129,9 +129,7 @@ async function refreshFileList() {
             }
         }
 
-        if (folders.length === 0 || !folders.find(f => f.name === 'Default_Project')) {
-            folders.unshift({ name: 'Default_Project', type: 'dir' });
-        }
+
 
         if (DOM.globalLoader) {
             DOM.globalLoader.classList.add('active');
@@ -235,7 +233,14 @@ async function handleAuthTest() {
 
 async function renderList(projectsToRender = state.projects) {
     if (projectsToRender.length === 0) {
-        DOM.list.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">검색된 프로젝트가 없습니다.</div>`;
+        const isSearch = document.getElementById('project-search-input') && document.getElementById('project-search-input').value.trim() !== '';
+        const msg = isSearch ? "검색된 프로젝트가 없습니다." : "생성된 프로젝트가 없습니다. 우측 상단의 New Project 버튼을 눌러 새 프로젝트를 생성해주세요.";
+        DOM.list.innerHTML = `
+            <div class="empty-text" style="grid-column: 1 / -1; padding: 60px 20px; text-align: center; background: rgba(30, 41, 59, 0.4); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+                <span class="material-icons-outlined" style="font-size: 48px; color: var(--accent); opacity: 0.6; margin-bottom: 16px; display: block;">create_new_folder</span>
+                <div style="font-size: 15px; font-weight: 500; color: var(--text-primary); margin-bottom: 8px;">프로젝트가 비어 있습니다</div>
+                <div style="font-size: 13px; color: var(--text-secondary);">${msg}</div>
+            </div>`;
         return;
     }
     DOM.list.innerHTML = '';

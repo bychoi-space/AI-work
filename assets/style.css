@@ -696,8 +696,8 @@ body {
 .screen-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
+    gap: 6px;
+    padding: 8px 10px;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
@@ -724,46 +724,50 @@ body {
 }
 .screen-delete-btn {
     opacity: 0;
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 4px;
-    color: #f87171;
+    color: #fca5a5;
     transition: all 0.2s;
-    background: transparent;
-    border: none;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     cursor: pointer;
 }
 .screen-item:hover .screen-delete-btn {
-    opacity: 0.6;
+    opacity: 1;
 }
 .screen-delete-btn:hover {
     opacity: 1 !important;
-    background: rgba(239, 68, 68, 0.2);
+    background: #ef4444;
+    color: #fff;
+    border-color: #ef4444;
 }
 
 .screen-edit-btn {
     opacity: 0;
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 4px;
-    color: var(--accent);
+    color: #93c5fd;
     transition: all 0.2s;
-    background: transparent;
-    border: none;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     cursor: pointer;
 }
 .screen-item:hover .screen-edit-btn {
-    opacity: 0.6;
+    opacity: 1;
 }
 .screen-edit-btn:hover {
     opacity: 1 !important;
-    background: var(--selected-bg);
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
 }
 
 /* Screen Categorical Badges */
@@ -773,7 +777,7 @@ body {
     padding: 1px 6px;
     border-radius: 4px;
     text-transform: uppercase;
-    margin-right: 8px;
+    margin-right: 4px;
     flex-shrink: 0;
     letter-spacing: 0.3px;
 }

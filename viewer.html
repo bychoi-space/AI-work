@@ -81,7 +81,6 @@
         /* ===== Fullscreen Mode ===== */
         body.fullscreen-mode .toolbar,
         body.fullscreen-mode .project-info-bar,
-        body.fullscreen-mode .sidebar-left,
         body.fullscreen-mode .sidebar-right {
             display: none !important;
         }
@@ -170,7 +169,7 @@
                 <span class="material-icons-outlined">arrow_back</span>
             </a>
             <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
-            <img src="assets/logo.svg" class="brand-logo" alt="Logo">
+            <img src="assets/logo.svg" class="brand-logo" alt="Logo" loading="lazy">
             <span style="font-weight: 600; letter-spacing: 0.5px;" id="file-name-display">Loading...</span>
         </div>
         
@@ -217,7 +216,7 @@
 
     <div id="workspace-view" style="display: flex; flex: 1; overflow: hidden;">
         <!-- Left Sidebar: Project & Screens -->
-        <aside class="sidebar sidebar-left" id="sidebar-left" style="width: 280px; background: var(--panel-bg); display: flex; flex-direction: column;">
+        <aside class="sidebar sidebar-left" id="sidebar-left" style="width: 260px; background: var(--panel-bg); display: flex; flex-direction: column;">
             <div class="sidebar-handle handle-left" id="btn-toggle-left" title="Toggle Metadata (L)">
                 <span class="material-icons-outlined">chevron_left</span>
             </div>
@@ -237,7 +236,7 @@
             <main class="canvas" id="canvas">
                 <div class="stage" id="stage">
                     <div class="artboard-wrapper" id="artboard-wrapper">
-                        <iframe id="main-iframe" class="artboard-iframe" style="width: 1440px; height: 900px; display: none;" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
+                        <iframe id="main-iframe" class="artboard-iframe" style="width: 1440px; height: 900px; display: none;" sandbox="allow-scripts allow-same-origin allow-forms allow-modals" loading="lazy"></iframe>
                         <div class="pins-layer" id="pins-layer"></div>
                     </div>
                 </div>
@@ -252,7 +251,7 @@
         </div>
 
         <!-- Right Sidebar: Description & Editor -->
-        <aside class="sidebar sidebar-right" id="sidebar-right" style="width: 340px; background: var(--panel-bg); display: flex; flex-direction: column;">
+        <aside class="sidebar sidebar-right" id="sidebar-right" style="width: 310px; background: var(--panel-bg); display: flex; flex-direction: column;">
             <div class="sidebar-handle handle-right" id="btn-toggle-right" title="Toggle Sidebar (R)">
                 <span class="material-icons-outlined">chevron_right</span>
             </div>
@@ -434,7 +433,7 @@
                 <div class="components-body" style="padding: 16px;">
                     <div class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
                         <div class="component-item" onclick="insertAtomicComponent('image', 'LF Logo')" style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: background 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                            <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width: 28px; filter: brightness(0); margin-top: 4px; margin-bottom: 10px;">
+                            <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width: 28px; filter: brightness(0); margin-top: 4px; margin-bottom: 10px;" loading="lazy">
                             <div style="font-size: 9px; color: #1e293b; font-weight: 700; text-align: center; margin-top: 2px;">LF Logo</div>
                         </div>
                         <div class="component-item" onclick="insertAtomicComponent('icon', 'search')" style="background: #ffffff; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: background 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
