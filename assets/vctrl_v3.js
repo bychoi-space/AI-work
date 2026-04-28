@@ -644,6 +644,10 @@ function updateProperties() {
                 <input type="text" id="viewer-meta-assignee" value="${pm.assignee || ''}" placeholder="담당자">
             </div>
             <div class="v4-meta-item">
+                <label>DEVELOPER</label>
+                <input type="text" id="viewer-meta-developer" value="${pm.developer || ''}" placeholder="개발자">
+            </div>
+            <div class="v4-meta-item">
                 <label>PERIOD</label>
                 <input type="text" id="viewer-meta-period" value="${pm.period || ''}" placeholder="사업 기간">
             </div>
@@ -1007,13 +1011,33 @@ async function handleGlobalSave() {
         if (state.isReadOnly) return showAuthModal();
         
         const btn = DOM.btnGlobalSave;
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<span class="material-icons-outlined" style="font-size:16px;">sync</span> 저장 중...';
-        btn.style.opacity = '0.7';
+        if (!btn) return;
+
+        // --- Loading bar UI ---
+        const originalHTML = btn.innerHTML;
+        btn.disabled = true;
+        btn.style.position = 'relative';
+        btn.style.overflow = 'hidden';
+        btn.innerHTML = `
+            <span class="material-icons-outlined" style="font-size:15px;">save</span>
+            저장 중...
+            <span id="save-loading-bar" style="
+                position:absolute; left:0; bottom:0; height:3px;
+                width:0%; background:rgba(255,255,255,0.9);
+                border-radius:0 0 8px 8px;
+                transition:width 2.5s cubic-bezier(0.4,0,0.2,1);
+            "></span>
+        `;
+        // Trigger animation on next frame
+        requestAnimationFrame(() => {
+            const bar = document.getElementById('save-loading-bar');
+            if (bar) bar.style.width = '90%';
+        });
 
         const projectMeta = {
             title: document.getElementById('viewer-meta-title')?.value || '',
             assignee: document.getElementById('viewer-meta-assignee')?.value || '',
+            developer: document.getElementById('viewer-meta-developer')?.value || '',
             period: document.getElementById('viewer-meta-period')?.value || '',
             jira: document.getElementById('viewer-meta-jira')?.value || ''
         };
@@ -1026,29 +1050,48 @@ async function handleGlobalSave() {
             projectMeta, 
             htmlContent,
             description: state.activeFile ? state.activeFile.meta.description : []
-        }, (msg, color) => {
-            btn.innerHTML = `<span class="material-icons-outlined" style="font-size:16px;">${color === '#4ade80' ? 'check_circle' : 'error'}</span> ${msg}`;
-            btn.style.background = color || ''; btn.style.opacity = '1';
-            if (color === '#4ade80') {
-                setTimeout(() => { btn.innerHTML = originalText; btn.style.background = ''; }, 2000);
-            }
-        });
+        }, () => {}); // status handled below
+
+        // Complete the loading bar
+        const bar = document.getElementById('save-loading-bar');
+        if (bar) { bar.style.transition = 'width 0.3s ease'; bar.style.width = '100%'; }
+
+        await new Promise(r => setTimeout(r, 350)); // let bar fill
 
         if (success) {
             markAsClean();
             Object.assign(state.projectMetadata, projectMeta);
             if (projectMeta.title) DOM.fileName.innerText = projectMeta.title;
             console.log("[Save] Global save successful.");
+
+            // Success state
+            btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+            btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">check_circle</span> 저장 완료`;
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.style.background = '';
+                btn.style.position = '';
+                btn.style.overflow = '';
+                btn.disabled = false;
+            }, 1800);
         } else {
-            throw new Error("GitHub API 반영에 실패했습니다. 토큰이나 네트워크를 확인해주세요.");
+            throw new Error("GitHub API 반영에 실패했습니다.");
         }
     } catch (err) {
         console.error("[Save Error]", err);
-        alert("저장 중 오류가 발생했습니다: " + err.message);
         const btn = DOM.btnGlobalSave;
-        btn.innerHTML = '<span class="material-icons-outlined">error</span> 저장 실패';
-        btn.style.background = '#f87171';
-        setTimeout(() => { btn.innerHTML = '전체 저장'; btn.style.background = ''; btn.style.opacity = '1'; }, 3000);
+        if (btn) {
+            btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">error</span> 저장 실패`;
+            btn.style.background = '#ef4444';
+            btn.disabled = false;
+            setTimeout(() => {
+                btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">save</span> 전체 저장`;
+                btn.style.background = '';
+                btn.style.position = '';
+                btn.style.overflow = '';
+            }, 2500);
+        }
+        Notification.alert('저장 중 오류가 발생했습니다: ' + err.message, '오류', 'error');
     }
 }
 
