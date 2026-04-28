@@ -57,11 +57,6 @@
       "type": "ui",
       "description": "매장배송 뱃지 및 안내"
     },
-    "slide_09_ui_mockups_cart.html": {
-      "title": "09. [UI] 장바구니/주문완료",
-      "type": "ui",
-      "description": "배송 리드타임 안내"
-    },
     "slide_10_operational_flow.html": {
       "title": "10. 알림톡 서비스 흐름",
       "type": "architecture",
