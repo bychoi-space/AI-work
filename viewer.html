@@ -81,7 +81,6 @@
         /* ===== Fullscreen Mode ===== */
         body.fullscreen-mode .toolbar,
         body.fullscreen-mode .project-info-bar,
-        body.fullscreen-mode .bottom-bar,
         body.fullscreen-mode .sidebar-left,
         body.fullscreen-mode .sidebar-right {
             display: none !important;
@@ -211,7 +210,10 @@
     <!-- Top Project Info Bar -->
     <div class="project-info-bar" id="top-metadata-panel">
         <div class="empty-text" style="padding: 0; margin: 0;">Loading metadata...</div>
+        <!-- spacer: right-side controls are injected by updateProperties() -->
     </div>
+    <!-- bottom-updated span: kept for JS compatibility, hidden, moved into info-bar by JS -->
+    <span id="bottom-updated" style="display:none;"><span></span></span>
 
     <div id="workspace-view" style="display: flex; flex: 1; overflow: hidden;">
         <!-- Left Sidebar: Project & Screens -->
@@ -247,23 +249,6 @@
                     <p style="color: rgba(255,255,255,0.4); font-size: 13px; margin: 8px 0 0 0;">왼쪽 프로젝트 스크린 패널에서 '+' 버튼을 눌러 시작하세요.</p>
                 </div>
             </main>
-            
-            <footer class="bottom-bar">
-                <div class="bottom-info-group">
-                    <div class="bottom-item" id="bottom-updated" style="border-right: none;">
-                        <i class="material-icons-outlined">history</i>
-                        <span>최종 업데이트: -</span>
-                    </div>
-                </div>
-
-                <div class="bottom-actions">
-                    <button id="btn-global-save" class="btn-primary">
-                        <span class="material-icons-outlined" style="font-size:18px;">save</span>
-                        전체 저장
-                    </button>
-                </div>
-                <div class="bottom-right-spacer"></div>
-            </footer>
         </div>
 
         <!-- Right Sidebar: Description & Editor -->

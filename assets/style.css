@@ -1832,12 +1832,33 @@ body.drag-active #drop-overlay {
 .project-info-bar {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
-    padding: 10px 24px;
+    padding: 6px 16px;
     background: var(--panel-bg);
     border-bottom: 1px solid var(--border-color);
     overflow-x: auto;
     scrollbar-width: thin;
+    min-height: 44px;
+}
+
+.v4-meta-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+    margin-left: auto;
+    padding-left: 16px;
+}
+
+.v4-meta-updated {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0.75;
 }
 
 .project-info-bar .form-group-inline {

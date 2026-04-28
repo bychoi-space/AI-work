@@ -652,7 +652,23 @@ function updateProperties() {
                 <input type="text" id="viewer-meta-jira" value="${pm.jira || ''}" placeholder="JIRA 티켓 또는 관련 링크">
             </div>
         </div>
+        <div class="v4-meta-actions">
+            <div class="v4-meta-updated" id="meta-bar-updated">
+                <span class="material-icons-outlined" style="font-size:14px; opacity:0.5;">history</span>
+                <span id="meta-updated-txt">최종 업데이트: -</span>
+            </div>
+            <button id="btn-global-save" class="btn-primary" style="height:30px; padding:0 14px; font-size:12px; gap:6px; white-space:nowrap;">
+                <span class="material-icons-outlined" style="font-size:15px;">save</span>
+                전체 저장
+            </button>
+        </div>
     `;
+
+    // Re-attach global save listener (element is re-created on every render)
+    const btnSave = document.getElementById('btn-global-save');
+    if (btnSave) btnSave.onclick = handleGlobalSave;
+    // Update DOM reference
+    DOM.btnGlobalSave = btnSave || DOM.btnGlobalSave;
 
     // Metadata Input Listeners
     if (!state.isReadOnly) {
@@ -680,8 +696,9 @@ function updateProperties() {
     if (state.activeFile) {
         renderDescriptionList();
         const m = state.activeFile.meta || {};
-        if (DOM.bottomUpdated) {
-            DOM.bottomUpdated.innerText = m.updatedAt ? `최종 업데이트: ${new Date(m.updatedAt).toLocaleString()}` : '최종 업데이트: -';
+        const updatedTxt = document.getElementById('meta-updated-txt');
+        if (updatedTxt) {
+            updatedTxt.innerText = m.updatedAt ? `최종 업데이트: ${new Date(m.updatedAt).toLocaleString()}` : '최종 업데이트: -';
         }
     }
 }
@@ -1012,8 +1029,8 @@ function centerView() {
     if (!DOM.canvas || !DOM.iframe) return;
     const iw = parseInt(DOM.iframe.style.width) || 1440, ih = parseInt(DOM.iframe.style.height) || 900;
     const cw = DOM.canvas.clientWidth, ch = DOM.canvas.clientHeight;
-    let s = Math.min((cw * 0.95) / iw, (ch * 0.95) / ih, 1);
-    if (s > 0.98) s = 0.98;
+    let s = Math.min((cw * 0.99) / iw, (ch * 0.99) / ih, 1);
+    if (s > 1.0) s = 1.0;
     state.transform = { x: (cw - (iw * s)) / 2, y: (ch - (ih * s)) / 2, scale: s };
     updateTransform();
 }
