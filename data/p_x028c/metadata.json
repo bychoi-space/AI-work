@@ -27,8 +27,8 @@
   "jira": "LFML-143087",
   "developer": "신소연",
   "screenOrder": [
-    "00_Cover_4017.html",
     "00_Cover_1956.html",
+    "00_Cover_4017.html",
     "01_Delivery_Notice.html"
   ]
 }
