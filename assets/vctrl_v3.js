@@ -1573,6 +1573,8 @@ DOM.sidebarToolBtns?.forEach(btn => {
 
 
 
+if (DOM.btnAddDescription) DOM.btnAddDescription.onclick = () => handleTextCreation();
+
 if (DOM.btnAddScreen) DOM.btnAddScreen.onclick = () => { 
     if (state.isReadOnly) return showAuthModal(); 
     DOM.addScreenModal?.classList.add('active'); 
