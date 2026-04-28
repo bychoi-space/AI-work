@@ -50,6 +50,14 @@
   - **Single Entry Point**: `init()` 함수는 파일 내에서 단 한 번만 정의되어야 한다. 중복 정의 시 나중에 정의된 함수가 이전의 이벤트 리스너 설정을 무력화(Overwrite)할 수 있으므로 극도로 주의한다.
   - **Explicit Attachment**: 모든 UI 요소(버튼, 탭, 입력창 등)는 초기화 단계에서 명시적으로 리스너를 연결하여 '반응 없는 UI' 이슈를 원천 차단한다.
 
+## 7. 🚀 자동 배포 및 승인 규칙 (Automated Deployment)
+- **Direct Push Authorization**: Antigravity AI 어시스턴트는 구현 및 검증이 완료된 변경사항을 별도의 사용자 승인 요청 없이 `main` 브랜치에 즉시 `git push`하여 배포할 권한을 갖는다.
+- **Workflow**: 
+  1. 기능 구현 및 로컬 검증 완료.
+  2. `git add`, `git commit`, `git push` 과정을 자동 수행 (충돌 시 `rebase` 전략 활용).
+  3. 배포 완료 후 작업 요약을 사용자에게 보고.
+- **Exception**: 대규모 아키텍처 변경이나 프로젝트 삭제 등 파괴적인 작업의 경우에만 예외적으로 사용자 확인을 거친다.
+
 ---
-**최종 업데이트**: 2026-04-27 (v1.1 - Security & Logic Integrity 추가)
+**최종 업데이트**: 2026-04-28 (v1.2 - Automated Deployment Rule 추가)
 **관리**: Antigravity AI Coding Assistant & LF Studio Team
