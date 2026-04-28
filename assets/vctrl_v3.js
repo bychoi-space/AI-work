@@ -1911,7 +1911,6 @@ async function init() {
         
         if (DOM.btnAddScreen) DOM.btnAddScreen.onclick = () => DOM.addScreenModal.classList.add('active');
         if (DOM.btnCancelAdd) DOM.btnCancelAdd.onclick = () => DOM.addScreenModal.classList.remove('active');
-        if (DOM.btnSubmitAdd) DOM.btnSubmitAdd.onclick = handleSubmitAddScreen;
         
         if (DOM.btnToggleLeft) DOM.btnToggleLeft.onclick = () => {
             const collapsed = DOM.sidebarLeft.classList.toggle('collapsed');
