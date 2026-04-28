@@ -292,17 +292,29 @@
                 </div>
                 <div class="components-body" style="padding: 12px;">
                     <div class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
-                        <div class="component-item v4-card sidebar-tool-btn" data-tool="text" title="텍스트 추가" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <div class="component-item v4-card sidebar-tool-btn" data-tool="text" title="텍스트 추가" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: var(--accent);">title</span>
-                            <span style="font-size: 11px; font-weight: 600; color: var(--text-secondary);">Text</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Text</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-data-table')" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.1); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-data-table')" style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.1); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: #818cf8;">table_chart</span>
-                            <span style="font-size: 11px; font-weight: 600; color: var(--text-secondary);">Table</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Table</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-rect')" style="background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.1); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-rect')" style="background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.1); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: #00e5ff;">crop_square</span>
-                            <span style="font-size: 11px; font-weight: 600; color: var(--text-secondary);">Shape</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Rect</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-circle')" style="background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.1); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #00e5ff;">panorama_fish_eye</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Circle</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-triangle')" style="background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.1); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #00e5ff;">change_history</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Triangle</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-product-card')" style="background: rgba(230, 0, 18, 0.05); border: 1px solid rgba(230, 0, 18, 0.1); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #e60012;">shopping_bag</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Product</span>
                         </div>
                     </div>
 
@@ -320,11 +332,25 @@
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
                             <span style="font-size: 10px; font-weight: 900; color: #818cf8;">TABLE EDITOR</span>
                         </div>
-                        <div class="v4-tool-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
-                            <button id="btn-add-row" class="v4-inspector-btn">Row+</button>
-                            <button id="btn-add-col" class="v4-inspector-btn">Col+</button>
-                            <button id="btn-del-row" class="v4-inspector-btn danger">Row-</button>
-                            <button id="btn-del-col" class="v4-inspector-btn danger">Col-</button>
+                        <div class="v4-tool-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
+                            <button id="btn-add-row" class="v4-inspector-btn" style="font-size: 11px;">Row+</button>
+                            <button id="btn-add-col" class="v4-inspector-btn" style="font-size: 11px;">Col+</button>
+                            <button id="btn-del-row" class="v4-inspector-btn danger" style="font-size: 11px;">Row-</button>
+                            <button id="btn-del-col" class="v4-inspector-btn danger" style="font-size: 11px;">Col-</button>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Header</label>
+                                <input type="color" id="table-header-color" value="#4f46e5" style="width:100%; height:24px; border:none; padding:0; background:none;">
+                            </div>
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Border</label>
+                                <input type="color" id="table-border-color" value="#e1e3e5" style="width:100%; height:24px; border:none; padding:0; background:none;">
+                            </div>
+                        </div>
+                        <div class="prop-group">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Font Size (<span id="txt-table-font-size">13</span>px)</label>
+                            <input type="range" id="table-font-size" min="10" max="30" value="13" style="width:100%;">
                         </div>
                     </div>
 
@@ -332,9 +358,19 @@
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
                             <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">SHAPE EDITOR</span>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                            <input type="color" id="shape-bg-color" value="#334155" style="width:100%;">
-                            <input type="color" id="shape-text-color" value="#ffffff" style="width:100%;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">BG</label>
+                                <input type="color" id="shape-bg-color" value="#334155" style="width:100%; height:24px; border:none; padding:0; background:none;">
+                            </div>
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Text</label>
+                                <input type="color" id="shape-text-color" value="#ffffff" style="width:100%; height:24px; border:none; padding:0; background:none;">
+                            </div>
+                        </div>
+                        <div class="prop-group">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Font Size (<span id="txt-shape-font-size">16</span>px)</label>
+                            <input type="range" id="shape-font-size" min="10" max="80" value="16" style="width:100%;">
                         </div>
                     </div>
                 </div>

@@ -80,14 +80,14 @@ function initQuillEditor() {
 
 
 // State Change Helpers
-function markAsDirty() {
+window.markAsDirty = function() {
     if (state.hasUnsavedChanges) return;
     state.hasUnsavedChanges = true;
     console.log("[Status] Unsaved changes detected.");
     if (DOM.btnGlobalSave) {
         DOM.btnGlobalSave.style.boxShadow = "0 0 20px rgba(0, 229, 255, 0.6)";
     }
-}
+};
 
 function markAsClean() {
     state.hasUnsavedChanges = false;
@@ -1888,13 +1888,6 @@ function insertAtomicComponent(type, name) {
 }
 
 // Component Selection & Deletion Handlers
-window.addEventListener('message', e => {
-    if (e.data.type === 'LF_COMP_SELECTED') {
-        DOM.compActionsSection.style.display = 'block';
-    } else if (e.data.type === 'LF_COMP_DESELECTED') {
-        DOM.compActionsSection.style.display = 'none';
-    }
-});
 
 DOM.btnCompDelete.onclick = () => {
     if (window.location.protocol === 'file:') {

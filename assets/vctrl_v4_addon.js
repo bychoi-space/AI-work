@@ -129,12 +129,50 @@
     bindAction('btn-add-col', 'ADD_COL');
     bindAction('btn-del-col', 'DEL_COL');
 
-    // 4. Global Cleanup
+    // 4. Message Listener (Show/Hide Inspectors)
+    window.addEventListener('message', e => {
+        const data = e.data;
+        if (!data) return;
+
+        if (data.type === 'LF_COMP_SELECTED') {
+            // Show global actions
+            const actions = document.getElementById('comp-actions-section');
+            if (actions) actions.style.display = 'block';
+
+            // Show specific inspectors
+            const tableSect = document.getElementById('table-inspector-section');
+            const shapeSect = document.getElementById('shape-inspector-section');
+            
+            if (tableSect) tableSect.style.display = data.isTable ? 'block' : 'none';
+            if (shapeSect) shapeSect.style.display = data.isShape ? 'block' : 'none';
+        } 
+        else if (data.type === 'LF_DESELECT' || data.type === 'LF_COMP_DESELECTED') {
+            const actions = document.getElementById('comp-actions-section');
+            const tableSect = document.getElementById('table-inspector-section');
+            const shapeSect = document.getElementById('shape-inspector-section');
+            
+            if (actions) actions.style.display = 'none';
+            if (tableSect) tableSect.style.display = 'none';
+            if (shapeSect) shapeSect.style.display = 'none';
+        }
+        else if (data.type === 'LF_DIRTY') {
+            // Use global markAsDirty from vctrl_v3.js
+            if (typeof window.markAsDirty === 'function') {
+                window.markAsDirty();
+            } else {
+                console.log("[V4 Addon] Manual dirty mark (markAsDirty not global)");
+            }
+        }
+    });
+
+    // 5. Global Cleanup
     window.closeAllV4Inspectors = function() {
         const tableSect = document.getElementById('table-inspector-section');
         const shapeSect = document.getElementById('shape-inspector-section');
+        const actions = document.getElementById('comp-actions-section');
         if (tableSect) tableSect.style.display = 'none';
         if (shapeSect) shapeSect.style.display = 'none';
+        if (actions) actions.style.display = 'none';
         notifyIframe({ type: 'LF_DESELECT_ALL' });
     };
 
