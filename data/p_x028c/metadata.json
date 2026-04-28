@@ -8,11 +8,11 @@
       "description": []
     },
     "00_Cover_7528.html": {
-      "title": "00_Cover_7528",
+      "title": "00_프로젝트 표지",
       "type": "cover",
-      "updatedAt": "2026-04-28T02:10:41.065Z",
+      "updatedAt": "2026-04-28T02:11:23.656Z",
       "template": "template_cover.html",
-      "description": []
+      "description": ""
     }
   },
   "assignee": "최범열",
