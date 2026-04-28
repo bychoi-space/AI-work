@@ -1877,10 +1877,8 @@ function insertAtomicComponent(type, name) {
         contentHtml = `<div style="background:#00e5ff; color:#000; border:none; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(0,229,255,0.3); pointer-events:none;">BUTTON</div>`;
     } else if (name === 'LF Discount') {
         contentHtml = `<div style="color:#E02020; font-size:24px; font-weight:800; font-family:sans-serif; text-align:center; pointer-events:none; line-height:1.2;">20%</div>`;
-    } else if (name === 'LF GNB') {
-        contentHtml = `<div style="background:#000; width:100%; height:100%; display:flex; align-items:center; justify-content:space-between; padding:0 16px; pointer-events:none;"><span class="material-icons-outlined" style="color:#fff; font-size:20px;">search</span><span style="color:#fff; font-size:18px; font-weight:900; letter-spacing:-0.5px; font-family:sans-serif;">l.f:</span><span class="material-icons-outlined" style="color:#fff; font-size:20px;">home</span></div>`;
-    } else if (name === 'LF LNB') {
-        contentHtml = `<div style="background:#fff; border-bottom:1px solid #f2f2f2; width:100%; height:100%; display:flex; align-items:center; padding:0 16px; pointer-events:none; overflow:hidden;"><div style="display:flex; align-items:center; gap:20px; font-size:14px; font-family:sans-serif;"><span style="color:#000; font-weight:bold; position:relative;">Home<span style="position:absolute; top:-2px; right:-6px; width:4px; height:4px; background:#E02020; border-radius:50%;"></span></span><span style="color:#888;">Best</span><span style="color:#888;">Women</span><span style="color:#888;">Men</span></div></div>`;
+    } else if (name === 'LFmall Header') {
+        contentHtml = `<div style="background:#fff; width:100%; height:50px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom: 1px solid #f2f2f2; pointer-events:none; box-sizing: border-box;"><div style="display: flex; align-items: center; width: 33%;"><div class="lf-icon lf-icon-bell" style="filter: brightness(0); transform: scale(0.65); transform-origin: left center;"></div></div><div style="display: flex; align-items: center; justify-content: center; width: 33%;"><img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="height: 20px;"></div><div style="display: flex; align-items: center; justify-content: flex-end; width: 33%; gap: 0px;"><div class="lf-icon lf-icon-search" style="filter: brightness(0); transform: scale(0.65); transform-origin: right center;"></div><div style="position: relative; width: 26px; height: 26px; margin-left: 8px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0); transform: scale(0.65); transform-origin: center right; position: absolute; right: 0;"></div><div style="position: absolute; top: -2px; right: -4px; background: #e60012; color: #fff; font-size: 10px; font-weight: 800; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-family: sans-serif; z-index: 2;">1</div></div></div></div>`;
     } else if (type === 'icon') {
         const iconClass = name.toLowerCase().split(' ')[0];
         contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="width:100%; height:100%; pointer-events:none; filter: brightness(0);"></div>`;
@@ -1895,10 +1893,10 @@ function insertAtomicComponent(type, name) {
                 id: id, 
                 html: contentHtml,
                 style: {
-                    top: name === 'LF GNB' ? '0px' : (name === 'LF LNB' ? '50px' : '150px'),
-                    left: (name === 'LF GNB' || name === 'LF LNB') ? '0px' : '100px',
-                    width: (name === 'LF GNB' || name === 'LF LNB') ? '100%' : (type === 'icon' ? '40px' : (name === 'LF Discount' ? '60px' : '120px')),
-                    height: name === 'LF GNB' ? '50px' : (name === 'LF LNB' ? '48px' : (type === 'icon' ? '40px' : 'auto'))
+                    top: name === 'LFmall Header' ? '0px' : '150px',
+                    left: name === 'LFmall Header' ? '0px' : '100px',
+                    width: name === 'LFmall Header' ? '100%' : (type === 'icon' ? '40px' : '120px'),
+                    height: name === 'LFmall Header' ? '50px' : (type === 'icon' ? '40px' : 'auto')
                 }
             }, '*');
         }
@@ -1912,10 +1910,10 @@ function insertAtomicComponent(type, name) {
     if (contentHtml) {
         const comp = iframeDoc.createElement('div');
         comp.id = id; comp.className = 'lf-component';
-        comp.style.top = name === 'LF GNB' ? '0px' : (name === 'LF LNB' ? '50px' : '150px');
-        comp.style.left = (name === 'LF GNB' || name === 'LF LNB') ? '0px' : '100px';
-        comp.style.width = (name === 'LF GNB' || name === 'LF LNB') ? '100%' : (type === 'icon' ? '40px' : (name === 'LF Discount' ? '60px' : '120px'));
-        comp.style.height = name === 'LF GNB' ? '50px' : (name === 'LF LNB' ? '48px' : (type === 'icon' ? '40px' : 'auto'));
+        comp.style.top = name === 'LFmall Header' ? '0px' : '150px';
+        comp.style.left = name === 'LFmall Header' ? '0px' : '100px';
+        comp.style.width = name === 'LFmall Header' ? '100%' : (type === 'icon' ? '40px' : '120px');
+        comp.style.height = name === 'LFmall Header' ? '50px' : (type === 'icon' ? '40px' : 'auto');
         comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>`;
         iframeDoc.body.appendChild(comp);
         markAsDirty();
@@ -1955,8 +1953,7 @@ function renderAtomicLibrary() {
         { name: 'LF Logo', type: 'image' },
         { name: 'Primary Button', type: 'button' },
         { name: 'LF Discount', type: 'text' },
-        { name: 'LF GNB', type: 'component' },
-        { name: 'LF LNB', type: 'component' }
+        { name: 'LFmall Header', type: 'component' }
     ];
 
     panes.atoms.innerHTML = atoms.map(a => `
