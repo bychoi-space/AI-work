@@ -2007,13 +2007,17 @@ async function init() {
         });
 
         state.screens = sortedScreens;
+        
+        if (!fileName && state.screens.length > 0) {
+            fileName = state.screens[0].name;
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('file', fileName);
+            window.history.replaceState({}, '', newUrl);
+        }
+
         renderScreenList(state.screens, fileName);
         renderAtomicLibrary();
         initQuillEditor();
-
-        if (!fileName && state.screens.length > 0) {
-            fileName = state.screens[0].name;
-        }
 
         if (fileName) {
             await loadScreen(fileName);
