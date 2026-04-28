@@ -313,6 +313,7 @@ async function createScreenFromTemplate(project, screenName, templateName, injec
             let type = 'default';
             if (templateName.includes('cover')) type = 'cover';
             else if (templateName.includes('architecture')) type = 'architecture';
+            else if (templateName.includes('plan_delivery')) type = 'plan-delivery';
             else if (templateName.includes('plan')) type = 'plan';
             else if (templateName.includes('front_ui')) type = 'ui';
             else if (templateName.includes('nbos')) type = 'admin-nbos';
