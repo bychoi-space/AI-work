@@ -23,10 +23,10 @@
       "updatedAt": "2026-04-28T07:31:43.039Z"
     },
     "02_LFmall_DB_Structure.html": {
-      "title": "02_1. LFmall DB 구조",
+      "title": "02_LFmall DB 구조",
       "type": "architecture",
-      "updatedAt": "2026-04-28T08:00:00.000Z",
-      "description": "LFmall 재고 관련 DB 구조 다이어그램"
+      "updatedAt": "2026-04-28T08:09:33.979Z",
+      "description": "[object Object]"
     },
     "slide_02_toc.html": {
       "title": "03. Index",
@@ -41,7 +41,13 @@
     "slide_04_selection.html": {
       "title": "05. 재고 선정 로직",
       "type": "plan",
-      "description": "가용성 정책 (Case 1~5)"
+      "description": [
+        {
+          "text": "가용성 정책 (Case 1~5)",
+          "x": 0,
+          "y": 0
+        }
+      ]
     },
     "slide_05_architecture.html": {
       "title": "06. 아키텍처 및 프로세스 맵",
