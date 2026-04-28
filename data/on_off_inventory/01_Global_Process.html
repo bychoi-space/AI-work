@@ -208,7 +208,7 @@
         </div>
     </div>
 
-    <!-- Diamond sizes increased to 110 -->
+    <!-- 승인여부 Diamond -->
     <div class="lf-component" style="position: absolute; top: 538px; left: 880px; width: 110px; height: 110px; z-index: 1000;">
         <div class="v4-shape v4-shape-diamond" style="width: 100%; height: 100%; background: #ffedd5; border: 1px solid #fb923c; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); display: flex; align-items: center; justify-content: center; color: #c2410c; overflow: hidden; box-sizing: border-box;">
             <div class="v4-editable-cell" contenteditable="true" style="width: 70%; height: 70%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 800; font-size: 12px; text-align: center;">승인<br>여부</div>
@@ -217,19 +217,21 @@
     <div class="lf-component" style="position: absolute; top: 510px; left: 915px; width: 20px; height: 20px; z-index: 1000; font-weight: 800; font-size: 14px; color: #1e293b;">N</div>
     <div class="lf-component" style="position: absolute; top: 585px; left: 990px; width: 20px; height: 20px; z-index: 1000; font-weight: 800; font-size: 14px; color: #1e293b;">Y</div>
 
-    <div class="lf-component" style="position: absolute; top: 410px; left: 810px; width: 100px; height: 100px; z-index: 1000;">
-        <div class="v4-shape v4-shape-diamond" style="width: 100%; height: 100%; background: #f1f5f9; border: 1px solid #94a3b8; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); display: flex; align-items: center; justify-content: center; color: #475569; overflow: hidden; box-sizing: border-box;">
-            <div class="v4-editable-cell" contenteditable="true" style="width: 70%; height: 70%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 800; font-size: 12px; text-align: center;">가용화</div>
-        </div>
-    </div>
-    <div class="lf-component" style="position: absolute; top: 450px; left: 910px; width: 20px; height: 20px; z-index: 1000; font-weight: 800; font-size: 14px; color: #1e293b;">Y</div>
-    <div class="lf-component" style="position: absolute; top: 385px; left: 850px; width: 20px; height: 20px; z-index: 1000; font-weight: 800; font-size: 14px; color: #1e293b;">N</div>
-
+    <!-- 매장반품 -->
     <div class="lf-component" style="position: absolute; top: 570px; left: 1020px; width: 100px; height: 46px; z-index: 1000;">
         <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #dcfce7; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
             <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 700; font-size: 13px;">매장 반품</div>
         </div>
     </div>
+
+    <!-- 가용화 Diamond (Moved to right of 매장반품) -->
+    <div class="lf-component" style="position: absolute; top: 538px; left: 1150px; width: 110px; height: 110px; z-index: 1000;">
+        <div class="v4-shape v4-shape-diamond" style="width: 100%; height: 100%; background: #f1f5f9; border: 1px solid #94a3b8; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); display: flex; align-items: center; justify-content: center; color: #475569; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 70%; height: 70%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 800; font-size: 13px; text-align: center;">가용화</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 515px; left: 1215px; width: 20px; height: 20px; z-index: 1000; font-weight: 800; font-size: 14px; color: #1e293b;">Y</div>
+    <div class="lf-component" style="position: absolute; top: 650px; left: 1215px; width: 20px; height: 20px; z-index: 1000; font-weight: 800; font-size: 14px; color: #1e293b;">N</div>
 
 
     <!-- ==================== ARROWS (ALL FLOWS) ==================== -->
@@ -348,7 +350,6 @@
         <div style="width: 2px; height: 40px; background: #94a3b8;"></div><div style="width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 8px solid #94a3b8; margin-left: -4px; margin-top: -50px;"></div>
     </div>
 
-
     <!-- 매장상품배송(Y) -> 비직송매장 재고체크 (Red Line Flow) -->
     <div class="lf-component" style="position: absolute; top: 508px; left: 685px; width: 10px; height: 22px; z-index: 100;">
         <div style="width: 2px; height: 22px; background: #dc2626;"></div>
@@ -375,24 +376,39 @@
         <div class="v4-shape v4-shape-arrow-straight" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-end; box-sizing: border-box;"><div style="flex: 1; height: 2px; background: #94a3b8;"></div><div style="width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid #94a3b8; margin-left: -1px;"></div></div>
     </div>
 
-    <!-- 승인여부(N) -> 가용화 -->
-    <div class="lf-component" style="position: absolute; top: 510px; left: 935px; width: 10px; height: 28px; z-index: 100;">
-        <div style="width: 2px; height: 20px; background: #94a3b8;"></div><div style="width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 8px solid #94a3b8; margin-left: -4px; margin-top: -28px;"></div>
-    </div>
-    <!-- 가용화(N) -> 출고처지정 -->
-    <div class="lf-component" style="position: absolute; top: 453px; left: 910px; width: 20px; height: 20px; z-index: 100;">
-        <div class="v4-shape v4-shape-arrow-elbow" style="width: 100%; height: 100%; position: relative; box-sizing: border-box;"><div style="position: absolute; left: 0; bottom: 0; width: 5px; border-bottom: 2px solid #94a3b8;"></div><div style="position: absolute; left: 3px; top: 0; bottom: 0; border-left: 2px solid #94a3b8;"></div><div style="position: absolute; left: 3px; top: 0; width: 17px; border-top: 2px solid #94a3b8; display: flex; justify-content: flex-end; align-items: center;"><div style="width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid #94a3b8; transform: translateY(-5px); margin-left: 10px;"></div></div></div>
-    </div>
-    <!-- 승인여부(Y) -> 매장반품 / 가용화(Y) -> 매장반품 -->
+    <!-- 승인여부(Y) -> 매장반품 -->
     <div class="lf-component" style="position: absolute; top: 593px; left: 990px; width: 30px; height: 10px; z-index: 100;">
         <div class="v4-shape v4-shape-arrow-straight" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-end; box-sizing: border-box;"><div style="flex: 1; height: 2px; background: #94a3b8;"></div><div style="width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid #94a3b8; margin-left: -1px;"></div></div>
     </div>
-    <div class="lf-component" style="position: absolute; top: 460px; left: 910px; width: 160px; height: 110px; z-index: 100;">
-        <div class="v4-shape v4-shape-arrow-elbow" style="width: 100%; height: 100%; position: relative; box-sizing: border-box;"><div style="position: absolute; left: 0; top: 0; width: 140px; border-top: 2px solid #94a3b8;"></div><div style="position: absolute; left: 138px; top: 0; bottom: 0; border-right: 2px solid #94a3b8;"></div><div style="position: absolute; left: 138px; bottom: 0; width: 22px; border-bottom: 2px solid transparent; display: flex; justify-content: flex-end; align-items: flex-end;"><div style="width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 8px solid #94a3b8; transform: translateX(5px);"></div></div></div>
+    
+    <!-- 승인여부(N) -> 출고처지정 (UP) -->
+    <div class="lf-component" style="position: absolute; top: 476px; left: 935px; width: 10px; height: 62px; z-index: 100;">
+        <div style="width: 2px; height: 62px; background: #94a3b8;"></div><div style="width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 8px solid #94a3b8; margin-left: -4px; margin-top: -70px;"></div>
     </div>
 
+    <!-- 매장반품 -> 가용화 -->
+    <div class="lf-component" style="position: absolute; top: 593px; left: 1120px; width: 30px; height: 10px; z-index: 100;">
+        <div class="v4-shape v4-shape-arrow-straight" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-end; box-sizing: border-box;"><div style="flex: 1; height: 2px; background: #94a3b8;"></div><div style="width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid #94a3b8; margin-left: -1px;"></div></div>
+    </div>
+
+    <!-- 가용화(Y) -> 출고처지정 (UP, LEFT, DOWN) -->
+    <div class="lf-component" style="position: absolute; top: 400px; left: 980px; width: 225px; height: 138px; z-index: 100;">
+        <div style="position: absolute; right: 0; top: 0; width: 2px; height: 138px; background: #94a3b8;"></div>
+        <div style="position: absolute; right: 0; top: 0; width: 225px; height: 2px; background: #94a3b8;"></div>
+        <div style="position: absolute; left: 0; top: 0; width: 2px; height: 30px; background: #94a3b8;"></div>
+        <div style="position: absolute; left: -4px; top: 30px; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 8px solid #94a3b8;"></div>
+    </div>
+
+    <!-- 가용화(N) -> 비직송매장재고체크 (DOWN, LEFT, UP) -->
+    <div class="lf-component" style="position: absolute; top: 616px; left: 560px; width: 645px; height: 44px; z-index: 100;">
+        <div style="position: absolute; right: 0; bottom: 0; width: 2px; height: 12px; background: #94a3b8;"></div>
+        <div style="position: absolute; right: 0; bottom: 0; width: 645px; height: 2px; background: #94a3b8;"></div>
+        <div style="position: absolute; left: 0; bottom: 0; width: 2px; height: 44px; background: #94a3b8;"></div>
+        <div style="position: absolute; left: -4px; top: -8px; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 8px solid #94a3b8;"></div>
+    </div>
+
+
     <!-- ==================== VERTICAL ISSUES (BOTTOM) ==================== -->
-    <!-- Compressed Issue Section to save space (720px y offset instead of 750px) -->
     <!-- Issue 1 -->
     <div class="lf-component" style="position: absolute; top: 250px; left: 180px; width: 10px; height: 460px; z-index: 100;">
         <div class="v4-shape v4-shape-arrow-vertical" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; box-sizing: border-box; opacity: 0.9;">
