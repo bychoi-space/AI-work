@@ -8,7 +8,13 @@
     "slide_01_cover.html": {
       "title": "01. 프로젝트 표지",
       "type": "cover",
-      "description": "온오프 재고 효율화 마스터 플랜 v0.7"
+      "description": [
+        {
+          "text": "온오프 재고 효율화 마스터 플랜 v0.7",
+          "x": 0,
+          "y": 0
+        }
+      ]
     },
     "01_Delivery_Notice.html": {
       "title": "02. 연휴 배송안내 설정",
@@ -206,11 +212,6 @@
       "type": "admin-nbos",
       "description": "브랜드 선택 팝업"
     },
-    "00_Cover_6906.html": {
-      "updatedAt": "2026-04-21T02:36:59.754Z",
-      "template": "template_cover.html",
-      "type": "cover"
-    },
     "01_Architecture_3894.html": {
       "updatedAt": "2026-04-21T02:37:16.646Z",
       "template": "template_architecture.html",
@@ -243,7 +244,8 @@
       "title": "00_프로젝트 표지",
       "type": "cover",
       "updatedAt": "2026-04-28T02:41:37.126Z",
-      "template": "template_cover.html"
+      "template": "template_cover.html",
+      "description": []
     }
   },
   "developer": ""
