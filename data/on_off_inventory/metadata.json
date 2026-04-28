@@ -238,6 +238,12 @@
       "type": "plan-delivery",
       "updatedAt": "2026-04-28T01:37:19.884Z",
       "template": "template_plan_delivery.html"
+    },
+    "00_프로젝트 표지.html": {
+      "title": "00_프로젝트 표지",
+      "type": "cover",
+      "updatedAt": "2026-04-28T02:41:37.126Z",
+      "template": "template_cover.html"
     }
   },
   "developer": ""
