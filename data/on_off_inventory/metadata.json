@@ -19,7 +19,13 @@
     "01_Global_Process.html": {
       "title": "02. 전체 프로세스",
       "type": "architecture",
-      "description": "전체 주문 이행 프로세스 맵"
+      "description": [
+        {
+          "text": "전체 주문 이행 프로세스 맵",
+          "x": 0,
+          "y": 0
+        }
+      ]
     },
     "01_Delivery_Notice.html": {
       "title": "02. 연휴 배송안내 설정",
@@ -216,11 +222,6 @@
       "title": "38. [어드민] 브랜드 조회",
       "type": "admin-nbos",
       "description": "브랜드 선택 팝업"
-    },
-    "01_Architecture_3894.html": {
-      "updatedAt": "2026-04-21T02:37:16.646Z",
-      "template": "template_architecture.html",
-      "type": "architecture"
     },
     "slide_03_architecture.html": {
       "description": [
