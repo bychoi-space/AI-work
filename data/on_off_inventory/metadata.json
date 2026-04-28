@@ -19,13 +19,8 @@
     "01_Global_Process.html": {
       "title": "02. 전체 프로세스",
       "type": "architecture",
-      "description": [
-        {
-          "text": "전체 주문 이행 프로세스 맵",
-          "x": 0,
-          "y": 0
-        }
-      ]
+      "description": [],
+      "updatedAt": "2026-04-28T07:31:43.039Z"
     },
     "slide_02_toc.html": {
       "title": "03. Index",
