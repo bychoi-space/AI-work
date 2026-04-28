@@ -456,12 +456,30 @@ async function loadScreen(fileName) {
     let startX, startY, startW, startH, startTop, startLeft;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
     function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
+    function updateHandles(c) {
+        if (!c) return;
+        const t = parseInt(c.style.top) || 0;
+        const l = parseInt(c.style.left) || 0;
+        const drag = c.querySelector('.lf-drag-handle');
+        const del = c.querySelector('.lf-delete-trigger');
+        if (drag) { drag.style.top = t < 16 ? '4px' : '-16px'; drag.style.left = l < 16 ? '4px' : '-16px'; }
+        if (del) { 
+            del.style.top = t < 16 ? '4px' : '-12px'; 
+            const rightDist = window.innerWidth - (l + c.offsetWidth);
+            del.style.right = rightDist < 16 ? '4px' : '-12px'; 
+        }
+    }
+    document.addEventListener('mouseover', e => {
+        const c = e.target.closest('.lf-component');
+        if (c) updateHandles(c);
+    });
     document.addEventListener('mousedown', e => {
         const h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
         if (d && c) { c.remove(); markDirty(); return; }
         if (c) {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             c.classList.add('selected');
+            updateHandles(c);
             notifyParent({ type: 'LF_COMP_SELECTED', id: c.id, isTable: !!c.querySelector('table'), isShape: !!c.querySelector('.v4-shape'), isIcon: !!c.querySelector('.lf-icon') });
         } else {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
@@ -471,11 +489,28 @@ async function loadScreen(fileName) {
         else if (r) { isResizing = true; activeEl = r.parentElement; startX = e.clientX; startY = e.clientY; startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; e.preventDefault(); }
     });
     document.addEventListener('mousemove', e => {
-        if (isDragging && activeEl) { activeEl.style.top = (startTop + e.clientY - startY) + 'px'; activeEl.style.left = (startLeft + e.clientX - startX) + 'px'; markDirty(); }
-        else if (isResizing && activeEl) { activeEl.style.width = (startW + e.clientX - startX) + 'px'; activeEl.style.height = (startH + e.clientY - startY) + 'px'; markDirty(); }
+        if (isDragging && activeEl) { 
+            activeEl.style.top = (startTop + e.clientY - startY) + 'px'; 
+            activeEl.style.left = (startLeft + e.clientX - startX) + 'px'; 
+            updateHandles(activeEl);
+            markDirty(); 
+        }
+        else if (isResizing && activeEl) { 
+            activeEl.style.width = (startW + e.clientX - startX) + 'px'; 
+            activeEl.style.height = (startH + e.clientY - startY) + 'px'; 
+            updateHandles(activeEl);
+            markDirty(); 
+        }
     });
     document.addEventListener('mouseup', () => { isDragging = false; isResizing = false; activeEl = null; });
     document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+            if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            const selected = document.querySelector('.lf-component.selected');
+            if (selected) { selected.remove(); markDirty(); notifyParent({ type: 'LF_DESELECT' }); }
+        }
+    });
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
         if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
@@ -1884,6 +1919,18 @@ function insertAtomicComponent(type, name) {
         contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="width:100%; height:100%; pointer-events:none; filter: brightness(0);"></div>`;
     }
 
+    const iframeWin = DOM.iframe.contentWindow;
+    const scrollY = iframeWin ? iframeWin.scrollY : 0;
+    const scrollX = iframeWin ? iframeWin.scrollX : 0;
+    const vh = iframeWin ? iframeWin.innerHeight : 800;
+    const vw = iframeWin ? iframeWin.innerWidth : 375;
+    
+    const compW = name === 'LFmall Header' ? vw : (type === 'icon' ? 40 : 120);
+    const compH = name === 'LFmall Header' ? 50 : (type === 'icon' ? 40 : 100);
+    
+    const centerTop = name === 'LFmall Header' ? 0 : Math.max(0, scrollY + (vh - compH) / 2);
+    const centerLeft = name === 'LFmall Header' ? 0 : Math.max(0, scrollX + (vw - compW) / 2);
+
     // Request insertion via message (Safe for file://)
     const isFileProtocol = window.location.protocol === 'file:';
     if (isFileProtocol) {
@@ -1893,8 +1940,8 @@ function insertAtomicComponent(type, name) {
                 id: id, 
                 html: contentHtml,
                 style: {
-                    top: name === 'LFmall Header' ? '0px' : '150px',
-                    left: name === 'LFmall Header' ? '0px' : '100px',
+                    top: centerTop + 'px',
+                    left: centerLeft + 'px',
                     width: name === 'LFmall Header' ? '100%' : (type === 'icon' ? '40px' : '120px'),
                     height: name === 'LFmall Header' ? '50px' : (type === 'icon' ? '40px' : 'auto')
                 }
@@ -1910,8 +1957,8 @@ function insertAtomicComponent(type, name) {
     if (contentHtml) {
         const comp = iframeDoc.createElement('div');
         comp.id = id; comp.className = 'lf-component';
-        comp.style.top = name === 'LFmall Header' ? '0px' : '150px';
-        comp.style.left = name === 'LFmall Header' ? '0px' : '100px';
+        comp.style.top = centerTop + 'px';
+        comp.style.left = centerLeft + 'px';
         comp.style.width = name === 'LFmall Header' ? '100%' : (type === 'icon' ? '40px' : '120px');
         comp.style.height = name === 'LFmall Header' ? '50px' : (type === 'icon' ? '40px' : 'auto');
         comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>`;
@@ -1938,6 +1985,14 @@ DOM.btnCompDelete.onclick = () => {
         Notification.toast("Deleted component.");
     }
 };
+
+// Global Delete Keyboard Handler (Parent Window)
+document.addEventListener('keydown', e => {
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        DOM.btnCompDelete.click(); // Trigger the exact same logic as clicking the delete button
+    }
+});
 
 function renderAtomicLibrary() {
     const panes = {
