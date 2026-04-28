@@ -1928,7 +1928,7 @@ function insertAtomicComponent(type, name) {
     const vh = iframeWin ? iframeWin.innerHeight : 800;
     const vw = iframeWin ? iframeWin.innerWidth : 375;
     
-    const compW = name === 'LFmall Header' ? vw : (type === 'icon' ? 40 : 120);
+    const compW = name === 'LFmall Header' ? vw : (type === 'icon' ? 40 : (name === 'LF Logo' ? 60 : 120));
     const compH = name === 'LFmall Header' ? 50 : (type === 'icon' ? 40 : 100);
     
     const centerTop = Math.max(0, scrollY + (vh - compH) / 2);
@@ -1945,7 +1945,7 @@ function insertAtomicComponent(type, name) {
                 style: {
                     top: centerTop + 'px',
                     left: centerLeft + 'px',
-                    width: name === 'LFmall Header' ? '100%' : (type === 'icon' ? '40px' : '120px'),
+                    width: name === 'LFmall Header' ? '100%' : (type === 'icon' ? '40px' : (name === 'LF Logo' ? '60px' : '120px')),
                     height: name === 'LFmall Header' ? '50px' : (type === 'icon' ? '40px' : 'auto')
                 }
             }, '*');
@@ -1962,7 +1962,7 @@ function insertAtomicComponent(type, name) {
         comp.id = id; comp.className = 'lf-component';
         comp.style.top = centerTop + 'px';
         comp.style.left = centerLeft + 'px';
-        comp.style.width = name === 'LFmall Header' ? '100%' : (type === 'icon' ? '40px' : '120px');
+        comp.style.width = name === 'LFmall Header' ? '100%' : (type === 'icon' ? '40px' : (name === 'LF Logo' ? '60px' : '120px'));
         comp.style.height = name === 'LFmall Header' ? '50px' : (type === 'icon' ? '40px' : 'auto');
         comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>`;
         iframeDoc.body.appendChild(comp);

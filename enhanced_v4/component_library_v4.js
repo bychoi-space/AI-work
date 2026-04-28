@@ -32,30 +32,7 @@ window.V4_COMPONENT_LIBRARY = {
                 <input type="text" placeholder="Search products..." style="background: transparent; border: none; color: white; margin-left: 10px; font-size: 14px; outline: none; width: 100%;">
             </div>`
         },
-        {
-            id: 'v4-product-card',
-            name: 'Premium Product Card',
-            category: 'Molecules',
-            previewHtml: `<div style="width: 60px; height: 80px; background: #eee; border-radius: 8px;"></div>`,
-            html: `
-            <div class="premium-product-card" style="width: 240px; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); font-family: 'Inter', sans-serif;">
-                <div style="height: 240px; background: #f8f9fa; display: flex; align-items: center; justify-content: center; position: relative;">
-                    <img src="https://via.placeholder.com/200x240/f8f9fa/adb5bd?text=Product+Image" style="max-width: 100%; height: auto;">
-                    <div style="position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                        <span class="material-icons-outlined" style="font-size: 18px; color: #666;">favorite_border</span>
-                    </div>
-                </div>
-                <div style="padding: 20px;">
-                    <div style="font-size: 12px; color: #888; margin-bottom: 4px;">LF COLLECTION</div>
-                    <div style="font-size: 15px; font-weight: 600; color: #1a1a1a; line-height: 1.4; margin-bottom: 12px;">Premium Leather Crossbody Bag</div>
-                    <div style="display: flex; align-items: baseline; gap: 8px;">
-                        <span style="font-size: 18px; font-weight: 800; color: #e60012;">₩ 248,000</span>
-                        <span style="font-size: 13px; color: #adb5bd; text-decoration: line-through;">₩ 310,000</span>
-                        <span style="font-size: 13px; font-weight: 700; color: #e60012;">20%</span>
-                    </div>
-                </div>
-            </div>`
-        },
+
         {
             id: 'v4-data-table',
             name: 'Glass Data Table',
