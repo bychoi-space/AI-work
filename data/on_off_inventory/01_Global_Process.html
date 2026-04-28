@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>전체 프로세스</title>
+</head>
+<body>
+<div class="lf-canvas" style="width: 1600px; height: 1000px; position: relative; background: #ffffff; margin: 0 auto;">
+
+    <!-- Top Area: Title & Legend -->
+    <div class="lf-component" style="position: absolute; top: 40px; left: 40px; width: 200px; height: 60px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #555555; border: 4px solid #dddddd; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 700; font-size: 16px;">전체 프로세스</div>
+        </div>
+    </div>
+
+    <!-- Legend Buttons -->
+    <div class="lf-component" style="position: absolute; top: 50px; right: 280px; width: 100px; height: 36px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e0e7ff; border: 1px solid #cbd5e1; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #334155; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">LFmall</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 50px; right: 160px; width: 100px; height: 36px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #dcfce7; border: 1px solid #cbd5e1; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #334155; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">OMS/SAP</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 50px; right: 40px; width: 100px; height: 36px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #fef08a; border: 1px solid #cbd5e1; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #334155; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">POS</div>
+        </div>
+    </div>
+
+    <!-- Horizontal Dividers -->
+    <div class="lf-component" style="position: absolute; top: 350px; left: 40px; width: 1520px; height: 20px; z-index: 500;">
+        <div class="v4-shape v4-shape-divider" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+            <div style="width: 100%; border-top: 2px dashed #94a3b8;"></div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 680px; left: 40px; width: 1520px; height: 20px; z-index: 500;">
+        <div class="v4-shape v4-shape-divider" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+            <div style="width: 100%; border-top: 2px dashed #94a3b8;"></div>
+        </div>
+    </div>
+
+    <!-- ==================== LEVEL 1: LFmall Flow ==================== -->
+    <div class="lf-component" style="position: absolute; top: 220px; left: 160px; width: 120px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e0e7ff; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">상품 목록</div>
+        </div>
+    </div>
+
+    <div class="lf-component" style="position: absolute; top: 220px; left: 320px; width: 120px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e0e7ff; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">상품 상세</div>
+        </div>
+    </div>
+
+    <div class="lf-component" style="position: absolute; top: 150px; left: 480px; width: 120px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e0e7ff; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">원클릭 결제</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 220px; left: 480px; width: 120px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e0e7ff; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">쇼핑백</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 290px; left: 480px; width: 120px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e0e7ff; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">주문서</div>
+        </div>
+    </div>
+
+    <div class="lf-component" style="position: absolute; top: 220px; left: 640px; width: 120px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e0e7ff; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">주문완료</div>
+        </div>
+    </div>
+    
+    <div class="lf-component" style="position: absolute; top: 290px; left: 640px; width: 120px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e0e7ff; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">주문생성</div>
+        </div>
+    </div>
+
+    <div class="lf-component" style="position: absolute; top: 275px; left: 800px; width: 80px; height: 80px; z-index: 1000;">
+        <div class="v4-shape v4-shape-circle" style="width: 100%; height: 100%; background: #334155; border: 2px solid #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 12px; text-align: center;">결제<br>완료</div>
+        </div>
+    </div>
+
+    <div class="lf-component" style="position: absolute; top: 285px; left: 920px; width: 280px; height: 60px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ffedd5; border: none; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: #c2410c; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 700; font-size: 14px;">자동결품배치 (알림톡) 정책</div>
+        </div>
+    </div>
+
+    <!-- Circles Right Side -->
+    <div class="lf-component" style="position: absolute; top: 275px; left: 1240px; width: 80px; height: 80px; z-index: 1000;">
+        <div class="v4-shape v4-shape-circle" style="width: 100%; height: 100%; background: #334155; border: 2px solid #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 12px; text-align: center;">상품<br>준비중</div>
+        </div>
+    </div>
+    
+    <!-- LFmall top right nodes -->
+    <div class="lf-component" style="position: absolute; top: 220px; left: 1340px; width: 100px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e0e7ff; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">배송중</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 220px; left: 1480px; width: 100px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e0e7ff; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">배송완료</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 180px; left: 1620px; width: 100px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e0e7ff; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">반품신청</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 260px; left: 1620px; width: 100px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e0e7ff; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">교환신청</div>
+        </div>
+    </div>
+
+    <div class="lf-component" style="position: absolute; top: 275px; left: 1350px; width: 80px; height: 80px; z-index: 1000;">
+        <div class="v4-shape v4-shape-circle" style="width: 100%; height: 100%; background: #334155; border: 2px solid #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 12px; text-align: center;">배송중</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 275px; left: 1490px; width: 80px; height: 80px; z-index: 1000;">
+        <div class="v4-shape v4-shape-circle" style="width: 100%; height: 100%; background: #334155; border: 2px solid #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 12px; text-align: center;">배송<br>완료</div>
+        </div>
+    </div>
+
+    <!-- ==================== LEVEL 2: OMS/SAP Flow ==================== -->
+    <div class="lf-component" style="position: absolute; top: 400px; left: 520px; width: 100px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #dcfce7; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">주문수집</div>
+        </div>
+    </div>
+
+    <div class="lf-component" style="position: absolute; top: 385px; left: 660px; width: 80px; height: 80px; z-index: 1000;">
+        <div class="v4-shape v4-shape-diamond" style="width: 100%; height: 100%; background: #ffedd5; border: 1px solid #fb923c; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); display: flex; align-items: center; justify-content: center; color: #c2410c; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 60%; height: 60%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 700; font-size: 11px; text-align: center;">매장상품<br>배송</div>
+        </div>
+    </div>
+
+    <!-- Top Right Green Nodes -->
+    <div class="lf-component" style="position: absolute; top: 400px; left: 1060px; width: 100px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #dcfce7; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">출고처지정</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 400px; left: 1200px; width: 100px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #dcfce7; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">입고확정</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 400px; left: 1340px; width: 100px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #dcfce7; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">송장출력</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 400px; left: 1480px; width: 100px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #dcfce7; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 11px; text-align: center;">CJ대한통운<br>배송완료</div>
+        </div>
+    </div>
+
+    <!-- Bottom Green/Orange Nodes -->
+    <div class="lf-component" style="position: absolute; top: 580px; left: 520px; width: 100px; height: 60px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #dcfce7; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 12px; text-align: center;">비직송매장<br>재고체크</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 580px; left: 650px; width: 100px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #dcfce7; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">물량 이동<br>지시</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 580px; left: 780px; width: 100px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ffedd5; border: 1px solid #fb923c; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #c2410c; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 12px; text-align: center;">물량 이동<br>확인/승인</div>
+        </div>
+    </div>
+
+    <div class="lf-component" style="position: absolute; top: 565px; left: 910px; width: 80px; height: 80px; z-index: 1000;">
+        <div class="v4-shape v4-shape-diamond" style="width: 100%; height: 100%; background: #ffedd5; border: 1px solid #fb923c; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); display: flex; align-items: center; justify-content: center; color: #c2410c; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 60%; height: 60%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 700; font-size: 11px; text-align: center;">승인<br>여부</div>
+        </div>
+    </div>
+
+    <div class="lf-component" style="position: absolute; top: 490px; left: 980px; width: 80px; height: 80px; z-index: 1000;">
+        <div class="v4-shape v4-shape-diamond" style="width: 100%; height: 100%; background: #f1f5f9; border: 1px solid #94a3b8; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); display: flex; align-items: center; justify-content: center; color: #475569; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 60%; height: 60%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 700; font-size: 11px; text-align: center;">가용화</div>
+        </div>
+    </div>
+
+    <div class="lf-component" style="position: absolute; top: 580px; left: 1060px; width: 100px; height: 50px; z-index: 1000;">
+        <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #dcfce7; border: 1px solid #94a3b8; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #1e293b; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-editable-cell" contenteditable="true" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; outline: none; font-weight: 600; font-size: 13px;">매장 반품</div>
+        </div>
+    </div>
+
+    <!-- ==================== ARROWS ==================== -->
+    <!-- Top Flow -->
+    <div class="lf-component" style="position: absolute; top: 240px; left: 280px; width: 40px; height: 10px; z-index: 100;">
+        <div class="v4-shape v4-shape-arrow-straight" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-end; box-sizing: border-box;"><div style="flex: 1; height: 2px; background: #94a3b8;"></div><div style="width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid #94a3b8; margin-left: -1px;"></div></div>
+    </div>
+    <!-- Arrow from 상세 to 3 options -->
+    <div class="lf-component" style="position: absolute; top: 240px; left: 440px; width: 40px; height: 10px; z-index: 100;">
+        <div class="v4-shape v4-shape-arrow-straight" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-end; box-sizing: border-box;"><div style="flex: 1; height: 2px; background: #94a3b8;"></div><div style="width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid #94a3b8; margin-left: -1px;"></div></div>
+    </div>
+    
+    <div class="lf-component" style="position: absolute; top: 240px; left: 600px; width: 40px; height: 10px; z-index: 100;">
+        <div class="v4-shape v4-shape-arrow-straight" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-end; box-sizing: border-box;"><div style="flex: 1; height: 2px; background: #94a3b8;"></div><div style="width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid #94a3b8; margin-left: -1px;"></div></div>
+    </div>
+    
+    <!-- Red line path down -->
+    <div class="lf-component" style="position: absolute; top: 500px; left: 560px; width: 420px; height: 10px; z-index: 100;">
+        <div class="v4-shape v4-shape-arrow-straight" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-end; box-sizing: border-box;"><div style="flex: 1; height: 2px; background: #dc2626;"></div></div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 500px; left: 560px; width: 2px; height: 80px; z-index: 100; background: #dc2626;"></div>
+    <div class="lf-component" style="position: absolute; top: 500px; left: 950px; width: 2px; height: 65px; z-index: 100; background: #dc2626;"></div>
+
+    <!-- ==================== VERTICAL ISSUES ==================== -->
+    <!-- Issue 1 -->
+    <div class="lf-component" style="position: absolute; top: 280px; left: 200px; width: 30px; height: 500px; z-index: 100;">
+        <div class="v4-shape v4-shape-arrow-vertical" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; box-sizing: border-box; opacity: 0.9;">
+            <div style="width: 30%; flex: 1; background: linear-gradient(to bottom, #fed7aa, #ea580c); z-index: 1;"></div>
+            <div style="width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 20px solid #ea580c; z-index: 2; margin-top: -1px;"></div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 800px; left: 165px; width: 100px; height: 30px; z-index: 1000;">
+        <div class="v4-shape v4-shape-badge" style="width: 100%; height: 100%; background: #ea580c; border-radius: 50px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2);">
+            <div class="v4-editable-cell" contenteditable="true" style="font-weight: 800; font-size: 13px;">ISSUE 1.</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 840px; left: 150px; width: 130px; height: 50px; z-index: 1000;">
+        <div class="v4-editable-cell" contenteditable="true" style="font-size: 12px; font-weight: 600; text-align: center; color: #475569; line-height: 1.4;">상품 재고 케이스 별<br>표현 방법</div>
+    </div>
+
+    <!-- Issue 2 -->
+    <div class="lf-component" style="position: absolute; top: 700px; left: 815px; width: 30px; height: 80px; z-index: 100;">
+        <div class="v4-shape v4-shape-arrow-vertical" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; box-sizing: border-box; opacity: 0.9;">
+            <div style="width: 30%; flex: 1; background: linear-gradient(to bottom, #fed7aa, #ea580c); z-index: 1;"></div>
+            <div style="width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 20px solid #ea580c; z-index: 2; margin-top: -1px;"></div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 800px; left: 780px; width: 100px; height: 30px; z-index: 1000;">
+        <div class="v4-shape v4-shape-badge" style="width: 100%; height: 100%; background: #ea580c; border-radius: 50px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2);">
+            <div class="v4-editable-cell" contenteditable="true" style="font-weight: 800; font-size: 13px;">ISSUE 2.</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 840px; left: 760px; width: 140px; height: 50px; z-index: 1000;">
+        <div class="v4-editable-cell" contenteditable="true" style="font-size: 12px; font-weight: 600; text-align: center; color: #475569; line-height: 1.4;">비직송 매장<br>물량 이동 승인 이슈<br>(매장 제공 혜택)</div>
+    </div>
+
+    <!-- Issue 3 -->
+    <div class="lf-component" style="position: absolute; top: 380px; left: 935px; width: 30px; height: 400px; z-index: 100;">
+        <div class="v4-shape v4-shape-arrow-vertical" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; box-sizing: border-box; opacity: 0.9;">
+            <div style="width: 30%; flex: 1; background: linear-gradient(to bottom, #fed7aa, #ea580c); z-index: 1;"></div>
+            <div style="width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 20px solid #ea580c; z-index: 2; margin-top: -1px;"></div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 800px; left: 900px; width: 100px; height: 30px; z-index: 1000;">
+        <div class="v4-shape v4-shape-badge" style="width: 100%; height: 100%; background: #ea580c; border-radius: 50px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2);">
+            <div class="v4-editable-cell" contenteditable="true" style="font-weight: 800; font-size: 13px;">ISSUE 3.</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 840px; left: 880px; width: 140px; height: 50px; z-index: 1000;">
+        <div class="v4-editable-cell" contenteditable="true" style="font-size: 12px; font-weight: 600; text-align: center; color: #475569; line-height: 1.4;">자동결품배치<br>예외처리 (D+5 등)<br>정책 수립</div>
+    </div>
+
+    <!-- Issue 4 -->
+    <div class="lf-component" style="position: absolute; top: 550px; left: 1095px; width: 30px; height: 230px; z-index: 100;">
+        <div class="v4-shape v4-shape-arrow-vertical" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; box-sizing: border-box; opacity: 0.9;">
+            <div style="width: 30%; flex: 1; background: linear-gradient(to bottom, #fed7aa, #ea580c); z-index: 1;"></div>
+            <div style="width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 20px solid #ea580c; z-index: 2; margin-top: -1px;"></div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 800px; left: 1060px; width: 100px; height: 30px; z-index: 1000;">
+        <div class="v4-shape v4-shape-badge" style="width: 100%; height: 100%; background: #ea580c; border-radius: 50px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2);">
+            <div class="v4-editable-cell" contenteditable="true" style="font-weight: 800; font-size: 13px;">ISSUE 4.</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 840px; left: 1040px; width: 140px; height: 50px; z-index: 1000;">
+        <div class="v4-editable-cell" contenteditable="true" style="font-size: 12px; font-weight: 600; text-align: center; color: #475569; line-height: 1.4;">고객 주문취소<br>인터벌에 대한<br>정책 수립</div>
+    </div>
+
+    <!-- Issue 5 -->
+    <div class="lf-component" style="position: absolute; top: 350px; left: 1655px; width: 30px; height: 430px; z-index: 100;">
+        <div class="v4-shape v4-shape-arrow-vertical" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; box-sizing: border-box; opacity: 0.9;">
+            <div style="width: 30%; flex: 1; background: linear-gradient(to bottom, #fed7aa, #ea580c); z-index: 1;"></div>
+            <div style="width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 20px solid #ea580c; z-index: 2; margin-top: -1px;"></div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 800px; left: 1620px; width: 100px; height: 30px; z-index: 1000;">
+        <div class="v4-shape v4-shape-badge" style="width: 100%; height: 100%; background: #ea580c; border-radius: 50px; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 6px rgba(234, 88, 12, 0.2);">
+            <div class="v4-editable-cell" contenteditable="true" style="font-weight: 800; font-size: 13px;">ISSUE 5.</div>
+        </div>
+    </div>
+    <div class="lf-component" style="position: absolute; top: 840px; left: 1600px; width: 140px; height: 50px; z-index: 1000;">
+        <div class="v4-editable-cell" contenteditable="true" style="font-size: 12px; font-weight: 600; text-align: center; color: #475569; line-height: 1.4;">교환 신청<br>재고 체크 로직</div>
+    </div>
+
+</div>
+</body>
+</html>

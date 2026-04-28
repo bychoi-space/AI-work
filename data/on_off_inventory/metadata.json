@@ -16,6 +16,11 @@
         }
       ]
     },
+    "01_Global_Process.html": {
+      "title": "02. 전체 프로세스",
+      "type": "architecture",
+      "description": "전체 주문 이행 프로세스 맵"
+    },
     "01_Delivery_Notice.html": {
       "title": "02. 연휴 배송안내 설정",
       "type": "plan",
