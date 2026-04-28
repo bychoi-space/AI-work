@@ -22,6 +22,12 @@
       "description": [],
       "updatedAt": "2026-04-28T07:31:43.039Z"
     },
+    "02_LFmall_DB_Structure.html": {
+      "title": "02_1. LFmall DB 구조",
+      "type": "architecture",
+      "updatedAt": "2026-04-28T08:00:00.000Z",
+      "description": "LFmall 재고 관련 DB 구조 다이어그램"
+    },
     "slide_02_toc.html": {
       "title": "03. Index",
       "type": "cover",
