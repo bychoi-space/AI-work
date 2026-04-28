@@ -58,6 +58,13 @@
   3. 배포 완료 후 작업 요약을 사용자에게 보고.
 - **Exception**: 대규모 아키텍처 변경이나 프로젝트 삭제 등 파괴적인 작업의 경우에만 예외적으로 사용자 확인을 거친다.
 
+## 8. 🧩 템플릿 및 스크린 에디터 연동 규칙 (Template & Editor Integration)
+- **V4 Component System**: 향후 새롭게 제작되거나 개선되는 모든 템플릿과 스크린은 에디터 기능과 완벽하게 연동되어야 한다.
+- **Editable Core**: 화면 내의 주요 구성 요소는 V4 표준 클래스(`lf-component`)로 감싸서 드래그 앤 드롭 이동이 가능하도록 해야 한다.
+- **Freedom of Modification**: 
+  - 사용자가 불필요한 기본 오브젝트를 삭제할 수 있도록 `.lf-delete-trigger`(`×` 버튼)를 필수로 주입한다.
+  - 텍스트 수정이 필요한 영역은 반드시 `contenteditable="true"` 속성과 `.v4-editable-cell` 클래스를 부여하여 에디터 인스펙터(글꼴, 색상 조절 등)와 연동되도록 설계한다.
+
 ---
-**최종 업데이트**: 2026-04-28 (v1.2 - Automated Deployment Rule 추가)
+**최종 업데이트**: 2026-04-28 (v1.3 - Template & Editor Integration Rule 추가)
 **관리**: Antigravity AI Coding Assistant & LF Studio Team
