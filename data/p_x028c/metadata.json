@@ -7,18 +7,12 @@
       "updatedAt": "2026-04-28T01:29:39.353Z",
       "description": []
     },
-    "00_Cover_1956.html": {
-      "title": "00_프로젝트 표지",
-      "type": "cover",
-      "updatedAt": "2026-04-28T02:04:53.062Z",
-      "template": "template_cover.html",
-      "description": []
-    },
     "00_Cover_7528.html": {
       "title": "00_Cover_7528",
       "type": "cover",
       "updatedAt": "2026-04-28T02:10:41.065Z",
-      "template": "template_cover.html"
+      "template": "template_cover.html",
+      "description": []
     }
   },
   "assignee": "최범열",
@@ -26,7 +20,6 @@
   "jira": "LFML-143087",
   "developer": "신소연",
   "screenOrder": [
-    "00_Cover_1956.html",
     "01_Delivery_Notice.html",
     "00_Cover_7528.html"
   ]
