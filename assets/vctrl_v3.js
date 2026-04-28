@@ -2011,9 +2011,9 @@ function renderAtomicLibrary() {
     panes.atoms.innerHTML = atoms.map(a => `
         <div class="library-item" onclick="insertAtomicComponent('${a.type}', '${a.name}')">
             <div class="item-preview">
-                ${a.name === 'LF Logo' ? '<img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width:30px;">' : 
-                  (a.name.includes('Button') ? '<div style="width:30px;height:12px;background:#00e5ff;border-radius:2px;"></div>' : 
-                  '<span class="material-icons-outlined">extension</span>')}
+                ${a.name === 'LF Logo' ? '<img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width:20px; filter: brightness(0);">' : 
+                  (a.name.includes('Button') ? '<div style="width:24px;height:10px;background:#000;border-radius:2px;"></div>' : 
+                  '<span class="material-icons-outlined" style="font-size:18px;">extension</span>')}
             </div>
             <div class="item-name">${a.name}</div>
         </div>
