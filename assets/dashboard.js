@@ -242,8 +242,7 @@ async function renderList(projectsToRender = state.projects) {
     for (const p of projectsToRender) {
         const card = document.createElement('a');
         card.className = 'file-card';
-        const firstScreen = Object.keys(p.meta.screens || {})[0] || '';
-        card.href = `viewer.html?project=${encodeURIComponent(p.name)}${firstScreen ? '&file='+encodeURIComponent(firstScreen) : ''}`;
+        card.href = `viewer.html?project=${encodeURIComponent(p.name)}`;
         
         const m = p.meta;
         const mainTitle = m.title || p.name;
@@ -520,8 +519,7 @@ if (searchInput && searchDropdown) {
         if (filtered.length > 0) {
             searchDropdown.innerHTML = filtered.slice(0, 5).map(p => {
                 const mainTitle = p.meta.title || p.name;
-                const firstScreen = Object.keys(p.meta.screens || {})[0] || '';
-                const url = `viewer.html?project=${encodeURIComponent(p.name)}${firstScreen ? '&file='+encodeURIComponent(firstScreen) : ''}`;
+                const url = `viewer.html?project=${encodeURIComponent(p.name)}`;
                 return `
                     <a href="${url}" class="search-item" style="text-decoration:none;">
                         <span class="material-icons-outlined search-item-icon">folder</span>
