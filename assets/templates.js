@@ -34,7 +34,10 @@ window.LF_TEMPLATES = {
         .page { 
             width: 1440px; height: 900px; 
             position: relative; 
-            background: var(--v4-bg);
+            background: #ffffff;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(230, 0, 18, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.04) 0%, transparent 50%);
             box-shadow: 0 40px 100px rgba(0,0,0,0.05);
             overflow: hidden;
         }
@@ -65,8 +68,8 @@ window.LF_TEMPLATES = {
 
         /* Isolated Table Styling for Cover - Avoids V4 Global Conflicts */
         .cover-info-premium-table { width: 100%; border-collapse: collapse; font-size: 15px; background: #ffffff !important; }
-        .cover-info-premium-table th { background: #f4f6f8; text-align: left; padding: 14px 24px; border-bottom: 2px solid var(--v4-border); color: #6d7175; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .cover-info-premium-table td { padding: 18px 24px; border-bottom: 1px solid var(--v4-border); background: #fff; line-height: 1.5; color: #1a1c1e !important; }
+        .cover-info-premium-table th { background: #f4f6f8; text-align: left; padding: 14px 24px; border-bottom: 2px solid #c0c4c9; color: #6d7175; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .cover-info-premium-table td { padding: 18px 24px; border-bottom: 1px solid #c0c4c9; background: #fff; line-height: 1.5; color: #1a1c1e !important; font-size: 16px; }
         .cover-info-premium-table tr:last-child td { border-bottom: none; }
         
         .accent-bar { position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: var(--v4-accent); }
@@ -92,32 +95,34 @@ window.LF_TEMPLATES = {
             <div class="logo-area">
                 <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" class="logo-img" alt="LF Logo">
                 <div style="width: 1px; height: 24px; background: #ddd; margin: 0 4px;"></div>
-                <div class="logo-text">LF <span class="logo-sub">Project Management System</span></div>
+                <div class="logo-text"><span class="logo-sub" style="margin-left: 0;">Project Management System</span></div>
             </div>
         </div>
 
         <!-- Editable Main Title - Balanced Typography -->
         <div id="cover-title" class="lf-component" style="top: 220px; left: 80px; min-width: 800px;">
             <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
+            <div class="lf-delete-trigger">×</div>
             <div contenteditable="true" class="v4-editable-cell" style="font-size: 72px; font-weight: 900; line-height: 1.15; letter-spacing: -2px; color: var(--v4-text); margin-bottom: 16px;">{{PROJECT_NAME}}</div>
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div style="width: 40px; height: 3px; background: var(--v4-accent);"></div>
-                <div contenteditable="true" class="v4-editable-cell" style="font-size: 20px; color: var(--v4-text-sub); font-weight: 500; letter-spacing: 1px; text-transform: uppercase;">Technical Design Specification</div>
+                <div contenteditable="true" class="v4-editable-cell" style="font-size: 24px; color: var(--v4-text-sub); font-weight: 500; letter-spacing: 1px; text-transform: uppercase;">Technical Design Specification</div>
             </div>
         </div>
 
         <!-- Editable Version Info - Clean Badges -->
         <div id="cover-version" class="lf-component" style="top: 500px; left: 80px;">
             <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
+            <div class="lf-delete-trigger">×</div>
             <div style="display: flex; align-items: center; gap: 24px;">
                 <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <span style="font-size: 11px; font-weight: 800; color: var(--v4-text-sub);">DOCUMENT VERSION</span>
-                    <div contenteditable="true" class="v4-editable-cell" style="font-size: 22px; font-weight: 800; color: var(--v4-accent);">v{{VERSION}}</div>
+                    <span style="font-size: 14px; font-weight: 800; color: var(--v4-text-sub);">DOCUMENT VERSION</span>
+                    <div contenteditable="true" class="v4-editable-cell" style="font-size: 28px; font-weight: 800; color: var(--v4-accent);">v{{VERSION}}</div>
                 </div>
                 <div style="width: 1px; height: 40px; background: var(--v4-border);"></div>
                 <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <span style="font-size: 11px; font-weight: 800; color: var(--v4-text-sub);">JIRA IDENTIFIER</span>
-                    <div contenteditable="true" class="v4-editable-cell" style="font-size: 22px; font-weight: 800; color: var(--v4-text);">{{JIRA}}</div>
+                    <span style="font-size: 14px; font-weight: 800; color: var(--v4-text-sub);">JIRA IDENTIFIER</span>
+                    <div id="cover-jira-id" contenteditable="true" class="v4-editable-cell" style="font-size: 28px; font-weight: 800; color: var(--v4-text);">{{JIRA}}</div>
                 </div>
             </div>
         </div>
@@ -125,6 +130,7 @@ window.LF_TEMPLATES = {
         <!-- Editable Project Info Table - High Legibility -->
         <div id="cover-info-table" class="lf-component v4-card" style="bottom: 80px; right: 80px; width: 540px; padding: 0; overflow: hidden;">
             <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
+            <div class="lf-delete-trigger">×</div>
             <table class="cover-info-premium-table">
                 <thead>
                     <tr>
@@ -149,8 +155,6 @@ window.LF_TEMPLATES = {
             </table>
         </div>
 
-        <!-- Subtle Abstract Decoration (Modern Gray) -->
-        <div style="position: absolute; bottom: -50px; left: -50px; width: 300px; height: 300px; background: #eee; border-radius: 50%; opacity: 0.5;"></div>
     </div>
 </body>
 </html>`,

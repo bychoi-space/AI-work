@@ -517,6 +517,15 @@ async function loadScreen(fileName) {
         finalContent = finalContent.replace('</body>', `${scriptBlock}\n</body>`);
     }
 
+    // Auto-update JIRA IDENTIFIER for Cover Template
+    if (finalContent.includes('cover-jira-id')) {
+        const jiraValue = state.projectMetadata.jira || '-';
+        finalContent = finalContent.replace(
+            /(<div[^>]*id="cover-jira-id"[^>]*>)[^<]*(<\/div>)/i, 
+            `$1${jiraValue}$2`
+        );
+    }
+
     // Using srcdoc as a safer alternative to blob URLs for local HTML content
     DOM.iframe.srcdoc = finalContent;
     DOM.iframe.style.display = 'block';
@@ -1043,7 +1052,24 @@ async function handleGlobalSave() {
         };
 
         // Get current HTML from iframe
-        const htmlContent = await getIframeHTML();
+        let htmlContent = await getIframeHTML();
+        
+        // Auto-update JIRA IDENTIFIER for Cover Template before saving
+        if (htmlContent && htmlContent.includes('cover-jira-id')) {
+            const jiraValue = projectMeta.jira || '-';
+            htmlContent = htmlContent.replace(
+                /(<div[^>]*id="cover-jira-id"[^>]*>)[^<]*(<\/div>)/i, 
+                `$1${jiraValue}$2`
+            );
+            
+            // Try to update UI directly if not blocked by CORS
+            try {
+                const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
+                const jiraCell = iframeDoc.getElementById('cover-jira-id');
+                if (jiraCell) jiraCell.innerText = jiraValue;
+            } catch (e) { /* Ignore CORS error in file:// */ }
+        }
+
         const activeFileName = state.activeFile ? state.activeFile.name : null;
 
         const success = await updateScreenMetadata(state.currentProject, activeFileName, { 
