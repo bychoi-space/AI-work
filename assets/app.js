@@ -264,6 +264,7 @@ async function updateScreenMetadata(project, screenFilename, data, statusCallbac
     if (data.projectMeta) {
         metadata.title = data.projectMeta.title || metadata.title;
         metadata.assignee = data.projectMeta.assignee || metadata.assignee;
+        metadata.developer = data.projectMeta.developer !== undefined ? data.projectMeta.developer : (metadata.developer || '');
         metadata.period = data.projectMeta.period || metadata.period;
         metadata.jira = data.projectMeta.jira || metadata.jira;
         metadata.figmaUrl = data.projectMeta.figmaUrl || metadata.figmaUrl;
