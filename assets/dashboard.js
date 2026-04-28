@@ -233,13 +233,13 @@ async function handleAuthTest() {
     });
 }
 
-async function renderList() {
-    if (state.projects.length === 0) {
-        DOM.list.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">프로젝트가 없습니다.</div>`;
+async function renderList(projectsToRender = state.projects) {
+    if (projectsToRender.length === 0) {
+        DOM.list.innerHTML = `<div class="empty-text" style="grid-column: 1 / -1;">검색된 프로젝트가 없습니다.</div>`;
         return;
     }
     DOM.list.innerHTML = '';
-    for (const p of state.projects) {
+    for (const p of projectsToRender) {
         const card = document.createElement('a');
         card.className = 'file-card';
         const firstScreen = Object.keys(p.meta.screens || {})[0] || '';
@@ -491,6 +491,61 @@ window.addEventListener('drop', async (e) => {
     window.addEventListener('load', () => setTimeout(dismiss, 1200));
     intro.addEventListener('click', dismiss);
 })();
+
+// Search and Auto-complete Logic
+const searchInput = document.getElementById('project-search-input');
+const searchDropdown = document.getElementById('search-dropdown');
+
+if (searchInput && searchDropdown) {
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (!query) {
+            searchDropdown.classList.remove('active');
+            renderList(state.projects); // Reset to full list
+            return;
+        }
+
+        // Filter projects by ID or title
+        const filtered = state.projects.filter(p => {
+            const idMatch = p.name.toLowerCase().includes(query);
+            const titleMatch = (p.meta.title || '').toLowerCase().includes(query);
+            return idMatch || titleMatch;
+        });
+
+        // Re-render grid with filtered items
+        renderList(filtered);
+
+        // Populate auto-complete dropdown (max 5 items)
+        if (filtered.length > 0) {
+            searchDropdown.innerHTML = filtered.slice(0, 5).map(p => {
+                const mainTitle = p.meta.title || p.name;
+                const firstScreen = Object.keys(p.meta.screens || {})[0] || '';
+                const url = `viewer.html?project=${encodeURIComponent(p.name)}${firstScreen ? '&file='+encodeURIComponent(firstScreen) : ''}`;
+                return `
+                    <a href="${url}" class="search-item" style="text-decoration:none;">
+                        <span class="material-icons-outlined search-item-icon">folder</span>
+                        <div style="display:flex; flex-direction:column;">
+                            <span class="search-item-title">${mainTitle}</span>
+                            <span class="search-item-sub">ID: ${p.name}</span>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+            searchDropdown.classList.add('active');
+        } else {
+            searchDropdown.innerHTML = `<div class="search-item" style="justify-content:center;"><span class="search-item-title" style="color:var(--text-secondary);">검색 결과가 없습니다.</span></div>`;
+            searchDropdown.classList.add('active');
+        }
+    });
+
+    // Close dropdown on outside click
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+            searchDropdown.classList.remove('active');
+        }
+    });
+}
 
 // Start system
 checkEnvironment();

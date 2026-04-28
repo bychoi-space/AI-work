@@ -102,6 +102,26 @@
         
         /* Ensure no ghost buttons at the top */
         .dashboard-header .edit-btn-card, .dashboard-header .delete-btn-card { display: none !important; }
+        
+        /* Auto-complete Dropdown */
+        .search-dropdown {
+            display: none; position: absolute; top: 100%; left: 0; width: 100%;
+            background: rgba(15, 17, 21, 0.95); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; margin-top: 8px; z-index: 100; max-height: 300px;
+            overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            backdrop-filter: blur(16px);
+        }
+        .search-dropdown.active { display: block; }
+        .search-item {
+            padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer; transition: background 0.2s;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .search-item:last-child { border-bottom: none; }
+        .search-item:hover { background: rgba(255,255,255,0.08); }
+        .search-item-icon { color: var(--accent); opacity: 0.8; font-size: 20px; }
+        .search-item-title { font-size: 13px; font-weight: 600; color: #fff; }
+        .search-item-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -129,8 +149,17 @@
 
     <!-- Dashboard View -->
     <div id="dashboard-view">
-        <div class="dashboard-header">
-            <h2 class="dashboard-title">My Projects</h2>
+        <div class="dashboard-header" style="display: flex; align-items: center; gap: 20px;">
+            <h2 class="dashboard-title" style="margin-right: auto;">My Projects</h2>
+            
+            <!-- Search Bar -->
+            <div class="search-container" style="position: relative; width: 320px;">
+                <span class="material-icons-outlined" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 18px; pointer-events: none;">search</span>
+                <input type="text" id="project-search-input" placeholder="프로젝트명 또는 제목으로 검색..." autocomplete="off" style="width: 100%; height: 40px; padding: 0 16px 0 40px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4); color: #fff; font-size: 14px; outline: none; transition: all 0.2s; box-sizing: border-box;">
+                <!-- Auto-complete dropdown -->
+                <div id="search-dropdown" class="search-dropdown"></div>
+            </div>
+
             <button class="tool-btn" id="btn-create-project" title="새 프로젝트 생성" style="width: auto; padding: 0 16px; background: var(--accent); color: #000; font-weight: 600;">
                 <span class="material-icons-outlined" style="margin-right: 6px;">create_new_folder</span> New Project
             </button>
