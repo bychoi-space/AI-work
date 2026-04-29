@@ -223,17 +223,12 @@
       "template": "template_cover.html",
       "description": []
     },
-    "03_UI_Screen_3736.html": {
-      "title": "03_UI_Screen_3736",
-      "type": "ui",
-      "updatedAt": "2026-04-29T06:06:36.828Z",
-      "template": "template_front_ui.html"
-    },
     "06_Mobile_Design_2_6727.html": {
       "title": "06_Mobile_Design_2_6727",
       "type": "mobile-ui",
       "updatedAt": "2026-04-29T07:04:19.717Z",
-      "template": "template_mobile_ui_2.html"
+      "template": "template_mobile_ui_2.html",
+      "description": []
     }
   },
   "developer": ""
