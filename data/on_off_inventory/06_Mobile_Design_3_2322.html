@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Mobile UI (3) - [과제] 온오프 재고 효율화</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg: #1e293b; --v4-frame-bg: #ffffff; }
+        body { margin: 0; padding: 0; background: var(--v4-bg); font-family: 'Inter', 'Noto Sans KR', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
+        .page { width: 1440px; height: 900px; position: relative; display: flex; justify-content: center; align-items: center; gap: 40px; }
+        .mobile-frame { width: 375px; height: 812px; background: var(--v4-frame-bg); border-radius: 40px; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111; overflow: hidden; border: 4px solid #334155; }
+        .mobile-header-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 150px; height: 30px; background: #111; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; z-index: 1000; }
+        .mobile-content { width: 100%; height: 100%; position: relative; background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 20px 20px; overflow-y: auto; overflow-x: hidden; }
+        .mobile-statusbar { position: absolute; top: 10px; left: 24px; right: 24px; height: 20px; display: flex; align-items: center; justify-content: space-between; color: #111827; font-size: 12px; font-weight: 800; z-index: 1001; pointer-events: none; white-space: nowrap; }
+        .mobile-home-indicator { position: absolute; bottom: 8px; left: 50%; width: 132px; height: 5px; border-radius: 999px; background: #111827; transform: translateX(-50%); z-index: 1001; pointer-events: none; }
+        .mobile-ui-header, .mobile-ui-card, .mobile-ui-nav, .mobile-ui-list { width: 100%; height: 100%; box-sizing: border-box; color: #0f172a; font-family: 'Inter', 'Noto Sans KR', sans-serif; }
+        .mobile-ui-header { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; background: #fff; border-bottom: 1px solid #e5e7eb; }
+        .mobile-ui-card { padding: 18px; border-radius: 22px; background: linear-gradient(135deg, #111827, #334155); color: #fff; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18); }
+        .mobile-ui-list { padding: 16px; border-radius: 18px; background: #f8fafc; border: 1px solid #e5e7eb; }
+        .mobile-ui-nav { display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; padding: 8px 14px 14px; background: #fff; border-top: 1px solid #e5e7eb; }
+        .mobile-ui-nav div { text-align: center; font-size: 12px; font-weight: 700; color: #64748b; white-space: nowrap; }
+        .lf-component { position: absolute !important; box-sizing: border-box !important; }
+        .lf-component:hover { outline: 2px dashed var(--v4-primary) !important; cursor: pointer !important; }
+        .lf-component.selected { outline: 2px solid var(--v4-primary) !important; z-index: 9999 !important; }
+        .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; border: 2px solid #fff; }
+        .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
+        .lf-resizer { position: absolute; bottom: -6px; right: -6px; width: 12px; height: 12px; background: var(--v4-primary); cursor: nwse-resize; border-radius: 2px; border: 2px solid #fff; opacity: 0; z-index: 100; }
+        .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
+        .lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 101; font-weight: bold; }
+        .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
+        .v4-editable-cell { outline: none; }
+        .v4-editable-cell:focus { background: rgba(99, 102, 241, 0.05); }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- Screen 1 -->
+        <div class="mobile-frame">
+            <div class="mobile-statusbar"><span>9:41</span><span>5G</span></div>
+            <div class="mobile-header-notch"></div>
+            <div class="mobile-content">
+                <div id="m3-a-header" class="lf-component" style="top:52px; left:20px; width:335px; height:46px;">
+                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    <div class="mobile-ui-header"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Step 1</div><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; font-weight:700; color:#64748b;">Start</div></div>
+                    <div class="lf-resizer"></div>
+                </div>
+                <div id="m3-a-card" class="lf-component" style="top:124px; left:20px; width:335px; height:148px;">
+                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    <div class="mobile-ui-card"><div contenteditable="true" class="v4-editable-cell" style="font-size:20px; font-weight:900;">Landing State</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:12px; font-size:13px; line-height:1.35;">Introduce the flow and key user action.</div></div>
+                    <div class="lf-resizer"></div>
+                </div>
+                <div id="m3-a-cta" class="lf-component" style="top:706px; left:20px; width:335px; height:50px;">
+                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    <div contenteditable="true" class="v4-editable-cell" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:25px; background:#111827; color:#fff; font-size:14px; font-weight:800;">Continue</div>
+                    <div class="lf-resizer"></div>
+                </div>
+            </div>
+            <div class="mobile-home-indicator"></div>
+        </div>
+        <!-- Screen 2 -->
+        <div class="mobile-frame">
+            <div class="mobile-statusbar"><span>9:41</span><span>5G</span></div>
+            <div class="mobile-header-notch"></div>
+            <div class="mobile-content">
+                <div id="m3-b-header" class="lf-component" style="top:52px; left:20px; width:335px; height:46px;">
+                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    <div class="mobile-ui-header"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Step 2</div><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; font-weight:700; color:#64748b;">Input</div></div>
+                    <div class="lf-resizer"></div>
+                </div>
+                <div id="m3-b-form" class="lf-component" style="top:122px; left:20px; width:335px; height:330px;">
+                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    <div class="mobile-ui-list"><div contenteditable="true" class="v4-editable-cell" style="font-size:16px; font-weight:900;">Form / Options</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:14px; padding:14px; border-radius:14px; background:#fff;">Field label and value</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; padding:14px; border-radius:14px; background:#fff;">Selection state</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; padding:14px; border-radius:14px; background:#fff;">Validation message</div></div>
+                    <div class="lf-resizer"></div>
+                </div>
+                <div id="m3-b-cta" class="lf-component" style="top:706px; left:20px; width:335px; height:50px;">
+                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    <div contenteditable="true" class="v4-editable-cell" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:25px; background:#111827; color:#fff; font-size:14px; font-weight:800;">Apply</div>
+                    <div class="lf-resizer"></div>
+                </div>
+            </div>
+            <div class="mobile-home-indicator"></div>
+        </div>
+        <!-- Screen 3 -->
+        <div class="mobile-frame">
+            <div class="mobile-statusbar"><span>9:41</span><span>5G</span></div>
+            <div class="mobile-header-notch"></div>
+            <div class="mobile-content">
+                <div id="m3-c-header" class="lf-component" style="top:52px; left:20px; width:335px; height:46px;">
+                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    <div class="mobile-ui-header"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Step 3</div><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; font-weight:700; color:#64748b;">Done</div></div>
+                    <div class="lf-resizer"></div>
+                </div>
+                <div id="m3-c-result" class="lf-component" style="top:150px; left:20px; width:335px; height:230px;">
+                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    <div class="mobile-ui-card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;"><div contenteditable="true" class="v4-editable-cell" style="font-size:40px; line-height:1;">OK</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:18px; font-size:20px; font-weight:900;">Completion State</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; font-size:13px; line-height:1.4;">Summarize the final user result.</div></div>
+                    <div class="lf-resizer"></div>
+                </div>
+                <div id="m3-c-summary" class="lf-component" style="top:410px; left:20px; width:335px; height:154px;">
+                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    <div class="mobile-ui-list"><div contenteditable="true" class="v4-editable-cell" style="font-size:16px; font-weight:900;">Summary</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:12px; font-size:14px; line-height:1.45;">Show selected values, next action, and related notices.</div></div>
+                    <div class="lf-resizer"></div>
+                </div>
+            </div>
+            <div class="mobile-home-indicator"></div>
+        </div>
+    </div>
+</body>
+</html>
