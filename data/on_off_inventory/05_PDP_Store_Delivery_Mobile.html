@@ -30,15 +30,15 @@
         .page { 
             width: 1440px; height: 900px; 
             position: relative; 
-            display: flex; justify-content: center; align-items: center;
-            gap: 60px;
+            background: var(--v4-bg);
+            overflow: hidden;
         }
         
         .mobile-frame {
             width: 375px; height: 812px;
             background: var(--v4-frame-bg);
             border-radius: 40px;
-            position: relative;
+            position: absolute;
             box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111;
             overflow: hidden;
             border: 4px solid #334155;
@@ -128,31 +128,43 @@
 
         /* Floating Callout Style */
         .callout-box {
-            width: 280px;
+            width: 320px;
             background: #fff;
             border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border: 1px solid #eee;
+            padding: 24px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.3);
+            border: 1px solid #ddd;
             z-index: 2000;
         }
-        .callout-title { font-weight: 800; font-size: 14px; margin-bottom: 12px; color: #111; display: flex; justify-content: space-between; }
-        .callout-copy { font-size: 12px; color: #555; line-height: 1.6; padding-left: 15px; margin: 0; }
-        .callout-copy li { margin-bottom: 6px; }
-        .callout-line-connector {
-            position: absolute;
-            width: 2px;
-            background: var(--v4-primary);
-            z-index: 1500;
-        }
+        .callout-title { font-weight: 800; font-size: 15px; margin-bottom: 14px; color: #111; display: flex; justify-content: space-between; }
+        .callout-copy { font-size: 13px; color: #444; line-height: 1.7; padding-left: 18px; margin: 0; }
+        .callout-copy li { margin-bottom: 8px; }
+        
         .v4-editable-cell { outline: none; }
         .v4-editable-cell:focus { background: rgba(99, 102, 241, 0.05); }
+
+        /* Enhanced Connector Style */
+        .connector {
+            position: absolute;
+            background: var(--v4-primary);
+            height: 2px;
+            z-index: 1500;
+            opacity: 0.6;
+        }
+        .connector::after {
+            content: '';
+            position: absolute;
+            width: 6px; height: 6px;
+            background: var(--v4-primary);
+            border-radius: 50%;
+            top: -2px;
+        }
     </style>
 </head>
 <body>
     <div class="page">
-        <!-- Screen 1: PDP Main -->
-        <div class="mobile-frame" style="left: 100px; top: 44px;">
+        <!-- Screen 1: PDP Main (Moved left) -->
+        <div class="mobile-frame" style="left: 60px; top: 44px;">
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
                 <div class="pdp-header">
@@ -191,33 +203,12 @@
                             <span class="material-icons-outlined" style="font-size: 16px; color: #ccc;">help_outline</span>
                         </div>
                     </div>
-                    
-                    <div style="display: flex; justify-content: flex-end; margin-top: -10px;">
-                        <div style="border: 1px solid #eee; border-radius: 4px; padding: 6px 12px; font-size: 12px; display: flex; align-items: center; gap: 4px;" class="v4-editable-cell" contenteditable="true">
-                            혜택받기 <span class="material-icons-outlined" style="font-size: 14px;">file_download</span>
-                        </div>
-                    </div>
-
-                    <div class="benefit-card">
-                        <div class="benefit-row">
-                            <span class="benefit-label v4-editable-cell" contenteditable="true">최대 혜택가</span>
-                            <span class="benefit-value v4-editable-cell" contenteditable="true" style="font-size: 15px;">403,300원</span>
-                        </div>
-                        <div class="benefit-row">
-                            <div style="display: flex; align-items: center; gap: 6px;">
-                                <span style="background: #222; color: #fff; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900;">B</span>
-                                <span class="benefit-label v4-editable-cell" contenteditable="true">1,970M 적립예정</span>
-                                <span class="material-icons-outlined" style="font-size: 14px; color: #ccc;">help_outline</span>
-                            </div>
-                            <span class="material-icons-outlined" style="font-size: 18px; color: #888;">expand_more</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Screen 2: Option & Shipping -->
-        <div class="mobile-frame" style="left: 600px; top: 44px;">
+        <!-- Screen 2: Option & Shipping (Moved middle-left) -->
+        <div class="mobile-frame" style="left: 495px; top: 44px;">
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
                 <div class="pdp-header">
@@ -226,68 +217,39 @@
                 </div>
                 
                 <div class="option-section">
-                    <div class="option-label v4-editable-cell" contenteditable="true">컬러 블랙</div>
-                    <div class="thumb-grid">
-                        <div class="thumb-item active">PROD<br>IMG</div>
-                        <div class="thumb-item">PROD<br>IMG</div>
-                    </div>
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <div class="option-label v4-editable-cell" contenteditable="true" style="margin-bottom: 0;">사이즈</div>
-                        <div style="font-size: 12px; color: #888; display: flex; align-items: center;" class="v4-editable-cell" contenteditable="true">사이즈안내 <span class="material-icons" style="font-size: 14px;">chevron_right</span></div>
-                    </div>
-                    
+                    <div class="option-label v4-editable-cell" contenteditable="true">사이즈</div>
                     <div class="size-grid">
-                        <div class="size-item">95 <span class="badge-alert" style="position: absolute; top: 4px; right: 4px; width: 4px; height: 4px; background: red; border-radius: 50%;"></span> <span class="badge-alert v4-editable-cell" contenteditable="true" style="position: absolute; bottom: -18px;">3개 남음</span></div>
+                        <div class="size-item">95 <span class="badge-alert" style="position: absolute; top: 4px; right: 4px; width: 4px; height: 4px; background: red; border-radius: 50%;"></span></div>
                         <div class="size-item">100</div>
-                        <div class="size-item selected" id="target-size-105">105 <span class="badge-blue v4-editable-cell" contenteditable="true" style="position: absolute; bottom: -20px;">매장배송</span></div>
+                        <div class="size-item selected">105 <span class="badge-blue v4-editable-cell" contenteditable="true" style="position: absolute; bottom: -20px;">매장배송</span></div>
                         <div class="size-item">110</div>
-                        <div class="size-item">115</div>
-                        <div class="size-item disabled">120 <span class="material-icons-outlined" style="position: absolute; top: -6px; right: -6px; font-size: 16px; color: var(--lfmall-red); background: #fff; border-radius: 50%;">notifications_none</span></div>
                     </div>
                     
-                    <div style="height: 40px;"></div>
+                    <div style="height: 30px;"></div>
 
                     <div class="section-title v4-editable-cell" contenteditable="true">배송 및 혜택 안내</div>
                     
                     <div class="info-box">
-                        <div style="display: flex; gap: 12px;">
+                        <div style="display: flex; gap: 12px; margin-bottom: 20px;">
                             <div style="font-weight: 800; font-size: 18px; color: var(--lfmall-blue);">I.I.I</div>
                             <div>
                                 <div class="info-txt-main v4-editable-cell" contenteditable="true"><span style="color: var(--lfmall-red);">쓱배송</span> | CJ대한통운</div>
                                 <div class="info-txt-sub v4-editable-cell" contenteditable="true">무료배송</div>
                             </div>
                         </div>
-                        
-                        <div style="background: #f8f8f8; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin: 16px 0;">
-                            <div>
-                                <div style="font-size: 13px; font-weight: 700; color: #111;" class="v4-editable-cell" contenteditable="true">12/13 (토) 이내 도착확률 96%</div>
-                                <div style="font-size: 11px; color: #888;" class="v4-editable-cell" contenteditable="true">서울 노원구 기준 (18시 이전 결제 시)</div>
-                            </div>
-                            <span class="material-icons-outlined" style="color: #888;">expand_more</span>
-                        </div>
 
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            <span class="store-badge v4-editable-cell" contenteditable="true" id="target-badge">매장상품배송</span>
+                            <span class="store-badge v4-editable-cell" contenteditable="true">매장상품배송</span>
                             <span class="material-icons-outlined" style="font-size: 14px; color: #ccc;">help_outline</span>
                         </div>
                         <div class="info-txt-sub v4-editable-cell" contenteditable="true" style="margin-top: 6px;">평균 <span style="color: var(--lfmall-red); font-weight: 700;">5~7</span> 영업일 소요됩니다.</div>
                     </div>
                 </div>
-                
-                <div class="bottom-nav" style="position: absolute; bottom: 0; left: 0; width: 100%;">
-                    <div class="btn-heart v4-editable-cell" contenteditable="true">
-                        <span class="material-icons-outlined" style="font-size: 20px;">favorite_border</span>
-                        <span>54</span>
-                    </div>
-                    <div class="btn-gift v4-editable-cell" contenteditable="true">선물하기</div>
-                    <div class="btn-buy v4-editable-cell" contenteditable="true">구매하기</div>
-                </div>
             </div>
         </div>
 
-        <!-- Floating Callout (LF Components) -->
-        <div class="lf-component callout-box" style="left: 1010px; top: 400px;">
+        <!-- Floating Callout -->
+        <div class="lf-component callout-box" style="left: 930px; top: 380px;">
             <div class="callout-title v4-editable-cell" contenteditable="true">
                 매장상품배송 서비스 안내
                 <span style="font-weight: 400; cursor: pointer;">&times;</span>
@@ -298,9 +260,11 @@
             </ul>
         </div>
 
-        <!-- Connection Lines (Simulated with div) -->
-        <div class="lf-component callout-line-connector" style="left: 742px; top: 120px; width: 300px; height: 2px; transform: rotate(15deg);"></div>
-        <div class="lf-component callout-line-connector" style="left: 710px; top: 570px; width: 300px; height: 2px; transform: rotate(-5deg);"></div>
+        <!-- Precise Connectors -->
+        <!-- From Callout to Badge in Option Screen -->
+        <div class="lf-component connector" style="left: 650px; top: 220px; width: 280px; transform: rotate(-30deg);"></div>
+        <!-- From Callout to Badge in Shipping Section -->
+        <div class="lf-component connector" style="left: 650px; top: 580px; width: 280px; transform: rotate(30deg);"></div>
     </div>
 </body>
 </html>
