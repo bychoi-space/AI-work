@@ -241,6 +241,12 @@
       "type": "mobile-ui",
       "updatedAt": "2026-04-29T07:16:15.753Z",
       "template": "template_mobile_ui_3.html"
+    },
+    "06_Mobile_Design_2_0075.html": {
+      "title": "06_Mobile_Design_2_0075",
+      "type": "mobile-ui",
+      "updatedAt": "2026-04-29T07:16:33.422Z",
+      "template": "template_mobile_ui_2.html"
     }
   },
   "developer": ""
