@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Front UI - [과제] 온오프 재고 효율화</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; background: #fafafa; }
+        .meta-table { width: 100%; border-collapse: collapse; background: #fff; font-size: 12px; margin-bottom: 20px; border: 1px solid #999; }
+        .meta-table th, .meta-table td { border: 1px solid #999; height: 28px; padding: 0 10px; }
+        .meta-table th { background: #e1e1e1; color: #333; font-weight: normal; width: 100px; text-align: center; }
+        .meta-table .value { width: calc(25% - 100px); color: #000; }
+        .meta-table .highlight { color: #e60012; font-weight: bold; }
+        
+        .main-frame { width: 375px; height: 812px; background: #fff; margin: 40px auto; border: 1px solid #ccc; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .app-header { height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-bottom: 1px solid #eee; }
+        .material-icons-outlined { font-size: 20px; }
+        .bottom-fixed { position: absolute; bottom: 0; left: 0; right: 0; height: 60px; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #888; }
+        
+        .footer { position: fixed; bottom: 0; left:0; right:0; height: 40px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
+        .logo-area { display: flex; align-items: center; gap: 8px; }
+        .logo-symbol { width: 20px; height: 20px; background: #e60012; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); color: #fff; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+        .logo-text { font-weight: 900; font-size: 16px; color: #1a1a1a; }
+    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+</head>
+<body>
+    <table class="meta-table">
+        <tr>
+            <th>화면 구분</th><td class="value">Front-End</td>
+            <th>화면 명칭</th><td class="value highlight">03_UI_Screen_3736</td>
+            <th>작성자</th><td class="value">최범열</td>
+            <th>작성 일자</th><td class="value">2026.4.29</td>
+        </tr>
+        <tr>
+            <th>화면 코드</th><td class="value">-</td>
+            <th>화면 경로</th><td class="value" style="color:#e60012">https://m.lfmall.co.kr/app/03_UI_Screen_3736</td>
+            <th>문서 버전</th><td class="value">v1.0</td>
+            <th>기타</th><td class="value">JIRA: LFML-138562</td>
+        </tr>
+    </table>
+
+    <div class="main-frame">
+        <div class="app-header">
+            <span class="material-icons-outlined">chevron_left</span>
+            <span style="font-size: 15px; font-weight: bold;">03_UI_Screen_3736</span>
+            <div style="display:flex; gap:12px;">
+                <span class="material-icons-outlined">search</span>
+                <span class="material-icons-outlined">home</span>
+                <span class="material-icons-outlined">shopping_bag</span>
+            </div>
+        </div>
+        <div style="height: 600px; display: flex; align-items: center; justify-content: center; color: #ccc; font-style: italic;">
+            UI WIREFRAME AREA
+        </div>
+        <div class="bottom-fixed">하단 고정 영역</div>
+    </div>
+
+    <div class="footer">
+        <div class="logo-area"><div class="logo-symbol">LF</div><div class="logo-text">LF</div></div>
+        <div class="page-num">4</div>
+    </div>
+</body>
+</html>
