@@ -180,6 +180,7 @@ const DOM = {
     editScreenModal: get('edit-screen-modal'),
     editScreenTitle: get('edit-screen-title'),
     editScreenType: get('edit-screen-type'),
+    editScreenDefaultTab: get('edit-screen-default-tab'),
     editScreenDesc: get('edit-screen-desc'),
     editScreenFilename: get('edit-screen-filename'),
     btnCancelEdit: get('btn-edit-screen-cancel'),
@@ -604,6 +605,14 @@ async function loadScreen(fileName) {
     
     renderDescriptionList();
     updateProperties(); 
+    
+    // Switch to default tab if specified
+    if (scMeta.defaultTab === 'description') {
+        switchSidebarTab('description');
+    } else {
+        switchSidebarTab('editor'); // default
+    }
+    
     setTimeout(() => centerView(), 150);
 }
 
@@ -616,12 +625,14 @@ async function handleEditScreen(fileName) {
     DOM.editScreenFilename.innerText = fileName;
     DOM.editScreenTitle.value = meta.title || "";
     DOM.editScreenType.value = meta.type || "default";
+    DOM.editScreenDefaultTab.value = meta.defaultTab || "editor";
     DOM.editScreenDesc.value = meta.description || "";
     DOM.editScreenModal.classList.add('active');
     
     DOM.btnSubmitEdit.onclick = async () => {
         const newTitle = DOM.editScreenTitle.value.trim();
         const newType = DOM.editScreenType.value;
+        const newDefaultTab = DOM.editScreenDefaultTab.value;
         const newDesc = DOM.editScreenDesc.value.trim();
         
         DOM.btnSubmitEdit.disabled = true;
@@ -632,6 +643,7 @@ async function handleEditScreen(fileName) {
             ...state.projectMetadata.screens[fileName],
             title: newTitle,
             type: newType,
+            defaultTab: newDefaultTab,
             description: newDesc,
             updatedAt: new Date().toISOString()
         };
@@ -937,8 +949,18 @@ function renderDescriptionList() {
                     highlight(false);
                     markAsDirty();
                 } else {
-                    // It was a simple click -> Activate Editor
-                    spawnTextEditor(item.x, item.y, index);
+                    // It was a simple click
+                    if (item.type === 'text') {
+                        // Activate Editor for text markers
+                        spawnTextEditor(item.x, item.y, index);
+                    } else {
+                        // For pin markers, focus the corresponding textarea
+                        const rowInput = document.querySelector(`.desc-row[data-index="${index}"] .desc-input`);
+                        if (rowInput) {
+                            switchSidebarTab('description');
+                            rowInput.focus();
+                        }
+                    }
                 }
             };
 
@@ -1065,6 +1087,11 @@ async function getIframeHTML() {
 async function handleGlobalSave() {
     try {
         if (state.isReadOnly) return showAuthModal();
+        
+        // Ensure any active text editor is synced before saving
+        if (state.isEditing && typeof closeActiveEditor === 'function') {
+            closeActiveEditor(true);
+        }
         
         const btn = DOM.btnGlobalSave;
         if (!btn) return;
@@ -1578,10 +1605,15 @@ if (DOM.btnAddDescription) DOM.btnAddDescription.onclick = () => {
     if (!state.activeFile) return Notification.alert("스크린을 선택해주세요.", "알림", "warning"); 
     
     const { x, y } = getCascadedPosition(50, 50);
-    state.activeFile.meta.description.push({ text: '', x, y }); 
+    state.activeFile.meta.description.push({ text: '', x, y, type: 'pin' }); 
     markAsDirty(); 
     renderDescriptionList(); 
-    setTimeout(() => DOM.descriptionList?.querySelectorAll('.desc-input').slice(-1)[0]?.focus(), 50); 
+    setTimeout(() => {
+        const inputs = DOM.descriptionList?.querySelectorAll('.desc-input');
+        if (inputs && inputs.length > 0) {
+            inputs[inputs.length - 1].focus();
+        }
+    }, 50); 
 };
 
 if (DOM.btnAddScreen) DOM.btnAddScreen.onclick = () => { 
