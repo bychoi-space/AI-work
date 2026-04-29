@@ -124,22 +124,6 @@
         }
       ]
     },
-    "02_Plan_3199.html": {
-      "title": "02_Plan_3199",
-      "type": "plan",
-      "updatedAt": "2026-04-22T09:57:28.161Z",
-      "template": "template_plan.html",
-      "description": [
-        {
-          "html": "<p><strong>1231231231</strong></p>",
-          "text": "1231231231",
-          "x": 50,
-          "y": 50,
-          "type": "text",
-          "color": "#000000"
-        }
-      ]
-    },
     "00_Cover_4279.html": {
       "title": "00_Cover_4279",
       "type": "cover",
@@ -160,7 +144,6 @@
     "01_Architecture_4304.html",
     "01_Architecture_7157.html",
     "00_TOC.html",
-    "02_Plan_3199.html",
     "02_Plan_5700.html",
     "02_Plan_6933.html",
     "03_UI_Screen_0933.html",
