@@ -95,12 +95,12 @@
 
 /* Design System Tokens */
 :root {
-    --bg-base: #1e2128; /* 魽國� ??諻吖? 諻國祭??*/
-    --panel-bg: rgba(35, 38, 45, 0.75); /* Glassmorphism ?刺� (魽國� ??諻祢�) */
+    --bg-base: #1e2128;
+    --panel-bg: rgba(35, 38, 45, 0.75);
     --border-color: rgba(255, 255, 255, 0.12);
     --text-primary: #ffffff;
     --text-secondary: #aab2bd;
-    --accent: #6366f1; /* ?科𥘵??儢禺剳: 赬��???賈�窸?*/
+    --accent: #6366f1;
     --accent-nav: #22d3ee;
     --accent-data: #fb7185;
     --accent-hover: #818cf8;
@@ -342,7 +342,7 @@ body {
 }
 
 /* ----------------------------------------------------
-   3. Main Workspace (?�� ?韒�???竾庖)
+   3. Main Workspace
    ---------------------------------------------------- */
 #workspace-view {
     display: flex; 
@@ -491,7 +491,7 @@ body {
     background: transparent;
     border: 1px dashed var(--accent);
     color: #000;
-    text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 2px #fff; /* White glow for visibility on dark bg */
+    text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 2px #fff;
     padding: 8px 14px;
     border-radius: 8px;
     font-size: 14px;
@@ -638,31 +638,6 @@ body {
     gap: 12px;
 }
 
-#btn-global-save {
-    background: linear-gradient(135deg, #00e5ff 0%, #00b0ff 100%);
-    color: #000;
-    font-weight: 600; /* Semi-bold for better readability than bold */
-    border-radius: 8px;
-    padding: 6px 18px;
-    font-size: 13px;
-    box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-#btn-global-save:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 229, 255, 0.5);
-    filter: brightness(1.1);
-}
-
-#btn-global-save:active {
-    transform: translateY(0);
-}
-
 .bottom-item i { font-size: 14px; opacity: 0.7; }
 
 .panel-header {
@@ -781,16 +756,17 @@ body {
     flex-shrink: 0;
     letter-spacing: 0.3px;
 }
-.badge-cover { background: #6366f1; color: #fff; } /* Indigo */
-.badge-architecture { background: #10b981; color: #fff; } /* Emerald */
-.badge-plan { background: #f59e0b; color: #fff; } /* Amber */
-.badge-ui { background: #3b82f6; color: #fff; } /* Blue */
-.badge-admin { background: #6b7280; color: #fff; } /* Gray */
-.badge-admin-nbos { background: #334155; color: #fff; } /* Slate */
-.badge-admin-onesphere { background: #9333ea; color: #fff; } /* Purple */
+.badge-cover { background: #6366f1; color: #fff; }
+.badge-architecture { background: #10b981; color: #fff; }
+.badge-plan { background: #f59e0b; color: #fff; }
+.badge-ui { background: #3b82f6; color: #fff; }
+.badge-mobile-ui { background: #8b5cf6; color: #fff; }
+.badge-admin { background: #6b7280; color: #fff; }
+.badge-admin-nbos { background: #334155; color: #fff; }
+.badge-admin-onesphere { background: #9333ea; color: #fff; }
 .badge-default { background: rgba(255,255,255,0.1); color: var(--text-secondary); }
 
-/* Add Action Buttons (Premium Style) */
+/* Add Action Buttons */
 .btn-add-action {
     width: 28px;
     height: 28px;
@@ -827,7 +803,7 @@ body {
 }
 
 /* ----------------------------------------------------
-   3. Canvas (?��鴔� / 鴗𡢾� ?�𡡒)
+   3. Canvas
    ---------------------------------------------------- */
 .canvas {
     flex: 1;
@@ -851,7 +827,6 @@ body {
 .artboard-wrapper {
     position: absolute;
     top: 0; left: 0;
-    /* Dimensions are synced via setDeviceViewport() in JS */
 }
 
 /* HTML IFrame Viewer */
@@ -899,7 +874,7 @@ body {
 
 
 /* ----------------------------------------------------
-   4. Properties & Upload Zone (?域腹 ?刺�)
+   4. Properties & Upload Zone
    ---------------------------------------------------- */
 .upload-zone {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -977,7 +952,6 @@ body {
     color: #fff;
     transform: scale(1.1);
 }
-.delete-btn-card span { font-size: 18px; }
 
 .tool-btn-danger {
     color: #f87171;
@@ -1002,10 +976,10 @@ body {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     z-index: 1000;
-    display: none; /* 黕�萼 ?刷? */
+    display: none;
     align-items: center;
     justify-content: center;
-    pointer-events: none; /* ?渠早 諻拗㟲 篣�? */
+    pointer-events: none;
     border: 4px dashed var(--accent);
     margin: 0;
 }
@@ -1112,38 +1086,82 @@ body.drag-active #drop-overlay {
     margin-top: 32px;
 }
 
+/* --- 3-TIER BUTTON SYSTEM (UNIFIED STANDARD) --- */
+.btn-accent, .btn-primary, .btn-secondary, .v4-button,
+.dialog-footer button, .modal-footer button, .v4-inspector-btn, .btn-jira-shortcut {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 0 16px !important; /* Unified Padding */
+    height: 26px !important;
+    border-radius: 13px !important; /* Pill Shape */
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-family: var(--font-main) !important;
+    box-sizing: border-box !important;
+    border: 1px solid transparent !important;
+    text-align: center !important;
+}
+
+/* Unified 3D Hover Effect */
+.btn-accent:hover, .btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25) !important;
+    filter: brightness(1.1);
+}
+
+.btn-accent:active, .btn-primary:active, .btn-secondary:active {
+    transform: translateY(0) scale(0.97) !important;
+}
+
+/* Tier 1: Critical (Accent + White Text) */
+.btn-accent {
+    background: #6366f1 !important; /* Indigo Accent */
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important; /* Subtle border for visibility */
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3) !important;
+}
+
+/* Tier 2: Important (Black + White Text) */
 .btn-primary {
-    background: var(--accent);
-    color: #000;
-    font-weight: 600;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s;
+    background: #1e2128 !important; /* Dark Navy/Black */
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important; /* Subtle border for visibility */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
 }
 
-.btn-primary:hover {
-    background: var(--accent-hover);
-    transform: translateY(-1px);
+/* Tier 3: General (Light + Black Text) */
+.btn-secondary, .btn-jira-shortcut {
+    background: #e0e7ff !important; /* Light Indigo */
+    color: #1e1b4b !important; /* Dark Text */
+    border: 1px solid #c7d2fe !important;
 }
 
-.btn-secondary {
-    background: transparent;
-    color: var(--text-secondary);
-    border: 1px solid var(--border-color);
-    padding: 10px 24px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
+/* Icon & SVG Styling (Only for Accent/Primary where applicable) */
+.btn-accent svg, .btn-primary svg,
+.btn-accent .material-icons-outlined, .btn-primary .material-icons-outlined {
+    width: 13px !important;
+    height: 13px !important;
+    font-size: 13px !important;
+    stroke-width: 2 !important;
+    display: inline-block !important;
+    color: inherit !important;
 }
 
-.btn-secondary:hover {
-    background: var(--hover-bg);
+
+/* Fix for index.html New Project button which might have tight padding */
+.btn-new-project {
+    padding: 0 16px !important;
 }
 
-/* Card Metadata Tags */
+.btn-new-project {
+    padding: 0 16px !important; /* Slightly more for this specific large button */
+}
 .metadata-row {
     display: flex;
     flex-wrap: wrap;
@@ -1871,7 +1889,7 @@ body.drag-active #drop-overlay {
     gap: 4px;
     padding: 3px 10px;
     height: 26px;
-    border-radius: 6px;
+    border-radius: 30px;
     font-size: 11px;
     font-weight: 600;
     white-space: nowrap;

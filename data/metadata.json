@@ -29,6 +29,13 @@
       "figmaUrl": "https://figmashort.link/NXDkGP",
       "pubUrl": "http://lfcp-pc-ux.lfcorp.io/ProductDetail",
       "updatedAt": "2026-04-16T04:31:25.440Z"
+    },
+    "05_PDP_Store_Delivery_Mobile.html": {
+      "title": "상품상세 매장상품배송 안내 (Mobile)",
+      "type": "mobile-ui",
+      "period": "2026.04.29",
+      "assignee": "최범열",
+      "updatedAt": "2026-04-29T07:05:30.000Z"
     }
   }
 }

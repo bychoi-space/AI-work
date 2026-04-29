@@ -390,6 +390,7 @@ function getCategoryBadge(type) {
         'architecture': { label: 'ARCH', class: 'badge-architecture' },
         'plan': { label: 'PLAN', class: 'badge-plan' },
         'ui': { label: 'UI', class: 'badge-ui' },
+        'mobile-ui': { label: 'MOBILE', class: 'badge-mobile-ui' },
         'admin-nbos': { label: 'NBOS', class: 'badge-admin-nbos' },
         'admin-onesphere': { label: '1SPH', class: 'badge-admin-onesphere' }
     };
@@ -518,15 +519,25 @@ async function loadScreen(fileName) {
             c.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
             notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: "<!DOCTYPE html>\\n" + c.outerHTML });
         } else if (d.type === 'LF_INSERT_COMPONENT') {
-            const vh = window.innerHeight, vw = window.innerWidth, sY = window.scrollY, sX = window.scrollX;
+            const host = document.querySelector('.mobile-content') || document.body;
+            const isMobileHost = host !== document.body;
+            const vh = isMobileHost ? host.clientHeight : window.innerHeight;
+            const vw = isMobileHost ? host.clientWidth : window.innerWidth;
+            const sY = isMobileHost ? host.scrollTop : window.scrollY;
+            const sX = isMobileHost ? host.scrollLeft : window.scrollX;
             const compW = (d.style && d.style.width && d.style.width !== '100%') ? parseInt(d.style.width) || 200 : (d.style && d.style.width === '100%' ? vw : 200);
             const compH = (d.style && d.style.height && d.style.height !== 'auto') ? parseInt(d.style.height) || 100 : 100;
-            const centerTop = Math.max(0, sY + (vh - compH) / 2);
-            const centerLeft = Math.max(0, sX + (vw - compW) / 2);
+            const centerTop = Math.max(isMobileHost ? 56 : 0, sY + (vh - compH) / 2);
+            const centerLeft = Math.max(isMobileHost ? 16 : 0, sX + (vw - compW) / 2);
             const v = document.createElement('div'); v.id = d.id || ('v4-comp-' + Date.now()); v.className = 'lf-component'; v.style.position = 'absolute'; v.style.top = centerTop + 'px'; v.style.left = centerLeft + 'px'; v.style.zIndex = '1000';
             if (d.style) Object.assign(v.style, d.style);
+            if (isMobileHost) {
+                v.style.top = centerTop + 'px';
+                v.style.left = d.style && d.style.width === '100%' ? '0px' : centerLeft + 'px';
+                if (d.style && d.style.width === '100%') v.style.width = '100%';
+            }
             v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
-            document.body.appendChild(v);
+            host.appendChild(v);
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); v.classList.add('selected');
             notifyParent({ type: 'LF_COMP_SELECTED', id: v.id, isTable: !!v.querySelector('table'), isShape: !!v.querySelector('.v4-shape'), isIcon: !!v.querySelector('.lf-icon') });
             markDirty();
@@ -727,10 +738,9 @@ function updateProperties() {
                        href="${pm.jira ? 'https://jira.lfcorp.com/browse/' + pm.jira.trim() : '#'}"
                        target="_blank"
                        rel="noopener noreferrer"
-                       class="btn-jira-shortcut"
+                       class="btn-secondary"
                        style="display: ${pm.jira && pm.jira.trim() ? 'flex' : 'none'};"
                        title="JIRA 바로가기: ${pm.jira || ''}">
-                        <span class="material-icons-outlined" style="font-size:13px;">open_in_new</span>
                         바로가기
                     </a>
                 </div>
@@ -741,8 +751,12 @@ function updateProperties() {
                 <span class="material-icons-outlined" style="font-size:14px; opacity:0.5;">history</span>
                 <span id="meta-updated-txt">최종 업데이트: -</span>
             </div>
-            <button id="btn-global-save" class="btn-primary" style="height:30px; padding:0 14px; font-size:12px; gap:6px; white-space:nowrap;">
-                <span class="material-icons-outlined" style="font-size:15px;">save</span>
+            <button id="btn-global-save" class="btn-accent">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                    <polyline points="7 3 7 8 15 8"></polyline>
+                </svg>
                 전체 저장
             </button>
         </div>
@@ -1824,7 +1838,7 @@ function injectIframeInteractions(doc) {
         }
         .lf-component:hover {
             outline: 2px solid #00e5ff !important;
-            cursor: move !important;
+            cursor: pointer !important;
         }
         .lf-component.selected {
             outline: 2px solid #00e5ff !important;
@@ -1863,6 +1877,21 @@ function injectIframeInteractions(doc) {
         .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger {
             display: flex;
         }
+        .lf-drag-handle {
+            position: absolute;
+            top: -12px; left: -12px;
+            width: 24px; height: 24px;
+            background: #6366f1;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center; justify-content: center;
+            cursor: move;
+            border: 2px solid #fff;
+            z-index: 10001;
+            font-size: 12px;
+            font-weight: 700;
+        }
         .lf-icon {
             background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png");
             background-size: 200px 160px;
@@ -1891,6 +1920,7 @@ function injectIframeInteractions(doc) {
         if (state.tool !== 'select') return;
         const deleteBtn = e.target.closest('.lf-delete-trigger');
         const resizer = e.target.closest('.lf-resizer');
+        const dragHandle = e.target.closest('.lf-drag-handle');
         const comp = e.target.closest('.lf-component');
 
         if (deleteBtn) {
@@ -1905,14 +1935,18 @@ function injectIframeInteractions(doc) {
             startX = e.clientX; startY = e.clientY;
             startW = activeEl.offsetWidth; startH = activeEl.offsetHeight;
             e.preventDefault(); e.stopPropagation();
-        } else if (comp) {
-            isMoving = true; activeEl = comp;
+        } else if (dragHandle) {
+            isMoving = true; activeEl = dragHandle.closest('.lf-component');
             startX = e.clientX; startY = e.clientY;
             startTop = activeEl.offsetTop; startLeft = activeEl.offsetLeft;
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             activeEl.classList.add('selected');
             window.postMessage({ type: 'LF_COMP_SELECTED', id: activeEl.id, isTable: !!activeEl.querySelector('table'), isShape: !!activeEl.querySelector('.v4-shape'), isIcon: !!activeEl.querySelector('.lf-icon') }, '*');
             e.preventDefault(); e.stopPropagation();
+        } else if (comp) {
+            doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
+            comp.classList.add('selected');
+            window.postMessage({ type: 'LF_COMP_SELECTED', id: comp.id, isTable: !!comp.querySelector('table'), isShape: !!comp.querySelector('.v4-shape'), isIcon: !!comp.querySelector('.lf-icon') }, '*');
         } else {
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             window.postMessage({ type: 'LF_COMP_DESELECTED' }, '*');
@@ -1999,16 +2033,21 @@ function insertAtomicComponent(type, name) {
     const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
     if (!iframeDoc) return;
     injectIframeInteractions(iframeDoc);
+    const host = iframeDoc.querySelector('.mobile-content') || iframeDoc.body;
+    const isMobileHost = host !== iframeDoc.body;
     
     if (contentHtml) {
         const comp = iframeDoc.createElement('div');
         comp.id = id; comp.className = 'lf-component';
-        comp.style.top = centerTop + 'px';
-        comp.style.left = centerLeft + 'px';
+        comp.style.top = isMobileHost ? Math.max(56, (host.clientHeight - compH) / 2) + 'px' : centerTop + 'px';
+        comp.style.left = isMobileHost ? (name === 'LFmall Header' ? '0px' : Math.max(16, (host.clientWidth - compW) / 2) + 'px') : centerLeft + 'px';
         comp.style.width = name === 'LFmall Header' ? '100%' : (type === 'icon' ? '40px' : (name === 'LF Logo' ? '60px' : '120px'));
         comp.style.height = name === 'LFmall Header' ? '50px' : (type === 'icon' ? '40px' : 'auto');
         comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>`;
-        iframeDoc.body.appendChild(comp);
+        comp.insertAdjacentHTML('afterbegin', '<div class="lf-drag-handle">::</div>');
+        const deleteTrigger = comp.querySelector('.lf-delete-trigger');
+        if (deleteTrigger) deleteTrigger.innerHTML = '&times;';
+        host.appendChild(comp);
         markAsDirty();
     }
 }
@@ -2153,6 +2192,12 @@ async function init() {
         DOM.tabBtns.forEach(btn => {
             btn.onclick = () => switchTab(btn.dataset.tab);
         });
+
+        // Tool Listeners (Selection/Pan)
+        if (DOM.btnSelect) DOM.btnSelect.onclick = () => setTool('select');
+        if (DOM.btnHand) DOM.btnHand.onclick = () => setTool('hand');
+        if (DOM.btnText) DOM.btnText.onclick = () => handleTextCreation();
+
 
         // Shortcuts
         window.addEventListener('keydown', (e) => {

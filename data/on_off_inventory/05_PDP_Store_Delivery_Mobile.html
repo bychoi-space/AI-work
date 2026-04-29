@@ -4,51 +4,315 @@
     <meta charset="UTF-8">
     <title>05. Mobile UI - 상품상세 매장상품배송 안내</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <style>
         :root {
-            --page-bg: #f7f7f5;
-            --ink: #222;
-            --muted: #777;
-            --line: #d6d6d6;
-            --blue: #315a9f;
-            --red: #e60012;
-            --orange: #ff8748;
+            --v4-primary: #6366f1;
+            --v4-accent: #00e5ff;
+            --v4-bg: #1e293b;
+            --v4-frame-bg: #ffffff;
+            --line: #efefef;
+            --text-main: #222;
+            --text-sub: #888;
+            --lfmall-blue: #315a9f;
+            --lfmall-red: #e60012;
         }
         * { box-sizing: border-box; }
-        html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
-        body {
-            background: var(--page-bg);
-            font-family: Inter, "Noto Sans KR", sans-serif;
-            color: var(--ink);
+        body { 
+            margin: 0; padding: 0; 
+            background: var(--v4-bg); 
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; overflow: hidden;
+            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
         }
-        .page {
-            width: 1440px;
-            height: 900px;
-            position: relative;
-            background: #f7f7f5;
-            overflow: hidden;
+        .page { 
+            width: 1440px; height: 900px; 
+            position: relative; 
+            display: flex; justify-content: center; align-items: center;
+            gap: 60px;
         }
+        
         .mobile-frame {
-            position: absolute;
-            top: 10px;
-            width: 380px;
-            height: 748px;
-            background: #fff;
-            border: 1px solid #bdbdbd;
+            width: 375px; height: 812px;
+            background: var(--v4-frame-bg);
+            border-radius: 40px;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111;
             overflow: hidden;
+            border: 4px solid #334155;
         }
-        .frame-left { left: 8px; }
-        .frame-right { left: 622px; }
+        .mobile-header-notch {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 150px; height: 30px; background: #111;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+            z-index: 1000;
+        }
         .mobile-content {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             position: relative;
             background: #fff;
-            overflow: hidden;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
-        .lf-component {
-            position: absolute !important;
-            box-sizing: border-box !important;
+
+        /* LFmall Icons */
+        .lf-icon {
+            background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png");
+            background-size: 200px 160px;
+            width: 40px; height: 40px;
+            display: inline-block;
+            background-repeat: no-repeat;
+            transform: scale(0.6);
+            transform-origin: center;
+        }
+        .lf-icon-back { background-position: 0 -40px; }
+        .lf-icon-search { background-position: -80px -40px; }
+        .lf-icon-home { background-position: -80px 0; }
+        .lf-icon-cart { background-position: -120px -40px; }
+
+        /* V4 Components */
+        .lf-component { position: absolute !important; }
+        
+        /* Product UI Styles */
+        .pdp-header { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; border-bottom: 1px solid var(--line); background: #fff; position: sticky; top: 0; z-index: 100; }
+        .product-img-area { width: 100%; aspect-ratio: 1/1.2; background: #f4f4f4; display: flex; align-items: center; justify-content: center; position: relative; }
+        .product-img-area::after { content: 'PRODUCT IMAGE'; color: #ccc; font-weight: 800; font-size: 24px; letter-spacing: 2px; }
+        
+        .pdp-info-section { padding: 20px 16px; background: #fff; border-bottom: 8px solid #f8f8f8; }
+        .pdp-category { font-size: 12px; color: #555; display: flex; gap: 4px; align-items: center; margin-bottom: 10px; }
+        .pdp-title { font-size: 18px; font-weight: 500; line-height: 1.4; color: #111; margin-bottom: 12px; }
+        .pdp-badge { display: inline-block; padding: 2px 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px; color: #888; margin-bottom: 12px; }
+        
+        .pdp-price-area { margin-bottom: 16px; }
+        .price-original { font-size: 14px; color: #aaa; text-decoration: line-through; margin-bottom: 4px; }
+        .price-current { display: flex; align-items: center; gap: 8px; }
+        .price-pct { font-size: 22px; font-weight: 800; color: var(--lfmall-red); }
+        .price-val { font-size: 22px; font-weight: 800; color: #111; }
+        
+        .benefit-card { background: #f9f9f9; border-radius: 8px; padding: 16px; margin-top: 10px; }
+        .benefit-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px; }
+        .benefit-label { color: #555; }
+        .benefit-value { font-weight: 700; color: #111; }
+        
+        /* Option Selection UI */
+        .option-section { padding: 20px 16px; background: #fff; }
+        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 20px; color: #111; }
+        .option-label { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: #333; }
+        
+        .thumb-grid { display: flex; gap: 10px; margin-bottom: 24px; }
+        .thumb-item { width: 60px; height: 60px; border: 1px solid #eee; border-radius: 4px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #bbb; text-align: center; }
+        .thumb-item.active { border-color: var(--text-main); }
+        
+        .size-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px; }
+        .size-item { height: 42px; border: 1px solid #ddd; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 14px; position: relative; }
+        .size-item.selected { border: 2px solid var(--lfmall-blue); background: #f0f4ff; font-weight: 700; }
+        .size-item.disabled { background: #f5f5f5; color: #ccc; border-color: #eee; }
+        .size-badge { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 10px; padding: 2px 4px; border-radius: 2px; }
+        .badge-blue { background: var(--lfmall-blue); color: #fff; }
+        .badge-alert { color: var(--lfmall-red); font-weight: 500; }
+        
+        .info-box { border-top: 1px solid #efefef; padding: 20px 0; }
+        .info-row { display: flex; gap: 12px; margin-bottom: 16px; }
+        .info-icon { width: 40px; height: 40px; background: #f4f4f4; border-radius: 50%; flex-shrink: 0; }
+        .info-txt-main { font-size: 14px; font-weight: 700; color: #111; margin-bottom: 4px; }
+        .info-txt-sub { font-size: 13px; color: #888; line-height: 1.4; }
+        
+        .store-badge { display: inline-flex; align-items: center; background: var(--lfmall-blue); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; margin-right: 6px; }
+        
+        .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: #fff; border-top: 1px solid #eee; display: flex; align-items: center; padding: 0 16px; gap: 10px; z-index: 100; }
+        .btn-heart { width: 50px; height: 44px; border: 1px solid #ddd; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: #888; }
+        .btn-gift { flex: 1; height: 44px; border: 1px solid #222; border-radius: 8px; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-buy { flex: 1; height: 44px; background: #333; color: #fff; border-radius: 8px; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- Screen 1: PDP Main -->
+        <div class="mobile-frame" style="left: 100px; top: 44px;">
+            <div class="mobile-header-notch"></div>
+            <div class="mobile-content">
+                <div class="pdp-header lf-component" style="position: sticky; top: 0; width: 100%; left: 0;">
+                    <span class="lf-icon lf-icon-back"></span>
+                    <div style="display: flex; align-items: center; gap: 0;">
+                        <span class="lf-icon lf-icon-search"></span>
+                        <span class="lf-icon lf-icon-home"></span>
+                        <div style="position: relative;">
+                            <span class="lf-icon lf-icon-cart"></span>
+                            <span style="position: absolute; top: 6px; right: 6px; background: var(--lfmall-red); color: #fff; font-size: 9px; min-width: 14px; height: 14px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 700;">7</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="product-img-area lf-component" style="position: relative; width: 100%;"></div>
+                
+                <div class="pdp-info-section lf-component" style="position: relative; width: 100%;">
+                    <div class="pdp-category v4-editable-cell" contenteditable="true">
+                        <span>DAKS MEN</span>
+                        <span class="material-icons-outlined" style="font-size: 12px;">chevron_right</span>
+                        <span>코트</span>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div class="pdp-title v4-editable-cell" contenteditable="true">[시즌오프][인기급상승] 다이아 패턴 구스 다운 점퍼 블랙</div>
+                        <span class="material-icons-outlined" style="color: #666; font-size: 20px;">share</span>
+                    </div>
+                    
+                    <div class="pdp-badge v4-editable-cell" contenteditable="true">마케팅배지</div>
+                    
+                    <div class="pdp-price-area">
+                        <div class="price-original v4-editable-cell" contenteditable="true">619,000원</div>
+                        <div class="price-current">
+                            <span class="price-pct v4-editable-cell" contenteditable="true">30%</span>
+                            <span class="price-val v4-editable-cell" contenteditable="true">433,300원</span>
+                            <span class="material-icons-outlined" style="font-size: 16px; color: #ccc;">help_outline</span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: flex-end; margin-top: -10px;">
+                        <div style="border: 1px solid #eee; border-radius: 4px; padding: 6px 12px; font-size: 12px; display: flex; align-items: center; gap: 4px;" class="v4-editable-cell" contenteditable="true">
+                            혜택받기 <span class="material-icons-outlined" style="font-size: 14px;">file_download</span>
+                        </div>
+                    </div>
+
+                    <div class="benefit-card">
+                        <div class="benefit-row">
+                            <span class="benefit-label v4-editable-cell" contenteditable="true">최대 혜택가</span>
+                            <span class="benefit-value v4-editable-cell" contenteditable="true" style="font-size: 15px;">403,300원</span>
+                        </div>
+                        <div class="benefit-row">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span style="background: #222; color: #fff; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900;">B</span>
+                                <span class="benefit-label v4-editable-cell" contenteditable="true">1,970M 적립예정</span>
+                                <span class="material-icons-outlined" style="font-size: 14px; color: #ccc;">help_outline</span>
+                            </div>
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #888;">expand_more</span>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-size: 13px; color: #333;">
+                        <div style="display: flex; align-items: center; gap: 4px;" class="v4-editable-cell" contenteditable="true">
+                            <span class="material-icons" style="color: #111; font-size: 16px;">star</span>
+                            <span style="font-weight: 700;">4.9</span>
+                            <span style="color: #888; text-decoration: underline;">리뷰 92</span>
+                            <span style="background: #eee; border-radius: 4px; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;">
+                                <span class="material-icons" style="font-size: 12px;">add</span>
+                            </span>
+                        </div>
+                        <div style="color: #888; display: flex; align-items: center;" class="v4-editable-cell" contenteditable="true">
+                            전체보기 <span class="material-icons" style="font-size: 16px;">chevron_right</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 2: Option & Shipping -->
+        <div class="mobile-frame" style="left: 600px; top: 44px;">
+            <div class="mobile-header-notch"></div>
+            <div class="mobile-content" style="padding-bottom: 60px;">
+                <div class="pdp-header lf-component" style="position: sticky; top: 0; width: 100%; left: 0;">
+                    <span style="font-weight: 700; font-size: 15px;" class="v4-editable-cell" contenteditable="true">옵션 선택</span>
+                    <span class="material-icons-outlined">close</span>
+                </div>
+                
+                <div class="option-section lf-component" style="position: relative; width: 100%;">
+                    <div class="option-label v4-editable-cell" contenteditable="true">컬러 블랙</div>
+                    <div class="thumb-grid">
+                        <div class="thumb-item active">PROD<br>IMG</div>
+                        <div class="thumb-item">PROD<br>IMG</div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <div class="option-label v4-editable-cell" contenteditable="true" style="margin-bottom: 0;">사이즈</div>
+                        <div style="font-size: 12px; color: #888; display: flex; align-items: center;" class="v4-editable-cell" contenteditable="true">사이즈안내 <span class="material-icons" style="font-size: 14px;">chevron_right</span></div>
+                    </div>
+                    
+                    <div class="size-grid">
+                        <div class="size-item">95 <span class="badge-alert" style="position: absolute; top: 4px; right: 4px; width: 4px; height: 4px; background: red; border-radius: 50%;"></span> <span class="badge-alert v4-editable-cell" contenteditable="true" style="position: absolute; bottom: -18px; font-size: 10px;">3개 남음</span></div>
+                        <div class="size-item">100</div>
+                        <div class="size-item selected">105 <span class="badge-blue v4-editable-cell" contenteditable="true" style="position: absolute; bottom: -20px; font-size: 10px; background: var(--lfmall-blue); color: #fff; padding: 2px 4px; border-radius: 2px;">매장배송</span></div>
+                        <div class="size-item">110</div>
+                        <div class="size-item">115</div>
+                        <div class="size-item disabled">120 <span class="material-icons-outlined" style="position: absolute; top: -6px; right: -6px; font-size: 16px; color: var(--lfmall-red); background: #fff; border-radius: 50%;">notifications_none</span></div>
+                    </div>
+                    
+                    <div style="height: 40px;"></div>
+
+                    <div class="section-title v4-editable-cell" contenteditable="true">배송 및 혜택 안내</div>
+                    
+                    <div class="info-box">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div style="display: flex; gap: 12px;">
+                                <div style="font-weight: 800; font-size: 18px; color: var(--lfmall-blue);">I.I.I</div>
+                                <div>
+                                    <div class="info-txt-main v4-editable-cell" contenteditable="true"><span style="color: var(--lfmall-red);">쓱배송</span> <span style="margin: 0 8px; color: #ddd; font-weight: 300;">|</span> CJ대한통운</div>
+                                    <div class="info-txt-sub v4-editable-cell" contenteditable="true">무료배송</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: #f8f8f8; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <div>
+                                <div style="font-size: 13px; font-weight: 700; color: #111;" class="v4-editable-cell" contenteditable="true">12/13 (토) 이내 도착확률 96% <span class="material-icons-outlined" style="font-size: 14px; color: #ccc; vertical-align: middle;">help_outline</span></div>
+                                <div style="font-size: 12px; color: #888; margin-top: 4px;" class="v4-editable-cell" contenteditable="true">서울 노원구 기준 (18시 이전 결제 시)</div>
+                            </div>
+                            <span class="material-icons-outlined" style="color: #888;">expand_more</span>
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="store-badge v4-editable-cell" contenteditable="true">매장상품배송</span>
+                            <span class="material-icons-outlined" style="font-size: 14px; color: #ccc;">help_outline</span>
+                        </div>
+                        <div class="info-txt-sub v4-editable-cell" contenteditable="true" style="margin-top: 6px; padding-left: 0;">평균 <span style="color: var(--lfmall-red); font-weight: 700;">5~7</span> 영업일 소요됩니다.</div>
+                    </div>
+                    
+                    <div class="info-box" style="padding-bottom: 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <div style="font-size: 13px; color: #555;" class="v4-editable-cell" contenteditable="true">카드혜택</div>
+                            <div style="flex: 1; padding: 0 12px; font-size: 13px;">
+                                <div class="v4-editable-cell" contenteditable="true">LFMall 신용카드 결제시 <span style="font-weight: 700;">5% 추가할인</span></div>
+                                <div style="margin-top: 4px;" class="v4-editable-cell" contenteditable="true">카드사별 할부 혜택</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 4px;">
+                                <span class="material-icons" style="font-size: 16px; color: #888;">chevron_right</span>
+                                <span class="material-icons" style="font-size: 16px; color: #888;">chevron_right</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #efefef; padding: 12px 0;">
+                            <div style="font-size: 13px; color: #555;" class="v4-editable-cell" contenteditable="true">선물포장</div>
+                            <div style="flex: 1; padding: 0 12px; font-size: 13px; color: #333;" class="v4-editable-cell" contenteditable="true">선물포장 가능 안내</div>
+                            <span class="material-icons-outlined" style="color: #888;">expand_more</span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <div style="font-size: 14px; font-weight: 700; margin-bottom: 12px;" class="v4-editable-cell" contenteditable="true">관련 검색어</div>
+                        <div style="display: flex; gap: 8px;">
+                            <span style="background: #f4f4f4; border-radius: 100px; padding: 6px 14px; font-size: 12px; color: #666;" class="v4-editable-cell" contenteditable="true">25FW</span>
+                            <span style="background: #f4f4f4; border-radius: 100px; padding: 6px 14px; font-size: 12px; color: #666;" class="v4-editable-cell" contenteditable="true">위켄드세일</span>
+                            <span style="background: #f4f4f4; border-radius: 100px; padding: 6px 14px; font-size: 12px; color: #666;" class="v4-editable-cell" contenteditable="true">선물포장</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bottom-nav lf-component" style="bottom: 0; left: 0; width: 100%;">
+                    <div class="btn-heart v4-editable-cell" contenteditable="true">
+                        <span class="material-icons-outlined" style="font-size: 20px;">favorite_border</span>
+                        <span>54</span>
+                    </div>
+                    <div class="btn-gift v4-editable-cell" contenteditable="true">
+                        <span class="material-icons-outlined">card_giftcard</span>
+                        선물하기
+                    </div>
+                    <div class="btn-buy v4-editable-cell" contenteditable="true">구매하기</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
         }
         .lf-component:hover {
             outline: 2px dashed #6366f1 !important;
