@@ -145,6 +145,12 @@
           "color": "#000000"
         }
       ]
+    },
+    "00_Cover_4279.html": {
+      "title": "00_Cover_4279",
+      "type": "cover",
+      "updatedAt": "2026-04-29T04:53:37.237Z",
+      "template": "template_cover.html"
     }
   },
   "title": "[원스피어] 관리자 권한 개선",
@@ -164,7 +170,8 @@
     "03_UI_Screen_0933.html",
     "03_UI_Screen_4984.html",
     "03_UI_Screen_9534.html",
-    "05_Admin_Onesphere_4990.html"
+    "05_Admin_Onesphere_4990.html",
+    "00_Cover_4279.html"
   ],
   "developer": ""
 }
