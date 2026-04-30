@@ -88,12 +88,12 @@ const v4Script = `
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             notifyParent({ type: 'LF_DESELECT' });
         }
-        if (h) { 
-            isDragging = true; activeEl = h.parentElement; 
+        if (h || c) { 
+            isDragging = true; activeEl = c; 
             startX = e.clientX; startY = e.clientY; 
             startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
             notifyParent({ type: 'LF_SNAP_START' });
-            e.preventDefault(); 
+            if (h) e.preventDefault(); 
         }
         else if (r) { isResizing = true; activeEl = r.parentElement; startX = e.clientX; startY = e.clientY; startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; e.preventDefault(); }
     });
@@ -517,7 +517,8 @@ window.MessageHub = {
             if (data.type === 'LF_SNAP_START') {
                 if (window.SmartGuide) window.SmartGuide.findSnapTargets();
             } else if (data.type === 'LF_SNAP_REQUEST') {
-                if (window.SmartGuide && DOM.iframe && DOM.iframe.contentWindow) {
+                const DOM = window.DOM;
+                if (window.SmartGuide && DOM && DOM.iframe && DOM.iframe.contentWindow) {
                     const snap = window.SmartGuide.calculateSnap(data.x, data.y, data.w, data.h);
                     window.SmartGuide.drawGuides(snap);
                     MessageHub.send(DOM.iframe.contentWindow, 'LF_SNAP_RESPONSE', snap);
@@ -599,15 +600,17 @@ window.SmartGuide = {
     activeLines: { x: null, y: null },
 
     findSnapTargets() {
+        const DOM = window.DOM;
         this.targets = [];
         const cw = parseInt(DOM.iframe.style.width) || 1440;
         const ch = parseInt(DOM.iframe.style.height) || 900;
 
         // 1. Canvas Center
-        this.targets.push({ x: cw / 2, y: ch / 2, type: 'center', label: 'Canvas Center' });
+        this.targets.push({ x: cw / 2, y: ch / 2, type: 'center', label: 'Canvas', part: 'Center' });
 
         // 2. Components inside Iframe
         try {
+            const DOM = window.DOM;
             const doc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
             const comps = doc.querySelectorAll('.lf-component:not(.selected)');
             comps.forEach(c => {
@@ -617,19 +620,29 @@ window.SmartGuide = {
                     w: c.offsetWidth,
                     h: c.offsetHeight
                 };
-                this.targets.push({ x: r.x, y: r.y, w: r.w, h: r.h, type: 'comp' });
-                this.targets.push({ x: r.x + r.w / 2, y: r.y + r.h / 2, type: 'comp-center' });
-                this.targets.push({ x: r.x + r.w, y: r.y + r.h, type: 'comp-end' });
+                const name = c.id.replace('lf-comp-', 'Comp ');
+                
+                // Horizontal Targets (Vertical Lines)
+                this.targets.push({ x: r.x, label: name, part: 'Left', type: 'h' });
+                this.targets.push({ x: r.x + r.w / 2, label: name, part: 'Center', type: 'h' });
+                this.targets.push({ x: r.x + r.w, label: name, part: 'Right', type: 'h' });
+                
+                // Vertical Targets (Horizontal Lines)
+                this.targets.push({ y: r.y, label: name, part: 'Top', type: 'v' });
+                this.targets.push({ y: r.y + r.h / 2, label: name, part: 'Middle', type: 'v' });
+                this.targets.push({ y: r.y + r.h, label: name, part: 'Bottom', type: 'v' });
             });
-        } catch (e) { console.warn("[SmartGuide] Iframe inaccessible for target collection."); }
+        } catch (e) { console.warn("[SmartGuide] Iframe inaccessible."); }
 
         // 3. Pins & Text Markers
+        const DOM = window.DOM;
         const pins = DOM.pinsLayer.querySelectorAll('.pin-marker, .text-marker');
         pins.forEach(p => {
             if (p.classList.contains('dragging-now')) return;
             const x = (parseFloat(p.style.left) / 100) * cw;
             const y = (parseFloat(p.style.top) / 100) * ch;
-            this.targets.push({ x, y, type: 'pin' });
+            const name = p.classList.contains('text-marker') ? 'Text' : `Pin ${p.innerText}`;
+            this.targets.push({ x, y, label: name, part: 'Point', type: 'both' });
         });
 
         console.log(`[SmartGuide] ${this.targets.length} targets collected.`);
@@ -637,59 +650,84 @@ window.SmartGuide = {
 
     calculateSnap(x, y, w = 0, h = 0) {
         let snappedX = x, snappedY = y;
-        let lineX = null, lineY = null;
+        let snapXData = null, snapYData = null;
         const thresh = this.threshold;
 
-        // X-axis
-        const pointsX = [x, x + w / 2, x + w];
+        // X-axis Points to check
+        const pointsX = [
+            { val: x, part: 'Left' },
+            { val: x + w / 2, part: 'Center' },
+            { val: x + w, part: 'Right' }
+        ];
+
         for (const t of this.targets) {
-            const tPointsX = t.w ? [t.x, t.x + t.w / 2, t.x + t.w] : [t.x];
+            if (t.x === undefined) continue;
             for (const p of pointsX) {
-                for (const tp of tPointsX) {
-                    if (Math.abs(p - tp) < thresh) {
-                        snappedX = x + (tp - p);
-                        lineX = tp;
-                        break;
-                    }
+                if (Math.abs(p.val - t.x) < thresh) {
+                    snappedX = x + (t.x - p.val);
+                    snapXData = { line: t.x, label: t.label, part: t.part, selfPart: p.part };
+                    break;
                 }
-                if (lineX !== null) break;
             }
-            if (lineX !== null) break;
+            if (snapXData) break;
         }
 
-        // Y-axis
-        const pointsY = [y, y + h / 2, y + h];
+        // Y-axis Points to check
+        const pointsY = [
+            { val: y, part: 'Top' },
+            { val: y + h / 2, part: 'Middle' },
+            { val: y + h, part: 'Bottom' }
+        ];
+
         for (const t of this.targets) {
-            const tPointsY = t.h ? [t.y, t.y + t.h / 2, t.y + t.h] : [t.y];
+            if (t.y === undefined) continue;
             for (const p of pointsY) {
-                for (const tp of tPointsY) {
-                    if (Math.abs(p - tp) < thresh) {
-                        snappedY = y + (tp - p);
-                        lineY = tp;
-                        break;
-                    }
+                if (Math.abs(p.val - t.y) < thresh) {
+                    snappedY = y + (t.y - p.val);
+                    snapYData = { line: t.y, label: t.label, part: t.part, selfPart: p.part };
+                    break;
                 }
-                if (lineY !== null) break;
             }
-            if (lineY !== null) break;
+            if (snapYData) break;
         }
 
-        return { x: snappedX, y: snappedY, lineX, lineY };
+        return { x: snappedX, y: snappedY, snapXData, snapYData };
     },
 
     drawGuides(data) {
+        const DOM = window.DOM;
         if (!DOM.guideLayer) return;
         let html = '';
-        if (data.lineX !== null) {
-            html += `<line x1="${data.lineX}" y1="0" x2="${data.lineX}" y2="100%" stroke="#ff4757" stroke-width="1" stroke-dasharray="4,2" />`;
+        const labelStyle = `fill: #ff4757; font-size: 11px; font-weight: 600; font-family: 'Inter', sans-serif;`;
+        const rectStyle = `fill: rgba(255, 71, 87, 0.1); stroke: #ff4757; stroke-width: 0.5; rx: 4;`;
+
+        if (data.snapXData) {
+            const { line, label, part, selfPart } = data.snapXData;
+            html += `<line x1="${line}" y1="0" x2="${line}" y2="100%" stroke="#ff4757" stroke-width="1" stroke-dasharray="4,2" />`;
+            // Label
+            const labelText = `${label} ${part} ↔ ${selfPart}`;
+            html += `
+                <g transform="translate(${line + 8}, 20)">
+                    <rect x="0" y="0" width="${labelText.length * 7}" height="20" style="${rectStyle}" />
+                    <text x="6" y="14" style="${labelStyle}">${labelText}</text>
+                </g>`;
         }
-        if (data.lineY !== null) {
-            html += `<line x1="0" y1="${data.lineY}" x2="100%" y2="${data.lineY}" stroke="#ff4757" stroke-width="1" stroke-dasharray="4,2" />`;
+        if (data.snapYData) {
+            const { line, label, part, selfPart } = data.snapYData;
+            html += `<line x1="0" y1="${line}" x2="100%" y2="${line}" stroke="#ff4757" stroke-width="1" stroke-dasharray="4,2" />`;
+            // Label
+            const labelText = `${label} ${part} ↔ ${selfPart}`;
+            html += `
+                <g transform="translate(20, ${line - 28})">
+                    <rect x="0" y="0" width="${labelText.length * 7}" height="20" style="${rectStyle}" />
+                    <text x="6" y="14" style="${labelStyle}">${labelText}</text>
+                </g>`;
         }
         DOM.guideLayer.innerHTML = html;
     },
 
     clearGuides() {
+        const DOM = window.DOM;
         if (DOM.guideLayer) DOM.guideLayer.innerHTML = '';
     }
 };
