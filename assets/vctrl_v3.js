@@ -70,6 +70,11 @@ window.renderDescriptionList = function() {
             let moved = false;
             const initialItemX = item.x || 0, initialItemY = item.y || 0;
             const r = DOM.pinsLayer.getBoundingClientRect();
+            
+            const cw = parseInt(DOM.iframe.style.width) || 1440;
+            const ch = parseInt(DOM.iframe.style.height) || 900;
+
+            if (window.SmartGuide) window.SmartGuide.findSnapTargets();
 
             const onMouseMove = (moveEvent) => {
                 if (item.type === 'text' && !handle) return;
@@ -83,8 +88,20 @@ window.renderDescriptionList = function() {
                     moved = true;
                 }
                 if (moved) {
-                    item.x = Math.max(0, Math.min(initialItemX + (dx / r.width) * 100, 100));
-                    item.y = Math.max(0, Math.min(initialItemY + (dy / r.height) * 100, 100));
+                    let targetX = initialItemX + (dx / r.width) * 100;
+                    let targetY = initialItemY + (dy / r.height) * 100;
+                    
+                    if (window.SmartGuide) {
+                        const pxX = (targetX / 100) * cw;
+                        const pxY = (targetY / 100) * ch;
+                        const snap = window.SmartGuide.calculateSnap(pxX, pxY);
+                        window.SmartGuide.drawGuides(snap);
+                        targetX = (snap.x / cw) * 100;
+                        targetY = (snap.y / ch) * 100;
+                    }
+
+                    item.x = Math.max(0, Math.min(targetX, 100));
+                    item.y = Math.max(0, Math.min(targetY, 100));
                     pin.style.left = item.x + "%"; pin.style.top = item.y + "%";
                 }
             };
@@ -92,6 +109,7 @@ window.renderDescriptionList = function() {
             const onMouseUp = () => {
                 window.removeEventListener('mousemove', onMouseMove);
                 window.removeEventListener('mouseup', onMouseUp);
+                if (window.SmartGuide) window.SmartGuide.clearGuides();
                 if (moved) {
                     if (DOM.iframe) DOM.iframe.style.pointerEvents = (state.tool === 'hand') ? 'none' : 'auto';
                     pin.style.cursor = 'grab';

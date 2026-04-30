@@ -55,6 +55,7 @@
                 startX = e.clientX; startY = e.clientY;
                 startTop = parseInt(activeEl.style.top) || 0;
                 startLeft = parseInt(activeEl.style.left) || 0;
+                notifyParent({ type: 'LF_SNAP_START' });
                 e.preventDefault();
             } else if (resizer) {
                 isResizing = true;
@@ -69,8 +70,15 @@
             if (isDragging && activeEl) {
                 const dx = e.clientX - startX;
                 const dy = e.clientY - startY;
-                activeEl.style.top = (startTop + dy) + 'px';
-                activeEl.style.left = (startLeft + dx) + 'px';
+                const targetX = startLeft + dx;
+                const targetY = startTop + dy;
+                notifyParent({ 
+                    type: 'LF_SNAP_REQUEST', 
+                    x: targetX, 
+                    y: targetY, 
+                    w: activeEl.offsetWidth, 
+                    h: activeEl.offsetHeight 
+                });
                 markDirty();
             } else if (isResizing && activeEl) {
                 const dx = e.clientX - startX;
@@ -82,6 +90,7 @@
         });
 
         document.addEventListener('mouseup', () => {
+            if (isDragging) notifyParent({ type: 'LF_SNAP_END' });
             isDragging = false;
             isResizing = false;
             activeEl = null;
@@ -94,13 +103,15 @@
             }
         });
 
-        // Safe Message Listeners (Bypass file:// security)
         window.addEventListener('message', e => {
             const data = e.data;
             if (!data) return;
 
-            // 1. Save Request
-            if (data.type === 'LF_REQUEST_SAVE_CONTENT') {
+            if (data.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
+                activeEl.style.top = data.y + 'px';
+                activeEl.style.left = data.x + 'px';
+            }
+            else if (data.type === 'LF_REQUEST_SAVE_CONTENT') {
                 const clone = document.documentElement.cloneNode(true);
                 clone.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
                 clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));

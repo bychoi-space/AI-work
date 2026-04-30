@@ -28,6 +28,7 @@ window.DOM = {
     
     // Bottom Bar
     pinsLayer: get('pins-layer'),
+    guideLayer: get('guide-layer'),
     
     // Buttons
     btnSelect: get('btn-select'),

@@ -88,14 +88,22 @@ const v4Script = `
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             notifyParent({ type: 'LF_DESELECT' });
         }
-        if (h) { isDragging = true; activeEl = h.parentElement; startX = e.clientX; startY = e.clientY; startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; e.preventDefault(); }
+        if (h) { 
+            isDragging = true; activeEl = h.parentElement; 
+            startX = e.clientX; startY = e.clientY; 
+            startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
+            notifyParent({ type: 'LF_SNAP_START' });
+            e.preventDefault(); 
+        }
         else if (r) { isResizing = true; activeEl = r.parentElement; startX = e.clientX; startY = e.clientY; startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; e.preventDefault(); }
     });
     document.addEventListener('mousemove', e => {
         if (isDragging && activeEl) { 
-            activeEl.style.top = (startTop + e.clientY - startY) + 'px'; 
-            activeEl.style.left = (startLeft + e.clientX - startX) + 'px'; 
-            updateHandles(activeEl);
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            const targetX = startLeft + dx;
+            const targetY = startTop + dy;
+            notifyParent({ type: 'LF_SNAP_REQUEST', x: targetX, y: targetY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
             markDirty(); 
         }
         else if (isResizing && activeEl) { 
@@ -105,11 +113,19 @@ const v4Script = `
             markDirty(); 
         }
     });
-    document.addEventListener('mouseup', () => { isDragging = false; isResizing = false; activeEl = null; });
+    document.addEventListener('mouseup', () => { 
+        if (isDragging) notifyParent({ type: 'LF_SNAP_END' });
+        isDragging = false; isResizing = false; activeEl = null; 
+    });
     document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
-        if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
+        if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
+            activeEl.style.top = d.y + 'px';
+            activeEl.style.left = d.x + 'px';
+            updateHandles(activeEl);
+        }
+        else if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
             const c = document.documentElement.cloneNode(true);
             c.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
             c.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
@@ -498,6 +514,18 @@ window.MessageHub = {
                 console.log(`%c[MessageHub] IN: ${data.type}`, "color: #10b981;", data);
             }
 
+            if (data.type === 'LF_SNAP_START') {
+                if (window.SmartGuide) window.SmartGuide.findSnapTargets();
+            } else if (data.type === 'LF_SNAP_REQUEST') {
+                if (window.SmartGuide && DOM.iframe && DOM.iframe.contentWindow) {
+                    const snap = window.SmartGuide.calculateSnap(data.x, data.y, data.w, data.h);
+                    window.SmartGuide.drawGuides(snap);
+                    MessageHub.send(DOM.iframe.contentWindow, 'LF_SNAP_RESPONSE', snap);
+                }
+            } else if (data.type === 'LF_SNAP_END') {
+                if (window.SmartGuide) window.SmartGuide.clearGuides();
+            }
+
             if (this.handlers[data.type]) {
                 try {
                     this.handlers[data.type](data);
@@ -562,6 +590,108 @@ window.checkUnsavedChanges = async function() {
         return true;
     }
     return false;
+};
+
+// 6. Smart Guide System
+window.SmartGuide = {
+    targets: [],
+    threshold: 8,
+    activeLines: { x: null, y: null },
+
+    findSnapTargets() {
+        this.targets = [];
+        const cw = parseInt(DOM.iframe.style.width) || 1440;
+        const ch = parseInt(DOM.iframe.style.height) || 900;
+
+        // 1. Canvas Center
+        this.targets.push({ x: cw / 2, y: ch / 2, type: 'center', label: 'Canvas Center' });
+
+        // 2. Components inside Iframe
+        try {
+            const doc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
+            const comps = doc.querySelectorAll('.lf-component:not(.selected)');
+            comps.forEach(c => {
+                const r = {
+                    x: parseInt(c.style.left) || 0,
+                    y: parseInt(c.style.top) || 0,
+                    w: c.offsetWidth,
+                    h: c.offsetHeight
+                };
+                this.targets.push({ x: r.x, y: r.y, w: r.w, h: r.h, type: 'comp' });
+                this.targets.push({ x: r.x + r.w / 2, y: r.y + r.h / 2, type: 'comp-center' });
+                this.targets.push({ x: r.x + r.w, y: r.y + r.h, type: 'comp-end' });
+            });
+        } catch (e) { console.warn("[SmartGuide] Iframe inaccessible for target collection."); }
+
+        // 3. Pins & Text Markers
+        const pins = DOM.pinsLayer.querySelectorAll('.pin-marker, .text-marker');
+        pins.forEach(p => {
+            if (p.classList.contains('dragging-now')) return;
+            const x = (parseFloat(p.style.left) / 100) * cw;
+            const y = (parseFloat(p.style.top) / 100) * ch;
+            this.targets.push({ x, y, type: 'pin' });
+        });
+
+        console.log(`[SmartGuide] ${this.targets.length} targets collected.`);
+    },
+
+    calculateSnap(x, y, w = 0, h = 0) {
+        let snappedX = x, snappedY = y;
+        let lineX = null, lineY = null;
+        const thresh = this.threshold;
+
+        // X-axis
+        const pointsX = [x, x + w / 2, x + w];
+        for (const t of this.targets) {
+            const tPointsX = t.w ? [t.x, t.x + t.w / 2, t.x + t.w] : [t.x];
+            for (const p of pointsX) {
+                for (const tp of tPointsX) {
+                    if (Math.abs(p - tp) < thresh) {
+                        snappedX = x + (tp - p);
+                        lineX = tp;
+                        break;
+                    }
+                }
+                if (lineX !== null) break;
+            }
+            if (lineX !== null) break;
+        }
+
+        // Y-axis
+        const pointsY = [y, y + h / 2, y + h];
+        for (const t of this.targets) {
+            const tPointsY = t.h ? [t.y, t.y + t.h / 2, t.y + t.h] : [t.y];
+            for (const p of pointsY) {
+                for (const tp of tPointsY) {
+                    if (Math.abs(p - tp) < thresh) {
+                        snappedY = y + (tp - p);
+                        lineY = tp;
+                        break;
+                    }
+                }
+                if (lineY !== null) break;
+            }
+            if (lineY !== null) break;
+        }
+
+        return { x: snappedX, y: snappedY, lineX, lineY };
+    },
+
+    drawGuides(data) {
+        if (!DOM.guideLayer) return;
+        let html = '';
+        if (data.lineX !== null) {
+            html += `<line x1="${data.lineX}" y1="0" x2="${data.lineX}" y2="100%" stroke="#ff4757" stroke-width="1" stroke-dasharray="4,2" />`;
+        }
+        if (data.lineY !== null) {
+            html += `<line x1="0" y1="${data.lineY}" x2="100%" y2="${data.lineY}" stroke="#ff4757" stroke-width="1" stroke-dasharray="4,2" />`;
+        }
+        DOM.guideLayer.innerHTML = html;
+    },
+
+    clearGuides() {
+        if (DOM.guideLayer) DOM.guideLayer.innerHTML = '';
+    }
 };
 
 // 6. Initial Bootstrap
