@@ -41,13 +41,6 @@
       "template": "template_cover.html",
       "description": []
     },
-    "06_Mobile_Design_3_2322.html": {
-      "title": "06_Mobile_Design_3_2322",
-      "type": "mobile-ui",
-      "updatedAt": "2026-04-29T07:16:15.753Z",
-      "template": "template_mobile_ui_3.html",
-      "description": []
-    },
     "05_PDP_Store_Delivery_Mobile.html": {
       "title": "05. [Mobile UI] 상품상세 - 매장상품배송 안내",
       "type": "mobile-ui",
@@ -67,8 +60,7 @@
     "01_Global_Process.html",
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
-    "05_PDP_Store_Delivery_Mobile.html",
-    "06_Mobile_Design_3_2322.html"
+    "05_PDP_Store_Delivery_Mobile.html"
   ],
   "developer": ""
 }
