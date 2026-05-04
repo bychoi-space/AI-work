@@ -34,11 +34,6 @@
       "type": "cover",
       "description": "기밀 유지 및 저작권 (Legal)"
     },
-    "slide_10_operational_flow.html": {
-      "title": "10. 알림톡 서비스 흐름",
-      "type": "architecture",
-      "description": "고객 안내 메시지 정책"
-    },
     "slide_11_lt_policy.html": {
       "title": "11. 배송 LT 및 자동결품",
       "type": "plan",
@@ -237,7 +232,6 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
-    "slide_10_operational_flow.html",
     "slide_11_lt_policy.html",
     "slide_12_resource.html",
     "slide_13_bsu_operation.html",
