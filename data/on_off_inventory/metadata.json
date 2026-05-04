@@ -39,11 +39,6 @@
       "type": "plan",
       "description": "시스템 자동 결품 상세 로직"
     },
-    "slide_24_pdp_detail.html": {
-      "title": "24. [UI] 상품상세 - 상세",
-      "type": "ui",
-      "description": "배송정보 상세 안내"
-    },
     "slide_25_basket.html": {
       "title": "25. [UI] 쇼핑백",
       "type": "ui",
@@ -180,7 +175,6 @@
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_20_out_of_stock_logic.html",
-    "slide_24_pdp_detail.html",
     "slide_24_pdp_location.html",
     "slide_25_basket.html",
     "slide_26_checkout_ui.html",
