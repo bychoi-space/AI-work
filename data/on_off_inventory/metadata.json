@@ -34,11 +34,6 @@
       "type": "cover",
       "description": "기밀 유지 및 저작권 (Legal)"
     },
-    "slide_33_admin_prod_stock.html": {
-      "title": "33. [어드민] 상품 재고 정보",
-      "type": "admin-nbos",
-      "description": "매장별 재고 상세 조회"
-    },
     "slide_34_admin_order_list.html": {
       "title": "34. [어드민] 주문 관리 목록",
       "type": "admin-nbos",
@@ -129,7 +124,6 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
-    "slide_33_admin_prod_stock.html",
     "slide_33_admin_shop_mgmt.html",
     "slide_34_admin_order_list.html",
     "slide_35_admin_order_detail.html",
