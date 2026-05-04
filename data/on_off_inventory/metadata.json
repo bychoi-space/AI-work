@@ -34,11 +34,6 @@
       "type": "cover",
       "description": "기밀 유지 및 저작권 (Legal)"
     },
-    "slide_12_resource.html": {
-      "title": "12. 리소스 산출",
-      "type": "plan",
-      "description": "업무량 및 투입 자원 분석"
-    },
     "slide_13_bsu_operation.html": {
       "title": "13. 물류 BSU 오퍼레이션",
       "type": "plan",
@@ -227,7 +222,6 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
-    "slide_12_resource.html",
     "slide_13_bsu_operation.html",
     "slide_14_data_interface.html",
     "slide_14_data_interface_map.html",
