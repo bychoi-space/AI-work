@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
+<html lang="ko"><head>
     <meta charset="UTF-8">
     <title>Mobile UI (2) - {{PROJECT_NAME}}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&amp;family=Noto+Sans+KR:wght@400;700;900&amp;display=swap" rel="stylesheet">
     <style>
         :root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg: #1e293b; --v4-frame-bg: #ffffff; }
         body { margin: 0; padding: 0; background: var(--v4-bg); font-family: 'Inter', 'Noto Sans KR', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
@@ -31,6 +30,49 @@
         .v4-editable-cell { outline: none; }
         .v4-editable-cell:focus { background: rgba(99, 102, 241, 0.05); }
     </style>
+<style id="v4-inlined-style">
+
+:root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg-dark: #0f172a; --v4-panel-bg: rgba(30, 41, 59, 0.7); --v4-border: rgba(255, 255, 255, 0.15); --v4-text-main: #ffffff; --v4-text-dim: #94a3b8; }
+.lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
+.lf-component.selected { outline: 2px solid #6366f1; z-index: 10001 !important; }
+.lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 2px solid #fff; z-index: 10; }
+.lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -16px; left: -16px; }
+.lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #6366f1; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10; }
+.lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
+.lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10001; font-size: 14px; font-weight: bold; }
+.lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
+.v4-premium-table { table-layout: fixed; border-collapse: collapse; overflow: hidden; border-radius: 8px; border: 1.6px solid #475569 !important; font-family: 'Inter', sans-serif; }
+.v4-premium-table th { padding: 14px 16px; text-align: left; border-bottom: 1.6px solid #475569 !important; font-weight: 700; white-space: nowrap; }
+.v4-premium-table td { padding: 14px 16px; border-bottom: 1.6px solid #cbd5e1 !important; }
+.v4-premium-table tr:last-child td { border-bottom: none !important; }
+.v4-shape { position: relative; border: 1.6px solid #475569 !important; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #e2e8f0; color: #0f172a; }
+.v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
+.lf-icon { 
+    background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png"); 
+    background-size: 500% 400%; 
+    width: 100%; height: 100%; 
+    display: inline-block; 
+    background-repeat: no-repeat; 
+    pointer-events: none; 
+}
+.lf-icon-home { background-position: 50% 0%; }
+.lf-icon-category { background-position: 0% 0%; }
+.lf-icon-my { background-position: 75% 0%; }
+.lf-icon-heart { background-position: 100% 0%; }
+.lf-icon-search { background-position: 50% 33.33%; }
+.lf-icon-cart { background-position: 75% 33.33%; }
+.lf-icon-brand { background-position: 25% 0%; }
+.lf-icon-bell { background-position: 25% 33.33%; }
+.v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
+.v4-shape-rect { border-radius: 8px; }
+.v4-shape-circle { border-radius: 50%; }
+.v4-shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); border: none !important; }
+.v4-shape-diamond { border: none !important; }
+/* Reset background for new SVG/Custom atoms to prevent sprite leakage */
+svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
+.lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
+
+</style>
 </head>
 <body>
     <div class="page">
@@ -39,21 +81,9 @@
             <div class="mobile-statusbar"><span>9:41</span><span>5G 100%</span></div>
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
-                <div id="m2-a-header" class="lf-component" style="top:52px; left:20px; width:335px; height:46px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-header"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">List</div><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; font-weight:700; color:#64748b;">Filter</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m2-a-card" class="lf-component" style="top:124px; left:20px; width:335px; height:124px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-card"><div contenteditable="true" class="v4-editable-cell" style="font-size:20px; font-weight:900;">Entry Screen</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:12px; font-size:13px; line-height:1.35;">Use this screen for browsing, discovery, or a first-step form.</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m2-a-list" class="lf-component" style="top:276px; left:20px; width:335px; height:260px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-list"><div contenteditable="true" class="v4-editable-cell" style="font-size:16px; font-weight:900;">Selectable Items</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:14px; padding:14px; border-radius:14px; background:#fff;">Item row A</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; padding:14px; border-radius:14px; background:#fff;">Item row B</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; padding:14px; border-radius:14px; background:#fff;">Item row C</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
+                
+                
+                
             </div>
             <div class="mobile-home-indicator"></div>
         </div>
@@ -63,28 +93,347 @@
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
                 <div id="m2-b-header" class="lf-component" style="top:52px; left:20px; width:335px; height:46px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    
                     <div class="mobile-ui-header"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Detail</div><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; font-weight:700; color:#64748b;">Share</div></div>
-                    <div class="lf-resizer"></div>
+                    
                 </div>
                 <div id="m2-b-hero" class="lf-component" style="top:120px; left:20px; width:335px; height:240px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    
                     <div class="mobile-ui-list" style="display:flex; align-items:center; justify-content:center; background:#e2e8f0;"><div contenteditable="true" class="v4-editable-cell" style="font-size:16px; font-weight:900; color:#475569;">Image / Preview</div></div>
-                    <div class="lf-resizer"></div>
+                    
                 </div>
                 <div id="m2-b-info" class="lf-component" style="top:386px; left:20px; width:335px; height:150px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    
                     <div class="mobile-ui-list"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Detail Title</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; font-size:14px; line-height:1.45;">Describe selected state, data, policy, or UX behavior here.</div></div>
-                    <div class="lf-resizer"></div>
+                    
                 </div>
                 <div id="m2-b-cta" class="lf-component" style="top:716px; left:20px; width:335px; height:50px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
+                    
                     <div contenteditable="true" class="v4-editable-cell" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:25px; background:#111827; color:#fff; font-size:14px; font-weight:800;">Primary CTA</div>
-                    <div class="lf-resizer"></div>
+                    
                 </div>
             </div>
             <div class="mobile-home-indicator"></div>
         </div>
-    </div>
-</body>
-</html>
+    <div id="v4-comp-1777878157262" class="lf-component" style="position: absolute; top: 96px; left: 308px; z-index: 500; width: 360px; height: 50px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><br></div>
+            </div></div><div id="lf-comp-1777878224236" class="lf-component" style="position: absolute; top: 104px; left: 318px; z-index: 500; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div id="lf-comp-1777878238237" class="lf-component" style="position: absolute; top: 99px; left: 533px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-search" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878244185" class="lf-component" style="position: absolute; top: 99px; left: 573px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-home" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878253190" class="lf-component" style="position: absolute; top: 99px; left: 613px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div>
+<script id="v4-inlined-script">
+
+(function() {
+    let isDragging = false, isResizing = false, activeEl = null;
+    let startX, startY, startW, startH, startTop, startLeft, startRect;
+    function notifyParent(data) { window.parent.postMessage(data, '*'); }
+    function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
+
+    // Unified Utility inside v4Script
+    const _rgb2hex = (rgb) => {
+        if (!rgb || rgb === "transparent" || rgb.includes("rgba(0, 0, 0, 0)")) return "#000000";
+        const parts = rgb.match(/\d+/g);
+        if (!parts || parts.length < 3) return "#000000";
+        const r = Math.min(255, parseInt(parts[0])).toString(16).padStart(2, "0");
+        const g = Math.min(255, parseInt(parts[1])).toString(16).padStart(2, "0");
+        const b = Math.min(255, parseInt(parts[2])).toString(16).padStart(2, "0");
+        return "#" + r + g + b;
+    };
+
+    const _getVal = (el, prop) => {
+        if (!el) return "";
+        return el.style[prop] || window.getComputedStyle(el)[prop] || "";
+    };
+
+    const _getCompStyles = (c) => {
+        const shape = c.querySelector('.v4-shape');
+        const table = c.querySelector('table');
+        const icon = c.querySelector('.lf-icon');
+        const textCell = c.querySelector('.v4-editable-cell');
+        
+        const getShapeColor = (prop) => {
+            if (!shape) return "";
+            if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle')) {
+                const svg = shape.querySelector('polygon, path, rect, circle');
+                if (svg) return prop === 'backgroundColor' ? svg.style.fill : svg.style.stroke;
+            }
+            return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
+        };
+
+        return {
+            id: c.id,
+            isTable: !!table,
+            isShape: !!shape,
+            isIcon: !!icon,
+            w: c.offsetWidth,
+            h: c.offsetHeight,
+            currentStyles: {
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "")),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))),
+                text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
+                fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
+                tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
+                tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
+                isBgTransparent: (shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "")).includes("rgba(0, 0, 0, 0)"),
+                isBorderTransparent: (shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : "")).includes("rgba(0, 0, 0, 0)")
+            }
+        };
+    };
+
+    function updateHandles(c) {
+        if (!c) return;
+        const t = parseInt(c.style.top) || 0;
+        const l = parseInt(c.style.left) || 0;
+        const drag = c.querySelector('.lf-drag-handle');
+        const del = c.querySelector('.lf-delete-trigger');
+        if (drag) { drag.style.top = t < 16 ? '4px' : '-16px'; drag.style.left = l < 16 ? '4px' : '-16px'; }
+        if (del) { 
+            del.style.top = t < 16 ? '4px' : '-12px'; 
+            const rightDist = window.innerWidth - (l + c.offsetWidth);
+            del.style.right = rightDist < 16 ? '4px' : '-12px'; 
+        }
+    }
+    document.addEventListener('mouseover', e => {
+        const c = e.target.closest('.lf-component');
+        if (c) updateHandles(c);
+    });
+    document.addEventListener('mousedown', e => {
+        const h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
+        if (d && c) { 
+            c.remove(); 
+            markDirty(); 
+            notifyParent({ type: 'LF_DESELECT' });
+            return; 
+        }
+        if (c) {
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            c.classList.add('selected');
+            updateHandles(c);
+            notifyParent({ 
+                type: "LF_COMP_SELECTED", 
+                ..._getCompStyles(c)
+            });
+        } else {
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            notifyParent({ type: 'LF_DESELECT' });
+        }
+        if (r) { 
+            isResizing = true; 
+            activeEl = r.parentElement; 
+            startX = e.clientX; startY = e.clientY; 
+            startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; 
+            e.preventDefault(); 
+        }
+        else if (h || (c && !e.target.closest('.v4-editable-cell'))) { 
+            isDragging = true; activeEl = c; 
+            startX = e.clientX; startY = e.clientY; 
+            startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
+            startRect = activeEl.getBoundingClientRect();
+            notifyParent({ type: 'LF_SNAP_START' });
+            if (h) e.preventDefault(); 
+        } else if (e.target.closest('.v4-editable-cell')) {
+            // Explicit focus to ensure text cursor appears immediately
+            e.target.closest('.v4-editable-cell').focus();
+        }
+    });
+    let rafId = null;
+    document.addEventListener('mousemove', e => {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+            if (isDragging && activeEl) { 
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                const requestX = startRect.left + dx;
+                const requestY = startRect.top + dy;
+                notifyParent({ type: 'LF_SNAP_REQUEST', x: requestX, y: requestY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
+                markDirty(); 
+            }
+            else if (isResizing && activeEl) { 
+                const nw = Math.max(10, startW + e.clientX - startX);
+                const nh = Math.max(10, startH + e.clientY - startY);
+                activeEl.style.width = nw + 'px'; 
+                activeEl.style.height = nh + 'px'; 
+                updateHandles(activeEl);
+                markDirty(); 
+                notifyParent({ type: 'LF_COMP_RESIZED', w: nw, h: nh });
+            }
+        });
+    });
+    document.addEventListener('mouseup', () => { 
+        if (isDragging) notifyParent({ type: 'LF_SNAP_END' });
+        isDragging = false; isResizing = false; activeEl = null; 
+    });
+    document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
+    window.addEventListener('message', e => {
+        const d = e.data; if (!d) return;
+        if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
+            const currentRect = activeEl.getBoundingClientRect();
+            const snapDx = d.x - currentRect.left;
+            const snapDy = d.y - currentRect.top;
+            if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
+                activeEl.style.left = (parseInt(activeEl.style.left || 0) + snapDx) + 'px';
+                activeEl.style.top = (parseInt(activeEl.style.top || 0) + snapDy) + 'px';
+                updateHandles(activeEl);
+            }
+        }
+        else if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
+            const c = document.documentElement.cloneNode(true);
+            c.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
+            c.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+            notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: "<!DOCTYPE html>\n" + c.outerHTML });
+        } else if (d.type === 'LF_INSERT_COMPONENT') {
+            const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+            const isMobileHost = host.classList.contains('mobile-content');
+            const vh = isMobileHost ? host.clientHeight : window.innerHeight;
+            const vw = isMobileHost ? host.clientWidth : window.innerWidth;
+            const sY = isMobileHost ? host.scrollTop : window.scrollY;
+            const sX = isMobileHost ? host.scrollLeft : window.scrollX;
+            const compW = (d.style && d.style.width && d.style.width !== '100%') ? parseInt(d.style.width) || 200 : (d.style && d.style.width === '100%' ? vw : 200);
+            const compH = (d.style && d.style.height && d.style.height !== 'auto') ? parseInt(d.style.height) || 100 : 100;
+            const centerTop = Math.max(isMobileHost ? 56 : 0, sY + (vh - compH) / 2);
+            const centerLeft = Math.max(isMobileHost ? 16 : 0, sX + (vw - compW) / 2);
+            const v = document.createElement('div'); v.id = d.id || ('v4-comp-' + Date.now()); v.className = 'lf-component'; v.style.position = 'absolute'; v.style.top = centerTop + 'px'; v.style.left = centerLeft + 'px'; v.style.zIndex = '500';
+            if (d.style) Object.assign(v.style, d.style);
+            if (isMobileHost) {
+                v.style.top = centerTop + 'px';
+                v.style.left = d.style && d.style.width === '100%' ? '0px' : centerLeft + 'px';
+                if (d.style && d.style.width === '100%') v.style.width = '100%';
+            }
+            v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
+            host.appendChild(v);
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); 
+            v.classList.add('selected');
+
+            notifyParent({ 
+                type: 'LF_COMP_SELECTED', 
+                ..._getCompStyles(v)
+            });
+            markDirty();
+        } else if (d.type === 'LF_UPDATE_STYLE') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const t = d.selector ? s.querySelector(d.selector) : s; if (!t) return;
+            
+            if (d.style) {
+                Object.assign(t.style, d.style);
+                
+                // SVG Sync: If the element contains an SVG, sync stroke/fill
+                const svgShape = t.querySelector('path, polygon, rect, circle');
+                if (svgShape) {
+                    if (d.style.backgroundColor || d.style.background) {
+                        svgShape.style.fill = d.style.backgroundColor || d.style.background;
+                        // For non-rectangular shapes, container must stay transparent to avoid square fill leakage
+                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle')) {
+                            t.style.backgroundColor = 'transparent';
+                        }
+                    }
+                    if (d.style.borderColor) {
+                        svgShape.style.stroke = d.style.borderColor;
+                        svgShape.style.strokeWidth = "1.6";
+                    }
+                }
+            }
+            
+            if (d.subSelector && d.subStyle) {
+                t.querySelectorAll(d.subSelector).forEach(sub => Object.assign(sub.style, d.subStyle));
+            }
+            markDirty();
+        } else if (d.type === 'LF_DELETE_SELECTED') {
+            const s = document.querySelector('.lf-component.selected'); 
+            if (s) { 
+                s.remove(); 
+                markDirty(); 
+                notifyParent({ type: 'LF_DESELECT' });
+            }
+        } else if (d.type === 'LF_DESELECT_ALL') {
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+        } else if (d.type === 'LF_REQUEST_SNAP_TARGETS') {
+            const targets = [];
+            document.querySelectorAll('.lf-component:not(.selected)').forEach(c => {
+                const r = c.getBoundingClientRect();
+                const name = c.id.replace('v4-comp-', 'Comp ');
+                targets.push({ x: r.left, label: name, part: 'Left', type: 'h' });
+                targets.push({ x: r.left + r.width / 2, label: name, part: 'Center', type: 'h' });
+                targets.push({ x: r.right, label: name, part: 'Right', type: 'h' });
+                targets.push({ y: r.top, label: name, part: 'Top', type: 'v' });
+                targets.push({ y: r.top + r.height / 2, label: name, part: 'Middle', type: 'v' });
+                targets.push({ y: r.bottom, label: name, part: 'Bottom', type: 'v' });
+            });
+            notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
+        } else if (d.type === 'LF_TABLE_ACTION') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const table = s.querySelector('table'); if (!table) return;
+            const focused = table.querySelector('.v4-editable-cell:focus') || table.querySelector('td, th');
+            const row = focused ? focused.closest('tr') : null;
+            const cell = focused ? focused.closest('td, th') : null;
+            const act = (d.action || "").toLowerCase();
+            
+            if (act === 'add-row' || act === 'add_row') {
+                const newRow = table.insertRow(row ? row.rowIndex + 1 : -1);
+                const colCount = table.rows[0].cells.length;
+                for (let i = 0; i < colCount; i++) {
+                    const c = newRow.insertCell();
+                    c.className = 'v4-editable-cell';
+                    c.contentEditable = 'true';
+                    c.innerText = 'New';
+                    c.style.borderBottom = '1.6px solid #cbd5e1';
+                    c.style.padding = '16px';
+                }
+            } else if (act === 'add-col' || act === 'add_col') {
+                Array.from(table.rows).forEach((r, idx) => {
+                    const c = idx === 0 ? r.insertCell(-1) : r.insertCell(-1);
+                    if (idx === 0) {
+                        const th = document.createElement('th');
+                        th.className = 'v4-editable-cell';
+                        th.contentEditable = 'true';
+                        th.innerText = 'Header';
+                        th.style.background = '#cbd5e1';
+                        th.style.borderBottom = '1.6px solid #475569';
+                        th.style.padding = '16px';
+                        r.replaceChild(th, c);
+                    } else {
+                        c.className = 'v4-editable-cell';
+                        c.contentEditable = 'true';
+                        c.innerText = 'Data';
+                        c.style.borderBottom = '1.6px solid #cbd5e1';
+                        c.style.padding = '16px';
+                    }
+                });
+            } else if ((act === 'del-row' || act === 'del_row') && row && table.rows.length > 1) {
+                row.remove();
+            } else if ((act === 'del-col' || act === 'del_col') && cell) {
+                const idx = cell.cellIndex;
+                Array.from(table.rows).forEach(r => { if (r.cells[idx]) r.cells[idx].remove(); });
+            }
+            markDirty();
+        }
+    });
+
+    // 🛡️ High-Persistence Border Standardization (Standardizes 1.6px everywhere)
+    const enforceDesignSystem = () => {
+        document.querySelectorAll('.v4-shape').forEach(s => {
+            if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle')) {
+                s.style.setProperty('border-width', '0px', 'important');
+                return;
+            }
+            if (s.style.borderWidth !== '1.6px') s.style.setProperty('border-width', '1.6px', 'important');
+        });
+        document.querySelectorAll('table.v4-premium-table').forEach(t => {
+            if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
+        });
+        document.querySelectorAll('polygon, path, rect, circle').forEach(svg => {
+            if (svg.getAttribute('stroke-width') !== '1.6') svg.setAttribute('stroke-width', '1.6');
+            if (svg.style.strokeWidth !== '1.6') svg.style.strokeWidth = '1.6';
+            if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
+        });
+    };
+
+    // Run immediately and setup observer for dynamic changes
+    enforceDesignSystem();
+    const observer = new MutationObserver(enforceDesignSystem);
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    
+    // Safety fallback for slow loads
+    setTimeout(enforceDesignSystem, 500);
+})();
+
+</script>
+
+</body></html>
