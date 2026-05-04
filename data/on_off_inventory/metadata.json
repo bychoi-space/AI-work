@@ -34,11 +34,6 @@
       "type": "cover",
       "description": "기밀 유지 및 저작권 (Legal)"
     },
-    "slide_08_ui_mockups_pdp.html": {
-      "title": "08. [UI] 상품 상세 (PDP)",
-      "type": "ui",
-      "description": "매장배송 뱃지 및 안내"
-    },
     "slide_10_operational_flow.html": {
       "title": "10. 알림톡 서비스 흐름",
       "type": "architecture",
@@ -242,7 +237,6 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
-    "slide_08_ui_mockups_pdp.html",
     "slide_10_lt_policy.html",
     "slide_10_operational_flow.html",
     "slide_11_lt_policy.html",
