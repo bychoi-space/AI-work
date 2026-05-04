@@ -44,11 +44,6 @@
       "type": "architecture",
       "description": "SAP/OMS/LFmall 연동 상세"
     },
-    "slide_17_roadmap.html": {
-      "title": "17. 개발 전체 일정",
-      "type": "plan",
-      "description": "마일스톤 및 런칭 타임라인"
-    },
     "slide_18_stock_movement.html": {
       "title": "18. 재고 이동 지시 정책",
       "type": "plan",
@@ -214,7 +209,6 @@
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_13_bsu_operation.html",
     "slide_14_data_interface.html",
-    "slide_17_roadmap.html",
     "slide_18_stock_movement.html",
     "slide_19_decision_items.html",
     "slide_19_operational_flow.html",
