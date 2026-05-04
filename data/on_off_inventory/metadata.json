@@ -44,11 +44,6 @@
       "type": "architecture",
       "description": "SAP/OMS/LFmall 연동 상세"
     },
-    "slide_16_monitoring.html": {
-      "title": "16. RT 현황 관리 주체",
-      "type": "plan",
-      "description": "비직송 매장 관리 운영 안"
-    },
     "slide_17_roadmap.html": {
       "title": "17. 개발 전체 일정",
       "type": "plan",
@@ -219,7 +214,6 @@
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_13_bsu_operation.html",
     "slide_14_data_interface.html",
-    "slide_16_monitoring.html",
     "slide_17_roadmap.html",
     "slide_18_stock_movement.html",
     "slide_19_decision_items.html",
