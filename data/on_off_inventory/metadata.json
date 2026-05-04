@@ -34,11 +34,6 @@
       "type": "cover",
       "description": "기밀 유지 및 저작권 (Legal)"
     },
-    "slide_19_decision_items.html": {
-      "title": "19. 세부 실무 결정 사항",
-      "type": "plan",
-      "description": "상상 오퍼레이션 결정 목록"
-    },
     "slide_20_out_of_stock_logic.html": {
       "title": "20. 자동결품 로직 정의",
       "type": "plan",
@@ -192,7 +187,6 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
-    "slide_19_decision_items.html",
     "slide_20_out_of_stock_logic.html",
     "slide_21_pdp_base.html",
     "slide_21_pdp_option.html",
