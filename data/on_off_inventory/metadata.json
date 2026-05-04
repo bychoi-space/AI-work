@@ -39,11 +39,6 @@
       "type": "plan",
       "description": "시스템 자동 결품 상세 로직"
     },
-    "slide_25_basket.html": {
-      "title": "25. [UI] 쇼핑백",
-      "type": "ui",
-      "description": "장바구니 리스트 설계"
-    },
     "slide_26_order_form.html": {
       "title": "26. [UI] 주문서/주문완료",
       "type": "ui",
@@ -175,7 +170,6 @@
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_20_out_of_stock_logic.html",
-    "slide_25_basket.html",
     "slide_26_order_form.html",
     "slide_27_mypage_list.html",
     "slide_28_mypage_list.html",
