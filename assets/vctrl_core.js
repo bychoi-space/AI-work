@@ -28,17 +28,20 @@ const v4Styles = `
 :root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg-dark: #0f172a; --v4-panel-bg: rgba(30, 41, 59, 0.7); --v4-border: rgba(255, 255, 255, 0.15); --v4-text-main: #ffffff; --v4-text-dim: #94a3b8; }
 .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
 .lf-component.selected { outline: 2px solid #6366f1; z-index: 10001 !important; }
-.lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 2px solid #fff; z-index: 10; }
+.lf-component .lf-component .lf-drag-handle, 
+.lf-component .lf-component .lf-resizer, 
+.lf-component .lf-component .lf-delete-trigger { display: none !important; }
+.lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 2px solid #fff; z-index: 10002; }
 .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -16px; left: -16px; }
-.lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #6366f1; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10; }
+.lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #6366f1; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10002; }
 .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
-.lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10001; font-size: 14px; font-weight: bold; }
+.lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10002; font-size: 14px; font-weight: bold; }
 .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
 .v4-premium-table { table-layout: fixed; border-collapse: collapse; overflow: hidden; border-radius: 8px; border: 1.6px solid #475569 !important; font-family: 'Inter', sans-serif; }
 .v4-premium-table th { padding: 14px 16px; text-align: left; border-bottom: 1.6px solid #475569 !important; font-weight: 700; white-space: nowrap; }
 .v4-premium-table td { padding: 14px 16px; border-bottom: 1.6px solid #cbd5e1 !important; }
 .v4-premium-table tr:last-child td { border-bottom: none !important; }
-.v4-shape { position: relative; border: 1.6px solid #475569 !important; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #e2e8f0; color: #0f172a; }
+.v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: #475569; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #e2e8f0; color: #0f172a; }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
 .lf-icon { 
     background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png"); 
@@ -56,6 +59,7 @@ const v4Styles = `
 .lf-icon-cart { background-position: 75% 33.33%; }
 .lf-icon-brand { background-position: 25% 0%; }
 .lf-icon-bell { background-position: 25% 33.33%; }
+.lf-icon-back { background-position: 0% 33.33%; }
 .v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 .v4-shape-rect { border-radius: 8px; }
 .v4-shape-circle { border-radius: 50%; }
@@ -75,7 +79,7 @@ const v4Script = `
 
     // Unified Utility inside v4Script
     const _rgb2hex = (rgb) => {
-        if (!rgb || rgb === "transparent" || rgb.includes("rgba(0, 0, 0, 0)")) return "#000000";
+        if (!rgb || rgb === "transparent" || rgb === "none" || rgb.includes("rgba(0, 0, 0, 0)")) return null;
         const parts = rgb.match(/\\d+/g);
         if (!parts || parts.length < 3) return "#000000";
         const r = Math.min(255, parseInt(parts[0])).toString(16).padStart(2, "0");
@@ -109,6 +113,7 @@ const v4Script = `
             isTable: !!table,
             isShape: !!shape,
             isIcon: !!icon,
+            isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
@@ -118,8 +123,14 @@ const v4Script = `
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
-                isBgTransparent: (shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "")).includes("rgba(0, 0, 0, 0)"),
-                isBorderTransparent: (shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : "")).includes("rgba(0, 0, 0, 0)")
+                isBgTransparent: (() => {
+                    const c = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "");
+                    return !c || c === "transparent" || c === "none" || c.includes("rgba(0, 0, 0, 0)");
+                })(),
+                isBorderTransparent: (() => {
+                    const c = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : "");
+                    return !c || c === "transparent" || c === "none" || c.includes("rgba(0, 0, 0, 0)");
+                })()
             }
         };
     };
@@ -141,8 +152,19 @@ const v4Script = `
         const c = e.target.closest('.lf-component');
         if (c) updateHandles(c);
     });
+    let isMarquee = false;
     document.addEventListener('mousedown', e => {
-        const h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
+        let h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
+        
+        // If clicking inside a component, find the top-most component (for grouping)
+        if (c && !h && !r && !d) {
+            let parent = c.parentElement.closest('.lf-component');
+            while (parent) {
+                c = parent;
+                parent = c.parentElement.closest('.lf-component');
+            }
+        }
+
         if (d && c) { 
             c.remove(); 
             markDirty(); 
@@ -150,6 +172,7 @@ const v4Script = `
             return; 
         }
         if (c) {
+            isMarquee = false;
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             c.classList.add('selected');
             updateHandles(c);
@@ -158,7 +181,14 @@ const v4Script = `
                 ..._getCompStyles(c)
             });
         } else {
+            isMarquee = true;
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            notifyParent({ 
+                type: 'LF_MARQUEE_START', 
+                x: e.clientX, 
+                y: e.clientY,
+                shiftKey: e.shiftKey
+            });
             notifyParent({ type: 'LF_DESELECT' });
         }
         if (r) { 
@@ -176,12 +206,15 @@ const v4Script = `
             notifyParent({ type: 'LF_SNAP_START' });
             if (h) e.preventDefault(); 
         } else if (e.target.closest('.v4-editable-cell')) {
-            // Explicit focus to ensure text cursor appears immediately
             e.target.closest('.v4-editable-cell').focus();
         }
     });
     let rafId = null;
     document.addEventListener('mousemove', e => {
+        if (isMarquee) {
+            notifyParent({ type: 'LF_MARQUEE_MOVE', x: e.clientX, y: e.clientY });
+            return;
+        }
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
             if (isDragging && activeEl) { 
@@ -189,6 +222,11 @@ const v4Script = `
                 const dy = e.clientY - startY;
                 const requestX = startRect.left + dx;
                 const requestY = startRect.top + dy;
+                
+                // Track delta for multi-move
+                const deltaX = dx; 
+                const deltaY = dy;
+
                 notifyParent({ type: 'LF_SNAP_REQUEST', x: requestX, y: requestY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
                 markDirty(); 
             }
@@ -204,6 +242,10 @@ const v4Script = `
         });
     });
     document.addEventListener('mouseup', () => { 
+        if (isMarquee) {
+            isMarquee = false;
+            notifyParent({ type: 'LF_MARQUEE_END' });
+        }
         if (isDragging) notifyParent({ type: 'LF_SNAP_END' });
         isDragging = false; isResizing = false; activeEl = null; 
     });
@@ -215,9 +257,12 @@ const v4Script = `
             const snapDx = d.x - currentRect.left;
             const snapDy = d.y - currentRect.top;
             if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
-                activeEl.style.left = (parseInt(activeEl.style.left || 0) + snapDx) + 'px';
-                activeEl.style.top = (parseInt(activeEl.style.top || 0) + snapDy) + 'px';
-                updateHandles(activeEl);
+                const comps = document.querySelectorAll('.lf-component.selected');
+                comps.forEach(c => {
+                    c.style.left = (parseInt(c.style.left || 0) + snapDx) + 'px';
+                    c.style.top = (parseInt(c.style.top || 0) + snapDy) + 'px';
+                    updateHandles(c);
+                });
             }
         }
         else if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
@@ -245,14 +290,30 @@ const v4Script = `
             }
             v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
             host.appendChild(v);
-            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); 
-            v.classList.add('selected');
-
-            notifyParent({ 
-                type: 'LF_COMP_SELECTED', 
-                ..._getCompStyles(v)
+            markDirty();
+        } else if (d.type === 'LF_INSERT_COMPONENTS') {
+            const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+            const comps = d.components || [];
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            
+            comps.forEach(c => {
+                const v = document.createElement('div');
+                v.id = c.id || ('v4-comp-' + Date.now());
+                v.className = 'lf-component selected';
+                v.style.position = 'absolute';
+                if (c.style) Object.assign(v.style, c.style);
+                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + c.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
+                host.appendChild(v);
+                updateHandles(v);
             });
             markDirty();
+        } else if (d.type === 'LF_SELECT_ID') {
+            const el = document.getElementById(d.id);
+            if (el) {
+                document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                el.classList.add('selected');
+                updateHandles(el);
+            }
         } else if (d.type === 'LF_UPDATE_STYLE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             const t = d.selector ? s.querySelector(d.selector) : s; if (!t) return;
@@ -352,8 +413,31 @@ const v4Script = `
         }
     });
 
+    const initHandles = () => {
+        document.querySelectorAll('.lf-component').forEach(c => {
+            if (!c.querySelector('.lf-drag-handle')) {
+                const h = document.createElement('div');
+                h.className = 'lf-drag-handle';
+                h.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg>';
+                c.appendChild(h);
+            }
+            if (!c.querySelector('.lf-resizer')) {
+                const r = document.createElement('div');
+                r.className = 'lf-resizer';
+                c.appendChild(r);
+            }
+            if (!c.querySelector('.lf-delete-trigger')) {
+                const d = document.createElement('div');
+                d.className = 'lf-delete-trigger';
+                d.innerText = '×';
+                c.appendChild(d);
+            }
+        });
+    };
+
     // 🛡️ High-Persistence Border Standardization (Standardizes 1.6px everywhere)
     const enforceDesignSystem = () => {
+        initHandles();
         document.querySelectorAll('.v4-shape').forEach(s => {
             if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle')) {
                 s.style.setProperty('border-width', '0px', 'important');
@@ -543,6 +627,25 @@ window.insertAtomicComponent = function(type, name) {
     } else if (name === 'LFmall Header') {
         contentHtml = `<div style="background:#fff; width:100%; height:50px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom: 1px solid #f2f2f2; pointer-events:none; box-sizing: border-box;"><div style="display: flex; align-items: center; width: 33%;"><div class="lf-icon lf-icon-bell" style="filter: brightness(0); transform: scale(0.65); transform-origin: left center;"></div></div><div style="display: flex; align-items: center; justify-content: center; width: 33%;"><img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="height: 20px;"></div><div style="display: flex; align-items: center; justify-content: flex-end; width: 33%; gap: 0px;"><div class="lf-icon lf-icon-search" style="filter: brightness(0); transform: scale(0.65); transform-origin: right center;"></div><div style="position: relative; width: 26px; height: 26px; margin-left: 8px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0); transform: scale(0.65); transform-origin: center right; position: absolute; right: 0;"></div><div style="position: absolute; top: -2px; right: -4px; background: #e60012; color: #fff; font-size: 10px; font-weight: 800; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-family: sans-serif; z-index: 2;">1</div></div></div></div>`;
         defaultStyle = { width: '100%', height: '50px' };
+    } else if (name === 'LFmall (MO) Header - 상품상세') {
+        const baseTop = 56; 
+        const baseLeft = 0;
+        const iconStyle = `width:100%; height:100%; color:#1e293b;`;
+        const svgAttr = `viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="${iconStyle}"`;
+        
+        const components = [
+            { id: `header-bg-${Date.now()}`, html: `<div class="v4-shape v4-shape-rect" style="width:100%; height:100%; border-width:1.6px !important; border-style:solid !important; border-color:#f1f5f9; background:#ffffff; border-radius:0;"></div>`, style: { top: `${baseTop}px`, left: `${baseLeft}px`, width: '375px', height: '50px' } },
+            { id: `header-back-${Date.now()}`, html: `<svg ${svgAttr}><polyline points="15 18 9 12 15 6"></polyline></svg>`, style: { top: `${baseTop + 15}px`, left: `${baseLeft + 16}px`, width: '20px', height: '20px' } },
+            { id: `header-search-${Date.now()}`, html: `<svg ${svgAttr}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`, style: { top: `${baseTop + 15}px`, left: `${baseLeft + 271}px`, width: '20px', height: '20px' } },
+            { id: `header-home-${Date.now()}`, html: `<svg ${svgAttr}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`, style: { top: `${baseTop + 15}px`, left: `${baseLeft + 305}px`, width: '20px', height: '20px' } },
+            { id: `header-cart-${Date.now()}`, html: `<svg ${svgAttr}><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>`, style: { top: `${baseTop + 15}px`, left: `${baseLeft + 339}px`, width: '20px', height: '20px' } }
+        ];
+
+        const iframe = document.getElementById('main-iframe');
+        if (iframe && iframe.contentWindow) {
+            MessageHub.send(iframe.contentWindow, 'LF_INSERT_COMPONENTS', { components });
+        }
+        return;
     } else if (type === 'icon') {
         if (name === 'Arrow Left') {
             contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
@@ -659,7 +762,7 @@ window.handleGlobalSave = async function() {
             window.closeActiveEditor(true);
         }
         
-        const btn = DOM.btnGlobalSave;
+        const btn = document.getElementById('btn-global-save');
         if (!btn) return;
 
         const originalHTML = btn.innerHTML;
@@ -706,11 +809,11 @@ window.handleGlobalSave = async function() {
             Object.assign(state.projectMetadata, projectMeta);
             if (projectMeta.title && DOM.fileName) DOM.fileName.innerText = projectMeta.title;
             
-            btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+            btn.style.setProperty('background', 'linear-gradient(135deg, #22c55e, #16a34a)', 'important');
             btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">check_circle</span> 저장 완료`;
             setTimeout(() => {
                 btn.innerHTML = originalHTML;
-                btn.style.background = '';
+                btn.style.removeProperty('background');
                 btn.style.position = '';
                 btn.style.overflow = '';
                 btn.disabled = false;
@@ -720,14 +823,14 @@ window.handleGlobalSave = async function() {
         }
     } catch (err) {
         console.error("[Save Error]", err);
-        const btn = DOM.btnGlobalSave;
+        const btn = document.getElementById('btn-global-save');
         if (btn) {
             btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">error</span> 저장 실패`;
-            btn.style.background = '#ef4444';
+            btn.style.setProperty('background', '#ef4444', 'important');
             btn.disabled = false;
             setTimeout(() => {
                 btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">save</span> 전체 저장`;
-                btn.style.background = '';
+                btn.style.removeProperty('background');
                 btn.style.position = '';
                 btn.style.overflow = '';
             }, 2500);
@@ -903,7 +1006,11 @@ window.init = async function() {
 
         // --- ATTACH GLOBAL LISTENERS ---
         console.log("[INIT] Attaching global listeners...");
-        if (DOM.btnGlobalSave) DOM.btnGlobalSave.onclick = handleGlobalSave;
+        document.addEventListener('click', (e) => {
+            if (e.target && e.target.closest('#btn-global-save')) {
+                handleGlobalSave();
+            }
+        });
         
         if (DOM.btnToggleLeft) DOM.btnToggleLeft.onclick = () => {
             const collapsed = DOM.sidebarLeft.classList.toggle('collapsed');

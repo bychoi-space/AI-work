@@ -72,7 +72,16 @@ window.DOM = {
     // Properties Sidebar Additions
     textPropSection: get('text-properties-section'),
     textColorPicker: get('text-color-picker'),
-    colorPresets: document.querySelectorAll('.color-preset')
+    colorPresets: document.querySelectorAll('.color-preset'),
+
+    // Selection Actions
+    selectionBar: get('selection-actions-bar'),
+    selectionCount: get('selection-count'),
+    selectionNumber: get('selection-number'),
+    selectionLabel: get('selection-label'),
+    btnGroup: get('btn-group-action'),
+    btnUngroup: get('btn-ungroup-action'),
+    btnAddToMolecules: get('btn-add-molecules-action')
 };
 
 // 2. UI Rendering Functions
@@ -294,6 +303,34 @@ window.handleDeleteScreen = async function(fileName, sha) {
 };
 
 window.renderAtomicLibrary = function() {
+    // 1. Render Custom Molecules (Top Priority, Independent)
+    const customMols = window.state.projectMetadata?.molecules || [];
+    const molHeader = document.getElementById('molecules-header-text');
+    if (molHeader) {
+        molHeader.innerHTML = `MOLECULES <b style="color:var(--accent); margin-left: 4px;">(${customMols.length})</b>`;
+    }
+
+    const molContainer = document.getElementById('custom-molecules-container');
+    if (molContainer) {
+        const baseHtml = `
+            <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LFmall Header')" style="height: 40px; font-weight: 700;">LFmall Header</button>
+            <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LFmall (MO) Header - 상품상세')" style="height: 40px; font-weight: 700; margin-top: 8px;">LFmall (MO) Header - 상품상세</button>
+        `;
+        const customHtml = customMols.map(m => `
+            <div style="position: relative; width: 100%; margin-top: 8px;">
+                <button class="v4-inspector-btn btn-secondary" onclick="insertV4ComponentById('${m.id}')" style="width: 100%; height: 36px; font-size: 11px; font-weight: 600; background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); padding-right: 32px; justify-content: flex-start; padding-left: 12px;">
+                    <span class="material-icons-outlined" style="font-size:14px; margin-right:8px; color:var(--accent);">category</span>
+                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${m.name}</span>
+                </button>
+                <button onclick="deleteMolecule('${m.id}', event)" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.2); border: none; color: #94a3b8; cursor: pointer; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                    <span class="material-icons-outlined" style="font-size: 14px;">close</span>
+                </button>
+            </div>
+        `).join('');
+        molContainer.innerHTML = baseHtml + customHtml;
+    }
+
+    // 2. Render Other Library Parts (Dependent on static lib)
     const panes = {
         'atoms': document.getElementById('pane-atoms'),
         'icons': document.getElementById('pane-icons')

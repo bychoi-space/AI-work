@@ -2381,3 +2381,36 @@ body.drag-active #drop-overlay {
 .lf-icon-bell { background-position: -40px -40px; }
 .lf-icon-share { background-position: -160px -40px; }
 .lf-icon-party { background-position: 0 -120px; }
+
+/* --- Restored Component Handles --- */
+.lf-drag-handle { position: absolute; top: -10px; left: -10px; width: 22px; height: 22px; background: #6366f1; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 14px; cursor: move; border: 2px solid #1e2128; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 2000; pointer-events: auto; }
+.lf-delete-trigger { position: absolute; top: -10px; right: -10px; width: 22px; height: 22px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid #1e2128; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 2000; pointer-events: auto; }
+.pin-marker:hover .lf-delete-trigger, .pin-marker.active .lf-delete-trigger, .pin-marker.highlight .lf-delete-trigger, .text-marker:hover .lf-delete-trigger, .text-marker.active .lf-delete-trigger, .text-marker.editing-active .lf-delete-trigger, .text-marker.highlight .lf-delete-trigger { display: flex !important; }
+.text-marker:hover .lf-drag-handle, .text-marker.active .lf-drag-handle, .text-marker.editing-active .lf-drag-handle, .text-marker.highlight .lf-drag-handle { display: flex !important; }
+
+/* --- Premium Button Design Standard (V4) --- */
+.v4-inspector-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    height: 28px !important;
+    padding: 0 16px !important;
+    border-radius: 14px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    border: none !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+    text-transform: uppercase !important;
+}
+.v4-inspector-btn:hover {
+    transform: translateY(-1px) !important;
+    filter: brightness(1.1) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+.v4-inspector-btn.btn-accent { background: var(--accent) !important; color: #000 !important; border: 1px solid rgba(255, 255, 255, 0.15) !important; }
+.v4-inspector-btn.btn-primary { background: #1e293b !important; color: #fff !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; }
+.v4-inspector-btn.btn-secondary { background: rgba(255, 255, 255, 0.9) !important; color: #0f172a !important; }

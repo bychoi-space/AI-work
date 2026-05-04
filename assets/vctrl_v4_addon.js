@@ -20,9 +20,12 @@
         const lib = window.V4_COMPONENT_LIBRARY;
         if (!lib) return console.error("[V4] Component Library not found.");
 
+        const customMols = (window.parent.state && window.parent.state.projectMetadata && window.parent.state.projectMetadata.molecules) ? window.parent.state.projectMetadata.molecules : [];
+        
         const item = (lib.atoms || []).find(i => i.id === id) || 
                      (lib.molecules || []).find(i => i.id === id) || 
-                     (lib.organisms || []).find(i => i.id === id);
+                     (lib.organisms || []).find(i => i.id === id) ||
+                     customMols.find(i => i.id === id);
 
         if (!item) return console.error("[V4] Component not found:", id);
 
@@ -195,9 +198,13 @@
             const shapeSect = document.getElementById('shape-inspector-section');
             const iconSect = document.getElementById('icon-inspector-section');
             
-            if (tableSect) tableSect.style.display = data.isTable ? 'block' : 'none';
-            if (shapeSect) shapeSect.style.display = data.isShape ? 'block' : 'none';
-            if (iconSect) iconSect.style.display = data.isIcon ? 'block' : 'none';
+            if (tableSect) tableSect.style.display = (data.isTable && !data.isGroup) ? 'block' : 'none';
+            if (shapeSect) shapeSect.style.display = (data.isShape && !data.isGroup) ? 'block' : 'none';
+            if (iconSect) iconSect.style.display = (data.isIcon && !data.isGroup) ? 'block' : 'none';
+
+            // Hide text editor for groups
+            const textSect = document.getElementById('text-editor-section');
+            if (textSect && data.isGroup) textSect.style.display = 'none';
 
             // UI Sync with current styles
             if (data.currentStyles) {
@@ -207,7 +214,7 @@
                 const syncColor = (id, wrapperId, color, isTransparent) => {
                     const picker = document.getElementById(id);
                     const wrapper = document.getElementById(wrapperId);
-                    if (picker) picker.value = color;
+                    if (picker && color) picker.value = color;
                     if (wrapper) wrapper.classList.toggle('transparent-active', isTransparent);
                 };
 
