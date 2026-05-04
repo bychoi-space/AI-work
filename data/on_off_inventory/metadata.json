@@ -34,11 +34,6 @@
       "type": "cover",
       "description": "기밀 유지 및 저작권 (Legal)"
     },
-    "slide_30_guide_info.html": {
-      "title": "30. [UI] 배송/교환 안내",
-      "type": "ui",
-      "description": "서비스 가이드 및 안내"
-    },
     "slide_32_admin_prod_detail.html": {
       "title": "32. [어드민] 자사상품 상세",
       "type": "admin-nbos",
@@ -139,7 +134,6 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
-    "slide_30_guide_info.html",
     "slide_32_admin_prod_detail.html",
     "slide_33_admin_prod_stock.html",
     "slide_33_admin_shop_mgmt.html",
