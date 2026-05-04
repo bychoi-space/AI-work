@@ -48,12 +48,6 @@
       "template": "template_mobile_ui_2.html",
       "description": []
     },
-    "06_Mobile_Design_1_5832.html": {
-      "title": "06_Mobile_Design_1_5832",
-      "type": "mobile-ui",
-      "updatedAt": "2026-04-29T07:15:39.017Z",
-      "template": "template_mobile_ui_1.html"
-    },
     "06_Mobile_Design_3_2322.html": {
       "title": "06_Mobile_Design_3_2322",
       "type": "mobile-ui",
@@ -93,7 +87,6 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
-    "06_Mobile_Design_1_5832.html",
     "06_Mobile_Design_2_0075.html",
     "06_Mobile_Design_2_6727.html",
     "06_Mobile_Design_3_2322.html",
