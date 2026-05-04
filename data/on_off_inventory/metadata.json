@@ -53,6 +53,12 @@
           "y": 0
         }
       ]
+    },
+    "06_Mobile_Design_2_516.html": {
+      "title": "06_Mobile_Design_2_516",
+      "type": "mobile-ui",
+      "updatedAt": "2026-05-04T06:26:48.557Z",
+      "template": "template_mobile_ui_2.html"
     }
   },
   "screenOrder": [
@@ -60,7 +66,8 @@
     "01_Global_Process.html",
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
-    "05_PDP_Store_Delivery_Mobile.html"
+    "05_PDP_Store_Delivery_Mobile.html",
+    "06_Mobile_Design_2_516.html"
   ],
   "developer": ""
 }
