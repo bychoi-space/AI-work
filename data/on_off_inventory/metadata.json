@@ -39,11 +39,6 @@
       "type": "ui",
       "description": "서비스 가이드 및 안내"
     },
-    "slide_31_admin_prod_list.html": {
-      "title": "31. [어드민] 상품 목록",
-      "type": "admin-nbos",
-      "description": "운영자 상품 관리 리스트"
-    },
     "slide_32_admin_prod_detail.html": {
       "title": "32. [어드민] 자사상품 상세",
       "type": "admin-nbos",
@@ -145,7 +140,6 @@
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_30_guide_info.html",
-    "slide_31_admin_prod_list.html",
     "slide_32_admin_prod_detail.html",
     "slide_33_admin_prod_stock.html",
     "slide_33_admin_shop_mgmt.html",
