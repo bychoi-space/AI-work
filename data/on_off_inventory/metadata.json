@@ -179,7 +179,8 @@
       "title": "06_Mobile_Design_2_550",
       "type": "mobile-ui",
       "updatedAt": "2026-05-04T02:09:03.230Z",
-      "template": "template_mobile_ui_2.html"
+      "template": "template_mobile_ui_2.html",
+      "description": []
     }
   },
   "screenOrder": [
@@ -189,7 +190,6 @@
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_20_out_of_stock_logic.html",
-    "slide_22_pdp_benefit.html",
     "slide_22_pdp_option.html",
     "slide_23_pdp_benefit.html",
     "slide_23_pdp_stock_grid.html",
