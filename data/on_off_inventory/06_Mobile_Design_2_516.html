@@ -35,6 +35,9 @@
 :root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg-dark: #0f172a; --v4-panel-bg: rgba(30, 41, 59, 0.7); --v4-border: rgba(255, 255, 255, 0.15); --v4-text-main: #ffffff; --v4-text-dim: #94a3b8; }
 .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
 .lf-component.selected { outline: 2px solid #6366f1; z-index: 10001 !important; }
+.lf-component .lf-component .lf-drag-handle, 
+.lf-component .lf-component .lf-resizer, 
+.lf-component .lf-component .lf-delete-trigger { display: none !important; }
 .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 2px solid #fff; z-index: 10002; }
 .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -16px; left: -16px; }
 .lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #6366f1; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10002; }
@@ -63,6 +66,7 @@
 .lf-icon-cart { background-position: 75% 33.33%; }
 .lf-icon-brand { background-position: 25% 0%; }
 .lf-icon-bell { background-position: 25% 33.33%; }
+.lf-icon-back { background-position: 0% 33.33%; }
 .v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 .v4-shape-rect { border-radius: 8px; }
 .v4-shape-circle { border-radius: 50%; }
@@ -115,10 +119,14 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
             </div>
             <div class="mobile-home-indicator"></div>
         </div>
-    <div id="v4-comp-1777878157262" class="lf-component" style="position: absolute; top: 96px; left: 308px; z-index: 500; width: 360px; height: 50px;">
+    <div id="group-1777881857792" class="lf-component lf-group" style="position: absolute; top: 96px; left: 308px; width: 360px; height: 50px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial;">
+            
+            
+            
+        <div id="v4-comp-1777878157262" class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 500; width: 360px; height: 50px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><br></div>
-            </div></div><div id="lf-comp-1777878224236" class="lf-component" style="position: absolute; top: 104px; left: 318px; z-index: 500; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div id="lf-comp-1777878238237" class="lf-component" style="position: absolute; top: 99px; left: 533px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-search" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878244185" class="lf-component" style="position: absolute; top: 99px; left: 573px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-home" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878253190" class="lf-component" style="position: absolute; top: 99px; left: 613px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div>
+            </div></div><div id="lf-comp-1777878224236" class="lf-component" style="position: absolute; top: 8px; left: 10px; z-index: 500; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div id="lf-comp-1777878238237" class="lf-component" style="position: absolute; top: 3px; left: 225px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-search" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878244185" class="lf-component" style="position: absolute; top: 3px; left: 265px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-home" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878253190" class="lf-component" style="position: absolute; top: 3px; left: 305px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div></div>
 <script id="v4-inlined-script">
 
 (function() {
@@ -201,8 +209,19 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
         const c = e.target.closest('.lf-component');
         if (c) updateHandles(c);
     });
+    let isMarquee = false;
     document.addEventListener('mousedown', e => {
-        const h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
+        let h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
+        
+        // If clicking inside a component, find the top-most component (for grouping)
+        if (c && !h && !r && !d) {
+            let parent = c.parentElement.closest('.lf-component');
+            while (parent) {
+                c = parent;
+                parent = c.parentElement.closest('.lf-component');
+            }
+        }
+
         if (d && c) { 
             c.remove(); 
             markDirty(); 
@@ -210,6 +229,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
             return; 
         }
         if (c) {
+            isMarquee = false;
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             c.classList.add('selected');
             updateHandles(c);
@@ -218,7 +238,14 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
                 ..._getCompStyles(c)
             });
         } else {
+            isMarquee = true;
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            notifyParent({ 
+                type: 'LF_MARQUEE_START', 
+                x: e.clientX, 
+                y: e.clientY,
+                shiftKey: e.shiftKey
+            });
             notifyParent({ type: 'LF_DESELECT' });
         }
         if (r) { 
@@ -236,12 +263,15 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
             notifyParent({ type: 'LF_SNAP_START' });
             if (h) e.preventDefault(); 
         } else if (e.target.closest('.v4-editable-cell')) {
-            // Explicit focus to ensure text cursor appears immediately
             e.target.closest('.v4-editable-cell').focus();
         }
     });
     let rafId = null;
     document.addEventListener('mousemove', e => {
+        if (isMarquee) {
+            notifyParent({ type: 'LF_MARQUEE_MOVE', x: e.clientX, y: e.clientY });
+            return;
+        }
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
             if (isDragging && activeEl) { 
@@ -249,6 +279,11 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
                 const dy = e.clientY - startY;
                 const requestX = startRect.left + dx;
                 const requestY = startRect.top + dy;
+                
+                // Track delta for multi-move
+                const deltaX = dx; 
+                const deltaY = dy;
+
                 notifyParent({ type: 'LF_SNAP_REQUEST', x: requestX, y: requestY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
                 markDirty(); 
             }
@@ -264,6 +299,10 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
         });
     });
     document.addEventListener('mouseup', () => { 
+        if (isMarquee) {
+            isMarquee = false;
+            notifyParent({ type: 'LF_MARQUEE_END' });
+        }
         if (isDragging) notifyParent({ type: 'LF_SNAP_END' });
         isDragging = false; isResizing = false; activeEl = null; 
     });
@@ -275,9 +314,12 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
             const snapDx = d.x - currentRect.left;
             const snapDy = d.y - currentRect.top;
             if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
-                activeEl.style.left = (parseInt(activeEl.style.left || 0) + snapDx) + 'px';
-                activeEl.style.top = (parseInt(activeEl.style.top || 0) + snapDy) + 'px';
-                updateHandles(activeEl);
+                const comps = document.querySelectorAll('.lf-component.selected');
+                comps.forEach(c => {
+                    c.style.left = (parseInt(c.style.left || 0) + snapDx) + 'px';
+                    c.style.top = (parseInt(c.style.top || 0) + snapDy) + 'px';
+                    updateHandles(c);
+                });
             }
         }
         else if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
@@ -305,14 +347,30 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
             }
             v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
             host.appendChild(v);
-            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); 
-            v.classList.add('selected');
-
-            notifyParent({ 
-                type: 'LF_COMP_SELECTED', 
-                ..._getCompStyles(v)
+            markDirty();
+        } else if (d.type === 'LF_INSERT_COMPONENTS') {
+            const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+            const comps = d.components || [];
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            
+            comps.forEach(c => {
+                const v = document.createElement('div');
+                v.id = c.id || ('v4-comp-' + Date.now());
+                v.className = 'lf-component selected';
+                v.style.position = 'absolute';
+                if (c.style) Object.assign(v.style, c.style);
+                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + c.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
+                host.appendChild(v);
+                updateHandles(v);
             });
             markDirty();
+        } else if (d.type === 'LF_SELECT_ID') {
+            const el = document.getElementById(d.id);
+            if (el) {
+                document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                el.classList.add('selected');
+                updateHandles(el);
+            }
         } else if (d.type === 'LF_UPDATE_STYLE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             const t = d.selector ? s.querySelector(d.selector) : s; if (!t) return;
