@@ -43,9 +43,9 @@ window.LF_TEMPLATES = {
         }
         
         /* V4 Component Base Styles */
-        .lf-component { position: absolute !important; box-sizing: border-box !important; transition: outline 0.1s; }
+        .lf-component { position: absolute !important; box-sizing: border-box !important; transition: outline 0.1s; z-index: 500; }
         .lf-component:hover { outline: 2px solid var(--v4-accent) !important; cursor: move !important; }
-        .lf-component.selected { outline: 2px solid var(--v4-accent) !important; z-index: 9999 !important; }
+        .lf-component.selected { outline: 2px solid var(--v4-accent) !important; z-index: 10001 !important; }
         
         .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; }
         .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
@@ -793,9 +793,9 @@ window.LF_TEMPLATES = {
         .mobile-ui-nav div { text-align: center; font-size: 12px; font-weight: 700; color: #64748b; white-space: nowrap; }
 
         /* V4 Component Base Styles */
-        .lf-component { position: absolute !important; box-sizing: border-box !important; }
+        .lf-component { position: absolute !important; box-sizing: border-box !important; z-index: 500; }
         .lf-component:hover { outline: 2px dashed var(--v4-primary) !important; cursor: pointer !important; }
-        .lf-component.selected { outline: 2px solid var(--v4-primary) !important; z-index: 9999 !important; }
+        .lf-component.selected { outline: 2px solid var(--v4-primary) !important; z-index: 10001 !important; }
 
         .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; border: 2px solid #fff; }
         .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
@@ -854,7 +854,7 @@ window.LF_TEMPLATES = {
         :root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg: #1e293b; --v4-frame-bg: #ffffff; }
         body { margin: 0; padding: 0; background: var(--v4-bg); font-family: 'Inter', 'Noto Sans KR', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
         .page { width: 1440px; height: 900px; position: relative; display: flex; justify-content: center; align-items: center; gap: 80px; }
-        .mobile-frame { width: 375px; height: 812px; background: var(--v4-frame-bg); border-radius: 40px; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111; overflow: hidden; border: 4px solid #334155; }
+        .mobile-frame { width: 375px; height: 812px; background: var(--v4-frame-bg); border-radius: 40px; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111; overflow: hidden; border: 4px solid #334155; z-index: 10; }
         .mobile-header-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 150px; height: 30px; background: #111; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; z-index: 1000; }
         .mobile-content { width: 100%; height: 100%; position: relative; background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 20px 20px; overflow-y: auto; overflow-x: hidden; }
         .mobile-statusbar { position: absolute; top: 10px; left: 24px; right: 24px; height: 20px; display: flex; align-items: center; justify-content: space-between; color: #111827; font-size: 12px; font-weight: 800; z-index: 1001; pointer-events: none; white-space: nowrap; }
@@ -865,9 +865,9 @@ window.LF_TEMPLATES = {
         .mobile-ui-list { padding: 16px; border-radius: 18px; background: #f8fafc; border: 1px solid #e5e7eb; }
         .mobile-ui-nav { display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; padding: 8px 14px 14px; background: #fff; border-top: 1px solid #e5e7eb; }
         .mobile-ui-nav div { text-align: center; font-size: 12px; font-weight: 700; color: #64748b; white-space: nowrap; }
-        .lf-component { position: absolute !important; box-sizing: border-box !important; }
+        .lf-component { position: absolute !important; box-sizing: border-box !important; z-index: 500; }
         .lf-component:hover { outline: 2px dashed var(--v4-primary) !important; cursor: pointer !important; }
-        .lf-component.selected { outline: 2px solid var(--v4-primary) !important; z-index: 9999 !important; }
+        .lf-component.selected { outline: 2px solid var(--v4-primary) !important; z-index: 10001 !important; }
         .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; border: 2px solid #fff; }
         .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
         .lf-resizer { position: absolute; bottom: -6px; right: -6px; width: 12px; height: 12px; background: var(--v4-primary); cursor: nwse-resize; border-radius: 2px; border: 2px solid #fff; opacity: 0; z-index: 100; }
@@ -946,7 +946,7 @@ window.LF_TEMPLATES = {
         :root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg: #1e293b; --v4-frame-bg: #ffffff; }
         body { margin: 0; padding: 0; background: var(--v4-bg); font-family: 'Inter', 'Noto Sans KR', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
         .page { width: 1440px; height: 900px; position: relative; display: flex; justify-content: center; align-items: center; gap: 40px; }
-        .mobile-frame { width: 375px; height: 812px; background: var(--v4-frame-bg); border-radius: 40px; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111; overflow: hidden; border: 4px solid #334155; }
+        .mobile-frame { width: 375px; height: 812px; background: var(--v4-frame-bg); border-radius: 40px; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111; overflow: hidden; border: 4px solid #334155; z-index: 10; }
         .mobile-header-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 150px; height: 30px; background: #111; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; z-index: 1000; }
         .mobile-content { width: 100%; height: 100%; position: relative; background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 20px 20px; overflow-y: auto; overflow-x: hidden; }
         .mobile-statusbar { position: absolute; top: 10px; left: 24px; right: 24px; height: 20px; display: flex; align-items: center; justify-content: space-between; color: #111827; font-size: 12px; font-weight: 800; z-index: 1001; pointer-events: none; white-space: nowrap; }
@@ -957,9 +957,9 @@ window.LF_TEMPLATES = {
         .mobile-ui-list { padding: 16px; border-radius: 18px; background: #f8fafc; border: 1px solid #e5e7eb; }
         .mobile-ui-nav { display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; padding: 8px 14px 14px; background: #fff; border-top: 1px solid #e5e7eb; }
         .mobile-ui-nav div { text-align: center; font-size: 12px; font-weight: 700; color: #64748b; white-space: nowrap; }
-        .lf-component { position: absolute !important; box-sizing: border-box !important; }
+        .lf-component { position: absolute !important; box-sizing: border-box !important; z-index: 500; }
         .lf-component:hover { outline: 2px dashed var(--v4-primary) !important; cursor: pointer !important; }
-        .lf-component.selected { outline: 2px solid var(--v4-primary) !important; z-index: 9999 !important; }
+        .lf-component.selected { outline: 2px solid var(--v4-primary) !important; z-index: 10001 !important; }
         .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; border: 2px solid #fff; }
         .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
         .lf-resizer { position: absolute; bottom: -6px; right: -6px; width: 12px; height: 12px; background: var(--v4-primary); cursor: nwse-resize; border-radius: 2px; border: 2px solid #fff; opacity: 0; z-index: 100; }

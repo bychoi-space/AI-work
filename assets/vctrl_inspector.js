@@ -298,19 +298,15 @@ window.renderAtomicLibrary = function() {
         'atoms': document.getElementById('pane-atoms'),
         'icons': document.getElementById('pane-icons')
     };
-    if (!panes.atoms) return;
+    if (!panes.atoms || !window.V4_COMPONENT_LIBRARY) return;
 
-    const atoms = [
-        { name: 'LF Logo', type: 'image' },
-        { name: 'Primary Button', type: 'button' },
-        { name: 'LF Discount', type: 'text' },
-        { name: 'LFmall Header', type: 'component' }
-    ];
+    const lib = window.V4_COMPONENT_LIBRARY;
+    const allComponents = [...(lib.atoms || []), ...(lib.molecules || []), ...(lib.organisms || [])];
 
-    panes.atoms.innerHTML = atoms.map(a => `
-        <div class="library-item" onclick="insertAtomicComponent('${a.type}', '${a.name}')">
-            <div class="item-preview">${a.name.includes('Logo') ? '<img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width:20px; filter: brightness(0);">' : '<span class="material-icons-outlined" style="font-size:18px;">extension</span>'}</div>
-            <div class="item-name">${a.name}</div>
+    panes.atoms.innerHTML = allComponents.map(item => `
+        <div class="library-item" onclick="insertV4ComponentById('${item.id}')">
+            <div class="item-preview">${item.previewHtml || '<span class="material-icons-outlined">extension</span>'}</div>
+            <div class="item-name">${item.name}</div>
         </div>
     `).join('');
 

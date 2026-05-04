@@ -40,13 +40,17 @@ window.renderDescriptionList = function() {
                 <div class="lf-drag-handle">
                     <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg>
                 </div>
+                <div class="lf-delete-trigger">×</div>
                 ${item.html || item.text || ''}
             `;
             pin.style.setProperty('color', item.color || "#000000", 'important');
             if (state.isEditing && state.editingIndex === index) pin.classList.add('editing-active');
         } else {
             pin.className = 'pin-marker';
-            pin.innerText = index + 1;
+            pin.innerHTML = `
+                <div class="lf-delete-trigger">×</div>
+                ${index + 1}
+            `;
         }
         pin.dataset.index = index;
         pin.style.left = (item.x || 0) + "%";
@@ -128,6 +132,15 @@ window.renderDescriptionList = function() {
             window.addEventListener('mousemove', onMouseMove);
             window.addEventListener('mouseup', onMouseUp);
         });
+
+        // Delete Trigger Logic (on marker)
+        var delTrigger = pin.querySelector('.lf-delete-trigger');
+        if (delTrigger) {
+            delTrigger.onclick = function(e) {
+                e.stopPropagation();
+                window.deleteAnnotation(index);
+            };
+        }
 
         // Input & Row Actions
         var input = row.querySelector('.desc-input');
@@ -301,6 +314,9 @@ window.addEventListener('DOMContentLoaded', function() {
                 state.startX = e.clientX - state.transform.x;
                 state.startY = e.clientY - state.transform.y;
                 e.preventDefault();
+            } else {
+                // Clicked on empty canvas space
+                if (window.closeActiveEditor) window.closeActiveEditor(true);
             }
         });
     }
@@ -325,3 +341,10 @@ window.addEventListener('DOMContentLoaded', function() {
 
     console.log("[VCTRL V3] Utility Engine initialized successfully.");
 });
+
+// 6. MessageHub Deselection Integration
+if (window.MessageHub) {
+    MessageHub.subscribe('LF_DESELECT', function() {
+        if (window.closeActiveEditor) window.closeActiveEditor(true);
+    });
+}

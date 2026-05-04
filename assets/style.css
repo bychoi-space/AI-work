@@ -89,7 +89,7 @@
 
 
 @keyframes fadeInSlideUp {
-    from { opacity: 0; transform: translateY(15px); }
+    from { display: none; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
@@ -128,7 +128,7 @@ body {
 }
 
 /* ----------------------------------------------------
-   1. Header Toolbar (?�𡆀 諻?
+   1. Header Toolbar (?�𡆀 �?
    ---------------------------------------------------- */
 .toolbar {
     height: 56px;
@@ -187,13 +187,13 @@ body {
 .tool-btn:hover { 
     background: var(--hover-bg); 
     color: var(--text-primary);
-    transform: scale(1.05); /* ?賈� ??諤�𦚯?禺� ?𧙖�諰䇹𦚯??穈𤣿� */
+    transform: scale(1.05); /* ?賈� ??諤�𦚯?禺� ?𧙖�諰?��??穈𤣿� */
 }
 .tool-btn:active { transform: scale(0.95); }
 .tool-btn.active { background: var(--selected-bg); color: var(--accent); }
 
 .file-upload-wrapper { position: relative; }
-.file-upload-wrapper input[type="file"] { position: absolute; width: 0; height: 0; opacity: 0; }
+.file-upload-wrapper input[type="file"] { position: absolute; width: 0; height: 0; display: none; }
 
 .actions {
     display: flex;
@@ -234,7 +234,7 @@ body {
 }
 
 /* ----------------------------------------------------
-   2. Dashboard View & Card Grid (諈拘� ?竾庖)
+   2. Dashboard View & Card Grid (諈拘�??竾庖)
    ---------------------------------------------------- */
 #dashboard-view {
     flex: 1;
@@ -508,12 +508,12 @@ body {
 }
 
 @keyframes editorAppear {
-    from { opacity: 0; transform: scale(0.8); }
+    from { display: none; transform: scale(0.8); }
     to { opacity: 1; transform: scale(1); }
 }
 
 /* Marker Hover Delete Button */
-.marker-delete-btn {
+.lf-delete-trigger {
     position: absolute;
     top: -10px;
     right: -10px;
@@ -527,19 +527,20 @@ body {
     justify-content: center;
     font-size: 14px;
     cursor: pointer;
-    opacity: 0;
+    display: none;
     transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: 2px solid #1e2128;
     box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     z-index: 200;
     pointer-events: auto;
 }
-.pin-marker:hover .marker-delete-btn,
-.text-marker:hover .marker-delete-btn {
+.pin-marker:hover .lf-delete-trigger,
+.text-marker:hover .lf-delete-trigger { display: flex; } #
+.text-marker:hover .lf-delete-trigger {
     opacity: 1;
     transform: scale(1);
 }
-.marker-delete-btn:hover {
+.lf-delete-trigger:hover {
     background: #f43f5e;
     transform: scale(1.2) !important;
 }
@@ -698,7 +699,7 @@ body {
     text-overflow: ellipsis;
 }
 .screen-delete-btn {
-    opacity: 0;
+    display: none;
     width: 22px;
     height: 22px;
     display: flex;
@@ -722,7 +723,7 @@ body {
 }
 
 .screen-edit-btn {
-    opacity: 0;
+    display: none;
     width: 22px;
     height: 22px;
     display: flex;
@@ -1500,7 +1501,7 @@ body.drag-active #drop-overlay {
     transition: opacity 0.4s ease, visibility 0.4s;
 }
 .intro-overlay.fade-out {
-    opacity: 0;
+    display: none;
     visibility: hidden;
 }
 .intro-content {
@@ -1522,7 +1523,7 @@ body.drag-active #drop-overlay {
 }
 
 @keyframes intro-reveal {
-    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    from { display: none; transform: translateY(20px) scale(0.95); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes intro-glow {
@@ -1695,7 +1696,7 @@ body.drag-active #drop-overlay {
     transition: opacity 0.4s ease, visibility 0.4s;
 }
 .intro-overlay.fade-out {
-    opacity: 0;
+    display: none;
     visibility: hidden;
 }
 .intro-content {
@@ -1717,7 +1718,7 @@ body.drag-active #drop-overlay {
 }
 
 @keyframes intro-reveal {
-    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    from { display: none; transform: translateY(20px) scale(0.95); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes intro-glow {
@@ -2046,7 +2047,7 @@ body.drag-active #drop-overlay {
     align-items: center;
     justify-content: center;
     color: var(--accent);
-    opacity: 0;
+    display: none;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     pointer-events: none;
     z-index: 2;
@@ -2127,7 +2128,7 @@ body.drag-active #drop-overlay {
     text-align: center;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     transform: scale(0.9);
-    opacity: 0;
+    display: none;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .dialog-overlay.active .dialog-card {
@@ -2197,7 +2198,7 @@ body.drag-active #drop-overlay {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    opacity: 0;
+    display: none;
     pointer-events: none;
     transition: opacity 0.4s ease;
 }
@@ -2255,7 +2256,7 @@ body.drag-active #drop-overlay {
     gap: 16px;
     z-index: 10001;
     box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-    opacity: 0;
+    display: none;
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 

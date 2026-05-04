@@ -25,20 +25,21 @@ window.state = {
 
 // --- Core Constants for V4 Injection ---
 const v4Styles = `
-:root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg-dark: #0a0b10; --v4-panel-bg: rgba(23, 25, 35, 0.7); --v4-border: rgba(255, 255, 255, 0.08); --v4-text-main: #f8fafc; --v4-text-dim: #94a3b8; }
-.lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; }
-.lf-component.selected { outline: 2px solid #6366f1; z-index: 1001; }
+:root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg-dark: #0f172a; --v4-panel-bg: rgba(30, 41, 59, 0.7); --v4-border: rgba(255, 255, 255, 0.15); --v4-text-main: #ffffff; --v4-text-dim: #94a3b8; }
+.lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
+.lf-component.selected { outline: 2px solid #6366f1; z-index: 10001 !important; }
 .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 2px solid #fff; z-index: 10; }
 .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -16px; left: -16px; }
 .lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #6366f1; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10; }
 .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
 .lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10001; font-size: 14px; font-weight: bold; }
 .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
-.v4-premium-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--v4-border); font-family: 'Inter', sans-serif; }
-.v4-premium-table th { background: #4f46e5; color: #ffffff; font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 16px; text-align: left; }
-.v4-premium-table td { padding: 16px; font-size: 14px; color: #1a1c1e !important; border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
+.v4-premium-table { table-layout: fixed; border-collapse: collapse; overflow: hidden; border-radius: 8px; border: 1.6px solid #475569 !important; font-family: 'Inter', sans-serif; }
+.v4-premium-table th { padding: 14px 16px; text-align: left; border-bottom: 1.6px solid #475569 !important; font-weight: 700; white-space: nowrap; }
+.v4-premium-table td { padding: 14px 16px; border-bottom: 1.6px solid #cbd5e1 !important; }
+.v4-premium-table tr:last-child td { border-bottom: none !important; }
+.v4-shape { position: relative; border: 1.6px solid #475569 !important; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #e2e8f0; color: #0f172a; }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
-.v4-shape { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border: 2px solid transparent; transition: all 0.3s; overflow: hidden; }
 .lf-icon { 
     background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png"); 
     background-size: 500% 400%; 
@@ -58,7 +59,8 @@ const v4Styles = `
 .v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 .v4-shape-rect { border-radius: 8px; }
 .v4-shape-circle { border-radius: 50%; }
-.v4-shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+.v4-shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); border: none !important; }
+.v4-shape-diamond { border: none !important; }
 /* Reset background for new SVG/Custom atoms to prevent sprite leakage */
 svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
@@ -70,6 +72,58 @@ const v4Script = `
     let startX, startY, startW, startH, startTop, startLeft, startRect;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
     function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
+
+    // Unified Utility inside v4Script
+    const _rgb2hex = (rgb) => {
+        if (!rgb || rgb === "transparent" || rgb.includes("rgba(0, 0, 0, 0)")) return "#000000";
+        const parts = rgb.match(/\\d+/g);
+        if (!parts || parts.length < 3) return "#000000";
+        const r = Math.min(255, parseInt(parts[0])).toString(16).padStart(2, "0");
+        const g = Math.min(255, parseInt(parts[1])).toString(16).padStart(2, "0");
+        const b = Math.min(255, parseInt(parts[2])).toString(16).padStart(2, "0");
+        return "#" + r + g + b;
+    };
+
+    const _getVal = (el, prop) => {
+        if (!el) return "";
+        return el.style[prop] || window.getComputedStyle(el)[prop] || "";
+    };
+
+    const _getCompStyles = (c) => {
+        const shape = c.querySelector('.v4-shape');
+        const table = c.querySelector('table');
+        const icon = c.querySelector('.lf-icon');
+        const textCell = c.querySelector('.v4-editable-cell');
+        
+        const getShapeColor = (prop) => {
+            if (!shape) return "";
+            if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle')) {
+                const svg = shape.querySelector('polygon, path, rect, circle');
+                if (svg) return prop === 'backgroundColor' ? svg.style.fill : svg.style.stroke;
+            }
+            return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
+        };
+
+        return {
+            id: c.id,
+            isTable: !!table,
+            isShape: !!shape,
+            isIcon: !!icon,
+            w: c.offsetWidth,
+            h: c.offsetHeight,
+            currentStyles: {
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "")),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))),
+                text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
+                fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
+                tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
+                tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
+                isBgTransparent: (shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "")).includes("rgba(0, 0, 0, 0)"),
+                isBorderTransparent: (shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : "")).includes("rgba(0, 0, 0, 0)")
+            }
+        };
+    };
+
     function updateHandles(c) {
         if (!c) return;
         const t = parseInt(c.style.top) || 0;
@@ -100,13 +154,8 @@ const v4Script = `
             c.classList.add('selected');
             updateHandles(c);
             notifyParent({ 
-                type: 'LF_COMP_SELECTED', 
-                id: c.id, 
-                isTable: !!c.querySelector('table'), 
-                isShape: !!c.querySelector('.v4-shape'), 
-                isIcon: !!c.querySelector('.lf-icon'),
-                w: c.offsetWidth,
-                h: c.offsetHeight
+                type: "LF_COMP_SELECTED", 
+                ..._getCompStyles(c)
             });
         } else {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
@@ -119,33 +168,40 @@ const v4Script = `
             startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; 
             e.preventDefault(); 
         }
-        else if (h || c) { 
+        else if (h || (c && !e.target.closest('.v4-editable-cell'))) { 
             isDragging = true; activeEl = c; 
             startX = e.clientX; startY = e.clientY; 
             startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
             startRect = activeEl.getBoundingClientRect();
             notifyParent({ type: 'LF_SNAP_START' });
             if (h) e.preventDefault(); 
+        } else if (e.target.closest('.v4-editable-cell')) {
+            // Explicit focus to ensure text cursor appears immediately
+            e.target.closest('.v4-editable-cell').focus();
         }
     });
+    let rafId = null;
     document.addEventListener('mousemove', e => {
-        if (isDragging && activeEl) { 
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            const requestX = startRect.left + dx;
-            const requestY = startRect.top + dy;
-            notifyParent({ type: 'LF_SNAP_REQUEST', x: requestX, y: requestY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
-            markDirty(); 
-        }
-        else if (isResizing && activeEl) { 
-            const nw = Math.max(10, startW + e.clientX - startX);
-            const nh = Math.max(10, startH + e.clientY - startY);
-            activeEl.style.width = nw + 'px'; 
-            activeEl.style.height = nh + 'px'; 
-            updateHandles(activeEl);
-            markDirty(); 
-            notifyParent({ type: 'LF_COMP_RESIZED', w: nw, h: nh });
-        }
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+            if (isDragging && activeEl) { 
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                const requestX = startRect.left + dx;
+                const requestY = startRect.top + dy;
+                notifyParent({ type: 'LF_SNAP_REQUEST', x: requestX, y: requestY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
+                markDirty(); 
+            }
+            else if (isResizing && activeEl) { 
+                const nw = Math.max(10, startW + e.clientX - startX);
+                const nh = Math.max(10, startH + e.clientY - startY);
+                activeEl.style.width = nw + 'px'; 
+                activeEl.style.height = nh + 'px'; 
+                updateHandles(activeEl);
+                markDirty(); 
+                notifyParent({ type: 'LF_COMP_RESIZED', w: nw, h: nh });
+            }
+        });
     });
     document.addEventListener('mouseup', () => { 
         if (isDragging) notifyParent({ type: 'LF_SNAP_END' });
@@ -170,8 +226,8 @@ const v4Script = `
             c.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
             notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: "<!DOCTYPE html>\\n" + c.outerHTML });
         } else if (d.type === 'LF_INSERT_COMPONENT') {
-            const host = document.querySelector('.mobile-content') || document.body;
-            const isMobileHost = host !== document.body;
+            const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+            const isMobileHost = host.classList.contains('mobile-content');
             const vh = isMobileHost ? host.clientHeight : window.innerHeight;
             const vw = isMobileHost ? host.clientWidth : window.innerWidth;
             const sY = isMobileHost ? host.scrollTop : window.scrollY;
@@ -180,7 +236,7 @@ const v4Script = `
             const compH = (d.style && d.style.height && d.style.height !== 'auto') ? parseInt(d.style.height) || 100 : 100;
             const centerTop = Math.max(isMobileHost ? 56 : 0, sY + (vh - compH) / 2);
             const centerLeft = Math.max(isMobileHost ? 16 : 0, sX + (vw - compW) / 2);
-            const v = document.createElement('div'); v.id = d.id || ('v4-comp-' + Date.now()); v.className = 'lf-component'; v.style.position = 'absolute'; v.style.top = centerTop + 'px'; v.style.left = centerLeft + 'px'; v.style.zIndex = '1000';
+            const v = document.createElement('div'); v.id = d.id || ('v4-comp-' + Date.now()); v.className = 'lf-component'; v.style.position = 'absolute'; v.style.top = centerTop + 'px'; v.style.left = centerLeft + 'px'; v.style.zIndex = '500';
             if (d.style) Object.assign(v.style, d.style);
             if (isMobileHost) {
                 v.style.top = centerTop + 'px';
@@ -189,21 +245,41 @@ const v4Script = `
             }
             v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
             host.appendChild(v);
-            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); v.classList.add('selected');
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); 
+            v.classList.add('selected');
+
             notifyParent({ 
                 type: 'LF_COMP_SELECTED', 
-                id: v.id, 
-                isTable: !!v.querySelector('table'), 
-                isShape: !!v.querySelector('.v4-shape'), 
-                isIcon: !!v.querySelector('.lf-icon'),
-                w: v.offsetWidth,
-                h: v.offsetHeight
+                ..._getCompStyles(v)
             });
             markDirty();
         } else if (d.type === 'LF_UPDATE_STYLE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             const t = d.selector ? s.querySelector(d.selector) : s; if (!t) return;
-            if (d.style) Object.assign(t.style, d.style);
+            
+            if (d.style) {
+                Object.assign(t.style, d.style);
+                
+                // SVG Sync: If the element contains an SVG, sync stroke/fill
+                const svgShape = t.querySelector('path, polygon, rect, circle');
+                if (svgShape) {
+                    if (d.style.backgroundColor || d.style.background) {
+                        svgShape.style.fill = d.style.backgroundColor || d.style.background;
+                        // For non-rectangular shapes, container must stay transparent to avoid square fill leakage
+                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle')) {
+                            t.style.backgroundColor = 'transparent';
+                        }
+                    }
+                    if (d.style.borderColor) {
+                        svgShape.style.stroke = d.style.borderColor;
+                        svgShape.style.strokeWidth = "1.6";
+                    }
+                }
+            }
+            
+            if (d.subSelector && d.subStyle) {
+                t.querySelectorAll(d.subSelector).forEach(sub => Object.assign(sub.style, d.subStyle));
+            }
             markDirty();
         } else if (d.type === 'LF_DELETE_SELECTED') {
             const s = document.querySelector('.lf-component.selected'); 
@@ -227,8 +303,81 @@ const v4Script = `
                 targets.push({ y: r.bottom, label: name, part: 'Bottom', type: 'v' });
             });
             notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
+        } else if (d.type === 'LF_TABLE_ACTION') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const table = s.querySelector('table'); if (!table) return;
+            const focused = table.querySelector('.v4-editable-cell:focus') || table.querySelector('td, th');
+            const row = focused ? focused.closest('tr') : null;
+            const cell = focused ? focused.closest('td, th') : null;
+            const act = (d.action || "").toLowerCase();
+            
+            if (act === 'add-row' || act === 'add_row') {
+                const newRow = table.insertRow(row ? row.rowIndex + 1 : -1);
+                const colCount = table.rows[0].cells.length;
+                for (let i = 0; i < colCount; i++) {
+                    const c = newRow.insertCell();
+                    c.className = 'v4-editable-cell';
+                    c.contentEditable = 'true';
+                    c.innerText = 'New';
+                    c.style.borderBottom = '1.6px solid #cbd5e1';
+                    c.style.padding = '16px';
+                }
+            } else if (act === 'add-col' || act === 'add_col') {
+                Array.from(table.rows).forEach((r, idx) => {
+                    const c = idx === 0 ? r.insertCell(-1) : r.insertCell(-1);
+                    if (idx === 0) {
+                        const th = document.createElement('th');
+                        th.className = 'v4-editable-cell';
+                        th.contentEditable = 'true';
+                        th.innerText = 'Header';
+                        th.style.background = '#cbd5e1';
+                        th.style.borderBottom = '1.6px solid #475569';
+                        th.style.padding = '16px';
+                        r.replaceChild(th, c);
+                    } else {
+                        c.className = 'v4-editable-cell';
+                        c.contentEditable = 'true';
+                        c.innerText = 'Data';
+                        c.style.borderBottom = '1.6px solid #cbd5e1';
+                        c.style.padding = '16px';
+                    }
+                });
+            } else if ((act === 'del-row' || act === 'del_row') && row && table.rows.length > 1) {
+                row.remove();
+            } else if ((act === 'del-col' || act === 'del_col') && cell) {
+                const idx = cell.cellIndex;
+                Array.from(table.rows).forEach(r => { if (r.cells[idx]) r.cells[idx].remove(); });
+            }
+            markDirty();
         }
     });
+
+    // 🛡️ High-Persistence Border Standardization (Standardizes 1.6px everywhere)
+    const enforceDesignSystem = () => {
+        document.querySelectorAll('.v4-shape').forEach(s => {
+            if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle')) {
+                s.style.setProperty('border-width', '0px', 'important');
+                return;
+            }
+            if (s.style.borderWidth !== '1.6px') s.style.setProperty('border-width', '1.6px', 'important');
+        });
+        document.querySelectorAll('table.v4-premium-table').forEach(t => {
+            if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
+        });
+        document.querySelectorAll('polygon, path, rect, circle').forEach(svg => {
+            if (svg.getAttribute('stroke-width') !== '1.6') svg.setAttribute('stroke-width', '1.6');
+            if (svg.style.strokeWidth !== '1.6') svg.style.strokeWidth = '1.6';
+            if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
+        });
+    };
+
+    // Run immediately and setup observer for dynamic changes
+    enforceDesignSystem();
+    const observer = new MutationObserver(enforceDesignSystem);
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    
+    // Safety fallback for slow loads
+    setTimeout(enforceDesignSystem, 500);
 })();
 `;
 
@@ -406,9 +555,9 @@ window.insertAtomicComponent = function(type, name) {
         } else if (name === 'Close X') {
             contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
         } else if (name === 'Check Box') {
-            contentHtml = `<div class="v4-checkbox lf-icon" style="width:100%; height:100%; background:#fff; border:1.5px solid #d1d5db; border-radius:6px; box-shadow:inset 0 1px 2px rgba(0,0,0,0.05); display:flex; align-items:center; justify-content:center; position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="#1f2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%;"><polyline points="20 6 9 17 4 12"></polyline></svg></div>`;
+            contentHtml = `<div class="v4-checkbox lf-icon" style="width:100%; height:100%; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; display:flex; align-items:center; justify-content:center; position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%;"><polyline points="20 6 9 17 4 12"></polyline></svg></div>`;
         } else if (name === 'Radio Button') {
-            contentHtml = `<div class="v4-radio lf-icon" style="width:100%; height:100%; background:radial-gradient(circle at 30% 30%, #ffffff 0%, #f3f4f6 100%); border:1px solid #d1d5db; border-radius:50%; box-shadow:0 1px 3px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,1); display:flex; align-items:center; justify-content:center;"><div style="width:45%; height:45%; background:#1f2937; border-radius:50%; box-shadow:0 1px 2px rgba(0,0,0,0.3);"></div></div>`;
+            contentHtml = `<div class="v4-radio lf-icon" style="width:100%; height:100%; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center;"><div style="width:45%; height:45%; background:#ffffff; border-radius:50%;"></div></div>`;
         } else {
             const iconClass = name.toLowerCase().split(' ')[0];
             contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="filter: brightness(0);"></div>`;
@@ -435,6 +584,7 @@ window.insertAtomicComponent = function(type, name) {
         Object.assign(comp.style, defaultStyle);
         comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div><div class="lf-drag-handle">::</div>`;
         host.appendChild(comp);
+        if (typeof enforceDesignSystem === 'function') enforceDesignSystem();
         markAsDirty();
     }
 };
@@ -772,6 +922,76 @@ window.init = async function() {
         DOM.tabBtns.forEach(btn => {
             btn.onclick = () => { if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab(btn.dataset.tab); };
         });
+
+        // 🟢 RESTORED: Sidebar Tool Buttons (Text, etc.)
+        if (DOM.sidebarToolBtns) {
+            DOM.sidebarToolBtns.forEach(btn => {
+                btn.onclick = () => {
+                    const tool = btn.dataset.tool;
+                    if (tool === 'text') {
+                        if (typeof window.handleTextCreation === 'function') window.handleTextCreation();
+                    } else if (typeof window.setTool === 'function') {
+                        window.setTool(tool);
+                    }
+                };
+            });
+        }
+        
+        // 🟢 RESTORED: Top Bar Tool Buttons
+        if (DOM.btnSelect) DOM.btnSelect.onclick = () => window.setTool?.('select');
+        if (DOM.btnHand) DOM.btnHand.onclick = () => window.setTool?.('hand');
+
+        // 🟢 RESTORED: Add Screen Modal Logic
+        if (DOM.btnAddScreen) {
+            DOM.btnAddScreen.onclick = () => {
+                if (state.isReadOnly) return window.showAuthModal?.();
+                if (DOM.addScreenModal) DOM.addScreenModal.classList.add('active');
+            };
+        }
+        if (DOM.btnCancelAdd) {
+            DOM.btnCancelAdd.onclick = () => {
+                if (DOM.addScreenModal) DOM.addScreenModal.classList.remove('active');
+            };
+        }
+        
+        // Template Selection Logic
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.onclick = () => {
+                document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                if (DOM.newScreenName) {
+                    const defaultName = card.dataset.defaultName || "new_screen";
+                    DOM.newScreenName.value = defaultName + "_" + Math.floor(Math.random() * 1000);
+                }
+            };
+        });
+
+        if (DOM.btnSubmitAdd) {
+            DOM.btnSubmitAdd.onclick = async () => {
+                const selectedCard = document.querySelector('.template-card.selected');
+                if (!selectedCard) return window.Notification?.alert("템플릿을 선택해주세요.", "알림", "warning");
+                
+                const screenName = DOM.newScreenName?.value?.trim();
+                if (!screenName) return window.Notification?.alert("화면 이름을 입력해주세요.", "알림", "warning");
+
+                DOM.btnSubmitAdd.disabled = true;
+                DOM.btnSubmitAdd.innerText = "생성 중...";
+
+                const template = selectedCard.dataset.template;
+                const success = await createScreenFromTemplate(state.currentProject, screenName, template, {
+                    PROJECT_TITLE: state.projectMetadata.title,
+                    SCREEN_NAME: screenName
+                }, msg => { if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = msg; });
+
+                if (success) {
+                    location.reload();
+                } else {
+                    window.Notification?.alert("화면 생성에 실패했습니다.", "오류", "error");
+                    DOM.btnSubmitAdd.disabled = false;
+                    DOM.btnSubmitAdd.innerText = "화면 생성하기";
+                }
+            };
+        }
 
         // Shortcuts
         window.addEventListener('keydown', (e) => {

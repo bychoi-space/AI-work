@@ -131,6 +131,70 @@
             transform: translateY(0);
         }
 
+        /* Checkerboard pattern for transparency (PNG style) */
+        .v4-checkerboard-bg {
+            background-image: linear-gradient(45deg, #888888 25%, transparent 25%),
+                              linear-gradient(-45deg, #888888 25%, transparent 25%),
+                              linear-gradient(45deg, transparent 75%, #888888 75%),
+                              linear-gradient(-45deg, transparent 75%, #888888 75%);
+            background-size: 8px 8px;
+            background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+            background-color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .v4-color-wrapper {
+            position: relative;
+            flex: 1;
+            height: 24px;
+            display: flex;
+            align-items: center;
+        }
+        .v4-color-wrapper input[type="color"] {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: calc(100% + 20px);
+            height: calc(100% + 20px);
+            border: none;
+            padding: 0;
+            background: none;
+            cursor: pointer;
+            z-index: 2;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .v4-color-wrapper input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        .v4-color-wrapper input[type="color"]::-webkit-color-swatch {
+            border: none !important;
+            border-radius: 4px;
+            padding: 0;
+        }
+        .v4-color-wrapper.transparent-active input[type="color"] {
+            opacity: 0;
+        }
+        .v4-color-none-btn {
+            width: 24px;
+            height: 24px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            color: #f87171;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .v4-color-none-btn:hover {
+            background: rgba(248, 113, 113, 0.2);
+            border-color: rgba(248, 113, 113, 0.4);
+        }
+
     </style>
     <script>
         window.onerror = function(msg, url, line, col, error) {
@@ -362,27 +426,44 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
                             <div class="prop-group">
                                 <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">헤더컬러</label>
-                                <input type="color" id="table-header-color" value="#4f46e5" style="width:100%; height:24px; border:none; padding:0; background:none;">
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="table-header-wrapper">
+                                        <input type="color" id="table-header-color" value="#334155">
+                                    </div>
+                                    <button class="v4-color-none-btn" id="btn-table-header-none" title="Transparent"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
                             </div>
                             <div class="prop-group">
                                 <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">헤더텍스트</label>
-                                <input type="color" id="table-header-text-color" value="#ffffff" style="width:100%; height:24px; border:none; padding:0; background:none;">
+                                <div class="v4-color-wrapper v4-checkerboard-bg">
+                                    <input type="color" id="table-header-text-color" value="#ffffff">
+                                </div>
                             </div>
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
                             <div class="prop-group">
                                 <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">메인컬러</label>
-                                <input type="color" id="table-bg-color" value="#ffffff" style="width:100%; height:24px; border:none; padding:0; background:none;">
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="table-bg-wrapper">
+                                        <input type="color" id="table-bg-color" value="#1e293b">
+                                    </div>
+                                    <button class="v4-color-none-btn" id="btn-table-bg-none" title="Transparent"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
                             </div>
                             <div class="prop-group">
                                 <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">메인텍스트</label>
-                                <input type="color" id="table-text-color" value="#1a1c1e" style="width:100%; height:24px; border:none; padding:0; background:none;">
+                                <input type="color" id="table-text-color" value="#ffffff" style="width:100%; height:24px; border:none; padding:0; background:none;">
                             </div>
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 12px;">
                             <div class="prop-group">
                                 <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">테두리</label>
-                                <input type="color" id="table-border-color" value="#e1e3e5" style="width:100%; height:24px; border:none; padding:0; background:none;">
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="table-border-wrapper">
+                                        <input type="color" id="table-border-color" value="#475569">
+                                    </div>
+                                    <button class="v4-color-none-btn" id="btn-table-border-none" title="Transparent"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
                             </div>
                         </div>
                         <div class="prop-group">
@@ -409,10 +490,24 @@
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
                             <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">SHAPE EDITOR</span>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;">
                             <div class="prop-group">
                                 <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">BG</label>
-                                <input type="color" id="shape-bg-color" value="#334155" style="width:100%; height:24px; border:none; padding:0; background:none;">
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="shape-bg-wrapper">
+                                        <input type="color" id="shape-bg-color" value="#1e293b">
+                                    </div>
+                                    <button id="btn-shape-bg-none" title="Transparent BG" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
+                            </div>
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Border</label>
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="shape-border-wrapper">
+                                        <input type="color" id="shape-border-color" value="#475569">
+                                    </div>
+                                    <button id="btn-shape-border-none" title="No Border" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
                             </div>
                             <div class="prop-group">
                                 <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Text</label>
@@ -525,7 +620,16 @@
                             <button id="btn-icon-black" class="v4-inspector-btn" style="flex: 1; background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2);">Black</button>
                             <button id="btn-icon-white" class="v4-inspector-btn" style="flex: 1; background: #fff; color: #000;">White</button>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Border</label>
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="icon-border-wrapper">
+                                        <input type="color" id="icon-border-color" value="#475569">
+                                    </div>
+                                    <button class="v4-color-none-btn" id="btn-icon-border-none" title="Transparent"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
+                            </div>
                             <div class="prop-group">
                                 <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">WIDTH (px)</label>
                                 <input type="number" id="prop-width-icon" value="0" class="v4-prop-input" data-prop="width" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
