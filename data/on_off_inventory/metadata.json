@@ -39,11 +39,6 @@
       "type": "architecture",
       "description": "SAP/OMS/LFmall 연동 상세"
     },
-    "slide_18_stock_movement.html": {
-      "title": "18. 재고 이동 지시 정책",
-      "type": "plan",
-      "description": "매장간 물량 이동 프로세스"
-    },
     "slide_19_decision_items.html": {
       "title": "19. 세부 실무 결정 사항",
       "type": "plan",
@@ -203,7 +198,6 @@
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_14_data_interface.html",
-    "slide_18_stock_movement.html",
     "slide_19_decision_items.html",
     "slide_20_out_of_stock_logic.html",
     "slide_21_pdp_base.html",
