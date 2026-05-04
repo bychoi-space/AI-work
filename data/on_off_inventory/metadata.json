@@ -45,11 +45,6 @@
         }
       ]
     },
-    "slide_05_architecture.html": {
-      "title": "06. 아키텍처 및 프로세스 맵",
-      "type": "architecture",
-      "description": "시스템 연동 및 이행 흐름"
-    },
     "slide_06_db_sync.html": {
       "title": "06. 데이터 인터페이스",
       "type": "architecture",
@@ -269,7 +264,6 @@
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_04_selection.html",
-    "slide_05_architecture.html",
     "slide_05_pain_points.html",
     "slide_06_db_sync.html",
     "slide_06_selection.html",
