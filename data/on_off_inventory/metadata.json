@@ -34,11 +34,6 @@
       "type": "cover",
       "description": "기밀 유지 및 저작권 (Legal)"
     },
-    "slide_07_global_process.html": {
-      "title": "07. 전체 주문 이행 프로세스",
-      "type": "architecture",
-      "description": "Global Fulfillment Flow"
-    },
     "slide_08_ui_mockups_pdp.html": {
       "title": "08. [UI] 상품 상세 (PDP)",
       "type": "ui",
@@ -247,7 +242,6 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
-    "slide_07_global_process.html",
     "slide_08_ui_mockups_pdp.html",
     "slide_09_bucket_policy.html",
     "slide_09_ui_mockups_2.html",
