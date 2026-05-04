@@ -174,6 +174,12 @@
           "y": 0
         }
       ]
+    },
+    "06_Mobile_Design_2_550.html": {
+      "title": "06_Mobile_Design_2_550",
+      "type": "mobile-ui",
+      "updatedAt": "2026-05-04T02:09:03.230Z",
+      "template": "template_mobile_ui_2.html"
     }
   },
   "screenOrder": [
@@ -212,7 +218,8 @@
     "06_Mobile_Design_1_5832.html",
     "06_Mobile_Design_2_0075.html",
     "06_Mobile_Design_2_6727.html",
-    "06_Mobile_Design_3_2322.html"
+    "06_Mobile_Design_3_2322.html",
+    "06_Mobile_Design_2_550.html"
   ],
   "developer": ""
 }
