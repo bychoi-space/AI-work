@@ -35,17 +35,17 @@
 :root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg-dark: #0f172a; --v4-panel-bg: rgba(30, 41, 59, 0.7); --v4-border: rgba(255, 255, 255, 0.15); --v4-text-main: #ffffff; --v4-text-dim: #94a3b8; }
 .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
 .lf-component.selected { outline: 2px solid #6366f1; z-index: 10001 !important; }
-.lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 2px solid #fff; z-index: 10; }
+.lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 2px solid #fff; z-index: 10002; }
 .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -16px; left: -16px; }
-.lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #6366f1; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10; }
+.lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #6366f1; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10002; }
 .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
-.lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10001; font-size: 14px; font-weight: bold; }
+.lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10002; font-size: 14px; font-weight: bold; }
 .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
 .v4-premium-table { table-layout: fixed; border-collapse: collapse; overflow: hidden; border-radius: 8px; border: 1.6px solid #475569 !important; font-family: 'Inter', sans-serif; }
 .v4-premium-table th { padding: 14px 16px; text-align: left; border-bottom: 1.6px solid #475569 !important; font-weight: 700; white-space: nowrap; }
 .v4-premium-table td { padding: 14px 16px; border-bottom: 1.6px solid #cbd5e1 !important; }
 .v4-premium-table tr:last-child td { border-bottom: none !important; }
-.v4-shape { position: relative; border: 1.6px solid #475569 !important; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #e2e8f0; color: #0f172a; }
+.v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: #475569; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #e2e8f0; color: #0f172a; }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
 .lf-icon { 
     background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png"); 
@@ -118,7 +118,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     <div id="v4-comp-1777878157262" class="lf-component" style="position: absolute; top: 96px; left: 308px; z-index: 500; width: 360px; height: 50px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><br></div>
-            </div></div><div id="lf-comp-1777878224236" class="lf-component" style="position: absolute; top: 104px; left: 318px; z-index: 500; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div id="lf-comp-1777878238237" class="lf-component" style="position: absolute; top: 99px; left: 533px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-search" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878244185" class="lf-component" style="position: absolute; top: 99px; left: 573px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-home" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878253190" class="lf-component" style="position: absolute; top: 99px; left: 613px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878505908" class="lf-component" style="position: absolute; top: 311px; left: 440px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-bell" style="filter: brightness(0);"></div></div></div>
+            </div></div><div id="lf-comp-1777878224236" class="lf-component" style="position: absolute; top: 104px; left: 318px; z-index: 500; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div id="lf-comp-1777878238237" class="lf-component" style="position: absolute; top: 99px; left: 533px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-search" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878244185" class="lf-component" style="position: absolute; top: 99px; left: 573px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-home" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878253190" class="lf-component" style="position: absolute; top: 99px; left: 613px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div>
 <script id="v4-inlined-script">
 
 (function() {
@@ -129,7 +129,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 
     // Unified Utility inside v4Script
     const _rgb2hex = (rgb) => {
-        if (!rgb || rgb === "transparent" || rgb.includes("rgba(0, 0, 0, 0)")) return "#000000";
+        if (!rgb || rgb === "transparent" || rgb === "none" || rgb.includes("rgba(0, 0, 0, 0)")) return null;
         const parts = rgb.match(/\d+/g);
         if (!parts || parts.length < 3) return "#000000";
         const r = Math.min(255, parseInt(parts[0])).toString(16).padStart(2, "0");
@@ -172,8 +172,14 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
-                isBgTransparent: (shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "")).includes("rgba(0, 0, 0, 0)"),
-                isBorderTransparent: (shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : "")).includes("rgba(0, 0, 0, 0)")
+                isBgTransparent: (() => {
+                    const c = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "");
+                    return !c || c === "transparent" || c === "none" || c.includes("rgba(0, 0, 0, 0)");
+                })(),
+                isBorderTransparent: (() => {
+                    const c = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : "");
+                    return !c || c === "transparent" || c === "none" || c.includes("rgba(0, 0, 0, 0)");
+                })()
             }
         };
     };
@@ -406,8 +412,31 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
         }
     });
 
+    const initHandles = () => {
+        document.querySelectorAll('.lf-component').forEach(c => {
+            if (!c.querySelector('.lf-drag-handle')) {
+                const h = document.createElement('div');
+                h.className = 'lf-drag-handle';
+                h.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg>';
+                c.appendChild(h);
+            }
+            if (!c.querySelector('.lf-resizer')) {
+                const r = document.createElement('div');
+                r.className = 'lf-resizer';
+                c.appendChild(r);
+            }
+            if (!c.querySelector('.lf-delete-trigger')) {
+                const d = document.createElement('div');
+                d.className = 'lf-delete-trigger';
+                d.innerText = '×';
+                c.appendChild(d);
+            }
+        });
+    };
+
     // 🛡️ High-Persistence Border Standardization (Standardizes 1.6px everywhere)
     const enforceDesignSystem = () => {
+        initHandles();
         document.querySelectorAll('.v4-shape').forEach(s => {
             if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle')) {
                 s.style.setProperty('border-width', '0px', 'important');
