@@ -39,17 +39,6 @@
       "type": "admin-nbos",
       "description": "매장 배정 주문 리스트"
     },
-    "slide_35_admin_order_detail.html": {
-      "title": "35. [어드민] 주문 정보 상세",
-      "type": "admin-nbos",
-      "description": [
-        {
-          "text": "주문 처리 상세",
-          "x": 0,
-          "y": 0
-        }
-      ]
-    },
     "slide_36_admin_shop_mgmt.html": {
       "title": "36. [어드민] 매장 마스터 관리",
       "type": "admin-nbos",
@@ -125,7 +114,6 @@
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_34_admin_order_list.html",
-    "slide_35_admin_order_detail.html",
     "slide_36_admin_shop_mgmt.html",
     "slide_36_admin_sync_mgmt.html",
     "slide_37_admin_sync_mgmt.html",
