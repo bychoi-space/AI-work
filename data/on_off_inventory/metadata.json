@@ -34,11 +34,6 @@
       "type": "cover",
       "description": "기밀 유지 및 저작권 (Legal)"
     },
-    "slide_36_admin_shop_mgmt.html": {
-      "title": "36. [어드민] 매장 마스터 관리",
-      "type": "admin-nbos",
-      "description": "매장 정보 및 정책 설정"
-    },
     "slide_37_admin_sync_mgmt.html": {
       "title": "37. [어드민] 재고 연동 관리",
       "type": "admin-nbos",
@@ -108,7 +103,6 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
-    "slide_36_admin_shop_mgmt.html",
     "slide_36_admin_sync_mgmt.html",
     "slide_37_admin_sync_mgmt.html",
     "slide_38_admin_brand_pop.html",
