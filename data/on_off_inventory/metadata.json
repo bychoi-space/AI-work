@@ -39,11 +39,6 @@
       "type": "plan",
       "description": "시스템 자동 결품 상세 로직"
     },
-    "slide_22_pdp_option.html": {
-      "title": "22. [UI] 상품상세 - 옵션",
-      "type": "ui",
-      "description": "PDP 옵션 선택 설계"
-    },
     "slide_23_pdp_benefit.html": {
       "title": "23. [UI] 상품상세 - 혜택",
       "type": "ui",
@@ -190,7 +185,6 @@
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_20_out_of_stock_logic.html",
-    "slide_22_pdp_option.html",
     "slide_23_pdp_benefit.html",
     "slide_23_pdp_stock_grid.html",
     "slide_24_pdp_detail.html",
