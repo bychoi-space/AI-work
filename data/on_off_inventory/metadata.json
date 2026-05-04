@@ -34,11 +34,6 @@
       "type": "cover",
       "description": "기밀 유지 및 저작권 (Legal)"
     },
-    "slide_14_data_interface.html": {
-      "title": "14. 시스템간 데이터 연동",
-      "type": "architecture",
-      "description": "SAP/OMS/LFmall 연동 상세"
-    },
     "slide_19_decision_items.html": {
       "title": "19. 세부 실무 결정 사항",
       "type": "plan",
@@ -197,7 +192,6 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
-    "slide_14_data_interface.html",
     "slide_19_decision_items.html",
     "slide_20_out_of_stock_logic.html",
     "slide_21_pdp_base.html",
