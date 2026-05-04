@@ -187,76 +187,70 @@
     function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
     function updateHandles(c) {
         if (!c) return;
-        const t = parseInt(c.style.top) || 0;
-        const l = parseInt(c.style.left) || 0;
-        const drag = c.querySelector('.lf-drag-handle');
-        const del = c.querySelector('.lf-delete-trigger');
+        const t = parseInt(c.style.top) || 0, l = parseInt(c.style.left) || 0;
+        const drag = c.querySelector('.lf-drag-handle'), del = c.querySelector('.lf-delete-trigger');
         if (drag) { drag.style.top = t < 16 ? '4px' : '-16px'; drag.style.left = l < 16 ? '4px' : '-16px'; }
-        if (del) { 
-            del.style.top = t < 16 ? '4px' : '-12px'; 
-            const rightDist = window.innerWidth - (l + c.offsetWidth);
-            del.style.right = rightDist < 16 ? '4px' : '-12px'; 
-        }
+        if (del) { del.style.top = t < 16 ? '4px' : '-12px'; const r = window.innerWidth - (l + c.offsetWidth); del.style.right = r < 16 ? '4px' : '-12px'; }
     }
-    document.addEventListener('mouseover', e => {
-        const c = e.target.closest('.lf-component');
-        if (c) updateHandles(c);
-    });
+    document.addEventListener('mouseover', e => { const c = e.target.closest('.lf-component'); if (c) updateHandles(c); });
     document.addEventListener('mousedown', e => {
         const h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
         if (d && c) { c.remove(); markDirty(); return; }
         if (c) {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
-            c.classList.add('selected');
-            updateHandles(c);
+            c.classList.add('selected'); updateHandles(c);
             notifyParent({ type: 'LF_COMP_SELECTED', id: c.id, isTable: !!c.querySelector('table'), isShape: !!c.querySelector('.v4-shape'), isIcon: !!c.querySelector('.lf-icon') });
         } else {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             notifyParent({ type: 'LF_DESELECT' });
         }
-        if (h) { isDragging = true; activeEl = h.parentElement; startX = e.clientX; startY = e.clientY; startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; e.preventDefault(); }
+        if (h || c) { 
+            isDragging = true; activeEl = c; startX = e.clientX; startY = e.clientY; 
+            startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
+            notifyParent({ type: 'LF_SNAP_START' });
+            if (h) e.preventDefault(); 
+        }
         else if (r) { isResizing = true; activeEl = r.parentElement; startX = e.clientX; startY = e.clientY; startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; e.preventDefault(); }
     });
     document.addEventListener('mousemove', e => {
         if (isDragging && activeEl) { 
-            activeEl.style.top = (startTop + e.clientY - startY) + 'px'; 
-            activeEl.style.left = (startLeft + e.clientX - startX) + 'px'; 
-            updateHandles(activeEl);
+            const dx = e.clientX - startX, dy = e.clientY - startY;
+            notifyParent({ type: 'LF_SNAP_REQUEST', x: startLeft + dx, y: startTop + dy, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
             markDirty(); 
         }
         else if (isResizing && activeEl) { 
-            activeEl.style.width = (startW + e.clientX - startX) + 'px'; 
-            activeEl.style.height = (startH + e.clientY - startY) + 'px'; 
-            updateHandles(activeEl);
-            markDirty(); 
+            activeEl.style.width = (startW + e.clientX - startX) + 'px'; activeEl.style.height = (startH + e.clientY - startY) + 'px'; 
+            updateHandles(activeEl); markDirty(); 
         }
     });
-    document.addEventListener('mouseup', () => { isDragging = false; isResizing = false; activeEl = null; });
+    document.addEventListener('mouseup', () => { if (isDragging) notifyParent({ type: 'LF_SNAP_END' }); isDragging = false; isResizing = false; activeEl = null; });
     document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Delete' || e.key === 'Backspace') {
-            if (e.target.isContentEditable || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-            const selected = document.querySelector('.lf-component.selected');
-            if (selected) { selected.remove(); markDirty(); notifyParent({ type: 'LF_DESELECT' }); }
-        }
-    });
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
-        if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
+        if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
+            activeEl.style.top = d.y + 'px'; activeEl.style.left = d.x + 'px'; updateHandles(activeEl);
+        }
+        else if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
             const c = document.documentElement.cloneNode(true);
             c.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
             c.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
-            notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: "<!DOCTYPE html>\n" + c.outerHTML });
+            notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: "<!DOCTYPE html>\\n" + c.outerHTML });
         } else if (d.type === 'LF_INSERT_COMPONENT') {
-            const vh = window.innerHeight, vw = window.innerWidth, sY = window.scrollY, sX = window.scrollX;
+            const host = document.querySelector('.mobile-content') || document.body;
+            const isMobileHost = host !== document.body;
+            const vh = isMobileHost ? host.clientHeight : window.innerHeight;
+            const vw = isMobileHost ? host.clientWidth : window.innerWidth;
+            const sY = isMobileHost ? host.scrollTop : window.scrollY;
+            const sX = isMobileHost ? host.scrollLeft : window.scrollX;
             const compW = (d.style && d.style.width && d.style.width !== '100%') ? parseInt(d.style.width) || 200 : (d.style && d.style.width === '100%' ? vw : 200);
             const compH = (d.style && d.style.height && d.style.height !== 'auto') ? parseInt(d.style.height) || 100 : 100;
-            const centerTop = Math.max(0, sY + (vh - compH) / 2);
-            const centerLeft = Math.max(0, sX + (vw - compW) / 2);
+            const centerTop = Math.max(isMobileHost ? 56 : 0, sY + (vh - compH) / 2);
+            const centerLeft = Math.max(isMobileHost ? 16 : 0, sX + (vw - compW) / 2);
             const v = document.createElement('div'); v.id = d.id || ('v4-comp-' + Date.now()); v.className = 'lf-component'; v.style.position = 'absolute'; v.style.top = centerTop + 'px'; v.style.left = centerLeft + 'px'; v.style.zIndex = '1000';
             if (d.style) Object.assign(v.style, d.style);
+            if (isMobileHost) { v.style.top = centerTop + 'px'; v.style.left = d.style && d.style.width === '100%' ? '0px' : centerLeft + 'px'; if (d.style && d.style.width === '100%') v.style.width = '100%'; }
             v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
-            document.body.appendChild(v);
+            host.appendChild(v);
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); v.classList.add('selected');
             notifyParent({ type: 'LF_COMP_SELECTED', id: v.id, isTable: !!v.querySelector('table'), isShape: !!v.querySelector('.v4-shape'), isIcon: !!v.querySelector('.lf-icon') });
             markDirty();
@@ -264,21 +258,24 @@
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             const t = d.selector ? s.querySelector(d.selector) : s; if (!t) return;
             if (d.style) Object.assign(t.style, d.style);
-            if (d.subSelector && d.subStyle) t.querySelectorAll(d.subSelector).forEach(el => Object.assign(el.style, d.subStyle));
-            markDirty();
-        } else if (d.type === 'LF_TABLE_ACTION') {
-            const t = document.querySelector('.lf-component.selected table'); if (!t) return;
-            if (d.action === 'ADD_ROW') {
-                const b = t.querySelector('tbody') || t, l = t.querySelector('tr:last-child');
-                if (l) { const n = l.cloneNode(true); n.querySelectorAll('td, th').forEach(x => { x.innerText = "-"; if (d.fontSize) x.style.fontSize = d.fontSize + 'px'; }); b.appendChild(n); }
-            } else if (d.action === 'DEL_ROW') { const r = t.querySelectorAll('tr'); if (r.length > 1) r[r.length - 1].remove(); }
-            else if (d.action === 'ADD_COL') { t.querySelectorAll('tr').forEach(tr => { const x = tr.querySelector('td:last-child') || tr.querySelector('th:last-child'); if (x) { const n = x.cloneNode(true); n.innerText = "-"; tr.appendChild(n); } }); }
-            else if (d.action === 'DEL_COL') { t.querySelectorAll('tr').forEach(tr => { const x = tr.querySelectorAll('td, th'); if (x.length > 1) x[x.length - 1].remove(); }); }
             markDirty();
         } else if (d.type === 'LF_DELETE_SELECTED') {
             const s = document.querySelector('.lf-component.selected'); if (s) { s.remove(); markDirty(); }
         } else if (d.type === 'LF_DESELECT_ALL') {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+        } else if (d.type === 'LF_REQUEST_SNAP_TARGETS') {
+            const targets = [];
+            document.querySelectorAll('.lf-component:not(.selected)').forEach(c => {
+                const r = { x: parseInt(c.style.left) || 0, y: parseInt(c.style.top) || 0, w: c.offsetWidth, h: c.offsetHeight };
+                const name = c.id.replace('v4-comp-', 'Comp ');
+                targets.push({ x: r.x, label: name, part: 'Left', type: 'h' });
+                targets.push({ x: r.x + r.w / 2, label: name, part: 'Center', type: 'h' });
+                targets.push({ x: r.x + r.w, label: name, part: 'Right', type: 'h' });
+                targets.push({ y: r.y, label: name, part: 'Top', type: 'v' });
+                targets.push({ y: r.y + r.h / 2, label: name, part: 'Middle', type: 'v' });
+                targets.push({ y: r.y + r.h, label: name, part: 'Bottom', type: 'v' });
+            });
+            notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
         }
     });
 })();

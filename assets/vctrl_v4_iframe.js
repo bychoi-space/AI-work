@@ -8,7 +8,7 @@
     let isDragging = false;
     let isResizing = false;
     let activeEl = null;
-    let startX, startY, startW, startH, startTop, startLeft;
+    let startX, startY, startW, startH, startTop, startLeft, startRect;
 
     function notifyParent(data) {
         window.parent.postMessage(data, '*');
@@ -32,37 +32,35 @@
             }
 
             if (comp) {
-                // Deselect others
                 document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
                 comp.classList.add('selected');
-                
-                // Notify parent
                 notifyParent({ 
                     type: 'LF_COMP_SELECTED', 
                     id: comp.id,
                     isTable: !!comp.querySelector('table'),
-                    isShape: comp.querySelector('.v4-shape') !== null
+                    isShape: comp.querySelector('.v4-shape') !== null,
+                    isIcon: !!comp.querySelector('.lf-icon')
                 });
             } else {
-                // Deselect all internal components
                 document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
                 notifyParent({ type: 'LF_DESELECT' });
             }
 
-            if (handle) {
-                isDragging = true;
-                activeEl = handle.parentElement;
-                startX = e.clientX; startY = e.clientY;
-                startTop = parseInt(activeEl.style.top) || 0;
-                startLeft = parseInt(activeEl.style.left) || 0;
-                notifyParent({ type: 'LF_SNAP_START' });
-                e.preventDefault();
-            } else if (resizer) {
+            if (resizer) {
                 isResizing = true;
                 activeEl = resizer.parentElement;
                 startX = e.clientX; startY = e.clientY;
                 startW = activeEl.offsetWidth; startH = activeEl.offsetHeight;
                 e.preventDefault();
+            } else if (handle || comp) {
+                isDragging = true;
+                activeEl = comp;
+                startX = e.clientX; startY = e.clientY;
+                startTop = parseInt(activeEl.style.top) || 0;
+                startLeft = parseInt(activeEl.style.left) || 0;
+                startRect = activeEl.getBoundingClientRect();
+                notifyParent({ type: 'LF_SNAP_START' });
+                if (handle) e.preventDefault();
             }
         });
 
@@ -70,12 +68,12 @@
             if (isDragging && activeEl) {
                 const dx = e.clientX - startX;
                 const dy = e.clientY - startY;
-                const targetX = startLeft + dx;
-                const targetY = startTop + dy;
+                const requestX = startRect.left + dx;
+                const requestY = startRect.top + dy;
                 notifyParent({ 
                     type: 'LF_SNAP_REQUEST', 
-                    x: targetX, 
-                    y: targetY, 
+                    x: requestX, 
+                    y: requestY, 
                     w: activeEl.offsetWidth, 
                     h: activeEl.offsetHeight 
                 });
@@ -96,7 +94,6 @@
             activeEl = null;
         });
 
-        // Handle text editing changes
         document.addEventListener('input', e => {
             if (e.target.classList.contains('v4-editable-cell')) {
                 markDirty();
@@ -108,8 +105,13 @@
             if (!data) return;
 
             if (data.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
-                activeEl.style.top = data.y + 'px';
-                activeEl.style.left = data.x + 'px';
+                const currentRect = activeEl.getBoundingClientRect();
+                const snapDx = data.x - currentRect.left;
+                const snapDy = data.y - currentRect.top;
+                if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
+                    activeEl.style.left = (parseInt(activeEl.style.left || 0) + snapDx) + 'px';
+                    activeEl.style.top = (parseInt(activeEl.style.top || 0) + snapDy) + 'px';
+                }
             }
             else if (data.type === 'LF_REQUEST_SAVE_CONTENT') {
                 const clone = document.documentElement.cloneNode(true);
@@ -118,8 +120,6 @@
                 const html = "<!DOCTYPE html>\n" + clone.outerHTML;
                 notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: html });
             }
-
-            // 2. Component Insertion Request
             else if (data.type === 'LF_INSERT_COMPONENT') {
                 const div = document.createElement('div');
                 div.id = data.id || ('v4-comp-' + Date.now());
@@ -139,8 +139,6 @@
                     <div class="lf-delete-trigger">×</div>
                 `;
                 document.body.appendChild(div);
-                
-                // Select new component
                 document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
                 div.classList.add('selected');
                 
@@ -148,121 +146,42 @@
                     type: 'LF_COMP_SELECTED', 
                     id: div.id, 
                     isTable: !!div.querySelector('table'), 
-                    isShape: !!div.querySelector('.v4-shape') 
+                    isShape: !!div.querySelector('.v4-shape'),
+                    isIcon: !!div.querySelector('.lf-icon')
                 });
                 markDirty();
             }
-
-            // 3. Style Update Request
             else if (data.type === 'LF_UPDATE_STYLE') {
                 const selected = document.querySelector('.lf-component.selected');
                 if (!selected) return;
-                
                 const target = data.selector ? selected.querySelector(data.selector) : selected;
                 if (!target) return;
-
-                if (data.style) {
-                    Object.assign(target.style, data.style);
-                }
+                if (data.style) Object.assign(target.style, data.style);
                 if (data.subSelector && data.subStyle) {
                     target.querySelectorAll(data.subSelector).forEach(el => Object.assign(el.style, data.subStyle));
                 }
                 markDirty();
             }
-
-            // 4. Table Action Request
-            else if (data.type === 'LF_TABLE_ACTION') {
-                const selected = document.querySelector('.lf-component.selected table');
-                if (!selected) return;
-                
-                if (data.action === 'ADD_ROW') {
-                    const tbody = selected.querySelector('tbody') || selected;
-                    const lastRow = selected.querySelector('tr:last-child');
-                    if (lastRow) {
-                        const newRow = lastRow.cloneNode(true);
-                        newRow.querySelectorAll('td, th').forEach(c => {
-                            c.innerText = "-";
-                            if (data.fontSize) c.style.fontSize = data.fontSize + 'px';
-                        });
-                        tbody.appendChild(newRow);
-                    }
-                } else if (data.action === 'DEL_ROW') {
-                    const rows = selected.querySelectorAll('tr');
-                    if (rows.length > 1) rows[rows.length - 1].remove();
-                } else if (data.action === 'ADD_COL') {
-                    selected.querySelectorAll('tr').forEach(tr => {
-                        const lastCell = tr.querySelector('td:last-child') || tr.querySelector('th:last-child');
-                        if (lastCell) {
-                            const newCell = lastCell.cloneNode(true);
-                            newCell.innerText = "-";
-                            tr.appendChild(newCell);
-                        }
-                    });
-                } else if (data.action === 'DEL_COL') {
-                    selected.querySelectorAll('tr').forEach(tr => {
-                        const cells = tr.querySelectorAll('td, th');
-                        if (cells.length > 1) cells[cells.length - 1].remove();
-                    });
-                } else if (data.action === 'LAYOUT_H' || data.action === 'LAYOUT_V') {
-                    const isHorizontal = !!selected.querySelector('thead');
-                    if ((data.action === 'LAYOUT_H' && isHorizontal) || (data.action === 'LAYOUT_V' && !isHorizontal)) return;
-                    
-                    let matrix = [];
-                    selected.querySelectorAll('tr').forEach((tr, r) => {
-                        tr.querySelectorAll('th, td').forEach((cell, c) => {
-                            if (!matrix[c]) matrix[c] = [];
-                            matrix[c][r] = cell.innerHTML;
-                        });
-                    });
-                    
-                    selected.innerHTML = '';
-                    if (data.action === 'LAYOUT_H') {
-                        let thead = document.createElement('thead');
-                        let tbody = document.createElement('tbody');
-                        matrix.forEach((row, r) => {
-                            let tr = document.createElement('tr');
-                            row.forEach(html => {
-                                let cell = document.createElement(r === 0 ? 'th' : 'td');
-                                cell.className = 'v4-editable-cell';
-                                cell.setAttribute('contenteditable', 'true');
-                                cell.innerHTML = html;
-                                tr.appendChild(cell);
-                            });
-                            (r === 0 ? thead : tbody).appendChild(tr);
-                        });
-                        selected.appendChild(thead);
-                        selected.appendChild(tbody);
-                    } else {
-                        let tbody = document.createElement('tbody');
-                        matrix.forEach(row => {
-                            let tr = document.createElement('tr');
-                            row.forEach((html, c) => {
-                                let cell = document.createElement(c === 0 ? 'th' : 'td');
-                                cell.className = 'v4-editable-cell';
-                                cell.setAttribute('contenteditable', 'true');
-                                cell.innerHTML = html;
-                                tr.appendChild(cell);
-                            });
-                            tbody.appendChild(tr);
-                        });
-                        selected.appendChild(tbody);
-                    }
-                }
-                markDirty();
-            }
-
-            // 5. Delete Selected Component
             else if (data.type === 'LF_DELETE_SELECTED') {
                 const selected = document.querySelector('.lf-component.selected');
-                if (selected) {
-                    selected.remove();
-                    markDirty();
-                }
+                if (selected) { selected.remove(); markDirty(); }
             }
-
-            // 6. Cleanup Request
             else if (data.type === 'LF_DESELECT_ALL') {
                 document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
+            }
+            else if (data.type === 'LF_REQUEST_SNAP_TARGETS') {
+                const targets = [];
+                document.querySelectorAll('.lf-component:not(.selected)').forEach(c => {
+                    const r = c.getBoundingClientRect();
+                    const name = c.id.replace('v4-comp-', 'Comp ');
+                    targets.push({ x: r.left, label: name, part: 'Left', type: 'h' });
+                    targets.push({ x: r.left + r.width / 2, label: name, part: 'Center', type: 'h' });
+                    targets.push({ x: r.right, label: name, part: 'Right', type: 'h' });
+                    targets.push({ y: r.top, label: name, part: 'Top', type: 'v' });
+                    targets.push({ y: r.top + r.height / 2, label: name, part: 'Middle', type: 'v' });
+                    targets.push({ y: r.bottom, label: name, part: 'Bottom', type: 'v' });
+                });
+                notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
             }
         });
     }

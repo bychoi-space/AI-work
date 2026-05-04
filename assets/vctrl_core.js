@@ -39,15 +39,23 @@ const v4Styles = `
 .v4-premium-table td { padding: 16px; font-size: 14px; color: #1a1c1e !important; border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
 .v4-shape { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border: 2px solid transparent; transition: all 0.3s; overflow: hidden; }
-.lf-icon { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png"); background-size: 200px 160px; width: 40px; height: 40px; display: inline-block; background-repeat: no-repeat; pointer-events: none; }
-.lf-icon-home { background-position: -80px 0; }
-.lf-icon-category { background-position: 0 0; }
-.lf-icon-my { background-position: -120px 0; }
-.lf-icon-heart { background-position: -160px 0; }
-.lf-icon-search { background-position: -80px -40px; }
-.lf-icon-cart { background-position: -120px -40px; }
-.lf-icon-brand { background-position: -40px 0; }
-.lf-icon-bell { background-position: -40px -40px; }
+.lf-icon { 
+    background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png"); 
+    background-size: 500% 400%; 
+    width: 100%; height: 100%; 
+    display: inline-block; 
+    background-repeat: no-repeat; 
+    pointer-events: none; 
+}
+.lf-icon-home { background-position: 50% 0%; }
+.lf-icon-category { background-position: 0% 0%; }
+.lf-icon-my { background-position: 75% 0%; }
+.lf-icon-heart { background-position: 100% 0%; }
+.lf-icon-search { background-position: 50% 33.33%; }
+.lf-icon-cart { background-position: 75% 33.33%; }
+.lf-icon-brand { background-position: 25% 0%; }
+.lf-icon-bell { background-position: 25% 33.33%; }
+.v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 .v4-shape-rect { border-radius: 8px; }
 .v4-shape-circle { border-radius: 50%; }
 .v4-shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
@@ -56,7 +64,7 @@ const v4Styles = `
 const v4Script = `
 (function() {
     let isDragging = false, isResizing = false, activeEl = null;
-    let startX, startY, startW, startH, startTop, startLeft;
+    let startX, startY, startW, startH, startTop, startLeft, startRect;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
     function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
     function updateHandles(c) {
@@ -88,22 +96,29 @@ const v4Script = `
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             notifyParent({ type: 'LF_DESELECT' });
         }
-        if (h || c) { 
+        if (r) { 
+            isResizing = true; 
+            activeEl = r.parentElement; 
+            startX = e.clientX; startY = e.clientY; 
+            startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; 
+            e.preventDefault(); 
+        }
+        else if (h || c) { 
             isDragging = true; activeEl = c; 
             startX = e.clientX; startY = e.clientY; 
             startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
+            startRect = activeEl.getBoundingClientRect();
             notifyParent({ type: 'LF_SNAP_START' });
             if (h) e.preventDefault(); 
         }
-        else if (r) { isResizing = true; activeEl = r.parentElement; startX = e.clientX; startY = e.clientY; startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; e.preventDefault(); }
     });
     document.addEventListener('mousemove', e => {
         if (isDragging && activeEl) { 
             const dx = e.clientX - startX;
             const dy = e.clientY - startY;
-            const targetX = startLeft + dx;
-            const targetY = startTop + dy;
-            notifyParent({ type: 'LF_SNAP_REQUEST', x: targetX, y: targetY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
+            const requestX = startRect.left + dx;
+            const requestY = startRect.top + dy;
+            notifyParent({ type: 'LF_SNAP_REQUEST', x: requestX, y: requestY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
             markDirty(); 
         }
         else if (isResizing && activeEl) { 
@@ -121,9 +136,14 @@ const v4Script = `
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
         if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
-            activeEl.style.top = d.y + 'px';
-            activeEl.style.left = d.x + 'px';
-            updateHandles(activeEl);
+            const currentRect = activeEl.getBoundingClientRect();
+            const snapDx = d.x - currentRect.left;
+            const snapDy = d.y - currentRect.top;
+            if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
+                activeEl.style.left = (parseInt(activeEl.style.left || 0) + snapDx) + 'px';
+                activeEl.style.top = (parseInt(activeEl.style.top || 0) + snapDy) + 'px';
+                updateHandles(activeEl);
+            }
         }
         else if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
             const c = document.documentElement.cloneNode(true);
@@ -162,6 +182,19 @@ const v4Script = `
             const s = document.querySelector('.lf-component.selected'); if (s) { s.remove(); markDirty(); }
         } else if (d.type === 'LF_DESELECT_ALL') {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+        } else if (d.type === 'LF_REQUEST_SNAP_TARGETS') {
+            const targets = [];
+            document.querySelectorAll('.lf-component:not(.selected)').forEach(c => {
+                const r = c.getBoundingClientRect();
+                const name = c.id.replace('v4-comp-', 'Comp ');
+                targets.push({ x: r.left, label: name, part: 'Left', type: 'h' });
+                targets.push({ x: r.left + r.width / 2, label: name, part: 'Center', type: 'h' });
+                targets.push({ x: r.right, label: name, part: 'Right', type: 'h' });
+                targets.push({ y: r.top, label: name, part: 'Top', type: 'v' });
+                targets.push({ y: r.top + r.height / 2, label: name, part: 'Middle', type: 'v' });
+                targets.push({ y: r.bottom, label: name, part: 'Bottom', type: 'v' });
+            });
+            notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
         }
     });
 })();
@@ -186,14 +219,19 @@ window.loadScreen = async function(fileName) {
 
     let finalContent = content;
     
-    // Inject Styles
-    if (!finalContent.includes('style_v4.css') && !finalContent.includes('/* V4 Premium Styles (Inlined) */')) {
-        const styleBlock = `<style id="v4-inlined-style">\n${v4Styles}\n</style>`;
+    // Inject/Update Styles
+    const styleBlock = `<style id="v4-inlined-style">\n${v4Styles}\n</style>`;
+    if (finalContent.includes('id="v4-inlined-style"')) {
+        finalContent = finalContent.replace(/<style id="v4-inlined-style">[\s\S]*?<\/style>/i, styleBlock);
+    } else if (!finalContent.includes('style_v4.css')) {
         finalContent = finalContent.replace('</head>', `${styleBlock}\n</head>`);
     }
-    // Inject Script
-    if (!finalContent.includes('vctrl_v4_iframe.js') && !finalContent.includes('LF_SAVE_CONTENT_RESPONSE')) {
-        const scriptBlock = `<script id="v4-inlined-script">\n${v4Script}\n</script>`;
+
+    // Inject/Update Script
+    const scriptBlock = `<script id="v4-inlined-script">\n${v4Script}\n</script>`;
+    if (finalContent.includes('id="v4-inlined-script"')) {
+        finalContent = finalContent.replace(/<script id="v4-inlined-script">[\s\S]*?<\/script>/i, scriptBlock);
+    } else if (!finalContent.includes('vctrl_v4_iframe.js')) {
         finalContent = finalContent.replace('</body>', `${scriptBlock}\n</body>`);
     }
 
@@ -265,7 +303,7 @@ window.injectIframeInteractions = function(doc) {
 
         if (deleteBtn && comp) {
             comp.remove(); markAsDirty();
-            window.postMessage({ type: 'LF_DESELECT' }, '*');
+            window.parent.postMessage({ type: 'LF_DESELECT' }, '*');
             e.preventDefault(); e.stopPropagation();
             return;
         }
@@ -278,7 +316,7 @@ window.injectIframeInteractions = function(doc) {
             startX = e.clientX; startY = e.clientY; startTop = activeEl.offsetTop; startLeft = activeEl.offsetLeft;
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             activeEl.classList.add('selected');
-            window.postMessage({ type: 'LF_COMP_SELECTED', id: activeEl.id, isTable: !!activeEl.querySelector('table'), isShape: !!activeEl.querySelector('.v4-shape'), isIcon: !!activeEl.querySelector('.lf-icon') }, '*');
+            window.parent.postMessage({ type: 'LF_COMP_SELECTED', id: activeEl.id, isTable: !!activeEl.querySelector('table'), isShape: !!activeEl.querySelector('.v4-shape'), isIcon: !!activeEl.querySelector('.lf-icon') }, '*');
             e.preventDefault(); e.stopPropagation();
         } else if (comp) {
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
@@ -310,24 +348,30 @@ window.insertAtomicComponent = function(type, name) {
     
     let contentHtml = '';
     const id = `lf-comp-${Date.now()}`;
+    let defaultStyle = { width: '120px', height: '100px' };
 
     if (name === 'LF Logo') {
-        contentHtml = `<img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width:100%; height:auto; display:block; pointer-events:none;">`;
+        contentHtml = `<img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" class="v4-logo-img">`;
+        defaultStyle = { width: '140px', height: '40px' };
     } else if (name === 'Primary Button') {
         contentHtml = `<div style="background:#00e5ff; color:#000; border:none; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(0,229,255,0.3); pointer-events:none;">BUTTON</div>`;
+        defaultStyle = { width: '120px', height: '36px' };
     } else if (name === 'LF Discount') {
         contentHtml = `<div style="color:#E02020; font-size:24px; font-weight:800; font-family:sans-serif; text-align:center; pointer-events:none; line-height:1.2;">20%</div>`;
+        defaultStyle = { width: '60px', height: '30px' };
     } else if (name === 'LFmall Header') {
         contentHtml = `<div style="background:#fff; width:100%; height:50px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom: 1px solid #f2f2f2; pointer-events:none; box-sizing: border-box;"><div style="display: flex; align-items: center; width: 33%;"><div class="lf-icon lf-icon-bell" style="filter: brightness(0); transform: scale(0.65); transform-origin: left center;"></div></div><div style="display: flex; align-items: center; justify-content: center; width: 33%;"><img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="height: 20px;"></div><div style="display: flex; align-items: center; justify-content: flex-end; width: 33%; gap: 0px;"><div class="lf-icon lf-icon-search" style="filter: brightness(0); transform: scale(0.65); transform-origin: right center;"></div><div style="position: relative; width: 26px; height: 26px; margin-left: 8px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0); transform: scale(0.65); transform-origin: center right; position: absolute; right: 0;"></div><div style="position: absolute; top: -2px; right: -4px; background: #e60012; color: #fff; font-size: 10px; font-weight: 800; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-family: sans-serif; z-index: 2;">1</div></div></div></div>`;
+        defaultStyle = { width: '100%', height: '50px' };
     } else if (type === 'icon') {
         const iconClass = name.toLowerCase().split(' ')[0];
-        contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="width:100%; height:100%; pointer-events:none; filter: brightness(0);"></div>`;
+        contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="filter: brightness(0);"></div>`;
+        defaultStyle = { width: '40px', height: '40px' };
     }
 
     const isFileProtocol = window.location.protocol === 'file:';
     if (isFileProtocol) {
         if (DOM.iframe && DOM.iframe.contentWindow) {
-            MessageHub.send(DOM.iframe.contentWindow, 'LF_INSERT_COMPONENT', { id, html: contentHtml, style: { width: '120px', height: '100px' } });
+            MessageHub.send(DOM.iframe.contentWindow, 'LF_INSERT_COMPONENT', { id, html: contentHtml, style: defaultStyle });
         }
         return;
     }
@@ -340,7 +384,7 @@ window.insertAtomicComponent = function(type, name) {
     if (contentHtml) {
         const comp = iframeDoc.createElement('div');
         comp.id = id; comp.className = 'lf-component';
-        comp.style.width = '120px'; comp.style.height = '100px';
+        Object.assign(comp.style, defaultStyle);
         comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div><div class="lf-drag-handle">::</div>`;
         host.appendChild(comp);
         markAsDirty();
@@ -556,7 +600,7 @@ window.markAsDirty = function() {
     state.hasUnsavedChanges = true;
     console.log("[Status] Unsaved changes detected.");
     
-    // UI Feedback (Will be managed by vctrl_inspector eventually)
+    // UI Feedback
     const btnSave = document.getElementById('btn-global-save');
     if (btnSave) {
         btnSave.style.boxShadow = "0 0 20px rgba(0, 229, 255, 0.6)";
@@ -570,14 +614,6 @@ window.markAsClean = function() {
         btnSave.style.boxShadow = "";
     }
 };
-
-// 5. Navigation Protection
-window.addEventListener('beforeunload', (e) => {
-    if (state.hasUnsavedChanges) {
-        e.preventDefault();
-        e.returnValue = '';
-    }
-});
 
 window.checkUnsavedChanges = async function() {
     if (!state.hasUnsavedChanges) return true;
@@ -593,144 +629,14 @@ window.checkUnsavedChanges = async function() {
     return false;
 };
 
-// 6. Smart Guide System
-window.SmartGuide = {
-    targets: [],
-    threshold: 8,
-    activeLines: { x: null, y: null },
-
-    findSnapTargets() {
-        const DOM = window.DOM;
-        this.targets = [];
-        const cw = parseInt(DOM.iframe.style.width) || 1440;
-        const ch = parseInt(DOM.iframe.style.height) || 900;
-
-        // 1. Canvas Center
-        this.targets.push({ x: cw / 2, y: ch / 2, type: 'center', label: 'Canvas', part: 'Center' });
-
-        // 2. Components inside Iframe
-        try {
-            const DOM = window.DOM;
-            const doc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
-            const comps = doc.querySelectorAll('.lf-component:not(.selected)');
-            comps.forEach(c => {
-                const r = {
-                    x: parseInt(c.style.left) || 0,
-                    y: parseInt(c.style.top) || 0,
-                    w: c.offsetWidth,
-                    h: c.offsetHeight
-                };
-                const name = c.id.replace('lf-comp-', 'Comp ');
-                
-                // Horizontal Targets (Vertical Lines)
-                this.targets.push({ x: r.x, label: name, part: 'Left', type: 'h' });
-                this.targets.push({ x: r.x + r.w / 2, label: name, part: 'Center', type: 'h' });
-                this.targets.push({ x: r.x + r.w, label: name, part: 'Right', type: 'h' });
-                
-                // Vertical Targets (Horizontal Lines)
-                this.targets.push({ y: r.y, label: name, part: 'Top', type: 'v' });
-                this.targets.push({ y: r.y + r.h / 2, label: name, part: 'Middle', type: 'v' });
-                this.targets.push({ y: r.y + r.h, label: name, part: 'Bottom', type: 'v' });
-            });
-        } catch (e) { console.warn("[SmartGuide] Iframe inaccessible."); }
-
-        // 3. Pins & Text Markers
-        const DOM = window.DOM;
-        const pins = DOM.pinsLayer.querySelectorAll('.pin-marker, .text-marker');
-        pins.forEach(p => {
-            if (p.classList.contains('dragging-now')) return;
-            const x = (parseFloat(p.style.left) / 100) * cw;
-            const y = (parseFloat(p.style.top) / 100) * ch;
-            const name = p.classList.contains('text-marker') ? 'Text' : `Pin ${p.innerText}`;
-            this.targets.push({ x, y, label: name, part: 'Point', type: 'both' });
-        });
-
-        console.log(`[SmartGuide] ${this.targets.length} targets collected.`);
-    },
-
-    calculateSnap(x, y, w = 0, h = 0) {
-        let snappedX = x, snappedY = y;
-        let snapXData = null, snapYData = null;
-        const thresh = this.threshold;
-
-        // X-axis Points to check
-        const pointsX = [
-            { val: x, part: 'Left' },
-            { val: x + w / 2, part: 'Center' },
-            { val: x + w, part: 'Right' }
-        ];
-
-        for (const t of this.targets) {
-            if (t.x === undefined) continue;
-            for (const p of pointsX) {
-                if (Math.abs(p.val - t.x) < thresh) {
-                    snappedX = x + (t.x - p.val);
-                    snapXData = { line: t.x, label: t.label, part: t.part, selfPart: p.part };
-                    break;
-                }
-            }
-            if (snapXData) break;
-        }
-
-        // Y-axis Points to check
-        const pointsY = [
-            { val: y, part: 'Top' },
-            { val: y + h / 2, part: 'Middle' },
-            { val: y + h, part: 'Bottom' }
-        ];
-
-        for (const t of this.targets) {
-            if (t.y === undefined) continue;
-            for (const p of pointsY) {
-                if (Math.abs(p.val - t.y) < thresh) {
-                    snappedY = y + (t.y - p.val);
-                    snapYData = { line: t.y, label: t.label, part: t.part, selfPart: p.part };
-                    break;
-                }
-            }
-            if (snapYData) break;
-        }
-
-        return { x: snappedX, y: snappedY, snapXData, snapYData };
-    },
-
-    drawGuides(data) {
-        const DOM = window.DOM;
-        if (!DOM.guideLayer) return;
-        let html = '';
-        const labelStyle = `fill: #ff4757; font-size: 11px; font-weight: 600; font-family: 'Inter', sans-serif;`;
-        const rectStyle = `fill: rgba(255, 71, 87, 0.1); stroke: #ff4757; stroke-width: 0.5; rx: 4;`;
-
-        if (data.snapXData) {
-            const { line, label, part, selfPart } = data.snapXData;
-            html += `<line x1="${line}" y1="0" x2="${line}" y2="100%" stroke="#ff4757" stroke-width="1" stroke-dasharray="4,2" />`;
-            // Label
-            const labelText = `${label} ${part} ↔ ${selfPart}`;
-            html += `
-                <g transform="translate(${line + 8}, 20)">
-                    <rect x="0" y="0" width="${labelText.length * 7}" height="20" style="${rectStyle}" />
-                    <text x="6" y="14" style="${labelStyle}">${labelText}</text>
-                </g>`;
-        }
-        if (data.snapYData) {
-            const { line, label, part, selfPart } = data.snapYData;
-            html += `<line x1="0" y1="${line}" x2="100%" y2="${line}" stroke="#ff4757" stroke-width="1" stroke-dasharray="4,2" />`;
-            // Label
-            const labelText = `${label} ${part} ↔ ${selfPart}`;
-            html += `
-                <g transform="translate(20, ${line - 28})">
-                    <rect x="0" y="0" width="${labelText.length * 7}" height="20" style="${rectStyle}" />
-                    <text x="6" y="14" style="${labelStyle}">${labelText}</text>
-                </g>`;
-        }
-        DOM.guideLayer.innerHTML = html;
-    },
-
-    clearGuides() {
-        const DOM = window.DOM;
-        if (DOM.guideLayer) DOM.guideLayer.innerHTML = '';
+// 5. Navigation Protection
+window.addEventListener('beforeunload', (e) => {
+    if (state.hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
     }
-};
+});
+
 
 // 6. Initial Bootstrap
 window.checkEnvironment = function() {

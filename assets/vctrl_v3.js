@@ -1,27 +1,26 @@
 /**
  * vctrl_v3.js - Legacy & Utility Engine
  * Responsibility: Annotation pins, canvas interaction (zoom/pan), and viewport management.
+ * 
+ * IMPORTANT: This file uses window.state and window.DOM directly (not cached const)
+ * to ensure references are always live, regardless of script load timing.
  */
 
 console.log("%c [VCTRL V3] Utility Engine Loaded ", "background: #0ea5e9; color: #fff; font-weight: bold; padding: 4px; border-radius: 4px;");
 
-// 1. Context & Local State
-const context = {
-    selectedTemplate: null
-};
-
 // 2. Annotation & Pins System
 window.renderDescriptionList = function() {
-    if (!state.activeFile) return;
-    const list = state.activeFile.meta.description;
-    if (!DOM.descriptionList || !DOM.pinsLayer) return;
+    var state = window.state, DOM = window.DOM;
+    if (!state || !state.activeFile) return;
+    var list = state.activeFile.meta.description;
+    if (!DOM || !DOM.descriptionList || !DOM.pinsLayer) return;
 
     DOM.descriptionList.innerHTML = '';
     DOM.pinsLayer.innerHTML = '';
 
-    list.forEach((item, index) => {
+    list.forEach(function(item, index) {
         // Description Row (Sidebar)
-        const row = document.createElement('div');
+        var row = document.createElement('div');
         row.className = 'desc-row';
         row.draggable = !state.isReadOnly;
         row.dataset.index = index;
@@ -34,7 +33,7 @@ window.renderDescriptionList = function() {
         `;
 
         // Pin Marker (Canvas)
-        const pin = document.createElement('div');
+        var pin = document.createElement('div');
         if (item.type === 'text') {
             pin.className = 'text-marker';
             pin.innerHTML = `
@@ -54,31 +53,33 @@ window.renderDescriptionList = function() {
         pin.style.top = (item.y || 0) + "%";
         
         // Highlight logic
-        const highlight = (active) => { pin.classList.toggle('highlight', active); row.classList.toggle('highlight', active); };
-        pin.onmouseenter = () => highlight(true);
-        pin.onmouseleave = () => highlight(false);
-        row.onmouseenter = () => highlight(true);
-        row.onmouseleave = () => highlight(false);
+        var highlight = function(active) { pin.classList.toggle('highlight', active); row.classList.toggle('highlight', active); };
+        pin.onmouseenter = function() { highlight(true); };
+        pin.onmouseleave = function() { highlight(false); };
+        row.onmouseenter = function() { highlight(true); };
+        row.onmouseleave = function() { highlight(false); };
 
         // Pin Drag Logic
-        pin.addEventListener('mousedown', (e) => {
+        pin.addEventListener('mousedown', function(e) {
+            var state = window.state, DOM = window.DOM;
             if (state.isReadOnly) return;
-            const handle = e.target.closest('.lf-drag-handle');
+            var handle = e.target.closest('.lf-drag-handle');
             e.stopPropagation();
 
-            const startX = e.clientX, startY = e.clientY;
-            let moved = false;
-            const initialItemX = item.x || 0, initialItemY = item.y || 0;
-            const r = DOM.pinsLayer.getBoundingClientRect();
+            var startX = e.clientX, startY = e.clientY;
+            var moved = false;
+            var initialItemX = item.x || 0, initialItemY = item.y || 0;
+            var r = DOM.pinsLayer.getBoundingClientRect();
             
-            const cw = parseInt(DOM.iframe.style.width) || 1440;
-            const ch = parseInt(DOM.iframe.style.height) || 900;
+            var cw = parseInt(DOM.iframe.style.width) || 1440;
+            var ch = parseInt(DOM.iframe.style.height) || 900;
 
             if (window.SmartGuide) window.SmartGuide.findSnapTargets();
 
-            const onMouseMove = (moveEvent) => {
+            var onMouseMove = function(moveEvent) {
+                var state = window.state, DOM = window.DOM;
                 if (item.type === 'text' && !handle) return;
-                const dx = moveEvent.clientX - startX, dy = moveEvent.clientY - startY;
+                var dx = moveEvent.clientX - startX, dy = moveEvent.clientY - startY;
                 if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
                     if (!moved) {
                         if (DOM.iframe) DOM.iframe.style.pointerEvents = 'none';
@@ -88,13 +89,13 @@ window.renderDescriptionList = function() {
                     moved = true;
                 }
                 if (moved) {
-                    let targetX = initialItemX + (dx / r.width) * 100;
-                    let targetY = initialItemY + (dy / r.height) * 100;
+                    var targetX = initialItemX + (dx / r.width) * 100;
+                    var targetY = initialItemY + (dy / r.height) * 100;
                     
                     if (window.SmartGuide) {
-                        const pxX = (targetX / 100) * cw;
-                        const pxY = (targetY / 100) * ch;
-                        const snap = window.SmartGuide.calculateSnap(pxX, pxY);
+                        var pxX = (targetX / 100) * cw;
+                        var pxY = (targetY / 100) * ch;
+                        var snap = window.SmartGuide.calculateSnap(pxX, pxY);
                         window.SmartGuide.drawGuides(snap);
                         targetX = (snap.x / cw) * 100;
                         targetY = (snap.y / ch) * 100;
@@ -106,7 +107,8 @@ window.renderDescriptionList = function() {
                 }
             };
 
-            const onMouseUp = () => {
+            var onMouseUp = function() {
+                var state = window.state, DOM = window.DOM;
                 window.removeEventListener('mousemove', onMouseMove);
                 window.removeEventListener('mouseup', onMouseUp);
                 if (window.SmartGuide) window.SmartGuide.clearGuides();
@@ -118,7 +120,7 @@ window.renderDescriptionList = function() {
                 } else {
                     if (item.type === 'text') spawnTextEditor(item.x, item.y, index);
                     else {
-                        const input = row.querySelector('.desc-input');
+                        var input = row.querySelector('.desc-input');
                         if (input) { window.switchSidebarTab?.('description'); input.focus(); }
                     }
                 }
@@ -128,12 +130,13 @@ window.renderDescriptionList = function() {
         });
 
         // Input & Row Actions
-        const input = row.querySelector('.desc-input');
-        const autoResize = (el) => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; };
-        input.oninput = () => { item.text = input.value; autoResize(input); markAsDirty(); };
+        var input = row.querySelector('.desc-input');
+        var autoResize = function(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; };
+        input.oninput = function() { item.text = input.value; autoResize(input); markAsDirty(); };
         autoResize(input);
 
-        row.querySelector('.desc-btn-del').onclick = async () => {
+        row.querySelector('.desc-btn-del').onclick = async function() {
+            var state = window.state;
             if (state.isReadOnly) return window.showAuthModal?.();
             if (await Notification.confirm("이 설명을 삭제하시겠습니까?", "설명 삭제")) {
                 list.splice(index, 1); markAsDirty(); renderDescriptionList();
@@ -146,39 +149,44 @@ window.renderDescriptionList = function() {
 };
 
 window.deleteAnnotation = function(index) {
+    var state = window.state;
     if (state.isReadOnly || !state.activeFile) return;
     state.activeFile.meta.description.splice(index, 1);
     markAsDirty(); renderDescriptionList();
 };
 
-window.spawnTextEditor = function(x, y, existingIndex = -1) {
+window.spawnTextEditor = function(x, y, existingIndex) {
+    if (existingIndex === undefined) existingIndex = -1;
+    var state = window.state;
     if (state.isEditing) closeActiveEditor(true);
     state.isEditing = true;
     state.editingIndex = existingIndex;
     window.initQuillEditor?.();
     window.switchSidebarTab?.('editor');
     
-    const editorSection = document.getElementById('text-editor-section');
+    var editorSection = document.getElementById('text-editor-section');
     if (editorSection) editorSection.style.display = 'block';
     
-    const emptyMsg = document.querySelector('.empty-inspector');
+    var emptyMsg = document.querySelector('.empty-inspector');
     if (emptyMsg) emptyMsg.style.display = 'none';
 
     if (window.quillEditor) {
-        const item = state.activeFile.meta.description[existingIndex];
+        var item = state.activeFile.meta.description[existingIndex];
         window.quillEditor.root.innerHTML = item ? (item.html || item.text || "") : "";
         window.quillEditor.focus();
     }
 
-    document.getElementById('btn-editor-apply').onclick = () => closeActiveEditor(true);
-    document.getElementById('btn-editor-delete').onclick = () => { deleteAnnotation(state.editingIndex); closeActiveEditor(false); };
+    document.getElementById('btn-editor-apply').onclick = function() { closeActiveEditor(true); };
+    document.getElementById('btn-editor-delete').onclick = function() { deleteAnnotation(window.state.editingIndex); closeActiveEditor(false); };
 };
 
-window.closeActiveEditor = function(save = true) {
+window.closeActiveEditor = function(save) {
+    if (save === undefined) save = true;
+    var state = window.state;
     if (!state.isEditing) return;
-    const q = window.quillEditor;
+    var q = window.quillEditor;
     if (save && q) {
-        const item = state.activeFile.meta.description[state.editingIndex];
+        var item = state.activeFile.meta.description[state.editingIndex];
         if (item) {
             item.html = q.root.innerHTML;
             item.text = q.getText().trim();
@@ -188,84 +196,132 @@ window.closeActiveEditor = function(save = true) {
     }
     state.isEditing = false;
     state.editingIndex = -1;
-    const editorSection = document.getElementById('text-editor-section');
+    var editorSection = document.getElementById('text-editor-section');
     if (editorSection) editorSection.style.display = 'none';
-    const emptyMsg = document.querySelector('.empty-inspector');
+    var emptyMsg = document.querySelector('.empty-inspector');
     if (emptyMsg) emptyMsg.style.display = 'flex';
     renderDescriptionList();
 };
 
 // 3. Canvas Utilities
 window.centerView = function() {
-    if (!DOM.canvas || !DOM.iframe) return;
-    const iw = parseInt(DOM.iframe.style.width) || 1440, ih = parseInt(DOM.iframe.style.height) || 900;
-    const cw = DOM.canvas.clientWidth, ch = DOM.canvas.clientHeight;
-    let s = Math.min((cw * 0.99) / iw, (ch * 0.99) / ih, 1);
+    var DOM = window.DOM, state = window.state;
+    if (!DOM || !DOM.canvas || !DOM.iframe) return;
+    var iw = parseInt(DOM.iframe.style.width) || 1440, ih = parseInt(DOM.iframe.style.height) || 900;
+    var cw = DOM.canvas.clientWidth, ch = DOM.canvas.clientHeight;
+    var s = Math.min((cw * 0.99) / iw, (ch * 0.99) / ih, 1);
     state.transform = { x: (cw - (iw * s)) / 2, y: (ch - (ih * s)) / 2, scale: s };
     updateTransform();
 };
 
 window.updateTransform = function() {
-    if (DOM.stage) DOM.stage.style.transform = `translate(${state.transform.x}px, ${state.transform.y}px) scale(${state.transform.scale})`;
+    var DOM = window.DOM, state = window.state;
+    if (!DOM || !state) return;
+    if (DOM.stage) DOM.stage.style.transform = 'translate(' + state.transform.x + 'px, ' + state.transform.y + 'px) scale(' + state.transform.scale + ')';
     if (DOM.zoomTxt) DOM.zoomTxt.innerText = Math.round(state.transform.scale * 100) + '%';
 };
 
 // 4. Device Viewport & Fullscreen
 window.setDeviceViewport = function(type, w, h) {
-    document.querySelectorAll('.tools .device-btn').forEach(btn => btn.classList.remove('active'));
-    if (DOM.artboardWrapper) { DOM.artboardWrapper.style.width = w + 'px'; DOM.artboardWrapper.style.height = h + 'px'; }
-    DOM.iframe.style.width = w + 'px'; DOM.iframe.style.height = h + 'px';
-    setTimeout(() => centerView(), 100);
+    var DOM = window.DOM;
+    document.querySelectorAll('.tools .device-btn').forEach(function(btn) { btn.classList.remove('active'); });
+    if (DOM && DOM.artboardWrapper) { DOM.artboardWrapper.style.width = w + 'px'; DOM.artboardWrapper.style.height = h + 'px'; }
+    if (DOM && DOM.iframe) { DOM.iframe.style.width = w + 'px'; DOM.iframe.style.height = h + 'px'; }
+    setTimeout(function() { centerView(); }, 100);
 };
 
 window.toggleFullscreen = function(forceExit) {
-    const isActive = document.body.classList.contains('fullscreen-mode');
-    const shouldExit = forceExit === true || (forceExit === undefined && isActive);
+    var DOM = window.DOM;
+    var isActive = document.body.classList.contains('fullscreen-mode');
+    var shouldExit = forceExit === true || (forceExit === undefined && isActive);
     document.body.classList.toggle('fullscreen-mode', !shouldExit);
-    if (DOM.btnFullscreen) DOM.btnFullscreen.querySelector('span').innerText = shouldExit ? 'fullscreen' : 'fullscreen_exit';
+    if (DOM && DOM.btnFullscreen) DOM.btnFullscreen.querySelector('span').innerText = shouldExit ? 'fullscreen' : 'fullscreen_exit';
     setTimeout(centerView, 350);
 };
 
 window.setTool = function(t) {
+    var state = window.state, DOM = window.DOM;
+    if (!state || !DOM) return;
     state.tool = t;
-    DOM.btnSelect?.classList.toggle('active', t === 'select');
-    DOM.btnHand?.classList.toggle('active', t === 'hand');
-    DOM.btnText?.classList.toggle('active', t === 'text');
-    DOM.canvas?.classList.toggle('hand-active', t === 'hand');
-    DOM.iframe.style.pointerEvents = t === 'hand' ? 'none' : 'auto';
+    if (DOM.btnSelect) DOM.btnSelect.classList.toggle('active', t === 'select');
+    if (DOM.btnHand) DOM.btnHand.classList.toggle('active', t === 'hand');
+    if (DOM.btnText) DOM.btnText.classList.toggle('active', t === 'text');
+    if (DOM.canvas) DOM.canvas.classList.toggle('hand-active', t === 'hand');
+    if (DOM.iframe) DOM.iframe.style.pointerEvents = t === 'hand' ? 'none' : 'auto';
     if (DOM.pinsLayer) DOM.pinsLayer.style.pointerEvents = (t === 'select') ? 'auto' : 'none';
 };
 
-// 5. Global Event Listeners
-window.addEventListener('keydown', e => {
-    if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
-    if (e.code === 'Space' && state.tool !== 'hand') { DOM.canvas.classList.add('hand-active'); DOM.iframe.style.pointerEvents = 'none'; }
-    if (e.code === 'KeyV') setTool('select');
-    if (e.code === 'KeyH') setTool('hand');
-    if (e.code === 'KeyT') window.handleTextCreation?.();
-    if (e.code === 'KeyF') toggleFullscreen();
-});
+// 5. Global Event Listeners (deferred to ensure DOM is ready)
+window.addEventListener('DOMContentLoaded', function() {
+    var DOM = window.DOM;
 
-window.addEventListener('keyup', e => {
-    if (e.code === 'Space' && state.tool !== 'hand') { DOM.canvas.classList.remove('hand-active'); DOM.iframe.style.pointerEvents = 'auto'; }
-});
+    window.addEventListener('keydown', function(e) {
+        var state = window.state;
+        if (!state) return;
+        if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+        if (e.code === 'Space' && state.tool !== 'hand') {
+            if (DOM && DOM.canvas) DOM.canvas.classList.add('hand-active');
+            if (DOM && DOM.iframe) DOM.iframe.style.pointerEvents = 'none';
+        }
+        if (e.code === 'KeyV') setTool('select');
+        if (e.code === 'KeyH') setTool('hand');
+        if (e.code === 'KeyT') { if (window.handleTextCreation) window.handleTextCreation(); }
+        if (e.code === 'KeyF') toggleFullscreen();
+    });
 
-DOM.canvas.addEventListener('wheel', e => {
-    e.preventDefault();
-    const s = state.transform.scale, ns = Math.max(0.1, Math.min(s * (1 + (e.deltaY > 0 ? -0.1 : 0.1)), 20));
-    const r = DOM.canvas.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
-    state.transform.x = mx - (mx - state.transform.x) * (ns / s);
-    state.transform.y = my - (my - state.transform.y) * (ns / s);
-    state.transform.scale = ns; updateTransform();
-}, { passive: false });
+    window.addEventListener('keyup', function(e) {
+        var state = window.state, DOM = window.DOM;
+        if (!state) return;
+        if (e.code === 'Space' && state.tool !== 'hand') {
+            if (DOM && DOM.canvas) DOM.canvas.classList.remove('hand-active');
+            if (DOM && DOM.iframe) DOM.iframe.style.pointerEvents = 'auto';
+        }
+    });
 
-DOM.canvas.addEventListener('mousedown', e => {
-    if (state.tool === 'hand' || e.button === 1 || DOM.canvas.classList.contains('hand-active')) {
-        state.isDragging = true; state.startX = e.clientX - state.transform.x; state.startY = e.clientY - state.transform.y; e.preventDefault();
+    if (DOM && DOM.canvas) {
+        DOM.canvas.addEventListener('wheel', function(e) {
+            var state = window.state;
+            if (!state) return;
+            e.preventDefault();
+            var s = state.transform.scale;
+            var ns = Math.max(0.1, Math.min(s * (1 + (e.deltaY > 0 ? -0.1 : 0.1)), 20));
+            var r = DOM.canvas.getBoundingClientRect();
+            var mx = e.clientX - r.left, my = e.clientY - r.top;
+            state.transform.x = mx - (mx - state.transform.x) * (ns / s);
+            state.transform.y = my - (my - state.transform.y) * (ns / s);
+            state.transform.scale = ns;
+            updateTransform();
+        }, { passive: false });
+
+        DOM.canvas.addEventListener('mousedown', function(e) {
+            var state = window.state, DOM = window.DOM;
+            if (!state) return;
+            if (state.tool === 'hand' || e.button === 1 || DOM.canvas.classList.contains('hand-active')) {
+                state.isDragging = true;
+                state.startX = e.clientX - state.transform.x;
+                state.startY = e.clientY - state.transform.y;
+                e.preventDefault();
+            }
+        });
     }
+
+    window.addEventListener('mousemove', function(e) {
+        var state = window.state;
+        if (!state || !state.isDragging) return;
+        state.transform.x = e.clientX - state.startX;
+        state.transform.y = e.clientY - state.startY;
+        updateTransform();
+    });
+
+    window.addEventListener('mouseup', function() {
+        var state = window.state;
+        if (state) state.isDragging = false;
+    });
+
+    // Auto-fit when window/monitor changes
+    window.addEventListener('resize', function() {
+        if (window.centerView) window.centerView();
+    });
+
+    console.log("[VCTRL V3] Utility Engine initialized successfully.");
 });
-
-window.addEventListener('mousemove', e => { if (state.isDragging) { state.transform.x = e.clientX - state.startX; state.transform.y = e.clientY - state.startY; updateTransform(); }});
-window.addEventListener('mouseup', () => { state.isDragging = false; });
-
-console.log("[VCTRL V3] Utility Engine initialized successfully.");
