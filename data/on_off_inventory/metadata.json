@@ -34,17 +34,6 @@
       "type": "cover",
       "description": "기밀 유지 및 저작권 (Legal)"
     },
-    "slide_04_selection.html": {
-      "title": "05. 재고 선정 로직",
-      "type": "plan",
-      "description": [
-        {
-          "text": "가용성 정책 (Case 1~5)",
-          "x": 0,
-          "y": 0
-        }
-      ]
-    },
     "slide_06_db_sync.html": {
       "title": "06. 데이터 인터페이스",
       "type": "architecture",
@@ -263,7 +252,6 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
-    "slide_04_selection.html",
     "slide_05_pain_points.html",
     "slide_06_db_sync.html",
     "slide_06_selection.html",
