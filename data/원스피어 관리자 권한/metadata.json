@@ -88,35 +88,6 @@
       "updatedAt": "2026-04-21T06:59:23.741Z",
       "template": "template_front_ui.html"
     },
-    "01_Architecture_7157.html": {
-      "title": "01_Architecture_7157",
-      "type": "cover",
-      "updatedAt": "2026-04-22T07:50:20.786Z",
-      "template": "template_cover.html",
-      "description": [
-        {
-          "text": "123",
-          "x": 50,
-          "y": 50,
-          "type": "text",
-          "color": "#000000"
-        },
-        {
-          "text": "123541526",
-          "x": 69.2018858929014,
-          "y": 61.902854292586305,
-          "type": "text",
-          "color": "#000000"
-        },
-        {
-          "text": "ㅁㅇㄻㅎㄹ",
-          "x": 65.98298019663622,
-          "y": 28.89866413874463,
-          "type": "text",
-          "color": "#000000"
-        }
-      ]
-    },
     "00_Cover_4279.html": {
       "title": "00_Cover_4279",
       "type": "cover",
@@ -134,7 +105,6 @@
   "screenOrder": [
     "00_Cover_4279.html",
     "01_Architecture_4304.html",
-    "01_Architecture_7157.html",
     "00_TOC.html",
     "02_Plan_5700.html",
     "02_Plan_6933.html",
