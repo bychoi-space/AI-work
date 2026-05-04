@@ -44,11 +44,6 @@
       "type": "architecture",
       "description": "SAP/OMS/LFmall 연동 상세"
     },
-    "slide_15_business_policy.html": {
-      "title": "15. 현업(e-영업) 정책 결정",
-      "type": "plan",
-      "description": "영업 부서 의사결정 사항"
-    },
     "slide_16_monitoring.html": {
       "title": "16. RT 현황 관리 주체",
       "type": "plan",
@@ -225,7 +220,6 @@
     "slide_13_bsu_operation.html",
     "slide_14_data_interface.html",
     "slide_14_data_interface_map.html",
-    "slide_15_business_policy.html",
     "slide_15_decision_items.html",
     "slide_16_monitoring.html",
     "slide_17_roadmap.html",
