@@ -39,11 +39,6 @@
       "type": "plan",
       "description": "시스템 자동 결품 상세 로직"
     },
-    "slide_28_tracking.html": {
-      "title": "28. [UI] 주문/배송 조회",
-      "type": "ui",
-      "description": "배송 추적 UI"
-    },
     "slide_29_order_detail.html": {
       "title": "29. [UI] 주문 상세 내역",
       "type": "ui",
@@ -160,7 +155,6 @@
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_20_out_of_stock_logic.html",
-    "slide_28_tracking.html",
     "slide_29_order_detail.html",
     "slide_30_admin_list.html",
     "slide_30_guide_info.html",
