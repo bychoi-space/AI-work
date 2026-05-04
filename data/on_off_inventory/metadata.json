@@ -34,11 +34,6 @@
       "type": "cover",
       "description": "기밀 유지 및 저작권 (Legal)"
     },
-    "slide_06_db_sync.html": {
-      "title": "06. 데이터 인터페이스",
-      "type": "architecture",
-      "description": "SAP-LFmall 재고 동기화"
-    },
     "slide_07_global_process.html": {
       "title": "07. 전체 주문 이행 프로세스",
       "type": "architecture",
@@ -253,7 +248,6 @@
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_05_pain_points.html",
-    "slide_06_db_sync.html",
     "slide_06_selection.html",
     "slide_07_bucket_policies.html",
     "slide_07_global_process.html",
