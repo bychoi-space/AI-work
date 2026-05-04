@@ -59,6 +59,9 @@ const v4Styles = `
 .v4-shape-rect { border-radius: 8px; }
 .v4-shape-circle { border-radius: 50%; }
 .v4-shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+/* Reset background for new SVG/Custom atoms to prevent sprite leakage */
+svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
+.lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
 `;
 
 const v4Script = `
@@ -86,12 +89,25 @@ const v4Script = `
     });
     document.addEventListener('mousedown', e => {
         const h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
-        if (d && c) { c.remove(); markDirty(); return; }
+        if (d && c) { 
+            c.remove(); 
+            markDirty(); 
+            notifyParent({ type: 'LF_DESELECT' });
+            return; 
+        }
         if (c) {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             c.classList.add('selected');
             updateHandles(c);
-            notifyParent({ type: 'LF_COMP_SELECTED', id: c.id, isTable: !!c.querySelector('table'), isShape: !!c.querySelector('.v4-shape'), isIcon: !!c.querySelector('.lf-icon') });
+            notifyParent({ 
+                type: 'LF_COMP_SELECTED', 
+                id: c.id, 
+                isTable: !!c.querySelector('table'), 
+                isShape: !!c.querySelector('.v4-shape'), 
+                isIcon: !!c.querySelector('.lf-icon'),
+                w: c.offsetWidth,
+                h: c.offsetHeight
+            });
         } else {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             notifyParent({ type: 'LF_DESELECT' });
@@ -122,10 +138,13 @@ const v4Script = `
             markDirty(); 
         }
         else if (isResizing && activeEl) { 
-            activeEl.style.width = (startW + e.clientX - startX) + 'px'; 
-            activeEl.style.height = (startH + e.clientY - startY) + 'px'; 
+            const nw = Math.max(10, startW + e.clientX - startX);
+            const nh = Math.max(10, startH + e.clientY - startY);
+            activeEl.style.width = nw + 'px'; 
+            activeEl.style.height = nh + 'px'; 
             updateHandles(activeEl);
             markDirty(); 
+            notifyParent({ type: 'LF_COMP_RESIZED', w: nw, h: nh });
         }
     });
     document.addEventListener('mouseup', () => { 
@@ -171,7 +190,15 @@ const v4Script = `
             v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
             host.appendChild(v);
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); v.classList.add('selected');
-            notifyParent({ type: 'LF_COMP_SELECTED', id: v.id, isTable: !!v.querySelector('table'), isShape: !!v.querySelector('.v4-shape'), isIcon: !!v.querySelector('.lf-icon') });
+            notifyParent({ 
+                type: 'LF_COMP_SELECTED', 
+                id: v.id, 
+                isTable: !!v.querySelector('table'), 
+                isShape: !!v.querySelector('.v4-shape'), 
+                isIcon: !!v.querySelector('.lf-icon'),
+                w: v.offsetWidth,
+                h: v.offsetHeight
+            });
             markDirty();
         } else if (d.type === 'LF_UPDATE_STYLE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
@@ -179,7 +206,12 @@ const v4Script = `
             if (d.style) Object.assign(t.style, d.style);
             markDirty();
         } else if (d.type === 'LF_DELETE_SELECTED') {
-            const s = document.querySelector('.lf-component.selected'); if (s) { s.remove(); markDirty(); }
+            const s = document.querySelector('.lf-component.selected'); 
+            if (s) { 
+                s.remove(); 
+                markDirty(); 
+                notifyParent({ type: 'LF_DESELECT' });
+            }
         } else if (d.type === 'LF_DESELECT_ALL') {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
         } else if (d.type === 'LF_REQUEST_SNAP_TARGETS') {
@@ -321,7 +353,7 @@ window.injectIframeInteractions = function(doc) {
         } else if (comp) {
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             comp.classList.add('selected');
-            window.postMessage({ type: 'LF_COMP_SELECTED', id: comp.id, isTable: !!comp.querySelector('table'), isShape: !!comp.querySelector('.v4-shape'), isIcon: !!comp.querySelector('.lf-icon') }, '*');
+            window.postMessage({ type: 'LF_COMP_SELECTED', id: comp.id, isTable: !!comp.querySelector('table'), isShape: !!comp.querySelector('.v4-shape'), isIcon: !!comp.querySelector('.lf-icon') || !!comp.querySelector('svg') }, '*');
         } else {
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             window.postMessage({ type: 'LF_DESELECT' }, '*');
@@ -363,8 +395,24 @@ window.insertAtomicComponent = function(type, name) {
         contentHtml = `<div style="background:#fff; width:100%; height:50px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom: 1px solid #f2f2f2; pointer-events:none; box-sizing: border-box;"><div style="display: flex; align-items: center; width: 33%;"><div class="lf-icon lf-icon-bell" style="filter: brightness(0); transform: scale(0.65); transform-origin: left center;"></div></div><div style="display: flex; align-items: center; justify-content: center; width: 33%;"><img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="height: 20px;"></div><div style="display: flex; align-items: center; justify-content: flex-end; width: 33%; gap: 0px;"><div class="lf-icon lf-icon-search" style="filter: brightness(0); transform: scale(0.65); transform-origin: right center;"></div><div style="position: relative; width: 26px; height: 26px; margin-left: 8px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0); transform: scale(0.65); transform-origin: center right; position: absolute; right: 0;"></div><div style="position: absolute; top: -2px; right: -4px; background: #e60012; color: #fff; font-size: 10px; font-weight: 800; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-family: sans-serif; z-index: 2;">1</div></div></div></div>`;
         defaultStyle = { width: '100%', height: '50px' };
     } else if (type === 'icon') {
-        const iconClass = name.toLowerCase().split(' ')[0];
-        contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="filter: brightness(0);"></div>`;
+        if (name === 'Arrow Left') {
+            contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
+        } else if (name === 'Arrow Right') {
+            contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+        } else if (name === 'Arrow Up') {
+            contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="18 15 12 9 6 15"></polyline></svg>`;
+        } else if (name === 'Arrow Down') {
+            contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+        } else if (name === 'Close X') {
+            contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+        } else if (name === 'Check Box') {
+            contentHtml = `<div class="v4-checkbox lf-icon" style="width:100%; height:100%; background:#fff; border:1.5px solid #d1d5db; border-radius:6px; box-shadow:inset 0 1px 2px rgba(0,0,0,0.05); display:flex; align-items:center; justify-content:center; position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="#1f2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%;"><polyline points="20 6 9 17 4 12"></polyline></svg></div>`;
+        } else if (name === 'Radio Button') {
+            contentHtml = `<div class="v4-radio lf-icon" style="width:100%; height:100%; background:radial-gradient(circle at 30% 30%, #ffffff 0%, #f3f4f6 100%); border:1px solid #d1d5db; border-radius:50%; box-shadow:0 1px 3px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,1); display:flex; align-items:center; justify-content:center;"><div style="width:45%; height:45%; background:#1f2937; border-radius:50%; box-shadow:0 1px 2px rgba(0,0,0,0.3);"></div></div>`;
+        } else {
+            const iconClass = name.toLowerCase().split(' ')[0];
+            contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="filter: brightness(0);"></div>`;
+        }
         defaultStyle = { width: '40px', height: '40px' };
     }
 
@@ -542,11 +590,15 @@ window.handleGlobalSave = async function() {
 window.MessageHub = {
     handlers: {},
     
+    // Support multiple subscribers for the same message type
+    subscribe(type, callback) {
+        if (!this.handlers[type]) this.handlers[type] = [];
+        this.handlers[type].push(callback);
+    },
+
     register(type, callback) {
-        if (this.handlers[type]) {
-            console.warn(`[MessageHub] Handler for "${type}" is being overwritten.`);
-        }
-        this.handlers[type] = callback;
+        console.warn(`[MessageHub] register() is deprecated. Use subscribe() instead.`);
+        this.subscribe(type, callback);
     },
 
     init() {
@@ -558,6 +610,7 @@ window.MessageHub = {
                 console.log(`%c[MessageHub] IN: ${data.type}`, "color: #10b981;", data);
             }
 
+            // Internal engine hooks
             if (data.type === 'LF_SNAP_START') {
                 if (window.SmartGuide) window.SmartGuide.findSnapTargets();
             } else if (data.type === 'LF_SNAP_REQUEST') {
@@ -571,15 +624,18 @@ window.MessageHub = {
                 if (window.SmartGuide) window.SmartGuide.clearGuides();
             }
 
+            // Call all registered subscribers
             if (this.handlers[data.type]) {
-                try {
-                    this.handlers[data.type](data);
-                } catch (err) {
-                    console.error(`[MessageHub] Error in handler for "${data.type}":`, err);
-                }
+                this.handlers[data.type].forEach(callback => {
+                    try {
+                        callback(data);
+                    } catch (err) {
+                        console.error(`[MessageHub] Error in handler for "${data.type}":`, err);
+                    }
+                });
             }
         });
-        console.log("[MessageHub] Central message listener active.");
+        console.log("[MessageHub] Central message listener active (V2 Modular).");
     },
 
     send(targetWindow, type, data = {}) {
