@@ -39,11 +39,6 @@
       "type": "plan",
       "description": "시스템 자동 결품 상세 로직"
     },
-    "slide_26_order_form.html": {
-      "title": "26. [UI] 주문서/주문완료",
-      "type": "ui",
-      "description": "결제 및 완료 화면"
-    },
     "slide_27_mypage_list.html": {
       "title": "27. [UI] 마이페이지 목록",
       "type": "ui",
@@ -170,7 +165,6 @@
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
     "slide_20_out_of_stock_logic.html",
-    "slide_26_order_form.html",
     "slide_27_mypage_list.html",
     "slide_28_mypage_list.html",
     "slide_28_tracking.html",
