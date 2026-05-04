@@ -34,11 +34,6 @@
       "type": "cover",
       "description": "기밀 유지 및 저작권 (Legal)"
     },
-    "slide_11_lt_policy.html": {
-      "title": "11. 배송 LT 및 자동결품",
-      "type": "plan",
-      "description": "리드타임 관리 및 결품 대응"
-    },
     "slide_12_resource.html": {
       "title": "12. 리소스 산출",
       "type": "plan",
@@ -232,7 +227,6 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "05_PDP_Store_Delivery_Mobile.html",
-    "slide_11_lt_policy.html",
     "slide_12_resource.html",
     "slide_13_bsu_operation.html",
     "slide_14_data_interface.html",
