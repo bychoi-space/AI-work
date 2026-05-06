@@ -352,7 +352,7 @@ const Notification = {
         overlay.id = 'notification-overlay';
         overlay.className = 'dialog-overlay';
         overlay.innerHTML = `<div class="dialog-card">
-                <div id="notification-icon" class="material-icons-outlined dialog-header-icon"></div>
+                <div id="notification-icon" class="material-icons-outlined dialog-icon"></div>
                 <h3 id="notification-title" class="dialog-title"></h3>
                 <div id="notification-message" class="dialog-message"></div>
                 <div id="notification-input-container"></div>
@@ -376,7 +376,7 @@ const Notification = {
         const iconMap = { success: 'check_circle', error: 'error_outline', warning: 'report_problem', info: 'info_outline' };
         
         // Clean up classes
-        this.DOM.icon.className = `material-icons-outlined dialog-header-icon ${type || 'info'}`;
+        this.DOM.icon.className = `material-icons-outlined dialog-icon ${type || 'info'}`;
         this.DOM.icon.innerText = iconMap[type] || 'info_outline';
         
         this.DOM.inputContainer.innerHTML = hasInput ? `<input type="text" id="notification-prompt-input" class="form-input" style="margin-top:20px; width:100%;" value="${defaultValue}">` : '';

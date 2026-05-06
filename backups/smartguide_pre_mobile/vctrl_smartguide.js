@@ -9,7 +9,7 @@
 
     window.SmartGuide = {
         targets: [],
-        threshold: 10,
+        threshold: 8,
         activeLines: { x: null, y: null },
 
         /**
@@ -58,15 +58,14 @@
         handleIframeTargets(data) {
             if (!data || !data.targets) return;
             
-            // Add iframe targets to the list (Merge with unique label/type/line signature)
+            // Add iframe targets to the list
+            // Data should be in pixels relative to the iframe top-left
             const iframeTargets = data.targets.map(t => ({
                 ...t,
                 source: 'iframe'
             }));
 
-            // Filter out existing iframe targets to avoid duplication
-            const otherTargets = this.targets.filter(t => t.source !== 'iframe');
-            this.targets = [...otherTargets, ...iframeTargets];
+            this.targets = this.targets.concat(iframeTargets);
             console.log(`[SmartGuide] Total targets synchronized: ${this.targets.length}`);
         },
 

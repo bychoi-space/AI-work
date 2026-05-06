@@ -29,7 +29,10 @@
 
         if (!item) return console.error("[V4] Component not found:", id);
 
-        const style = { width: '200px', height: '200px' };
+        const style = { 
+            width: item.width || '200px', 
+            height: item.height || '200px' 
+        };
         if (item.category === 'Atoms' || item.id === 'v4-shape-badge') {
             style.width = '120px';
             style.height = '40px';
@@ -43,7 +46,8 @@
             type: 'LF_INSERT_COMPONENT',
             id: 'v4-comp-' + Date.now(),
             html: item.html,
-            style: style
+            style: style,
+            isGroup: !!item.isGroup
         });
     };
 

@@ -121,31 +121,14 @@
                 notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: html });
             }
             else if (data.type === 'LF_INSERT_COMPONENT') {
-                const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
-                const isMobileHost = host.classList.contains('mobile-content');
-                const vh = isMobileHost ? host.clientHeight : window.innerHeight;
-                const vw = isMobileHost ? host.clientWidth : window.innerWidth;
-                const sY = isMobileHost ? host.scrollTop : window.scrollY;
-                const sX = isMobileHost ? host.scrollLeft : window.scrollX;
-                const compW = (data.style && data.style.width && data.style.width !== '100%') ? parseInt(data.style.width) || 200 : (data.style && data.style.width === '100%' ? vw : 200);
-                const compH = (data.style && data.style.height && data.style.height !== 'auto') ? parseInt(data.style.height) || 100 : 100;
-                const centerTop = Math.max(isMobileHost ? 56 : 0, sY + (vh - compH) / 2);
-                const centerLeft = Math.max(isMobileHost ? 16 : 0, sX + (vw - compW) / 2);
-
                 const div = document.createElement('div');
                 div.id = data.id || ('v4-comp-' + Date.now());
-                div.className = 'lf-component' + (data.isGroup ? ' lf-group' : '');
+                div.className = 'lf-component';
                 div.style.position = 'absolute';
-                div.style.top = centerTop + 'px';
-                div.style.left = centerLeft + 'px';
+                div.style.top = '100px';
+                div.style.left = '100px';
                 div.style.zIndex = '1000';
-                
                 if (data.style) Object.assign(div.style, data.style);
-                if (isMobileHost) {
-                    div.style.top = centerTop + 'px';
-                    div.style.left = data.style && data.style.width === '100%' ? '0px' : centerLeft + 'px';
-                    if (data.style && data.style.width === '100%') div.style.width = '100%';
-                }
                 
                 div.innerHTML = `
                     <div class="lf-drag-handle">
@@ -155,22 +138,7 @@
                     <div class="lf-resizer"></div>
                     <div class="lf-delete-trigger">×</div>
                 `;
-
-                // Legacy Compatibility: Detect old-style molecule with absolute coordinates
-                const children = Array.from(div.children).filter(c => c.classList.contains('lf-component') || c.classList.contains('lf-group'));
-                if (children.length === 1) {
-                    const inner = children[0];
-                    const l = parseInt(inner.style.left) || 0;
-                    const t = parseInt(inner.style.top) || 0;
-                    if (l !== 0 || t !== 0) {
-                        inner.style.left = '0px';
-                        inner.style.top = '0px';
-                        if (inner.style.width) div.style.width = inner.style.width;
-                        if (inner.style.height) div.style.height = inner.style.height;
-                    }
-                }
-
-                host.appendChild(div);
+                document.body.appendChild(div);
                 document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
                 div.classList.add('selected');
                 
@@ -179,8 +147,7 @@
                     id: div.id, 
                     isTable: !!div.querySelector('table'), 
                     isShape: !!div.querySelector('.v4-shape'),
-                    isIcon: !!div.querySelector('.lf-icon'),
-                    isGroup: !!data.isGroup
+                    isIcon: !!div.querySelector('.lf-icon')
                 });
                 markDirty();
             }
@@ -214,24 +181,6 @@
                     targets.push({ y: r.top + r.height / 2, label: name, part: 'Middle', type: 'v' });
                     targets.push({ y: r.bottom, label: name, part: 'Bottom', type: 'v' });
                 });
-
-                // Add Inner Screens as Snap Targets (Focus on actual UI area)
-                document.querySelectorAll('.mobile-frame').forEach((f, idx) => {
-                    const content = f.querySelector('.mobile-content');
-                    if (content) {
-                        const sr = content.getBoundingClientRect();
-                        const sName = 'UI Area ' + (idx + 1);
-                        const bezel = 8; // Inset shadow bezel width
-                        targets.push({ x: sr.left + bezel, label: sName, part: 'Left', type: 'h' });
-                        targets.push({ x: sr.right - bezel, label: sName, part: 'Right', type: 'h' });
-                        targets.push({ y: sr.top + bezel, label: sName, part: 'Top', type: 'v' });
-                        targets.push({ y: sr.bottom - bezel, label: sName, part: 'Bottom', type: 'v' });
-                        // Center/Middle remain the same
-                        targets.push({ x: sr.left + sr.width / 2, label: sName, part: 'Center', type: 'h' });
-                        targets.push({ y: sr.top + sr.height / 2, label: sName, part: 'Middle', type: 'v' });
-                    }
-                });
-
                 notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
             }
         });

@@ -281,38 +281,14 @@ const v4Script = `
             const compH = (d.style && d.style.height && d.style.height !== 'auto') ? parseInt(d.style.height) || 100 : 100;
             const centerTop = Math.max(isMobileHost ? 56 : 0, sY + (vh - compH) / 2);
             const centerLeft = Math.max(isMobileHost ? 16 : 0, sX + (vw - compW) / 2);
-            
-            const v = document.createElement('div'); 
-            v.id = d.id || ('v4-comp-' + Date.now()); 
-            v.className = 'lf-component' + (d.isGroup ? ' lf-group' : ''); 
-            v.style.position = 'absolute'; 
-            v.style.top = centerTop + 'px'; 
-            v.style.left = centerLeft + 'px'; 
-            v.style.zIndex = '1000';
-            
+            const v = document.createElement('div'); v.id = d.id || ('v4-comp-' + Date.now()); v.className = 'lf-component'; v.style.position = 'absolute'; v.style.top = centerTop + 'px'; v.style.left = centerLeft + 'px'; v.style.zIndex = '500';
             if (d.style) Object.assign(v.style, d.style);
             if (isMobileHost) {
                 v.style.top = centerTop + 'px';
                 v.style.left = d.style && d.style.width === '100%' ? '0px' : centerLeft + 'px';
                 if (d.style && d.style.width === '100%') v.style.width = '100%';
             }
-            
             v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
-            
-            // Legacy Compatibility: Detect old-style molecule with absolute coordinates
-            const children = Array.from(v.children).filter(c => c.classList.contains('lf-component') || c.classList.contains('lf-group'));
-            if (children.length === 1) {
-                const inner = children[0];
-                const l = parseInt(inner.style.left) || 0;
-                const t = parseInt(inner.style.top) || 0;
-                if (l !== 0 || t !== 0) {
-                    inner.style.left = '0px';
-                    inner.style.top = '0px';
-                    if (inner.style.width) v.style.width = inner.style.width;
-                    if (inner.style.height) v.style.height = inner.style.height;
-                }
-            }
-            
             host.appendChild(v);
             markDirty();
         } else if (d.type === 'LF_INSERT_COMPONENTS') {
@@ -387,24 +363,6 @@ const v4Script = `
                 targets.push({ y: r.top + r.height / 2, label: name, part: 'Middle', type: 'v' });
                 targets.push({ y: r.bottom, label: name, part: 'Bottom', type: 'v' });
             });
-
-            // Add Inner Screens as Snap Targets (Focus on actual UI area)
-            document.querySelectorAll('.mobile-frame').forEach((f, idx) => {
-                const content = f.querySelector('.mobile-content');
-                if (content) {
-                    const sr = content.getBoundingClientRect();
-                    const sName = 'UI Area ' + (idx + 1);
-                    const bezel = 8; // Inset shadow bezel width
-                    targets.push({ x: sr.left + bezel, label: sName, part: 'Left', type: 'h' });
-                    targets.push({ x: sr.right - bezel, label: sName, part: 'Right', type: 'h' });
-                    targets.push({ y: sr.top + bezel, label: sName, part: 'Top', type: 'v' });
-                    targets.push({ y: sr.bottom - bezel, label: sName, part: 'Bottom', type: 'v' });
-                    // Center/Middle remain the same
-                    targets.push({ x: sr.left + sr.width / 2, label: sName, part: 'Center', type: 'h' });
-                    targets.push({ y: sr.top + sr.height / 2, label: sName, part: 'Middle', type: 'v' });
-                }
-            });
-
             notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
         } else if (d.type === 'LF_TABLE_ACTION') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;

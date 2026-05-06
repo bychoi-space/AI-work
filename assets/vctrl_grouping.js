@@ -292,19 +292,22 @@ window.GroupingManager = (function() {
 
         // 1. Clone and Clean HTML
         const clone = group.cloneNode(true);
-        clone.classList.remove('selected');
         clone.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
         
         // Remove internal IDs to prevent collisions when inserted multiple times
         clone.removeAttribute('id');
         clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
 
+        // Use the inner HTML to avoid double-component wrapping issues
         const moleculeData = {
             id: 'mol-' + Date.now(),
             name: name,
             category: 'Custom',
+            width: group.style.width,
+            height: group.style.height,
+            isGroup: true,
             previewHtml: `<div style="font-size: 10px; font-weight: 700; color: #6366f1;">${name}</div>`,
-            html: clone.outerHTML
+            html: clone.innerHTML
         };
 
         if (!window.state.projectMetadata) window.state.projectMetadata = {};

@@ -1,4 +1,4 @@
-@keyframes subtlePan {
+﻿@keyframes subtlePan {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
@@ -128,7 +128,7 @@ body {
 }
 
 /* ----------------------------------------------------
-   1. Header Toolbar (?�𡆀 �?
+   1. Header Toolbar (?占쏜죫 獄?
    ---------------------------------------------------- */
 .toolbar {
     height: 56px;
@@ -187,7 +187,7 @@ body {
 .tool-btn:hover { 
     background: var(--hover-bg); 
     color: var(--text-primary);
-    transform: scale(1.05); /* ?賈� ??諤�𦚯?禺� ?𧙖�諰?��??穈𤣿� */
+    transform: scale(1.05); /* ?蘊덌옙 ??獄ㅿ옙啼슣?獵븝옙 ?堤솘占썼グ?뱅쬃??令덍ㄳ울옙 */
 }
 .tool-btn:active { transform: scale(0.95); }
 .tool-btn.active { background: var(--selected-bg); color: var(--accent); }
@@ -234,7 +234,7 @@ body {
 }
 
 /* ----------------------------------------------------
-   2. Dashboard View & Card Grid (諈拘�??竾庖)
+   2. Dashboard View & Card Grid (獄덃떂占??塋얍틬)
    ---------------------------------------------------- */
 #dashboard-view {
     flex: 1;
@@ -2128,7 +2128,7 @@ body.drag-active #drop-overlay {
     text-align: center;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     transform: scale(0.9);
-    display: none;
+    display: block;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .dialog-overlay.active .dialog-card {
