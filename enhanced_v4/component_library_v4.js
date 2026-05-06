@@ -162,6 +162,16 @@ window.V4_COMPONENT_LIBRARY = {
             <div class="v4-shape v4-shape-badge" style="width: 100%; height: 100%; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 50px; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 12px; text-align: center; outline: none; font-weight: 800; font-size: 14px; white-space: nowrap;">BADGE</div>
             </div>`
+        },
+        {
+            id: 'v4-shape-pattern-grid',
+            name: 'Pattern Rect',
+            category: 'Shapes',
+            previewHtml: `<div class="v4-shape-pattern-grid" style="width: 40px; height: 30px; border: 1.6px solid #475569;"></div>`,
+            html: `
+            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+            </div>`
         }
     ],
     organisms: [
