@@ -26,6 +26,7 @@
             const comp = e.target.closest('.lf-component');
 
             if (deleteBtn && comp) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
                 comp.remove();
                 markDirty();
                 return;
@@ -47,12 +48,14 @@
             }
 
             if (resizer) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
                 isResizing = true;
                 activeEl = resizer.parentElement;
                 startX = e.clientX; startY = e.clientY;
                 startW = activeEl.offsetWidth; startH = activeEl.offsetHeight;
                 e.preventDefault();
             } else if (handle || comp) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
                 isDragging = true;
                 activeEl = comp;
                 startX = e.clientX; startY = e.clientY;
@@ -96,6 +99,8 @@
 
         document.addEventListener('input', e => {
             if (e.target.classList.contains('v4-editable-cell')) {
+                // For text edits, we usually save state on focus (mousedown), 
+                // but we mark dirty here.
                 markDirty();
             }
         });
@@ -132,6 +137,7 @@
                 const centerTop = Math.max(isMobileHost ? 56 : 0, sY + (vh - compH) / 2);
                 const centerLeft = Math.max(isMobileHost ? 16 : 0, sX + (vw - compW) / 2);
 
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
                 const div = document.createElement('div');
                 div.id = data.id || ('v4-comp-' + Date.now());
                 div.className = 'lf-component' + (data.isGroup ? ' lf-group' : '');
@@ -187,6 +193,7 @@
             else if (data.type === 'LF_UPDATE_STYLE') {
                 const selected = document.querySelector('.lf-component.selected');
                 if (!selected) return;
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
                 const target = data.selector ? selected.querySelector(data.selector) : selected;
                 if (!target) return;
                 if (data.style) Object.assign(target.style, data.style);
@@ -197,7 +204,11 @@
             }
             else if (data.type === 'LF_DELETE_SELECTED') {
                 const selected = document.querySelector('.lf-component.selected');
-                if (selected) { selected.remove(); markDirty(); }
+                if (selected) { 
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    selected.remove(); 
+                    markDirty(); 
+                }
             }
             else if (data.type === 'LF_DESELECT_ALL') {
                 document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));

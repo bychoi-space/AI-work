@@ -303,31 +303,32 @@ window.handleDeleteScreen = async function(fileName, sha) {
 };
 
 window.renderAtomicLibrary = function() {
-    // 1. Render Custom Molecules (Top Priority, Independent)
-    const customMols = window.state.projectMetadata?.molecules || [];
-    const molHeader = document.getElementById('molecules-header-text');
-    if (molHeader) {
-        molHeader.innerHTML = `MOLECULES <b style="color:var(--accent); margin-left: 4px;">(${customMols.length})</b>`;
+    // 1. Render Custom Components (formerly Molecules)
+    const customComps = window.state.projectMetadata?.molecules || [];
+    const compHeader = document.getElementById('molecules-header-text');
+    if (compHeader) {
+        compHeader.innerHTML = `COMPONENTS <b style="color:var(--accent); margin-left: 4px;">(${customComps.length})</b>`;
     }
 
     const molContainer = document.getElementById('custom-molecules-container');
     if (molContainer) {
-        const baseHtml = `
-            <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LFmall Header')" style="height: 40px; font-weight: 700;">LFmall Header</button>
-            <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LFmall (MO) Header - 상품상세')" style="height: 40px; font-weight: 700; margin-top: 8px;">LFmall (MO) Header - 상품상세</button>
-        `;
-        const customHtml = customMols.map(m => `
-            <div style="position: relative; width: 100%; margin-top: 8px;">
-                <button class="v4-inspector-btn btn-secondary" onclick="insertV4ComponentById('${m.id}')" style="width: 100%; height: 36px; font-size: 11px; font-weight: 600; background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); padding-right: 32px; justify-content: flex-start; padding-left: 12px;">
-                    <span class="material-icons-outlined" style="font-size:14px; margin-right:8px; color:var(--accent);">category</span>
-                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${m.name}</span>
-                </button>
-                <button onclick="deleteMolecule('${m.id}', event)" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.2); border: none; color: #94a3b8; cursor: pointer; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
-                    <span class="material-icons-outlined" style="font-size: 14px;">close</span>
-                </button>
+        const customHtml = customComps.map(m => `
+            <div class="v4-component-item">
+                <div class="v4-component-name-wrap" onclick="insertV4ComponentById('${m.id}')">
+                    <span class="material-icons-outlined" style="font-size:14px; margin-right:8px; color:var(--accent); flex-shrink:0;">category</span>
+                    <span class="v4-component-name" title="${m.name}">${m.name}</span>
+                </div>
+                <div class="v4-comp-actions">
+                    <button class="v4-comp-btn v4-comp-edit-btn" onclick="renameComponent('${m.id}', event)" title="이름 수정">
+                        <span class="material-icons-outlined" style="font-size: 14px;">edit</span>
+                    </button>
+                    <button class="v4-comp-btn v4-comp-delete-btn" onclick="deleteMolecule('${m.id}', event)" title="삭제">
+                        <span class="material-icons-outlined" style="font-size: 14px;">close</span>
+                    </button>
+                </div>
             </div>
         `).join('');
-        molContainer.innerHTML = baseHtml + customHtml;
+        molContainer.innerHTML = customHtml;
     }
 
     // 2. Render Other Library Parts (Dependent on static lib)

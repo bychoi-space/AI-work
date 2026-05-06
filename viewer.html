@@ -195,6 +195,75 @@
             border-color: rgba(248, 113, 113, 0.4);
         }
 
+        /* V4 Component List Styles (Synced with Screen List) */
+        .v4-component-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            height: 38px;
+            padding: 0 8px 0 12px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+        }
+        .v4-component-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .v4-component-name-wrap {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            overflow: hidden;
+            cursor: pointer;
+            height: 100%;
+        }
+        .v4-component-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: color 0.2s;
+        }
+        .v4-component-item:hover .v4-component-name {
+            color: var(--text-primary);
+        }
+        .v4-comp-actions {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+        .v4-comp-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .v4-comp-edit-btn { color: #93c5fd; }
+        .v4-comp-edit-btn:hover {
+            background: var(--accent) !important;
+            color: #000 !important;
+            border-color: var(--accent) !important;
+        }
+        .v4-comp-delete-btn { color: #fca5a5; }
+        .v4-comp-delete-btn:hover {
+            background: #ef4444 !important;
+            color: #fff !important;
+            border-color: #ef4444 !important;
+        }
     </style>
     <script>
         window.onerror = function(msg, url, line, col, error) {
@@ -377,7 +446,7 @@
                 
                 <!-- Part 1: COMPONENTS -->
                 <div class="panel-header" style="background: rgba(99, 102, 241, 0.03);">
-                    <span style="font-size: 10px; font-weight: 800; color: #818cf8; letter-spacing: 1.5px;">COMPONENTS</span>
+                    <span style="font-size: 10px; font-weight: 800; color: #818cf8; letter-spacing: 1.5px;">SHAPE</span>
                 </div>
                 <div class="components-body" style="padding: 12px;">
                     <div class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">

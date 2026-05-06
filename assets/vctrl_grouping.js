@@ -329,9 +329,9 @@ window.GroupingManager = (function() {
 
                 // Show notification safely
                 if (window.Notification && typeof window.Notification.alert === 'function') {
-                    window.Notification.alert(`'${name}'이(가) Molecules 라이브러리에 추가되었습니다.`, "저장 완료");
+                    window.Notification.alert(`'${name}'이(가) Components 라이브러리에 추가되었습니다.`, "저장 완료");
                 } else {
-                    console.log(`[V4] Molecule added: ${name}`);
+                    console.log(`[V4] Component added: ${name}`);
                 }
             } else {
                 console.error("[V4] Failed to save project metadata.");
@@ -343,12 +343,34 @@ window.GroupingManager = (function() {
 
     const deleteMolecule = async (id, e) => {
         if (e) e.stopPropagation();
-        if (!confirm("이 Molecule을 삭제하시겠습니까?")) return;
+        if (!confirm("이 컴포넌트를 삭제하시겠습니까?")) return;
 
         if (window.state.projectMetadata && window.state.projectMetadata.molecules) {
             window.state.projectMetadata.molecules = window.state.projectMetadata.molecules.filter(m => m.id !== id);
             
             // Update UI immediately
+            if (window.renderAtomicLibrary) window.renderAtomicLibrary();
+
+            // Persist
+            const saveFn = window.saveProjectMetadata || (typeof saveProjectMetadata === 'function' ? saveProjectMetadata : null);
+            if (saveFn) {
+                await saveFn(window.state.currentProject, window.state.projectMetadata);
+            }
+        }
+    };
+
+    const renameMolecule = async (id, e) => {
+        if (e) e.stopPropagation();
+        const molecules = window.state.projectMetadata?.molecules || [];
+        const mol = molecules.find(m => m.id === id);
+        if (!mol) return;
+
+        const newName = prompt("새로운 컴포넌트 이름을 입력하세요:", mol.name);
+        if (newName && newName.trim() && newName !== mol.name) {
+            mol.name = newName.trim();
+            mol.previewHtml = `<div style="font-size: 10px; font-weight: 700; color: #6366f1;">${mol.name}</div>`;
+            
+            // Update UI
             if (window.renderAtomicLibrary) window.renderAtomicLibrary();
 
             // Persist
@@ -366,11 +388,13 @@ window.GroupingManager = (function() {
         groupSelected,
         ungroupSelected,
         addToMolecules,
-        deleteMolecule
+        deleteMolecule,
+        renameMolecule
     };
 })();
 
 window.deleteMolecule = (id, e) => window.GroupingManager.deleteMolecule(id, e);
+window.renameComponent = (id, e) => window.GroupingManager.renameMolecule(id, e);
 
 // Auto-init when ready
 document.addEventListener('DOMContentLoaded', () => {

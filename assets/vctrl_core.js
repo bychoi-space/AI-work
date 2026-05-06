@@ -70,6 +70,47 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
 `;
 
+const v4UndoScript = `
+window.V4UndoManager = (function() {
+    const MAX_HISTORY = 5;
+    let undoStack = [];
+    function notifyParent(data) { if (window.parent) window.parent.postMessage(data, '*'); }
+    function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
+    function getCleanHTML() {
+        const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+        const clone = host.cloneNode(true);
+        clone.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
+        clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+        return clone.innerHTML;
+    }
+    return {
+        saveState: function() {
+            const currentState = getCleanHTML();
+            if (undoStack.length > 0 && undoStack[undoStack.length - 1] === currentState) return;
+            undoStack.push(currentState);
+            if (undoStack.length > MAX_HISTORY) undoStack.shift();
+        },
+        undo: function() {
+            if (undoStack.length === 0) return;
+            const prevState = undoStack.pop();
+            const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+            host.innerHTML = prevState;
+            if (typeof window.initHandles === 'function') window.initHandles();
+            markDirty();
+        },
+        init: function() {
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                    e.preventDefault();
+                    this.undo();
+                }
+            });
+        }
+    };
+})();
+if (window.V4UndoManager) window.V4UndoManager.init();
+`;
+
 const v4Script = `
 (function() {
     let isDragging = false, isResizing = false, activeEl = null;
@@ -166,6 +207,7 @@ const v4Script = `
         }
 
         if (d && c) { 
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             c.remove(); 
             markDirty(); 
             notifyParent({ type: 'LF_DESELECT' });
@@ -192,6 +234,7 @@ const v4Script = `
             notifyParent({ type: 'LF_DESELECT' });
         }
         if (r) { 
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             isResizing = true; 
             activeEl = r.parentElement; 
             startX = e.clientX; startY = e.clientY; 
@@ -199,6 +242,7 @@ const v4Script = `
             e.preventDefault(); 
         }
         else if (h || (c && !e.target.closest('.v4-editable-cell'))) { 
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             isDragging = true; activeEl = c; 
             startX = e.clientX; startY = e.clientY; 
             startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
@@ -206,6 +250,7 @@ const v4Script = `
             notifyParent({ type: 'LF_SNAP_START' });
             if (h) e.preventDefault(); 
         } else if (e.target.closest('.v4-editable-cell')) {
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             e.target.closest('.v4-editable-cell').focus();
         }
     });
@@ -282,6 +327,7 @@ const v4Script = `
             const centerTop = Math.max(isMobileHost ? 56 : 0, sY + (vh - compH) / 2);
             const centerLeft = Math.max(isMobileHost ? 16 : 0, sX + (vw - compW) / 2);
             
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             const v = document.createElement('div'); 
             v.id = d.id || ('v4-comp-' + Date.now()); 
             v.className = 'lf-component' + (d.isGroup ? ' lf-group' : ''); 
@@ -340,6 +386,7 @@ const v4Script = `
             }
         } else if (d.type === 'LF_UPDATE_STYLE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             const t = d.selector ? s.querySelector(d.selector) : s; if (!t) return;
             
             if (d.style) {
@@ -369,6 +416,7 @@ const v4Script = `
         } else if (d.type === 'LF_DELETE_SELECTED') {
             const s = document.querySelector('.lf-component.selected'); 
             if (s) { 
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
                 s.remove(); 
                 markDirty(); 
                 notifyParent({ type: 'LF_DESELECT' });
@@ -408,6 +456,7 @@ const v4Script = `
             notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
         } else if (d.type === 'LF_TABLE_ACTION') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             const table = s.querySelector('table'); if (!table) return;
             const focused = table.querySelector('.v4-editable-cell:focus') || table.querySelector('td, th');
             const row = focused ? focused.closest('tr') : null;
@@ -535,7 +584,7 @@ window.loadScreen = async function(fileName) {
     }
 
     // Inject/Update Script
-    const scriptBlock = `<script id="v4-inlined-script">\n${v4Script}\n</script>`;
+    const scriptBlock = `<script id="v4-inlined-script">\n${v4UndoScript}\n${v4Script}\n</script>`;
     if (finalContent.includes('id="v4-inlined-script"')) {
         finalContent = finalContent.replace(/<script id="v4-inlined-script">[\s\S]*?<\/script>/i, scriptBlock);
     } else if (!finalContent.includes('vctrl_v4_iframe.js')) {
@@ -666,28 +715,6 @@ window.insertAtomicComponent = function(type, name) {
     } else if (name === 'LF Discount') {
         contentHtml = `<div style="color:#E02020; font-size:24px; font-weight:800; font-family:sans-serif; text-align:center; pointer-events:none; line-height:1.2;">20%</div>`;
         defaultStyle = { width: '60px', height: '30px' };
-    } else if (name === 'LFmall Header') {
-        contentHtml = `<div style="background:#fff; width:100%; height:50px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom: 1px solid #f2f2f2; pointer-events:none; box-sizing: border-box;"><div style="display: flex; align-items: center; width: 33%;"><div class="lf-icon lf-icon-bell" style="filter: brightness(0); transform: scale(0.65); transform-origin: left center;"></div></div><div style="display: flex; align-items: center; justify-content: center; width: 33%;"><img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="height: 20px;"></div><div style="display: flex; align-items: center; justify-content: flex-end; width: 33%; gap: 0px;"><div class="lf-icon lf-icon-search" style="filter: brightness(0); transform: scale(0.65); transform-origin: right center;"></div><div style="position: relative; width: 26px; height: 26px; margin-left: 8px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0); transform: scale(0.65); transform-origin: center right; position: absolute; right: 0;"></div><div style="position: absolute; top: -2px; right: -4px; background: #e60012; color: #fff; font-size: 10px; font-weight: 800; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-family: sans-serif; z-index: 2;">1</div></div></div></div>`;
-        defaultStyle = { width: '100%', height: '50px' };
-    } else if (name === 'LFmall (MO) Header - 상품상세') {
-        const baseTop = 56; 
-        const baseLeft = 0;
-        const iconStyle = `width:100%; height:100%; color:#1e293b;`;
-        const svgAttr = `viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="${iconStyle}"`;
-        
-        const components = [
-            { id: `header-bg-${Date.now()}`, html: `<div class="v4-shape v4-shape-rect" style="width:100%; height:100%; border-width:1.6px !important; border-style:solid !important; border-color:#f1f5f9; background:#ffffff; border-radius:0;"></div>`, style: { top: `${baseTop}px`, left: `${baseLeft}px`, width: '375px', height: '50px' } },
-            { id: `header-back-${Date.now()}`, html: `<svg ${svgAttr}><polyline points="15 18 9 12 15 6"></polyline></svg>`, style: { top: `${baseTop + 15}px`, left: `${baseLeft + 16}px`, width: '20px', height: '20px' } },
-            { id: `header-search-${Date.now()}`, html: `<svg ${svgAttr}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`, style: { top: `${baseTop + 15}px`, left: `${baseLeft + 271}px`, width: '20px', height: '20px' } },
-            { id: `header-home-${Date.now()}`, html: `<svg ${svgAttr}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`, style: { top: `${baseTop + 15}px`, left: `${baseLeft + 305}px`, width: '20px', height: '20px' } },
-            { id: `header-cart-${Date.now()}`, html: `<svg ${svgAttr}><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>`, style: { top: `${baseTop + 15}px`, left: `${baseLeft + 339}px`, width: '20px', height: '20px' } }
-        ];
-
-        const iframe = document.getElementById('main-iframe');
-        if (iframe && iframe.contentWindow) {
-            MessageHub.send(iframe.contentWindow, 'LF_INSERT_COMPONENTS', { components });
-        }
-        return;
     } else if (type === 'icon') {
         if (name === 'Arrow Left') {
             contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
