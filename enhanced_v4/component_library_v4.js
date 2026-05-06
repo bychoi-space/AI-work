@@ -28,6 +28,13 @@ window.V4_COMPONENT_LIBRARY = {
             <div class="v4-shape v4-shape-text" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid transparent; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 8px; text-align: center; outline: none; font-weight: 500; font-size: 14px; word-break: break-word; white-space: pre-wrap;">Enter Premium Text</div>
             </div>`
+        },
+        {
+            id: 'v4-atom-icon-share',
+            name: 'Share Icon (Premium)',
+            category: 'Atoms',
+            previewHtml: `<img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width: 24px;">`,
+            html: `<img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;">`
         }
     ],
     molecules: [
