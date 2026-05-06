@@ -101,21 +101,9 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
                     <div class="mobile-ui-header"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Detail</div><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; font-weight:700; color:#64748b;">Share</div></div>
                     
                 </div>
-                <div id="m2-b-hero" class="lf-component" style="top:120px; left:20px; width:335px; height:240px;">
-                    
-                    <div class="mobile-ui-list" style="display:flex; align-items:center; justify-content:center; background:#e2e8f0;"><div contenteditable="true" class="v4-editable-cell" style="font-size:16px; font-weight:900; color:#475569;">Image / Preview</div></div>
-                    
-                </div>
-                <div id="m2-b-info" class="lf-component" style="top:386px; left:20px; width:335px; height:150px;">
-                    
-                    <div class="mobile-ui-list"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Detail Title</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; font-size:14px; line-height:1.45;">Describe selected state, data, policy, or UX behavior here.</div></div>
-                    
-                </div>
-                <div id="m2-b-cta" class="lf-component" style="top:716px; left:20px; width:335px; height:50px;">
-                    
-                    <div contenteditable="true" class="v4-editable-cell" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:25px; background:#111827; color:#fff; font-size:14px; font-weight:800;">Primary CTA</div>
-                    
-                </div>
+                
+                
+                
             </div>
             <div class="mobile-home-indicator"></div>
         </div>
@@ -421,6 +409,24 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
                 targets.push({ y: r.top + r.height / 2, label: name, part: 'Middle', type: 'v' });
                 targets.push({ y: r.bottom, label: name, part: 'Bottom', type: 'v' });
             });
+
+            // Add Inner Screens as Snap Targets (Focus on actual UI area)
+            document.querySelectorAll('.mobile-frame').forEach((f, idx) => {
+                const content = f.querySelector('.mobile-content');
+                if (content) {
+                    const sr = content.getBoundingClientRect();
+                    const sName = 'UI Area ' + (idx + 1);
+                    const bezel = 8; // Inset shadow bezel width
+                    targets.push({ x: sr.left + bezel, label: sName, part: 'Left', type: 'h' });
+                    targets.push({ x: sr.right - bezel, label: sName, part: 'Right', type: 'h' });
+                    targets.push({ y: sr.top + bezel, label: sName, part: 'Top', type: 'v' });
+                    targets.push({ y: sr.bottom - bezel, label: sName, part: 'Bottom', type: 'v' });
+                    // Center/Middle remain the same
+                    targets.push({ x: sr.left + sr.width / 2, label: sName, part: 'Center', type: 'h' });
+                    targets.push({ y: sr.top + sr.height / 2, label: sName, part: 'Middle', type: 'v' });
+                }
+            });
+
             notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
         } else if (d.type === 'LF_TABLE_ACTION') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
