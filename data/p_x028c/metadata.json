@@ -39,12 +39,6 @@
       "updatedAt": "2026-04-30T08:26:30.726Z",
       "template": "template_cover.html",
       "description": []
-    },
-    "Test_Restoration.html": {
-      "title": "Test_Restoration",
-      "type": "cover",
-      "updatedAt": "2026-05-04T02:03:58.089Z",
-      "template": "template_cover.html"
     }
   },
   "assignee": "최범열",
@@ -53,7 +47,6 @@
   "developer": "신소연",
   "screenOrder": [
     "00_Cover_7528.html",
-    "01_Delivery_Notice.html",
-    "Test_Restoration.html"
+    "01_Delivery_Notice.html"
   ]
 }
