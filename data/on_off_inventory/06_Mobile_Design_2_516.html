@@ -72,6 +72,14 @@
 .v4-shape-circle { border-radius: 50%; }
 .v4-shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); border: none !important; }
 .v4-shape-diamond { border: none !important; }
+.v4-shape-pattern-grid { 
+    background-color: #ffffff !important; 
+    background-image: 
+        linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)), 
+        linear-gradient(-45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)) !important; 
+    background-size: 12px 12px !important; 
+    border-radius: 0 !important; 
+}
 /* Reset background for new SVG/Custom atoms to prevent sprite leakage */
 svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
@@ -107,15 +115,58 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
             </div>
             <div class="mobile-home-indicator"></div>
         </div>
-    <div id="group-1777881857792" class="lf-component lf-group" style="position: absolute; top: 96px; left: 308px; width: 360px; height: 50px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial;">
+    <div id="v4-comp-1778058131507" class="lf-component" style="position: absolute; top: 75px; left: 307.5px; z-index: 1000; width: 360px; height: 360px;">
+            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+            </div></div><div id="v4-comp-1778058170162" class="lf-component" style="position: absolute; top: 75px; left: 307.5px; z-index: 1000; width: 360px; height: 50px;"><div class="lf-component lf-group" style="position: absolute; top: 0px; left: 0px; width: 360px; height: 50px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial;">
             
             
             
-        <div id="v4-comp-1777878157262" class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 500; width: 360px; height: 50px;">
+        <div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 500; width: 360px; height: 50px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><br></div>
-            </div></div><div id="lf-comp-1777878224236" class="lf-component" style="position: absolute; top: 8px; left: 10px; z-index: 500; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div id="lf-comp-1777878238237" class="lf-component" style="position: absolute; top: 3px; left: 225px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-search" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878244185" class="lf-component" style="position: absolute; top: 3px; left: 265px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-home" style="filter: brightness(0);"></div></div><div id="lf-comp-1777878253190" class="lf-component" style="position: absolute; top: 3px; left: 305px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div></div>
+            </div></div><div class="lf-component" style="position: absolute; top: 8px; left: 10px; z-index: 500; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="lf-component" style="position: absolute; top: 3px; left: 225px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-search" style="filter: brightness(0);"></div></div><div class="lf-component" style="position: absolute; top: 3px; left: 265px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-home" style="filter: brightness(0);"></div></div><div class="lf-component" style="position: absolute; top: 3px; left: 305px; z-index: 500; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div></div></div>
 <script id="v4-inlined-script">
+
+window.V4UndoManager = (function() {
+    const MAX_HISTORY = 5;
+    let undoStack = [];
+    function notifyParent(data) { if (window.parent) window.parent.postMessage(data, '*'); }
+    function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
+    function getCleanHTML() {
+        const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+        const clone = host.cloneNode(true);
+        clone.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
+        clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+        return clone.innerHTML;
+    }
+    return {
+        saveState: function() {
+            const currentState = getCleanHTML();
+            if (undoStack.length > 0 && undoStack[undoStack.length - 1] === currentState) return;
+            undoStack.push(currentState);
+            if (undoStack.length > MAX_HISTORY) undoStack.shift();
+        },
+        undo: function() {
+            if (undoStack.length === 0) return;
+            const prevState = undoStack.pop();
+            const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+            host.innerHTML = prevState;
+            if (typeof window.initHandles === 'function') window.initHandles();
+            markDirty();
+        },
+        init: function() {
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                    e.preventDefault();
+                    this.undo();
+                }
+            });
+        }
+    };
+})();
+if (window.V4UndoManager) window.V4UndoManager.init();
+
 
 (function() {
     let isDragging = false, isResizing = false, activeEl = null;
@@ -212,6 +263,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
         }
 
         if (d && c) { 
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             c.remove(); 
             markDirty(); 
             notifyParent({ type: 'LF_DESELECT' });
@@ -238,6 +290,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
             notifyParent({ type: 'LF_DESELECT' });
         }
         if (r) { 
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             isResizing = true; 
             activeEl = r.parentElement; 
             startX = e.clientX; startY = e.clientY; 
@@ -245,6 +298,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
             e.preventDefault(); 
         }
         else if (h || (c && !e.target.closest('.v4-editable-cell'))) { 
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             isDragging = true; activeEl = c; 
             startX = e.clientX; startY = e.clientY; 
             startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
@@ -252,6 +306,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
             notifyParent({ type: 'LF_SNAP_START' });
             if (h) e.preventDefault(); 
         } else if (e.target.closest('.v4-editable-cell')) {
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             e.target.closest('.v4-editable-cell').focus();
         }
     });
@@ -327,14 +382,39 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
             const compH = (d.style && d.style.height && d.style.height !== 'auto') ? parseInt(d.style.height) || 100 : 100;
             const centerTop = Math.max(isMobileHost ? 56 : 0, sY + (vh - compH) / 2);
             const centerLeft = Math.max(isMobileHost ? 16 : 0, sX + (vw - compW) / 2);
-            const v = document.createElement('div'); v.id = d.id || ('v4-comp-' + Date.now()); v.className = 'lf-component'; v.style.position = 'absolute'; v.style.top = centerTop + 'px'; v.style.left = centerLeft + 'px'; v.style.zIndex = '500';
+            
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const v = document.createElement('div'); 
+            v.id = d.id || ('v4-comp-' + Date.now()); 
+            v.className = 'lf-component' + (d.isGroup ? ' lf-group' : ''); 
+            v.style.position = 'absolute'; 
+            v.style.top = centerTop + 'px'; 
+            v.style.left = centerLeft + 'px'; 
+            v.style.zIndex = '1000';
+            
             if (d.style) Object.assign(v.style, d.style);
             if (isMobileHost) {
                 v.style.top = centerTop + 'px';
                 v.style.left = d.style && d.style.width === '100%' ? '0px' : centerLeft + 'px';
                 if (d.style && d.style.width === '100%') v.style.width = '100%';
             }
+            
             v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
+            
+            // Legacy Compatibility: Detect old-style molecule with absolute coordinates
+            const children = Array.from(v.children).filter(c => c.classList.contains('lf-component') || c.classList.contains('lf-group'));
+            if (children.length === 1) {
+                const inner = children[0];
+                const l = parseInt(inner.style.left) || 0;
+                const t = parseInt(inner.style.top) || 0;
+                if (l !== 0 || t !== 0) {
+                    inner.style.left = '0px';
+                    inner.style.top = '0px';
+                    if (inner.style.width) v.style.width = inner.style.width;
+                    if (inner.style.height) v.style.height = inner.style.height;
+                }
+            }
+            
             host.appendChild(v);
             markDirty();
         } else if (d.type === 'LF_INSERT_COMPONENTS') {
@@ -362,6 +442,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
             }
         } else if (d.type === 'LF_UPDATE_STYLE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             const t = d.selector ? s.querySelector(d.selector) : s; if (!t) return;
             
             if (d.style) {
@@ -391,6 +472,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
         } else if (d.type === 'LF_DELETE_SELECTED') {
             const s = document.querySelector('.lf-component.selected'); 
             if (s) { 
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
                 s.remove(); 
                 markDirty(); 
                 notifyParent({ type: 'LF_DESELECT' });
@@ -430,6 +512,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
             notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
         } else if (d.type === 'LF_TABLE_ACTION') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             const table = s.querySelector('table'); if (!table) return;
             const focused = table.querySelector('.v4-editable-cell:focus') || table.querySelector('td, th');
             const row = focused ? focused.closest('tr') : null;
