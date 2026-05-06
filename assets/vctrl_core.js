@@ -67,7 +67,9 @@ const v4Styles = `
 .v4-shape-diamond { border: none !important; }
 .v4-shape-pattern-grid { 
     background-color: #ffffff !important; 
-    background-image: linear-gradient(45deg, #e5e7eb 1px, transparent 1px), linear-gradient(-45deg, #e5e7eb 1px, transparent 1px) !important; 
+    background-image: 
+        linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)), 
+        linear-gradient(-45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)) !important; 
     background-size: 12px 12px !important; 
     border-radius: 0 !important; 
 }
