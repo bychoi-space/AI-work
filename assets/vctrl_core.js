@@ -65,6 +65,12 @@ const v4Styles = `
 .v4-shape-circle { border-radius: 50%; }
 .v4-shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); border: none !important; }
 .v4-shape-diamond { border: none !important; }
+.v4-shape-pattern-grid { 
+    background-color: #ffffff !important; 
+    background-image: linear-gradient(45deg, #e5e7eb 1px, transparent 1px), linear-gradient(-45deg, #e5e7eb 1px, transparent 1px) !important; 
+    background-size: 12px 12px !important; 
+    border-radius: 0 !important; 
+}
 /* Reset background for new SVG/Custom atoms to prevent sprite leakage */
 svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
