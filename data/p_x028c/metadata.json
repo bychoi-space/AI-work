@@ -36,7 +36,7 @@
     "00_Cover_7528.html": {
       "title": "00_프로젝트 표지",
       "type": "cover",
-      "updatedAt": "2026-05-07T06:39:25.193Z",
+      "updatedAt": "2026-05-07T06:42:24.943Z",
       "template": "template_cover.html",
       "description": []
     },
@@ -49,7 +49,7 @@
   },
   "assignee": "최범열",
   "period": "2026.04.27 ~ 2026.05.05",
-  "jira": "LFML-143087",
+  "jira": "LFML-143087LFML-123456$1",
   "developer": "신소연",
   "screenOrder": [
     "00_Cover_7528.html",
