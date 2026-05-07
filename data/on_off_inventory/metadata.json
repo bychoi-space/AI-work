@@ -70,12 +70,6 @@
       "type": "plan",
       "updatedAt": "2026-05-06T08:23:00.000Z",
       "description": []
-    },
-    "07_LFMall_Home_MO_473.html": {
-      "title": "07_LFMall_Home_MO_473",
-      "type": "lfmall",
-      "updatedAt": "2026-05-07T04:10:19.248Z",
-      "template": "template_lfmall_home_mo.html"
     }
   },
   "screenOrder": [
@@ -84,8 +78,7 @@
     "02_LFmall_DB_Structure.html",
     "03_Project_Schedule.html",
     "07_Project_Calendar.html",
-    "06_Mobile_Design_2_516.html",
-    "07_LFMall_Home_MO_473.html"
+    "06_Mobile_Design_2_516.html"
   ],
   "developer": "",
   "molecules": [
