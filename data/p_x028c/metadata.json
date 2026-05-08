@@ -36,14 +36,14 @@
     "00_Cover_55.html": {
       "title": "00_Cover_55",
       "type": "cover",
-      "updatedAt": "2026-05-08T02:10:52.944Z",
+      "updatedAt": "2026-05-08T02:12:00.169Z",
       "template": "template_cover.html",
       "description": []
     }
   },
   "assignee": "최범열",
   "period": "2026.04.27 ~ 2026.05.05",
-  "jira": "LFML-143087LFML-123456$1",
+  "jira": "LFML-143087",
   "developer": "신소연",
   "screenOrder": [
     "00_Cover_55.html",
