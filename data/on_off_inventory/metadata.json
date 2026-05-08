@@ -44,22 +44,22 @@
     "06_Mobile_Design_2_516.html": {
       "title": "06_Mobile_Design_2_516",
       "type": "mobile-ui",
-      "updatedAt": "2026-05-06T09:08:12.150Z",
+      "updatedAt": "2026-05-08T00:15:20.988Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
-          "html": "<p>브랜드명칭 〉카테고리</p>",
+          "html": "<p><span style=\"font-size: 14px;\">브랜드명칭 〉카테고리</span></p>",
           "text": "브랜드명칭 〉카테고리",
-          "x": 28.181456738708636,
-          "y": 51.43957396202228,
+          "x": 28.333333333333332,
+          "y": 53.66180000000001,
           "type": "text",
           "color": "#000000"
         },
         {
           "html": "<p>[시즌] [마케팅문구] 상품명 ABCD 1234</p>",
           "text": "[시즌] [마케팅문구] 상품명 ABCD 1234",
-          "x": 32.7551,
-          "y": 56.0199,
+          "x": 66.02083418104384,
+          "y": 55.884044444444434,
           "type": "text",
           "color": "#000000"
         }
