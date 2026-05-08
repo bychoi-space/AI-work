@@ -50,16 +50,16 @@
         {
           "html": "<p><span style=\"font-size: 14px;\">브랜드명칭 〉카테고리</span></p>",
           "text": "브랜드명칭 〉카테고리",
-          "x": 28.333333333333332,
-          "y": 53.66180000000001,
+          "x": 27.604166666666668,
+          "y": 52.22222222222223,
           "type": "text",
           "color": "#000000"
         },
         {
-          "html": "<p>[시즌] [마케팅문구] 상품명 ABCD 1234</p>",
+          "html": "<p><strong>[시즌] [마케팅문구] 상품명 ABCD 1234</strong></p>",
           "text": "[시즌] [마케팅문구] 상품명 ABCD 1234",
-          "x": 66.02083418104384,
-          "y": 55.884044444444434,
+          "x": 32.32642222222222,
+          "y": 56.666644444444444,
           "type": "text",
           "color": "#000000"
         }
@@ -84,9 +84,9 @@
   "molecules": [
     {
       "id": "mol-1777884611186",
-      "name": "Custom Molecule112",
+      "name": "LFmall (MO) Header - 상품상세",
       "category": "Custom",
-      "previewHtml": "<div style=\"font-size: 10px; font-weight: 700; color: #6366f1;\">Custom Molecule112</div>",
+      "previewHtml": "<div style=\"font-size: 10px; font-weight: 700; color: #6366f1;\">LFmall (MO) Header - 상품상세</div>",
       "html": "<div class=\"lf-component lf-group\" style=\"position: absolute; top: 96px; left: 308px; width: 360px; height: 50px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial;\">\n            \n            \n            \n        <div class=\"lf-component\" style=\"position: absolute; top: 0px; left: 0px; z-index: 500; width: 360px; height: 50px;\">\n            <div class=\"v4-shape v4-shape-rect\" style=\"width: 100%; height: 100%; background: transparent; border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;\">\n                <div contenteditable=\"true\" class=\"v4-editable-cell\" style=\"width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;\"><br></div>\n            </div></div><div class=\"lf-component\" style=\"position: absolute; top: 8px; left: 10px; z-index: 500; width: 30px; height: 30px;\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lf-icon\" style=\"width:100%; height:100%;\"><polyline points=\"15 18 9 12 15 6\"></polyline></svg></div><div class=\"lf-component\" style=\"position: absolute; top: 3px; left: 225px; z-index: 500; width: 40px; height: 40px;\"><div class=\"lf-icon lf-icon-search\" style=\"filter: brightness(0);\"></div></div><div class=\"lf-component\" style=\"position: absolute; top: 3px; left: 265px; z-index: 500; width: 40px; height: 40px;\"><div class=\"lf-icon lf-icon-home\" style=\"filter: brightness(0);\"></div></div><div class=\"lf-component\" style=\"position: absolute; top: 3px; left: 305px; z-index: 500; width: 40px; height: 40px;\"><div class=\"lf-icon lf-icon-cart\" style=\"filter: brightness(0);\"></div></div></div>"
     }
   ]
