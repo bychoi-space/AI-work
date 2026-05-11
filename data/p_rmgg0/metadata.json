@@ -1,6 +1,13 @@
 {
   "title": "[기획전] 리뷰 카드",
-  "screens": {},
+  "screens": {
+    "00_Cover_289.html": {
+      "title": "00_Cover_289",
+      "type": "cover",
+      "updatedAt": "2026-05-11T08:41:32.240Z",
+      "template": "template_cover.html"
+    }
+  },
   "assignee": "최범열",
   "developer": "",
   "period": "2026.04.27(월) ~ 2026.05.14(목)"
