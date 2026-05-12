@@ -11,9 +11,26 @@
     "06_Mobile_Design_3_773.html": {
       "title": "06_Mobile_Design_3_773",
       "type": "mobile-ui",
-      "updatedAt": "2026-05-12T00:09:49.818Z",
+      "updatedAt": "2026-05-12T00:11:37.070Z",
       "template": "template_mobile_ui_3.html",
-      "description": []
+      "description": [
+        {
+          "html": "<p>TITLE</p>",
+          "text": "TITLE",
+          "x": 20.555555555555554,
+          "y": 17.8495148481692,
+          "type": "text",
+          "color": "#000000"
+        },
+        {
+          "html": "<p>DESCRIPTION</p>",
+          "text": "DESCRIPTION",
+          "x": 20.555555555555554,
+          "y": 21.405055555555556,
+          "type": "text",
+          "color": "#000000"
+        }
+      ]
     }
   },
   "assignee": "최범열",
