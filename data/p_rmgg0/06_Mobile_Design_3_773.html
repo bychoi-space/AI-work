@@ -317,8 +317,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const snapDx = d.x - currentRect.left, snapDy = d.y - currentRect.top;
             if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
                 document.querySelectorAll('.lf-component.selected').forEach(c => {
-                    c.style.left = (parseInt(c.style.left || 0) + snapDx) + 'px';
-                    c.style.top = (parseInt(c.style.top || 0) + snapDy) + 'px';
+                    const curL = parseFloat(c.style.left) || 0;
+                    const curT = parseFloat(c.style.top) || 0;
+                    c.style.left = (curL + snapDx) + 'px';
+                    c.style.top = (curT + snapDy) + 'px';
                     updateHandles(c);
                 });
                 notifyParent({ type: 'LF_SELECTION_MOVE', dx: snapDx, dy: snapDy });
@@ -328,8 +330,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (comps.length > 0) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
                 comps.forEach(c => {
-                    c.style.left = (parseInt(c.style.left || 0) + (d.dx || 0)) + 'px';
-                    c.style.top = (parseInt(c.style.top || 0) + (d.dy || 0)) + 'px';
+                    const curL = parseFloat(c.style.left) || 0;
+                    const curT = parseFloat(c.style.top) || 0;
+                    c.style.left = (curL + (d.dx || 0)) + 'px';
+                    c.style.top = (curT + (d.dy || 0)) + 'px';
                     updateHandles(c);
                 });
                 notifyParent({ type: 'LF_SELECTION_MOVE', dx: d.dx || 0, dy: d.dy || 0 });
@@ -417,6 +421,33 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             } else if ((act === 'del-row' || act === 'del_row') && row && table.rows.length > 1) { row.remove(); }
             else if ((act === 'del-col' || act === 'del_col') && cell) { const idx = cell.cellIndex; Array.from(table.rows).forEach(r => { if (r.cells[idx]) r.cells[idx].remove(); }); }
             markDirty();
+        }
+    });
+
+    document.addEventListener('keydown', e => {
+        const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+        if (!arrowKeys.includes(e.key)) return;
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+        const comps = document.querySelectorAll('.lf-component.selected');
+        e.preventDefault();
+        const step = e.shiftKey ? 10 : 1;
+        const dx = e.key === 'ArrowLeft' ? -step : e.key === 'ArrowRight' ? step : 0;
+        const dy = e.key === 'ArrowUp' ? -step : e.key === 'ArrowDown' ? step : 0;
+
+        if (comps.length > 0) {
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            comps.forEach(c => {
+                const curL = parseFloat(c.style.left) || 0;
+                const curT = parseFloat(c.style.top) || 0;
+                c.style.left = (curL + dx) + 'px';
+                c.style.top = (curT + dy) + 'px';
+                updateHandles(c);
+            });
+            notifyParent({ type: 'LF_SELECTION_MOVE', dx, dy });
+            markDirty();
+        } else {
+            // Forward nudge to parent even if nothing is selected in iframe (could be a connector in parent)
+            notifyParent({ type: 'LF_NUDGE', dx, dy });
         }
     });
 
