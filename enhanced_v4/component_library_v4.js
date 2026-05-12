@@ -118,26 +118,18 @@ window.V4_COMPONENT_LIBRARY = {
             </div>`
         },
         {
-            id: 'v4-shape-arrow-straight',
-            name: 'Straight Arrow',
+            id: 'v4-connector-straight',
+            name: '선그리기 (직선)',
             category: 'Shapes',
-            previewHtml: `<div style="display: flex; align-items: center; width: 30px;"><div style="flex: 1; height: 2px; background: #64748b;"></div><div style="width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #64748b;"></div></div>`,
-            html: `
-            <div class="v4-shape v4-shape-arrow-straight" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-end; padding: 0; box-sizing: border-box; overflow: visible;">
-                <div style="flex: 1; height: 2px; background: #64748b; z-index: 1;"></div>
-                <div style="width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 10px solid #64748b; margin-left: -1px; z-index: 2;"></div>
-            </div>`
+            previewHtml: `<div style="display: flex; align-items: center; width: 30px;"><div style="flex: 1; height: 2px; background: #3b82f6;"></div><div style="width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #3b82f6;"></div></div>`,
+            onclick: "window.ConnectorEngine && window.ConnectorEngine.spawnLine('straight')"
         },
         {
-            id: 'v4-shape-arrow-elbow',
-            name: 'Elbow Arrow',
+            id: 'v4-connector-elbow',
+            name: '선그리기 (꺾임)',
             category: 'Shapes',
-            previewHtml: `<div style="width: 24px; height: 24px; border-left: 2px solid #64748b; border-bottom: 2px solid #64748b; position: relative;"><div style="position: absolute; right: -6px; bottom: -4px; width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #64748b;"></div></div>`,
-            html: `
-            <div class="v4-shape v4-shape-arrow-elbow" style="width: 100%; height: 100%; position: relative; display: flex; align-items: flex-end; box-sizing: border-box; overflow: visible;">
-                <div style="width: 100%; height: 100%; border-left: 2px solid #64748b; border-bottom: 2px solid #64748b; border-bottom-left-radius: 6px; box-sizing: border-box;"></div>
-                <div style="position: absolute; right: -2px; bottom: -6px; width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 10px solid #64748b;"></div>
-            </div>`
+            previewHtml: `<div style="width: 24px; height: 24px; border-left: 2px solid #3b82f6; border-bottom: 2px solid #3b82f6; position: relative;"><div style="position: absolute; right: -6px; bottom: -4px; width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #3b82f6;"></div></div>`,
+            onclick: "window.ConnectorEngine && window.ConnectorEngine.spawnLine('elbow')"
         },
         {
             id: 'v4-shape-divider',

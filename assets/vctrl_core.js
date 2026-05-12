@@ -17,6 +17,7 @@ window.state = {
     dragLayerRect: null,
     startX: 0, startY: 0,
     screens: [],
+    connectors: [],
     get isReadOnly() { return (window.ghConfig && window.ghConfig.isReadOnly) || false; },
     hasUnsavedChanges: false,
     isEditing: false,
@@ -61,6 +62,7 @@ const v4Styles = `
 .lf-icon-bell { background-position: 25% 33.33%; }
 .lf-icon-back { background-position: 0% 33.33%; }
 .v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
+img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; object-fit: contain; }
 .v4-shape-rect { border-radius: 8px; }
 .v4-shape-circle { border-radius: 50%; }
 .v4-shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); border: none !important; }
@@ -80,10 +82,13 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 
 const v4UndoScript = `
 window.V4UndoManager = (function() {
-    const MAX_HISTORY = 5;
+    const MAX_HISTORY = 10;
     let undoStack = [];
+    let currentConnectors = []; // Locally synced connectors for secure undo
+    
     function notifyParent(data) { if (window.parent) window.parent.postMessage(data, '*'); }
     function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
+    
     function getCleanHTML() {
         const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
         const clone = host.cloneNode(true);
@@ -91,26 +96,47 @@ window.V4UndoManager = (function() {
         clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
         return clone.innerHTML;
     }
+
     return {
         saveState: function() {
-            const currentState = getCleanHTML();
-            if (undoStack.length > 0 && undoStack[undoStack.length - 1] === currentState) return;
-            undoStack.push(currentState);
-            if (undoStack.length > MAX_HISTORY) undoStack.shift();
+            try {
+                const html = getCleanHTML();
+                const connectors = JSON.parse(JSON.stringify(currentConnectors));
+                const currentState = JSON.stringify({ html, connectors });
+                if (undoStack.length > 0 && undoStack[undoStack.length - 1] === currentState) return;
+                undoStack.push(currentState);
+                if (undoStack.length > MAX_HISTORY) undoStack.shift();
+                console.log("[V4 Undo] State Saved (HTML + " + connectors.length + " Connectors)");
+            } catch (e) { console.warn("[V4 Undo] Save failed:", e); }
         },
         undo: function() {
-            if (undoStack.length === 0) return;
-            const prevState = undoStack.pop();
-            const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
-            host.innerHTML = prevState;
-            if (typeof window.initHandles === 'function') window.initHandles();
-            markDirty();
+            try {
+                if (undoStack.length === 0) return;
+                const prevState = JSON.parse(undoStack.pop());
+                const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+                host.innerHTML = prevState.html;
+                if (prevState.connectors) {
+                    currentConnectors = prevState.connectors;
+                    notifyParent({ type: 'LF_RESTORE_CONNECTORS', connectors: prevState.connectors });
+                }
+                if (typeof window.initHandles === 'function') window.initHandles();
+                markDirty();
+                console.log("[V4 Undo] Undo Performed");
+            } catch (e) { console.warn("[V4 Undo] Undo failed:", e); }
         },
         init: function() {
             document.addEventListener('keydown', (e) => {
                 if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
                     e.preventDefault();
                     this.undo();
+                }
+            });
+            // Handle cross-origin safe sync
+            window.addEventListener('message', (e) => {
+                if (e.data && e.data.type === 'LF_SYNC_CONNECTORS') {
+                    currentConnectors = e.data.connectors || [];
+                } else if (e.data && e.data.type === 'LF_SAVE_UNDO') {
+                    this.saveState();
                 }
             });
         }
@@ -203,6 +229,9 @@ const v4Script = `
     });
     let isMarquee = false;
     document.addEventListener('mousedown', e => {
+        // Rule: Ignore clicks on sidebars, modals, or top panels to prevent unintended deselection/marquee
+        if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.project-info-bar')) return;
+
         let h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
         
         // If clicking inside a component, find the top-most component (for grouping)
@@ -323,7 +352,7 @@ const v4Script = `
             c.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
             c.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
             notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: "<!DOCTYPE html>\\n" + c.outerHTML });
-        } else if (d.type === 'LF_INSERT_COMPONENT') {
+        } else if (d.type === 'LF_INSERT_COMPONENT' || d.type === 'LF_INSERT_V4_COMP') {
             const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
             const isMobileHost = host.classList.contains('mobile-content');
             const vh = isMobileHost ? host.clientHeight : window.innerHeight;
@@ -352,6 +381,20 @@ const v4Script = `
             }
             
             v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
+            
+            // 🛡️ Smart Scaling based on Parent Viewport
+            if (window.parent.state && window.parent.state.transform) {
+                const s = window.parent.state.transform.scale || 1;
+                if (s < 1) {
+                    const bw = parseInt(v.style.width) || 200;
+                    const bh = parseInt(v.style.height) || 100;
+                    // Auto-boost size if zoomed out to keep visually consistent
+                    if (s < 0.8) {
+                        v.style.width = Math.round(bw / s) + 'px';
+                        v.style.height = Math.round(bh / s) + 'px';
+                    }
+                }
+            }
             
             // Legacy Compatibility: Detect old-style molecule with absolute coordinates
             const children = Array.from(v.children).filter(c => c.classList.contains('lf-component') || c.classList.contains('lf-group'));
@@ -622,12 +665,14 @@ window.loadScreen = async function(fileName) {
 
     let scMeta = (state.projectMetadata.screens || {})[fileName] || {};
     if (!scMeta.description) scMeta.description = [];
+    if (!scMeta.connectors) scMeta.connectors = [];
 
     state.activeFile = { 
         name: fileName, 
         size: (content.length / 1024).toFixed(1) + ' KB',
         meta: scMeta
     };
+    state.connectors = scMeta.connectors;
     
     if (DOM.fileName) DOM.fileName.innerText = state.projectMetadata.title || state.currentProject;
     
@@ -688,7 +733,7 @@ window.injectIframeInteractions = function(doc) {
             window.postMessage({ type: 'LF_COMP_SELECTED', id: comp.id, isTable: !!comp.querySelector('table'), isShape: !!comp.querySelector('.v4-shape'), isIcon: !!comp.querySelector('.lf-icon') || !!comp.querySelector('svg') }, '*');
         } else {
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
-            window.postMessage({ type: 'LF_DESELECT' }, '*');
+            window.parent.postMessage({ type: 'LF_DESELECT' }, '*');
         }
     });
 
@@ -750,7 +795,7 @@ window.insertAtomicComponent = function(type, name) {
     const isFileProtocol = window.location.protocol === 'file:';
     if (isFileProtocol) {
         if (DOM.iframe && DOM.iframe.contentWindow) {
-            MessageHub.send(DOM.iframe.contentWindow, 'LF_INSERT_COMPONENT', { id, html: contentHtml, style: defaultStyle });
+            MessageHub.send(DOM.iframe.contentWindow, 'LF_INSERT_V4_COMP', { id, html: contentHtml, style: defaultStyle });
         }
         return;
     }
@@ -768,6 +813,24 @@ window.insertAtomicComponent = function(type, name) {
         host.appendChild(comp);
         if (typeof enforceDesignSystem === 'function') enforceDesignSystem();
         markAsDirty();
+    }
+};
+
+window.insertV4ComponentById = function(id) {
+    if (state.isReadOnly) return window.showAuthModal?.();
+    if (typeof window.V4_LIBRARY === 'undefined') return console.error("[V4] Library not found.");
+    
+    const compData = window.V4_LIBRARY[id];
+    if (!compData) return console.error(`[V4] Component "${id}" not found.`);
+
+    if (DOM.iframe && DOM.iframe.contentWindow) {
+        MessageHub.send(DOM.iframe.contentWindow, 'LF_INSERT_V4_COMP', {
+            id: `v4-comp-${Date.now()}`,
+            name: compData.name,
+            category: compData.category,
+            html: compData.html,
+            style: compData.style || { width: '200px', height: '100px' }
+        });
     }
 };
 
@@ -954,6 +1017,11 @@ window.MessageHub = {
                 }
             } else if (data.type === 'LF_SNAP_END') {
                 if (window.SmartGuide) window.SmartGuide.clearGuides();
+            } else if (data.type === 'LF_RESTORE_CONNECTORS') {
+                if (window.state && data.connectors) {
+                    window.state.connectors = data.connectors;
+                    if (window.ConnectorEngine) window.ConnectorEngine.redrawAll();
+                }
             }
 
             // Call all registered subscribers
@@ -988,6 +1056,13 @@ window.markAsDirty = function() {
     state.hasUnsavedChanges = true;
     console.log("[Status] Unsaved changes detected.");
     
+    // Sync connectors to iframe for Undo support
+    const iframe = document.getElementById('main-iframe');
+    if (iframe && iframe.contentWindow && window.state && window.state.connectors) {
+        MessageHub.send(iframe.contentWindow, 'LF_SYNC_CONNECTORS', { connectors: window.state.connectors });
+        MessageHub.send(iframe.contentWindow, 'LF_SAVE_UNDO'); // Explicitly capture synced state
+    }
+
     // UI Feedback
     const btnSave = document.getElementById('btn-global-save');
     if (btnSave) {

@@ -13,6 +13,8 @@
         MessageHub.subscribe('LF_COMP_SELECTED', (data) => {
             activeCompId = data.id;
             updateAllInputs(data.w, data.h);
+            
+            // Connector Support - Handled internally by ConnectorEngine now
         });
 
         MessageHub.subscribe('LF_COMP_RESIZED', (data) => {
@@ -64,10 +66,12 @@
     });
 
     function applyDimension(type, value) {
-        if (!activeCompId || !window.DOM || !window.DOM.iframe || !window.DOM.iframe.contentWindow) return;
-        
         const val = parseInt(value) || 0;
         if (val < 1) return;
+
+        // Connector Sync - Handled internally by ConnectorEngine now
+
+        if (!activeCompId || !window.DOM || !window.DOM.iframe || !window.DOM.iframe.contentWindow) return;
 
         const style = {};
         style[type] = val + 'px';

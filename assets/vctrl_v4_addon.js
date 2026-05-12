@@ -34,7 +34,8 @@
             height: item.height || '200px' 
         };
         if (item.category === 'Atoms' || item.id === 'v4-shape-badge') {
-            style.width = '120px';
+            const isIcon = item.id.includes('icon') || item.html.includes('<img');
+            style.width = isIcon ? '40px' : '120px';
             style.height = '40px';
         }
         if (item.id === 'v4-search-bar' || item.id === 'v4-premium-gnb') {
@@ -122,6 +123,21 @@
         type: 'LF_UPDATE_STYLE',
         selector: '.v4-shape',
         style: { borderColor: val }
+    }));
+
+    // Icon Editor Bindings
+    const btnIconBlack = document.getElementById('btn-icon-black');
+    const btnIconWhite = document.getElementById('btn-icon-white');
+    if (btnIconBlack) {
+        btnIconBlack.onclick = () => notifyIframe({ type: 'LF_UPDATE_STYLE', selector: 'img, .lf-icon', style: { color: 'black' } });
+    }
+    if (btnIconWhite) {
+        btnIconWhite.onclick = () => notifyIframe({ type: 'LF_UPDATE_STYLE', selector: 'img, .lf-icon', style: { color: 'white' } });
+    }
+    bindStyleUpdate('icon-border-color', (val) => ({
+        type: 'LF_UPDATE_STYLE',
+        selector: 'img, .lf-icon',
+        style: { borderColor: val, borderStyle: 'solid', borderWidth: '1px' }
     }));
 
     // Universal Transparency Logic

@@ -370,6 +370,16 @@
                 <div class="stage" id="stage">
                     <div class="artboard-wrapper" id="artboard-wrapper">
                         <iframe id="main-iframe" class="artboard-iframe" style="width: 1440px; height: 900px; display: none;" sandbox="allow-scripts allow-same-origin allow-forms allow-modals" loading="lazy"></iframe>
+                        <svg id="connector-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10001; overflow: visible;">
+                            <defs>
+                                <marker id="marker-arrow-start" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+                                </marker>
+                                <marker id="marker-arrow-end" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" />
+                                </marker>
+                            </defs>
+                        </svg>
                         <div class="pins-layer" id="pins-layer"></div>
                         <svg id="guide-layer" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10002;"></svg>
                     </div>
@@ -475,13 +485,13 @@
                             <span class="material-icons-outlined" style="font-size: 18px; color: #00e5ff; transform: rotate(45deg);">crop_square</span>
                             <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Diamond</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-arrow-straight')" style="background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
-                            <span class="material-icons-outlined" style="font-size: 18px; color: #94a3b8;">east</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Arrow</span>
+                        <div class="component-item v4-card" onclick="window.ConnectorEngine && window.ConnectorEngine.spawnLine('straight')" title="선그리기 (직선)" style="background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">선그리기 (직선)</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-arrow-elbow')" style="background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
-                            <span class="material-icons-outlined" style="font-size: 18px; color: #94a3b8;">subdirectory_arrow_right</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Elbow</span>
+                        <div class="component-item v4-card" onclick="window.ConnectorEngine && window.ConnectorEngine.spawnLine('elbow')" title="선그리기 (꺾임)" style="background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="9 10 9 19 18 19"></polyline><polyline points="14 14 19 19 14 24"></polyline></svg>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">선그리기 (꺾임)</span>
                         </div>
                         <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-divider')" style="background: rgba(148, 163, 184, 0.1); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: #94a3b8;">more_horiz</span>
@@ -602,7 +612,7 @@
                                 <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Border</label>
                                 <div style="display: flex; gap: 4px; align-items: center;">
                                     <div class="v4-color-wrapper v4-checkerboard-bg" id="shape-border-wrapper">
-                                        <input type="color" id="shape-border-color" value="#475569">
+                                        <input type="color" id="shape-border-color" value="#475569" class="v4-prop-input" data-prop="stroke">
                                     </div>
                                     <button id="btn-shape-border-none" title="No Border" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
                                 </div>
@@ -625,6 +635,52 @@
                         <div class="prop-group">
                             <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Font Size (<span id="txt-shape-font-size">16</span>px)</label>
                             <input type="range" id="shape-font-size" min="10" max="80" value="16" style="width:100%;">
+                        </div>
+                    </div>
+
+                    <div id="line-editor-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #3b82f6;">LINE EDITOR</span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Line Color</label>
+                                <div style="width: 100%; height: 26px; background: rgba(0,0,0,0.3); border: 1.6px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 2px; box-sizing: border-box;">
+                                    <input type="color" id="line-stroke-color" value="#475569" style="width: 100%; height: 100%; border: none; background: none; padding: 0; cursor: pointer;">
+                                </div>
+                            </div>
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Thickness (<span id="txt-line-stroke-width">1.6</span>)</label>
+                                <input type="range" id="line-stroke-width" min="0.5" max="10" step="0.1" value="1.6" style="width:100%; accent-color: #00e5ff; margin-top: 4px;">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Start Arrow</label>
+                                <select id="line-marker-start" class="v4-inspector-select" style="width:100%;">
+                                    <option value="">None</option>
+                                    <option value="marker-arrow-start">Arrow</option>
+                                </select>
+                            </div>
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">End Arrow</label>
+                                <select id="line-marker-end" class="v4-inspector-select" style="width:100%;">
+                                    <option value="">None</option>
+                                    <option value="marker-arrow-end">Arrow</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Line Style -->
+                        <div class="prop-group">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Line Style</label>
+                            <select id="line-dash-array" class="v4-prop-input" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px; border-radius: 4px; font-size: 11px;">
+                                <option value="">Solid</option>
+                                <option value="5,5">Dashed</option>
+                                <option value="2,2">Dotted</option>
+                            </select>
                         </div>
                     </div>
 
@@ -955,6 +1011,7 @@
     <script src="assets/vctrl_inspector.js?v=V106_FILEFIX"></script>
     <script src="assets/vctrl_v3.js?v=V106_FILEFIX"></script>
     <script src="assets/vctrl_properties.js"></script>
+    <script src="assets/vctrl_connectors.js"></script>
     
     <!-- V4 Premium Addons -->
     <script src="enhanced_v4/component_library_v4.js"></script>

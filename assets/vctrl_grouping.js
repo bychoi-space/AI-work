@@ -117,6 +117,28 @@ window.GroupingManager = (function() {
             }
         });
 
+        // --- Connector Selection Integration ---
+        if (window.state.connectors && window.ConnectorEngine) {
+            const scale = window.state.transform.scale || 1;
+            const svgLayer = document.getElementById('connector-layer');
+            const svgRect = svgLayer ? svgLayer.getBoundingClientRect() : { left: 0, top: 0 };
+            const connectorIdsToSelect = [];
+
+            window.state.connectors.forEach(conn => {
+                const p1 = { x: (conn.start.x * scale) + svgRect.left, y: (conn.start.y * scale) + svgRect.top };
+                const p2 = { x: (conn.end.x * scale) + svgRect.left, y: (conn.end.y * scale) + svgRect.top };
+                const isIn = (pt) => pt.x >= box.x && pt.x <= box.x + box.w && pt.y >= box.y && pt.y <= box.y + box.h;
+
+                if (isIn(p1) || isIn(p2)) {
+                    connectorIdsToSelect.push(conn.id);
+                    if (!selectedIds.includes(conn.id)) selectedIds.push(conn.id);
+                } else {
+                    selectedIds = selectedIds.filter(id => id !== conn.id);
+                }
+            });
+            window.ConnectorEngine.setSelectedIds(connectorIdsToSelect);
+        }
+
         syncWithCore();
     };
 

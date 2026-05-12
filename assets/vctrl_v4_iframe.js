@@ -10,6 +10,56 @@
     let activeEl = null;
     let startX, startY, startW, startH, startTop, startLeft, startRect;
 
+    const _rgb2hex = (rgb) => {
+        if (!rgb || rgb === "transparent" || rgb === "none" || rgb.includes("rgba(0, 0, 0, 0)")) return null;
+        const parts = rgb.match(/\d+/g);
+        if (!parts || parts.length < 3) return "#000000";
+        const r = Math.min(255, parseInt(parts[0])).toString(16).padStart(2, "0");
+        const g = Math.min(255, parseInt(parts[1])).toString(16).padStart(2, "0");
+        const b = Math.min(255, parseInt(parts[2])).toString(16).padStart(2, "0");
+        return "#" + r + g + b;
+    };
+
+    const _getVal = (el, prop) => {
+        if (!el) return "";
+        return el.style[prop] || window.getComputedStyle(el)[prop] || "";
+    };
+
+    const _getIframeCompStyles = (c) => {
+        const shape = c.querySelector('.v4-shape');
+        const table = c.querySelector('table');
+        const icon = c.querySelector('.lf-icon') || c.querySelector('img');
+        const textCell = c.querySelector('.v4-editable-cell');
+        
+        const getShapeColor = (prop) => {
+            if (!shape) return "";
+            if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle')) {
+                const svg = shape.querySelector('polygon, path, rect, circle');
+                if (svg) return prop === 'backgroundColor' ? svg.style.fill : svg.style.stroke;
+            }
+            return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
+        };
+
+        return {
+            id: c.id,
+            w: c.offsetWidth, h: c.offsetHeight,
+            currentStyles: {
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "")),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (icon ? _getVal(icon.parentElement || icon, "borderColor") : ""))),
+                text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
+                fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
+                isBgTransparent: (() => {
+                    const c = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "");
+                    return !c || c === "transparent" || c === "none" || c.includes("rgba(0, 0, 0, 0)");
+                })(),
+                isBorderTransparent: (() => {
+                    const c = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : "");
+                    return !c || c === "transparent" || c === "none" || c.includes("rgba(0, 0, 0, 0)");
+                })()
+            }
+        };
+    };
+
     function notifyParent(data) {
         window.parent.postMessage(data, '*');
     }
@@ -19,6 +69,8 @@
     }
 
     function init() {
+        if (window.V4UndoManager) window.V4UndoManager.init();
+
         document.addEventListener('mousedown', e => {
             const handle = e.target.closest('.lf-drag-handle');
             const resizer = e.target.closest('.lf-resizer');
@@ -40,7 +92,8 @@
                     id: comp.id,
                     isTable: !!comp.querySelector('table'),
                     isShape: comp.querySelector('.v4-shape') !== null,
-                    isIcon: !!comp.querySelector('.lf-icon')
+                    isIcon: !!comp.querySelector('.lf-icon') || !!comp.querySelector('img'),
+                    currentStyles: _getIframeCompStyles(comp)
                 });
             } else {
                 document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
@@ -185,7 +238,7 @@
                     id: div.id, 
                     isTable: !!div.querySelector('table'), 
                     isShape: !!div.querySelector('.v4-shape'),
-                    isIcon: !!div.querySelector('.lf-icon'),
+                    isIcon: !!div.querySelector('.lf-icon') || !!div.querySelector('img'),
                     isGroup: !!data.isGroup
                 });
                 markDirty();
@@ -194,8 +247,23 @@
                 const selected = document.querySelector('.lf-component.selected');
                 if (!selected) return;
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
                 const target = data.selector ? selected.querySelector(data.selector) : selected;
                 if (!target) return;
+
+                // Color to Filter mapping for img-based icons
+                if (target.tagName === 'IMG' && data.style && data.style.color) {
+                    const color = data.style.color.toLowerCase();
+                    if (color === '#000000' || color === 'black') {
+                        target.style.filter = 'brightness(0)';
+                    } else if (color === '#ffffff' || color === 'white') {
+                        target.style.filter = 'brightness(0) invert(1)';
+                    } else {
+                        target.style.filter = 'none';
+                    }
+                    delete data.style.color; // Don't apply text color to img
+                }
+
                 if (data.style) Object.assign(target.style, data.style);
                 if (data.subSelector && data.subStyle) {
                     target.querySelectorAll(data.subSelector).forEach(el => Object.assign(el.style, data.subStyle));

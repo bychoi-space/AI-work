@@ -28,9 +28,17 @@ window.V4UndoManager = (function() {
 
     return {
         saveState: function() {
-            const currentState = getCleanHTML();
+            const html = getCleanHTML();
+            let connectors = [];
             
-            // Prevent duplicate states (e.g. redundant focus events)
+            // Capture parent connector state if available
+            if (window.parent && window.parent.state && window.parent.state.connectors) {
+                connectors = JSON.parse(JSON.stringify(window.parent.state.connectors));
+            }
+            
+            const currentState = JSON.stringify({ html, connectors });
+            
+            // Prevent duplicate states
             if (undoStack.length > 0 && undoStack[undoStack.length - 1] === currentState) {
                 return;
             }
@@ -39,7 +47,7 @@ window.V4UndoManager = (function() {
             if (undoStack.length > MAX_HISTORY) {
                 undoStack.shift();
             }
-            console.log("[UndoManager] State Saved. Stack size:", undoStack.length);
+            console.log("[UndoManager] State Saved (HTML + Connectors). Stack size:", undoStack.length);
         },
 
         undo: function() {
@@ -48,19 +56,28 @@ window.V4UndoManager = (function() {
                 return;
             }
 
-            const prevState = undoStack.pop();
+            const prevStateStr = undoStack.pop();
+            const prevState = JSON.parse(prevStateStr);
             const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
             
-            // Restore HTML
-            host.innerHTML = prevState;
+            // 1. Restore HTML
+            host.innerHTML = prevState.html;
             
-            // Re-initialize engine handles and listeners
+            // 2. Restore Connectors in parent
+            if (window.parent && window.parent.state && prevState.connectors) {
+                window.parent.state.connectors = prevState.connectors;
+                if (window.parent.ConnectorEngine) {
+                    window.parent.ConnectorEngine.redrawAll();
+                }
+            }
+            
+            // 3. Re-initialize engine handles and listeners
             if (typeof window.initHandles === 'function') {
                 window.initHandles();
             }
             
             markDirty();
-            console.log("[UndoManager] Undo performed. Remaining stack:", undoStack.length);
+            console.log("[UndoManager] Undo performed (HTML + Connectors). Remaining stack:", undoStack.length);
         },
 
         init: function() {

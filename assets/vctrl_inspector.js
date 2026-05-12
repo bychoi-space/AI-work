@@ -100,7 +100,7 @@ window.updateProperties = function() {
                 <label>JIRA / LINKS</label>
                 <div style="display: flex; align-items: center; gap: 6px;">
                     <input type="text" id="viewer-meta-jira" value="${pm.jira || ''}" placeholder="예) LFML-123456" style="flex: 1;">
-                    <a id="btn-jira-link" href="${pm.jira ? 'https://jira.lfcorp.com/browse/' + pm.jira.trim() : '#'}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display: ${pm.jira && pm.jira.trim() ? 'flex' : 'none'};">바로가기</a>
+                    <a id="btn-jira-link" href="${(pm.jira && typeof pm.jira === 'string') ? 'https://jira.lfcorp.com/browse/' + pm.jira.trim() : '#'}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display: ${(pm.jira && typeof pm.jira === 'string' && pm.jira.trim()) ? 'flex' : 'none'};">바로가기</a>
                 </div>
             </div>
         </div>
