@@ -11,7 +11,7 @@
     "06_Mobile_Design_3_773.html": {
       "title": "06_Mobile_Design_3_773",
       "type": "mobile-ui",
-      "updatedAt": "2026-05-12T00:36:59.548Z",
+      "updatedAt": "2026-05-12T00:40:09.444Z",
       "template": "template_mobile_ui_3.html",
       "description": [
         {
@@ -25,8 +25,8 @@
         {
           "html": "<p>DESCRIPTION</p>",
           "text": "DESCRIPTION",
-          "x": 20.555555555555554,
-          "y": 21.405055555555556,
+          "x": 20.520833333333332,
+          "y": 22.071722222222224,
           "type": "text",
           "color": "#000000"
         },
