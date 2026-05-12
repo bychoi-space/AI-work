@@ -11,11 +11,11 @@
     "06_Mobile_Design_3_773.html": {
       "title": "06_Mobile_Design_3_773",
       "type": "mobile-ui",
-      "updatedAt": "2026-05-12T00:13:06.920Z",
+      "updatedAt": "2026-05-12T00:21:29.478Z",
       "template": "template_mobile_ui_3.html",
       "description": [
         {
-          "html": "<p>TITLE</p>",
+          "html": "<p><span style=\"font-size: 12px;\"><span class=\"ql-cursor\">﻿﻿﻿</span></span><strong style=\"font-size: 24px;\">TITLE</strong></p>",
           "text": "TITLE",
           "x": 20.555555555555554,
           "y": 17.8495148481692,
