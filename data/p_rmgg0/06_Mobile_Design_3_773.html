@@ -37,7 +37,10 @@
 .lf-component.selected { outline: 2px solid #6366f1; z-index: 10001 !important; }
 .lf-component .lf-component .lf-drag-handle, 
 .lf-component .lf-component .lf-resizer, 
-.lf-component .lf-component .lf-delete-trigger { display: none !important; }
+.lf-component .lf-component .lf-delete-trigger,
+.lf-in-group .lf-drag-handle,
+.lf-in-group .lf-resizer,
+.lf-in-group .lf-delete-trigger { display: none !important; }
 .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 2px solid #fff; z-index: 10002; }
 .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -16px; left: -16px; }
 .lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #6366f1; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10002; }
@@ -84,6 +87,27 @@ img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; o
 /* Reset background for new SVG/Custom atoms to prevent sprite leakage */
 svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
+
+/* Text Marker Integration */
+.text-marker { 
+    position: absolute; padding: 2px 6px; border-radius: 4px; 
+    border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
+    white-space: normal; cursor: grab; pointer-events: auto; z-index: 9999 !important; 
+    transform: translate(-50%, -50%);
+    transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, outline 0.2s;
+    min-width: unset; min-height: unset; background: rgba(255,255,255,0.9); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    color: #1e293b;
+}
+.text-marker .v4-editable-cell p { margin: 0; padding: 0; }
+.text-marker:hover { border-color: var(--v4-primary); background: #fff; transform: translate(-50%, -52%); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+.text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); z-index: 1001; }
+
+/* Force disable transitions during drag for maximum smoothness */
+.lf-component.dragging-now, .lf-component.dragging-now * { 
+    transition: none !important; 
+    pointer-events: none !important;
+}
 
 </style>
 </head>
@@ -201,6 +225,8 @@ window.V4UndoManager = (function() {
             window.addEventListener('message', (e) => {
                 if (e.data && e.data.type === 'LF_SYNC_CONNECTORS') {
                     currentConnectors = e.data.connectors || [];
+                } else if (e.data && e.data.type === 'LF_SAVE_UNDO') {
+                    this.saveState();
                 }
             });
         }
@@ -236,6 +262,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const table = c.querySelector('table');
         const icon = c.querySelector('.lf-icon');
         const textCell = c.querySelector('.v4-editable-cell');
+        const isPin = c.classList.contains('text-marker');
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
@@ -251,23 +278,26 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             isTable: !!table,
             isShape: !!shape,
             isIcon: !!icon,
+            isPin: isPin,
+            pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
+            html: textCell ? textCell.innerHTML : (shape ? shape.innerHTML : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "")),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))),
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : "")))),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 isBgTransparent: (() => {
-                    const c = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "");
-                    return !c || c === "transparent" || c === "none" || c.includes("rgba(0, 0, 0, 0)");
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""));
+                    return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const c = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : "");
-                    return !c || c === "transparent" || c === "none" || c.includes("rgba(0, 0, 0, 0)");
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : ""));
+                    return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })()
             }
         };
@@ -292,6 +322,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     });
     let isMarquee = false;
     document.addEventListener('mousedown', e => {
+        // Rule: Ignore clicks on sidebars, modals, or top panels to prevent unintended deselection/marquee
+        if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.project-info-bar')) return;
+
         let h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
         
         // If clicking inside a component, find the top-most component (for grouping)
@@ -305,6 +338,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
         if (d && c) { 
             if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            // Sync deletion for pins
+            if (c.classList.contains('text-marker')) {
+                const idx = parseInt(c.id.replace('v4-pin-', ''));
+                notifyParent({ type: 'LF_DELETE_PIN', index: idx });
+            }
+
             c.remove(); 
             markDirty(); 
             notifyParent({ type: 'LF_DESELECT' });
@@ -346,6 +386,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             startRect = activeEl.getBoundingClientRect();
             notifyParent({ type: 'LF_SNAP_START' });
             if (h) e.preventDefault(); 
+            // Apply dragging class to all selected for smoothness
+            document.querySelectorAll('.lf-component.selected').forEach(s => s.classList.add('dragging-now'));
         } else if (e.target.closest('.v4-editable-cell')) {
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             e.target.closest('.v4-editable-cell').focus();
@@ -388,7 +430,33 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             isMarquee = false;
             notifyParent({ type: 'LF_MARQUEE_END' });
         }
-        if (isDragging) notifyParent({ type: 'LF_SNAP_END' });
+        if (isDragging && activeEl) {
+            notifyParent({ type: 'LF_SNAP_END' });
+            
+            // Sync position for pins (text markers)
+            if (activeEl.classList.contains('text-marker')) {
+                const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
+                const hRect = host.getBoundingClientRect();
+                const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
+                
+                // Get current position in body, then subtract host offset to get relative pos
+                const curX = parseFloat(activeEl.style.left);
+                const curY = parseFloat(activeEl.style.top);
+                const relativeX = curX - (hRect.left + window.scrollX);
+                const relativeY = curY - (hRect.top + window.scrollY);
+                
+                const xPercent = (relativeX / hRect.width) * 100;
+                const yPercent = (relativeY / hRect.height) * 100;
+                
+                notifyParent({
+                    type: 'LF_UPDATE_PIN_POS',
+                    index: idx,
+                    x: xPercent,
+                    y: yPercent
+                });
+            }
+        }
+        document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
         isDragging = false; isResizing = false; activeEl = null; 
     });
     document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
@@ -406,6 +474,41 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     updateHandles(c);
                 });
             }
+        }
+        else if (d.type === 'LF_IMPORT_PINS') {
+            const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
+            const rect = host.getBoundingClientRect();
+            const hw = rect.width;
+            const hh = rect.height;
+            const offX = rect.left + window.scrollX;
+            const offY = rect.top + window.scrollY;
+
+            d.pins.forEach((pin, idx) => {
+                let div = document.getElementById('v4-pin-' + idx);
+                if (!div) {
+                    div = document.createElement('div');
+                    div.id = 'v4-pin-' + idx;
+                    div.className = 'lf-component text-marker';
+                    // Append to body to avoid clipping by mobile frame
+                    document.body.appendChild(div);
+                }
+                
+                // Convert % to PX relative to host, then add offset for absolute body positioning
+                const pxX = ((pin.x / 100) * hw) + offX;
+                const pxY = ((pin.y / 100) * hh) + offY;
+                
+                div.style.left = pxX + 'px';
+                div.style.top = pxY + 'px';
+                div.style.width = 'auto';
+                div.style.height = 'auto';
+                div.style.zIndex = '9999'; // Ensure it's on top of everything
+
+                div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                                '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
+                                '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
+                
+                updateHandles(div);
+            });
         }
         else if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
             const c = document.documentElement.cloneNode(true);
@@ -501,6 +604,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const t = d.selector ? s.querySelector(d.selector) : s; if (!t) return;
             
             if (d.style) {
+                if (d.style.html !== undefined) t.innerHTML = d.style.html;
                 Object.assign(t.style, d.style);
                 
                 // SVG Sync: If the element contains an SVG, sync stroke/fill
@@ -668,4 +772,4 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 </script>
 
-</body></html>
+<div id="v4-pin-0" class="lf-component text-marker" style="left: 295.333px; top: 165.807px; width: auto; height: auto; z-index: 9999;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p><span style="font-size: 12px;"><span class="ql-cursor">﻿﻿﻿﻿</span></span><strong style="font-size: 24px;">TITLE</strong></p></div></div><div id="v4-pin-1" class="lf-component text-marker" style="left: 294.54px; top: 194.095px; width: auto; height: auto; z-index: 9999;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>DESCRIPTION</p></div></div><div id="v4-pin-2" class="lf-component text-marker" style="left: 198.418px; top: 97.6267px; width: auto; height: auto; z-index: 9999;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div id="v4-pin-3" class="lf-component text-marker" style="left: 294.703px; top: 573.328px; width: auto; height: auto; z-index: 9999;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>SUB TITLE</p></div></div><div id="v4-pin-4" class="lf-component text-marker" style="left: 294.859px; top: 610.88px; width: auto; height: auto; z-index: 9999;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>SUB DESCRIPTION</p></div></div></body></html>
