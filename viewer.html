@@ -452,6 +452,36 @@
                             ADD TO MOLECULES
                         </button>
                     </div>
+
+                    <!-- Part 0: ALIGNMENT (RESTORED) -->
+                    <div id="selection-align-bar" class="v4-inspector-panel" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1.6px solid rgba(99, 102, 241, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #818cf8; letter-spacing: 1px;">ALIGNMENT</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 6px;">
+                            <button id="btn-align-left" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Left">
+                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M4 2v20M8 6h12v4H8zM8 14h8v4H8z"/></svg>
+                            </button>
+                            <button id="btn-align-center" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Center">
+                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M12 2v2M12 20v2M8 4h8v6H8zM6 14h12v6H6z"/></svg>
+                            </button>
+                            <button id="btn-align-right" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Right">
+                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M20 2v20M4 6h12v4H4zM8 14h12v4H8z"/></svg>
+                            </button>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                            <button id="btn-align-top" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Top">
+                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M2 4h20M6 8v12h4V8zM14 8v8h4V8z"/></svg>
+                            </button>
+                            <button id="btn-align-middle" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Middle">
+                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M2 12h2M20 12h2M4 8h6v8H4zM14 6h6v12h-6z"/></svg>
+                            </button>
+                            <button id="btn-align-bottom" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Bottom">
+                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M2 20h20M6 4v12h4V4zM14 8v8h4V8z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 </div>
                 
                 <!-- Part 1: COMPONENTS -->
@@ -497,9 +527,21 @@
                             <span class="material-icons-outlined" style="font-size: 18px; color: #94a3b8;">more_horiz</span>
                             <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Divider</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-arrow-vertical')" style="background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.2); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-arrow-up')" title="Arrow Up" style="background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.2); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #ea580c;">arrow_upward</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Up</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-arrow-down')" title="Arrow Down" style="background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.2); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: #ea580c;">arrow_downward</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">V-Arrow</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Down</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-arrow-left')" title="Arrow Left" style="background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.2); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #ea580c;">arrow_back</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Left</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-arrow-right')" title="Arrow Right" style="background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.2); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #ea580c;">arrow_forward</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Right</span>
                         </div>
                         <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-badge')" style="background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.2); border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: #ea580c;">label</span>

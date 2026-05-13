@@ -16,10 +16,18 @@ window.renderDescriptionList = function() {
     if (!DOM || !DOM.descriptionList || !DOM.pinsLayer) return;
 
     DOM.descriptionList.innerHTML = '';
-    DOM.pinsLayer.innerHTML = '';
+    DOM.pinsLayer.innerHTML = ''; // Canvas pins will now be handled inside the iframe
+
+    // Notify iframe to render pins
+    if (DOM.iframe && DOM.iframe.contentWindow) {
+        DOM.iframe.contentWindow.postMessage({
+            type: 'LF_IMPORT_PINS',
+            pins: list
+        }, '*');
+    }
 
     list.forEach(function(item, index) {
-        // Description Row (Sidebar)
+        // Description Row (Sidebar) - Kept in parent for easier editing
         var row = document.createElement('div');
         row.className = 'desc-row';
         row.draggable = !state.isReadOnly;
@@ -31,35 +39,11 @@ window.renderDescriptionList = function() {
                 <button class="desc-btn desc-btn-del" data-index="${index}" title="삭제"><span class="material-icons-outlined">remove_circle_outline</span></button>
             </div>
         `;
-
-        // Pin Marker (Canvas)
-        var pin = document.createElement('div');
-        if (item.type === 'text') {
-            pin.className = 'text-marker';
-            pin.innerHTML = `
-                <div class="lf-drag-handle">
-                    <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg>
-                </div>
-                <div class="lf-delete-trigger">×</div>
-                ${item.html || item.text || ''}
-            `;
-            pin.style.setProperty('color', item.color || "#000000", 'important');
-            if (state.isEditing && state.editingIndex === index) pin.classList.add('editing-active');
-        } else {
-            pin.className = 'pin-marker';
-            pin.innerHTML = `
-                <div class="lf-delete-trigger">×</div>
-                ${index + 1}
-            `;
-        }
-        pin.dataset.index = index;
-        pin.style.left = (item.x || 0) + "%";
-        pin.style.top = (item.y || 0) + "%";
         
-        // Highlight logic
-        var highlight = function(active) { pin.classList.toggle('highlight', active); row.classList.toggle('highlight', active); };
-        pin.onmouseenter = function() { highlight(true); };
-        pin.onmouseleave = function() { highlight(false); };
+        // Pin Marker logic removed here...
+        
+        // Highlight logic (Simplified for sidebar)
+        var highlight = function(active) { row.classList.toggle('highlight', active); };
         row.onmouseenter = function() { highlight(true); };
         row.onmouseleave = function() { highlight(false); };
 

@@ -14,7 +14,10 @@
             activeCompId = data.id;
             updateAllInputs(data.w, data.h);
             
-            // Connector Support - Handled internally by ConnectorEngine now
+            // Pin Selection Auto-Tab
+            if (data.id && data.id.startsWith('v4-pin-')) {
+                if (window.switchSidebarTab) window.switchSidebarTab('description');
+            }
         });
 
         MessageHub.subscribe('LF_COMP_RESIZED', (data) => {

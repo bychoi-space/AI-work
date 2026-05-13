@@ -807,6 +807,21 @@ window.LF_TEMPLATES = {
         /* Typography & Tables */
         .v4-editable-cell { outline: none; }
         .v4-editable-cell:focus { background: rgba(99, 102, 241, 0.05); }
+
+        /* Text Marker Integration */
+        .text-marker { 
+            position: absolute; padding: 8px 14px; border-radius: 12px; 
+            border: 1.6px solid transparent; font-size: 14px; line-height: 1.5; 
+            white-space: normal; cursor: grab; pointer-events: auto; z-index: 1000; 
+            transform: translate(-50%, -50%); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+            min-width: 60px; background: rgba(255,255,255,0.95); 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.05);
+            backdrop-filter: blur(8px); color: #1e293b;
+        }
+        .text-marker:hover { border-color: var(--v4-primary); background: #fff; transform: translate(-50%, -52%) scale(1.02); }
+        .text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); z-index: 1001; }
+        .text-marker .lf-drag-handle { top: -14px; left: 50%; transform: translateX(-50%); }
+        .text-marker .lf-delete-trigger { top: -14px; right: -14px; }
     </style>
 </head>
 <body>
@@ -876,6 +891,21 @@ window.LF_TEMPLATES = {
         .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
         .v4-editable-cell { outline: none; }
         .v4-editable-cell:focus { background: rgba(99, 102, 241, 0.05); }
+
+        /* Text Marker Integration */
+        .text-marker { 
+            position: absolute; padding: 8px 14px; border-radius: 12px; 
+            border: 1.6px solid transparent; font-size: 14px; line-height: 1.5; 
+            white-space: normal; cursor: grab; pointer-events: auto; z-index: 1000; 
+            transform: translate(-50%, -50%); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+            min-width: 60px; background: rgba(255,255,255,0.95); 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.05);
+            backdrop-filter: blur(8px); color: #1e293b;
+        }
+        .text-marker:hover { border-color: var(--v4-primary); background: #fff; transform: translate(-50%, -52%) scale(1.02); }
+        .text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); z-index: 1001; }
+        .text-marker .lf-drag-handle { top: -14px; left: 50%; transform: translateX(-50%); }
+        .text-marker .lf-delete-trigger { top: -14px; right: -14px; }
     </style>
 </head>
 <body>
@@ -968,6 +998,21 @@ window.LF_TEMPLATES = {
         .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
         .v4-editable-cell { outline: none; }
         .v4-editable-cell:focus { background: rgba(99, 102, 241, 0.05); }
+
+        /* Text Marker Integration */
+        .text-marker { 
+            position: absolute; padding: 8px 14px; border-radius: 12px; 
+            border: 1.6px solid transparent; font-size: 14px; line-height: 1.5; 
+            white-space: normal; cursor: grab; pointer-events: auto; z-index: 1000; 
+            transform: translate(-50%, -50%); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+            min-width: 60px; background: rgba(255,255,255,0.95); 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.05);
+            backdrop-filter: blur(8px); color: #1e293b;
+        }
+        .text-marker:hover { border-color: var(--v4-primary); background: #fff; transform: translate(-50%, -52%) scale(1.02); }
+        .text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); z-index: 1001; }
+        .text-marker .lf-drag-handle { top: -14px; left: 50%; transform: translateX(-50%); }
+        .text-marker .lf-delete-trigger { top: -14px; right: -14px; }
     </style>
 </head>
 <body>

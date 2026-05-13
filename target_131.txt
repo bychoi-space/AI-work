@@ -1,0 +1,2 @@
+﻿"        const scale = window.state.transform.scale || 1;\n        const pRect = pinsLayer.getBoundingClientRect();\n\n        // 1. Gather all selected element bounds in normalized virtual space\n        const elements = [];\n        selectedIds.forEach(i
+<truncated 3727 bytes>

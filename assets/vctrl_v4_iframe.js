@@ -79,6 +79,13 @@
 
             if (deleteBtn && comp) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                // Sync deletion for pins
+                if (comp.classList.contains('text-marker')) {
+                    const idx = parseInt(comp.id.replace('v4-pin-', ''));
+                    notifyParent({ type: 'LF_DELETE_PIN', index: idx });
+                }
+
                 comp.remove();
                 markDirty();
                 return;
@@ -144,7 +151,24 @@
         });
 
         document.addEventListener('mouseup', () => {
-            if (isDragging) notifyParent({ type: 'LF_SNAP_END' });
+            if (isDragging && activeEl) {
+                notifyParent({ type: 'LF_SNAP_END' });
+                
+                // Sync position for pins (text markers)
+                if (activeEl.classList.contains('text-marker')) {
+                    const host = activeEl.parentElement;
+                    const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
+                    const xPercent = (parseFloat(activeEl.style.left) / host.clientWidth) * 100 || parseFloat(activeEl.style.left);
+                    const yPercent = (parseFloat(activeEl.style.top) / host.clientHeight) * 100 || parseFloat(activeEl.style.top);
+                    
+                    notifyParent({
+                        type: 'LF_UPDATE_PIN_POS',
+                        index: idx,
+                        x: xPercent,
+                        y: yPercent
+                    });
+                }
+            }
             isDragging = false;
             isResizing = false;
             activeEl = null;
@@ -242,6 +266,34 @@
                     isGroup: !!data.isGroup
                 });
                 markDirty();
+            }
+            else if (data.type === 'LF_IMPORT_PINS') {
+                const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
+                // Clear existing pins within this host if needed, or manage by ID
+                // For now, we assume simple re-render or additive
+                data.pins.forEach((pin, idx) => {
+                    let div = document.getElementById('v4-pin-' + idx);
+                    if (!div) {
+                        div = document.createElement('div');
+                        div.id = 'v4-pin-' + idx;
+                        div.className = 'lf-component text-marker';
+                        host.appendChild(div);
+                    }
+                    
+                    div.style.position = 'absolute';
+                    div.style.left = pin.x + '%';
+                    div.style.top = pin.y + '%';
+                    div.style.zIndex = '1000';
+                    div.style.color = pin.color || '#000000';
+                    
+                    div.innerHTML = `
+                        <div class="lf-drag-handle">
+                            <svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg>
+                        </div>
+                        <div class="lf-delete-trigger">×</div>
+                        <div class="v4-editable-cell" contenteditable="true" style="outline:none;">${pin.html || pin.text || ''}</div>
+                    `;
+                });
             }
             else if (data.type === 'LF_UPDATE_STYLE') {
                 const selected = document.querySelector('.lf-component.selected');

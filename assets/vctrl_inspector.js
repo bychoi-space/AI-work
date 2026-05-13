@@ -81,7 +81,15 @@ window.DOM = {
     selectionLabel: get('selection-label'),
     btnGroup: get('btn-group-action'),
     btnUngroup: get('btn-ungroup-action'),
-    btnAddToMolecules: get('btn-add-molecules-action')
+    btnAddToMolecules: get('btn-add-molecules-action'),
+    // Alignment (RESTORED)
+    alignBar: get('selection-align-bar'),
+    btnAlignLeft: get('btn-align-left'),
+    btnAlignCenter: get('btn-align-center'),
+    btnAlignRight: get('btn-align-right'),
+    btnAlignTop: get('btn-align-top'),
+    btnAlignMiddle: get('btn-align-middle'),
+    btnAlignBottom: get('btn-align-bottom')
 };
 
 // 2. UI Rendering Functions

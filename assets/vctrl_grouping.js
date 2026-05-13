@@ -40,6 +40,14 @@ window.GroupingManager = (function() {
             if (DOM.btnGroup) DOM.btnGroup.onclick = groupSelected;
             if (DOM.btnUngroup) DOM.btnUngroup.onclick = ungroupSelected;
             if (DOM.btnAddToMolecules) DOM.btnAddToMolecules.onclick = addToMolecules;
+
+            // Alignment Listeners (RESTORED)
+            if (DOM.btnAlignLeft) DOM.btnAlignLeft.onclick = () => alignSelected('left');
+            if (DOM.btnAlignCenter) DOM.btnAlignCenter.onclick = () => alignSelected('center');
+            if (DOM.btnAlignRight) DOM.btnAlignRight.onclick = () => alignSelected('right');
+            if (DOM.btnAlignTop) DOM.btnAlignTop.onclick = () => alignSelected('top');
+            if (DOM.btnAlignMiddle) DOM.btnAlignMiddle.onclick = () => alignSelected('middle');
+            if (DOM.btnAlignBottom) DOM.btnAlignBottom.onclick = () => alignSelected('bottom');
         }
 
         // Keyboard Shortcuts
@@ -202,9 +210,89 @@ window.GroupingManager = (function() {
             }
             DOM.btnUngroup.style.display = showUngroup ? 'flex' : 'none';
             if (DOM.btnAddToMolecules) DOM.btnAddToMolecules.style.display = showUngroup ? 'flex' : 'none';
+
+            // Show Align Bar if 2+ selected (RESTORED)
+            if (DOM.alignBar) {
+                DOM.alignBar.style.display = selectedIds.length > 1 ? 'block' : 'none';
+            }
         } else {
             DOM.selectionBar.style.display = 'none';
+            if (DOM.alignBar) DOM.alignBar.style.display = 'none';
         }
+    };
+
+    const alignSelected = (type) => {
+        if (selectedIds.length < 2) return;
+        const iframe = document.getElementById('main-iframe');
+        if (!iframe || !iframe.contentDocument) return;
+
+        const doc = iframe.contentDocument;
+        const items = [];
+        
+        // 1. Gather all selected elements with their global bounding boxes
+        selectedIds.forEach(id => {
+            const isMarker = id.startsWith('v4-pin-');
+            let el = isMarker ? document.getElementById(id) : doc.getElementById(id);
+            if (el) {
+                const r = el.getBoundingClientRect();
+                items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: r.left, y: r.top, w: r.width, h: r.height });
+            }
+        });
+
+        if (items.length < 2) return;
+
+        // 2. Determine target alignment value (Global client coords)
+        let targetX = 0, targetY = 0;
+        const minX = Math.min(...items.map(i => i.x));
+        const minY = Math.min(...items.map(i => i.y));
+        const maxX = Math.max(...items.map(i => i.x + i.w));
+        const maxY = Math.max(...items.map(i => i.y + i.h));
+
+        // 3. Move items using Delta (corrected by zoom scale)
+        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
+
+        items.forEach(item => {
+            let dx = 0, dy = 0;
+            switch(type) {
+                case 'left':   dx = minX - item.x; break;
+                case 'right':  dx = maxX - item.w - item.x; break;
+                case 'center': dx = (minX + maxX)/2 - item.w/2 - item.x; break;
+                case 'top':    dy = minY - item.y; break;
+                case 'bottom': dy = maxY - item.h - item.y; break;
+                case 'middle': dy = (minY + maxY)/2 - item.h/2 - item.y; break;
+            }
+
+            if (dx === 0 && dy === 0) return;
+
+            const realDx = dx / scale;
+            const realDy = dy / scale;
+
+            if (item.type === 'marker') {
+                const host = item.el.parentElement;
+                const curL = parseFloat(item.el.style.left) || 0;
+                const curT = parseFloat(item.el.style.top) || 0;
+                
+                const newL = curL + (realDx / host.clientWidth) * 100;
+                const newT = curT + (realDy / host.clientHeight) * 100;
+                
+                item.el.style.left = newL + '%';
+                item.el.style.top = newT + '%';
+
+                // Update State via MessageHub
+                const idx = parseInt(item.id.replace('v4-pin-', ''));
+                if (window.MessageHub) {
+                    MessageHub.send(window, 'LF_UPDATE_PIN_POS', { index: idx, x: newL, y: newT });
+                }
+            } else {
+                const curL = parseInt(item.el.style.left) || 0;
+                const curT = parseInt(item.el.style.top) || 0;
+                item.el.style.left = (curL + realDx) + 'px';
+                item.el.style.top = (curT + realDy) + 'px';
+                if (window.markAsDirty) window.markAsDirty();
+            }
+        });
+        
+        if (window.V4UndoManager) window.V4UndoManager.saveState();
     };
 
     const groupSelected = () => {
@@ -409,6 +497,7 @@ window.GroupingManager = (function() {
         clearSelection,
         groupSelected,
         ungroupSelected,
+        alignSelected,
         addToMolecules,
         deleteMolecule,
         renameMolecule

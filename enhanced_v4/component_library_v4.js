@@ -142,14 +142,47 @@ window.V4_COMPONENT_LIBRARY = {
             </div>`
         },
         {
-            id: 'v4-shape-arrow-vertical',
-            name: 'Vertical Arrow',
-            category: 'Shapes',
-            previewHtml: `<div style="display: flex; flex-direction: column; align-items: center; height: 24px;"><div style="width: 6px; flex: 1; background: #fb923c;"></div><div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 6px solid #fb923c;"></div></div>`,
+            id: 'v4-shape-arrow-up',
+            name: 'Arrow Up',
+            category: 'Atoms',
             html: `
-            <div class="v4-shape v4-shape-arrow-vertical" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; box-sizing: border-box; opacity: 0.9;">
-                <div style="width: 30%; flex: 1; background: linear-gradient(to bottom, #fed7aa, #ea580c); z-index: 1;"></div>
-                <div style="width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 20px solid #ea580c; z-index: 2; margin-top: -1px;"></div>
+            <div class="v4-shape v4-shape-arrow" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; box-sizing: border-box; position: relative;">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+                    <polygon points="50,2 98,50 70,50 70,98 30,98 30,50 2,50" style="fill: #fb923c; stroke: #ea580c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
+                </svg>
+            </div>`
+        },
+        {
+            id: 'v4-shape-arrow-down',
+            name: 'Arrow Down',
+            category: 'Atoms',
+            html: `
+            <div class="v4-shape v4-shape-arrow" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; box-sizing: border-box; position: relative;">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+                    <polygon points="30,2 70,2 70,50 98,50 50,98 2,50 30,50" style="fill: #fb923c; stroke: #ea580c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
+                </svg>
+            </div>`
+        },
+        {
+            id: 'v4-shape-arrow-left',
+            name: 'Arrow Left',
+            category: 'Atoms',
+            html: `
+            <div class="v4-shape v4-shape-arrow" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; box-sizing: border-box; position: relative;">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+                    <polygon points="98,30 98,70 50,70 50,98 2,50 50,2 50,30" style="fill: #fb923c; stroke: #ea580c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
+                </svg>
+            </div>`
+        },
+        {
+            id: 'v4-shape-arrow-right',
+            name: 'Arrow Right',
+            category: 'Atoms',
+            html: `
+            <div class="v4-shape v4-shape-arrow" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; box-sizing: border-box; position: relative;">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
+                    <polygon points="2,30 2,70 50,70 50,98 98,50 50,2 50,30" style="fill: #fb923c; stroke: #ea580c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
+                </svg>
             </div>`
         },
         {

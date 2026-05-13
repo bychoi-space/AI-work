@@ -1,0 +1,2 @@
+﻿"        } else if (d.type === 'LF_ALIGN_COMPONENTS') {\n            if (window.V4UndoManager) window.V4UndoManager.saveState();\n            const deltas = d.deltas || [];\n            deltas.forEach(delta => {\n                const el = document.getElem
+<truncated 340 bytes>

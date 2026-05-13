@@ -31,7 +31,10 @@ const v4Styles = `
 .lf-component.selected { outline: 2px solid #6366f1; z-index: 10001 !important; }
 .lf-component .lf-component .lf-drag-handle, 
 .lf-component .lf-component .lf-resizer, 
-.lf-component .lf-component .lf-delete-trigger { display: none !important; }
+.lf-component .lf-component .lf-delete-trigger,
+.lf-in-group .lf-drag-handle,
+.lf-in-group .lf-resizer,
+.lf-in-group .lf-delete-trigger { display: none !important; }
 .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 2px solid #fff; z-index: 10002; }
 .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -16px; left: -16px; }
 .lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #6366f1; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10002; }
@@ -78,6 +81,21 @@ img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; o
 /* Reset background for new SVG/Custom atoms to prevent sprite leakage */
 svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
+
+/* Text Marker Integration */
+.text-marker { 
+    position: absolute; padding: 8px 14px; border-radius: 12px; 
+    border: 1.6px solid transparent; font-size: 14px; line-height: 1.5; 
+    white-space: normal; cursor: grab; pointer-events: auto; z-index: 1000; 
+    transform: translate(-50%, -50%); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+    min-width: 60px; background: rgba(255,255,255,0.95); 
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.05);
+    backdrop-filter: blur(8px); color: #1e293b;
+}
+.text-marker:hover { border-color: var(--v4-primary); background: #fff; transform: translate(-50%, -52%) scale(1.02); }
+.text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); z-index: 1001; }
+.text-marker .lf-drag-handle { top: -14px; left: 50%; transform: translateX(-50%); }
+.text-marker .lf-delete-trigger { top: -14px; right: -14px; }
 `;
 
 const v4UndoScript = `
@@ -245,6 +263,13 @@ const v4Script = `
 
         if (d && c) { 
             if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            // Sync deletion for pins
+            if (c.classList.contains('text-marker')) {
+                const idx = parseInt(c.id.replace('v4-pin-', ''));
+                notifyParent({ type: 'LF_DELETE_PIN', index: idx });
+            }
+
             c.remove(); 
             markDirty(); 
             notifyParent({ type: 'LF_DESELECT' });
@@ -328,7 +353,24 @@ const v4Script = `
             isMarquee = false;
             notifyParent({ type: 'LF_MARQUEE_END' });
         }
-        if (isDragging) notifyParent({ type: 'LF_SNAP_END' });
+        if (isDragging && activeEl) {
+            notifyParent({ type: 'LF_SNAP_END' });
+            
+            // Sync position for pins (text markers)
+            if (activeEl.classList.contains('text-marker')) {
+                const host = activeEl.parentElement;
+                const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
+                const xPercent = (parseFloat(activeEl.style.left) / host.clientWidth) * 100 || parseFloat(activeEl.style.left);
+                const yPercent = (parseFloat(activeEl.style.top) / host.clientHeight) * 100 || parseFloat(activeEl.style.top);
+                
+                notifyParent({
+                    type: 'LF_UPDATE_PIN_POS',
+                    index: idx,
+                    x: xPercent,
+                    y: yPercent
+                });
+            }
+        }
         isDragging = false; isResizing = false; activeEl = null; 
     });
     document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
@@ -346,6 +388,25 @@ const v4Script = `
                     updateHandles(c);
                 });
             }
+        }
+        else if (d.type === 'LF_IMPORT_PINS') {
+            const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
+            d.pins.forEach((pin, idx) => {
+                let div = document.getElementById('v4-pin-' + idx);
+                if (!div) {
+                    div = document.createElement('div');
+                    div.id = 'v4-pin-' + idx;
+                    div.className = 'lf-component text-marker';
+                    host.appendChild(div);
+                }
+                div.style.left = pin.x + '%';
+                div.style.top = pin.y + '%';
+                div.innerHTML = `
+                    <div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>
+                    <div class="lf-delete-trigger">×</div>
+                    <div class="v4-editable-cell" contenteditable="true" style="outline:none; color:${pin.color || '#000'}">${pin.html || pin.text || ''}</div>
+                `;
+            });
         }
         else if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
             const c = document.documentElement.cloneNode(true);
@@ -816,23 +877,7 @@ window.insertAtomicComponent = function(type, name) {
     }
 };
 
-window.insertV4ComponentById = function(id) {
-    if (state.isReadOnly) return window.showAuthModal?.();
-    if (typeof window.V4_LIBRARY === 'undefined') return console.error("[V4] Library not found.");
-    
-    const compData = window.V4_LIBRARY[id];
-    if (!compData) return console.error(`[V4] Component "${id}" not found.`);
-
-    if (DOM.iframe && DOM.iframe.contentWindow) {
-        MessageHub.send(DOM.iframe.contentWindow, 'LF_INSERT_V4_COMP', {
-            id: `v4-comp-${Date.now()}`,
-            name: compData.name,
-            category: compData.category,
-            html: compData.html,
-            style: compData.style || { width: '200px', height: '100px' }
-        });
-    }
-};
+// Note: insertV4ComponentById is now handled by vctrl_v4_addon.js for modularity.
 
 window.getCascadedPosition = function(startX = 50, startY = 50) {
     let x = startX, y = startY;
@@ -1021,6 +1066,23 @@ window.MessageHub = {
                 if (window.state && data.connectors) {
                     window.state.connectors = data.connectors;
                     if (window.ConnectorEngine) window.ConnectorEngine.redrawAll();
+                }
+            } else if (data.type === 'LF_UPDATE_PIN_POS') {
+                if (window.state && window.state.activeFile && window.state.activeFile.meta.description) {
+                    const pin = window.state.activeFile.meta.description[data.index];
+                    if (pin) {
+                        pin.x = data.x;
+                        pin.y = data.y;
+                        markAsDirty();
+                    }
+                }
+            } else if (data.type === 'LF_DELETE_PIN') {
+                if (window.state && window.state.activeFile && window.state.activeFile.meta.description) {
+                    window.state.activeFile.meta.description.splice(data.index, 1);
+                    if (typeof window.renderDescriptionList === 'function') {
+                        window.renderDescriptionList(window.state.activeFile.meta.description);
+                    }
+                    markAsDirty();
                 }
             }
 
