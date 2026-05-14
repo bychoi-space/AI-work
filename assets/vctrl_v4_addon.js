@@ -210,24 +210,7 @@
         if (!data) return;
 
         if (data.type === 'LF_COMP_SELECTED') {
-            // Show global actions
-            const actions = document.getElementById('comp-actions-section');
-            if (actions) actions.style.display = 'block';
-
-            // Show specific inspectors
-            const tableSect = document.getElementById('table-inspector-section');
-            const shapeSect = document.getElementById('shape-inspector-section');
-            const iconSect = document.getElementById('icon-inspector-section');
-            
-            if (tableSect) tableSect.style.display = (data.isTable && !data.isGroup) ? 'block' : 'none';
-            if (shapeSect) shapeSect.style.display = (data.isShape && !data.isGroup) ? 'block' : 'none';
-            if (iconSect) iconSect.style.display = (data.isIcon && !data.isGroup) ? 'block' : 'none';
-
-            // Hide text editor for groups
-            const textSect = document.getElementById('text-editor-section');
-            if (textSect && data.isGroup) textSect.style.display = 'none';
-
-            // UI Sync with current styles
+            // UI Sync with current styles (Visibility is now managed by vctrl_inspector.js)
             if (data.currentStyles) {
                 const s = data.currentStyles;
                 
@@ -261,15 +244,7 @@
             }
         } 
         else if (data.type === 'LF_DESELECT' || data.type === 'LF_COMP_DESELECTED') {
-            const actions = document.getElementById('comp-actions-section');
-            const tableSect = document.getElementById('table-inspector-section');
-            const shapeSect = document.getElementById('shape-inspector-section');
-            const iconSect = document.getElementById('icon-inspector-section');
-            
-            if (actions) actions.style.display = 'none';
-            if (tableSect) tableSect.style.display = 'none';
-            if (shapeSect) shapeSect.style.display = 'none';
-            if (iconSect) iconSect.style.display = 'none';
+            // Deselection UI sync is handled by vctrl_inspector.js
         }
         else if (data.type === 'LF_DIRTY') {
             if (typeof window.markAsDirty === 'function') {

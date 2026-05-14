@@ -84,18 +84,24 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 
 /* Text Marker Integration */
 .text-marker { 
-    position: absolute; padding: 8px 14px; border-radius: 12px; 
-    border: 1.6px solid transparent; font-size: 14px; line-height: 1.5; 
-    white-space: normal; cursor: grab; pointer-events: auto; z-index: 1000; 
-    transform: translate(-50%, -50%); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-    min-width: 60px; background: rgba(255,255,255,0.95); 
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.05);
-    backdrop-filter: blur(8px); color: #1e293b;
+    position: absolute; padding: 2px 6px; border-radius: 4px; 
+    border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
+    white-space: normal; cursor: grab; pointer-events: auto; z-index: 9999 !important; 
+    transform: translate(-50%, -50%);
+    transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, outline 0.2s;
+    min-width: unset; min-height: unset; background: transparent; 
+    box-shadow: none;
+    color: #1e293b;
 }
-.text-marker:hover { border-color: var(--v4-primary); background: #fff; transform: translate(-50%, -52%) scale(1.02); }
-.text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); z-index: 1001; }
-.text-marker .lf-drag-handle { top: -14px; left: 50%; transform: translateX(-50%); }
-.text-marker .lf-delete-trigger { top: -14px; right: -14px; }
+.text-marker .v4-editable-cell p { margin: 0; padding: 0; }
+.text-marker:hover { border-color: var(--v4-primary); background: transparent; transform: translate(-50%, -50%); box-shadow: none; }
+.text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 1001; }
+
+/* Force disable transitions during drag for maximum smoothness */
+.lf-component.dragging-now, .lf-component.dragging-now * { 
+    transition: none !important; 
+    pointer-events: none !important;
+}
 `;
 
 const v4UndoScript = `
@@ -191,6 +197,7 @@ const v4Script = `
         const table = c.querySelector('table');
         const icon = c.querySelector('.lf-icon');
         const textCell = c.querySelector('.v4-editable-cell');
+        const isPin = c.classList.contains('text-marker');
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
@@ -206,23 +213,26 @@ const v4Script = `
             isTable: !!table,
             isShape: !!shape,
             isIcon: !!icon,
+            isPin: isPin,
+            pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
+            html: textCell ? textCell.innerHTML : (shape ? shape.innerHTML : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "")),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))),
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : "")))),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 isBgTransparent: (() => {
-                    const c = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "");
-                    return !c || c === "transparent" || c === "none" || c.includes("rgba(0, 0, 0, 0)");
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""));
+                    return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const c = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : "");
-                    return !c || c === "transparent" || c === "none" || c.includes("rgba(0, 0, 0, 0)");
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : ""));
+                    return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })()
             }
         };
@@ -311,6 +321,8 @@ const v4Script = `
             startRect = activeEl.getBoundingClientRect();
             notifyParent({ type: 'LF_SNAP_START' });
             if (h) e.preventDefault(); 
+            // Apply dragging class to all selected for smoothness
+            document.querySelectorAll('.lf-component.selected').forEach(s => s.classList.add('dragging-now'));
         } else if (e.target.closest('.v4-editable-cell')) {
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             e.target.closest('.v4-editable-cell').focus();
@@ -358,10 +370,18 @@ const v4Script = `
             
             // Sync position for pins (text markers)
             if (activeEl.classList.contains('text-marker')) {
-                const host = activeEl.parentElement;
+                const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
+                const hRect = host.getBoundingClientRect();
                 const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
-                const xPercent = (parseFloat(activeEl.style.left) / host.clientWidth) * 100 || parseFloat(activeEl.style.left);
-                const yPercent = (parseFloat(activeEl.style.top) / host.clientHeight) * 100 || parseFloat(activeEl.style.top);
+                
+                // Get current position in body, then subtract host offset to get relative pos
+                const curX = parseFloat(activeEl.style.left);
+                const curY = parseFloat(activeEl.style.top);
+                const relativeX = curX - (hRect.left + window.scrollX);
+                const relativeY = curY - (hRect.top + window.scrollY);
+                
+                const xPercent = (relativeX / hRect.width) * 100;
+                const yPercent = (relativeY / hRect.height) * 100;
                 
                 notifyParent({
                     type: 'LF_UPDATE_PIN_POS',
@@ -371,6 +391,7 @@ const v4Script = `
                 });
             }
         }
+        document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
         isDragging = false; isResizing = false; activeEl = null; 
     });
     document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
@@ -391,21 +412,37 @@ const v4Script = `
         }
         else if (d.type === 'LF_IMPORT_PINS') {
             const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
+            const rect = host.getBoundingClientRect();
+            const hw = rect.width;
+            const hh = rect.height;
+            const offX = rect.left + window.scrollX;
+            const offY = rect.top + window.scrollY;
+
             d.pins.forEach((pin, idx) => {
                 let div = document.getElementById('v4-pin-' + idx);
                 if (!div) {
                     div = document.createElement('div');
                     div.id = 'v4-pin-' + idx;
                     div.className = 'lf-component text-marker';
-                    host.appendChild(div);
+                    // Append to body to avoid clipping by mobile frame
+                    document.body.appendChild(div);
                 }
-                div.style.left = pin.x + '%';
-                div.style.top = pin.y + '%';
-                div.innerHTML = `
-                    <div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:14px; height:14px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>
-                    <div class="lf-delete-trigger">×</div>
-                    <div class="v4-editable-cell" contenteditable="true" style="outline:none; color:${pin.color || '#000'}">${pin.html || pin.text || ''}</div>
-                `;
+                
+                // Convert % to PX relative to host, then add offset for absolute body positioning
+                const pxX = ((pin.x / 100) * hw) + offX;
+                const pxY = ((pin.y / 100) * hh) + offY;
+                
+                div.style.left = pxX + 'px';
+                div.style.top = pxY + 'px';
+                div.style.width = 'auto';
+                div.style.height = 'auto';
+                div.style.zIndex = '9999'; // Ensure it's on top of everything
+
+                div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                                '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
+                                '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
+                
+                updateHandles(div);
             });
         }
         else if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
@@ -502,6 +539,7 @@ const v4Script = `
             const t = d.selector ? s.querySelector(d.selector) : s; if (!t) return;
             
             if (d.style) {
+                if (d.style.html !== undefined) t.innerHTML = d.style.html;
                 Object.assign(t.style, d.style);
                 
                 // SVG Sync: If the element contains an SVG, sync stroke/fill
@@ -688,19 +726,19 @@ window.loadScreen = async function(fileName) {
     let finalContent = content;
     
     // Inject/Update Styles
-    const styleBlock = `<style id="v4-inlined-style">\n${v4Styles}\n</style>`;
+    const styleBlock = '<style id="v4-inlined-style">\n' + v4Styles + '\n</style>';
     if (finalContent.includes('id="v4-inlined-style"')) {
         finalContent = finalContent.replace(/<style id="v4-inlined-style">[\s\S]*?<\/style>/i, styleBlock);
     } else if (!finalContent.includes('style_v4.css')) {
-        finalContent = finalContent.replace('</head>', `${styleBlock}\n</head>`);
+        finalContent = finalContent.replace('</head>', styleBlock + '\n</head>');
     }
 
     // Inject/Update Script
-    const scriptBlock = `<script id="v4-inlined-script">\n${v4UndoScript}\n${v4Script}\n</script>`;
+    const scriptBlock = '<script id="v4-inlined-script">\n' + v4UndoScript + '\n' + v4Script + '\n</script>';
     if (finalContent.includes('id="v4-inlined-script"')) {
         finalContent = finalContent.replace(/<script id="v4-inlined-script">[\s\S]*?<\/script>/i, scriptBlock);
     } else if (!finalContent.includes('vctrl_v4_iframe.js')) {
-        finalContent = finalContent.replace('</body>', `${scriptBlock}\n</body>`);
+        finalContent = finalContent.replace('</body>', scriptBlock + '\n</body>');
     }
 
     // Auto-update JIRA IDENTIFIER for Cover Template
@@ -722,6 +760,11 @@ window.loadScreen = async function(fileName) {
         clearTimeout(loadTimeout);
         if (typeof window.hideLoading === 'function') window.hideLoading();
         DOM.iframe.onload = null;
+        
+        // Ensure pins are rendered AFTER iframe is ready
+        if (typeof window.renderDescriptionList === 'function') {
+            setTimeout(window.renderDescriptionList, 100); 
+        }
     };
 
     let scMeta = (state.projectMetadata.screens || {})[fileName] || {};
@@ -737,7 +780,6 @@ window.loadScreen = async function(fileName) {
     
     if (DOM.fileName) DOM.fileName.innerText = state.projectMetadata.title || state.currentProject;
     
-    if (typeof window.renderDescriptionList === 'function') window.renderDescriptionList();
     if (typeof window.updateProperties === 'function') window.updateProperties(); 
     
     if (scMeta.defaultTab === 'description') {
@@ -786,12 +828,30 @@ window.injectIframeInteractions = function(doc) {
             startX = e.clientX; startY = e.clientY; startTop = activeEl.offsetTop; startLeft = activeEl.offsetLeft;
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             activeEl.classList.add('selected');
-            window.parent.postMessage({ type: 'LF_COMP_SELECTED', id: activeEl.id, isTable: !!activeEl.querySelector('table'), isShape: !!activeEl.querySelector('.v4-shape'), isIcon: !!activeEl.querySelector('.lf-icon') }, '*');
+            const isPin = activeEl.classList.contains('text-marker');
+            window.parent.postMessage({ 
+                type: 'LF_COMP_SELECTED', 
+                id: activeEl.id, 
+                isTable: !!activeEl.querySelector('table'), 
+                isShape: !!activeEl.querySelector('.v4-shape'), 
+                isIcon: !!activeEl.querySelector('.lf-icon'),
+                isPin: isPin,
+                pinIndex: isPin ? parseInt(activeEl.id.replace('v4-pin-', '')) : -1
+            }, '*');
             e.preventDefault(); e.stopPropagation();
         } else if (comp) {
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             comp.classList.add('selected');
-            window.postMessage({ type: 'LF_COMP_SELECTED', id: comp.id, isTable: !!comp.querySelector('table'), isShape: !!comp.querySelector('.v4-shape'), isIcon: !!comp.querySelector('.lf-icon') || !!comp.querySelector('svg') }, '*');
+            const isPin = comp.classList.contains('text-marker');
+            window.parent.postMessage({ 
+                type: 'LF_COMP_SELECTED', 
+                id: comp.id, 
+                isTable: !!comp.querySelector('table'), 
+                isShape: !!comp.querySelector('.v4-shape'), 
+                isIcon: !!comp.querySelector('.lf-icon') || !!comp.querySelector('svg'),
+                isPin: isPin,
+                pinIndex: isPin ? parseInt(comp.id.replace('v4-pin-', '')) : -1
+            }, '*');
         } else {
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             window.parent.postMessage({ type: 'LF_DESELECT' }, '*');
@@ -1084,6 +1144,11 @@ window.MessageHub = {
                     }
                     markAsDirty();
                 }
+            } else if (data.type === 'LF_COMP_SELECTED') {
+                state.isEditing = true;
+                state.editingIndex = data.id;
+                if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab('editor');
+                if (typeof window.updateProperties === 'function') window.updateProperties(data);
             }
 
             // Call all registered subscribers

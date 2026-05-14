@@ -1,12 +1,12 @@
-﻿@keyframes subtlePan {
+@keyframes subtlePan {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
 @keyframes markerPulse {
-    0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); border-color: var(--accent); }
-    70% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); border-color: #fff; }
-    100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); border-color: var(--accent); }
+    0% { border-color: var(--accent); }
+    70% { border-color: #fff; }
+    100% { border-color: var(--accent); }
 }
 
 .text-marker.editing-active {
@@ -19,7 +19,7 @@
 .text-marker.dragging-now {
     animation: none !important;
     opacity: 0.8;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    box-shadow: none;
 }
 
 .authorized-badge {
@@ -2291,21 +2291,19 @@ body.drag-active #drop-overlay {
 /* Added by Antigravity: Text Annotation Marker */
 .text-marker {
     position: absolute;
-    color: #fff;
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: 1px solid transparent;
-    font-size: 16px;
-    line-height: 1.4;
-    white-space: normal; /* Multi-line support */
+    color: #1e293b;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1.6px solid transparent;
+    font-size: 14px;
+    line-height: 1.2;
+    white-space: normal;
     cursor: grab;
     pointer-events: auto;
-    user-select: none;
     z-index: 100;
     transform: translate(-50%, -50%);
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s, background 0.2s;
-    min-width: 40px;
-    text-align: left; /* Default alignment */
+    transition: box-shadow 0.2s, border-color 0.2s, background 0.2s;
+    min-width: unset;
 }
 
 .text-marker p {
@@ -2315,15 +2313,15 @@ body.drag-active #drop-overlay {
 }
 
 .text-marker:hover, .text-marker.highlight {
-    transform: translate(-50%, -50%) scale(1.02);
+    transform: translate(-50%, -50%);
     border-color: var(--accent);
-    background: rgba(0, 229, 255, 0.05);
+    background: transparent;
     z-index: 1000;
 }
 
 .text-marker.active {
     outline: 2px solid var(--accent);
-    box-shadow: 0 0 15px var(--accent);
+    box-shadow: none;
     z-index: 1001;
 }
 

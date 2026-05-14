@@ -6,7 +6,8 @@ description: Use when editing V4 components, .lf-icon SVG atoms, premium buttons
 # LF Editor UI Components
 
 ## Component Standards
-- Wrap every editable major element in `.lf-component` so drag and drop remains available.
+- Wrap every editable major element (Shapes, Atoms, and **Text Markers**) in `.lf-component` so drag and drop remains available.
+- **Unified Marker Structure**: Text markers must include a `.lf-drag-handle` (drag handle), `.lf-delete-trigger` (delete), and `.v4-editable-cell` (content) inside their `.lf-component` wrapper.
 - Add `contenteditable="true"` and `.v4-editable-cell` to editor-linked text regions.
 - Inject `.lf-delete-trigger` (`×`) whenever users must be able to delete an object.
 - Keep editor canvas/page dimensions aligned to the Cover screen size, typically 1440x900.

@@ -47,101 +47,31 @@ window.renderDescriptionList = function() {
         row.onmouseenter = function() { highlight(true); };
         row.onmouseleave = function() { highlight(false); };
 
-        // Pin Drag Logic
-        pin.addEventListener('mousedown', function(e) {
-            var state = window.state, DOM = window.DOM;
-            if (state.isReadOnly) return;
-            var handle = e.target.closest('.lf-drag-handle');
-            e.stopPropagation();
-
-            var startX = e.clientX, startY = e.clientY;
-            var moved = false;
-            var initialItemX = item.x || 0, initialItemY = item.y || 0;
-            var r = DOM.pinsLayer.getBoundingClientRect();
-            
-            var cw = parseInt(DOM.iframe.style.width) || 1440;
-            var ch = parseInt(DOM.iframe.style.height) || 900;
-
-            if (window.SmartGuide) window.SmartGuide.findSnapTargets();
-
-            var onMouseMove = function(moveEvent) {
-                var state = window.state, DOM = window.DOM;
-                if (item.type === 'text' && !handle) return;
-                var dx = moveEvent.clientX - startX, dy = moveEvent.clientY - startY;
-                if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
-                    if (!moved) {
-                        if (DOM.iframe) DOM.iframe.style.pointerEvents = 'none';
-                        pin.style.cursor = 'grabbing';
-                        pin.classList.add('active', 'dragging-now');
-                    }
-                    moved = true;
-                }
-                if (moved) {
-                    var targetX = initialItemX + (dx / r.width) * 100;
-                    var targetY = initialItemY + (dy / r.height) * 100;
-                    
-                    if (window.SmartGuide) {
-                        var pxX = (targetX / 100) * cw;
-                        var pxY = (targetY / 100) * ch;
-                        var snap = window.SmartGuide.calculateSnap(pxX, pxY);
-                        window.SmartGuide.drawGuides(snap);
-                        targetX = (snap.x / cw) * 100;
-                        targetY = (snap.y / ch) * 100;
-                    }
-
-                    item.x = Math.max(0, Math.min(targetX, 100));
-                    item.y = Math.max(0, Math.min(targetY, 100));
-                    pin.style.left = item.x + "%"; pin.style.top = item.y + "%";
-                }
-            };
-
-            var onMouseUp = function() {
-                var state = window.state, DOM = window.DOM;
-                window.removeEventListener('mousemove', onMouseMove);
-                window.removeEventListener('mouseup', onMouseUp);
-                if (window.SmartGuide) window.SmartGuide.clearGuides();
-                if (moved) {
-                    if (DOM.iframe) DOM.iframe.style.pointerEvents = (state.tool === 'hand') ? 'none' : 'auto';
-                    pin.style.cursor = 'grab';
-                    pin.classList.remove('active', 'dragging-now');
-                    markAsDirty();
-                } else {
-                    if (item.type === 'text') spawnTextEditor(item.x, item.y, index);
-                    else {
-                        var input = row.querySelector('.desc-input');
-                        if (input) { window.switchSidebarTab?.('description'); input.focus(); }
-                    }
-                }
-            };
-            window.addEventListener('mousemove', onMouseMove);
-            window.addEventListener('mouseup', onMouseUp);
-        });
-
-        // Delete Trigger Logic (on marker)
-        var delTrigger = pin.querySelector('.lf-delete-trigger');
-        if (delTrigger) {
-            delTrigger.onclick = function(e) {
-                e.stopPropagation();
-                window.deleteAnnotation(index);
-            };
-        }
-
         // Input & Row Actions
         var input = row.querySelector('.desc-input');
         var autoResize = function(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; };
-        input.oninput = function() { item.text = input.value; autoResize(input); markAsDirty(); };
+        input.oninput = function() { 
+            item.text = input.value; 
+            autoResize(input); 
+            markAsDirty();
+            // Sync to iframe
+            if (DOM.iframe && DOM.iframe.contentWindow) {
+                DOM.iframe.contentWindow.postMessage({ type: 'LF_IMPORT_PINS', pins: list }, '*');
+            }
+        };
         autoResize(input);
 
         row.querySelector('.desc-btn-del').onclick = async function() {
             var state = window.state;
             if (state.isReadOnly) return window.showAuthModal?.();
             if (await Notification.confirm("이 설명을 삭제하시겠습니까?", "설명 삭제")) {
-                list.splice(index, 1); markAsDirty(); renderDescriptionList();
+                list.splice(index, 1); 
+                markAsDirty(); 
+                renderDescriptionList();
             }
         };
 
         DOM.descriptionList.appendChild(row);
-        DOM.pinsLayer.appendChild(pin);
     });
 };
 

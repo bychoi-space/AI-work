@@ -13,11 +13,6 @@
         MessageHub.subscribe('LF_COMP_SELECTED', (data) => {
             activeCompId = data.id;
             updateAllInputs(data.w, data.h);
-            
-            // Pin Selection Auto-Tab
-            if (data.id && data.id.startsWith('v4-pin-')) {
-                if (window.switchSidebarTab) window.switchSidebarTab('description');
-            }
         });
 
         MessageHub.subscribe('LF_COMP_RESIZED', (data) => {

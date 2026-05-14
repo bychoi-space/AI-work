@@ -25,8 +25,16 @@ window.GroupingManager = (function() {
                 endMarquee();
             });
             MessageHub.subscribe('LF_COMP_SELECTED', (data) => {
-                // Single selection from core also updates our list
-                selectedIds = [data.id];
+                // Single/Multi selection from core
+                if (data.shiftKey) {
+                    if (selectedIds.includes(data.id)) {
+                        selectedIds = selectedIds.filter(id => id !== data.id);
+                    } else {
+                        selectedIds.push(data.id);
+                    }
+                } else {
+                    selectedIds = [data.id];
+                }
                 updateSelectionUI();
             });
             MessageHub.subscribe('LF_DESELECT', () => {
@@ -52,7 +60,7 @@ window.GroupingManager = (function() {
 
         // Keyboard Shortcuts
         window.addEventListener('keydown', (e) => {
-            if (window.state.isReadOnly) return;
+            if (window.state && window.state.isReadOnly) return;
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'g') {
                 e.preventDefault();
                 if (e.shiftKey) ungroupSelected();
@@ -232,7 +240,8 @@ window.GroupingManager = (function() {
         // 1. Gather all selected elements with their global bounding boxes
         selectedIds.forEach(id => {
             const isMarker = id.startsWith('v4-pin-');
-            let el = isMarker ? document.getElementById(id) : doc.getElementById(id);
+            // Both pins and shapes are now inside the iframe
+            let el = doc.getElementById(id);
             if (el) {
                 const r = el.getBoundingClientRect();
                 items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: r.left, y: r.top, w: r.width, h: r.height });
@@ -269,11 +278,24 @@ window.GroupingManager = (function() {
 
             if (item.type === 'marker') {
                 const host = item.el.parentElement;
-                const curL = parseFloat(item.el.style.left) || 0;
-                const curT = parseFloat(item.el.style.top) || 0;
+                const hostRect = host.getBoundingClientRect();
                 
-                const newL = curL + (realDx / host.clientWidth) * 100;
-                const newT = curT + (realDy / host.clientHeight) * 100;
+                // Calculate new visual center in viewport pixels
+                let newVisualCenterX, newVisualCenterY;
+                
+                if (type === 'left' || type === 'right' || type === 'center') {
+                    const targetLeft = item.x + dx;
+                    newVisualCenterX = targetLeft + item.w / 2;
+                    newVisualCenterY = item.y + item.h / 2; // Keep Y same
+                } else {
+                    const targetTop = item.y + dy;
+                    newVisualCenterX = item.x + item.w / 2;
+                    newVisualCenterY = targetTop + item.h / 2;
+                }
+
+                // Convert viewport center to host-relative percentage
+                const newL = ((newVisualCenterX - hostRect.left) / scale / host.clientWidth) * 100;
+                const newT = ((newVisualCenterY - hostRect.top) / scale / host.clientHeight) * 100;
                 
                 item.el.style.left = newL + '%';
                 item.el.style.top = newT + '%';
@@ -301,38 +323,46 @@ window.GroupingManager = (function() {
         if (!iframe || !iframe.contentDocument) return;
 
         const doc = iframe.contentDocument;
-        const host = doc.querySelector('.page') || doc.querySelector('.artboard') || doc.body;
-        const comps = selectedIds.map(id => doc.getElementById(id)).filter(el => el);
+        const host = doc.querySelector('.mobile-content') || doc.querySelector('.page') || doc.querySelector('.artboard') || doc.body;
+        const hostRect = host.getBoundingClientRect();
+        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
 
+        // 1. Gather all selected elements and their global bounding boxes
+        const comps = selectedIds.map(id => doc.getElementById(id)).filter(el => el);
         if (comps.length < 2) return;
 
-        // 1. Calculate Bounding Box
         let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-        comps.forEach(c => {
-            const t = parseInt(c.style.top) || 0;
-            const l = parseInt(c.style.left) || 0;
-            minX = Math.min(minX, l);
-            minY = Math.min(minY, t);
-            maxX = Math.max(maxX, l + c.offsetWidth);
-            maxY = Math.max(maxY, t + c.offsetHeight);
+        const items = comps.map(c => {
+            const r = c.getBoundingClientRect();
+            minX = Math.min(minX, r.left);
+            minY = Math.min(minY, r.top);
+            maxX = Math.max(maxX, r.right);
+            maxY = Math.max(maxY, r.bottom);
+            return { el: c, r, isMarker: c.classList.contains('text-marker') };
         });
 
-        // 2. Create Group Container
+        // 2. Calculate Group Position in Base Pixels (relative to host)
+        const groupBaseL = (minX - hostRect.left) / scale;
+        const groupBaseT = (minY - hostRect.top) / scale;
+        const groupBaseW = (maxX - minX) / scale;
+        const groupBaseH = (maxY - minY) / scale;
+
+        // 3. Create Group Container
         const groupId = `group-${Date.now()}`;
         const group = doc.createElement('div');
         group.id = groupId;
         group.className = 'lf-component lf-group selected';
         Object.assign(group.style, {
             position: 'absolute',
-            top: minY + 'px',
-            left: minX + 'px',
-            width: (maxX - minX) + 'px',
-            height: (maxY - minY) + 'px',
+            left: groupBaseL + 'px',
+            top: groupBaseT + 'px',
+            width: groupBaseW + 'px',
+            height: groupBaseH + 'px',
             background: 'transparent',
-            border: 'none'
+            border: 'none',
+            zIndex: '1000'
         });
 
-        // Add standard handles
         group.innerHTML = `
             <div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>
             <div class="lf-resizer"></div>
@@ -341,18 +371,32 @@ window.GroupingManager = (function() {
 
         host.appendChild(group);
 
-        // 3. Move components into group
-        comps.forEach(c => {
-            const ct = parseInt(c.style.top) || 0;
-            const cl = parseInt(c.style.left) || 0;
-            c.style.top = (ct - minY) + 'px';
-            c.style.left = (cl - minX) + 'px';
-            c.classList.remove('selected');
-            group.appendChild(c);
+        // 4. Move components into group and adjust positions
+        items.forEach(item => {
+            if (item.isMarker) {
+                // Calculate center in viewport
+                const cx = item.r.left + item.r.width / 2;
+                const cy = item.r.top + item.r.height / 2;
+                // Relative to group in base pixels
+                const rx = (cx - minX) / scale;
+                const ry = (cy - minY) / scale;
+                // Set as percentage of group
+                item.el.style.left = (rx / groupBaseW * 100) + '%';
+                item.el.style.top = (ry / groupBaseH * 100) + '%';
+            } else {
+                // Relative to group in base pixels
+                const rx = (item.r.left - minX) / scale;
+                const ry = (item.r.top - minY) / scale;
+                item.el.style.left = rx + 'px';
+                item.el.style.top = ry + 'px';
+            }
+            item.el.classList.remove('selected');
+            group.appendChild(item.el);
         });
 
         selectedIds = [groupId];
         updateSelectionUI();
+        if (window.V4UndoManager) window.V4UndoManager.saveState();
         window.MessageHub.send(iframe.contentWindow, 'LF_DIRTY');
     };
 
@@ -365,18 +409,39 @@ window.GroupingManager = (function() {
         const group = doc.getElementById(selectedIds[0]);
         if (!group || !group.classList.contains('lf-group')) return;
 
-        const host = doc.querySelector('.page') || doc.querySelector('.artboard') || doc.body;
-        const gt = parseInt(group.style.top) || 0;
-        const gl = parseInt(group.style.left) || 0;
+        const host = doc.querySelector('.mobile-content') || doc.querySelector('.page') || doc.querySelector('.artboard') || doc.body;
+        const hostRect = host.getBoundingClientRect();
+        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
 
         const children = Array.from(group.children).filter(c => c.classList.contains('lf-component'));
         const newIds = [];
 
         children.forEach(c => {
-            const ct = parseInt(c.style.top) || 0;
-            const cl = parseInt(c.style.left) || 0;
-            c.style.top = (gt + ct) + 'px';
-            c.style.left = (gl + cl) + 'px';
+            const isMarker = c.classList.contains('text-marker');
+            const r = c.getBoundingClientRect(); // Global viewport pos
+
+            if (isMarker) {
+                // Calculate absolute center and convert to host-relative %
+                const cx = r.left + r.width / 2;
+                const cy = r.top + r.height / 2;
+                const rx = (cx - hostRect.left) / scale;
+                const ry = (cy - hostRect.top) / scale;
+                c.style.left = (rx / host.clientWidth * 100) + '%';
+                c.style.top = (ry / host.clientHeight * 100) + '%';
+                
+                // Update Parent State for Pins
+                const idx = parseInt(c.id.replace('v4-pin-', ''));
+                if (window.MessageHub) {
+                    MessageHub.send(window, 'LF_UPDATE_PIN_POS', { index: idx, x: parseFloat(c.style.left), y: parseFloat(c.style.top) });
+                }
+            } else {
+                // Calculate absolute top-left and convert to host-relative px
+                const rx = (r.left - hostRect.left) / scale;
+                const ry = (r.top - hostRect.top) / scale;
+                c.style.left = rx + 'px';
+                c.style.top = ry + 'px';
+            }
+
             c.classList.add('selected');
             host.appendChild(c);
             newIds.push(c.id);
@@ -385,6 +450,7 @@ window.GroupingManager = (function() {
         group.remove();
         selectedIds = newIds;
         updateSelectionUI();
+        if (window.V4UndoManager) window.V4UndoManager.saveState();
         window.MessageHub.send(iframe.contentWindow, 'LF_DIRTY');
     };
 

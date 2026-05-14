@@ -30,6 +30,7 @@
         const table = c.querySelector('table');
         const icon = c.querySelector('.lf-icon') || c.querySelector('img');
         const textCell = c.querySelector('.v4-editable-cell');
+        const isPin = c.classList.contains('text-marker');
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
@@ -42,19 +43,21 @@
 
         return {
             id: c.id,
+            isPin: isPin,
+            pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             w: c.offsetWidth, h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "")),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (icon ? _getVal(icon.parentElement || icon, "borderColor") : ""))),
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (icon ? _getVal(icon.parentElement || icon, "borderColor") : "")))),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
                 isBgTransparent: (() => {
-                    const c = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : "");
-                    return !c || c === "transparent" || c === "none" || c.includes("rgba(0, 0, 0, 0)");
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""));
+                    return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const c = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : "");
-                    return !c || c === "transparent" || c === "none" || c.includes("rgba(0, 0, 0, 0)");
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : ""));
+                    return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })()
             }
         };
@@ -92,19 +95,28 @@
             }
 
             if (comp) {
-                document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
-                comp.classList.add('selected');
+                if (!e.shiftKey) {
+                    document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
+                }
+                comp.classList.toggle('selected');
+                
+                const isPin = comp.classList.contains('text-marker');
                 notifyParent({ 
                     type: 'LF_COMP_SELECTED', 
                     id: comp.id,
+                    shiftKey: e.shiftKey,
                     isTable: !!comp.querySelector('table'),
                     isShape: comp.querySelector('.v4-shape') !== null,
                     isIcon: !!comp.querySelector('.lf-icon') || !!comp.querySelector('img'),
+                    isPin: isPin,
+                    pinIndex: isPin ? parseInt(comp.id.replace('v4-pin-', '')) : -1,
                     currentStyles: _getIframeCompStyles(comp)
                 });
             } else {
-                document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
-                notifyParent({ type: 'LF_DESELECT' });
+                if (!e.shiftKey) {
+                    document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
+                    notifyParent({ type: 'LF_DESELECT' });
+                }
             }
 
             if (resizer) {
@@ -154,12 +166,21 @@
             if (isDragging && activeEl) {
                 notifyParent({ type: 'LF_SNAP_END' });
                 
+                const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
+                const hostRect = host.getBoundingClientRect();
+                const scale = window.parent.state.transform.scale || 1;
+
                 // Sync position for pins (text markers)
-                if (activeEl.classList.contains('text-marker')) {
-                    const host = activeEl.parentElement;
-                    const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
-                    const xPercent = (parseFloat(activeEl.style.left) / host.clientWidth) * 100 || parseFloat(activeEl.style.left);
-                    const yPercent = (parseFloat(activeEl.style.top) / host.clientHeight) * 100 || parseFloat(activeEl.style.top);
+                const syncPin = (el) => {
+                    if (!el.classList.contains('text-marker')) return;
+                    const idx = parseInt(el.id.replace('v4-pin-', ''));
+                    const r = el.getBoundingClientRect();
+                    const cx = r.left + r.width / 2;
+                    const cy = r.top + r.height / 2;
+                    
+                    // Always calculate relative to the main host for the state
+                    const xPercent = ((cx - hostRect.left) / scale / host.clientWidth) * 100;
+                    const yPercent = ((cy - hostRect.top) / scale / host.clientHeight) * 100;
                     
                     notifyParent({
                         type: 'LF_UPDATE_PIN_POS',
@@ -167,6 +188,13 @@
                         x: xPercent,
                         y: yPercent
                     });
+                };
+
+                if (activeEl.classList.contains('text-marker')) {
+                    syncPin(activeEl);
+                } else if (activeEl.classList.contains('lf-group')) {
+                    // If a group was moved, sync all pins inside it
+                    activeEl.querySelectorAll('.text-marker').forEach(syncPin);
                 }
             }
             isDragging = false;
@@ -190,9 +218,24 @@
                 const currentRect = activeEl.getBoundingClientRect();
                 const snapDx = data.x - currentRect.left;
                 const snapDy = data.y - currentRect.top;
-                if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
-                    activeEl.style.left = (parseInt(activeEl.style.left || 0) + snapDx) + 'px';
-                    activeEl.style.top = (parseInt(activeEl.style.top || 0) + snapDy) + 'px';
+                if (Math.abs(snapDx) > 0.05 || Math.abs(snapDy) > 0.05) {
+                    if (activeEl.classList.contains('text-marker')) {
+                        const host = activeEl.parentElement;
+                        const curL = parseFloat(activeEl.style.left) || 0;
+                        const curT = parseFloat(activeEl.style.top) || 0;
+                        // Since snap coordinates are viewport pixels, and we want to move by snapDx in viewport,
+                        // we need to convert snapDx (zoomed px) to % change.
+                        // Wait! The parent (vctrl_core.js) calculates snap coordinates based on viewport.
+                        // So snapDx is the delta in viewport pixels.
+                        const scale = window.parent.state.transform.scale || 1;
+                        const newL = curL + (snapDx / scale / host.clientWidth) * 100;
+                        const newT = curT + (snapDy / scale / host.clientHeight) * 100;
+                        activeEl.style.left = newL + '%';
+                        activeEl.style.top = newT + '%';
+                    } else {
+                        activeEl.style.left = (parseInt(activeEl.style.left || 0) + (snapDx / (window.parent.state.transform.scale || 1))) + 'px';
+                        activeEl.style.top = (parseInt(activeEl.style.top || 0) + (snapDy / (window.parent.state.transform.scale || 1))) + 'px';
+                    }
                 }
             }
             else if (data.type === 'LF_REQUEST_SAVE_CONTENT') {
@@ -281,10 +324,15 @@
                     }
                     
                     div.style.position = 'absolute';
-                    div.style.left = pin.x + '%';
-                    div.style.top = pin.y + '%';
                     div.style.zIndex = '1000';
                     div.style.color = pin.color || '#000000';
+
+                    // ONLY update position if it's NOT in a group.
+                    // If it's in a group, the group's position + the pin's group-relative style already handles it.
+                    if (div.parentElement === host) {
+                        div.style.left = pin.x + '%';
+                        div.style.top = pin.y + '%';
+                    }
                     
                     div.innerHTML = `
                         <div class="lf-drag-handle">

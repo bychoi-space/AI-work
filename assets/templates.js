@@ -440,7 +440,19 @@ window.LF_TEMPLATES = {
     document.addEventListener('mousedown', e => {
         const h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
         if (d && c) { c.remove(); markDirty(); return; }
-        if (c) { document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); c.classList.add('selected'); notifyParent({ type: 'LF_COMP_SELECTED', id: c.id, isTable: !!c.querySelector('table'), isShape: !!c.querySelector('.v4-shape') }); }
+        if (c) { 
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); 
+            c.classList.add('selected'); 
+            const isPin = c.classList.contains('text-marker');
+            notifyParent({ 
+                type: 'LF_COMP_SELECTED', 
+                id: c.id, 
+                isTable: !!c.querySelector('table'), 
+                isShape: !!c.querySelector('.v4-shape'),
+                isPin: isPin,
+                pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1
+            }); 
+        }
         else { document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); notifyParent({ type: 'LF_DESELECT' }); }
         if (h) { isDragging = true; activeEl = h.parentElement; startX = e.clientX; startY = e.clientY; startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; e.preventDefault(); }
         else if (r) { isResizing = true; activeEl = r.parentElement; startX = e.clientX; startY = e.clientY; startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; e.preventDefault(); }
@@ -454,7 +466,7 @@ window.LF_TEMPLATES = {
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
         if (d.type === 'LF_REQUEST_SAVE_CONTENT') { const c = document.documentElement.cloneNode(true); c.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove()); c.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected')); notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: "<!DOCTYPE html>\\n" + c.outerHTML }); }
-        else if (d.type === 'LF_INSERT_COMPONENT') { const v = document.createElement('div'); v.id = d.id || ('v4-comp-' + Date.now()); v.className = 'lf-component'; v.style.position = 'absolute'; v.style.top = '100px'; v.style.left = '100px'; v.style.zIndex = '1000'; if (d.style) Object.assign(v.style, d.style); v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>'; document.body.appendChild(v); document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); v.classList.add('selected'); notifyParent({ type: 'LF_COMP_SELECTED', id: v.id, isTable: !!v.querySelector('table'), isShape: !!v.querySelector('.v4-shape') }); markDirty(); }
+        else if (d.type === 'LF_INSERT_COMPONENT') { const v = document.createElement('div'); v.id = d.id || ('v4-comp-' + Date.now()); v.className = 'lf-component'; v.style.position = 'absolute'; v.style.top = '100px'; v.style.left = '100px'; v.style.zIndex = '1000'; if (d.style) Object.assign(v.style, d.style); v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>'; document.body.appendChild(v); document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected')); v.classList.add('selected'); const isPin = v.classList.contains('text-marker'); notifyParent({ type: 'LF_COMP_SELECTED', id: v.id, isTable: !!v.querySelector('table'), isShape: !!v.querySelector('.v4-shape'), isPin: isPin, pinIndex: isPin ? parseInt(v.id.replace('v4-pin-', '')) : -1 }); markDirty(); }
         else if (d.type === 'LF_UPDATE_STYLE') { const s = document.querySelector('.lf-component.selected'); if (!s) return; const t = d.selector ? s.querySelector(d.selector) : s; if (!t) return; if (d.style) Object.assign(t.style, d.style); if (d.subSelector && d.subStyle) t.querySelectorAll(d.subSelector).forEach(el => Object.assign(el.style, d.subStyle)); markDirty(); }
         else if (d.type === 'LF_TABLE_ACTION') { const t = document.querySelector('.lf-component.selected table'); if (!t) return; if (d.action === 'ADD_ROW') { const b = t.querySelector('tbody') || t, l = t.querySelector('tr:last-child'); if (l) { const n = l.cloneNode(true); n.querySelectorAll('td, th').forEach(x => { x.innerText = "-"; }); b.appendChild(n); } } else if (d.action === 'DEL_ROW') { const r = t.querySelectorAll('tr'); if (r.length > 1) r[r.length - 1].remove(); } else if (d.action === 'ADD_COL') { t.querySelectorAll('tr').forEach(tr => { const x = tr.querySelector('td:last-child') || tr.querySelector('th:last-child'); if (x) { const n = x.cloneNode(true); n.innerText = "-"; tr.appendChild(n); } }); } else if (d.action === 'DEL_COL') { t.querySelectorAll('tr').forEach(tr => { const x = tr.querySelectorAll('td, th'); if (x.length > 1) x[x.length - 1].remove(); }); } markDirty(); }
         else if (d.type === 'LF_DELETE_SELECTED') { const s = document.querySelector('.lf-component.selected'); if (s) { s.remove(); markDirty(); } }
@@ -810,16 +822,16 @@ window.LF_TEMPLATES = {
 
         /* Text Marker Integration */
         .text-marker { 
-            position: absolute; padding: 8px 14px; border-radius: 12px; 
-            border: 1.6px solid transparent; font-size: 14px; line-height: 1.5; 
+            position: absolute; padding: 2px 6px; border-radius: 4px; 
+            border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
             white-space: normal; cursor: grab; pointer-events: auto; z-index: 1000; 
             transform: translate(-50%, -50%); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-            min-width: 60px; background: rgba(255,255,255,0.95); 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.05);
-            backdrop-filter: blur(8px); color: #1e293b;
+            min-width: unset; background: transparent; 
+            box-shadow: none;
+            color: #1e293b;
         }
-        .text-marker:hover { border-color: var(--v4-primary); background: #fff; transform: translate(-50%, -52%) scale(1.02); }
-        .text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); z-index: 1001; }
+        .text-marker:hover { border-color: var(--v4-primary); background: transparent; transform: translate(-50%, -50%); box-shadow: none; }
+        .text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 1001; }
         .text-marker .lf-drag-handle { top: -14px; left: 50%; transform: translateX(-50%); }
         .text-marker .lf-delete-trigger { top: -14px; right: -14px; }
     </style>
@@ -894,16 +906,16 @@ window.LF_TEMPLATES = {
 
         /* Text Marker Integration */
         .text-marker { 
-            position: absolute; padding: 8px 14px; border-radius: 12px; 
-            border: 1.6px solid transparent; font-size: 14px; line-height: 1.5; 
+            position: absolute; padding: 2px 6px; border-radius: 4px; 
+            border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
             white-space: normal; cursor: grab; pointer-events: auto; z-index: 1000; 
             transform: translate(-50%, -50%); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-            min-width: 60px; background: rgba(255,255,255,0.95); 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.05);
-            backdrop-filter: blur(8px); color: #1e293b;
+            min-width: unset; background: transparent; 
+            box-shadow: none;
+            color: #1e293b;
         }
-        .text-marker:hover { border-color: var(--v4-primary); background: #fff; transform: translate(-50%, -52%) scale(1.02); }
-        .text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); z-index: 1001; }
+        .text-marker:hover { border-color: var(--v4-primary); background: transparent; transform: translate(-50%, -50%); box-shadow: none; }
+        .text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 1001; }
         .text-marker .lf-drag-handle { top: -14px; left: 50%; transform: translateX(-50%); }
         .text-marker .lf-delete-trigger { top: -14px; right: -14px; }
     </style>
@@ -1001,16 +1013,16 @@ window.LF_TEMPLATES = {
 
         /* Text Marker Integration */
         .text-marker { 
-            position: absolute; padding: 8px 14px; border-radius: 12px; 
-            border: 1.6px solid transparent; font-size: 14px; line-height: 1.5; 
+            position: absolute; padding: 2px 6px; border-radius: 4px; 
+            border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
             white-space: normal; cursor: grab; pointer-events: auto; z-index: 1000; 
             transform: translate(-50%, -50%); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
-            min-width: 60px; background: rgba(255,255,255,0.95); 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.05);
-            backdrop-filter: blur(8px); color: #1e293b;
+            min-width: unset; background: transparent; 
+            box-shadow: none;
+            color: #1e293b;
         }
-        .text-marker:hover { border-color: var(--v4-primary); background: #fff; transform: translate(-50%, -52%) scale(1.02); }
-        .text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); z-index: 1001; }
+        .text-marker:hover { border-color: var(--v4-primary); background: transparent; transform: translate(-50%, -50%); box-shadow: none; }
+        .text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 1001; }
         .text-marker .lf-drag-handle { top: -14px; left: 50%; transform: translateX(-50%); }
         .text-marker .lf-delete-trigger { top: -14px; right: -14px; }
     </style>
