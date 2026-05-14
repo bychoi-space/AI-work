@@ -166,7 +166,7 @@
             if (isDragging && activeEl) {
                 notifyParent({ type: 'LF_SNAP_END' });
                 
-                const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
+                const host = document.querySelector('.page') || document.querySelector('.artboard') || document.querySelector('#canvas') || document.body;
                 const hostRect = host.getBoundingClientRect();
                 const scale = window.parent.state.transform.scale || 1;
 
@@ -190,11 +190,47 @@
                     });
                 };
 
+                // Sync position for connectors
+                const syncConnector = (el) => {
+                    if (!el.classList.contains('connector-line')) return;
+                    const id = el.id;
+                    const r = el.getBoundingClientRect();
+                    
+                    const conn = window.parent.state.connectors.find(c => c.id === id);
+                    if (conn) {
+                        const baseWidth = parseFloat(conn.style.strokeWidth || 1.6);
+                        const headLength = Math.max(12, baseWidth * 4.5);
+                        const padding = headLength + 5;
+
+                        // The SVG's top-left (r.left, r.top) is host-relative (minX, minY)
+                        const hostRelMinX = (r.left - hostRect.left) / scale;
+                        const hostRelMinY = (r.top - hostRect.top) / scale;
+
+                        // Original relative positions inside the SVG
+                        const oldMinX = Math.min(conn.start.x, conn.end.x) - padding;
+                        const oldMinY = Math.min(conn.start.y, conn.end.y) - padding;
+                        
+                        const dx = hostRelMinX - oldMinX;
+                        const dy = hostRelMinY - oldMinY;
+
+                        if (Math.abs(dx) > 0.01 || Math.abs(dy) > 0.01) {
+                            notifyParent({
+                                type: 'LF_UPDATE_CONNECTOR_POS',
+                                id: id,
+                                start: { x: conn.start.x + dx, y: conn.start.y + dy },
+                                end: { x: conn.end.x + dx, y: conn.end.y + dy }
+                            });
+                        }
+                    }
+                };
+
                 if (activeEl.classList.contains('text-marker')) {
                     syncPin(activeEl);
                 } else if (activeEl.classList.contains('lf-group')) {
                     // If a group was moved, sync all pins inside it
                     activeEl.querySelectorAll('.text-marker').forEach(syncPin);
+                    // Also sync connectors if any are inside (though they usually aren't yet)
+                    activeEl.querySelectorAll('.connector-line').forEach(syncConnector);
                 }
             }
             isDragging = false;
@@ -244,6 +280,116 @@
                 clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
                 const html = "<!DOCTYPE html>\n" + clone.outerHTML;
                 notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: html });
+            }
+            else if (data.type === 'LF_RENDER_CONNECTORS') {
+                const host = document.querySelector('.page') || 
+                           document.querySelector('.artboard') || 
+                           document.querySelector('#canvas') || 
+                           document.body;
+                
+                if (window.parent.state && window.parent.state.debugMode) {
+                    console.log("[Iframe] Rendering Connectors. Host:", host.tagName, (host.className || host.id), "Count:", data.connectors?.length);
+                }
+
+                document.querySelectorAll('.connector-line').forEach(el => el.remove());
+                
+                const connectors = data.connectors || [];
+                const selectedIds = data.selectedIds || [];
+                
+                connectors.forEach(conn => {
+                    const isSelected = selectedIds.includes(conn.id);
+                    const baseWidth = parseFloat(conn.style.strokeWidth || 1.6);
+                    const width = isSelected ? (baseWidth + 1) : baseWidth;
+                    const color = isSelected ? '#3b82f6' : (conn.style.stroke || '#475569');
+                    
+                    const headLength = Math.max(12, baseWidth * 4.5);
+                    const padding = headLength + 10;
+                    const minX = Math.min(conn.start.x, conn.end.x) - padding;
+                    const minY = Math.min(conn.start.y, conn.end.y) - padding;
+                    const maxX = Math.max(conn.start.x, conn.end.x) + padding;
+                    const maxY = Math.max(conn.start.y, conn.end.y) + padding;
+                    const w = maxX - minX;
+                    const h = maxY - minY;
+
+                    if (isNaN(w) || isNaN(h)) return;
+
+                    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    svg.id = conn.id;
+                    svg.setAttribute("class", "lf-component connector-line" + (isSelected ? " selected" : ""));
+                    Object.assign(svg.style, {
+                        position: 'absolute',
+                        left: minX + 'px',
+                        top: minY + 'px',
+                        width: w + 'px',
+                        height: h + 'px',
+                        pointerEvents: 'none',
+                        zIndex: isSelected ? '10001' : '9999',
+                        overflow: 'visible'
+                    });
+
+                    const rel = (pt) => ({ x: pt.x - minX, y: pt.y - minY });
+                    const rStart = rel(conn.start);
+                    const rEnd = rel(conn.end);
+
+                    const calculatePathData = (c, s, e) => {
+                        if (c.type === 'straight') return `M ${s.x} ${s.y} L ${e.x} ${e.y}`;
+                        const midX = (s.x + e.x) / 2;
+                        return `M ${s.x} ${s.y} H ${midX} V ${e.y} H ${e.x}`;
+                    };
+                    const d = calculatePathData(conn, rStart, rEnd);
+
+                    const startMId = `m-start-${conn.id}`;
+                    const endMId = `m-end-${conn.id}`;
+
+                    svg.innerHTML = `
+                        <defs>
+                            <marker id="${startMId}" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="${color}" />
+                            </marker>
+                            <marker id="${endMId}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="${color}" />
+                            </marker>
+                        </defs>
+                        <path d="${d}" stroke="transparent" stroke-width="20" fill="none" style="cursor:pointer; pointer-events:auto;" class="connector-hit-area" />
+                        <path d="${d}" stroke="${color}" stroke-width="${width}" fill="none" 
+                              marker-start="${conn.style.markerStart ? `url(#${startMId})` : ''}"
+                              marker-end="${conn.style.markerEnd ? `url(#${endMId})` : ''}"
+                              style="pointer-events:none;" 
+                              ${conn.style.dashArray ? `stroke-dasharray="${conn.style.dashArray}"` : ''} />
+                    `;
+
+                    // Handle hit area click
+                    const hitArea = svg.querySelector('.connector-hit-area');
+                    if (hitArea) {
+                        hitArea.onmousedown = (e) => {
+                            e.stopPropagation();
+                            notifyParent({ type: 'LF_CONNECTOR_CLICKED', id: conn.id, shiftKey: e.shiftKey });
+                        };
+                    }
+
+                    // Handles (Inside SVG but clickable)
+                    if (isSelected) {
+                        ['start', 'end'].forEach(type => {
+                            const pt = rel(conn[type]);
+                            const handle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                            handle.setAttribute("cx", pt.x);
+                            handle.setAttribute("cy", pt.y);
+                            handle.setAttribute("r", 6);
+                            handle.setAttribute("fill", "#3b82f6");
+                            handle.setAttribute("stroke", "#fff");
+                            handle.setAttribute("stroke-width", "2");
+                            handle.style.cursor = 'crosshair';
+                            handle.style.pointerEvents = 'auto';
+                            handle.onmousedown = (e) => {
+                                e.stopPropagation();
+                                notifyParent({ type: 'LF_CONNECTOR_HANDLE_DOWN', id: conn.id, pointType: type });
+                            };
+                            svg.appendChild(handle);
+                        });
+                    }
+
+                    host.appendChild(svg);
+                });
             }
             else if (data.type === 'LF_INSERT_COMPONENT') {
                 const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;

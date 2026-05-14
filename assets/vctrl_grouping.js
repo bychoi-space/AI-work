@@ -223,6 +223,14 @@ window.GroupingManager = (function() {
             if (DOM.alignBar) {
                 DOM.alignBar.style.display = selectedIds.length > 1 ? 'block' : 'none';
             }
+
+            // Line Editor Trigger
+            if (selectedIds.length === 1 && selectedIds[0].startsWith('conn_')) {
+                if (window.switchSidebarTab) window.switchSidebarTab('editor');
+                if (DOM.linePropSection) DOM.linePropSection.style.display = 'block';
+                if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'none';
+                if (DOM.textPropSection) DOM.textPropSection.style.display = 'none';
+            }
         } else {
             DOM.selectionBar.style.display = 'none';
             if (DOM.alignBar) DOM.alignBar.style.display = 'none';
@@ -240,11 +248,12 @@ window.GroupingManager = (function() {
         // 1. Gather all selected elements with their global bounding boxes
         selectedIds.forEach(id => {
             const isMarker = id.startsWith('v4-pin-');
-            // Both pins and shapes are now inside the iframe
+            const isConnector = id.startsWith('conn_');
+            // Both pins, shapes, and connectors are now inside the iframe
             let el = doc.getElementById(id);
             if (el) {
                 const r = el.getBoundingClientRect();
-                items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: r.left, y: r.top, w: r.width, h: r.height });
+                items.push({ id, type: isMarker ? 'marker' : (isConnector ? 'connector' : 'comp'), el, x: r.left, y: r.top, w: r.width, h: r.height });
             }
         });
 

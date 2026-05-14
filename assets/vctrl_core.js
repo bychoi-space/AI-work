@@ -12,6 +12,7 @@ window.state = {
     projectMetadata: null,
     tool: 'select',
     transform: { x: 0, y: 0, scale: 1 },
+    debugMode: true,
     isDragging: false,
     draggingPinIndex: null,
     dragLayerRect: null,
@@ -171,7 +172,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 const v4Script = `
 (function() {
-    let isDragging = false, isResizing = false, activeEl = null;
+    console.log("[V4 Iframe] Script initialized (V106_CONNECTORS)");
+    let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
     let startX, startY, startW, startH, startTop, startLeft, startRect;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
     function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
@@ -336,6 +338,9 @@ const v4Script = `
         }
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
+            if (isConnectorDragging) {
+                notifyParent({ type: 'LF_CONNECTOR_HANDLE_MOVE', clientX: e.clientX, clientY: e.clientY });
+            }
             if (isDragging && activeEl) { 
                 const dx = e.clientX - startX;
                 const dy = e.clientY - startY;
@@ -361,6 +366,10 @@ const v4Script = `
         });
     });
     document.addEventListener('mouseup', () => { 
+        if (isConnectorDragging) {
+            isConnectorDragging = false;
+            notifyParent({ type: 'LF_CONNECTOR_HANDLE_UP' });
+        }
         if (isMarquee) {
             isMarquee = false;
             notifyParent({ type: 'LF_MARQUEE_END' });
@@ -443,6 +452,101 @@ const v4Script = `
                                 '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
                 
                 updateHandles(div);
+            });
+        }
+        else if (d.type === 'LF_RENDER_CONNECTORS') {
+            console.log("[V4 Iframe] LF_RENDER_CONNECTORS received:", d);
+            const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+            console.log("[V4 Iframe] Host for connectors:", host);
+            document.querySelectorAll('.connector-line').forEach(el => el.remove());
+            const connectors = d.connectors || [];
+            const selectedIds = d.selectedIds || [];
+            
+            connectors.forEach(conn => {
+                const isSelected = selectedIds.includes(conn.id);
+                const baseWidth = parseFloat(conn.style.strokeWidth || 1.6);
+                const width = isSelected ? (baseWidth + 1) : baseWidth;
+                const color = conn.style.stroke || '#475569';
+                
+                const headLength = Math.max(12, baseWidth * 4.5);
+                const padding = headLength + 10;
+                const minX = Math.min(conn.start.x, conn.end.x) - padding;
+                const minY = Math.min(conn.start.y, conn.end.y) - padding;
+                const maxX = Math.max(conn.start.x, conn.end.x) + padding;
+                const maxY = Math.max(conn.start.y, conn.end.y) + padding;
+                const w = maxX - minX;
+                const h = maxY - minY;
+
+                if (isNaN(w) || isNaN(h)) return;
+
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.id = conn.id;
+                svg.setAttribute("class", "lf-component connector-line" + (isSelected ? " selected" : ""));
+                Object.assign(svg.style, {
+                    position: 'absolute',
+                    left: minX + 'px',
+                    top: minY + 'px',
+                    width: w + 'px',
+                    height: h + 'px',
+                    pointerEvents: 'none',
+                    zIndex: isSelected ? '10001' : '9999',
+                    overflow: 'visible'
+                });
+
+                const rel = (pt) => ({ x: pt.x - minX, y: pt.y - minY });
+                const rStart = rel(conn.start);
+                const rEnd = rel(conn.end);
+
+                const calculatePathData = (c, s, e) => {
+                    if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
+                    const midX = (s.x + e.x) / 2;
+                    return 'M ' + s.x + ' ' + s.y + ' H ' + midX + ' V ' + e.y + ' H ' + e.x;
+                };
+                const pathData = calculatePathData(conn, rStart, rEnd);
+
+                const startMId = 'm-start-' + conn.id;
+                const endMId = 'm-end-' + conn.id;
+
+                svg.innerHTML = '<defs>' +
+                    '<marker id="' + startMId + '" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">' +
+                        '<path d="M 0 0 L 10 5 L 0 10 z" fill="' + color + '" />' +
+                    '</marker>' +
+                    '<marker id="' + endMId + '" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
+                        '<path d="M 0 0 L 10 5 L 0 10 z" fill="' + color + '" />' +
+                    '</marker>' +
+                '</defs>' +
+                '<path d="' + pathData + '" stroke="transparent" stroke-width="40" fill="none" style="cursor:pointer; pointer-events:auto;" class="connector-hit-area" />' +
+                '<path d="' + pathData + '" stroke="' + color + '" stroke-width="' + width + '" fill="none" ' +
+                      'marker-start="' + (conn.style.markerStart ? 'url(#' + startMId + ')' : '') + '" ' +
+                      'marker-end="' + (conn.style.markerEnd ? 'url(#' + endMId + ')' : '') + '" ' +
+                      'style="pointer-events:none;" ' +
+                      (conn.style.dashArray ? 'stroke-dasharray="' + conn.style.dashArray + '"' : '') + ' />';
+
+                const hitArea = svg.querySelector('.connector-hit-area');
+                if (hitArea) {
+                    hitArea.onmousedown = (e) => {
+                        e.stopPropagation();
+                        notifyParent({ type: 'LF_CONNECTOR_CLICKED', id: conn.id, shiftKey: e.shiftKey });
+                    };
+                }
+
+                if (isSelected) {
+                    ['start', 'end'].forEach(type => {
+                        const pt = rel(conn[type]);
+                        const handle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        handle.setAttribute("cx", pt.x); handle.setAttribute("cy", pt.y);
+                        handle.setAttribute("r", 6); handle.setAttribute("fill", "#3b82f6");
+                        handle.setAttribute("stroke", "#fff"); handle.setAttribute("stroke-width", "2");
+                        handle.style.cursor = 'crosshair'; handle.style.pointerEvents = 'auto';
+                        handle.onmousedown = (e) => {
+                            e.stopPropagation();
+                            isConnectorDragging = true;
+                            notifyParent({ type: 'LF_CONNECTOR_HANDLE_DOWN', id: conn.id, pointType: type });
+                        };
+                        svg.appendChild(handle);
+                    });
+                }
+                host.appendChild(svg);
             });
         }
         else if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
@@ -690,6 +794,7 @@ const v4Script = `
             if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
         });
         document.querySelectorAll('polygon, path, rect, circle').forEach(svg => {
+            if (svg.closest('.connector-line')) return;
             if (svg.getAttribute('stroke-width') !== '1.6') svg.setAttribute('stroke-width', '1.6');
             if (svg.style.strokeWidth !== '1.6') svg.style.strokeWidth = '1.6';
             if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
@@ -1314,14 +1419,16 @@ window.init = async function() {
         // 🟢 RESTORED: Sidebar Tool Buttons (Text, etc.)
         if (DOM.sidebarToolBtns) {
             DOM.sidebarToolBtns.forEach(btn => {
-                btn.onclick = () => {
-                    const tool = btn.dataset.tool;
-                    if (tool === 'text') {
-                        if (typeof window.handleTextCreation === 'function') window.handleTextCreation();
-                    } else if (typeof window.setTool === 'function') {
-                        window.setTool(tool);
-                    }
-                };
+                const tool = btn.dataset.tool;
+                if (tool) {
+                    btn.onclick = () => {
+                        if (tool === 'text') {
+                            if (typeof window.handleTextCreation === 'function') window.handleTextCreation();
+                        } else if (typeof window.setTool === 'function') {
+                            window.setTool(tool);
+                        }
+                    };
+                }
             });
         }
         
