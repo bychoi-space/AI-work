@@ -13,22 +13,13 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 - `vctrl_v3.js` owns annotation pins (legacy render), Canvas Interaction (`adjustZoom`, `centerView`, `updateTransform`), Fullscreen, and Global Space-key Panning logic (integrated with `vctrl_core.js` iframe event propagation).
 
 
-## Communication
+## Communication & Scripting Safety
 - In `file://` contexts, do not access iframe `contentDocument` directly. Use `MessageHub`/`postMessage`.
 - Normalize action names sent through `MessageHub` so case, hyphen, and underscore variants are accepted.
 - **MessageHub Publish Collision**: `MessageHub.publish(type, data)` 호출 시 `data` 객체 내부에 `type` 프로퍼티가 포함되지 않도록 주의하라. `publish` 함수는 `{ type, ...data }` 형태로 객체를 병합하므로, `data.type`이 첫 번째 인자인 `type`을 덮어씌워 구독자가 메시지를 수신하지 못하게 된다.
 - Inline CSS/JS dependencies needed by `srcdoc` iframe flows to avoid security blocking.
-- When changing `v4Script` in `vctrl_core.js`, keep escaped inline strings syntactically valid and ensure the internal logic remains consistent with the editor's expected behavior.
-- **Iframe State Initialization**: iframe 컨텍스트에서는 부모 창의 전역 변수(예: `window.state`)가 자동으로 공유되지 않는다. iframe 내부에 주입되는 스크립트(예: `v4UndoScript`)에서 상태를 참조하거나 저장할 때는 반드시 참조 전 초기화 여부(예: `if (!window.state) window.state = {};`)를 확인하여 `TypeError`에 의한 기능 중단(Regression)을 방지하라.
-
-
-## Communication
-- In `file://` contexts, do not access iframe `contentDocument` directly. Use `MessageHub`/`postMessage`.
-- Normalize action names sent through `MessageHub` so case, hyphen, and underscore variants are accepted.
-- **MessageHub Publish Collision**: `MessageHub.publish(type, data)` 호출 시 `data` 객체 내부에 `type` 프로퍼티가 포함되지 않도록 주의하라. `publish` 함수는 `{ type, ...data }` 형태로 객체를 병합하므로, `data.type`이 첫 번째 인자인 `type`을 덮어씌워 구독자가 메시지를 수신하지 못하게 된다.
-- Inline CSS/JS dependencies needed by `srcdoc` iframe flows to avoid security blocking.
-- When changing `v4Script` in `vctrl_core.js`, keep escaped inline strings syntactically valid and ensure the internal logic remains consistent with the editor's expected behavior.
-- **Iframe State Initialization**: iframe 컨텍스트에서는 부모 창의 전역 변수(예: `window.state`)가 자동으로 공유되지 않는다. iframe 내부에 주입되는 스크립트(예: `v4UndoScript`)에서 상태를 참조하거나 저장할 때는 반드시 참조 전 초기화 여부(예: `if (!window.state) window.state = {};`)를 확인하여 `TypeError`에 의한 기능 중단(Regression)을 방지하라.
+- **Nested Backtick Precaution**: `vctrl_core.js`의 `v4Script`와 같이 백틱(`)으로 감싸진 템플릿 리터럴 내부에서 다시 백틱을 사용하면 구문 에러가 발생한다. 내부에서는 반드시 일반 따옴표(`"` 또는 `'`)를 사용하거나 이스케이프(`\``) 처리를 해야 한다.
+- **Iframe State Initialization**: iframe 컨텍스트에서는 부모 창의 전역 변수(예: `window.state`)가 자동으로 공유되지 않는다. iframe 내부에 주입되는 스크립트(예: `v4UndoScript`)에서 상태를 참조하거나 저장할 때는 반드시 참조 전 초기화 여부(예: `if (!window.state) window.state = {};`)를 확인하여 `TypeError`를 방지하라.
 
 ## Interaction Integrity
 - Keep marker drag and click-to-edit separate.
@@ -59,5 +50,6 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 - **Terminology**: Text Boxes, Shapes, Atoms, and Lines are collectively referred to as **'모든 오브젝트' (All Objects)**.
 - **Global Screen Layer**: 모든 오브젝트는 iframe 내부의 **`document.body`**에 직접 위치한다. 특정 템플릿 영역(`.mobile-content` 등)에 종속되지 않음으로써 스크린 어디서든 자유로운 배치와 그룹화가 가능하다.
 - **Unified Coordinate System**: 모든 오브젝트는 고정 픽셀(**px**) 단위를 사용한다. 더 이상 퍼센트(%) 단위를 사용하지 않아 단위 변환 오차가 발생하지 않는다.
+- **Auto-Migration Strategy**: 스크린 로드 시 `%` 좌표가 발견되면 `enforceDesignSystem`을 통해 현재 화면 크기 기준의 **절대 픽셀(`px`)**로 즉시 자동 변환한다. 이는 그룹화 엔진이 `style.left/top` 데이터를 안전하게 산술 연산하기 위한 전제 조건이다.
 - **Zero-Drift Measurement**: 크기 측정(`offsetWidth/Height`) 시에는 반드시 UI 핸들(.lf-drag-handle 등)을 일시적으로 숨겨서, 핸들 여백이 논리적인 객체 크기를 왜곡하지 않도록 처리해야 한다.
 - **Persistence**: 저장 시 HTML DOM 스냅샷이 주체(SSOT)가 된다. 텍스트 마커의 경우 호환성을 위해 `metadata.json`의 `description` 리스트를 유지하지만, 이 또한 항상 `body` 기준의 절대 픽셀 좌표로 동기화되어야 한다.
