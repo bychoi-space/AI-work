@@ -36,8 +36,10 @@
                 const pins = DOM.pinsLayer.querySelectorAll('.pin-marker, .text-marker');
                 pins.forEach(p => {
                     if (p.classList.contains('dragging-now')) return;
-                    const x = (parseFloat(p.style.left) / 100) * cw;
-                    const y = (parseFloat(p.style.top) / 100) * ch;
+                    const l = p.style.left || '';
+                    const t = p.style.top || '';
+                    const x = l.includes('%') ? (parseFloat(l) / 100) * cw : parseFloat(l) || 0;
+                    const y = t.includes('%') ? (parseFloat(t) / 100) * ch : parseFloat(t) || 0;
                     const name = p.classList.contains('text-marker') ? 'Text' : `Pin ${p.innerText}`;
                     this.targets.push({ x, label: name, part: 'Center', type: 'h' });
                     this.targets.push({ y, label: name, part: 'Center', type: 'v' });

@@ -83,6 +83,7 @@
 
 ## 🛡️ 보안 및 통신 규칙 (매우 중요)
 - **파일 프로토콜 준수**: `file://` 환경에서는 iframe에 대한 직접적인 DOM 접근(`contentDocument`)이 차단됩니다. 교차 창 간의 모든 비동기 통신에는 반드시 **`MessageHub`** (postMessage wrapping) API를 사용해야 합니다.
+- **DOM 접근 완전 배제 (Pure MessageHub Architecture)**: 부모 창의 오케스트레이터(`vctrl_grouping.js`, `vctrl_smartguide.js` 등)에서 Iframe 내부의 요소를 그룹화, 정렬, 추출 또는 측정(`getBoundingClientRect`)할 때 `contentDocument`에 절대로 직접 접근해서는 안 됩니다. 반드시 `MessageHub`를 통해 `LF_GROUP_SELECTED`, `LF_ALIGN_SELECTED`, `LF_REQUEST_SNAP_TARGETS` 등의 메시지를 보내어, 순수 데이터(Pure Data)를 기반으로 Iframe 내부 스크립트(`vctrl_iframe_script.js`)가 전담 처리하도록 위임(Dispatch)해야 합니다.
 - **의존성 인라인화**: `srcdoc` iframe에서의 보안 차단을 방지하기 위해, 핵심 CSS/JS 의존성은 HTML 문자열 내에 직접 인라인으로 주입하세요.
 - **명령어 유연성 (Case-Insensitivity)**: `MessageHub`를 통해 전달되는 모든 액션 명령어(예: `ADD_ROW`, `add-row`)는 대소문자를 구분하지 않으며, 하이픈(`-`)과 언더바(`_`)를 모두 수용할 수 있도록 정규화하여 처리해야 합니다.
 
