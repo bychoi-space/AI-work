@@ -11,7 +11,7 @@
     "06_Mobile_Design_3_773.html": {
       "title": "06_Mobile_Design_3_773",
       "type": "mobile-ui",
-      "updatedAt": "2026-05-15T04:45:56.243Z",
+      "updatedAt": "2026-05-15T04:59:51.624Z",
       "template": "template_mobile_ui_3.html",
       "description": [
         {
@@ -42,8 +42,8 @@
           "standardized": true
         },
         {
-          "html": "<p><strong style=\"font-size: 16px;\">SUB TITLE</strong></p>",
-          "text": "SUB TITLE",
+          "html": "<p><strong style=\"font-size: 16px;\">SUB TITLE123</strong></p>",
+          "text": "SUB TITLE123",
           "x": 243.549,
           "y": 564.948,
           "type": "text",
