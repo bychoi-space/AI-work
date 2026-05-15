@@ -28,7 +28,11 @@ window.state = {
 // --- Core Constants for V4 Injection ---
 const v4Styles = `
 :root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg-dark: #0f172a; --v4-panel-bg: rgba(30, 41, 59, 0.7); --v4-border: rgba(255, 255, 255, 0.15); --v4-text-main: #ffffff; --v4-text-dim: #94a3b8; }
-.lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
+.lf-component { 
+    position: absolute; cursor: pointer; transition: outline 0.2s; 
+    box-sizing: border-box; z-index: 100;
+    transform: none !important; /* Kill legacy centering drift */
+}
 .lf-component.selected { outline: 2px solid #6366f1; z-index: 10001 !important; }
 .lf-component .lf-component .lf-drag-handle, 
 .lf-component .lf-component .lf-resizer, 
@@ -92,12 +96,14 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     min-width: unset; min-height: unset; background: transparent; 
     box-shadow: none; box-sizing: border-box;
     color: #1e293b; text-align: left;
+    width: fit-content !important;
 }
 .text-marker .v4-editable-cell { padding: 2px 4px; display: block; text-align: left; }
 .text-marker .v4-editable-cell p { margin: 0; padding: 0; }
 .text-marker:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
 .text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
 
+body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; }
 /* Force disable transitions during drag for maximum smoothness */
 .lf-component.dragging-now, .lf-component.dragging-now * { 
     transition: none !important; 
@@ -423,10 +429,7 @@ const v4Script = `
             }
         }
         else if (d.type === 'LF_IMPORT_PINS') {
-            const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
-            const hw = host.clientWidth || 375;
-            const hh = host.clientHeight || 812;
-
+            const host = document.body;
             d.pins.forEach((pin, idx) => {
                 let div = document.getElementById('v4-pin-' + idx);
                 if (!div) {
@@ -440,18 +443,13 @@ const v4Script = `
                                 '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
                                 '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
                 
-                div.style.width = 'auto';
+                div.style.width = 'fit-content';
                 div.style.height = 'auto';
                 div.style.zIndex = '1000';
 
-                if (pin.standardized) {
-                    div.style.left = pin.x + 'px';
-                    div.style.top = pin.y + 'px';
-                } else {
-                    // Legacy % -> px (direct conversion, no center offset)
-                    div.style.left = ((pin.x / 100) * hw) + 'px';
-                    div.style.top = ((pin.y / 100) * hh) + 'px';
-                }
+                // Global absolute position relative to body
+                div.style.left = (parseFloat(pin.x) || 0) + 'px';
+                div.style.top = (parseFloat(pin.y) || 0) + 'px';
                 
                 updateHandles(div);
             });
@@ -557,16 +555,17 @@ const v4Script = `
             c.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
             notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: "<!DOCTYPE html>\\n" + c.outerHTML });
         } else if (d.type === 'LF_INSERT_COMPONENT' || d.type === 'LF_INSERT_V4_COMP') {
-            const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
-            const isMobileHost = host.classList.contains('mobile-content');
-            const vh = isMobileHost ? host.clientHeight : window.innerHeight;
-            const vw = isMobileHost ? host.clientWidth : window.innerWidth;
-            const sY = isMobileHost ? host.scrollTop : window.scrollY;
-            const sX = isMobileHost ? host.scrollLeft : window.scrollX;
-            const compW = (d.style && d.style.width && d.style.width !== '100%') ? parseInt(d.style.width) || 200 : (d.style && d.style.width === '100%' ? vw : 200);
-            const compH = (d.style && d.style.height && d.style.height !== 'auto') ? parseInt(d.style.height) || 100 : 100;
-            const centerTop = Math.max(isMobileHost ? 56 : 0, sY + (vh - compH) / 2);
-            const centerLeft = Math.max(isMobileHost ? 16 : 0, sX + (vw - compW) / 2);
+            const host = document.body;
+            const vh = window.innerHeight;
+            const vw = window.innerWidth;
+            const sY = window.scrollY;
+            const sX = window.scrollX;
+            
+            const compW = (d.style && d.style.width) ? parseInt(d.style.width) || 200 : 200;
+            const compH = (d.style && d.style.height) ? parseInt(d.style.height) || 100 : 100;
+            
+            const centerTop = sY + (vh - compH) / 2;
+            const centerLeft = sX + (vw - compW) / 2;
             
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             const v = document.createElement('div'); 
@@ -576,13 +575,9 @@ const v4Script = `
             v.style.top = centerTop + 'px'; 
             v.style.left = centerLeft + 'px'; 
             v.style.zIndex = '1000';
+            v.style.transform = 'none'; // Prevent drift during grouping
             
             if (d.style) Object.assign(v.style, d.style);
-            if (isMobileHost) {
-                v.style.top = centerTop + 'px';
-                v.style.left = d.style && d.style.width === '100%' ? '0px' : centerLeft + 'px';
-                if (d.style && d.style.width === '100%') v.style.width = '100%';
-            }
             
             v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
             
@@ -629,17 +624,26 @@ const v4Script = `
             });
             markDirty();
         } else if (d.type === 'LF_INSERT_COMPONENTS') {
-            const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+            const host = document.body;
             const comps = d.components || [];
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             
             comps.forEach(c => {
                 const v = document.createElement('div');
-                v.id = c.id || ('v4-comp-' + Date.now());
-                v.className = 'lf-component selected';
+                v.id = c.id || ('v4-comp-' + Date.now() + Math.random());
+                v.className = 'lf-component selected' + (c.isGroup ? ' lf-group' : '') + (c.className ? ' ' + c.className : '');
+                
                 v.style.position = 'absolute';
+                v.style.left = (parseFloat(c.x) || 0) + 'px';
+                v.style.top = (parseFloat(c.y) || 0) + 'px';
+                v.style.width = c.width || '200px';
+                v.style.height = c.height || '100px';
+                v.style.zIndex = '1000';
+                v.style.transform = 'none !important'; // Critical fix for atoms
+
                 if (c.style) Object.assign(v.style, c.style);
-                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + c.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
+
+                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + (c.html || '') + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
                 host.appendChild(v);
                 updateHandles(v);
             });
@@ -811,9 +815,32 @@ const v4Script = `
         });
     };
 
-    // 🛡️ High-Persistence Border Standardization (Standardizes 1.6px everywhere)
+    // 🛡️ High-Persistence Border Standardization & Coordinate Migration
     const enforceDesignSystem = () => {
         initHandles();
+        
+        // --- Coordinate Migration: % to px ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            // Only migrate if not in a group (groups already handle their children)
+            if (c.parentElement !== document.body) return;
+            
+            const lStr = c.style.left || "";
+            const tStr = c.style.top || "";
+            
+            if (lStr.includes('%')) {
+                const val = parseFloat(lStr);
+                const px = (val / 100) * window.innerWidth;
+                c.style.left = px + 'px';
+                console.log(`[V4 Migration] Migrated ${c.id} left: ${lStr} -> ${c.style.left}`);
+            }
+            if (tStr.includes('%')) {
+                const val = parseFloat(tStr);
+                const px = (val / 100) * window.innerHeight;
+                c.style.top = px + 'px';
+                console.log(`[V4 Migration] Migrated ${c.id} top: ${tStr} -> ${c.style.top}`);
+            }
+        });
+
         document.querySelectorAll('.v4-shape').forEach(s => {
             if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle')) {
                 s.style.setProperty('border-width', '0px', 'important');
@@ -1008,6 +1035,12 @@ window.injectIframeInteractions = function(doc) {
         } else if (isMoving) {
             activeEl.style.top = `${startTop + (e.clientY - startY)}px`;
             activeEl.style.left = `${startLeft + (e.clientX - startX)}px`;
+            
+            // Sync for pins if moved via this fallback logic
+            if (activeEl.classList.contains('text-marker')) {
+                const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
+                window.parent.postMessage({ type: 'LF_UPDATE_PIN_POS', index: idx, x: parseFloat(activeEl.style.left), y: parseFloat(activeEl.style.top) }, '*');
+            }
         }
     });
 
@@ -1066,13 +1099,21 @@ window.insertAtomicComponent = function(type, name) {
     const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
     if (!iframeDoc) return;
     injectIframeInteractions(iframeDoc);
-    const host = iframeDoc.querySelector('.mobile-content') || iframeDoc.body;
+    const host = document.body;
     
     if (contentHtml) {
-        const comp = iframeDoc.createElement('div');
+        const comp = document.createElement('div');
         comp.id = id; comp.className = 'lf-component';
         Object.assign(comp.style, defaultStyle);
-        comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div><div class="lf-drag-handle">::</div>`;
+        
+        // Initial center placement relative to body
+        const vw = window.innerWidth, vh = window.innerHeight;
+        const cw = parseInt(defaultStyle.width) || 40, ch = parseInt(defaultStyle.height) || 40;
+        comp.style.left = (window.scrollX + (vw - cw)/2) + 'px';
+        comp.style.top = (window.scrollY + (vh - ch)/2) + 'px';
+        comp.style.transform = 'none !important';
+
+        comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div><div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>`;
         host.appendChild(comp);
         if (typeof enforceDesignSystem === 'function') enforceDesignSystem();
         markAsDirty();
@@ -1094,36 +1135,30 @@ window.getCascadedPosition = function(startX = 120, startY = 300) {
     return { x, y };
 };
 
+
+
 window.handleTextCreation = function() {
     if (state.isReadOnly) return window.showAuthModal?.();
     if (!state.activeFile) return window.Notification?.alert("스크린을 선택해주세요.", "알림", "warning");
     
-    // Phase 3: Text boxes are now DOM-native, same as shapes/atoms
     const id = 'v4-pin-' + Date.now();
     const contentHtml = '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;">Edit Text</div>';
     const defaultStyle = { width: 'auto', height: 'auto' };
+
+    const host = document.body;
+    const comp = document.createElement('div');
+    comp.id = id;
+    comp.className = 'lf-component text-marker';
+    Object.assign(comp.style, defaultStyle);
     
-    const isFileProtocol = window.location.protocol === 'file:';
-    if (isFileProtocol) {
-        if (DOM.iframe && DOM.iframe.contentWindow) {
-            MessageHub.send(DOM.iframe.contentWindow, 'LF_INSERT_V4_COMP', { 
-                id, 
-                html: contentHtml, 
-                style: defaultStyle,
-                className: 'text-marker'
-            });
-        }
-    } else {
-        const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
-        if (!iframeDoc) return;
-        const host = iframeDoc.querySelector('.mobile-content') || iframeDoc.body;
-        const comp = iframeDoc.createElement('div');
-        comp.id = id;
-        comp.className = 'lf-component text-marker';
-        Object.assign(comp.style, defaultStyle);
-        comp.innerHTML = contentHtml + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div><div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>';
-        host.appendChild(comp);
-    }
+    // Initial center placement relative to body
+    const vw = window.innerWidth, vh = window.innerHeight;
+    comp.style.left = (window.scrollX + (vw - 100)/2) + 'px';
+    comp.style.top = (window.scrollY + (vh - 40)/2) + 'px';
+    comp.style.transform = 'none !important';
+
+    comp.innerHTML = contentHtml + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div><div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>';
+    host.appendChild(comp);
     markAsDirty();
 };
 
