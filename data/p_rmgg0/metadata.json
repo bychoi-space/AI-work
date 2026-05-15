@@ -11,48 +11,53 @@
     "06_Mobile_Design_3_773.html": {
       "title": "06_Mobile_Design_3_773",
       "type": "mobile-ui",
-      "updatedAt": "2026-05-13T08:56:37.772Z",
+      "updatedAt": "2026-05-15T04:45:56.243Z",
       "template": "template_mobile_ui_3.html",
       "description": [
         {
-          "html": "<p><span style=\"font-size: 12px;\"><span class=\"ql-cursor\">﻿﻿﻿﻿</span></span><strong style=\"font-size: 24px;\">TITLE</strong></p>",
+          "html": "<p><span style=\"font-size: 12px;\"><span class=\"ql-cursor\">﻿﻿﻿﻿﻿</span></span><strong style=\"font-size: 24px;\">TITLE</strong></p>",
           "text": "TITLE",
-          "x": 49.49620157094714,
-          "y": 15.138617102152836,
+          "x": 250.795,
+          "y": 142.792,
           "type": "text",
-          "color": "#000000"
+          "color": "#000000",
+          "standardized": true
         },
         {
           "html": "<p>DESCRIPTION</p>",
           "text": "DESCRIPTION",
-          "x": 49.28473492148967,
-          "y": 18.62237560877563,
+          "x": 236.611,
+          "y": 182.705,
           "type": "text",
-          "color": "#000000"
+          "color": "#000000",
+          "standardized": true
         },
         {
           "html": "<p>기획전 명칭</p>",
           "text": "기획전 명칭",
-          "x": 23.652203674137073,
-          "y": 6.741993088115293,
+          "x": 168.823,
+          "y": 83.6493,
           "type": "text",
-          "color": "#000000"
+          "color": "#000000",
+          "standardized": true
         },
         {
-          "html": "<p>SUB TITLE</p>",
+          "html": "<p><strong style=\"font-size: 16px;\">SUB TITLE</strong></p>",
           "text": "SUB TITLE",
-          "x": 49.328201584619,
-          "y": 65.3261436285042,
+          "x": 243.549,
+          "y": 564.948,
           "type": "text",
-          "color": "#000000"
+          "color": "#000000",
+          "standardized": true
         },
         {
           "html": "<p>SUB DESCRIPTION</p>",
           "text": "SUB DESCRIPTION",
-          "x": 49.36980158123359,
-          "y": 69.95079363701308,
+          "x": 221.427,
+          "y": 593.451,
           "type": "text",
-          "color": "#000000"
+          "color": "#000000",
+          "standardized": true
         }
       ]
     }
