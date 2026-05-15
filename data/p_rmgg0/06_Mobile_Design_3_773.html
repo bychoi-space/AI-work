@@ -369,11 +369,24 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         } else {
             isMarquee = true;
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            
+            const targets = [];
+            document.querySelectorAll('.lf-component').forEach(c => {
+                targets.push({
+                    id: c.id,
+                    x: parseFloat(c.style.left) || 0,
+                    y: parseFloat(c.style.top) || 0,
+                    w: c.offsetWidth,
+                    h: c.offsetHeight
+                });
+            });
+
             notifyParent({ 
                 type: 'LF_MARQUEE_START', 
                 x: e.clientX, 
                 y: e.clientY,
-                shiftKey: e.shiftKey
+                shiftKey: e.shiftKey,
+                targets: targets
             });
             notifyParent({ type: 'LF_DESELECT' });
         }
@@ -505,7 +518,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
                                 '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
-                                '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
+                                '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
                 
                 div.style.width = 'fit-content';
                 div.style.height = 'auto';
@@ -643,9 +656,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             
             if (d.style) Object.assign(v.style, d.style);
             
-            v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
+            v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
             
-            // 🛡️ Smart Scaling based on Parent Viewport
+            // Smart Scaling based on Parent Viewport
             if (window.parent.state && window.parent.state.transform) {
                 const s = window.parent.state.transform.scale || 1;
                 if (s < 1) {
@@ -707,7 +720,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
                 if (c.style) Object.assign(v.style, c.style);
 
-                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + (c.html || '') + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
+                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + (c.html || '') + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
                 host.appendChild(v);
                 updateHandles(v);
             });
@@ -776,33 +789,234 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         } else if (d.type === 'LF_DESELECT_ALL') {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+        } else if (d.type === 'LF_UPDATE_MARQUEE_SELECTION') {
+            const ids = d.ids || [];
+            document.querySelectorAll('.lf-component').forEach(x => {
+                if (ids.includes(x.id)) {
+                    x.classList.add('selected');
+                } else {
+                    x.classList.remove('selected');
+                }
+            });
+        } else if (d.type === 'LF_ALIGN_SELECTED') {
+            const ids = d.ids || [];
+            const alignType = d.alignType || d.type;
+            if (ids.length < 2) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            const doc = document;
+            const items = [];
+            const allHandles = doc.querySelectorAll('.lf-drag-handle, .lf-resizer, .lf-delete-trigger');
+            const handleStates = Array.from(allHandles).map(h => h.style.display);
+            allHandles.forEach(h => h.style.display = 'none');
+
+            ids.forEach(id => {
+                const isMarker = id.startsWith('v4-pin-');
+                const el = doc.getElementById(id);
+                if (el) {
+                    const l = parseFloat(el.style.left) || 0;
+                    const t = parseFloat(el.style.top) || 0;
+                    const w = el.offsetWidth;
+                    const h = el.offsetHeight;
+                    items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: l, y: t, w, h });
+                }
+            });
+
+            allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+
+            if (items.length < 2) return;
+
+            let minX = Math.min(...items.map(i => i.x));
+            let minY = Math.min(...items.map(i => i.y));
+            let maxX = Math.max(...items.map(i => i.x + i.w));
+            let maxY = Math.max(...items.map(i => i.y + i.h));
+
+            items.forEach(item => {
+                let dx = 0, dy = 0;
+                switch(alignType) {
+                    case 'left':   dx = minX - item.x; break;
+                    case 'right':  dx = maxX - item.w - item.x; break;
+                    case 'center': dx = (minX + maxX)/2 - item.w/2 - item.x; break;
+                    case 'top':    dy = minY - item.y; break;
+                    case 'bottom': dy = maxY - item.h - item.y; break;
+                    case 'middle': dy = (minY + maxY)/2 - item.h/2 - item.y; break;
+                }
+
+                if (dx === 0 && dy === 0) return;
+
+                item.el.style.left = (item.x + dx) + 'px';
+                item.el.style.top = (item.y + dy) + 'px';
+                
+                if (item.type === 'marker') {
+                    const idx = parseInt(item.id.replace('v4-pin-', ''));
+                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: item.x + dx, y: item.y + dy });
+                }
+            });
+            markDirty();
+        } else if (d.type === 'LF_GROUP_SELECTED') {
+            const ids = d.ids || [];
+            if (ids.length < 2) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            
+            const doc = document;
+            const host = doc.body;
+            
+            const allHandles = doc.querySelectorAll('.lf-drag-handle, .lf-resizer, .lf-delete-trigger');
+            const handleStates = Array.from(allHandles).map(h => h.style.display);
+            allHandles.forEach(h => h.style.display = 'none');
+
+            const comps = ids.map(id => doc.getElementById(id)).filter(el => el);
+            if (comps.length < 2) return;
+
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            const items = comps.map(c => {
+                const l = parseFloat(c.style.left) || 0;
+                const t = parseFloat(c.style.top) || 0;
+                const w = c.offsetWidth;
+                const h = c.offsetHeight;
+                minX = Math.min(minX, l);
+                minY = Math.min(minY, t);
+                maxX = Math.max(maxX, l + w);
+                maxY = Math.max(maxY, t + h);
+                return { el: c, l, t, w, h };
+            });
+
+            allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+
+            const groupBaseL = minX;
+            const groupBaseT = minY;
+            const groupBaseW = maxX - minX;
+            const groupBaseH = maxY - minY;
+
+            const groupId = 'group-' + Date.now();
+            const group = doc.createElement('div');
+            group.id = groupId;
+            group.className = 'lf-component lf-group selected';
+            Object.assign(group.style, {
+                position: 'absolute', left: groupBaseL + 'px', top: groupBaseT + 'px',
+                width: groupBaseW + 'px', height: groupBaseH + 'px',
+                background: 'transparent', border: 'none', zIndex: '1000'
+            });
+
+            group.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                              '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+
+            host.appendChild(group);
+
+            items.forEach(item => {
+                item.el.style.left = (item.l - minX) + 'px';
+                item.el.style.top = (item.t - minY) + 'px';
+                item.el.style.width = item.w + 'px';
+                item.el.style.height = item.h + 'px';
+                item.el.classList.remove('selected');
+                group.appendChild(item.el);
+            });
+
+            notifyParent({ type: 'LF_SELECT_ID', id: groupId });
+            markDirty();
+        } else if (d.type === 'LF_UNGROUP_SELECTED') {
+            const ids = d.ids || [];
+            if (ids.length < 1) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            const doc = document;
+            const host = doc.body;
+            const group = doc.getElementById(ids[0]);
+            if (!group || !group.classList.contains('lf-group')) return;
+
+            const groupL = parseFloat(group.style.left) || 0;
+            const groupT = parseFloat(group.style.top) || 0;
+
+            const children = Array.from(group.children).filter(c => c.classList.contains('lf-component'));
+            const newIds = [];
+
+            children.forEach(c => {
+                const relL = parseFloat(c.style.left) || 0;
+                const relT = parseFloat(c.style.top) || 0;
+                const w = c.offsetWidth;
+                const h = c.offsetHeight;
+
+                const absL = groupL + relL;
+                const absT = groupT + relT;
+
+                c.style.left = absL + 'px';
+                c.style.top = absT + 'px';
+                c.style.width = w + 'px';
+                c.style.height = h + 'px';
+
+                const isMarker = c.classList.contains('text-marker');
+                if (isMarker) {
+                    const idx = parseInt(c.id.replace('v4-pin-', ''));
+                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: absL, y: absT });
+                }
+                c.classList.add('selected');
+                newIds.push(c.id);
+                host.appendChild(c);
+            });
+
+            group.remove();
+            
+            // To ensure parent updates selectedIds array, send them
+            notifyParent({ type: 'LF_DESELECT' });
+            markDirty();
+        } else if (d.type === 'LF_EXTRACT_MOLECULE') {
+            const group = document.getElementById(d.id);
+            if (!group || !group.classList.contains('lf-group')) return;
+
+            const clone = group.cloneNode(true);
+            clone.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
+            clone.removeAttribute('id');
+            clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+
+            const moleculeData = {
+                id: 'mol-' + Date.now(),
+                name: d.name,
+                category: 'Custom',
+                width: group.style.width,
+                height: group.style.height,
+                isGroup: true,
+                previewHtml: '<div style="font-size: 10px; font-weight: 700; color: #6366f1;">' + d.name + '</div>',
+                html: clone.innerHTML
+            };
+
+            notifyParent({ type: 'LF_MOLECULE_EXTRACTED', moleculeData });
         } else if (d.type === 'LF_REQUEST_SNAP_TARGETS') {
             const targets = [];
             document.querySelectorAll('.lf-component:not(.selected)').forEach(c => {
-                const r = c.getBoundingClientRect();
+                const l = parseFloat(c.style.left) || 0;
+                const t = parseFloat(c.style.top) || 0;
+                const w = c.offsetWidth;
+                const h = c.offsetHeight;
                 const name = c.id.replace('v4-comp-', 'Comp ');
-                targets.push({ x: r.left, label: name, part: 'Left', type: 'h' });
-                targets.push({ x: r.left + r.width / 2, label: name, part: 'Center', type: 'h' });
-                targets.push({ x: r.right, label: name, part: 'Right', type: 'h' });
-                targets.push({ y: r.top, label: name, part: 'Top', type: 'v' });
-                targets.push({ y: r.top + r.height / 2, label: name, part: 'Middle', type: 'v' });
-                targets.push({ y: r.bottom, label: name, part: 'Bottom', type: 'v' });
+                targets.push({ x: l, label: name, part: 'Left', type: 'h' });
+                targets.push({ x: l + w / 2, label: name, part: 'Center', type: 'h' });
+                targets.push({ x: l + w, label: name, part: 'Right', type: 'h' });
+                targets.push({ y: t, label: name, part: 'Top', type: 'v' });
+                targets.push({ y: t + h / 2, label: name, part: 'Middle', type: 'v' });
+                targets.push({ y: t + h, label: name, part: 'Bottom', type: 'v' });
             });
 
             // Add Inner Screens as Snap Targets (Focus on actual UI area)
             document.querySelectorAll('.mobile-frame').forEach((f, idx) => {
                 const content = f.querySelector('.mobile-content');
                 if (content) {
-                    const sr = content.getBoundingClientRect();
+                    let el = content;
+                    let l = 0, t = 0;
+                    while(el) {
+                        l += el.offsetLeft;
+                        t += el.offsetTop;
+                        el = el.offsetParent;
+                    }
+                    const w = content.offsetWidth;
+                    const h = content.offsetHeight;
                     const sName = 'UI Area ' + (idx + 1);
                     const bezel = 8; // Inset shadow bezel width
-                    targets.push({ x: sr.left + bezel, label: sName, part: 'Left', type: 'h' });
-                    targets.push({ x: sr.right - bezel, label: sName, part: 'Right', type: 'h' });
-                    targets.push({ y: sr.top + bezel, label: sName, part: 'Top', type: 'v' });
-                    targets.push({ y: sr.bottom - bezel, label: sName, part: 'Bottom', type: 'v' });
-                    // Center/Middle remain the same
-                    targets.push({ x: sr.left + sr.width / 2, label: sName, part: 'Center', type: 'h' });
-                    targets.push({ y: sr.top + sr.height / 2, label: sName, part: 'Middle', type: 'v' });
+                    targets.push({ x: l + bezel, label: sName, part: 'Left', type: 'h' });
+                    targets.push({ x: l + w - bezel, label: sName, part: 'Right', type: 'h' });
+                    targets.push({ y: t + bezel, label: sName, part: 'Top', type: 'v' });
+                    targets.push({ y: t + h - bezel, label: sName, part: 'Bottom', type: 'v' });
+                    targets.push({ x: l + w / 2, label: sName, part: 'Center', type: 'h' });
+                    targets.push({ y: t + h / 2, label: sName, part: 'Middle', type: 'v' });
                 }
             });
 
@@ -873,13 +1087,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (!c.querySelector('.lf-delete-trigger')) {
                 const d = document.createElement('div');
                 d.className = 'lf-delete-trigger';
-                d.innerText = '×';
+                d.innerHTML = '&times;';
                 c.appendChild(d);
             }
         });
     };
 
-    // 🛡️ High-Persistence Border Standardization & Coordinate Migration
+    // High-Persistence Border Standardization & Coordinate Migration
     const enforceDesignSystem = () => {
         initHandles();
         
