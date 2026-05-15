@@ -665,6 +665,18 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
             
             host.appendChild(v);
+            document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
+            v.classList.add('selected');
+            const isPin = v.classList.contains('text-marker');
+            notifyParent({ 
+                type: 'LF_COMP_SELECTED', 
+                id: v.id, 
+                isTable: !!v.querySelector('table'), 
+                isShape: !!v.querySelector('.v4-shape'),
+                isIcon: !!v.querySelector('.lf-icon') || !!v.querySelector('img'),
+                isPin: isPin,
+                pinIndex: isPin ? parseInt(v.id.replace('v4-pin-', '')) : -1
+            });
             markDirty();
         } else if (d.type === 'LF_INSERT_COMPONENTS') {
             const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
