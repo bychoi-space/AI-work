@@ -143,24 +143,32 @@ window.updateProperties = function(compStyles) {
     if (!DOM.metadataPanel) return;
 
     // 1. Update Top Metadata Bar
-    if (!DOM.metadataPanel.innerHTML.includes('v4-meta-grid')) {
+    if (!DOM.metadataPanel.innerHTML.includes('v4-meta-horizontal')) {
         DOM.metadataPanel.innerHTML = `
-            <div class="v4-meta-grid">
-                <div class="v4-meta-item"><label>PROJECT TITLE</label><input type="text" id="viewer-meta-title" value="${pm.title || ''}" placeholder="프로젝트 제목"></div>
-                <div class="v4-meta-item"><label>ASSIGNEE</label><input type="text" id="viewer-meta-assignee" value="${pm.assignee || ''}" placeholder="담당자"></div>
-                <div class="v4-meta-item"><label>DEVELOPER</label><input type="text" id="viewer-meta-developer" value="${pm.developer || ''}" placeholder="개발자"></div>
-                <div class="v4-meta-item"><label>PERIOD</label><input type="text" id="viewer-meta-period" value="${pm.period || ''}" placeholder="사업 기간"></div>
-                <div class="v4-meta-item" style="position: relative;">
+            <div class="v4-meta-horizontal">
+                <div class="v4-meta-item" style="flex: 0 0 180px;">
+                    <label>PROJECT TITLE</label>
+                    <input type="text" id="viewer-meta-title" value="${pm.title || ''}" placeholder="프로젝트 제목">
+                </div>
+                <div class="v4-meta-item" style="flex: 0 0 80px;">
+                    <label>ASSIGNEE</label>
+                    <input type="text" id="viewer-meta-assignee" value="${pm.assignee || ''}" placeholder="담당자">
+                </div>
+                <div class="v4-meta-item" style="flex: 0 0 80px;">
+                    <label>DEVELOPER</label>
+                    <input type="text" id="viewer-meta-developer" value="${pm.developer || ''}" placeholder="개발자">
+                </div>
+                <div class="v4-meta-item" style="flex: 0 0 200px;">
+                    <label>PERIOD</label>
+                    <input type="text" id="viewer-meta-period" value="${pm.period || ''}" placeholder="사업 기간">
+                </div>
+                <div class="v4-meta-item" style="flex: 0 0 220px; position: relative;">
                     <label>JIRA / LINKS</label>
                     <div style="display: flex; align-items: center; gap: 6px;">
                         <input type="text" id="viewer-meta-jira" value="${pm.jira || ''}" placeholder="예) LFML-123456" style="flex: 1;">
-                        <a id="btn-jira-link" href="${(pm.jira && typeof pm.jira === 'string') ? 'https://jira.lfcorp.com/browse/' + pm.jira.trim() : '#'}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display: ${(pm.jira && typeof pm.jira === 'string' && pm.jira.trim()) ? 'flex' : 'none'};">바로가기</a>
+                        <a id="btn-jira-link" href="${(pm.jira && typeof pm.jira === 'string') ? 'https://jira.lfcorp.com/browse/' + pm.jira.trim() : '#'}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display: ${(pm.jira && typeof pm.jira === 'string' && pm.jira.trim()) ? 'flex' : 'none'}; height: 22px; padding: 0 8px; font-size: 11px;">바로가기</a>
                     </div>
                 </div>
-            </div>
-            <div class="v4-meta-actions">
-                <div class="v4-meta-updated" id="meta-bar-updated"><span class="material-icons-outlined" style="font-size:14px; opacity:0.5;">history</span><span id="meta-updated-txt">최종 업데이트: -</span></div>
-                <button id="btn-global-save" class="btn-accent">전체 저장</button>
             </div>
         `;
         const btnSave = document.getElementById('btn-global-save');
@@ -178,6 +186,12 @@ window.updateProperties = function(compStyles) {
     } else {
         const titleIn = document.getElementById('viewer-meta-title'); if (titleIn) titleIn.value = pm.title || '';
         const jiraIn = document.getElementById('viewer-meta-jira'); if (jiraIn) jiraIn.value = pm.jira || '';
+    }
+
+    // 1-1. Update Sidebar Footer (Last Updated)
+    const updatedTxt = document.getElementById('meta-updated-txt');
+    if (updatedTxt) {
+        updatedTxt.innerText = pm.updated ? `최종 업데이트: ${pm.updated}` : '최종 업데이트: -';
     }
 
     // 2. Update Sidebar Panels based on selected component

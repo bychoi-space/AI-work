@@ -260,7 +260,7 @@ const v4Script = `
     let isMarquee = false;
     document.addEventListener('mousedown', e => {
         // Rule: Ignore clicks on sidebars, modals, or top panels to prevent unintended deselection/marquee
-        if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.project-info-bar')) return;
+        if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.header-metadata')) return;
 
         let h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
         
