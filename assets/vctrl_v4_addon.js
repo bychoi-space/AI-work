@@ -126,6 +126,13 @@
         style: { borderColor: val }
     }));
 
+    // Text Marker Bindings
+    bindStyleUpdate('text-color-picker', (val) => ({
+        type: 'LF_UPDATE_STYLE',
+        selector: '.v4-editable-cell',
+        style: { color: val }
+    }));
+
     // Icon Editor Bindings
     const btnIconBlack = document.getElementById('btn-icon-black');
     const btnIconWhite = document.getElementById('btn-icon-white');
@@ -233,6 +240,11 @@
                 syncColor('table-text-color', '', s.text, false);
 
                 syncColor('icon-border-color', 'icon-border-wrapper', s.border, s.isBorderTransparent);
+                
+                // Sync Text Marker Color Picker
+                if (data.isPin) {
+                    syncColor('text-color-picker', '', s.text, false);
+                }
 
                 // Sync Other Inputs
                 const fontSizeInput = document.getElementById(data.isTable ? 'table-font-size' : 'shape-font-size');

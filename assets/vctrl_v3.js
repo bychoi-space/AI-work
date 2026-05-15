@@ -16,15 +16,10 @@ window.renderDescriptionList = function() {
     if (!DOM || !DOM.descriptionList || !DOM.pinsLayer) return;
 
     DOM.descriptionList.innerHTML = '';
-    DOM.pinsLayer.innerHTML = ''; // Canvas pins will now be handled inside the iframe
+    DOM.pinsLayer.innerHTML = '';
 
-    // Notify iframe to render pins
-    if (DOM.iframe && DOM.iframe.contentWindow) {
-        DOM.iframe.contentWindow.postMessage({
-            type: 'LF_IMPORT_PINS',
-            pins: list
-        }, '*');
-    }
+    // Phase 3: LF_IMPORT_PINS is sent once during loadScreen only.
+    // After that, text boxes live in iframe DOM and are saved as HTML.
 
     list.forEach(function(item, index) {
         // Description Row (Sidebar) - Kept in parent for easier editing
@@ -54,10 +49,6 @@ window.renderDescriptionList = function() {
             item.text = input.value; 
             autoResize(input); 
             markAsDirty();
-            // Sync to iframe
-            if (DOM.iframe && DOM.iframe.contentWindow) {
-                DOM.iframe.contentWindow.postMessage({ type: 'LF_IMPORT_PINS', pins: list }, '*');
-            }
         };
         autoResize(input);
 

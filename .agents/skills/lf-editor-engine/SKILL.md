@@ -24,9 +24,9 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 - Keep marker drag and click-to-edit separate.
 - For `.v4-editable-cell`, bypass drag logic on click and call `.focus()` immediately.
 - Keep component `id`, `selectedIds`, and `.selected` class state synchronized across core and grouping logic.
-- **SmartGuide Anchor Compensation**: For `.text-marker`, remember that visually it is offset by `transform: translate(-50%, -50%)`. When calculating `calculateSnap()` bounding boxes, you must shift coordinates from the anchor center to the top-left visual bounds.
-- **Cross-Boundary Coordinates (Viewport-Absolute)**: When performing multi-selection grouping, nudging, or alignment that mixes `.text-marker` (pins-layer, `%` coordinates) and `.lf-component` (iframe, `px` coordinates), **ALWAYS** use `getBoundingClientRect()` to calculate targets in viewport space. Then, back-calculate relative to the target container (host or group) using the current `scale`.
-- **Group-Aware State Sync**: When a group containing `.text-marker` elements is moved, the engine must immediately recalculate their **host-relative** percentages from their new viewport positions and update the parent `state` via `LF_UPDATE_PIN_POS`. This prevents position jumps when the group is deselected or the page is refreshed.
+- **SmartGuide Anchor Compensation**: For `.text-marker`, all objects are now Top-Left oriented. When calculating `calculateSnap()` bounding boxes, coordinates are relative to the component's top-left corner without the legacy center-offset transform.
+- **Cross-Boundary Coordinates (Viewport-Absolute)**: When performing multi-selection grouping, nudging, or alignment, **ALWAYS** use `getBoundingClientRect()` to calculate targets in viewport space. All objects now use `px` units, simplifying coordinate reconciliation.
+- **Group-Aware State Sync**: When a group containing components is moved, the engine must immediately recalculate their **host-relative** pixel coordinates and update the parent `state` via `LF_UPDATE_PIN_POS`. This ensures position integrity across refreshes.
 - **MessageHub Nudge/Align/Undo**: Use MessageHub (`LF_NUDGE`, `LF_ALIGN_COMPONENTS`, `LF_SAVE_UNDO`) to synchronize keyboard movements and alignments from the parent window to the iframe components seamlessly.
 - **Keyboard Nudge Forwarding**: 사용자가 컴포넌트를 클릭하면 포커스가 iframe 내부로 이동하여 부모 창의 키보드 이벤트가 동작하지 않을 수 있다. 따라서 iframe 내부(`vctrl_core.js`의 `v4Script`)에도 화살표 키 리스너를 배치하여, iframe 내 요소가 선택된 경우 직접 이동시키고, 그렇지 않은 경우 `LF_NUDGE` 메시지를 통해 부모 창(커넥터, 텍스트 마커 등)에 이벤트를 전달해야 한다.
 
@@ -44,6 +44,7 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 - **Selection Loop Protection**: `LF_COMP_SELECTED` 메시지를 구독하여 기존 선택을 해제(clearSelection)하는 로직을 작성할 때, 현재 내가 선택한 컴포넌트(예: `isConnector: true`)에 대한 메시지까지 처리하여 자기 자신을 해제하지 않도록 메시지 데이터를 필터링하라.
 
 ## 🏗️ Unified Object Architecture (Established)
-- **Standard**: All objects (Shapes, Atoms, Text Markers) are now unified as `.lf-component` within the iframe DOM.
-- **Duality Management**: While visually unified, they maintain distinct coordinate units (px for shapes, % for markers) to satisfy both layout precision and responsive scaling.
-- **Persistence**: Shapes are persisted via the iframe HTML, while Text Markers are persisted via `metadata.json`'s `description` list. The engine bridges this gap through real-time coordinate synchronization.
+- **Terminology**: Text Boxes, Shapes, Atoms, and Lines are collectively referred to as **'모든 오브젝트' (All Objects)**.
+- **Component Standards**: Wrap every **'모든 오브젝트' (All Objects)** in `.lf-component` so drag and drop remains available.
+- **Unified Coordinate System**: Every object uses absolute pixels (**px**) for positioning. This eliminates cross-unit complexity and ensures pixel-perfect alignment.
+- **Persistence**: The primary **Source of Truth** is the HTML DOM snapshot saved during the 'Save All' process. Text markers maintain a secondary `description` list in `metadata.json` for legacy compatibility, but visual rendering and editing are driven by the DOM.

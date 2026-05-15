@@ -45,6 +45,7 @@
             id: c.id,
             isPin: isPin,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
+            html: isPin && textCell ? textCell.innerHTML : undefined,
             w: c.offsetWidth, h: c.offsetHeight,
             currentStyles: {
                 bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
@@ -101,6 +102,7 @@
                 comp.classList.toggle('selected');
                 
                 const isPin = comp.classList.contains('text-marker');
+                const textCell = comp.querySelector('.v4-editable-cell');
                 notifyParent({ 
                     type: 'LF_COMP_SELECTED', 
                     id: comp.id,
@@ -110,6 +112,7 @@
                     isIcon: !!comp.querySelector('.lf-icon') || !!comp.querySelector('img'),
                     isPin: isPin,
                     pinIndex: isPin ? parseInt(comp.id.replace('v4-pin-', '')) : -1,
+                    html: isPin && textCell ? textCell.innerHTML : undefined,
                     currentStyles: _getIframeCompStyles(comp)
                 });
             } else {
@@ -386,7 +389,7 @@
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
                 const div = document.createElement('div');
                 div.id = data.id || ('v4-comp-' + Date.now());
-                div.className = 'lf-component' + (data.isGroup ? ' lf-group' : '');
+                div.className = 'lf-component' + (data.isGroup ? ' lf-group' : '') + (data.className ? ' ' + data.className : '');
                 div.style.position = 'absolute';
                 div.style.top = centerTop + 'px';
                 div.style.left = centerLeft + 'px';
@@ -426,13 +429,19 @@
                 document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
                 div.classList.add('selected');
                 
+                const isPin = div.classList.contains('text-marker');
+                const insertedTextCell = div.querySelector('.v4-editable-cell');
                 notifyParent({ 
                     type: 'LF_COMP_SELECTED', 
                     id: div.id, 
                     isTable: !!div.querySelector('table'), 
                     isShape: !!div.querySelector('.v4-shape'),
                     isIcon: !!div.querySelector('.lf-icon') || !!div.querySelector('img'),
-                    isGroup: !!data.isGroup
+                    isGroup: !!data.isGroup,
+                    isPin: isPin,
+                    pinIndex: isPin ? parseInt(div.id.replace('v4-pin-', '')) : -1,
+                    html: isPin && insertedTextCell ? insertedTextCell.innerHTML : undefined,
+                    currentStyles: _getIframeCompStyles(div)
                 });
                 markDirty();
             }
@@ -474,12 +483,26 @@
                     }
                 });
             }
+            else if (data.type === 'LF_UPDATE_PIN_CONTENT') {
+                // Phase 3: Sync Quill editor content to iframe text marker
+                const selected = document.querySelector('.lf-component.text-marker.selected');
+                if (selected) {
+                    const cell = selected.querySelector('.v4-editable-cell');
+                    if (cell) {
+                        cell.innerHTML = data.html;
+                        markDirty();
+                    }
+                }
+            }
             else if (data.type === 'LF_UPDATE_STYLE') {
                 const selected = document.querySelector('.lf-component.selected');
                 if (!selected) return;
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
                 
-                const target = data.selector ? selected.querySelector(data.selector) : selected;
+                let target = data.selector ? selected.querySelector(data.selector) : selected;
+                if (!target && selected.classList.contains('text-marker')) {
+                    target = selected.querySelector('.v4-editable-cell') || selected;
+                }
                 if (!target) return;
 
                 // Color to Filter mapping for img-based icons

@@ -413,13 +413,22 @@ window.initQuillEditor = function() {
         if (!state.isEditing || state.editingIndex === -1) return;
         const html = window.quillEditor.root.innerHTML;
         if (state.editingType === 'pin') {
+            // Update description array (legacy compat)
             const list = state.activeFile?.meta?.description;
             if (list && list[state.editingIndex]) {
                 list[state.editingIndex].html = html;
                 list[state.editingIndex].text = window.quillEditor.getText().trim();
-                markAsDirty();
-                if (typeof window.renderDescriptionList === 'function') window.renderDescriptionList();
             }
+            // Phase 3: Also sync to iframe DOM directly
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow) {
+                const compId = state.editingIndex;
+                MessageHub.send(iframe.contentWindow, 'LF_UPDATE_PIN_CONTENT', { 
+                    id: compId,
+                    html: html
+                });
+            }
+            markAsDirty();
         } else {
             const iframe = document.getElementById('main-iframe');
             if (iframe && iframe.contentWindow) {

@@ -557,7 +557,7 @@ const v4Script = `
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             const v = document.createElement('div'); 
             v.id = d.id || ('v4-comp-' + Date.now()); 
-            v.className = 'lf-component' + (d.isGroup ? ' lf-group' : ''); 
+            v.className = 'lf-component' + (d.isGroup ? ' lf-group' : '') + (d.className ? ' ' + d.className : ''); 
             v.style.position = 'absolute'; 
             v.style.top = centerTop + 'px'; 
             v.style.left = centerLeft + 'px'; 
@@ -601,6 +601,18 @@ const v4Script = `
             }
             
             host.appendChild(v);
+            document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
+            v.classList.add('selected');
+            const isPin = v.classList.contains('text-marker');
+            notifyParent({ 
+                type: 'LF_COMP_SELECTED', 
+                id: v.id, 
+                isTable: !!v.querySelector('table'), 
+                isShape: !!v.querySelector('.v4-shape'),
+                isIcon: !!v.querySelector('.lf-icon') || !!v.querySelector('img'),
+                isPin: isPin,
+                pinIndex: isPin ? parseInt(v.id.replace('v4-pin-', '')) : -1
+            });
             markDirty();
         } else if (d.type === 'LF_INSERT_COMPONENTS') {
             const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
@@ -625,10 +637,27 @@ const v4Script = `
                 el.classList.add('selected');
                 updateHandles(el);
             }
-        } else if (d.type === 'LF_UPDATE_STYLE') {
+        }
+        else if (d.type === 'LF_UPDATE_PIN_CONTENT') {
+            const selected = document.querySelector('.lf-component.text-marker.selected');
+            if (selected) {
+                const cell = selected.querySelector('.v4-editable-cell');
+                if (cell) {
+                    cell.innerHTML = d.html;
+                    markDirty();
+                }
+            }
+        }
+        else if (d.type === 'LF_UPDATE_STYLE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
-            const t = d.selector ? s.querySelector(d.selector) : s; if (!t) return;
+            
+            // If it's a text marker, target the editable cell for content/style updates if needed
+            let t = d.selector ? s.querySelector(d.selector) : s;
+            if (!t && s.classList.contains('text-marker')) {
+                t = s.querySelector('.v4-editable-cell') || s;
+            }
+            if (!t) return;
             
             if (d.style) {
                 if (d.style.html !== undefined) t.innerHTML = d.style.html;
@@ -854,7 +883,13 @@ window.loadScreen = async function(fileName) {
         if (typeof window.hideLoading === 'function') window.hideLoading();
         DOM.iframe.onload = null;
         
-        // Ensure pins are rendered AFTER iframe is ready
+        // Phase 3: Import legacy description pins ONCE, then render sidebar list
+        const legacyPins = (state.activeFile?.meta?.description || []).filter(p => p.type === 'text' || p.text || p.html);
+        if (legacyPins.length > 0 && DOM.iframe.contentWindow) {
+            setTimeout(() => {
+                DOM.iframe.contentWindow.postMessage({ type: 'LF_IMPORT_PINS', pins: legacyPins }, '*');
+            }, 80);
+        }
         if (typeof window.renderDescriptionList === 'function') {
             setTimeout(window.renderDescriptionList, 100); 
         }
@@ -1048,12 +1083,34 @@ window.getCascadedPosition = function(startX = 120, startY = 300) {
 window.handleTextCreation = function() {
     if (state.isReadOnly) return window.showAuthModal?.();
     if (!state.activeFile) return window.Notification?.alert("스크린을 선택해주세요.", "알림", "warning");
-    const { x, y } = getCascadedPosition(120, 300);
-    const newIdx = state.activeFile.meta.description.length;
-    state.activeFile.meta.description.push({ html: "", text: "", x, y, type: 'text', color: "#000000", standardized: true });
+    
+    // Phase 3: Text boxes are now DOM-native, same as shapes/atoms
+    const id = 'v4-pin-' + Date.now();
+    const contentHtml = '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;">Edit Text</div>';
+    const defaultStyle = { width: 'auto', height: 'auto' };
+    
+    const isFileProtocol = window.location.protocol === 'file:';
+    if (isFileProtocol) {
+        if (DOM.iframe && DOM.iframe.contentWindow) {
+            MessageHub.send(DOM.iframe.contentWindow, 'LF_INSERT_V4_COMP', { 
+                id, 
+                html: contentHtml, 
+                style: defaultStyle,
+                className: 'text-marker'
+            });
+        }
+    } else {
+        const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
+        if (!iframeDoc) return;
+        const host = iframeDoc.querySelector('.mobile-content') || iframeDoc.body;
+        const comp = iframeDoc.createElement('div');
+        comp.id = id;
+        comp.className = 'lf-component text-marker';
+        Object.assign(comp.style, defaultStyle);
+        comp.innerHTML = contentHtml + '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div><div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>';
+        host.appendChild(comp);
+    }
     markAsDirty();
-    if (typeof window.renderDescriptionList === 'function') window.renderDescriptionList();
-    setTimeout(() => { if (typeof window.spawnTextEditor === 'function') window.spawnTextEditor(x, y, newIdx); }, 50);
 };
 
 window.getIframeHTML = async function() {
