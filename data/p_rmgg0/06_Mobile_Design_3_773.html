@@ -88,20 +88,20 @@ img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; o
 svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
 
-/* Text Marker Integration */
+/* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
 .text-marker { 
     position: absolute; padding: 2px 6px; border-radius: 4px; 
     border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
-    white-space: normal; cursor: grab; pointer-events: auto; z-index: 9999 !important; 
-    transform: translate(-50%, -50%);
+    white-space: normal; cursor: grab; pointer-events: auto; z-index: 1000; 
     transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, outline 0.2s;
-    min-width: unset; min-height: unset; background: rgba(255,255,255,0.9); 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    color: #1e293b;
+    min-width: unset; min-height: unset; background: transparent; 
+    box-shadow: none; box-sizing: border-box;
+    color: #1e293b; text-align: left;
 }
+.text-marker .v4-editable-cell { padding: 2px 4px; display: block; text-align: left; }
 .text-marker .v4-editable-cell p { margin: 0; padding: 0; }
-.text-marker:hover { border-color: var(--v4-primary); background: #fff; transform: translate(-50%, -52%); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
-.text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); z-index: 1001; }
+.text-marker:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
+.text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
 
 /* Force disable transitions during drag for maximum smoothness */
 .lf-component.dragging-now, .lf-component.dragging-now * { 
@@ -236,7 +236,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 
 (function() {
-    let isDragging = false, isResizing = false, activeEl = null;
+    console.log("[V4 Iframe] Script initialized (V106_CONNECTORS)");
+    let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
     let startX, startY, startW, startH, startTop, startLeft, startRect;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
     function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
@@ -401,6 +402,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
+            if (isConnectorDragging) {
+                notifyParent({ type: 'LF_CONNECTOR_HANDLE_MOVE', clientX: e.clientX, clientY: e.clientY });
+            }
             if (isDragging && activeEl) { 
                 const dx = e.clientX - startX;
                 const dy = e.clientY - startY;
@@ -426,6 +430,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
     });
     document.addEventListener('mouseup', () => { 
+        if (isConnectorDragging) {
+            isConnectorDragging = false;
+            notifyParent({ type: 'LF_CONNECTOR_HANDLE_UP' });
+        }
         if (isMarquee) {
             isMarquee = false;
             notifyParent({ type: 'LF_MARQUEE_END' });
@@ -433,26 +441,15 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         if (isDragging && activeEl) {
             notifyParent({ type: 'LF_SNAP_END' });
             
-            // Sync position for pins (text markers)
+            // Sync position for pins (text markers) - now using px directly
             if (activeEl.classList.contains('text-marker')) {
-                const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
-                const hRect = host.getBoundingClientRect();
                 const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
-                
-                // Get current position in body, then subtract host offset to get relative pos
-                const curX = parseFloat(activeEl.style.left);
-                const curY = parseFloat(activeEl.style.top);
-                const relativeX = curX - (hRect.left + window.scrollX);
-                const relativeY = curY - (hRect.top + window.scrollY);
-                
-                const xPercent = (relativeX / hRect.width) * 100;
-                const yPercent = (relativeY / hRect.height) * 100;
-                
                 notifyParent({
                     type: 'LF_UPDATE_PIN_POS',
                     index: idx,
-                    x: xPercent,
-                    y: yPercent
+                    x: parseFloat(activeEl.style.left) || 0,
+                    y: parseFloat(activeEl.style.top) || 0,
+                    standardized: true
                 });
             }
         }
@@ -477,11 +474,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
         else if (d.type === 'LF_IMPORT_PINS') {
             const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
-            const rect = host.getBoundingClientRect();
-            const hw = rect.width;
-            const hh = rect.height;
-            const offX = rect.left + window.scrollX;
-            const offY = rect.top + window.scrollY;
+            const hw = host.clientWidth || 375;
+            const hh = host.clientHeight || 812;
 
             d.pins.forEach((pin, idx) => {
                 let div = document.getElementById('v4-pin-' + idx);
@@ -489,25 +483,122 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     div = document.createElement('div');
                     div.id = 'v4-pin-' + idx;
                     div.className = 'lf-component text-marker';
-                    // Append to body to avoid clipping by mobile frame
-                    document.body.appendChild(div);
+                    host.appendChild(div);
                 }
                 
-                // Convert % to PX relative to host, then add offset for absolute body positioning
-                const pxX = ((pin.x / 100) * hw) + offX;
-                const pxY = ((pin.y / 100) * hh) + offY;
-                
-                div.style.left = pxX + 'px';
-                div.style.top = pxY + 'px';
-                div.style.width = 'auto';
-                div.style.height = 'auto';
-                div.style.zIndex = '9999'; // Ensure it's on top of everything
-
                 div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
                                 '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
                                 '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
                 
+                div.style.width = 'auto';
+                div.style.height = 'auto';
+                div.style.zIndex = '1000';
+
+                if (pin.standardized) {
+                    div.style.left = pin.x + 'px';
+                    div.style.top = pin.y + 'px';
+                } else {
+                    // Legacy % -> px (direct conversion, no center offset)
+                    div.style.left = ((pin.x / 100) * hw) + 'px';
+                    div.style.top = ((pin.y / 100) * hh) + 'px';
+                }
+                
                 updateHandles(div);
+            });
+        }
+        else if (d.type === 'LF_RENDER_CONNECTORS') {
+            console.log("[V4 Iframe] LF_RENDER_CONNECTORS received:", d);
+            const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+            console.log("[V4 Iframe] Host for connectors:", host);
+            document.querySelectorAll('.connector-line').forEach(el => el.remove());
+            const connectors = d.connectors || [];
+            const selectedIds = d.selectedIds || [];
+            
+            connectors.forEach(conn => {
+                const isSelected = selectedIds.includes(conn.id);
+                const baseWidth = parseFloat(conn.style.strokeWidth || 1.6);
+                const width = isSelected ? (baseWidth + 1) : baseWidth;
+                const color = conn.style.stroke || '#475569';
+                
+                const headLength = Math.max(12, baseWidth * 4.5);
+                const padding = headLength + 10;
+                const minX = Math.min(conn.start.x, conn.end.x) - padding;
+                const minY = Math.min(conn.start.y, conn.end.y) - padding;
+                const maxX = Math.max(conn.start.x, conn.end.x) + padding;
+                const maxY = Math.max(conn.start.y, conn.end.y) + padding;
+                const w = maxX - minX;
+                const h = maxY - minY;
+
+                if (isNaN(w) || isNaN(h)) return;
+
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.id = conn.id;
+                svg.setAttribute("class", "lf-component connector-line" + (isSelected ? " selected" : ""));
+                Object.assign(svg.style, {
+                    position: 'absolute',
+                    left: minX + 'px',
+                    top: minY + 'px',
+                    width: w + 'px',
+                    height: h + 'px',
+                    pointerEvents: 'none',
+                    zIndex: isSelected ? '10001' : '9999',
+                    overflow: 'visible'
+                });
+
+                const rel = (pt) => ({ x: pt.x - minX, y: pt.y - minY });
+                const rStart = rel(conn.start);
+                const rEnd = rel(conn.end);
+
+                const calculatePathData = (c, s, e) => {
+                    if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
+                    const midX = (s.x + e.x) / 2;
+                    return 'M ' + s.x + ' ' + s.y + ' H ' + midX + ' V ' + e.y + ' H ' + e.x;
+                };
+                const pathData = calculatePathData(conn, rStart, rEnd);
+
+                const startMId = 'm-start-' + conn.id;
+                const endMId = 'm-end-' + conn.id;
+
+                svg.innerHTML = '<defs>' +
+                    '<marker id="' + startMId + '" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">' +
+                        '<path d="M 0 0 L 10 5 L 0 10 z" fill="' + color + '" />' +
+                    '</marker>' +
+                    '<marker id="' + endMId + '" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
+                        '<path d="M 0 0 L 10 5 L 0 10 z" fill="' + color + '" />' +
+                    '</marker>' +
+                '</defs>' +
+                '<path d="' + pathData + '" stroke="transparent" stroke-width="40" fill="none" style="cursor:pointer; pointer-events:auto;" class="connector-hit-area" />' +
+                '<path d="' + pathData + '" stroke="' + color + '" stroke-width="' + width + '" fill="none" ' +
+                      'marker-start="' + (conn.style.markerStart ? 'url(#' + startMId + ')' : '') + '" ' +
+                      'marker-end="' + (conn.style.markerEnd ? 'url(#' + endMId + ')' : '') + '" ' +
+                      'style="pointer-events:none;" ' +
+                      (conn.style.dashArray ? 'stroke-dasharray="' + conn.style.dashArray + '"' : '') + ' />';
+
+                const hitArea = svg.querySelector('.connector-hit-area');
+                if (hitArea) {
+                    hitArea.onmousedown = (e) => {
+                        e.stopPropagation();
+                        notifyParent({ type: 'LF_CONNECTOR_CLICKED', id: conn.id, shiftKey: e.shiftKey });
+                    };
+                }
+
+                if (isSelected) {
+                    ['start', 'end'].forEach(type => {
+                        const pt = rel(conn[type]);
+                        const handle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        handle.setAttribute("cx", pt.x); handle.setAttribute("cy", pt.y);
+                        handle.setAttribute("r", 6); handle.setAttribute("fill", "#3b82f6");
+                        handle.setAttribute("stroke", "#fff"); handle.setAttribute("stroke-width", "2");
+                        handle.style.cursor = 'crosshair'; handle.style.pointerEvents = 'auto';
+                        handle.onmousedown = (e) => {
+                            e.stopPropagation();
+                            isConnectorDragging = true;
+                            notifyParent({ type: 'LF_CONNECTOR_HANDLE_DOWN', id: conn.id, pointType: type });
+                        };
+                        svg.appendChild(handle);
+                    });
+                }
+                host.appendChild(svg);
             });
         }
         else if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
@@ -755,6 +846,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
         });
         document.querySelectorAll('polygon, path, rect, circle').forEach(svg => {
+            if (svg.closest('.connector-line')) return;
             if (svg.getAttribute('stroke-width') !== '1.6') svg.setAttribute('stroke-width', '1.6');
             if (svg.style.strokeWidth !== '1.6') svg.style.strokeWidth = '1.6';
             if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
@@ -772,4 +864,4 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 </script>
 
-<div id="v4-pin-0" class="lf-component text-marker" style="left: 295.333px; top: 165.807px; width: auto; height: auto; z-index: 9999;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p><span style="font-size: 12px;"><span class="ql-cursor">﻿﻿﻿﻿</span></span><strong style="font-size: 24px;">TITLE</strong></p></div></div><div id="v4-pin-1" class="lf-component text-marker" style="left: 294.54px; top: 194.095px; width: auto; height: auto; z-index: 9999;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>DESCRIPTION</p></div></div><div id="v4-pin-2" class="lf-component text-marker" style="left: 198.418px; top: 97.6267px; width: auto; height: auto; z-index: 9999;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div id="v4-pin-3" class="lf-component text-marker" style="left: 294.703px; top: 573.328px; width: auto; height: auto; z-index: 9999;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>SUB TITLE</p></div></div><div id="v4-pin-4" class="lf-component text-marker" style="left: 294.859px; top: 610.88px; width: auto; height: auto; z-index: 9999;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>SUB DESCRIPTION</p></div></div></body></html>
+<div id="v4-pin-0" class="lf-component text-marker" style="left: 250.795px; top: 142.792px; width: auto; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p><span style="font-size: 12px;"><span class="ql-cursor">﻿﻿﻿﻿﻿</span></span><strong style="font-size: 24px;">TITLE</strong></p></div></div><div id="v4-pin-1" class="lf-component text-marker" style="left: 236.611px; top: 182.705px; width: auto; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>DESCRIPTION</p></div></div><div id="v4-pin-2" class="lf-component text-marker" style="left: 168.823px; top: 83.6493px; width: auto; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div id="v4-pin-3" class="lf-component text-marker" style="left: 243.549px; top: 564.948px; width: auto; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p><strong style="font-size: 16px;">SUB TITLE</strong></p></div></div><div id="v4-pin-4" class="lf-component text-marker" style="left: 221.427px; top: 593.451px; width: auto; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>SUB DESCRIPTION</p></div></div></body></html>
