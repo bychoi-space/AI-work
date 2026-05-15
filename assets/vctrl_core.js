@@ -428,11 +428,11 @@ window.handleGlobalSave = async function() {
         console.error("[Save Error]", err);
         const btn = document.getElementById('btn-global-save');
         if (btn) {
-            btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">error</span> ????ㅽ뙣`;
+            btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">error</span> Error`;
             btn.style.setProperty('background', '#ef4444', 'important');
             btn.disabled = false;
             setTimeout(() => {
-                btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">save</span> ?꾩껜 ???;
+                btn.innerHTML = '<span class="material-icons-outlined" style="font-size:15px;">save</span> Save';
                 btn.style.removeProperty('background');
                 btn.style.position = '';
                 btn.style.overflow = '';

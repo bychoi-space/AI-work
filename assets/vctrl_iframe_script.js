@@ -884,7 +884,7 @@ window.v4Script = `
                 width: group.style.width,
                 height: group.style.height,
                 isGroup: true,
-                previewHtml: `<div style="font-size: 10px; font-weight: 700; color: #6366f1;">${d.name}</div>`,
+                previewHtml: '<div style="font-size: 10px; font-weight: 700; color: #6366f1;">' + d.name + '</div>',
                 html: clone.innerHTML
             };
 

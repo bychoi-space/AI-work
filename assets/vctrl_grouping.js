@@ -38,6 +38,7 @@ window.GroupingManager = (function() {
                 }
                 updateSelectionUI();
             });
+            MessageHub.subscribe('LF_DESELECT', () => {
                 selectedIds = [];
                 updateSelectionUI();
             });
