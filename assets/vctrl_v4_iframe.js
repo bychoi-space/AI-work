@@ -170,23 +170,16 @@
                 const hostRect = host.getBoundingClientRect();
                 const scale = window.parent.state.transform.scale || 1;
 
-                // Sync position for pins (text markers)
+                // Sync position for pins (text markers) - unified px
                 const syncPin = (el) => {
                     if (!el.classList.contains('text-marker')) return;
                     const idx = parseInt(el.id.replace('v4-pin-', ''));
-                    const r = el.getBoundingClientRect();
-                    const cx = r.left + r.width / 2;
-                    const cy = r.top + r.height / 2;
-                    
-                    // Always calculate relative to the main host for the state
-                    const xPercent = ((cx - hostRect.left) / scale / host.clientWidth) * 100;
-                    const yPercent = ((cy - hostRect.top) / scale / host.clientHeight) * 100;
-                    
                     notifyParent({
                         type: 'LF_UPDATE_PIN_POS',
                         index: idx,
-                        x: xPercent,
-                        y: yPercent
+                        x: parseFloat(el.style.left) || 0,
+                        y: parseFloat(el.style.top) || 0,
+                        standardized: true
                     });
                 };
 
@@ -255,23 +248,10 @@
                 const snapDx = data.x - currentRect.left;
                 const snapDy = data.y - currentRect.top;
                 if (Math.abs(snapDx) > 0.05 || Math.abs(snapDy) > 0.05) {
-                    if (activeEl.classList.contains('text-marker')) {
-                        const host = activeEl.parentElement;
-                        const curL = parseFloat(activeEl.style.left) || 0;
-                        const curT = parseFloat(activeEl.style.top) || 0;
-                        // Since snap coordinates are viewport pixels, and we want to move by snapDx in viewport,
-                        // we need to convert snapDx (zoomed px) to % change.
-                        // Wait! The parent (vctrl_core.js) calculates snap coordinates based on viewport.
-                        // So snapDx is the delta in viewport pixels.
-                        const scale = window.parent.state.transform.scale || 1;
-                        const newL = curL + (snapDx / scale / host.clientWidth) * 100;
-                        const newT = curT + (snapDy / scale / host.clientHeight) * 100;
-                        activeEl.style.left = newL + '%';
-                        activeEl.style.top = newT + '%';
-                    } else {
-                        activeEl.style.left = (parseInt(activeEl.style.left || 0) + (snapDx / (window.parent.state.transform.scale || 1))) + 'px';
-                        activeEl.style.top = (parseInt(activeEl.style.top || 0) + (snapDy / (window.parent.state.transform.scale || 1))) + 'px';
-                    }
+                    // Unified handling: all components use px, scale correction only
+                    const scale = window.parent.state.transform.scale || 1;
+                    activeEl.style.left = (parseFloat(activeEl.style.left) || 0) + (snapDx / scale) + 'px';
+                    activeEl.style.top = (parseFloat(activeEl.style.top) || 0) + (snapDy / scale) + 'px';
                 }
             }
             else if (data.type === 'LF_REQUEST_SAVE_CONTENT') {
@@ -458,8 +438,9 @@
             }
             else if (data.type === 'LF_IMPORT_PINS') {
                 const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
-                // Clear existing pins within this host if needed, or manage by ID
-                // For now, we assume simple re-render or additive
+                const hw = host.clientWidth || 375;
+                const hh = host.clientHeight || 812;
+
                 data.pins.forEach((pin, idx) => {
                     let div = document.getElementById('v4-pin-' + idx);
                     if (!div) {
@@ -472,13 +453,6 @@
                     div.style.position = 'absolute';
                     div.style.zIndex = '1000';
                     div.style.color = pin.color || '#000000';
-
-                    // ONLY update position if it's NOT in a group.
-                    // If it's in a group, the group's position + the pin's group-relative style already handles it.
-                    if (div.parentElement === host) {
-                        div.style.left = pin.x + '%';
-                        div.style.top = pin.y + '%';
-                    }
                     
                     div.innerHTML = `
                         <div class="lf-drag-handle">
@@ -487,6 +461,17 @@
                         <div class="lf-delete-trigger">×</div>
                         <div class="v4-editable-cell" contenteditable="true" style="outline:none;">${pin.html || pin.text || ''}</div>
                     `;
+
+                    if (div.parentElement === host) {
+                        if (pin.standardized) {
+                            div.style.left = pin.x + 'px';
+                            div.style.top = pin.y + 'px';
+                        } else {
+                            // Legacy % -> px (direct conversion, no center offset)
+                            div.style.left = ((pin.x / 100) * hw) + 'px';
+                            div.style.top = ((pin.y / 100) * hh) + 'px';
+                        }
+                    }
                 });
             }
             else if (data.type === 'LF_UPDATE_STYLE') {

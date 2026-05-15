@@ -83,20 +83,20 @@ img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; o
 svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
 
-/* Text Marker Integration */
+/* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
 .text-marker { 
     position: absolute; padding: 2px 6px; border-radius: 4px; 
     border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
-    white-space: normal; cursor: grab; pointer-events: auto; z-index: 9999 !important; 
-    transform: translate(-50%, -50%);
+    white-space: normal; cursor: grab; pointer-events: auto; z-index: 1000; 
     transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, outline 0.2s;
     min-width: unset; min-height: unset; background: transparent; 
-    box-shadow: none;
-    color: #1e293b;
+    box-shadow: none; box-sizing: border-box;
+    color: #1e293b; text-align: left;
 }
+.text-marker .v4-editable-cell { padding: 2px 4px; display: block; text-align: left; }
 .text-marker .v4-editable-cell p { margin: 0; padding: 0; }
-.text-marker:hover { border-color: var(--v4-primary); background: transparent; transform: translate(-50%, -50%); box-shadow: none; }
-.text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 1001; }
+.text-marker:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
+.text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
 
 /* Force disable transitions during drag for maximum smoothness */
 .lf-component.dragging-now, .lf-component.dragging-now * { 
@@ -377,26 +377,15 @@ const v4Script = `
         if (isDragging && activeEl) {
             notifyParent({ type: 'LF_SNAP_END' });
             
-            // Sync position for pins (text markers)
+            // Sync position for pins (text markers) - now using px directly
             if (activeEl.classList.contains('text-marker')) {
-                const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
-                const hRect = host.getBoundingClientRect();
                 const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
-                
-                // Get current position in body, then subtract host offset to get relative pos
-                const curX = parseFloat(activeEl.style.left);
-                const curY = parseFloat(activeEl.style.top);
-                const relativeX = curX - (hRect.left + window.scrollX);
-                const relativeY = curY - (hRect.top + window.scrollY);
-                
-                const xPercent = (relativeX / hRect.width) * 100;
-                const yPercent = (relativeY / hRect.height) * 100;
-                
                 notifyParent({
                     type: 'LF_UPDATE_PIN_POS',
                     index: idx,
-                    x: xPercent,
-                    y: yPercent
+                    x: parseFloat(activeEl.style.left) || 0,
+                    y: parseFloat(activeEl.style.top) || 0,
+                    standardized: true
                 });
             }
         }
@@ -421,11 +410,8 @@ const v4Script = `
         }
         else if (d.type === 'LF_IMPORT_PINS') {
             const host = document.querySelector('.mobile-content') || document.querySelector('.page') || document.body;
-            const rect = host.getBoundingClientRect();
-            const hw = rect.width;
-            const hh = rect.height;
-            const offX = rect.left + window.scrollX;
-            const offY = rect.top + window.scrollY;
+            const hw = host.clientWidth || 375;
+            const hh = host.clientHeight || 812;
 
             d.pins.forEach((pin, idx) => {
                 let div = document.getElementById('v4-pin-' + idx);
@@ -433,23 +419,25 @@ const v4Script = `
                     div = document.createElement('div');
                     div.id = 'v4-pin-' + idx;
                     div.className = 'lf-component text-marker';
-                    // Append to body to avoid clipping by mobile frame
-                    document.body.appendChild(div);
+                    host.appendChild(div);
                 }
                 
-                // Convert % to PX relative to host, then add offset for absolute body positioning
-                const pxX = ((pin.x / 100) * hw) + offX;
-                const pxY = ((pin.y / 100) * hh) + offY;
-                
-                div.style.left = pxX + 'px';
-                div.style.top = pxY + 'px';
-                div.style.width = 'auto';
-                div.style.height = 'auto';
-                div.style.zIndex = '9999'; // Ensure it's on top of everything
-
                 div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
                                 '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
                                 '<div class="lf-resizer"></div><div class="lf-delete-trigger">×</div>';
+                
+                div.style.width = 'auto';
+                div.style.height = 'auto';
+                div.style.zIndex = '1000';
+
+                if (pin.standardized) {
+                    div.style.left = pin.x + 'px';
+                    div.style.top = pin.y + 'px';
+                } else {
+                    // Legacy % -> px (direct conversion, no center offset)
+                    div.style.left = ((pin.x / 100) * hw) + 'px';
+                    div.style.top = ((pin.y / 100) * hh) + 'px';
+                }
                 
                 updateHandles(div);
             });
@@ -1044,15 +1032,15 @@ window.insertAtomicComponent = function(type, name) {
 
 // Note: insertV4ComponentById is now handled by vctrl_v4_addon.js for modularity.
 
-window.getCascadedPosition = function(startX = 50, startY = 50) {
+window.getCascadedPosition = function(startX = 120, startY = 300) {
     let x = startX, y = startY;
-    const step = 3;
+    const step = 25;
     const list = state.activeFile?.meta.description || [];
     let isOccupied = true;
     let attempts = 0;
     while (isOccupied && attempts < 15) {
-        isOccupied = list.some(item => item.type === 'text' && Math.abs(item.x - x) < 1 && Math.abs(item.y - y) < 1);
-        if (isOccupied) { x += step; y += step; attempts++; if (x > 95 || y > 95) { x = startX; y = startY; break; } }
+        isOccupied = list.some(item => item.type === 'text' && Math.abs(item.x - x) < 20 && Math.abs(item.y - y) < 20);
+        if (isOccupied) { x += step; y += step; attempts++; if (x > 340 || y > 750) { x = startX; y = startY; break; } }
     }
     return { x, y };
 };
@@ -1060,9 +1048,9 @@ window.getCascadedPosition = function(startX = 50, startY = 50) {
 window.handleTextCreation = function() {
     if (state.isReadOnly) return window.showAuthModal?.();
     if (!state.activeFile) return window.Notification?.alert("스크린을 선택해주세요.", "알림", "warning");
-    const { x, y } = getCascadedPosition(50, 50);
+    const { x, y } = getCascadedPosition(120, 300);
     const newIdx = state.activeFile.meta.description.length;
-    state.activeFile.meta.description.push({ html: "", text: "", x, y, type: 'text', color: "#000000" });
+    state.activeFile.meta.description.push({ html: "", text: "", x, y, type: 'text', color: "#000000", standardized: true });
     markAsDirty();
     if (typeof window.renderDescriptionList === 'function') window.renderDescriptionList();
     setTimeout(() => { if (typeof window.spawnTextEditor === 'function') window.spawnTextEditor(x, y, newIdx); }, 50);
@@ -1238,6 +1226,7 @@ window.MessageHub = {
                     if (pin) {
                         pin.x = data.x;
                         pin.y = data.y;
+                        if (data.standardized) pin.standardized = true;
                         markAsDirty();
                     }
                 }
