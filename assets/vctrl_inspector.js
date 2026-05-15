@@ -6,7 +6,7 @@
 console.log("%c [VCTRL INSPECTOR] Initializing UI Controller... ", "background: #10b981; color: #fff; font-weight: bold; padding: 4px; border-radius: 4px;");
 
 // 1. Central DOM Registry
-window.get = (id) => document.getElementById(id) || { style: {}, classList: { add:() => {}, remove:() => {} }, innerText: '', innerHTML: '', onclick: null, oninput: null };
+window.get = (id) => document.getElementById(id) || { style: {}, classList: { add:() => {}, remove:() => {}, toggle:() => {} }, innerText: '', innerHTML: '', onclick: null, oninput: null };
 
 window.DOM = {
     iframe: get('main-iframe'),
@@ -27,13 +27,11 @@ window.DOM = {
     sidebarRight: get('sidebar-right'),
     
     // Bottom Bar
+    // Bottom Bar
     pinsLayer: get('pins-layer'),
     guideLayer: get('guide-layer'),
     
     // Buttons
-    btnSelect: get('btn-select'),
-    btnHand: get('btn-hand'),
-    btnText: get('btn-text'),
     btnToggleLeft: get('btn-toggle-left'),
     btnToggleRight: get('btn-toggle-right'),
     btnGlobalSave: get('btn-global-save'),

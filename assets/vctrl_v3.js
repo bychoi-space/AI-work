@@ -139,6 +139,22 @@ window.updateTransform = function() {
     if (DOM.zoomTxt) DOM.zoomTxt.innerText = Math.round(state.transform.scale * 100) + '%';
 };
 
+window.adjustZoom = function(delta) {
+    var state = window.state, DOM = window.DOM;
+    if (!state || !DOM || !DOM.canvas) return;
+    var s = state.transform.scale;
+    var ns = Math.max(0.1, Math.min(s + delta, 20));
+    
+    // Zoom relative to the center of the viewport
+    var cw = DOM.canvas.clientWidth, ch = DOM.canvas.clientHeight;
+    var mx = cw / 2, my = ch / 2;
+    
+    state.transform.x = mx - (mx - state.transform.x) * (ns / s);
+    state.transform.y = my - (my - state.transform.y) * (ns / s);
+    state.transform.scale = ns;
+    updateTransform();
+};
+
 // 4. Device Viewport & Fullscreen
 window.setDeviceViewport = function(type, w, h) {
     var DOM = window.DOM;
@@ -161,25 +177,32 @@ window.setTool = function(t) {
     var state = window.state, DOM = window.DOM;
     if (!state || !DOM) return;
     state.tool = t;
-    if (DOM.btnSelect) DOM.btnSelect.classList.toggle('active', t === 'select');
-    if (DOM.btnHand) DOM.btnHand.classList.toggle('active', t === 'hand');
-    if (DOM.btnText) DOM.btnText.classList.toggle('active', t === 'text');
     if (DOM.canvas) DOM.canvas.classList.toggle('hand-active', t === 'hand');
     if (DOM.iframe) DOM.iframe.style.pointerEvents = t === 'hand' ? 'none' : 'auto';
     if (DOM.pinsLayer) DOM.pinsLayer.style.pointerEvents = (t === 'select') ? 'auto' : 'none';
 };
 
-// 5. Global Event Listeners (deferred to ensure DOM is ready)
-window.addEventListener('DOMContentLoaded', function() {
+// 5. Global Event Listeners
+function initV3Listeners() {
     var DOM = window.DOM;
+    if (!DOM) {
+        console.warn("[VCTRL V3] DOM registry not found during listener init. Retrying...");
+        setTimeout(initV3Listeners, 100);
+        return;
+    }
 
     window.addEventListener('keydown', function(e) {
         var state = window.state;
         if (!state) return;
         if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
-        if (e.code === 'Space' && state.tool !== 'hand') {
-            if (DOM && DOM.canvas) DOM.canvas.classList.add('hand-active');
-            if (DOM && DOM.iframe) DOM.iframe.style.pointerEvents = 'none';
+        
+        if (e.code === 'Space') {
+            e.preventDefault(); // Prevent scrolling
+            if (state.tool !== 'hand') {
+                if (DOM.canvas) DOM.canvas.classList.add('hand-active');
+                if (DOM.iframe) DOM.iframe.style.pointerEvents = 'none';
+                state.isHandMode = true;
+            }
         }
         if (e.code === 'KeyV') setTool('select');
         if (e.code === 'KeyH') setTool('hand');
@@ -190,13 +213,16 @@ window.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('keyup', function(e) {
         var state = window.state, DOM = window.DOM;
         if (!state) return;
-        if (e.code === 'Space' && state.tool !== 'hand') {
-            if (DOM && DOM.canvas) DOM.canvas.classList.remove('hand-active');
-            if (DOM && DOM.iframe) DOM.iframe.style.pointerEvents = 'auto';
+        if (e.code === 'Space') {
+            if (state.tool !== 'hand') {
+                if (DOM.canvas) DOM.canvas.classList.remove('hand-active');
+                if (DOM.iframe) DOM.iframe.style.pointerEvents = 'auto';
+                state.isHandMode = false;
+            }
         }
     });
 
-    if (DOM && DOM.canvas) {
+    if (DOM.canvas) {
         DOM.canvas.addEventListener('wheel', function(e) {
             var state = window.state;
             if (!state) return;
@@ -214,7 +240,7 @@ window.addEventListener('DOMContentLoaded', function() {
         DOM.canvas.addEventListener('mousedown', function(e) {
             var state = window.state, DOM = window.DOM;
             if (!state) return;
-            if (state.tool === 'hand' || e.button === 1 || DOM.canvas.classList.contains('hand-active')) {
+            if (state.tool === 'hand' || e.button === 1 || state.isHandMode) {
                 state.isDragging = true;
                 state.startX = e.clientX - state.transform.x;
                 state.startY = e.clientY - state.transform.y;
@@ -239,13 +265,18 @@ window.addEventListener('DOMContentLoaded', function() {
         if (state) state.isDragging = false;
     });
 
-    // Auto-fit when window/monitor changes
     window.addEventListener('resize', function() {
         if (window.centerView) window.centerView();
     });
 
     console.log("[VCTRL V3] Utility Engine initialized successfully.");
-});
+}
+
+if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', initV3Listeners);
+} else {
+    initV3Listeners();
+}
 
 // 6. MessageHub Deselection Integration
 if (window.MessageHub) {

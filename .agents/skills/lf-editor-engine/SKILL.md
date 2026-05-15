@@ -10,7 +10,8 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 - `vctrl_core.js` owns global `state`, `MessageHub`, GitHub API load/save, inline `v4Script`, and SmartGuide calculation flow.
 - `vctrl_grouping.js` owns marquee selection, `selectedIds`, group move/delete/grouping behavior, and selected class sync.
 - `vctrl_inspector.js` owns sidebar tabs, metadata UI, screen list rendering, Quill initialization, and the central `DOM` registry.
-- `vctrl_v3.js` owns annotation pin render/create flows, zoom/pan, device viewport changes, and utility behavior.
+- `vctrl_v3.js` owns annotation pins (legacy render), Canvas Interaction (`adjustZoom`, `centerView`, `updateTransform`), Fullscreen, and Global Space-key Panning logic (integrated with `vctrl_core.js` iframe event propagation).
+
 
 ## Communication
 - In `file://` contexts, do not access iframe `contentDocument` directly. Use `MessageHub`/`postMessage`.

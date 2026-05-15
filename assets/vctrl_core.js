@@ -393,6 +393,20 @@ const v4Script = `
         isDragging = false; isResizing = false; activeEl = null; 
     });
     document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
+    document.addEventListener('keydown', e => {
+        if (e.code === 'Space') {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                e.preventDefault();
+                notifyParent({ type: 'LF_SPACE_DOWN' });
+            }
+        }
+    });
+    document.addEventListener('keyup', e => {
+        if (e.code === 'Space') {
+            notifyParent({ type: 'LF_SPACE_UP' });
+        }
+    });
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
         if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
@@ -1300,6 +1314,16 @@ window.MessageHub = {
                 state.editingIndex = data.id;
                 if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab('editor');
                 if (typeof window.updateProperties === 'function') window.updateProperties(data);
+            } else if (data.type === 'LF_SPACE_DOWN') {
+                const DOM = window.DOM;
+                if (DOM && DOM.canvas) DOM.canvas.classList.add('hand-active');
+                if (DOM && DOM.iframe) DOM.iframe.style.pointerEvents = 'none';
+                window.state.isHandMode = true;
+            } else if (data.type === 'LF_SPACE_UP') {
+                const DOM = window.DOM;
+                if (DOM && DOM.canvas) DOM.canvas.classList.remove('hand-active');
+                if (DOM && DOM.iframe) DOM.iframe.style.pointerEvents = 'auto';
+                window.state.isHandMode = false;
             }
 
             // Call all registered subscribers

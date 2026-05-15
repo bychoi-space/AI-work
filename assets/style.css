@@ -814,8 +814,8 @@ body {
     position: relative;
     overflow: hidden;
 }
-.canvas.hand-active { cursor: grab; }
-.canvas.hand-active:active { cursor: grabbing; }
+.canvas.hand-active, .canvas.hand-active * { cursor: grab !important; }
+.canvas.hand-active:active, .canvas.hand-active:active * { cursor: grabbing !important; }
 
 /* The scaling container */
 .stage {
