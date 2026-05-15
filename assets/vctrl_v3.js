@@ -124,7 +124,7 @@ window.closeActiveEditor = function(save) {
 // 3. Canvas Utilities
 window.centerView = function() {
     var DOM = window.DOM, state = window.state;
-    if (!DOM || !DOM.canvas || !DOM.iframe) return;
+    if (!DOM || !DOM.canvas || !DOM.iframe || !state) return;
     var iw = parseInt(DOM.iframe.style.width) || 1440, ih = parseInt(DOM.iframe.style.height) || 900;
     var cw = DOM.canvas.clientWidth, ch = DOM.canvas.clientHeight;
     var s = Math.min((cw * 0.99) / iw, (ch * 0.99) / ih, 1);

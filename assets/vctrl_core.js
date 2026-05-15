@@ -831,13 +831,13 @@ const v4Script = `
                 const val = parseFloat(lStr);
                 const px = (val / 100) * window.innerWidth;
                 c.style.left = px + 'px';
-                console.log(`[V4 Migration] Migrated ${c.id} left: ${lStr} -> ${c.style.left}`);
+                console.log("[V4 Migration] Migrated " + c.id + " left: " + lStr + " -> " + c.style.left);
             }
             if (tStr.includes('%')) {
                 const val = parseFloat(tStr);
                 const px = (val / 100) * window.innerHeight;
                 c.style.top = px + 'px';
-                console.log(`[V4 Migration] Migrated ${c.id} top: ${tStr} -> ${c.style.top}`);
+                console.log("[V4 Migration] Migrated " + c.id + " top: " + tStr + " -> " + c.style.top);
             }
         });
 
