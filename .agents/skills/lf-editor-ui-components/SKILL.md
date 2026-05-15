@@ -5,9 +5,9 @@ description: Use when editing V4 components, .lf-icon SVG atoms, premium buttons
 
 # LF Editor UI Components
 
-## Component Standards
-- Wrap every **'모든 오브젝트' (All Objects)** in `.lf-component` so drag and drop remains available.
-- **Unified Marker Structure**: Text markers must include a `.lf-drag-handle` (drag handle), `.lf-delete-trigger` (delete), and `.v4-editable-cell` (content) inside their `.lf-component` wrapper. All markers are aligned to their **Top-Left** corner (0, 0) for consistent coordinate mapping with shapes and atoms.
+- **Global Screen Layer**: 모든 오브젝트는 iframe 내부의 **`document.body`**에 직접 위치한다. 특정 템플릿 영역(`.mobile-content` 등)에 종속되지 않음으로써 스크린 어디서든 자유로운 배치와 그룹화가 가능하다.
+- **Unified Marker Structure**: Text markers must include a `.lf-drag-handle` (drag handle), `.lf-delete-trigger` (delete), and `.v4-editable-cell` (content) inside their `.lf-component` wrapper. All markers are aligned to their **Top-Left** corner (0, 0) and use **px** units for consistent coordinate mapping with shapes and atoms.
+- **Zero-Drift Measurement**: 크기 측정(`offsetWidth/Height`) 시에는 반드시 UI 핸들(.lf-drag-handle 등)을 일시적으로 숨겨서, 핸들 여백이 논리적인 객체 크기를 왜곡하지 않도록 처리해야 한다.
 - Add `contenteditable="true"` and `.v4-editable-cell` to editor-linked text regions.
 - Inject `.lf-delete-trigger` (`×`) whenever users must be able to delete an object.
 - Keep editor canvas/page dimensions aligned to the Cover screen size, typically 1440x900.
@@ -41,5 +41,6 @@ description: Use when editing V4 components, .lf-icon SVG atoms, premium buttons
 
 ## Molecules
 - When saving grouped elements to Molecules, store the container `innerHTML` only and save `width`, `height`, and `isGroup` as metadata.
+- **Global Host Restoration**: 컴포넌트 삽입 시 호스트는 항상 `document.body`가 되어야 하며, 줌 배율을 고려하여 삽입 위치를 보정해야 한다.
 - When loading Molecules, restore wrapper dimensions from metadata.
 - For legacy HTML with absolute coordinates inside inserted content, reset internal coordinates to `0, 0`.

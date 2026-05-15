@@ -245,21 +245,33 @@ window.GroupingManager = (function() {
         const doc = iframe.contentDocument;
         const items = [];
         
-        // 1. Gather all selected elements with their global bounding boxes
+        // 1. Temporary hide handles for accurate alignment measurement
+        const allHandles = doc.querySelectorAll('.lf-drag-handle, .lf-resizer, .lf-delete-trigger');
+        const handleStates = Array.from(allHandles).map(h => h.style.display);
+        allHandles.forEach(h => h.style.display = 'none');
+
+        // 2. Gather all selected elements with their PURE DATA coordinates
         selectedIds.forEach(id => {
             const isMarker = id.startsWith('v4-pin-');
             const isConnector = id.startsWith('conn_');
-            // Both pins, shapes, and connectors are now inside the iframe
             let el = doc.getElementById(id);
             if (el) {
-                const r = el.getBoundingClientRect();
-                items.push({ id, type: isMarker ? 'marker' : (isConnector ? 'connector' : 'comp'), el, x: r.left, y: r.top, w: r.width, h: r.height });
+                // Use pure data instead of viewport measurement
+                const l = parseFloat(el.style.left) || 0;
+                const t = parseFloat(el.style.top) || 0;
+                const w = el.offsetWidth;
+                const h = el.offsetHeight;
+                
+                items.push({ id, type: isMarker ? 'marker' : (isConnector ? 'connector' : 'comp'), el, x: l, y: t, w, h });
             }
         });
 
+        // Restore handles
+        allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+
         if (items.length < 2) return;
 
-        // 2. Determine target alignment value (Global client coords)
+        // 3. Determine target alignment value (Pure Pixel coordinates relative to body)
         let targetX = 0, targetY = 0;
         const minX = Math.min(...items.map(i => i.x));
         const minY = Math.min(...items.map(i => i.y));
@@ -282,43 +294,15 @@ window.GroupingManager = (function() {
 
             if (dx === 0 && dy === 0) return;
 
-            const realDx = dx / scale;
-            const realDy = dy / scale;
-
+            item.el.style.left = (item.x + dx) + 'px';
+            item.el.style.top = (item.y + dy) + 'px';
+            
             if (item.type === 'marker') {
-                const host = item.el.parentElement;
-                const hostRect = host.getBoundingClientRect();
-                
-                // Calculate new visual center in viewport pixels
-                let newVisualCenterX, newVisualCenterY;
-                
-                if (type === 'left' || type === 'right' || type === 'center') {
-                    const targetLeft = item.x + dx;
-                    newVisualCenterX = targetLeft + item.w / 2;
-                    newVisualCenterY = item.y + item.h / 2; // Keep Y same
-                } else {
-                    const targetTop = item.y + dy;
-                    newVisualCenterX = item.x + item.w / 2;
-                    newVisualCenterY = targetTop + item.h / 2;
-                }
-
-                // Convert viewport center to host-relative percentage
-                const newL = ((newVisualCenterX - hostRect.left) / scale / host.clientWidth) * 100;
-                const newT = ((newVisualCenterY - hostRect.top) / scale / host.clientHeight) * 100;
-                
-                item.el.style.left = newL + '%';
-                item.el.style.top = newT + '%';
-
-                // Update State via MessageHub
                 const idx = parseInt(item.id.replace('v4-pin-', ''));
                 if (window.MessageHub) {
-                    MessageHub.send(window, 'LF_UPDATE_PIN_POS', { index: idx, x: newL, y: newT });
+                    MessageHub.send(window, 'LF_UPDATE_PIN_POS', { index: idx, x: item.x + dx, y: item.y + dy });
                 }
             } else {
-                const curL = parseInt(item.el.style.left) || 0;
-                const curT = parseInt(item.el.style.top) || 0;
-                item.el.style.left = (curL + realDx) + 'px';
-                item.el.style.top = (curT + realDy) + 'px';
                 if (window.markAsDirty) window.markAsDirty();
             }
         });
@@ -332,29 +316,42 @@ window.GroupingManager = (function() {
         if (!iframe || !iframe.contentDocument) return;
 
         const doc = iframe.contentDocument;
-        const host = doc.querySelector('.mobile-content') || doc.querySelector('.page') || doc.querySelector('.artboard') || doc.body;
+        const host = doc.body;
         const hostRect = host.getBoundingClientRect();
         const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
 
-        // 1. Gather all selected elements and their global bounding boxes
+        // 1. Temporary hide ALL handles to prevent bounding box inflation
+        const allHandles = doc.querySelectorAll('.lf-drag-handle, .lf-resizer, .lf-delete-trigger');
+        const handleStates = Array.from(allHandles).map(h => h.style.display);
+        allHandles.forEach(h => h.style.display = 'none');
+
         const comps = selectedIds.map(id => doc.getElementById(id)).filter(el => el);
         if (comps.length < 2) return;
 
         let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
         const items = comps.map(c => {
-            const r = c.getBoundingClientRect();
-            minX = Math.min(minX, r.left);
-            minY = Math.min(minY, r.top);
-            maxX = Math.max(maxX, r.right);
-            maxY = Math.max(maxY, r.bottom);
-            return { el: c, r, isMarker: c.classList.contains('text-marker') };
+            // READ PURE DATA COORDINATES (Ignore browser layout engine's viewport measurement)
+            const l = parseFloat(c.style.left) || 0;
+            const t = parseFloat(c.style.top) || 0;
+            const w = c.offsetWidth;
+            const h = c.offsetHeight;
+
+            minX = Math.min(minX, l);
+            minY = Math.min(minY, t);
+            maxX = Math.max(maxX, l + w);
+            maxY = Math.max(maxY, t + h);
+            
+            return { el: c, l, t, w, h };
         });
 
-        // 2. Calculate Group Position in Base Pixels (relative to host)
-        const groupBaseL = (minX - hostRect.left) / scale;
-        const groupBaseT = (minY - hostRect.top) / scale;
-        const groupBaseW = (maxX - minX) / scale;
-        const groupBaseH = (maxY - minY) / scale;
+        // Restore handles immediately after gathering core dimensions
+        allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+
+        // 2. Calculate Group Position (Already in Global PX because host is body)
+        const groupBaseL = minX;
+        const groupBaseT = minY;
+        const groupBaseW = maxX - minX;
+        const groupBaseH = maxY - minY;
 
         // 3. Create Group Container
         const groupId = `group-${Date.now()}`;
@@ -380,25 +377,16 @@ window.GroupingManager = (function() {
 
         host.appendChild(group);
 
-        // 4. Move components into group and adjust positions
+        // 4. Move components into group and adjust relative positions (PURE MATH)
         items.forEach(item => {
-            if (item.isMarker) {
-                // Calculate center in viewport
-                const cx = item.r.left + item.r.width / 2;
-                const cy = item.r.top + item.r.height / 2;
-                // Relative to group in base pixels
-                const rx = (cx - minX) / scale;
-                const ry = (cy - minY) / scale;
-                // Set as percentage of group
-                item.el.style.left = (rx / groupBaseW * 100) + '%';
-                item.el.style.top = (ry / groupBaseH * 100) + '%';
-            } else {
-                // Relative to group in base pixels
-                const rx = (item.r.left - minX) / scale;
-                const ry = (item.r.top - minY) / scale;
-                item.el.style.left = rx + 'px';
-                item.el.style.top = ry + 'px';
-            }
+            const relL = item.l - minX;
+            const relT = item.t - minY;
+            
+            item.el.style.left = relL + 'px';
+            item.el.style.top = relT + 'px';
+            item.el.style.width = item.w + 'px';
+            item.el.style.height = item.h + 'px';
+            
             item.el.classList.remove('selected');
             group.appendChild(item.el);
         });
@@ -415,45 +403,45 @@ window.GroupingManager = (function() {
         if (!iframe || !iframe.contentDocument) return;
 
         const doc = iframe.contentDocument;
+        const host = doc.body;
+        const hostRect = host.getBoundingClientRect();
+        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
+
         const group = doc.getElementById(selectedIds[0]);
         if (!group || !group.classList.contains('lf-group')) return;
 
-        const host = doc.querySelector('.mobile-content') || doc.querySelector('.page') || doc.querySelector('.artboard') || doc.body;
-        const hostRect = host.getBoundingClientRect();
-        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
+        const groupL = parseFloat(group.style.left) || 0;
+        const groupT = parseFloat(group.style.top) || 0;
 
         const children = Array.from(group.children).filter(c => c.classList.contains('lf-component'));
         const newIds = [];
 
         children.forEach(c => {
-            const isMarker = c.classList.contains('text-marker');
-            const r = c.getBoundingClientRect(); // Global viewport pos
+            // RELATIVE DATA FROM GROUP
+            const relL = parseFloat(c.style.left) || 0;
+            const relT = parseFloat(c.style.top) || 0;
+            const w = c.offsetWidth;
+            const h = c.offsetHeight;
 
+            // ABSOLUTE PX (RELATIVE TO BODY)
+            const absL = groupL + relL;
+            const absT = groupT + relT;
+
+            c.style.left = absL + 'px';
+            c.style.top = absT + 'px';
+            c.style.width = w + 'px';
+            c.style.height = h + 'px';
+
+            const isMarker = c.classList.contains('text-marker');
             if (isMarker) {
-                // Calculate absolute center and convert to host-relative %
-                const cx = r.left + r.width / 2;
-                const cy = r.top + r.height / 2;
-                const rx = (cx - hostRect.left) / scale;
-                const ry = (cy - hostRect.top) / scale;
-                c.style.left = (rx / host.clientWidth * 100) + '%';
-                c.style.top = (ry / host.clientHeight * 100) + '%';
-                
-                // Update Parent State for Pins
                 const idx = parseInt(c.id.replace('v4-pin-', ''));
                 if (window.MessageHub) {
-                    MessageHub.send(window, 'LF_UPDATE_PIN_POS', { index: idx, x: parseFloat(c.style.left), y: parseFloat(c.style.top) });
+                    MessageHub.send(window, 'LF_UPDATE_PIN_POS', { index: idx, x: absL, y: absT });
                 }
-            } else {
-                // Calculate absolute top-left and convert to host-relative px
-                const rx = (r.left - hostRect.left) / scale;
-                const ry = (r.top - hostRect.top) / scale;
-                c.style.left = rx + 'px';
-                c.style.top = ry + 'px';
             }
-
             c.classList.add('selected');
-            host.appendChild(c);
             newIds.push(c.id);
+            host.appendChild(c);
         });
 
         group.remove();
