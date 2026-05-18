@@ -131,70 +131,7 @@ window.V4_COMPONENT_LIBRARY = {
             previewHtml: `<div style="width: 24px; height: 24px; border-left: 2px solid #3b82f6; border-bottom: 2px solid #3b82f6; position: relative;"><div style="position: absolute; right: -6px; bottom: -4px; width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #3b82f6;"></div></div>`,
             onclick: "window.ConnectorEngine && window.ConnectorEngine.spawnLine('elbow')"
         },
-        {
-            id: 'v4-shape-divider',
-            name: 'Dotted Divider',
-            category: 'Shapes',
-            previewHtml: `<div style="width: 30px; border-top: 2px dashed #cbd5e1;"></div>`,
-            html: `
-            <div class="v4-shape v4-shape-divider" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
-                <div style="width: 100%; border-top: 2px dashed #cbd5e1;"></div>
-            </div>`
-        },
-        {
-            id: 'v4-shape-arrow-up',
-            name: 'Arrow Up',
-            category: 'Atoms',
-            html: `
-            <div class="v4-shape v4-shape-arrow" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; box-sizing: border-box; position: relative;">
-                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
-                    <polygon points="50,2 98,50 70,50 70,98 30,98 30,50 2,50" style="fill: #fb923c; stroke: #ea580c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
-                </svg>
-            </div>`
-        },
-        {
-            id: 'v4-shape-arrow-down',
-            name: 'Arrow Down',
-            category: 'Atoms',
-            html: `
-            <div class="v4-shape v4-shape-arrow" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; box-sizing: border-box; position: relative;">
-                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
-                    <polygon points="30,2 70,2 70,50 98,50 50,98 2,50 30,50" style="fill: #fb923c; stroke: #ea580c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
-                </svg>
-            </div>`
-        },
-        {
-            id: 'v4-shape-arrow-left',
-            name: 'Arrow Left',
-            category: 'Atoms',
-            html: `
-            <div class="v4-shape v4-shape-arrow" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; box-sizing: border-box; position: relative;">
-                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
-                    <polygon points="98,30 98,70 50,70 50,98 2,50 50,2 50,30" style="fill: #fb923c; stroke: #ea580c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
-                </svg>
-            </div>`
-        },
-        {
-            id: 'v4-shape-arrow-right',
-            name: 'Arrow Right',
-            category: 'Atoms',
-            html: `
-            <div class="v4-shape v4-shape-arrow" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; box-sizing: border-box; position: relative;">
-                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;">
-                    <polygon points="2,30 2,70 50,70 50,98 98,50 50,2 50,30" style="fill: #fb923c; stroke: #ea580c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
-                </svg>
-            </div>`
-        },
-        {
-            id: 'v4-shape-badge',
-            name: 'Badge',
-            category: 'Shapes',
-            previewHtml: `<div style="width: 40px; height: 20px; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 10px;"></div>`,
-            html: `
-            <div class="v4-shape v4-shape-badge" style="width: 100%; height: 100%; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 50px; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 12px; text-align: center; outline: none; font-weight: 800; font-size: 14px; white-space: nowrap;">BADGE</div>
-            </div>`
-        },
+
         {
             id: 'v4-shape-pattern-grid',
             name: 'Pattern Rect',
