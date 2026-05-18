@@ -1,0 +1,12 @@
+[
+  {
+    "id": "mol-1779063107238",
+    "name": "LFmall (MO) Header - 기획전",
+    "category": "Custom",
+    "width": "360px",
+    "height": "50px",
+    "isGroup": true,
+    "previewHtml": "<div style=\"font-size: 10px; font-weight: 700; color: #6366f1;\">LFmall (MO) Header - 기획전</div>",
+    "html": "<div class=\"lf-component\" style=\"position: absolute; top: 0px; left: 0px; z-index: 1000; width: 360px; height: 50px;\">\n            <div class=\"v4-shape v4-shape-rect\" style=\"width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(100, 100, 100); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;\">\n                <div contenteditable=\"true\" class=\"v4-editable-cell\" style=\"width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;\"><br></div>\n            </div></div><div class=\"lf-component text-marker\" style=\"left: 52.823px; top: 9.6493px; width: 92px; height: 28px; z-index: 1000;\"><div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000\"><p>기획전 명칭</p></div></div><div class=\"lf-component\" style=\"position: absolute; top: 10px; left: 14px; z-index: 1000; width: 30px; height: 30px;\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lf-icon\" style=\"width:100%; height:100%;\"><polyline points=\"15 18 9 12 15 6\"></polyline></svg></div><div class=\"lf-component\" style=\"position: absolute; top: 5px; left: 262px; z-index: 1000; width: 40px; height: 40px;\"><div class=\"lf-icon\" style=\"width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding: 9px; box-sizing: border-box;\"><img src=\"https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png\" style=\"width:100%; height:100%; object-fit:contain; pointer-events:none;\"></div></div><div class=\"lf-component\" style=\"position: absolute; top: 5px; left: 303px; z-index: 1000; width: 40px; height: 40px;\"><div class=\"lf-icon lf-icon-cart\" style=\"filter: brightness(0);\"></div></div>"
+  }
+]
