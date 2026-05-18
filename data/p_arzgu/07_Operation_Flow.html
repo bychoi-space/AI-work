@@ -5,12 +5,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <style>
         :root {
-            --v4-primary: #1a1a1a;
+            --v4-primary: #1e3a8a;
             --v4-accent: #e60012;
             --v4-bg: #ffffff;
             --v4-surface: #f8f9fa;
-            --v4-border: #cbd5e1;
-            --v4-text: #1a1c1e;
+            --v4-border: #475569;
+            --v4-text: #1e293b;
         }
         body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--v4-surface); overflow: hidden; }
         .page { width: 1440px; height: 900px; position: relative; background: #ffffff; box-shadow: 0 40px 100px rgba(0,0,0,0.05); overflow: hidden; }
@@ -19,30 +19,34 @@
         .lf-component:hover { outline: 2px solid var(--v4-accent) !important; cursor: move !important; }
         .lf-component.selected { outline: 2px solid var(--v4-accent) !important; z-index: 10001 !important; }
         
-        .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; }
-        .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
-        
-        /* Premium Process Node Style */
-        .v4-process-node {
-            border-radius: 20px; border: 1.6px solid #475569 !important; background: #ffffff;
-            color: #1e293b; font-size: 13px; font-weight: 700; display: flex;
-            align-items: center; justify-content: center; text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: all 0.2s;
+        /* Unified Header Styles */
+        .slide-header {
+            position: absolute; top: 0; left: 0; width: 1440px; height: 60px;
+            background: #2a2a2a; display: flex; align-items: center; padding: 0 30px;
+            box-sizing: border-box; color: #ffffff; font-size: 16px; font-weight: 700; z-index: 10;
         }
-        .v4-process-node:hover { border-color: var(--v4-accent) !important; color: var(--v4-accent); transform: scale(1.03) !important; }
-        .v4-process-node.step-group-1 { background: rgba(14, 165, 233, 0.02); border-color: #0284c7 !important; color: #0284c7; }
-        .v4-process-node.step-group-2 { background: rgba(99, 102, 241, 0.02); border-color: #6366f1 !important; color: #4f46e5; }
-        .v4-process-node.step-group-3 { background: rgba(236, 72, 153, 0.02); border-color: #db2777 !important; color: #db2777; }
-        
-        .text-marker { 
-            position: absolute; padding: 18px; border-radius: 12px; 
-            border: 1.6px solid var(--v4-border); font-size: 14px; line-height: 1.6; 
-            background: #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.04); box-sizing: border-box;
-            color: #1e293b; text-align: left; transition: all 0.2s;
+
+        /* Flow Diagram Node Style */
+        .flow-node {
+            background: #ffffff; border: 1.6px solid var(--v4-border) !important;
+            border-radius: 30px; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; color: #1e293b; text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03); cursor: pointer;
+            transition: all 0.2s;
         }
-        .text-marker:hover { border-color: var(--v4-accent); box-shadow: 0 12px 36px rgba(0,0,0,0.06); }
-        .v4-editable-cell { outline: none; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-        .text-marker .v4-editable-cell { display: block; }
+        .flow-node:hover {
+            border-color: var(--v4-accent) !important; background: #fffbeb;
+        }
+        .flow-node-num {
+            width: 20px; height: 20px; border-radius: 50%;
+            background: var(--v4-primary); color: #ffffff; font-size: 10px; font-weight: 800;
+            line-height: 20px; text-align: center; margin-right: 8px;
+        }
+        .flow-arrow {
+            font-size: 18px; color: #94a3b8; font-weight: 900;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .v4-editable-cell { outline: none; width: 100%; display: block; }
     </style>
 <style id="v4-inlined-style">
 .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
@@ -52,72 +56,107 @@
 </head>
 <body>
     <div class="page">
-        <!-- PPT Background Guide Image (15% opacity) -->
-        <div style="position: absolute; top: 137px; left: 30px; width: 1000px; height: 625px; pointer-events: none; opacity: 0.15; z-index: 1;">
-            <img src="images/slide_8.jpg" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="Slide 8 Guide">
+        <!-- 1. PPT 스타일 최상단 헤더 배너 -->
+        <div class="slide-header">
+            <div style="flex: 1;">당일/새벽 배송서비스 조사</div>
         </div>
 
-        <!-- 1. Header Title -->
-        <div id="v4-title-area" class="lf-component" style="top: 50px; left: 60px; min-width: 600px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true" style="font-size: 26px; font-weight: 800; color: #0f172a; display: block;">
-                새벽배송 엔드투엔드 오퍼레이션 프로세스 맵 (E2E Operation Flow)
+        <!-- 2. 세련된 타이틀 배너 (파란색 라운드 뱃지 박스) -->
+        <div id="v4-slide-badge" class="lf-component" style="top: 85px; left: 30px; z-index: 10;">
+            <div style="background: #1e3a8a; color: #ffffff; font-size: 14px; font-weight: 800; padding: 10px 28px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                새벽배송 통합 Operation Flow (15개 순차 노드 1:1 완벽 시각화)
             </div>
-            <div style="font-size: 14px; color: #64748b; margin-top: 4px;">장바구니 주문 유입단계부터 최종 새벽 완료 및 물류 정산에 이르는 전 오퍼레이션 단계 라이프사이클</div>
         </div>
 
-        <!-- Row 1: 주문 단계 (Blue Theme) -->
-        <div id="v4-row-1-title" class="lf-component" style="top: 155px; left: 60px; font-size: 14px; font-weight: 800; color: #0284c7; z-index: 10;">[1단계: 주문 접수 채널 영역]</div>
+        <!-- 3. [1라인] 1 ~ 5단계 노드 -->
+        <div id="flow-node-1" class="lf-component flow-node" style="top: 200px; left: 60px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">1</span><div class="v4-editable-cell" contenteditable="true">장바구니</div>
+        </div>
+        <div class="lf-component flow-arrow" style="top: 200px; left: 260px; width: 40px; height: 50px;">➔</div>
+
+        <div id="flow-node-2" class="lf-component flow-node" style="top: 200px; left: 310px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">2</span><div class="v4-editable-cell" contenteditable="true">상품상세</div>
+        </div>
+        <div class="lf-component flow-arrow" style="top: 200px; left: 510px; width: 40px; height: 50px;">➔</div>
+
+        <div id="flow-node-3" class="lf-component flow-node" style="top: 200px; left: 560px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">3</span><div class="v4-editable-cell" contenteditable="true">주문/결제</div>
+        </div>
+        <div class="lf-component flow-arrow" style="top: 200px; left: 760px; width: 40px; height: 50px;">➔</div>
+
+        <div id="flow-node-4" class="lf-component flow-node" style="top: 200px; left: 810px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">4</span><div class="v4-editable-cell" contenteditable="true">송장출력</div>
+        </div>
+        <div class="lf-component flow-arrow" style="top: 200px; left: 1010px; width: 40px; height: 50px;">➔</div>
+
+        <div id="flow-node-5" class="lf-component flow-node" style="top: 200px; left: 1060px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">5</span><div class="v4-editable-cell" contenteditable="true">주문접수</div>
+        </div>
         
-        <div id="v4-node-1" class="lf-component v4-process-node step-group-1" style="top: 185px; left: 60px; width: 220px; height: 60px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true">① 상품상세 진입</div>
-        </div>
-        <div id="v4-node-2" class="lf-component v4-process-node step-group-1" style="top: 185px; left: 320px; width: 220px; height: 60px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true">② 장바구니 분기</div>
-        </div>
-        <div id="v4-node-3" class="lf-component v4-process-node step-group-1" style="top: 185px; left: 580px; width: 220px; height: 60px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true">③ 주문/결제 완료</div>
-        </div>
-        <div id="v4-node-4" class="lf-component v4-process-node step-group-1" style="top: 185px; left: 840px; width: 220px; height: 60px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true">④ 주문 접수 (OMS)</div>
+        <!-- 우측 라인 꺾임 화살표 표시 -->
+        <div class="lf-component flow-arrow" style="top: 260px; left: 1135px; width: 40px; height: 50px; transform: rotate(90deg);">➔</div>
+
+        <!-- 4. [2라인] 6 ~ 10단계 노드 (우측에서 좌측으로 전개) -->
+        <div id="flow-node-10" class="lf-component flow-node" style="top: 360px; left: 60px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">10</span><div class="v4-editable-cell" contenteditable="true">입고확정</div>
         </div>
 
-        <!-- Row 2: 분류/출고 단계 (Purple Theme) -->
-        <div id="v4-row-2-title" class="lf-component" style="top: 285px; left: 60px; font-size: 14px; font-weight: 800; color: #4f46e5; z-index: 10;">[2단계: 센터 WMS 출고 및 합포장 영역]</div>
-        
-        <div id="v4-node-5" class="lf-component v4-process-node step-group-2" style="top: 315px; left: 60px; width: 220px; height: 60px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true">⑤ 출고처 자동 지정</div>
+        <div class="lf-component flow-arrow" style="top: 360px; left: 260px; width: 40px; height: 50px;">➔</div>
+
+        <div id="flow-node-9" class="lf-component flow-node" style="top: 360px; left: 310px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">9</span><div class="v4-editable-cell" contenteditable="true">출고처지정</div>
         </div>
-        <div id="v4-node-6" class="lf-component v4-process-node step-group-2" style="top: 315px; left: 320px; width: 220px; height: 60px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true">⑥ 피킹 / 합포 패킹</div>
+        <div class="lf-component flow-arrow" style="top: 360px; left: 510px; width: 40px; height: 50px;">➔</div>
+
+        <div id="flow-node-8" class="lf-component flow-node" style="top: 360px; left: 560px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">8</span><div class="v4-editable-cell" contenteditable="true">배송완료 (야간)</div>
         </div>
-        <div id="v4-node-7" class="lf-component v4-process-node step-group-2" style="top: 315px; left: 580px; width: 220px; height: 60px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true">⑦ 송장 실시간 출력</div>
+        <div class="lf-component flow-arrow" style="top: 360px; left: 760px; width: 40px; height: 50px;">➔</div>
+
+        <div id="flow-node-7" class="lf-component flow-node" style="top: 360px; left: 810px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">7</span><div class="v4-editable-cell" contenteditable="true">주문조회</div>
         </div>
-        <div id="v4-node-8" class="lf-component v4-process-node step-group-2" style="top: 315px; left: 840px; width: 220px; height: 60px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true">⑧ 집하 및 간선 분류</div>
+        <div class="lf-component flow-arrow" style="top: 360px; left: 1010px; width: 40px; height: 50px;">➔</div>
+
+        <div id="flow-node-6" class="lf-component flow-node" style="top: 360px; left: 1060px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">6</span><div class="v4-editable-cell" contenteditable="true">클레임(반품/교환)</div>
         </div>
 
-        <!-- Row 3: 배송 단계 (Pink Theme) -->
-        <div id="v4-row-3-title" class="lf-component" style="top: 415px; left: 60px; font-size: 14px; font-weight: 800; color: #db2777; z-index: 10;">[3단계: 라스트마일 배송 파트너 연동 영역]</div>
-        
-        <div id="v4-node-9" class="lf-component v4-process-node step-group-3" style="top: 445px; left: 60px; width: 220px; height: 60px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true">⑨ 센터 출고 배차</div>
+        <!-- 좌측 라인 꺾임 화살표 표시 -->
+        <div class="lf-component flow-arrow" style="top: 420px; left: 135px; width: 40px; height: 50px; transform: rotate(90deg);">➔</div>
+
+        <!-- 5. [3라인] 11 ~ 15단계 노드 (다시 좌측에서 우측으로 전개) -->
+        <div id="flow-node-11" class="lf-component flow-node" style="top: 520px; left: 60px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">11</span><div class="v4-editable-cell" contenteditable="true">송장등록</div>
         </div>
-        <div id="v4-node-10" class="lf-component v4-process-node step-group-3" style="top: 445px; left: 320px; width: 220px; height: 60px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true">⑩ 송장번호 자동등록</div>
+        <div class="lf-component flow-arrow" style="top: 520px; left: 260px; width: 40px; height: 50px;">➔</div>
+
+        <div id="flow-node-12" class="lf-component flow-node" style="top: 520px; left: 310px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">12</span><div class="v4-editable-cell" contenteditable="true">출고</div>
         </div>
-        <div id="v4-node-11" class="lf-component v4-process-node step-group-3" style="top: 445px; left: 580px; width: 220px; height: 60px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true">⑪ 파트너 센터 입고확정</div>
+        <div class="lf-component flow-arrow" style="top: 520px; left: 510px; width: 40px; height: 50px;">➔</div>
+
+        <div id="flow-node-13" class="lf-component flow-node" style="top: 520px; left: 560px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">13</span><div class="v4-editable-cell" contenteditable="true">피킹/패킹</div>
         </div>
-        <div id="v4-node-12" class="lf-component v4-process-node step-group-3" style="top: 445px; left: 840px; width: 220px; height: 60px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true">⑫ 새벽 배송 완료 (07시)</div>
+        <div class="lf-component flow-arrow" style="top: 520px; left: 760px; width: 40px; height: 50px;">➔</div>
+
+        <div id="flow-node-14" class="lf-component flow-node" style="top: 520px; left: 810px; width: 190px; height: 50px; z-index: 20;">
+            <span class="flow-node-num">14</span><div class="v4-editable-cell" contenteditable="true">집하분류</div>
+        </div>
+        <div class="lf-component flow-arrow" style="top: 520px; left: 1010px; width: 40px; height: 50px;">➔</div>
+
+        <div id="flow-node-15" class="lf-component flow-node" style="top: 520px; left: 1060px; width: 190px; height: 50px; z-index: 20; border-color: var(--v4-accent) !important; background: rgba(230,0,18,0.05);">
+            <span class="flow-node-num" style="background:var(--v4-accent);">15</span><div class="v4-editable-cell" contenteditable="true" style="font-weight: 800; color: var(--v4-accent);">최종배송완료</div>
         </div>
 
-        <!-- 4. 기획자 마커 및 요약 설명 핀 -->
-        <div id="v4-pin-0" class="lf-component text-marker" style="top: 185px; left: 1100px; width: 300px; z-index: 20;">
-            <div class="v4-editable-cell" contenteditable="true">
-                🔄 <strong>[데이터 트래킹 관건]</strong><br>
-                주문결제 완료(③) 후 OMS에서 송장을 발부할 때, WMS(⑤) 단에서 새벽배송 가능지 여부를 한 번 더 정밀 오디팅하여 예외처리를 집행해야 물류 오출고를 100% 예방할 수 있습니다.
+        <!-- 6. 상세 요약 보드 -->
+        <div id="v4-summary-board" class="lf-component" style="bottom: 40px; left: 60px; width: 1320px; height: 180px; background: #f8fafc; border: 1.6px solid var(--v4-border) !important; border-radius: 12px; padding: 25px; box-sizing: border-box; z-index: 10;">
+            <div class="v4-editable-cell" contenteditable="true" style="font-size: 14px; line-height: 1.6; color: #334155; width: 100%;">
+                💡 <strong>[새벽배송 15단계 오퍼레이션 핵심 지표 요약]</strong><br>
+                1. <strong>고객 주문 인입 (1~3단계)</strong>: 모바일 FRONT 상품 상세 및 주문서에서 실시간 배송 가능 우편번호 권역 API 필터 연동 가동.<br>
+                2. <strong>콜드체인 WMS 처리 (9~13단계)</strong>: 안산 물류 센터 입고 확정 후 야간 배치 송장 출력 및 자동 픽킹/합포장 완료.<br>
+                3. <strong>라스트마일 배송 제어 (14~15단계)</strong>: 팀프레시 집하 분류 과정을 거쳐 야간 배송 기사 전용 App을 통해 익일 아침 07시 문앞 배송 완료 사진 전송 인터페이스 동기화.
             </div>
         </div>
     </div>

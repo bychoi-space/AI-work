@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko"><head>
     <meta charset="UTF-8">
-    <title>04. 배송 예상 수치 (서울/경기)</title>
+    <title>04. 당일배송 / 새벽배송 예상 수치 (서울/경기)</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <style>
         :root {
-            --v4-primary: #1a1a1a;
+            --v4-primary: #1e3a8a;
             --v4-accent: #e60012;
             --v4-bg: #ffffff;
             --v4-surface: #f8f9fa;
-            --v4-border: #cbd5e1;
-            --v4-text: #1a1c1e;
+            --v4-border: #475569;
+            --v4-text: #1e293b;
         }
         body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--v4-surface); overflow: hidden; }
         .page { width: 1440px; height: 900px; position: relative; background: #ffffff; box-shadow: 0 40px 100px rgba(0,0,0,0.05); overflow: hidden; }
@@ -19,33 +19,30 @@
         .lf-component:hover { outline: 2px solid var(--v4-accent) !important; cursor: move !important; }
         .lf-component.selected { outline: 2px solid var(--v4-accent) !important; z-index: 10001 !important; }
         
-        .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; }
-        .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
-        
-        /* Premium Value Card Style */
-        .v4-value-card {
-            background: #ffffff; border: 1.6px solid #475569 !important; border-radius: 16px;
-            padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); text-align: left;
-            transition: all 0.2s;
+        /* Unified Header Styles */
+        .slide-header {
+            position: absolute; top: 0; left: 0; width: 1440px; height: 60px;
+            background: #2a2a2a; display: flex; align-items: center; padding: 0 30px;
+            box-sizing: border-box; color: #ffffff; font-size: 16px; font-weight: 700; z-index: 10;
         }
-        .v4-value-card:hover { border-color: var(--v4-accent) !important; box-shadow: 0 15px 40px rgba(0,0,0,0.06); }
-        .v4-value-card.blue-theme { background: linear-gradient(135deg, #ffffff 0%, rgba(14, 165, 233, 0.03) 100%); }
-        .v4-value-card.purple-theme { background: linear-gradient(135deg, #ffffff 0%, rgba(99, 102, 241, 0.03) 100%); }
-        
-        .card-title { font-size: 18px; font-weight: 800; color: #334155; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-        .metric-group { margin-bottom: 16px; }
-        .metric-label { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 4px; }
-        .metric-value { font-size: 32px; font-weight: 900; color: #0f172a; letter-spacing: -1px; }
-        .metric-value.highlight { color: var(--v4-accent); }
-        
-        .text-marker { 
-            position: absolute; padding: 18px; border-radius: 12px; 
-            border: 1.6px solid var(--v4-border); font-size: 14px; line-height: 1.6; 
-            background: #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.04); box-sizing: border-box;
-            color: #1e293b; text-align: left; transition: all 0.2s;
+
+        /* 1.6px Border Data Table Style */
+        .v4-expected-table {
+            width: 100%; border-collapse: collapse; border: 1.6px solid var(--v4-border) !important;
+            font-size: 12px; color: var(--v4-text); background: #ffffff; text-align: center;
         }
-        .text-marker:hover { border-color: var(--v4-accent); box-shadow: 0 12px 36px rgba(0,0,0,0.06); }
-        .v4-editable-cell { outline: none; width: 100%; display: block; text-align: left; }
+        .v4-expected-table th {
+            background: #1e293b; color: #ffffff; font-weight: 700;
+            padding: 10px 6px; border: 1.6px solid var(--v4-border) !important;
+        }
+        .v4-expected-table td {
+            padding: 10px 6px; border: 1.6px solid var(--v4-border) !important;
+            line-height: 1.5; font-weight: 500;
+        }
+        .cell-highlight-pink { background: rgba(219, 39, 119, 0.05); font-weight: 700; color: #db2777; }
+        .cell-highlight-blue { background: rgba(30, 58, 138, 0.05); font-weight: 700; color: #1e3a8a; }
+
+        .v4-editable-cell { outline: none; width: 100%; display: block; }
     </style>
 <style id="v4-inlined-style">
 .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
@@ -55,62 +52,78 @@
 </head>
 <body>
     <div class="page">
-        <!-- PPT Background Guide Image (15% opacity) -->
-        <div style="position: absolute; top: 137px; left: 30px; width: 1000px; height: 625px; pointer-events: none; opacity: 0.15; z-index: 1;">
-            <img src="images/slide_5.jpg" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="Slide 5 Guide">
+        <!-- 1. PPT 스타일 최상단 헤더 배너 -->
+        <div class="slide-header">
+            <div style="flex: 1;">당일/새벽 배송서비스 조사</div>
         </div>
 
-        <!-- 1. Header Title -->
-        <div id="v4-title-area" class="lf-component" style="top: 50px; left: 60px; min-width: 600px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true" style="font-size: 26px; font-weight: 800; color: #0f172a; display: block;">
-                서울/경기 권역 배송 예상 총량 시뮬레이션
-            </div>
-            <div style="font-size: 14px; color: #64748b; margin-top: 4px;">상반기 실제 주문 분배 데이터에 기초한 도입 초기 예상 거래 규모 산정</div>
-        </div>
-
-        <!-- 2. 당일배송 예상 수치 카드 -->
-        <div id="v4-card-day" class="lf-component v4-value-card blue-theme" style="top: 170px; left: 60px; width: 450px; z-index: 10;">
-            <div class="card-title">
-                <span style="color: #0284c7;">⚡</span> 당일배송 예상 수치 (서울/경기 권역)
-            </div>
-            <div class="metric-group">
-                <div class="metric-label">월 평균 예상 배송 총량 (Overall Volume)</div>
-                <div class="v4-editable-cell metric-value" contenteditable="true">42,635 건</div>
-            </div>
-            <div class="metric-group" style="margin-bottom: 0;">
-                <div class="metric-label">월 평균 VIP 회원 유도 물량 (VIP Target)</div>
-                <div class="v4-editable-cell metric-value highlight" contenteditable="true">18,000 건</div>
+        <!-- 2. 세련된 타이틀 배너 (파란색 라운드 뱃지 박스) -->
+        <div id="v4-slide-badge" class="lf-component" style="top: 85px; left: 30px; z-index: 10;">
+            <div style="background: #1e3a8a; color: #ffffff; font-size: 14px; font-weight: 800; padding: 10px 28px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                당일배송 / 새벽배송 예상 수치 (서울/경기 권역 특화)
             </div>
         </div>
 
-        <!-- 3. 새벽배송 예상 수치 카드 -->
-        <div id="v4-card-night" class="lf-component v4-value-card purple-theme" style="top: 170px; left: 560px; width: 450px; z-index: 10;">
-            <div class="card-title">
-                <span style="color: #4f46e5;">🌙</span> 새벽배송 예상 수치 (서울/경기 권역)
+        <!-- 3. 예상 물동량 상세 격자 표 (1.6px Grid 100% 복원) -->
+        <div id="v4-expected-table-container" class="lf-component" style="top: 170px; left: 30px; width: 1380px; z-index: 20;">
+            <table class="v4-expected-table">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;" rowspan="2">구분</th>
+                        <th style="width: 40%;" colspan="2">당일배송 예상 수치</th>
+                        <th style="width: 40%;" colspan="2">새벽배송 예상 수치</th>
+                    </tr>
+                    <tr>
+                        <th style="background: #edf2f7; color: #1e293b;">월 평균</th>
+                        <th style="background: #edf2f7; color: #1e293b;">월 평균 (VIP 대상)</th>
+                        <th style="background: #edf2f7; color: #1e293b;">월 평균</th>
+                        <th style="background: #edf2f7; color: #1e293b;">월 평균 (VIP 대상)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="background: #ebf8ff; font-weight: 700; color: #2b6cb0;">예상 물동량 (송장 기준)</td>
+                        <td contenteditable="true" style="font-weight: 700; color: #1e3a8a;">42,635 건</td>
+                        <td contenteditable="true" class="cell-highlight-blue">18,000 건</td>
+                        <td contenteditable="true" style="font-weight: 700; color: #db2777;">70,736 건</td>
+                        <td contenteditable="true" class="cell-highlight-pink">29,287 건</td>
+                    </tr>
+                    <tr>
+                        <td style="background: #ebf8ff; font-weight: 700; color: #2b6cb0;">VIP 비중 점유율 (%)</td>
+                        <td contenteditable="true" colspan="2">당일배송 내 VIP 비중 : <strong>42.2%</strong></td>
+                        <td contenteditable="true" colspan="2">새벽배송 내 VIP 비중 : <strong>41.4%</strong></td>
+                    </tr>
+                    <tr style="background: #f1f5f9; font-weight: 800; color: #0f172a;">
+                        <td>총합 (Total)</td>
+                        <td contenteditable="true" style="color: #1e3a8a; font-size: 13px;">월 평균 86,806 건</td>
+                        <td contenteditable="true" class="cell-highlight-blue">월 평균 (VIP) 35,737 건</td>
+                        <td contenteditable="true" style="color: #db2777; font-size: 13px;">월 평균 113,371 건</td>
+                        <td contenteditable="true" class="cell-highlight-pink">월 평균 (VIP) 47,287 건</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 4. 상세 전략 안내 보드 -->
+        <div id="v4-strategy-board" class="lf-component" style="top: 380px; left: 30px; width: 1380px; height: 310px; background: #f8fafc; border: 1.6px solid var(--v4-border) !important; border-radius: 12px; padding: 25px; box-sizing: border-box; z-index: 10;">
+            <div style="font-size: 16px; font-weight: 800; color: #1e3a8a; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                <span style="display:inline-block; width: 4px; height: 16px; background: #e60012;"></span>
+                서울/경기 권역 물동량 기반 파트너십 유치 전략
             </div>
-            <div class="metric-group">
-                <div class="metric-label">월 평균 예상 배송 총량 (Overall Volume)</div>
-                <div class="v4-editable-cell metric-value" contenteditable="true">70,736 건</div>
-            </div>
-            <div class="metric-group" style="margin-bottom: 0;">
-                <div class="metric-label">월 평균 VIP 회원 유도 물량 (VIP Target)</div>
-                <div class="v4-editable-cell metric-value highlight" contenteditable="true">29,287 건</div>
+            <div class="v4-editable-cell" contenteditable="true" style="font-size: 13px; line-height: 1.7; color: #334155; height: 210px; overflow-y: auto;">
+                1. <strong>물량 규모를 통한 단가 네고 협상력 확보</strong><br>
+                - 새벽배송 물동량은 월 평균 약 **70,736 건**에 달하며, 이는 **팀프레시 구간 단가 2단계(월 65,000건 이상 시 3,230원)**을 즉각 달성할 수 있는 안정적인 규모입니다.<br>
+                - 물동량이 가속화되어 월 120,000건을 넘어서면 **최저 단가인 3,150원**까지 낮출 수 있는 강력한 바게닝 파워가 생깁니다.<br>
+                <br>
+                2. <strong>VIP 중심 배송 서비스 우선 적용 타당성</strong><br>
+                - 당일/새벽배송 대상 고객 중 VIP 등급(SP, PT, GD, SV, BK) 비중이 **41%~42%**로 매우 높습니다.<br>
+                - VIP 회원 대상 무료 새벽배송 프로모션 기획 시, 월 평균 **35,737 건**의 정밀 타겟 물동량이 산출되며 이를 통한 핵심 충성 고객 만족도 극대화가 가능합니다.
             </div>
         </div>
 
-        <!-- 4. 기획자 마커 및 요약 설명 핀 -->
-        <div id="v4-pin-0" class="lf-component text-marker" style="top: 170px; left: 1100px; width: 300px; z-index: 20;">
-            <div class="v4-editable-cell" contenteditable="true">
-                📈 <strong>[Scale-up 의의]</strong><br>
-                수도권 타겟의 새벽배송 예상 수치(70K건)는 전체 물동량의 약 60%를 차지하는 수준으로, 초기 물류 파트너(팀프레시) 단가 협상 시 강력한 규모의 경제(Scale-up) 메리트를 선점하는 협상 카드 지표로 쓰입니다.
-            </div>
-        </div>
-
-        <div id="v4-pin-1" class="lf-component text-marker" style="top: 380px; left: 1100px; width: 300px; z-index: 20;">
-            <div class="v4-editable-cell" contenteditable="true">
-                💎 <strong>[VIP 회원 인센티브]</strong><br>
-                당일배송과 새벽배송 전체 예상치 중 약 40% 이상(18K건 / 29K건)이 우수 VIP 회원 주문으로 유입될 전망입니다. 이는 무료 특화 배송권 등 VIP 충성도 인센티브 강화 방안의 근거가 됩니다.
-            </div>
+        <!-- 5. 하단 텍스트 -->
+        <div id="v4-footnote-container" class="lf-component" style="bottom: 40px; left: 30px; font-size: 13px; color: #64748b; font-style: italic; z-index: 10;">
+            ※ 우편번호 분석 기준 서울/경기 권역 배송 물동량 시뮬레이션의 상세 원본 산출식은 6페이지 '데이터 시뮬레이션' 장표를 참조하십시오.
         </div>
     </div>
 </body></html>

@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko"><head>
     <meta charset="UTF-8">
-    <title>08. 새벽배송 Flow 상세</title>
+    <title>08. 새벽배송 Operation Flow - 상세 정책</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <style>
         :root {
-            --v4-primary: #1a1a1a;
+            --v4-primary: #1e3a8a;
             --v4-accent: #e60012;
             --v4-bg: #ffffff;
             --v4-surface: #f8f9fa;
-            --v4-border: #cbd5e1;
-            --v4-text: #1a1c1e;
+            --v4-border: #475569;
+            --v4-text: #1e293b;
         }
         body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--v4-surface); overflow: hidden; }
         .page { width: 1440px; height: 900px; position: relative; background: #ffffff; box-shadow: 0 40px 100px rgba(0,0,0,0.05); overflow: hidden; }
@@ -19,25 +19,27 @@
         .lf-component:hover { outline: 2px solid var(--v4-accent) !important; cursor: move !important; }
         .lf-component.selected { outline: 2px solid var(--v4-accent) !important; z-index: 10001 !important; }
         
-        .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; }
-        .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
-        
-        /* Premium Detail Section */
-        .v4-detail-card {
-            background: #ffffff; border: 1.6px solid #475569 !important; border-radius: 12px;
-            padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); text-align: left;
+        /* Unified Header Styles */
+        .slide-header {
+            position: absolute; top: 0; left: 0; width: 1440px; height: 60px;
+            background: #2a2a2a; display: flex; align-items: center; padding: 0 30px;
+            box-sizing: border-box; color: #ffffff; font-size: 16px; font-weight: 700; z-index: 10;
         }
-        .card-title { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 12px; border-bottom: 1.6px solid #e2e8f0; padding-bottom: 8px; }
-        .card-body-text { font-size: 14px; color: #475569; line-height: 1.6; }
-        
-        .text-marker { 
-            position: absolute; padding: 18px; border-radius: 12px; 
-            border: 1.6px solid var(--v4-border); font-size: 14px; line-height: 1.6; 
-            background: #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.04); box-sizing: border-box;
-            color: #1e293b; text-align: left; transition: all 0.2s;
+
+        /* Premium Detail Card Style */
+        .policy-card {
+            background: #f8fafc; border: 1.6px solid var(--v4-border) !important;
+            border-radius: 12px; padding: 25px; box-sizing: border-box;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         }
-        .text-marker:hover { border-color: var(--v4-accent); box-shadow: 0 12px 36px rgba(0,0,0,0.06); }
-        .v4-editable-cell { outline: none; width: 100%; display: block; text-align: left; }
+        .policy-title {
+            font-size: 15px; font-weight: 800; color: #1e3a8a; margin-bottom: 15px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .policy-title::before {
+            content: ''; display: inline-block; width: 4px; height: 14px; background: #e60012;
+        }
+        .v4-editable-cell { outline: none; width: 100%; display: block; }
     </style>
 <style id="v4-inlined-style">
 .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
@@ -47,42 +49,60 @@
 </head>
 <body>
     <div class="page">
-        <!-- PPT Background Guide Image (15% opacity) -->
-        <div style="position: absolute; top: 137px; left: 30px; width: 1000px; height: 625px; pointer-events: none; opacity: 0.15; z-index: 1;">
-            <img src="images/slide_9.jpg" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="Slide 9 Guide">
+        <!-- 1. PPT 스타일 최상단 헤더 배너 -->
+        <div class="slide-header">
+            <div style="flex: 1;">당일/새벽 배송서비스 조사</div>
         </div>
 
-        <!-- 1. Header Title -->
-        <div id="v4-title-area" class="lf-component" style="top: 50px; left: 60px; min-width: 600px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true" style="font-size: 26px; font-weight: 800; color: #0f172a; display: block;">
-                새벽배송 상세 오퍼레이션 및 예외 처리 정책 가이드
-            </div>
-            <div style="font-size: 14px; color: #64748b; margin-top: 4px;">도도 권역 검증 고도화 및 WMS 연동 예외 클레임 프로세스 상세 명세</div>
-        </div>
-
-        <!-- 2. Detail Card 1 -->
-        <div id="v4-card-detail-1" class="lf-component v4-detail-card" style="top: 170px; left: 60px; width: 480px; z-index: 10;">
-            <div class="card-title">1단계: OMS / WMS 연동 검증 정책</div>
-            <div class="v4-editable-cell card-body-text" contenteditable="true">
-                • <strong>주소지 실시간 적격성 판단</strong>: 고객 주문 완료 시 배송 권역 지번/도로명 주소를 팀프레시 API와 실시간 동기화하여 검증 필터링 집행.<br>
-                • <strong>배치 마감 스케줄러</strong>: 18:00 정각 서버 배치 자동 강제 차단을 통해, 18시 이후 주문 건의 익일 새벽 배송 처리를 차단하고 익익일로 자동 대기 지정.
+        <!-- 2. 세련된 타이틀 배너 (파란색 라운드 뱃지 박스) -->
+        <div id="v4-slide-badge" class="lf-component" style="top: 85px; left: 30px; z-index: 10;">
+            <div style="background: #1e3a8a; color: #ffffff; font-size: 14px; font-weight: 800; padding: 10px 28px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                새벽배송 Operation Flow – 예외 CS 및 정산 운영 상세 정책
             </div>
         </div>
 
-        <!-- 3. Detail Card 2 -->
-        <div id="v4-card-detail-2" class="lf-component v4-detail-card" style="top: 170px; left: 580px; width: 480px; z-index: 10;">
-            <div class="card-title">2단계: WMS / 배송사 송장 및 CS 정책</div>
-            <div class="v4-editable-cell card-body-text" contenteditable="true">
-                • <strong>실시간 송장 채번 연동</strong>: WMS 피킹 완료 단계에서 팀프레시 API를 통과시켜 익일 배달용 특화 송장번호 즉시 채번 및 자동 매핑.<br>
-                • <strong>미배송/지연 CS 정산</strong>: 파트너사 배송 마감(07:00)까지 배송 사진이 전송되지 않는 누락 건의 경우, OMS 배치 자동 감지를 통해 고객 배송 지연 보상 쿠폰 자동 즉시 발부.
+        <!-- 3. 상세 운영 정책 카드 3종 세트 -->
+        <div id="policy-card-1" class="lf-component policy-card" style="top: 170px; left: 30px; width: 430px; height: 480px; z-index: 20;">
+            <div class="policy-title">공동현관 출입 비밀번호 미입력 건</div>
+            <div class="v4-editable-cell" contenteditable="true" style="font-size: 13px; line-height: 1.6; color: #334155; height: 380px; overflow-y: auto;">
+                <strong>■ 표준 처리 가이드라인</strong><br>
+                1. 공동현관문 비밀번호가 누락되었거나 오류인 경우, 야간 기사는 1차적으로 비상 호출 및 경비실 호출을 시도합니다.<br>
+                <br>
+                2. 진입 불가 시 공동현관 앞 <strong>가장 안전한 장소에 1차 배송</strong>을 조치합니다.<br>
+                <br>
+                3. 배송 완료 사진 촬영 시 공동현관 주변 식별 가능한 랜드마크(경비실 옆, 출입문 좌측 등)를 포함하여 촬영하고, 알림 발송 시 공동현관 앞 배송 사유를 명확히 고지합니다.
             </div>
         </div>
 
-        <!-- 4. 기획자 마커 및 요약 설명 핀 -->
-        <div id="v4-pin-0" class="lf-component text-marker" style="top: 170px; left: 1100px; width: 300px; z-index: 20;">
-            <div class="v4-editable-cell" contenteditable="true">
-                💡 <strong>[클레임 최소화 가이드]</strong><br>
-                새벽배송 지연 보상 정책 수립 시, 지연 발생 시 고객이 수동으로 CS 센터에 연락하지 않고 시스템이 자동 즉시 보상 쿠폰(5,000원 상당)을 인젝션해 주는 선제적 CS 처리가 브랜드 고객 충성도 유지에 큰 핵심입니다.
+        <div id="policy-card-2" class="lf-component policy-card" style="top: 170px; left: 495px; width: 450px; height: 480px; z-index: 20;">
+            <div class="policy-title">오배송 및 파손 상품 클레임 처리</div>
+            <div class="v4-editable-cell" contenteditable="true" style="font-size: 13px; line-height: 1.6; color: #334155; height: 380px; overflow-y: auto;">
+                <strong>■ CS 실시간 연동 명세</strong><br>
+                1. 새벽배송 파손 및 오배송 클레임은 고객센터 오픈 전인 아침 07:00 ~ 09:00 간 모바일 1대1 CS 챗봇을 통해 <strong>실시간 AI 자동 환불/재배송 접수</strong> 처리를 가동합니다.<br>
+                <br>
+                2. 배송 완료 사진 데이터와 안산 물류 센터 패킹 시점의 녹화 동영상 API를 자동 비교하여 파손 주체를 선별합니다.<br>
+                <br>
+                3. 배송사 귀책 판정 시, 파트너 정산 수수료 차감 정책(월말 일괄 정산 시 페널티 적용)에 의거하여 즉각 차감 처리합니다.
+            </div>
+        </div>
+
+        <div id="policy-card-3" class="lf-component policy-card" style="top: 170px; right: 30px; width: 430px; height: 480px; z-index: 20;">
+            <div class="policy-title">물류 대행사 정산 및 슬롯 관리</div>
+            <div class="v4-editable-cell" contenteditable="true" style="font-size: 13px; line-height: 1.6; color: #334155; height: 380px; overflow-y: auto;">
+                <strong>■ 월말 정산 및 운영 수치</strong><br>
+                1. <strong>슬롯 마감 자동 제어</strong><br>
+                - 물류 대행사(팀프레시)의 하루 최대 수용 용량(슬롯)에 도달하기 10% 전에 시스템 경고 알림을 발송하고, 100% 도달 시 즉각 당일 새벽배송 선택 옵션을 FRONT 주문서에서 품절/비활성화 처리합니다.<br>
+                <br>
+                2. <strong>다단식 정산 수수료 연동</strong><br>
+                - 6페이지의 단가 구간표 시뮬레이션 결과에 기반하여, 실제 배송 완료 처리된 운송장 API 개수를 매일 밤 24:00 기준으로 마감 집계하여 월말에 다단식 요율로 일괄 자동 정산합니다.
+            </div>
+        </div>
+
+        <!-- 4. 하단 상세 분석 요약 보드 -->
+        <div id="v4-footnote-container" class="lf-component" style="bottom: 40px; left: 30px; width: 1380px; z-index: 10;">
+            <div style="background: #f8fafc; border: 1.6px solid var(--v4-border) !important; border-radius: 8px; padding: 20px 25px; box-sizing: border-box; font-size: 13px; line-height: 1.6; color: #475569;">
+                💡 <strong>[예외 정책 시스템 고도화 제안]</strong><br>
+                - 기획된 예외 CS 접수 및 출입번호 암호화 인프라는 LFmall 개인정보 보호 규칙 및 7페이지 개발 명세에 정의된 NBOS/OMS 데이터베이스와 긴밀히 연동되어 가동되어야 합니다.
             </div>
         </div>
     </div>

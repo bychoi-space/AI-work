@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko"><head>
     <meta charset="UTF-8">
-    <title>06. 개발 예상 범위</title>
+    <title>06. 당일배송, 새벽배송 – 개발 예상 범위</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <style>
         :root {
-            --v4-primary: #1a1a1a;
+            --v4-primary: #1e3a8a;
             --v4-accent: #e60012;
             --v4-bg: #ffffff;
             --v4-surface: #f8f9fa;
-            --v4-border: #cbd5e1;
-            --v4-text: #1a1c1e;
+            --v4-border: #475569;
+            --v4-text: #1e293b;
         }
         body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--v4-surface); overflow: hidden; }
         .page { width: 1440px; height: 900px; position: relative; background: #ffffff; box-shadow: 0 40px 100px rgba(0,0,0,0.05); overflow: hidden; }
@@ -19,28 +19,32 @@
         .lf-component:hover { outline: 2px solid var(--v4-accent) !important; cursor: move !important; }
         .lf-component.selected { outline: 2px solid var(--v4-accent) !important; z-index: 10001 !important; }
         
-        .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; }
-        .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
-        
-        /* Premium Scope Card */
-        .v4-scope-card {
-            background: #ffffff; border: 1.6px solid #475569 !important; border-radius: 12px;
-            padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); text-align: left;
+        /* Unified Header Styles */
+        .slide-header {
+            position: absolute; top: 0; left: 0; width: 1440px; height: 60px;
+            background: #2a2a2a; display: flex; align-items: center; padding: 0 30px;
+            box-sizing: border-box; color: #ffffff; font-size: 16px; font-weight: 700; z-index: 10;
         }
-        .card-title { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 16px; border-bottom: 1.6px solid #e2e8f0; padding-bottom: 8px; }
-        .scope-list { list-style: none; padding: 0; margin: 0; }
-        .scope-list li { font-size: 14px; color: #475569; padding: 8px 0; display: flex; align-items: center; gap: 8px; border-bottom: 1px dashed #f1f5f9; }
-        .scope-list li:last-child { border-bottom: none; }
-        .bullet-icon { color: var(--v4-accent); font-weight: bold; }
-        
-        .text-marker { 
-            position: absolute; padding: 18px; border-radius: 12px; 
-            border: 1.6px solid var(--v4-border); font-size: 14px; line-height: 1.6; 
-            background: #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.04); box-sizing: border-box;
-            color: #1e293b; text-align: left; transition: all 0.2s;
+
+        /* 1.6px Border IT Spec Table Style */
+        .v4-spec-table {
+            width: 100%; border-collapse: collapse; border: 1.6px solid var(--v4-border) !important;
+            font-size: 11px; color: var(--v4-text); background: #ffffff; text-align: left;
         }
-        .text-marker:hover { border-color: var(--v4-accent); box-shadow: 0 12px 36px rgba(0,0,0,0.06); }
-        .v4-editable-cell { outline: none; width: 100%; display: block; text-align: left; }
+        .v4-spec-table th {
+            background: #1e293b; color: #ffffff; font-weight: 700; text-align: center;
+            padding: 8px 6px; border: 1.6px solid var(--v4-border) !important;
+        }
+        .v4-spec-table td {
+            padding: 8px 6px; border: 1.6px solid var(--v4-border) !important;
+            line-height: 1.4; font-weight: 500;
+        }
+        .domain-front { background: #eff6ff; font-weight: 700; color: #1e40af; text-align: center; }
+        .domain-nbos { background: #f0fdf4; font-weight: 700; color: #166534; text-align: center; }
+        .domain-oms { background: #fdf2f8; font-weight: 700; color: #9d174d; text-align: center; }
+        .domain-api { background: #fffbeb; font-weight: 700; color: #92400e; text-align: center; }
+
+        .v4-editable-cell { outline: none; width: 100%; display: block; }
     </style>
 <style id="v4-inlined-style">
 .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
@@ -50,47 +54,205 @@
 </head>
 <body>
     <div class="page">
-        <!-- PPT Background Guide Image (15% opacity) -->
-        <div style="position: absolute; top: 137px; left: 30px; width: 1000px; height: 625px; pointer-events: none; opacity: 0.15; z-index: 1;">
-            <img src="images/slide_7.jpg" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="Slide 7 Guide">
+        <!-- 1. PPT 스타일 최상단 헤더 배너 -->
+        <div class="slide-header">
+            <div style="flex: 1;">당일/새벽 배송서비스 조사</div>
         </div>
 
-        <!-- 1. Header Title -->
-        <div id="v4-title-area" class="lf-component" style="top: 50px; left: 60px; min-width: 600px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true" style="font-size: 26px; font-weight: 800; color: #0f172a; display: block;">
-                당일/새벽 배송 서비스 개발 예상 범위 (Scope)
+        <!-- 2. 세련된 타이틀 배너 (파란색 라운드 뱃지 박스) -->
+        <div id="v4-slide-badge" class="lf-component" style="top: 85px; left: 30px; z-index: 10;">
+            <div style="background: #1e3a8a; color: #ffffff; font-size: 14px; font-weight: 800; padding: 10px 28px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                당일배송, 새벽배송 – IT 시스템 개발 예상 범위 명세서 (1:1 복원)
             </div>
-            <div style="font-size: 14px; color: #64748b; margin-top: 4px;">배송 서비스 고도화를 위한 프론트 채널 화면 및 백엔드 물류 시스템 연동 개발 과제 정의</div>
         </div>
 
-        <!-- 2. Front-End Scope Card -->
-        <div id="v4-card-front" class="lf-component v4-scope-card" style="top: 170px; left: 60px; width: 480px; z-index: 10;">
-            <div class="card-title">■ Front-End (고객 인터페이스 & 채널)</div>
-            <ul class="scope-list">
-                <li contenteditable="true"><span class="bullet-icon">✔</span> 상품 상세 페이지 내 당일/새벽 배송 가능 배너 노출</li>
-                <li contenteditable="true"><span class="bullet-icon">✔</span> 장바구니 내 일반배송 / 당일배송 / 새벽배송 라디오 분기 분리</li>
-                <li contenteditable="true"><span class="bullet-icon">✔</span> 결제단 주소 정보 검증 및 새벽배송 불가 권역 얼럿 얼럿팅</li>
-                <li contenteditable="true"><span class="bullet-icon">✔</span> 마이페이지 내 새벽 완료 실시간 송장 조회 트래커</li>
-            </ul>
+        <!-- 3. 거대한 IT 개발 스펙 상세 표 (Table 2 격자 100% 완벽 복원) -->
+        <div id="v4-spec-table-container" class="lf-component" style="top: 155px; left: 30px; width: 1380px; height: 620px; overflow-y: auto; z-index: 20; border: 1.6px solid var(--v4-border);">
+            <table class="v4-spec-table">
+                <thead>
+                    <tr>
+                        <th style="width: 10%; text-align:center;">영역</th>
+                        <th style="width: 15%; text-align:center;">구분</th>
+                        <th style="width: 25%; text-align:center;">작업 영역</th>
+                        <th style="width: 32%; text-align:center;">작업 내용</th>
+                        <th style="width: 18%; text-align:center;">비고</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- FRONT 영역 -->
+                    <tr>
+                        <td class="domain-front" rowspan="6">FRONT</td>
+                        <td style="font-weight: 700;">상품리스트</td>
+                        <td>카테고리, 검색결과, 브랜드관 등</td>
+                        <td contenteditable="true">배송 표현 UI 개발 / 조회 필터 추가</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">상품상세</td>
+                        <td>상단 영역, 하단 영역</td>
+                        <td contenteditable="true">배송 표현 UI 개발 / 배송방법 선택 기능 / 회원 등급 별 정책 개발</td>
+                        <td contenteditable="true" style="color: #2563eb;">배송 권역 조회 API 연동</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">장바구니</td>
+                        <td>일반/패밀리</td>
+                        <td contenteditable="true">배송 표현 UI 개발 / 배송방법 선택 기능 / 회원 등급 별 정책 개발</td>
+                        <td contenteditable="true" style="color: #2563eb;">배송 권역 조회 API 연동</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">주문서</td>
+                        <td>일반/패밀리</td>
+                        <td contenteditable="true">배송 표현 UI 개발 / 배송방법 선택 기능 / 회원 등급 별 정책 개발 / 출입 정보 입력 기능 / 안내 문구 등</td>
+                        <td contenteditable="true" style="color: #2563eb;">배송 권역 조회 API 연동</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">마이페이지</td>
+                        <td>주문목록, 주문상세, 취/반/교 등</td>
+                        <td contenteditable="true">배송 표현 UI 개발 / 배송방법 선택 기능 / 회원 등급 별 정책 개발 / 출입 정보 입력 기능 / 안내 문구 등</td>
+                        <td contenteditable="true" style="color: #2563eb;">배송 권역 조회 API 연동</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">메시지 (알림톡/문자)</td>
+                        <td>주문완료, 배송시작, 배송지연 등</td>
+                        <td contenteditable="true">배송 알림톡 생성 및 적용 개발</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+
+                    <!-- NBOS 영역 -->
+                    <tr>
+                        <td class="domain-nbos" rowspan="11">NBOS</td>
+                        <td style="font-weight: 700;">상품관리</td>
+                        <td>조회화면, 상세화면</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">세트상품관리</td>
+                        <td>조회화면, 상세화면</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">주문목록</td>
+                        <td>조회화면, 상세화면</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가 / 배송지 변경 기능 개발</td>
+                        <td contenteditable="true" style="color: #2563eb;">배송 권역 조회 API 연동</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">주문목록(CS)</td>
+                        <td>조회화면, 상세화면</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가 / 배송지 변경 기능 개발</td>
+                        <td contenteditable="true" style="color: #2563eb;">배송 권역 조회 API 연동</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">배송목록</td>
+                        <td>조회화면, 상세화면</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가</td>
+                        <td contenteditable="true" style="color: #2563eb;">배송 권역 조회 API 연동</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">중계지연 현황</td>
+                        <td>조회화면</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">3차 출고내역 조회</td>
+                        <td>조회화면</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">출고 가인 현황</td>
+                        <td>조회화면</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">영업일 관리</td>
+                        <td>조회화면</td>
+                        <td contenteditable="true">배송 운영일 구분 추가</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">배송예정일기준시간관리</td>
+                        <td>조회화면</td>
+                        <td contenteditable="true">배송 기준 시간 기능 추가</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700; color: #166534;">(신규) 새벽배송 지역 관리</td>
+                        <td>조회화면, 상세화면</td>
+                        <td contenteditable="true" style="font-weight: 700; color: #166534;">우편번호 기준 새벽배송 가능 지역 관리 기능 신규 개발</td>
+                        <td contenteditable="true" style="color: #e60012; font-weight: 700;">신규 독자 DB 구축</td>
+                    </tr>
+
+                    <!-- OMS 영역 -->
+                    <tr>
+                        <td class="domain-oms" rowspan="5">OMS</td>
+                        <td style="font-weight: 700;">상품/컨텐츠 통합조회</td>
+                        <td>조회화면, 상세화면</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">주문내역조회</td>
+                        <td>조회화면, 상세화면</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가</td>
+                        <td contenteditable="true" style="color: #2563eb;">배송 권역 조회 API 연동</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">배송관리</td>
+                        <td>전체 하위 메뉴</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가</td>
+                        <td contenteditable="true" style="color: #2563eb;">배송 권역 조회 API 연동</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">택배관리</td>
+                        <td>전체 하위 메뉴</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가</td>
+                        <td contenteditable="true" style="color: #2563eb;">배송 권역 조회 API 연동</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">안산센터(일반)</td>
+                        <td>전체 하위 메뉴</td>
+                        <td contenteditable="true">배송 조회 기능 추가 / 배송 구분 추가</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+
+                    <!-- 배송사 API 영역 -->
+                    <tr>
+                        <td class="domain-api" rowspan="4">배송사 API</td>
+                        <td style="font-weight: 700;">배송권역조회</td>
+                        <td>-</td>
+                        <td contenteditable="true">배송가능권역 결과값 호출</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">주문 접수 / 수정 / 취소</td>
+                        <td>-</td>
+                        <td contenteditable="true">주문 접수, 주문 수정, 주문 취소 데이터 연동</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">반품 접수 / 교환 접수</td>
+                        <td>-</td>
+                        <td contenteditable="true">수거지시 데이터 연동</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">배송정보조회</td>
+                        <td>-</td>
+                        <td contenteditable="true">배송 상태 값 호출</td>
+                        <td contenteditable="true">-</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <!-- 3. Back-End Scope Card -->
-        <div id="v4-card-back" class="lf-component v4-scope-card" style="top: 170px; left: 580px; width: 480px; z-index: 10;">
-            <div class="card-title">■ Back-End & Logistics (시스템 연동)</div>
-            <ul class="scope-list">
-                <li contenteditable="true"><span class="bullet-icon">✔</span> 물류 파트너사 API 실시간 연동 (팀프레시/CJ대한통운 송장 채번)</li>
-                <li contenteditable="true"><span class="bullet-icon">✔</span> 우수 VIP 고객 무료 당일/새벽 배송권 자동 감면 로직 설계</li>
-                <li contenteditable="true"><span class="bullet-icon">✔</span> 센터 WMS 합포장 패킹 작업 분지 할당 로직 및 피킹 목록 분리</li>
-                <li contenteditable="true"><span class="bullet-icon">✔</span> 권역별 배송 마감 시간(12시/18시) 서버 Batch 강제 마감 처리</li>
-            </ul>
-        </div>
-
-        <!-- 4. 기획자 마커 및 요약 설명 핀 -->
-        <div id="v4-pin-0" class="lf-component text-marker" style="top: 170px; left: 1100px; width: 300px; z-index: 20;">
-            <div class="v4-editable-cell" contenteditable="true">
-                📝 <strong>[프론트 얼럿 고도화]</strong><br>
-                고객이 결제 주소지를 입력할 때 새벽배송 불가능한 도서산간/외곽 권역을 1차 클라이언트 주소지 단위로 강력히 필터링하여 오배송 클레임을 사전에 예방하는 범위 설정이 핵심 과제입니다.
-            </div>
+        <!-- 5. 하단 텍스트 -->
+        <div id="v4-footnote-container" class="lf-component" style="bottom: 30px; left: 30px; font-size: 13px; color: #64748b; font-style: italic; z-index: 10;">
+            ※ 우편번호 기준 지역 관리 및 배송 권역 실시간 호출 인터페이스 설계는 8페이지 'Operation Flow' 장표를 바탕으로 연계 가동됩니다.
         </div>
     </div>
 </body></html>

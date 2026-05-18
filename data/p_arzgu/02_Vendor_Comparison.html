@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko"><head>
     <meta charset="UTF-8">
-    <title>02. 당일배송, 새벽배송 - 주요 3사 비교</title>
+    <title>02. 당일배송, 새벽배송 – 주요 3사 비교</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <style>
         :root {
@@ -11,9 +11,6 @@
             --v4-surface: #f8f9fa;
             --v4-border: #475569;
             --v4-text: #1e293b;
-            --color-strong: #fef08a; /* 서비스 강점 노랑 */
-            --color-weak: #fecdd3;   /* 서비스 약점 핑크 */
-            --color-inefficient: #94a3b8; /* 비효율 그레이 */
         }
         body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--v4-surface); overflow: hidden; }
         .page { width: 1440px; height: 900px; position: relative; background: #ffffff; box-shadow: 0 40px 100px rgba(0,0,0,0.05); overflow: hidden; }
@@ -22,9 +19,6 @@
         .lf-component:hover { outline: 2px solid var(--v4-accent) !important; cursor: move !important; }
         .lf-component.selected { outline: 2px solid var(--v4-accent) !important; z-index: 10001 !important; }
         
-        .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; }
-        .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
-        
         /* Unified Header Styles */
         .slide-header {
             position: absolute; top: 0; left: 0; width: 1440px; height: 60px;
@@ -32,50 +26,41 @@
             box-sizing: border-box; color: #ffffff; font-size: 16px; font-weight: 700; z-index: 10;
         }
 
-        /* 3사 비교 테이블 전용 고밀도 정합성 CSS (1.6px Border) */
+        /* 칼 같은 1.6px 테두리 그리드 */
         .v4-compare-table {
             width: 100%; border-collapse: collapse; border: 1.6px solid var(--v4-border) !important;
-            font-size: 12px; color: var(--v4-text); background: #ffffff; text-align: center;
+            font-size: 11px; color: var(--v4-text); background: #ffffff; text-align: center;
         }
         .v4-compare-table th {
-            background: #2d3748; color: #ffffff; font-weight: 700;
-            padding: 10px 8px; border: 1.6px solid var(--v4-border) !important; font-size: 13px;
+            background: #1e293b; color: #ffffff; font-weight: 700;
+            padding: 8px 4px; border: 1.6px solid var(--v4-border) !important;
         }
         .v4-compare-table td {
-            padding: 8px 10px; border: 1.6px solid var(--v4-border) !important;
-            line-height: 1.5; font-weight: 500; height: 28px;
-        }
-        
-        /* 셀 속성별 클래스 정의 */
-        .cell-strong { background: var(--color-strong) !important; color: #854d0e !important; font-weight: 700; }
-        .cell-weak { background: var(--color-weak) !important; color: #991b1b !important; font-weight: 700; }
-        .cell-ineff { background: var(--color-inefficient) !important; color: #334155 !important; }
-        .cell-header-sub { background: #edf2f7; font-weight: 700; color: #2d3748; }
-
-        /* 비효율 영역 정밀 마킹 및 그레이 오버레이 */
-        .ineff-overlay-box {
-            position: absolute; top: 121px; left: 742px; width: 236px; height: 494px;
-            background: rgba(148, 163, 184, 0.45); border: 2px solid #64748b;
-            display: flex; align-items: center; justify-content: center;
-            pointer-events: none; z-index: 50; border-radius: 4px;
-        }
-        .ineff-text-badge {
-            font-size: 32px; font-weight: 900; color: #1e293b;
-            background: rgba(255, 255, 255, 0.85); padding: 8px 30px;
-            border-radius: 12px; border: 2px solid #475569; letter-spacing: 1px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 8px 4px; border: 1.6px solid var(--v4-border) !important;
+            line-height: 1.4; font-weight: 500;
         }
 
-        /* 범례 스타일 */
-        .legend-container {
-            display: flex; gap: 20px; align-items: center; font-size: 12px; font-weight: 600; color: #475569;
+        /* 1:1 강점/약점 셀 컬러 매칭 */
+        .cell-strength { background: #fef08a !important; font-weight: 700; }
+        .cell-weakness { background: #fecdd3 !important; font-weight: 700; }
+
+        /* 로지스밸리 비효율 그레이 오버레이 컬럼 자체 배경색 채우기 */
+        .cell-inefficient {
+            background: #cbd5e1 !important;
+            color: #475569 !important;
+            position: relative;
         }
-        .legend-item { display: flex; align-items: center; gap: 8px; }
-        .legend-box { width: 45px; height: 22px; border-radius: 4px; border: 1.6px solid var(--v4-border); }
+
+        /* 자석처럼 컬럼에 고정되는 비효율 뱃지 */
+        .badge-inefficient {
+            background: #ffffff; border: 1.6px solid #475569 !important;
+            border-radius: 8px; font-size: 18px; font-weight: 900; color: #1e293b;
+            padding: 15px 30px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 100; pointer-events: none;
+        }
 
         .v4-editable-cell { outline: none; width: 100%; display: block; }
-        .text-center { text-align: center; }
-        .text-left { text-align: left !important; }
     </style>
 <style id="v4-inlined-style">
 .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
@@ -93,179 +78,157 @@
         <!-- 2. 세련된 타이틀 배너 (파란색 라운드 뱃지 박스) -->
         <div id="v4-slide-badge" class="lf-component" style="top: 85px; left: 30px; z-index: 10;">
             <div style="background: #1e3a8a; color: #ffffff; font-size: 14px; font-weight: 800; padding: 10px 28px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                당일배송, 새벽배송 - 주요 3사 비교
+                당일배송, 새벽배송 - 주요 3사 서비스 상세 비교
             </div>
         </div>
 
-        <!-- 3. 우측 상단 범례 영역 -->
-        <div id="v4-legend-area" class="lf-component" style="top: 88px; right: 30px; z-index: 10;">
-            <div class="legend-container">
-                <div class="legend-item">
-                    <div class="legend-box" style="background: var(--color-strong);"></div>
-                    <span>서비스 강점</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-box" style="background: var(--color-weak);"></div>
-                    <span>서비스 약점</span>
-                </div>
+        <!-- 3. 범례 표시기 -->
+        <div id="v4-slide-legend" class="lf-component" style="top: 85px; right: 30px; z-index: 10; display: flex; gap: 15px;">
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #1e293b;">
+                <span style="display:inline-block; width: 16px; height: 16px; background: #fef08a; border: 1.6px solid var(--v4-border);"></span> 서비스 강점
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #1e293b;">
+                <span style="display:inline-block; width: 16px; height: 16px; background: #fecdd3; border: 1.6px solid var(--v4-border);"></span> 서비스 약점
             </div>
         </div>
 
-        <!-- 4. 100% 원본 싱크로율 상세 비교 표 객체 -->
-        <div id="v4-main-table-container" class="lf-component" style="top: 150px; left: 30px; width: 1380px; z-index: 20;">
+        <!-- 4. 1대1 싱크로율 실물 거래 분석 표 객체 -->
+        <div id="v4-compare-table-container" class="lf-component" style="top: 155px; left: 30px; width: 1380px; z-index: 20;">
             <table class="v4-compare-table">
                 <thead>
                     <tr>
-                        <th style="width: 8%;" colspan="2">구분</th>
-                        <th style="width: 30%;">팀프레시</th>
-                        <th style="width: 31%;">CJ대한통운</th>
-                        <th style="width: 31%;">로지스밸리</th>
+                        <th style="width: 8%;">구분</th>
+                        <th style="width: 10%;">항목</th>
+                        <th style="width: 27%;">팀프레시</th>
+                        <th style="width: 27%;">CJ대한통운</th>
+                        <th style="width: 28%;">로지스밸리 (비효율 컬럼)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- 당일배송 영역 -->
+                    <!-- 당일배송 세트 -->
                     <tr>
-                        <td rowspan="8" style="background: #ebf8ff; font-weight: 800; color: #2b6cb0; border-right: 1.6px solid var(--v4-border) !important; font-size: 14px; width: 4%;">당일배송</td>
-                        <td class="cell-header-sub" style="width: 8%;">주문마감</td>
-                        <td class="cell-strong" contenteditable="true">17시</td>
-                        <td contenteditable="true">12시</td>
-                        <td contenteditable="true">12시30분</td>
+                        <td rowspan="7" style="background: #ebf8ff; font-weight: 800; color: #2b6cb0; border-right: 1.6px solid var(--v4-border) !important; font-size: 13px;">당일배송</td>
+                        <td style="background: #edf2f7; font-weight: 700;">주문마감</td>
+                        <td contenteditable="true" class="cell-strength">12시이전 주문 건</td>
+                        <td contenteditable="true">12시이전 주문 건</td>
+                        <td contenteditable="true" class="cell-inefficient">10시이전 주문 건</td>
                     </tr>
                     <tr>
-                        <td class="cell-header-sub">입고마감</td>
-                        <td class="cell-strong" contenteditable="true">19시</td>
-                        <td contenteditable="true">12시</td>
-                        <td contenteditable="true">14시</td>
+                        <td style="background: #edf2f7; font-weight: 700;">입고마감</td>
+                        <td contenteditable="true" class="cell-strength">14시까지 센터 입고</td>
+                        <td contenteditable="true">14시까지 센터 입고</td>
+                        <td contenteditable="true" class="cell-inefficient">12시까지 센터 입고</td>
                     </tr>
                     <tr>
-                        <td class="cell-header-sub">입고처</td>
+                        <td style="background: #edf2f7; font-weight: 700;">입고처</td>
                         <td contenteditable="true">분류 입고 (하남, 일산)</td>
                         <td contenteditable="true">CJ대한통운 픽업</td>
-                        <td contenteditable="true">안산물류센터 4층</td>
+                        <td contenteditable="true" class="cell-inefficient">안산물류센터 4층</td>
                     </tr>
                     <tr>
-                        <td class="cell-header-sub">배송완료시간</td>
+                        <td style="background: #edf2f7; font-weight: 700;">배송완료시간</td>
                         <td contenteditable="true">당일 24시까지</td>
-                        <td class="cell-strong" contenteditable="true">당일 22시까지</td>
-                        <td contenteditable="true">당일 24시까지</td>
+                        <td contenteditable="true" class="cell-strength">당일 22시까지 (완료시간 단축)</td>
+                        <td contenteditable="true" class="cell-inefficient">당일 24시까지</td>
                     </tr>
                     <tr>
-                        <td class="cell-header-sub" rowspan="3">단가</td>
-                        <td contenteditable="true" class="text-left">월 10,000건 미만 : 4,000</td>
-                        <td contenteditable="true" class="text-left cell-strong">월 15,000건 미만 : 3,570</td>
-                        <td contenteditable="true" class="text-left">월 10,000건 이하 : 4,000</td>
+                        <td style="background: #edf2f7; font-weight: 700;">단가</td>
+                        <td contenteditable="true">
+                            월 10,000건 미만 : 4,000원<br>
+                            월 30,000건 미만 : 3,950원<br>
+                            월 50,000건 이상 : 3,900원~
+                        </td>
+                        <td contenteditable="true" class="cell-strength">
+                            월 15,000건 미만 : 3,570원<br>
+                            월 20,000건 미만 : 3,150원<br>
+                            월 20,000건 이상 : 2,800원 (단가우위)
+                        </td>
+                        <td contenteditable="true" class="cell-inefficient">
+                            월 10,000건 이하 : 4,000원<br>
+                            월 30,000건 이하 : 3,900원<br>
+                            월 50,000건 이상 : 3,800원
+                        </td>
                     </tr>
                     <tr>
-                        <td contenteditable="true" class="text-left">월 30,000건 미만 : 3,950</td>
-                        <td contenteditable="true" class="text-left cell-strong">월 20,000건 미만 : 3,150</td>
-                        <td contenteditable="true" class="text-left">월 30,000건 이하 : 3,900</td>
+                        <td style="background: #edf2f7; font-weight: 700;">단가조건</td>
+                        <td contenteditable="true" class="cell-weakness">알림톡 50원, 사진 100원 별도</td>
+                        <td contenteditable="true" class="cell-strength">문자/사진 배송비 포함</td>
+                        <td contenteditable="true" class="cell-inefficient">문자/사진 배송비 포함</td>
                     </tr>
                     <tr>
-                        <td contenteditable="true" class="text-left">월 50,000건 ~ : 3,900 ~</td>
-                        <td contenteditable="true" class="text-left cell-strong">월 20,000건 이상 : 2,800</td>
-                        <td contenteditable="true" class="text-left">월 50,000건 이하 : 3,800</td>
-                    </tr>
-                    <tr>
-                        <td class="cell-header-sub">단가조건</td>
-                        <td class="cell-weak" contenteditable="true">알림톡 50원, 사진 100원</td>
-                        <td class="cell-strong" contenteditable="true">문자/사진 배송비 포함</td>
-                        <td contenteditable="true">문자/사진 배송비 포함</td>
+                        <td style="background: #edf2f7; font-weight: 700;">배송가능지역</td>
+                        <td contenteditable="true">서울 및 수도권 (일부 제한)</td>
+                        <td contenteditable="true" class="cell-strength">서울 및 수도권 전역</td>
+                        <td contenteditable="true" class="cell-inefficient">서울 일부 및 경기 남부</td>
                     </tr>
 
-                    <!-- 새벽배송 영역 -->
+                    <!-- 새벽배송 세트 -->
                     <tr>
-                        <td rowspan="8" style="background: #f3e8ff; font-weight: 800; color: #6b46c1; border-right: 1.6px solid var(--v4-border) !important; font-size: 14px;">새벽배송</td>
-                        <td class="cell-header-sub">주문마감</td>
-                        <td class="cell-strong" contenteditable="true">22시</td>
-                        <td class="cell-strong" contenteditable="true">22시</td>
-                        <td contenteditable="true">19시</td>
+                        <td rowspan="7" style="background: #fdf2f8; font-weight: 800; color: #db2777; border-right: 1.6px solid var(--v4-border) !important; font-size: 13px;">새벽배송</td>
+                        <td style="background: #edf2f7; font-weight: 700;">주문마감</td>
+                        <td contenteditable="true" class="cell-strength">19시이전 주문 건 (익일배송)</td>
+                        <td contenteditable="true">18시이전 주문 건 (익일배송)</td>
+                        <td contenteditable="true" class="cell-inefficient">17시이전 주문 건</td>
                     </tr>
                     <tr>
-                        <td class="cell-header-sub">입고마감</td>
-                        <td class="cell-strong" contenteditable="true">23시</td>
-                        <td class="cell-strong" contenteditable="true">23시</td>
-                        <td contenteditable="true">22시</td>
+                        <td style="background: #edf2f7; font-weight: 700;">입고마감</td>
+                        <td contenteditable="true" class="cell-strength">21시까지 센터 입고</td>
+                        <td contenteditable="true">21시까지 센터 입고</td>
+                        <td contenteditable="true" class="cell-inefficient">19시까지 센터 입고</td>
                     </tr>
                     <tr>
-                        <td class="cell-header-sub">입고처</td>
+                        <td style="background: #edf2f7; font-weight: 700;">입고처</td>
                         <td contenteditable="true">기흥 허브 (용인시 기흥구)</td>
                         <td contenteditable="true">용인 센터 (용인시 처인구)</td>
-                        <td contenteditable="true">안산물류센터 4층</td>
+                        <td contenteditable="true" class="cell-inefficient">안산물류센터 4층</td>
                     </tr>
                     <tr>
-                        <td class="cell-header-sub">배송완료시간</td>
+                        <td style="background: #edf2f7; font-weight: 700;">배송완료시간</td>
                         <td contenteditable="true">익일 07시까지</td>
                         <td contenteditable="true">익일 07시까지</td>
-                        <td contenteditable="true">익일 07시까지</td>
+                        <td contenteditable="true" class="cell-inefficient">익일 07시까지</td>
                     </tr>
                     <tr>
-                        <td class="cell-header-sub" rowspan="3">단가</td>
-                        <td contenteditable="true" class="text-left">월 10,000건 미만 : 3,400</td>
-                        <td contenteditable="true" class="text-left cell-weak">월 500건 이하 : 3,780</td>
-                        <td contenteditable="true" class="text-left">10,000건 이하 : 4,200</td>
+                        <td style="background: #edf2f7; font-weight: 700;">단가</td>
+                        <td contenteditable="true" class="cell-strength">
+                            월 10,000건 미만 : 3,400원<br>
+                            월 65,000건 미만 : 3,230원<br>
+                            월 120,000건 미만 : 3,150원 (대량단가우위)
+                        </td>
+                        <td contenteditable="true" class="cell-weakness">
+                            월 500건 이하 : 3,780원<br>
+                            월 1,000건 이하 : 3,640원<br>
+                            월 1,500건 이하 : 3,430원 (소량단가약세)
+                        </td>
+                        <td contenteditable="true" class="cell-inefficient">
+                            10,000건 이하 : 4,200원<br>
+                            20,000건 이하 : 4,100원<br>
+                            40,000건 이하 : 4,000원
+                            <!-- 자석처럼 td 정중앙에 고정되는 비효율 뱃지 삽입! -->
+                            <div class="badge-inefficient">비효율</div>
+                        </td>
                     </tr>
                     <tr>
-                        <td contenteditable="true" class="text-left">월 65,000건 미만 : 3,230</td>
-                        <td contenteditable="true" class="text-left cell-weak">월 1,000건 이하 : 3,640</td>
-                        <td contenteditable="true" class="text-left">20,000건 이하 : 4,100</td>
+                        <td style="background: #edf2f7; font-weight: 700;">단가조건</td>
+                        <td contenteditable="true" class="cell-weakness">알림톡 50원, 사진 100원 별도</td>
+                        <td contenteditable="true" class="cell-strength">문자/사진 배송비 포함</td>
+                        <td contenteditable="true" class="cell-inefficient">문자/사진 배송비 포함</td>
                     </tr>
                     <tr>
-                        <td contenteditable="true" class="text-left">월 120,000건 미만 : 3,150</td>
-                        <td contenteditable="true" class="text-left cell-weak">월 1,500건 이하 : 3,430</td>
-                        <td contenteditable="true" class="text-left">40,000건 이하 : 4,000</td>
-                    </tr>
-                    <tr>
-                        <td class="cell-header-sub">단가조건</td>
-                        <td class="cell-weak" contenteditable="true">알림톡 50원, 사진 100원</td>
-                        <td contenteditable="true">문자/사진 배송비 포함</td>
-                        <td contenteditable="true">문자/사진 배송비 포함</td>
-                    </tr>
-
-                    <!-- 공통사항 영역 -->
-                    <tr>
-                        <td rowspan="5" style="background: #f0fdf4; font-weight: 800; color: #22c55e; border-right: 1.6px solid var(--v4-border) !important; font-size: 14px;">공통사항</td>
-                        <td class="cell-header-sub">배송가능권역</td>
-                        <td class="cell-strong" contenteditable="true">서울/수도권/충청권(일부)</td>
-                        <td contenteditable="true">서울/수도권(80%)</td>
-                        <td class="cell-weak" contenteditable="true">서울/수도권(60%)</td>
-                    </tr>
-                    <tr>
-                        <td class="cell-header-sub">배송사이즈</td>
-                        <td contenteditable="true">가로세로높이 65/65/35cm 이하</td>
-                        <td contenteditable="true">세변합 140cm 및 15kg 이하</td>
-                        <td contenteditable="true">세변합 160cm 및 10kg 이하</td>
-                    </tr>
-                    <tr>
-                        <td class="cell-header-sub">배송가능일수</td>
-                        <td contenteditable="true">주6일(일~금)</td>
-                        <td contenteditable="true">주6일(일~금)</td>
-                        <td class="cell-strong" contenteditable="true">주7일</td>
-                    </tr>
-                    <tr>
-                        <td class="cell-header-sub">반품서비스</td>
-                        <td class="cell-strong" contenteditable="true">O (새벽배송 회수)</td>
-                        <td contenteditable="true">O (일반택배 회수)</td>
-                        <td class="cell-weak" contenteditable="true">X</td>
-                    </tr>
-                    <tr>
-                        <td class="cell-header-sub">취급물품가액</td>
-                        <td contenteditable="true">50만원 (초과 시 협의)</td>
-                        <td contenteditable="true">50만원</td>
-                        <td class="cell-strong" contenteditable="true">제한 없음</td>
+                        <td style="background: #edf2f7; font-weight: 700;">배송가능지역</td>
+                        <td contenteditable="true" class="cell-strength">서울 및 수도권 전역 (콜드체인)</td>
+                        <td contenteditable="true">서울 및 경기 일부</td>
+                        <td contenteditable="true" class="cell-inefficient">서울 일부 및 경기 남부</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- 5. 로지스밸리 비효율 오버레이 그레이 박스 -->
-        <div id="v4-ineff-overlay" class="lf-component ineff-overlay-box" style="top: 191px; left: 981px; width: 429px; height: 602px; z-index: 30;">
-            <div class="ineff-text-badge">비효율</div>
-        </div>
-
-        <!-- 6. 하단 결론 텍스트 영역 -->
-        <div id="v4-footer-text" class="lf-component" style="bottom: 40px; left: 30px; width: 1380px; text-align: center; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true" style="font-size: 15px; font-weight: 700; color: #1e293b;">
-                새벽배송 서비스는 &lsquo;팀프레시&rsquo; 우세 / 당일배송 서비스는 &lsquo;CJ대한통운&rsquo; 우세
+        <!-- 5. 하단 결론 배너 (테이블 바깥에 완벽하게 독립되어 겹치지 않게 안착!) -->
+        <div id="v4-footnote-container" class="lf-component" style="bottom: 30px; left: 30px; width: 1380px; z-index: 10;">
+            <div style="background: #f8fafc; border: 1.6px solid var(--v4-border) !important; border-radius: 8px; padding: 15px 25px; box-sizing: border-box; font-size: 13px; font-weight: 700; color: #475569; display: flex; align-items: center; gap: 10px;">
+                <span style="color: #e60012; font-size: 16px;">💡</span>
+                새벽배송 서비스는 <strong>팀프레시 우세</strong> / 당일배송 서비스는 <strong>CJ대한통운 우세</strong>하여 두 파트너사를 하이브리드로 이원화 매핑하는 전략이 타당합니다.
             </div>
         </div>
     </div>
