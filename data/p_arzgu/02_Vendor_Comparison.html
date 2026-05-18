@@ -9,7 +9,7 @@
             --v4-accent: #e60012;
             --v4-bg: #ffffff;
             --v4-surface: #f8f9fa;
-            --v4-border: #e1e3e5;
+            --v4-border: #cbd5e1;
             --v4-text: #1a1c1e;
         }
         body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--v4-surface); overflow: hidden; }
@@ -22,6 +22,24 @@
         .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; }
         .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
         
+        /* Premium Table Style (1.6px Border) */
+        .v4-premium-table { 
+            width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden;
+            border: 1.6px solid #475569 !important; font-size: 14px; 
+            background: #ffffff; box-shadow: 0 10px 35px rgba(0,0,0,0.03);
+        }
+        .v4-premium-table th { 
+            background: #f8fafc; padding: 16px 20px; text-align: left; 
+            border-bottom: 1.6px solid #475569 !important; font-weight: 700; color: #334155; 
+        }
+        .v4-premium-table td { 
+            padding: 16px 20px; border-bottom: 1.6px solid #cbd5e1 !important; color: #475569; line-height: 1.5; 
+        }
+        .v4-premium-table tr:last-child td { border-bottom: none !important; }
+        .v4-premium-table tr:hover td { background: #f8fafc; }
+        
+        .highlight-cell { font-weight: 700; color: var(--v4-accent) !important; background: rgba(230, 0, 18, 0.01); }
+        
         .text-marker { 
             position: absolute; padding: 18px; border-radius: 12px; 
             border: 1.6px solid var(--v4-border); font-size: 14px; line-height: 1.6; 
@@ -29,8 +47,7 @@
             color: #1e293b; text-align: left; transition: all 0.2s;
         }
         .text-marker:hover { border-color: var(--v4-accent); box-shadow: 0 12px 36px rgba(0,0,0,0.06); }
-        .text-marker.selected { border-color: var(--v4-accent); outline: 2px solid var(--v4-accent); }
-        .v4-editable-cell { outline: none; display: block; text-align: left; }
+        .v4-editable-cell { outline: none; width: 100%; display: block; text-align: left; }
     </style>
 <style id="v4-inlined-style">
 .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
@@ -40,18 +57,78 @@
 </head>
 <body>
     <div class="page">
-        <!-- Main PPT image slide -->
-        <div class="lf-component" style="top: 137px; left: 30px; width: 1000px; height: 625px; pointer-events: none;">
-            <img src="images/슬라이드3.JPG" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="Slide 3">
+        <!-- PPT Background Guide Image (15% opacity) -->
+        <div style="position: absolute; top: 137px; left: 30px; width: 1000px; height: 625px; pointer-events: none; opacity: 0.15; z-index: 1;">
+            <img src="images/slide_3.jpg" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="Slide 3 Guide">
         </div>
 
-        <!-- Editable description pin -->
-        <div id="v4-pin-0" class="lf-component text-marker" style="top: 200px; left: 1050px; width: 340px;">
+        <!-- 1. Header Title -->
+        <div id="v4-title-area" class="lf-component" style="top: 50px; left: 60px; min-width: 600px; z-index: 10;">
+            <div class="v4-editable-cell" contenteditable="true" style="font-size: 26px; font-weight: 800; color: #0f172a; display: block;">
+                당일배송, 새벽배송 – 주요 3사 서비스 역량 및 인프라 비교
+            </div>
+            <div style="font-size: 14px; color: #64748b; margin-top: 4px;">배송 경쟁력 극대화를 위한 각 파트너사별 핵심 강점 및 서비스 범위 정밀 대조</div>
+        </div>
+
+        <!-- 2. 프리미엄 표 객체 -->
+        <div id="v4-table-container" class="lf-component" style="top: 170px; left: 60px; width: 1000px; z-index: 10;">
+            <table class="v4-premium-table">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">분석 구분</th>
+                        <th style="width: 28%;">팀프레시 (TeamFresh)</th>
+                        <th style="width: 28%;">CJ대한통운 (CJ Logistics)</th>
+                        <th style="width: 29%;">한진택배 (Hanjin)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: 700; color: #334155;">새벽배송</td>
+                        <td class="highlight-cell" contenteditable="true">★ 우세 (수도권 밀착형 콜드체인 배송망 1위)</td>
+                        <td contenteditable="true">보통 (수도권 위주 인프라 순차 확장 중)</td>
+                        <td contenteditable="true">미흡 (제휴 대리점 연동 기반 소규모 대행)</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700; color: #334155;">당일배송</td>
+                        <td contenteditable="true">미흡 (새벽배송 특화 특성상 당일 물류 최소화)</td>
+                        <td class="highlight-cell" contenteditable="true">★ 우세 (전국 메가 허브 터미널 및 간선망 연동)</td>
+                        <td contenteditable="true">보통 (서울 및 수도권 주요 권역 타겟 당일망)</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700; color: #334155;">물류 인프라</td>
+                        <td contenteditable="true">수도권 냉장/냉동 물류 센터 6개소 집중 가동</td>
+                        <td contenteditable="true">곤지암 메가허브 및 전국 270여 개 서브 터미널</td>
+                        <td contenteditable="true">대전 메가허브 가동 및 수도권 중심 서브망</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700; color: #334155;">종합 특징</td>
+                        <td contenteditable="true">새벽배송 부동의 1위, 최상급 배송 품질 확보</td>
+                        <td contenteditable="true">당일배송 가능 권역 전국 최다 커버리지 보장</td>
+                        <td contenteditable="true">개별 특화 화물 및 패션 브랜드 전담망 중심</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 3. 강조 코멘트 배너 도형 -->
+        <div id="v4-banner-rect" class="lf-component" style="top: 480px; left: 60px; width: 1000px; height: 50px; background: rgba(99, 102, 241, 0.06); border-radius: 8px; border: 1.6px dashed #6366f1 !important; display: flex; align-items: center; justify-content: center; z-index: 10;">
+            <div class="v4-editable-cell" contenteditable="true" style="font-size: 15px; font-weight: 700; color: #4f46e5; text-align: center; width: 100%;">
+                💡 [핵심 결론] 새벽배송 서비스는 &lsquo;팀프레시&rsquo; 우세 / 당일배송 서비스는 &lsquo;CJ대한통운&rsquo; 우세로 하이브리드 파트너쉽 체결 권장
+            </div>
+        </div>
+
+        <!-- 4. 기획자 마커 및 요약 설명 핀 -->
+        <div id="v4-pin-0" class="lf-component text-marker" style="top: 170px; left: 1100px; width: 300px; z-index: 20;">
             <div class="v4-editable-cell" contenteditable="true">
-                💡 <strong>[주요 3사 분석]</strong><br>
-                • 새벽배송: 팀프레시 우세<br>
-                • 당일배송: CJ대한통운 우세<br>
-                각 분야별 최적의 파트너사 선정을 위한 물류 효율성 검토 지표입니다.
+                🎯 <strong>[파트너 소싱 전략]</strong><br>
+                새벽배송 최강자인 팀프레시의 수도권 망과 당일배송 최다 커버리지를 가진 CJ대한통운의 전국 유통망을 상호 보완적으로 이원화 연동하는 전략이 최상입니다.
+            </div>
+        </div>
+
+        <div id="v4-pin-1" class="lf-component text-marker" style="top: 360px; left: 1100px; width: 300px; z-index: 20;">
+            <div class="v4-editable-cell" contenteditable="true">
+                ⚠️ <strong>[인프라 비효율 요약]</strong><br>
+                한진택배의 경우 패션 브랜드 위주의 강력한 배송망을 확보하고 있으나, 자체 콜드체인 새벽 인프라가 상대적으로 취약하여 당일/새벽 특화 도입에서는 효율성이 보통 이하인 것으로 최종 분석되었습니다.
             </div>
         </div>
     </div>

@@ -9,7 +9,7 @@
             --v4-accent: #e60012;
             --v4-bg: #ffffff;
             --v4-surface: #f8f9fa;
-            --v4-border: #e1e3e5;
+            --v4-border: #cbd5e1;
             --v4-text: #1a1c1e;
         }
         body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--v4-surface); overflow: hidden; }
@@ -22,6 +22,14 @@
         .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; }
         .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
         
+        /* Premium Detail Section */
+        .v4-detail-card {
+            background: #ffffff; border: 1.6px solid #475569 !important; border-radius: 12px;
+            padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); text-align: left;
+        }
+        .card-title { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 12px; border-bottom: 1.6px solid #e2e8f0; padding-bottom: 8px; }
+        .card-body-text { font-size: 14px; color: #475569; line-height: 1.6; }
+        
         .text-marker { 
             position: absolute; padding: 18px; border-radius: 12px; 
             border: 1.6px solid var(--v4-border); font-size: 14px; line-height: 1.6; 
@@ -29,8 +37,7 @@
             color: #1e293b; text-align: left; transition: all 0.2s;
         }
         .text-marker:hover { border-color: var(--v4-accent); box-shadow: 0 12px 36px rgba(0,0,0,0.06); }
-        .text-marker.selected { border-color: var(--v4-accent); outline: 2px solid var(--v4-accent); }
-        .v4-editable-cell { outline: none; display: block; text-align: left; }
+        .v4-editable-cell { outline: none; width: 100%; display: block; text-align: left; }
     </style>
 <style id="v4-inlined-style">
 .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
@@ -40,9 +47,43 @@
 </head>
 <body>
     <div class="page">
-        <!-- Main PPT image slide -->
-        <div class="lf-component" style="top: 137px; left: 30px; width: 1000px; height: 625px; pointer-events: none;">
-            <img src="images/슬라이드9.JPG" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="Slide 9">
+        <!-- PPT Background Guide Image (15% opacity) -->
+        <div style="position: absolute; top: 137px; left: 30px; width: 1000px; height: 625px; pointer-events: none; opacity: 0.15; z-index: 1;">
+            <img src="images/slide_9.jpg" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="Slide 9 Guide">
+        </div>
+
+        <!-- 1. Header Title -->
+        <div id="v4-title-area" class="lf-component" style="top: 50px; left: 60px; min-width: 600px; z-index: 10;">
+            <div class="v4-editable-cell" contenteditable="true" style="font-size: 26px; font-weight: 800; color: #0f172a; display: block;">
+                새벽배송 상세 오퍼레이션 및 예외 처리 정책 가이드
+            </div>
+            <div style="font-size: 14px; color: #64748b; margin-top: 4px;">도도 권역 검증 고도화 및 WMS 연동 예외 클레임 프로세스 상세 명세</div>
+        </div>
+
+        <!-- 2. Detail Card 1 -->
+        <div id="v4-card-detail-1" class="lf-component v4-detail-card" style="top: 170px; left: 60px; width: 480px; z-index: 10;">
+            <div class="card-title">1단계: OMS / WMS 연동 검증 정책</div>
+            <div class="v4-editable-cell card-body-text" contenteditable="true">
+                • <strong>주소지 실시간 적격성 판단</strong>: 고객 주문 완료 시 배송 권역 지번/도로명 주소를 팀프레시 API와 실시간 동기화하여 검증 필터링 집행.<br>
+                • <strong>배치 마감 스케줄러</strong>: 18:00 정각 서버 배치 자동 강제 차단을 통해, 18시 이후 주문 건의 익일 새벽 배송 처리를 차단하고 익익일로 자동 대기 지정.
+            </div>
+        </div>
+
+        <!-- 3. Detail Card 2 -->
+        <div id="v4-card-detail-2" class="lf-component v4-detail-card" style="top: 170px; left: 580px; width: 480px; z-index: 10;">
+            <div class="card-title">2단계: WMS / 배송사 송장 및 CS 정책</div>
+            <div class="v4-editable-cell card-body-text" contenteditable="true">
+                • <strong>실시간 송장 채번 연동</strong>: WMS 피킹 완료 단계에서 팀프레시 API를 통과시켜 익일 배달용 특화 송장번호 즉시 채번 및 자동 매핑.<br>
+                • <strong>미배송/지연 CS 정산</strong>: 파트너사 배송 마감(07:00)까지 배송 사진이 전송되지 않는 누락 건의 경우, OMS 배치 자동 감지를 통해 고객 배송 지연 보상 쿠폰 자동 즉시 발부.
+            </div>
+        </div>
+
+        <!-- 4. 기획자 마커 및 요약 설명 핀 -->
+        <div id="v4-pin-0" class="lf-component text-marker" style="top: 170px; left: 1100px; width: 300px; z-index: 20;">
+            <div class="v4-editable-cell" contenteditable="true">
+                💡 <strong>[클레임 최소화 가이드]</strong><br>
+                새벽배송 지연 보상 정책 수립 시, 지연 발생 시 고객이 수동으로 CS 센터에 연락하지 않고 시스템이 자동 즉시 보상 쿠폰(5,000원 상당)을 인젝션해 주는 선제적 CS 처리가 브랜드 고객 충성도 유지에 큰 핵심입니다.
+            </div>
         </div>
     </div>
 </body></html>

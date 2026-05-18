@@ -9,7 +9,7 @@
             --v4-accent: #e60012;
             --v4-bg: #ffffff;
             --v4-surface: #f8f9fa;
-            --v4-border: #e1e3e5;
+            --v4-border: #cbd5e1;
             --v4-text: #1a1c1e;
         }
         body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--v4-surface); overflow: hidden; }
@@ -22,6 +22,16 @@
         .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; }
         .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
         
+        /* Premium Shape & Diagram Flow */
+        .v4-shape-rect { 
+            border-radius: 10px; border: 1.6px solid #475569 !important; background: #ffffff; 
+            color: #1e293b; font-size: 14px; font-weight: 600; display: flex; 
+            align-items: center; justify-content: center; text-align: center; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: all 0.2s;
+        }
+        .v4-shape-rect:hover { border-color: var(--v4-accent) !important; transform: translateY(-2px) !important; box-shadow: 0 8px 20px rgba(0,0,0,0.04); }
+        .v4-shape-rect.highlight { border-color: #6366f1 !important; background: rgba(99, 102, 241, 0.02); color: #4f46e5; }
+        
         .text-marker { 
             position: absolute; padding: 18px; border-radius: 12px; 
             border: 1.6px solid var(--v4-border); font-size: 14px; line-height: 1.6; 
@@ -29,8 +39,8 @@
             color: #1e293b; text-align: left; transition: all 0.2s;
         }
         .text-marker:hover { border-color: var(--v4-accent); box-shadow: 0 12px 36px rgba(0,0,0,0.06); }
-        .text-marker.selected { border-color: var(--v4-accent); outline: 2px solid var(--v4-accent); }
-        .v4-editable-cell { outline: none; display: block; text-align: left; }
+        .v4-editable-cell { outline: none; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        .text-marker .v4-editable-cell { display: block; }
     </style>
 <style id="v4-inlined-style">
 .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
@@ -40,18 +50,60 @@
 </head>
 <body>
     <div class="page">
-        <!-- Main PPT image slide -->
-        <div class="lf-component" style="top: 137px; left: 30px; width: 1000px; height: 625px; pointer-events: none;">
-            <img src="images/슬라이드6.JPG" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="Slide 6">
+        <!-- PPT Background Guide Image (15% opacity) -->
+        <div style="position: absolute; top: 137px; left: 30px; width: 1000px; height: 625px; pointer-events: none; opacity: 0.15; z-index: 1;">
+            <img src="images/slide_6.jpg" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="Slide 6 Guide">
         </div>
 
-        <!-- Editable description pin -->
-        <div id="v4-pin-0" class="lf-component text-marker" style="top: 160px; left: 1050px; width: 340px;">
+        <!-- 1. Header Title -->
+        <div id="v4-title-area" class="lf-component" style="top: 50px; left: 60px; min-width: 600px; z-index: 10;">
+            <div class="v4-editable-cell" contenteditable="true" style="font-size: 26px; font-weight: 800; color: #0f172a; display: block;">
+                당일배송, 새벽배송 – 데이터 시뮬레이션 단계 모델
+            </div>
+            <div style="font-size: 14px; color: #64748b; margin-top: 4px;">배송 서비스 구축 타당성 분석 및 리스크 예측을 위한 핵심 4단계 전개 시나리오</div>
+        </div>
+
+        <!-- 2. 시뮬레이션 4단계 플로우 도형 객체들 -->
+        <!-- Step 1 -->
+        <div id="v4-shape-flow-1" class="lf-component v4-shape-rect highlight" style="top: 220px; left: 60px; width: 220px; height: 80px; z-index: 10;">
             <div class="v4-editable-cell" contenteditable="true">
-                ⚙️ <strong>[시뮬레이션 전개]</strong><br>
-                1. 주문 데이터 분석<br>
-                2. 택배비 단가 상승 예측 모델링<br>
-                Appendix를 통한 등급별 주문 분배 모델 적용 완료.
+                1. 주문데이터 분석<br><span style="font-size: 12px; font-weight: 500; color: #64748b;">(2024년 상반기 트래픽)</span>
+            </div>
+        </div>
+        <!-- Step 2 -->
+        <div id="v4-shape-flow-2" class="lf-component v4-shape-rect" style="top: 220px; left: 320px; width: 220px; height: 80px; z-index: 10;">
+            <div class="v4-editable-cell" contenteditable="true">
+                2. 택배비 상승 예측<br><span style="font-size: 12px; font-weight: 500; color: #64748b;">(물가 연동 요율 모델링)</span>
+            </div>
+        </div>
+        <!-- Step 3 -->
+        <div id="v4-shape-flow-3" class="lf-component v4-shape-rect" style="top: 220px; left: 580px; width: 220px; height: 80px; z-index: 10;">
+            <div class="v4-editable-cell" contenteditable="true">
+                Appendix. 새벽배송 단가<br><span style="font-size: 12px; font-weight: 500; color: #64748b;">(팀프레시 입고 협상 단가)</span>
+            </div>
+        </div>
+        <!-- Step 4 -->
+        <div id="v4-shape-flow-4" class="lf-component v4-shape-rect" style="top: 220px; left: 840px; width: 220px; height: 80px; z-index: 10;">
+            <div class="v4-editable-cell" contenteditable="true">
+                Appendix. 회원등급 주문율<br><span style="font-size: 12px; font-weight: 500; color: #64748b;">(VIP 인센티브 배분 모델)</span>
+            </div>
+        </div>
+
+        <!-- 3. 시뮬레이션 결과 데이터 요약 보드 -->
+        <div id="v4-board-rect" class="lf-component" style="top: 360px; left: 60px; width: 1000px; height: 160px; background: #f8fafc; border: 1.6px solid #475569 !important; border-radius: 12px; padding: 20px; box-sizing: border-box; z-index: 10;">
+            <div class="v4-editable-cell" contenteditable="true" style="font-size: 14px; line-height: 1.6; color: #334155; width: 100%;">
+                🎯 <strong>[시뮬레이션 전개 종합 요약]</strong><br>
+                1. 상반기 수도권 주문 밀도(69%) 분석을 통해 도입 타당성 1단계 통과 완료.<br>
+                2. 매년 평균 4%의 간선 운송 택배비 상승 요소를 선제 예측 모델에 반영하여 리스크 소거.<br>
+                3. 최종적으로 VIP 무료 배송 등급 허들을 설정하고, 분배율 시뮬레이션을 통해 연간 물류 예산 범위 산출 완수.
+            </div>
+        </div>
+
+        <!-- 4. 기획자 마커 및 요약 설명 핀 -->
+        <div id="v4-pin-0" class="lf-component text-marker" style="top: 170px; left: 1100px; width: 300px; z-index: 20;">
+            <div class="v4-editable-cell" contenteditable="true">
+                ⚙️ <strong>[예측 변수 검토]</strong><br>
+                시뮬레이션 2단계의 택배비 상승 예측의 경우, 고유가 지속 및 친환경 패키지 패킹 단가 인상 요인을 보수적으로 추가 5% 상향 가산하여 물류 버퍼 마진을 넉넉히 확보했습니다.
             </div>
         </div>
     </div>
