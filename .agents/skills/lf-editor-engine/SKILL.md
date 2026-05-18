@@ -20,6 +20,7 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 - Inline CSS/JS dependencies needed by `srcdoc` iframe flows to avoid security blocking.
 - **Nested Backtick Precaution**: `vctrl_core.js`의 `v4Script`와 같이 백틱(`)으로 감싸진 템플릿 리터럴 내부에서 다시 백틱을 사용하면 구문 에러가 발생한다. 내부에서는 반드시 일반 따옴표(`"` 또는 `'`)를 사용하거나 이스케이프(`\``) 처리를 해야 한다.
 - **Iframe State Initialization**: iframe 컨텍스트에서는 부모 창의 전역 변수(예: `window.state`)가 자동으로 공유되지 않는다. iframe 내부에 주입되는 스크립트(예: `v4UndoScript`)에서 상태를 참조하거나 저장할 때는 반드시 참조 전 초기화 여부(예: `if (!window.state) window.state = {};`)를 확인하여 `TypeError`를 방지하라.
+- **`vctrl_iframe_script.js` 외부 분리 및 캐시 무효화 (Cache Busting)**: iframe 내부 렌더링 로직인 `vctrl_iframe_script.js`는 인라인 문자열(v4Script)에서 독립된 외부 파일로 완전히 분리되었다. 따라서 이 파일을 수정하는 경우, 브라우저가 이전 버전을 캐싱하여 변경 사항이 반영되지 않는 문제를 방지하기 위해 **반드시 `viewer.html` 내의 스크립트 로드 태그에 버전 쿼리 파라미터(예: `vctrl_iframe_script.js?v=YYYYMMDD_HHMM` 또는 `vctrl_iframe_script.js?v=V109_COMMON_OBJ`)를 즉시 업데이트**하여 캐시를 무효화해야 한다.
 
 ## Interaction Integrity
 - Keep marker drag and click-to-edit separate.
@@ -31,6 +32,8 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 
 - **MessageHub Nudge/Align/Undo**: Use MessageHub (`LF_NUDGE`, `LF_ALIGN_COMPONENTS`, `LF_SAVE_UNDO`) to synchronize keyboard movements and alignments from the parent window to the iframe components seamlessly.
 - **Keyboard Nudge Forwarding**: 사용자가 컴포넌트를 클릭하면 포커스가 iframe 내부로 이동하여 부모 창의 키보드 이벤트가 동작하지 않을 수 있다. 따라서 iframe 내부(`vctrl_core.js`의 `v4Script`)에도 화살표 키 리스너를 배치하여, iframe 내 요소가 선택된 경우 직접 이동시키고, 그렇지 않은 경우 `LF_NUDGE` 메시지를 통해 부모 창(커넥터, 텍스트 마커 등)에 이벤트를 전달해야 한다.
+- **통합 키보드 이벤트 파이프라인 (Unified Keyboard Event Pipeline)**: 기존에 분산되어 있던 부모 창과 iframe 내부의 키보드 이벤트 리스너를 단일화된 파이프라인으로 통합했다. 컴포넌트나 커넥터가 포커싱되었을 때 이벤트가 유실되거나 중복 처리되지 않도록, `vctrl_iframe_script.js` 내부의 통합 키보드 핸들러가 이벤트를 포착하고, 부모 창의 단일 리스너와 `MessageHub`를 통해 연동되어야 한다. 화살표 키 이동(Nudge), Delete/Backspace 삭제, Undo/Redo 등의 모든 인터랙션이 단일 이벤트 흐름으로 제어됨을 보장해야 한다.
+- **커넥터(Lines) 실시간 좌표 동기화 (Real-Time Connector Reconciliation)**: 사용자가 컴포넌트를 드래그하거나 화살표 키로 이동시킬 때, 컴포넌트에 연결된 모든 커넥터 라인(Lines)은 브라우저 렌더링 주사율에 맞춰 `requestAnimationFrame`을 사용하여 실시간으로 시작/끝 좌표를 재계산하고 부드럽게 다시 그려야 한다. 드래그가 완료되면 이동된 최종 좌표 상태가 `V4UndoManager` 및 `metadata.json`에 영구히 저장되어야 한다.
 
 ## Connector and Cross-Window Interaction Principles
 - **Iframe Occlusion Protection**: 부모 창에서 드래그 인터랙션(커넥터 핸들 등)이 발생할 때, 마우스가 iframe 위로 올라가면 이벤트가 끊길 수 있다. `mousedown` 시 iframe에 `pointer-events: none`을 설정하고 `mouseup` 시 `auto`로 복구하여 끊김 없는 드래그를 보장하라.
@@ -48,6 +51,11 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 
 ## 🏗️ Unified Object Architecture (Established)
 - **Terminology**: Text Boxes, Shapes, Atoms, and Lines are collectively referred to as **'모든 오브젝트' (All Objects)**.
+- **Common Object Protocol (4원칙)**: 모든 객체(텍스트, 도형, 선, 아톰 등)는 예외 없이 다음 4가지 동작을 보장해야 한다.
+  1. 드래그(Marquee) 및 Shift+Click을 통한 **다중 선택, 그룹화(Ctrl+G), 해제** 보장
+  2. 선택 상태에서 **화살표 키(`ArrowUp` 등)를 이용한 픽셀 단위 그룹 이동** 보장
+  3. `Delete` 또는 `Backspace` 키보드 입력을 통한 **즉각 삭제** 보장
+  4. 객체의 이동, 생성, 삭제, 그룹화 등 모든 상태 변경 전 **`V4UndoManager.saveState()` 호출을 통한 Ctrl+Z (Undo) 보장**
 - **Global Screen Layer**: 모든 오브젝트는 iframe 내부의 **`document.body`**에 직접 위치한다. 특정 템플릿 영역(`.mobile-content` 등)에 종속되지 않음으로써 스크린 어디서든 자유로운 배치와 그룹화가 가능하다.
 - **Unified Coordinate System**: 모든 오브젝트는 고정 픽셀(**px**) 단위를 사용한다. 더 이상 퍼센트(%) 단위를 사용하지 않아 단위 변환 오차가 발생하지 않는다.
 - **Auto-Migration Strategy**: 스크린 로드 시 `%` 좌표가 발견되면 `enforceDesignSystem`을 통해 현재 화면 크기 기준의 **절대 픽셀(`px`)**로 즉시 자동 변환한다. 이는 그룹화 엔진이 `style.left/top` 데이터를 안전하게 산술 연산하기 위한 전제 조건이다.

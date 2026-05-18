@@ -34,7 +34,11 @@
   - **3단 그룹화**: [Brand Group] - [Metadata Group] - [Actions Group] 순으로 배치하며, `white-space: nowrap`을 적용합니다.
 - **버튼 디자인 표준 (Premium UI)**: 모든 버튼은 알약형(Pill) 쉐입(`height: 28px`, `border-radius: 14px`)을 따르며, 아이콘은 인라인 SVG(`stroke-width: 1.6`)를 사용합니다.
 - **통합 오브젝트 아키텍처 (Unified Object Architecture)**:
-  - 텍스트 박스, 도형, 선, 아톰 4종을 **'모든 오브젝트' (All Objects)**로 통칭하며, iframe 내부의 `document.body`로 계층을 통합했습니다.
+  - 텍스트 박스, 도형, 선, 아톰 4종을 **'모든 객체' (All Objects)**로 통칭하며, 이들은 반드시 **공통 오브젝트 4원칙(Common Object Protocol)**을 준수해야 합니다.
+  - 1. **다중 선택 보장**: 드래그(Marquee) 및 Shift+Click으로 다중 선택과 그룹화(Ctrl+G), 해제가 가능해야 합니다.
+  - 2. **키보드 이동 보장**: 화살표 키(`ArrowUp` 등)를 통해 픽셀 단위로 상하좌우 이동이 가능해야 합니다.
+  - 3. **Delete 삭제 보장**: 사이드바 버튼 외에도 `Delete` 또는 `Backspace` 키보드 입력만으로 즉시 삭제되어야 합니다.
+  - 4. **Ctrl+Z (Undo) 보장**: 모든 객체의 이동, 생성, 삭제, 그룹화 동작은 `V4UndoManager.saveState()`를 거쳐 실행 취소가 가능해야 합니다.
 - **통합 좌표 및 단위 표준 (Unified Coordinate Standards)**:
   - **No-Measure 전략**: 브라우저의 `getBoundingClientRect()` 대신 객체의 **`style.left/top` 데이터**를 Single Source of Truth(SSOT)로 사용합니다.
   - **Pure Data 연산**: 모든 이동/정렬 연산은 순수 픽셀(`px`) 산술로 수행하여 줌이나 레이아웃 방식에 영향을 받지 않는 절대적인 정확도를 보장합니다.

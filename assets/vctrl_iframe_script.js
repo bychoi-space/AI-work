@@ -421,9 +421,48 @@ window.v4Script = `
                             const idx = parseInt(c.id.replace('v4-pin-', ''));
                             notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: l + dx, y: t + dy });
                         }
+                        
+                        if (c.classList.contains('connector-line')) {
+                            notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: c.id, dx: dx, dy: dy });
+                        }
+                        
+                        // Sync children if it's a group
+                        if (c.classList.contains('lf-group')) {
+                            c.querySelectorAll('.text-marker').forEach(child => {
+                                const idx = parseInt(child.id.replace('v4-pin-', ''));
+                                const childRect = child.getBoundingClientRect();
+                                const hostRect = document.body.getBoundingClientRect();
+                                const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
+                                const absX = (childRect.left - hostRect.left) / scale;
+                                const absY = (childRect.top - hostRect.top) / scale;
+                                notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: absX, y: absY });
+                            });
+                        }
                     });
                     
                     notifyParent({ type: 'LF_SNAP_END' });
+                }
+            }
+        } else if (e.code === 'Delete' || e.code === 'Backspace') {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                const selected = document.querySelectorAll('.lf-component.selected');
+                if (selected.length > 0) {
+                    e.preventDefault();
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    
+                    selected.forEach(c => {
+                        if (c.classList.contains('connector-line')) {
+                            notifyParent({ type: 'LF_DELETE_CONNECTOR', id: c.id });
+                        } else if (c.classList.contains('text-marker')) {
+                            const idx = parseInt(c.id.replace('v4-pin-', ''));
+                            notifyParent({ type: 'LF_DELETE_PIN', index: idx });
+                        } else {
+                            c.remove();
+                        }
+                    });
+                    
+                    notifyParent({ type: 'LF_DESELECT' });
                     markDirty();
                 }
             }
@@ -811,7 +850,7 @@ window.v4Script = `
             const handleStates = Array.from(allHandles).map(h => h.style.display);
             allHandles.forEach(h => h.style.display = 'none');
 
-            const comps = ids.map(id => doc.getElementById(id)).filter(el => el);
+            const comps = ids.map(id => doc.getElementById(id)).filter(el => el && !el.classList.contains('connector-line'));
             if (comps.length < 2) return;
 
             let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;

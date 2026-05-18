@@ -69,10 +69,27 @@ window.ConnectorEngine = (function() {
                     conn.end.y = data.end.y;
                 }
             });
+            window.MessageHub.subscribe('LF_SHIFT_CONNECTOR_POS', (data) => {
+                const conn = window.state.connectors.find(c => c.id === data.id);
+                if (conn) {
+                    conn.start.x += data.dx;
+                    conn.start.y += data.dy;
+                    conn.end.x += data.dx;
+                    conn.end.y += data.dy;
+                }
+            });
             window.MessageHub.subscribe('LF_CONNECTOR_HANDLE_MOVE', (data) => {
                 onIframeMouseMove(data);
             });
             window.MessageHub.subscribe('LF_CONNECTOR_HANDLE_UP', onGlobalMouseUp);
+            window.MessageHub.subscribe('LF_DELETE_CONNECTOR', (data) => {
+                if (data.id) {
+                    window.state.connectors = window.state.connectors.filter(c => c.id !== data.id);
+                    selectedConnectorIds = selectedConnectorIds.filter(id => id !== data.id);
+                    redrawAll();
+                    if (window.markAsDirty) window.markAsDirty();
+                }
+            });
         }
 
         // Line Editor Event Listeners
@@ -310,6 +327,7 @@ window.ConnectorEngine = (function() {
     function handleKeyDown(e) {
         if (e.key === 'Delete' || e.key === 'Backspace') {
             if (selectedConnectorIds.length > 0) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
                 deleteSelectedLine();
             }
         }
