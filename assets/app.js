@@ -75,7 +75,22 @@ async function listContents(path) {
                 res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
             }
         }
-        return res.ok ? await res.json() : [];
+        if (res.ok) {
+            const list = await res.json();
+            window.shaCache = window.shaCache || {};
+            if (Array.isArray(list)) {
+                list.forEach(item => {
+                    if (item.type === 'file' && item.sha) {
+                        const relativePath = item.path.startsWith(ghConfig.dataDir)
+                            ? item.path.substring(ghConfig.dataDir.length)
+                            : item.path;
+                        window.shaCache[relativePath] = item.sha;
+                    }
+                });
+            }
+            return list;
+        }
+        return [];
     } catch (e) {
         console.warn("[API] listContents failed or timed out:", e.message);
         return [];
