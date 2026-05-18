@@ -385,6 +385,7 @@ window.v4Script = `
         isDragging = false; isResizing = false; activeEl = null; 
     });
     document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
+    let isArrowMoving = false;
     document.addEventListener('keydown', e => {
         if (e.code === 'Space') {
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
@@ -392,11 +393,47 @@ window.v4Script = `
                 e.preventDefault();
                 notifyParent({ type: 'LF_SPACE_DOWN' });
             }
+        } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                const selected = document.querySelectorAll('.lf-component.selected');
+                if (selected.length > 0) {
+                    e.preventDefault();
+                    if (window.V4UndoManager && !isArrowMoving) {
+                        window.V4UndoManager.saveState();
+                        isArrowMoving = true;
+                    }
+                    const step = e.shiftKey ? 10 : 1;
+                    let dx = 0, dy = 0;
+                    if (e.code === 'ArrowUp') dy = -step;
+                    if (e.code === 'ArrowDown') dy = step;
+                    if (e.code === 'ArrowLeft') dx = -step;
+                    if (e.code === 'ArrowRight') dx = step;
+
+                    selected.forEach(c => {
+                        const l = parseFloat(c.style.left) || 0;
+                        const t = parseFloat(c.style.top) || 0;
+                        c.style.left = (l + dx) + 'px';
+                        c.style.top = (t + dy) + 'px';
+                        updateHandles(c);
+                        
+                        if (c.classList.contains('text-marker')) {
+                            const idx = parseInt(c.id.replace('v4-pin-', ''));
+                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: l + dx, y: t + dy });
+                        }
+                    });
+                    
+                    notifyParent({ type: 'LF_SNAP_END' });
+                    markDirty();
+                }
+            }
         }
     });
     document.addEventListener('keyup', e => {
         if (e.code === 'Space') {
             notifyParent({ type: 'LF_SPACE_UP' });
+        } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+            isArrowMoving = false;
         }
     });
     window.addEventListener('message', e => {
