@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="ko"><head>
     <meta charset="UTF-8">
-    <title>03. 주문 데이터 분석</title>
+    <title>03. 2024년 1월 ~ 6월 주문 데이터 분석</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <style>
         :root {
-            --v4-primary: #1a1a1a;
+            --v4-primary: #1e3a8a;
             --v4-accent: #e60012;
             --v4-bg: #ffffff;
             --v4-surface: #f8f9fa;
-            --v4-border: #cbd5e1;
-            --v4-text: #1a1c1e;
+            --v4-border: #475569;
+            --v4-text: #1e293b;
         }
         body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--v4-surface); overflow: hidden; }
         .page { width: 1440px; height: 900px; position: relative; background: #ffffff; box-shadow: 0 40px 100px rgba(0,0,0,0.05); overflow: hidden; }
@@ -22,30 +22,30 @@
         .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: var(--v4-accent); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; z-index: 100; opacity: 0; transition: opacity 0.2s; }
         .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; }
         
+        /* Unified Header Styles */
+        .slide-header {
+            position: absolute; top: 0; left: 0; width: 1440px; height: 60px;
+            background: #2a2a2a; display: flex; align-items: center; padding: 0 30px;
+            box-sizing: border-box; color: #ffffff; font-size: 16px; font-weight: 700; z-index: 10;
+        }
+
         /* Premium Table Style (1.6px Border) */
-        .v4-premium-table { 
-            width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden;
-            border: 1.6px solid #475569 !important; font-size: 14px; 
-            background: #ffffff; box-shadow: 0 10px 35px rgba(0,0,0,0.03);
+        .v4-data-table {
+            width: 100%; border-collapse: collapse; border: 1.6px solid var(--v4-border) !important;
+            font-size: 13px; color: var(--v4-text); background: #ffffff; text-align: center;
         }
-        .v4-premium-table th { 
-            background: #f8fafc; padding: 14px 18px; text-align: left; 
-            border-bottom: 1.6px solid #475569 !important; font-weight: 700; color: #334155; 
+        .v4-data-table th {
+            background: #2d3748; color: #ffffff; font-weight: 700;
+            padding: 12px 10px; border: 1.6px solid var(--v4-border) !important;
         }
-        .v4-premium-table td { 
-            padding: 14px 18px; border-bottom: 1.6px solid #cbd5e1 !important; color: #475569; line-height: 1.5; 
+        .v4-data-table td {
+            padding: 12px 10px; border: 1.6px solid var(--v4-border) !important;
+            line-height: 1.5; font-weight: 500;
         }
-        .v4-premium-table tr:last-child td { border-bottom: none !important; }
-        .v4-premium-table tr:hover td { background: #f8fafc; }
-        
-        .text-marker { 
-            position: absolute; padding: 18px; border-radius: 12px; 
-            border: 1.6px solid var(--v4-border); font-size: 14px; line-height: 1.6; 
-            background: #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.04); box-sizing: border-box;
-            color: #1e293b; text-align: left; transition: all 0.2s;
-        }
-        .text-marker:hover { border-color: var(--v4-accent); box-shadow: 0 12px 36px rgba(0,0,0,0.06); }
-        .v4-editable-cell { outline: none; width: 100%; display: block; text-align: left; }
+        .cell-highlight { background: rgba(14, 165, 233, 0.05); font-weight: 700; color: #0284c7; }
+        .cell-header-sub { background: #edf2f7; font-weight: 700; color: #2d3748; }
+
+        .v4-editable-cell { outline: none; width: 100%; display: block; }
     </style>
 <style id="v4-inlined-style">
 .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
@@ -55,88 +55,79 @@
 </head>
 <body>
     <div class="page">
-        <!-- PPT Background Guide Image (15% opacity) -->
-        <div style="position: absolute; top: 137px; left: 30px; width: 1000px; height: 625px; pointer-events: none; opacity: 0.15; z-index: 1;">
-            <img src="images/slide_4.jpg" style="width: 100%; height: 100%; object-fit: contain; display: block;" alt="Slide 4 Guide">
+        <!-- 1. PPT 스타일 최상단 헤더 배너 -->
+        <div class="slide-header">
+            <div style="flex: 1;">당일/새벽 배송서비스 조사</div>
         </div>
 
-        <!-- 1. Header Title -->
-        <div id="v4-title-area" class="lf-component" style="top: 50px; left: 60px; min-width: 600px; z-index: 10;">
-            <div class="v4-editable-cell" contenteditable="true" style="font-size: 26px; font-weight: 800; color: #0f172a; display: block;">
-                2024년 1월 ~ 6월 주문 데이터 트래픽 분석
+        <!-- 2. 세련된 타이틀 배너 (파란색 라운드 뱃지 박스) -->
+        <div id="v4-slide-badge" class="lf-component" style="top: 85px; left: 30px; z-index: 10;">
+            <div style="background: #1e3a8a; color: #ffffff; font-size: 14px; font-weight: 800; padding: 10px 28px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                2024년 1월 ~ 6월 주문 데이터 분석
             </div>
-            <div style="font-size: 14px; color: #64748b; margin-top: 4px;">서울/경기 수도권 집중 권역 주문량 산출 및 피킹/패킹 합포장 시뮬레이션 지표</div>
         </div>
 
-        <!-- 2. 프리미엄 표 객체 -->
-        <div id="v4-table-container" class="lf-component" style="top: 170px; left: 60px; width: 1000px; z-index: 10;">
-            <table class="v4-premium-table">
+        <!-- 3. 100% 원본 싱크로율 실물 거래 분석 표 객체 -->
+        <div id="v4-main-table-container" class="lf-component" style="top: 170px; left: 30px; width: 1380px; z-index: 20;">
+            <table class="v4-data-table">
                 <thead>
                     <tr>
-                        <th>조사 대상 월</th>
-                        <th>총 주문 건수 (SKU 기준)</th>
-                        <th>서울/경기 권역 점유율</th>
-                        <th>합포장 기준 실 출고량 (Box)</th>
+                        <th style="width: 15%;" colspan="2">분석 구분</th>
+                        <th style="width: 25%;">6개월 합산</th>
+                        <th style="width: 25%;">월 평균</th>
+                        <th style="width: 15%;">일 평균</th>
+                        <th style="width: 20%;">비고</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <!-- 전체 지표 -->
                     <tr>
-                        <td style="font-weight: 700;">1월 (January)</td>
-                        <td contenteditable="true">120,450 건</td>
-                        <td contenteditable="true" style="font-weight: 600; color: #4f46e5;">68.2 %</td>
-                        <td contenteditable="true">82,300 Box</td>
+                        <td rowspan="2" style="background: #ebf8ff; font-weight: 800; color: #2b6cb0; border-right: 1.6px solid var(--v4-border) !important; font-size: 14px;">전체</td>
+                        <td class="cell-header-sub">주문상품</td>
+                        <td contenteditable="true" style="font-weight: 700;">1,093,373 SKU</td>
+                        <td contenteditable="true">156,196 SKU</td>
+                        <td contenteditable="true">6,008 SKU</td>
+                        <td contenteditable="true" style="color: #64748b;">-</td>
                     </tr>
                     <tr>
-                        <td style="font-weight: 700;">2월 (February)</td>
-                        <td contenteditable="true">114,200 건</td>
-                        <td contenteditable="true" style="font-weight: 600; color: #4f46e5;">68.5 %</td>
-                        <td contenteditable="true">78,120 Box</td>
+                        <td class="cell-header-sub">주문송장</td>
+                        <td contenteditable="true" style="font-weight: 700;">927,998 건</td>
+                        <td contenteditable="true">132,571 건</td>
+                        <td contenteditable="true">5,099 건</td>
+                        <td contenteditable="true" style="color: #64748b;">-</td>
+                    </tr>
+                    
+                    <!-- 서울/경기 지표 -->
+                    <tr>
+                        <td rowspan="2" style="background: #fdf2f8; font-weight: 800; color: #db2777; border-right: 1.6px solid var(--v4-border) !important; font-size: 14px;">서울/경기</td>
+                        <td class="cell-header-sub">주문상품</td>
+                        <td contenteditable="true" style="font-weight: 700; color: #db2777;">553,704 SKU</td>
+                        <td contenteditable="true">79,101 SKU</td>
+                        <td contenteditable="true">3,042 SKU</td>
+                        <td class="cell-highlight" contenteditable="true">우편번호 기준 50.45%</td>
                     </tr>
                     <tr>
-                        <td style="font-weight: 700;">3월 (March)</td>
-                        <td contenteditable="true">128,900 건</td>
-                        <td contenteditable="true" style="font-weight: 600; color: #4f46e5;">69.1 %</td>
-                        <td contenteditable="true">89,040 Box</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: 700;">4월 (April)</td>
-                        <td contenteditable="true">132,600 건</td>
-                        <td contenteditable="true" style="font-weight: 600; color: #4f46e5;">68.8 %</td>
-                        <td contenteditable="true">91,230 Box</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: 700;">5월 (May)</td>
-                        <td contenteditable="true">142,800 건</td>
-                        <td contenteditable="true" style="font-weight: 600; color: #4f46e5;">69.5 %</td>
-                        <td contenteditable="true">98,100 Box</td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: 700;">6월 (June)</td>
-                        <td contenteditable="true">138,500 건</td>
-                        <td contenteditable="true" style="font-weight: 600; color: #4f46e5;">69.2 %</td>
-                        <td contenteditable="true">95,450 Box</td>
+                        <td class="cell-header-sub">주문송장</td>
+                        <td contenteditable="true" style="font-weight: 700; color: #db2777;">468,174 건</td>
+                        <td contenteditable="true">66,882 건</td>
+                        <td contenteditable="true">2,571 건</td>
+                        <td class="cell-highlight" contenteditable="true">송장 기준 약 50.45%</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <!-- 3. 설명 코멘트 텍스트 -->
-        <div id="v4-footnote-container" class="lf-component" style="top: 550px; left: 60px; font-size: 13px; color: #64748b; font-style: italic; z-index: 10;">
-            ※ 한 박스에 복수 SKU 상품을 합포장(Multi-Item Packing) 처리하므로, 실 출고 Box 수는 총 SKU 주문 건수 대비 약 30% 적게 산출됩니다.
+        <!-- 4. 하단 강조 텍스트 -->
+        <div id="v4-footnote-container" class="lf-component" style="top: 420px; left: 30px; font-size: 13px; color: #64748b; font-style: italic; z-index: 10;">
+            ※ 한 박스에 복수 상품을 패킹하므로, 주문 SKU 수보다 적은 수로 송장 건수가 집계됩니다. (합포장율 약 15.1% 발생)
         </div>
 
-        <!-- 4. 기획자 마커 및 요약 설명 핀 -->
-        <div id="v4-pin-0" class="lf-component text-marker" style="top: 170px; left: 1100px; width: 300px; z-index: 20;">
-            <div class="v4-editable-cell" contenteditable="true">
-                📊 <strong>[수도권 타겟 집중도]</strong><br>
-                서울/경기 권역의 주문 집중도가 상반기 내내 69% 내외를 확고하게 유지하고 있습니다. 이는 수도권 밀착형 새벽배송 도입 시 타겟 효율성이 매우 극대화됨을 실증합니다.
-            </div>
-        </div>
-
-        <div id="v4-pin-1" class="lf-component text-marker" style="top: 360px; left: 1100px; width: 300px; z-index: 20;">
-            <div class="v4-editable-cell" contenteditable="true">
-                📦 <strong>[피킹/패킹 인건비 시뮬레이션]</strong><br>
-                합포장율이 상승함에 따라 배송 택배비 원가는 절감되나, 센터 내 작업자 합포 피킹 작업 시간(Lead Time)이 약 1.4배 증가하므로 WMS 고도화 연동 범위 설정이 반드시 요구됩니다.
+        <!-- 5. 요약 안내 보드 -->
+        <div id="v4-summary-board" class="lf-component" style="top: 470px; left: 30px; width: 1380px; height: 120px; background: #f8fafc; border: 1.6px solid var(--v4-border) !important; border-radius: 12px; padding: 20px; box-sizing: border-box; z-index: 10;">
+            <div class="v4-editable-cell" contenteditable="true" style="font-size: 14px; line-height: 1.6; color: #334155; width: 100%;">
+                💡 <strong>[주문 데이터 트래픽 정밀 분석 결과 요약]</strong><br>
+                1. 상반기 6개월간 총 주문 송장수는 약 93만 건이며, 이 중 서울/경기 권역이 정확하게 <strong>50.45% (약 46.8만 건)</strong>를 점유하고 있습니다.<br>
+                2. 일 평균 약 2,570건의 안정적인 배송 물동량이 확보되어, 대량 정기 배송 소싱 및 콜드체인 터미널 이원화 연동 타당성을 명확히 증명합니다.
             </div>
         </div>
     </div>
