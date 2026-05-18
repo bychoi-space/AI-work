@@ -398,7 +398,7 @@ window.handleGlobalSave = async function() {
         }
         
         const btn = document.getElementById('btn-global-save');
-        if (!btn) return;
+        if (!btn || btn.disabled) return;
 
         const originalHTML = btn.innerHTML;
         btn.disabled = true;
@@ -452,7 +452,7 @@ window.handleGlobalSave = async function() {
                 btn.style.position = '';
                 btn.style.overflow = '';
                 btn.disabled = false;
-            }, 1800);
+            }, 1500);
         } else {
             throw new Error("GitHub API 반영에 실패했습니다.");
         }
@@ -460,15 +460,15 @@ window.handleGlobalSave = async function() {
         console.error("[Save Error]", err);
         const btn = document.getElementById('btn-global-save');
         if (btn) {
-            btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">error</span> Error`;
+            btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">error</span> 저장 실패`;
             btn.style.setProperty('background', '#ef4444', 'important');
-            btn.disabled = false;
             setTimeout(() => {
-                btn.innerHTML = '<span class="material-icons-outlined" style="font-size:15px;">save</span> Save';
+                btn.innerHTML = `<span class="material-icons-outlined" style="font-size:13px;">save</span> 전체 저장`;
                 btn.style.removeProperty('background');
                 btn.style.position = '';
                 btn.style.overflow = '';
-            }, 2500);
+                btn.disabled = false;
+            }, 1500);
         }
         if (window.Notification) window.Notification.alert('저장 중 오류가 발생했습니다: ' + err.message, '오류', 'error');
     }

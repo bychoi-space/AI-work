@@ -172,7 +172,6 @@ window.updateProperties = function(compStyles) {
             </div>
         `;
         const btnSave = document.getElementById('btn-global-save');
-        if (btnSave) btnSave.onclick = window.handleGlobalSave;
         const jiraInput = document.getElementById('viewer-meta-jira');
         const jiraBtn = document.getElementById('btn-jira-link');
         if (jiraInput && jiraBtn) {
