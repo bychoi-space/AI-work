@@ -239,7 +239,7 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
         const finalContent = isBinary ? content : btoa(unescape(encodeURIComponent(content)));
 
         if (statusCallback) statusCallback('Saving...', '#facc15');
-        const putRes = await fetch(url, {
+        let putRes = await fetch(url, {
             method: 'PUT',
             headers: { 
                 'Accept': 'application/vnd.github.v3+json',
@@ -253,6 +253,37 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
                 sha: sha
             })
         });
+
+        // 409 Conflict Self-Healing & Retry Mechanism
+        if (putRes.status === 409) {
+            console.warn(`[API] 409 Conflict for ${filename}. Retrying with fresh SHA...`);
+            try {
+                const res = await fetch(url + `?t=${Date.now()}`, { headers, credentials: 'omit' });
+                if (res.ok) {
+                    const json = await res.json();
+                    sha = json.sha;
+                    window.shaCache[cacheKey] = sha;
+                    
+                    putRes = await fetch(url, {
+                        method: 'PUT',
+                        headers: { 
+                            'Accept': 'application/vnd.github.v3+json',
+                            'Authorization': `token ${ghConfig.token}`, 
+                            'Content-Type': 'application/json' 
+                        },
+                        credentials: 'omit',
+                        body: JSON.stringify({
+                            message: `Update ${filename} (Retry)`,
+                            content: finalContent,
+                            sha: sha
+                        })
+                    });
+                }
+            } catch (e) {
+                console.error("[API] Self-healing retry failed:", e);
+            }
+        }
+
         if (putRes.ok) {
             const putData = await putRes.json().catch(() => null);
             if (putData && putData.content && putData.content.sha) {
@@ -513,3 +544,5 @@ const Notification = {
         ], true, defaultValue);
     }
 };
+
+window.Notification = Notification;
