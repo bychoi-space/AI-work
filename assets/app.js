@@ -409,18 +409,16 @@ async function updateScreenMetadata(project, screenFilename, data, statusCallbac
     
     if (statusCallback) statusCallback('Saving...', '#facc15');
     
-    const promises = [];
+    // Save 1: Project Metadata
+    const res1 = await saveProjectMetadata(project, metadata, null);
     
-    // Parallel Save 1: Project Metadata
-    promises.push(saveProjectMetadata(project, metadata, null));
-    
-    // Parallel Save 2: Screen Design HTML
+    // Save 2: Screen Design HTML
+    let res2 = true;
     if (data.htmlContent && screenFilename) {
-        promises.push(uploadToProject(project, screenFilename, data.htmlContent, null));
+        res2 = await uploadToProject(project, screenFilename, data.htmlContent, null);
     }
     
-    const results = await Promise.all(promises);
-    const success = results.every(res => res === true);
+    const success = res1 && res2;
     
     if (statusCallback) {
         if (success) {
