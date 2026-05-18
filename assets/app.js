@@ -113,6 +113,10 @@ async function fetchFileContent(path, isRoot = false) {
     
     if (!res.ok) return null;
     const data = await res.json();
+    if (data && data.sha) {
+        window.shaCache = window.shaCache || {};
+        window.shaCache[path] = data.sha;
+    }
     return decodeURIComponent(escape(atob(data.content)));
 }
 
@@ -149,16 +153,21 @@ async function saveGlobalComponents(components, statusCallback) {
         const fullPath = `${ghConfig.dataDir}global_components.json`;
         const safePath = fullPath.split('/').map(segment => encodeURIComponent(segment).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16))).join('/');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${safePath}`;
-        let sha = null;
+        
+        const cacheKey = `global_components.json`;
+        window.shaCache = window.shaCache || {};
+        let sha = window.shaCache[cacheKey] || null;
         
         const token = ghConfig.token;
         const headers = { 'Accept': 'application/vnd.github.v3+json' };
         if (token) headers['Authorization'] = `token ${token}`;
 
-        try {
-            const res = await fetch(url + `?t=${Date.now()}`, { headers, credentials: 'omit' });
-            if (res.ok) { const json = await res.json(); sha = json.sha; }
-        } catch(e) {}
+        if (!sha) {
+            try {
+                const res = await fetch(url + `?t=${Date.now()}`, { headers, credentials: 'omit' });
+                if (res.ok) { const json = await res.json(); sha = json.sha; window.shaCache[cacheKey] = sha; }
+            } catch(e) {}
+        }
 
         const finalContent = btoa(unescape(encodeURIComponent(JSON.stringify(components, null, 2))));
 
@@ -178,6 +187,10 @@ async function saveGlobalComponents(components, statusCallback) {
             })
         });
         if (putRes.ok) {
+            const putData = await putRes.json().catch(() => null);
+            if (putData && putData.content && putData.content.sha) {
+                window.shaCache[cacheKey] = putData.content.sha;
+            }
             if (statusCallback) {
                 statusCallback('Success', '#4ade80');
                 setTimeout(() => statusCallback('Ready', '#4ade80'), 2000);
@@ -198,21 +211,30 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
         const fullPath = `${ghConfig.dataDir}${project}/${filename}`;
         const safePath = fullPath.split('/').map(segment => encodeURIComponent(segment).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16))).join('/');
         const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${safePath}`;
-        let sha = null;
+        
+        const cacheKey = `${project}/${filename}`;
+        window.shaCache = window.shaCache || {};
+        let sha = window.shaCache[cacheKey] || null;
         
         const token = ghConfig.token;
         const headers = { 'Accept': 'application/vnd.github.v3+json' };
         if (token) headers['Authorization'] = `token ${token}`;
 
-        try {
-            const res = await fetch(url + `?t=${Date.now()}`, { headers, credentials: 'omit' });
-            if (res.status === 401 || res.status === 403) {
-                if (localStorage.getItem('gh_token')) {
-                    localStorage.removeItem('gh_token');
+        if (!sha) {
+            try {
+                const res = await fetch(url + `?t=${Date.now()}`, { headers, credentials: 'omit' });
+                if (res.status === 401 || res.status === 403) {
+                    if (localStorage.getItem('gh_token')) {
+                        localStorage.removeItem('gh_token');
+                    }
                 }
-            }
-            if (res.ok) { const json = await res.json(); sha = json.sha; }
-        } catch(e) {}
+                if (res.ok) { 
+                    const json = await res.json(); 
+                    sha = json.sha; 
+                    window.shaCache[cacheKey] = sha;
+                }
+            } catch(e) {}
+        }
 
         const finalContent = isBinary ? content : btoa(unescape(encodeURIComponent(content)));
 
@@ -232,6 +254,10 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
             })
         });
         if (putRes.ok) {
+            const putData = await putRes.json().catch(() => null);
+            if (putData && putData.content && putData.content.sha) {
+                window.shaCache[cacheKey] = putData.content.sha;
+            }
             if (statusCallback) {
                 statusCallback('Success', '#4ade80');
                 setTimeout(() => statusCallback('Ready', '#4ade80'), 2000);
@@ -335,16 +361,30 @@ async function updateScreenMetadata(project, screenFilename, data, statusCallbac
         metadata.screens[screenFilename].updatedAt = new Date().toISOString();
     }
     
-    // Save metadata
-    const metaSuccess = await saveProjectMetadata(project, metadata, statusCallback);
+    if (statusCallback) statusCallback('Saving...', '#facc15');
     
-    // Phase 1: Overwrite HTML if content provided AND screen exists
-    if (metaSuccess && data.htmlContent && screenFilename) {
-        if (statusCallback) statusCallback('Saving Design...', '#facc15');
-        return await uploadToProject(project, screenFilename, data.htmlContent, statusCallback);
+    const promises = [];
+    
+    // Parallel Save 1: Project Metadata
+    promises.push(saveProjectMetadata(project, metadata, null));
+    
+    // Parallel Save 2: Screen Design HTML
+    if (data.htmlContent && screenFilename) {
+        promises.push(uploadToProject(project, screenFilename, data.htmlContent, null));
     }
     
-    return metaSuccess;
+    const results = await Promise.all(promises);
+    const success = results.every(res => res === true);
+    
+    if (statusCallback) {
+        if (success) {
+            statusCallback('Success', '#4ade80');
+        } else {
+            statusCallback('Error', '#f87171');
+        }
+    }
+    
+    return success;
 }
 
 async function createScreenFromTemplate(project, screenName, templateName, injectData = {}, statusCallback) {
