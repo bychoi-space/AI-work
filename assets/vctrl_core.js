@@ -390,6 +390,7 @@ window.getIframeHTML = async function() {
 };
 
 window.handleGlobalSave = async function() {
+    const overlay = document.getElementById('save-overlay');
     try {
         if (state.isReadOnly) return window.showAuthModal?.();
         
@@ -399,6 +400,15 @@ window.handleGlobalSave = async function() {
         
         const btn = document.getElementById('btn-global-save');
         if (!btn || btn.disabled) return;
+
+        // Show premium glassmorphic lock overlay
+        if (overlay) {
+            overlay.style.display = 'flex';
+            overlay.style.opacity = '0';
+            requestAnimationFrame(() => {
+                overlay.style.opacity = '1';
+            });
+        }
 
         const originalHTML = btn.innerHTML;
         btn.disabled = true;
@@ -439,6 +449,12 @@ window.handleGlobalSave = async function() {
 
         await new Promise(r => setTimeout(r, 350));
 
+        // Hide overlay smoothly on completion
+        if (overlay) {
+            overlay.style.opacity = '0';
+            setTimeout(() => { overlay.style.display = 'none'; }, 300);
+        }
+
         if (success) {
             markAsClean();
             Object.assign(state.projectMetadata, projectMeta);
@@ -458,6 +474,11 @@ window.handleGlobalSave = async function() {
         }
     } catch (err) {
         console.error("[Save Error]", err);
+        // Hide overlay smoothly on error
+        if (overlay) {
+            overlay.style.opacity = '0';
+            setTimeout(() => { overlay.style.display = 'none'; }, 300);
+        }
         const btn = document.getElementById('btn-global-save');
         if (btn) {
             btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">error</span> 저장 실패`;
