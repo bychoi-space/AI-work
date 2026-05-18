@@ -441,7 +441,8 @@ window.handleGlobalSave = async function() {
         const success = await updateScreenMetadata(state.currentProject, activeFileName, { 
             projectMeta, 
             htmlContent,
-            description: state.activeFile ? state.activeFile.meta.description : []
+            description: state.activeFile ? state.activeFile.meta.description : [],
+            existingMetadata: state.projectMetadata
         }, () => {});
 
         const bar = document.getElementById('save-loading-bar');

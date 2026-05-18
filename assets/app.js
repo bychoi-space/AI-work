@@ -390,7 +390,7 @@ async function verifyAndSaveToken(token, statusCb) {
 }
 
 async function updateScreenMetadata(project, screenFilename, data, statusCallback) {
-    const metadata = await fetchProjectMetadata(project);
+    const metadata = data.existingMetadata ? JSON.parse(JSON.stringify(data.existingMetadata)) : await fetchProjectMetadata(project);
     if (data.projectMeta) {
         metadata.title = data.projectMeta.title || metadata.title;
         metadata.assignee = data.projectMeta.assignee || metadata.assignee;
