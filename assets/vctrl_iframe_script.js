@@ -427,7 +427,7 @@ window.v4Script = `
                 
                 div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
                                 '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
-                                '<div class="lf-resizer"></div><div class="lf-delete-trigger">횞</div>';
+                                '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
                 
                 div.style.width = 'fit-content';
                 div.style.height = 'auto';
@@ -565,16 +565,16 @@ window.v4Script = `
             
             if (d.style) Object.assign(v.style, d.style);
             
-            v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">횞</div>';
+            v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
             
-            // ?썳截?Smart Scaling based on Parent Viewport
+            // Smart Scaling based on Parent Viewport
             if (window.parent.state && window.parent.state.transform) {
                 const s = window.parent.state.transform.scale || 1;
                 if (s < 1) {
                     const bw = parseInt(v.style.width) || 200;
                     const bh = parseInt(v.style.height) || 100;
-                    // Auto-boost size if zoomed out to keep visually consistent
-                    if (s < 0.8) {
+                    // Auto-boost size if zoomed out to keep visually consistent, but NOT for groups which have absolute positioned children
+                    if (s < 0.8 && !d.isGroup) {
                         v.style.width = Math.round(bw / s) + 'px';
                         v.style.height = Math.round(bh / s) + 'px';
                     }
@@ -629,7 +629,7 @@ window.v4Script = `
 
                 if (c.style) Object.assign(v.style, c.style);
 
-                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + (c.html || '') + '<div class="lf-resizer"></div><div class="lf-delete-trigger">횞</div>';
+                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + (c.html || '') + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
                 host.appendChild(v);
                 updateHandles(v);
             });
@@ -839,7 +839,11 @@ window.v4Script = `
             const children = Array.from(group.children).filter(c => c.classList.contains('lf-component'));
             const newIds = [];
 
-            children.forEach(c => {
+            children.forEach((c, idx) => {
+                if (!c.id) {
+                    c.id = 'v4-comp-ug-' + Date.now() + '-' + idx;
+                }
+
                 const relL = parseFloat(c.style.left) || 0;
                 const relT = parseFloat(c.style.top) || 0;
                 const w = c.offsetWidth;
@@ -854,9 +858,9 @@ window.v4Script = `
                 c.style.height = h + 'px';
 
                 const isMarker = c.classList.contains('text-marker');
-                if (isMarker) {
-                    const idx = parseInt(c.id.replace('v4-pin-', ''));
-                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: absL, y: absT });
+                if (isMarker && c.id.startsWith('v4-pin-')) {
+                    const pinIdx = parseInt(c.id.replace('v4-pin-', ''));
+                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: pinIdx, x: absL, y: absT });
                 }
                 c.classList.add('selected');
                 newIds.push(c.id);
@@ -1002,7 +1006,7 @@ window.v4Script = `
         });
     };
 
-    // ?썳截?High-Persistence Border Standardization & Coordinate Migration
+    // High-Persistence Border Standardization & Coordinate Migration
     const enforceDesignSystem = () => {
         initHandles();
         

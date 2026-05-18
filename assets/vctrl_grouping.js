@@ -44,17 +44,16 @@ window.GroupingManager = (function() {
             });
             MessageHub.subscribe('LF_MOLECULE_EXTRACTED', async (data) => {
                 const mol = data.moleculeData;
-                if (!window.state.projectMetadata) window.state.projectMetadata = {};
-                if (!window.state.projectMetadata.molecules) window.state.projectMetadata.molecules = [];
-                window.state.projectMetadata.molecules.unshift(mol);
+                if (!window.state.globalComponents) window.state.globalComponents = [];
+                window.state.globalComponents.unshift(mol);
 
                 if (window.renderAtomicLibrary) window.renderAtomicLibrary();
 
-                const saveFn = window.saveProjectMetadata || (typeof saveProjectMetadata === 'function' ? saveProjectMetadata : null);
+                const saveFn = window.saveGlobalComponents || (typeof saveGlobalComponents === 'function' ? saveGlobalComponents : null);
                 if (saveFn) {
-                    const success = await saveFn(window.state.currentProject, window.state.projectMetadata);
+                    const success = await saveFn(window.state.globalComponents);
                     if (success && window.Notification && typeof window.Notification.alert === 'function') {
-                        window.Notification.alert(`'${mol.name}'이(가) Components 라이브러리에 추가되었습니다.`, "저장 완료");
+                        window.Notification.alert(`'${mol.name}'이(가) 글로벌 라이브러리에 추가되었습니다.`, "저장 완료");
                     }
                 }
             });
@@ -285,23 +284,23 @@ window.GroupingManager = (function() {
         if (e) e.stopPropagation();
         if (!confirm("이 컴포넌트를 삭제하시겠습니까?")) return;
 
-        if (window.state.projectMetadata && window.state.projectMetadata.molecules) {
-            window.state.projectMetadata.molecules = window.state.projectMetadata.molecules.filter(m => m.id !== id);
+        if (window.state.globalComponents) {
+            window.state.globalComponents = window.state.globalComponents.filter(m => m.id !== id);
             
             // Update UI immediately
             if (window.renderAtomicLibrary) window.renderAtomicLibrary();
 
             // Persist
-            const saveFn = window.saveProjectMetadata || (typeof saveProjectMetadata === 'function' ? saveProjectMetadata : null);
+            const saveFn = window.saveGlobalComponents || (typeof saveGlobalComponents === 'function' ? saveGlobalComponents : null);
             if (saveFn) {
-                await saveFn(window.state.currentProject, window.state.projectMetadata);
+                await saveFn(window.state.globalComponents);
             }
         }
     };
 
     const renameMolecule = async (id, e) => {
         if (e) e.stopPropagation();
-        const molecules = window.state.projectMetadata?.molecules || [];
+        const molecules = window.state.globalComponents || [];
         const mol = molecules.find(m => m.id === id);
         if (!mol) return;
 
@@ -314,9 +313,9 @@ window.GroupingManager = (function() {
             if (window.renderAtomicLibrary) window.renderAtomicLibrary();
 
             // Persist
-            const saveFn = window.saveProjectMetadata || (typeof saveProjectMetadata === 'function' ? saveProjectMetadata : null);
+            const saveFn = window.saveGlobalComponents || (typeof saveGlobalComponents === 'function' ? saveGlobalComponents : null);
             if (saveFn) {
-                await saveFn(window.state.currentProject, window.state.projectMetadata);
+                await saveFn(window.state.globalComponents);
             }
         }
     };

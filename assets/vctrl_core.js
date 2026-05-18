@@ -10,6 +10,7 @@ window.state = {
     currentProject: null,
     activeFile: null,
     projectMetadata: null,
+    globalComponents: [],
     tool: 'select',
     transform: { x: 0, y: 0, scale: 1 },
     debugMode: true,
@@ -115,6 +116,37 @@ window.loadScreen = async function(fileName) {
     }
     
     setTimeout(() => { if (typeof window.centerView === 'function') window.centerView(); }, 150);
+};
+
+window.handleDeleteScreen = async function(name, sha) {
+    if (state.isReadOnly) return window.showAuthModal?.();
+    const confirmed = await Notification.confirm(
+        `'${name}' 스크린을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`, 
+        "스크린 삭제", 
+        "warning"
+    );
+    if (!confirmed) return;
+    
+    if (typeof window.showLoading === 'function') window.showLoading("Deleting: " + name);
+    
+    const success = await deleteFileFromGitHub(`${state.currentProject}/${name}`, sha);
+    if (success) {
+        state.screens = state.screens.filter(s => s.name !== name);
+        if (state.projectMetadata.screens) delete state.projectMetadata.screens[name];
+        if (state.projectMetadata.screenOrder) {
+            state.projectMetadata.screenOrder = state.projectMetadata.screenOrder.filter(n => n !== name);
+        }
+        await saveProjectMetadata(state.currentProject, state.projectMetadata, () => {});
+        
+        if (state.activeFile && state.activeFile.name === name) {
+            location.href = `viewer.html?project=${state.currentProject}`;
+        } else {
+            location.reload();
+        }
+    } else {
+        if (typeof window.hideLoading === 'function') window.hideLoading();
+        window.Notification?.alert("삭제 실패", "오류", "error");
+    }
 };
 
 window.injectIframeInteractions = function(doc) {
@@ -270,7 +302,7 @@ window.insertAtomicComponent = function(type, name) {
         comp.style.top = (window.scrollY + (vh - ch)/2) + 'px';
         comp.style.transform = 'none !important';
 
-        comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">횞</div><div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>`;
+        comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div><div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>`;
         host.appendChild(comp);
         if (typeof enforceDesignSystem === 'function') enforceDesignSystem();
         markAsDirty();
@@ -296,7 +328,7 @@ window.getCascadedPosition = function(startX = 120, startY = 300) {
 
 window.handleTextCreation = function() {
     if (state.isReadOnly) return window.showAuthModal?.();
-    if (!state.activeFile) return window.Notification?.alert("?ㅽ겕由곗쓣 ?좏깮?댁＜?몄슂.", "?뚮┝", "warning");
+    if (!state.activeFile) return window.Notification?.alert("스크린을 선택해주세요.", "알림", "warning");
     
     const id = 'v4-pin-' + Date.now();
     const contentHtml = '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;">Edit Text</div>';
@@ -314,7 +346,7 @@ window.handleTextCreation = function() {
     comp.style.top = (window.scrollY + (vh - 40)/2) + 'px';
     comp.style.transform = 'none !important';
 
-    comp.innerHTML = contentHtml + '<div class="lf-resizer"></div><div class="lf-delete-trigger">횞</div><div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>';
+    comp.innerHTML = contentHtml + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div><div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>';
     host.appendChild(comp);
     markAsDirty();
 };
@@ -372,7 +404,7 @@ window.handleGlobalSave = async function() {
         btn.disabled = true;
         btn.style.position = 'relative';
         btn.style.overflow = 'hidden';
-        btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">save</span> ???以?..<span id="save-loading-bar" style="position:absolute; left:0; bottom:0; height:3px; width:0%; background:rgba(255,255,255,0.9); border-radius:0 0 8px 8px; transition:width 2.5s cubic-bezier(0.4,0,0.2,1);"></span>`;
+        btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">save</span> 저장 중..<span id="save-loading-bar" style="position:absolute; left:0; bottom:0; height:3px; width:0%; background:rgba(255,255,255,0.9); border-radius:0 0 8px 8px; transition:width 2.5s cubic-bezier(0.4,0,0.2,1);"></span>`;
         
         requestAnimationFrame(() => {
             const bar = document.getElementById('save-loading-bar');
@@ -413,7 +445,7 @@ window.handleGlobalSave = async function() {
             if (projectMeta.title && DOM.fileName) DOM.fileName.innerText = projectMeta.title;
             
             btn.style.setProperty('background', 'linear-gradient(135deg, #22c55e, #16a34a)', 'important');
-            btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">check_circle</span> ????꾨즺`;
+            btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">check_circle</span> 저장 완료`;
             setTimeout(() => {
                 btn.innerHTML = originalHTML;
                 btn.style.removeProperty('background');
@@ -422,7 +454,7 @@ window.handleGlobalSave = async function() {
                 btn.disabled = false;
             }, 1800);
         } else {
-            throw new Error("GitHub API 諛섏쁺???ㅽ뙣?덉뒿?덈떎.");
+            throw new Error("GitHub API 반영에 실패했습니다.");
         }
     } catch (err) {
         console.error("[Save Error]", err);
@@ -438,7 +470,7 @@ window.handleGlobalSave = async function() {
                 btn.style.overflow = '';
             }, 2500);
         }
-        if (window.Notification) window.Notification.alert('???以??ㅻ쪟媛 諛쒖깮?덉뒿?덈떎: ' + err.message, '?ㅻ쪟', 'error');
+        if (window.Notification) window.Notification.alert('저장 중 오류가 발생했습니다: ' + err.message, '오류', 'error');
     }
 };
 
@@ -574,11 +606,7 @@ window.markAsClean = function() {
 
 window.checkUnsavedChanges = async function() {
     if (!state.hasUnsavedChanges) return true;
-    const confirmed = await Notification.confirm(
-        "??λ릺吏 ?딆? ?섏젙?ы빆???덉뒿?덈떎. 臾댁떆?섍퀬 ?대룞?섏떆寃좎뒿?덇퉴?", 
-        "?뚮┝", 
-        "warning"
-    );
+    const confirmed = await Notification.confirm("저장되지 않은 수정사항이 있습니다. 무시하고 이동하시겠습니까?", "알림", "warning");
     if (confirmed) {
         markAsClean();
         return true;
@@ -615,11 +643,14 @@ window.init = async function() {
         console.log("[INIT] Target Project:", project);
 
         // Fetch data
-        const [contents, metadata] = await Promise.all([
+        const [contents, metadata, globalComps] = await Promise.all([
             listContents(project),
-            fetchProjectMetadata(project)
+            fetchProjectMetadata(project),
+            (typeof fetchGlobalComponents === 'function') ? fetchGlobalComponents() : Promise.resolve([])
         ]);
         state.projectMetadata = metadata || {};
+        state.globalComponents = globalComps || [];
+
         
         const repoScreens = (contents || []).filter(i => i.type === 'file' && i.name.endsWith('.html'));
         const order = state.projectMetadata.screenOrder || [];
@@ -648,7 +679,7 @@ window.init = async function() {
         if (fileName) {
             await loadScreen(fileName);
         } else {
-            if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = "?꾨줈?앺듃 ?ㅽ겕由곗쓣 異붽??댁＜?몄슂.";
+            if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = "프로젝트 스크린을 추가해주세요.";
             if (DOM.btnAddScreen) DOM.btnAddScreen.classList.add('pulse-attention');
         }
 
@@ -678,7 +709,7 @@ window.init = async function() {
             btn.onclick = () => { if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab(btn.dataset.tab); };
         });
 
-        // ?윟 RESTORED: Sidebar Tool Buttons (Text, etc.)
+        // RESTORED: Sidebar Tool Buttons (Text, etc.)
         if (DOM.sidebarToolBtns) {
             DOM.sidebarToolBtns.forEach(btn => {
                 const tool = btn.dataset.tool;
@@ -694,11 +725,11 @@ window.init = async function() {
             });
         }
         
-        // ?윟 RESTORED: Top Bar Tool Buttons
+        // RESTORED: Top Bar Tool Buttons
         if (DOM.btnSelect) DOM.btnSelect.onclick = () => window.setTool?.('select');
         if (DOM.btnHand) DOM.btnHand.onclick = () => window.setTool?.('hand');
 
-        // ?윟 RESTORED: Add Screen Modal Logic
+        // RESTORED: Add Screen Modal Logic
         if (DOM.btnAddScreen) {
             DOM.btnAddScreen.onclick = () => {
                 if (state.isReadOnly) return window.showAuthModal?.();
@@ -726,13 +757,13 @@ window.init = async function() {
         if (DOM.btnSubmitAdd) {
             DOM.btnSubmitAdd.onclick = async () => {
                 const selectedCard = document.querySelector('.template-card.selected');
-                if (!selectedCard) return window.Notification?.alert("?쒗뵆由우쓣 ?좏깮?댁＜?몄슂.", "?뚮┝", "warning");
+                if (!selectedCard) return window.Notification?.alert("템플릿을 선택해주세요.", "알림", "warning");
                 
                 const screenName = DOM.newScreenName?.value?.trim();
-                if (!screenName) return window.Notification?.alert("?붾㈃ ?대쫫???낅젰?댁＜?몄슂.", "?뚮┝", "warning");
+                if (!screenName) return window.Notification?.alert("화면 이름을 입력해주세요.", "알림", "warning");
 
                 DOM.btnSubmitAdd.disabled = true;
-                DOM.btnSubmitAdd.innerText = "?앹꽦 以?..";
+                DOM.btnSubmitAdd.innerText = "생성 중..";
 
                 const template = selectedCard.dataset.template;
                 const success = await createScreenFromTemplate(state.currentProject, screenName, template, {
@@ -743,9 +774,9 @@ window.init = async function() {
                 if (success) {
                     location.reload();
                 } else {
-                    window.Notification?.alert("?붾㈃ ?앹꽦???ㅽ뙣?덉뒿?덈떎.", "?ㅻ쪟", "error");
+                    window.Notification?.alert("화면 생성에 실패했습니다.", "오류", "error");
                     DOM.btnSubmitAdd.disabled = false;
-                    DOM.btnSubmitAdd.innerText = "?붾㈃ ?앹꽦?섍린";
+                    DOM.btnSubmitAdd.innerText = "화면 생성하기";
                 }
             };
         }

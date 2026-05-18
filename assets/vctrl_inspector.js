@@ -357,7 +357,7 @@ function getCategoryBadge(type) {
 
 // --- 4. Library & Editor ---
 window.renderAtomicLibrary = function() {
-    const customComps = window.state.projectMetadata?.molecules || [];
+    const customComps = window.state.globalComponents || [];
     const compHeader = document.getElementById('molecules-header-text');
     if (compHeader) compHeader.innerHTML = `COMPONENTS <b style="color:var(--accent); margin-left: 4px;">(${customComps.length})</b>`;
 

@@ -134,6 +134,64 @@ async function saveProjectMetadata(project, metadata, statusCallback) {
     return await uploadToProject(project, 'metadata.json', content, statusCallback);
 }
 
+async function fetchGlobalComponents() {
+    const content = await fetchFileContent(`global_components.json`);
+    try {
+        return content ? JSON.parse(content) : [];
+    } catch(e) {
+        return [];
+    }
+}
+
+async function saveGlobalComponents(components, statusCallback) {
+    if (ghConfig.isReadOnly) return false;
+    try {
+        const fullPath = `${ghConfig.dataDir}global_components.json`;
+        const safePath = fullPath.split('/').map(segment => encodeURIComponent(segment).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16))).join('/');
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${safePath}`;
+        let sha = null;
+        
+        const token = ghConfig.token;
+        const headers = { 'Accept': 'application/vnd.github.v3+json' };
+        if (token) headers['Authorization'] = `token ${token}`;
+
+        try {
+            const res = await fetch(url + `?t=${Date.now()}`, { headers, credentials: 'omit' });
+            if (res.ok) { const json = await res.json(); sha = json.sha; }
+        } catch(e) {}
+
+        const finalContent = btoa(unescape(encodeURIComponent(JSON.stringify(components, null, 2))));
+
+        if (statusCallback) statusCallback('Saving components...', '#facc15');
+        const putRes = await fetch(url, {
+            method: 'PUT',
+            headers: { 
+                'Accept': 'application/vnd.github.v3+json',
+                'Authorization': `token ${ghConfig.token}`, 
+                'Content-Type': 'application/json' 
+            },
+            credentials: 'omit',
+            body: JSON.stringify({
+                message: `Update global_components.json`,
+                content: finalContent,
+                sha: sha
+            })
+        });
+        if (putRes.ok) {
+            if (statusCallback) {
+                statusCallback('Success', '#4ade80');
+                setTimeout(() => statusCallback('Ready', '#4ade80'), 2000);
+            }
+            return true;
+        }
+        if (putRes.status === 401) localStorage.removeItem('gh_token');
+        return false;
+    } catch (err) {
+        if (statusCallback) statusCallback('Error', '#f87171');
+        return false;
+    }
+}
+
 async function uploadToProject(project, filename, content, statusCallback, isBinary = false) {
     if (ghConfig.isReadOnly) return false;
     try {

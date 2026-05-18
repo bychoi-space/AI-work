@@ -21,7 +21,7 @@
         if (!lib) return console.error("[V4] Component Library not found.");
 
         const curState = window.state || window.parent.state || {};
-        const customMols = (curState.projectMetadata && curState.projectMetadata.molecules) ? curState.projectMetadata.molecules : [];
+        const customMols = curState.globalComponents || ((curState.projectMetadata && curState.projectMetadata.molecules) ? curState.projectMetadata.molecules : []);
         
         const item = (lib.atoms || []).find(i => i.id === id) || 
                      (lib.molecules || []).find(i => i.id === id) || 
