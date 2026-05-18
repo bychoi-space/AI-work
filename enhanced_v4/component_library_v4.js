@@ -119,14 +119,14 @@ window.V4_COMPONENT_LIBRARY = {
         },
         {
             id: 'v4-connector-straight',
-            name: '선그리기 (직선)',
+            name: 'Line (Straight)',
             category: 'Shapes',
             previewHtml: `<div style="display: flex; align-items: center; width: 30px;"><div style="flex: 1; height: 2px; background: #3b82f6;"></div><div style="width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #3b82f6;"></div></div>`,
             onclick: "window.ConnectorEngine && window.ConnectorEngine.spawnLine('straight')"
         },
         {
             id: 'v4-connector-elbow',
-            name: '선그리기 (꺾임)',
+            name: 'Line (Elbow)',
             category: 'Shapes',
             previewHtml: `<div style="width: 24px; height: 24px; border-left: 2px solid #3b82f6; border-bottom: 2px solid #3b82f6; position: relative;"><div style="position: absolute; right: -6px; bottom: -4px; width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #3b82f6;"></div></div>`,
             onclick: "window.ConnectorEngine && window.ConnectorEngine.spawnLine('elbow')"
