@@ -355,7 +355,65 @@ function getCategoryBadge(type) {
 }
 
 // --- 4. Library & Editor ---
+window.renderV4Shapes = function() {
+    console.log("[Inspector] Rendering V4 Shapes dynamically...");
+    const container = document.getElementById('v4-shapes-container');
+    if (!container || !window.V4_COMPONENT_LIBRARY) {
+        console.warn("[Inspector] #v4-shapes-container or V4_COMPONENT_LIBRARY not found!");
+        return;
+    }
+
+    const molecules = window.V4_COMPONENT_LIBRARY.molecules || [];
+    const shapes = molecules.filter(item => item.category === 'Shapes');
+
+    container.innerHTML = shapes.map(item => {
+        let onclickAttr = '';
+        let classList = 'component-item v4-card';
+        let dataAttrs = '';
+        let titleAttr = item.name;
+
+        // 1) 툴 카드인 경우 (Text 툴)
+        if (item.isTool) {
+            classList += ' sidebar-tool-btn';
+            dataAttrs = `data-tool="${item.toolName}"`;
+            titleAttr = `${item.name} 추가`;
+            onclickAttr = `onclick="if (typeof window.handleTextCreation === 'function') window.handleTextCreation();"`;
+        } 
+        // 2) 클릭 액션이 명시된 경우 (선그리기 등)
+        else if (item.onclick) {
+            onclickAttr = `onclick="${item.onclick}"`;
+            titleAttr = item.name;
+        } 
+        // 3) 일반 V4 컴포넌트 추가인 경우
+        else {
+            onclickAttr = `onclick="insertV4ComponentById('${item.id}')"`;
+            titleAttr = item.name;
+        }
+
+        // 아이콘 HTML 빌드
+        let iconHtml = '';
+        if (item.iconType === 'svg') {
+            iconHtml = item.iconSvg;
+        } else if (item.icon) {
+            const styleStr = item.iconStyle ? `style="${item.iconStyle} font-size: 18px; color: ${item.iconColor || 'var(--text-secondary)'};"` : `style="font-size: 18px; color: ${item.iconColor || 'var(--text-secondary)'};"`;
+            iconHtml = `<span class="material-icons-outlined" ${styleStr}>${item.icon}</span>`;
+        } else {
+            iconHtml = `<span class="material-icons-outlined" style="font-size: 18px; color: var(--text-secondary);">extension</span>`;
+        }
+
+        const cardStyle = item.cardStyle ? item.cardStyle : '';
+
+        return `
+            <div class="${classList}" ${onclickAttr} ${dataAttrs} title="${titleAttr}" style="${cardStyle} border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                ${iconHtml}
+                <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">${item.name}</span>
+            </div>
+        `;
+    }).join('');
+};
+
 window.renderAtomicLibrary = function() {
+    if (typeof window.renderV4Shapes === 'function') window.renderV4Shapes();
     const customComps = window.state.globalComponents || [];
     const compHeader = document.getElementById('molecules-header-text');
     if (compHeader) compHeader.innerHTML = `COMPONENTS <b style="color:var(--accent); margin-left: 4px;">(${customComps.length})</b>`;

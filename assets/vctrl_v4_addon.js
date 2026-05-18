@@ -16,7 +16,7 @@
     }
 
     // 1. Component Insertion
-    window.insertV4ComponentById = function(id) {
+    window.insertV4ComponentById = function(id, customIdx) {
         const lib = window.V4_COMPONENT_LIBRARY;
         if (!lib) return console.error("[V4] Component Library not found.");
 
@@ -43,12 +43,22 @@
             style.width = '100%';
             style.height = 'auto';
         }
+        if (item.id === 'v4-tool-text') {
+            style.width = 'fit-content';
+            style.height = 'auto';
+        }
+
+        const isTextTool = item.id === 'v4-tool-text';
+        const targetId = isTextTool 
+            ? ('v4-pin-' + (customIdx !== undefined ? customIdx : Date.now())) 
+            : ('v4-comp-' + Date.now());
 
         notifyIframe({
             type: 'LF_INSERT_COMPONENT',
-            id: 'v4-comp-' + Date.now(),
+            id: targetId,
             html: item.html,
             style: style,
+            className: isTextTool ? 'text-marker' : '',
             isGroup: !!item.isGroup
         });
     };

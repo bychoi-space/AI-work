@@ -15,6 +15,13 @@ window.GroupingManager = (function() {
     const init = () => {
         // Listen for marquee messages from Core (Iframe)
         if (window.MessageHub) {
+            MessageHub.subscribe('LF_SHORTCUT_TRIGGERED', (data) => {
+                if (data.shortcut === 'group') {
+                    groupSelected();
+                } else if (data.shortcut === 'ungroup') {
+                    ungroupSelected();
+                }
+            });
             MessageHub.subscribe('LF_MARQUEE_START', (data) => {
                 if (window.state.isReadOnly || window.state.tool !== 'select') return;
                 startMarquee(data);

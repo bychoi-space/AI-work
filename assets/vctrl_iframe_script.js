@@ -123,6 +123,37 @@ window.V4UndoManager = (function() {
                     currentConnectors = prevState.connectors;
                     notifyParent({ type: 'LF_RESTORE_CONNECTORS', connectors: prevState.connectors });
                 }
+                
+                if (window.parent && window.parent.state && window.parent.state.activeFile) {
+                    const descList = window.parent.state.activeFile.meta.description || [];
+                    const remainingPins = document.querySelectorAll('.text-marker');
+                    
+                    if (descList.length > remainingPins.length) {
+                        descList.splice(remainingPins.length);
+                    }
+                    
+                    remainingPins.forEach((pin, idx) => {
+                        pin.id = 'v4-pin-' + idx;
+                        const editable = pin.querySelector('.v4-editable-cell');
+                        const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                        const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                        
+                        if (!descList[idx]) {
+                            descList[idx] = {};
+                        }
+                        
+                        descList[idx].text = textContent;
+                        descList[idx].html = htmlContent;
+                        descList[idx].x = parseFloat(pin.style.left) || 0;
+                        descList[idx].y = parseFloat(pin.style.top) || 0;
+                        descList[idx].standardized = true;
+                    });
+                    
+                    if (typeof window.parent.renderDescriptionList === 'function') {
+                        window.parent.renderDescriptionList();
+                    }
+                }
+
                 if (typeof window.initHandles === 'function') window.initHandles();
                 markDirty();
                 console.log("[V4 Undo] Undo Performed");
@@ -380,6 +411,25 @@ window.v4Script = `
                     standardized: true
                 });
             }
+            if (activeEl.classList.contains('lf-group')) {
+                const scale = (window.parent && window.parent.state && window.parent.state.transform) ? window.parent.state.transform.scale : 1;
+                const hostRect = document.body.getBoundingClientRect();
+                activeEl.querySelectorAll('.text-marker').forEach(child => {
+                    const idx = parseInt(child.id.replace('v4-pin-', ''));
+                    if (!isNaN(idx)) {
+                        const childRect = child.getBoundingClientRect();
+                        const absX = (childRect.left - hostRect.left) / scale;
+                        const absY = (childRect.top - hostRect.top) / scale;
+                        notifyParent({
+                            type: 'LF_UPDATE_PIN_POS',
+                            index: idx,
+                            x: absX,
+                            y: absY,
+                            standardized: true
+                        });
+                    }
+                });
+            }
         }
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
         isDragging = false; isResizing = false; activeEl = null; 
@@ -387,7 +437,17 @@ window.v4Script = `
     document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
     let isArrowMoving = false;
     document.addEventListener('keydown', e => {
-        if (e.code === 'Space') {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'g') {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                e.preventDefault();
+                notifyParent({
+                    type: 'LF_SHORTCUT_TRIGGERED',
+                    shortcut: e.shiftKey ? 'ungroup' : 'group'
+                });
+            }
+        }
+        else if (e.code === 'Space') {
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
             if (!isInput) {
                 e.preventDefault();
@@ -457,6 +517,7 @@ window.v4Script = `
                         } else if (c.classList.contains('text-marker')) {
                             const idx = parseInt(c.id.replace('v4-pin-', ''));
                             notifyParent({ type: 'LF_DELETE_PIN', index: idx });
+                            c.remove();
                         } else {
                             c.remove();
                         }
@@ -477,6 +538,26 @@ window.v4Script = `
     });
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
+        if (d.type === 'LF_SHORTCUT_KEY_PROXY') {
+            const eventType = d.code === 'Space' ? 'keyup' : 'keydown';
+            const event = new KeyboardEvent(eventType, {
+                code: d.code,
+                key: d.key,
+                shiftKey: !!d.shiftKey,
+                ctrlKey: !!d.ctrlKey,
+                metaKey: !!d.metaKey,
+                bubbles: true
+            });
+            document.dispatchEvent(event);
+            return;
+        }
+        if (d.type === 'LF_REORDER_PINS') {
+            const pins = document.querySelectorAll('.text-marker');
+            pins.forEach((pin, idx) => {
+                pin.id = 'v4-pin-' + idx;
+            });
+            return;
+        }
         if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
             const currentRect = activeEl.getBoundingClientRect();
             const snapDx = d.x - currentRect.left;

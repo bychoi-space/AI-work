@@ -51,9 +51,23 @@ window.V4_COMPONENT_LIBRARY = {
         },
 
         {
+            id: 'v4-tool-text',
+            name: 'Text',
+            category: 'Shapes',
+            isTool: true,
+            toolName: 'text',
+            icon: 'title',
+            iconColor: 'var(--accent)',
+            cardStyle: 'background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(255, 255, 255, 0.1) !important;',
+            html: '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;">Edit Text</div>'
+        },
+        {
             id: 'v4-data-table',
-            name: 'Glass Data Table',
-            category: 'Molecules',
+            name: 'Table',
+            category: 'Shapes',
+            icon: 'table_chart',
+            iconColor: '#818cf8',
+            cardStyle: 'background: rgba(99, 102, 241, 0.05); border: 1.6px solid rgba(99, 102, 241, 0.1) !important;',
             previewHtml: `<div style="width: 80px; height: 40px; border: 1.6px solid #475569; background: #e2e8f0; border-radius: 4px;"></div>`,
             html: `
             <table class="v4-premium-table" style="background: #e2e8f0; border: 1.6px solid #475569; color: #0f172a; width: 100%; height: 100%;">
@@ -73,8 +87,11 @@ window.V4_COMPONENT_LIBRARY = {
         },
         {
             id: 'v4-shape-rect',
-            name: 'Rectangle',
+            name: 'Rect',
             category: 'Shapes',
+            icon: 'crop_square',
+            iconColor: '#00e5ff',
+            cardStyle: 'background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important;',
             previewHtml: `<div style="width: 40px; height: 30px; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 4px;"></div>`,
             html: `
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
@@ -85,6 +102,9 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-shape-circle',
             name: 'Circle',
             category: 'Shapes',
+            icon: 'panorama_fish_eye',
+            iconColor: '#00e5ff',
+            cardStyle: 'background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important;',
             previewHtml: `<div style="width: 30px; height: 30px; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 50%;"></div>`,
             html: `
             <div class="v4-shape v4-shape-circle" style="width: 100%; height: 100%; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
@@ -95,6 +115,9 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-shape-triangle',
             name: 'Triangle',
             category: 'Shapes',
+            icon: 'change_history',
+            iconColor: '#00e5ff',
+            cardStyle: 'background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important;',
             previewHtml: `<div style="width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 30px solid #e2e8f0;"></div>`,
             html: `
             <div class="v4-shape v4-shape-triangle" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: flex-end; justify-content: center; color: #0f172a; overflow: visible; box-sizing: border-box; position: relative;">
@@ -108,6 +131,10 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-shape-diamond',
             name: 'Diamond',
             category: 'Shapes',
+            icon: 'crop_square',
+            iconColor: '#00e5ff',
+            iconStyle: 'transform: rotate(45deg);',
+            cardStyle: 'background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important;',
             previewHtml: `<div style="width: 30px; height: 30px; background: #e2e8f0; border: 1.6px solid #475569; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);"></div>`,
             html: `
             <div class="v4-shape v4-shape-diamond" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: visible; box-sizing: border-box; position: relative;">
@@ -121,6 +148,9 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-connector-straight',
             name: 'Line (Straight)',
             category: 'Shapes',
+            iconType: 'svg',
+            iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>',
+            cardStyle: 'background: rgba(148, 163, 184, 0.1); border: 1.6px solid rgba(148, 163, 184, 0.2) !important;',
             previewHtml: `<div style="display: flex; align-items: center; width: 30px;"><div style="flex: 1; height: 2px; background: #3b82f6;"></div><div style="width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #3b82f6;"></div></div>`,
             onclick: "window.ConnectorEngine && window.ConnectorEngine.spawnLine('straight')"
         },
@@ -128,14 +158,19 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-connector-elbow',
             name: 'Line (Elbow)',
             category: 'Shapes',
+            iconType: 'svg',
+            iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="9 10 9 19 18 19"></polyline><polyline points="14 14 19 19 14 24"></polyline></svg>',
+            cardStyle: 'background: rgba(148, 163, 184, 0.1); border: 1.6px solid rgba(148, 163, 184, 0.2) !important;',
             previewHtml: `<div style="width: 24px; height: 24px; border-left: 2px solid #3b82f6; border-bottom: 2px solid #3b82f6; position: relative;"><div style="position: absolute; right: -6px; bottom: -4px; width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #3b82f6;"></div></div>`,
             onclick: "window.ConnectorEngine && window.ConnectorEngine.spawnLine('elbow')"
         },
-
         {
             id: 'v4-shape-pattern-grid',
-            name: 'Pattern Rect',
+            name: 'Pattern',
             category: 'Shapes',
+            icon: 'grid_4x4',
+            iconColor: '#fff',
+            cardStyle: 'background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(255, 255, 255, 0.1) !important;',
             previewHtml: `<div class="v4-shape-pattern-grid" style="width: 40px; height: 30px; border: 1.6px solid #475569;"></div>`,
             html: `
             <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">

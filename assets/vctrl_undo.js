@@ -75,8 +75,44 @@ window.V4UndoManager = (function() {
             if (typeof window.initHandles === 'function') {
                 window.initHandles();
             }
-            
             markDirty();
+
+            // 4. Symmetric Reverse Synchronization: 
+            // Update parent metadata to perfectly match the restored DOM pins.
+            if (window.parent && window.parent.state && window.parent.state.activeFile) {
+                const descList = window.parent.state.activeFile.meta.description || [];
+                const remainingPins = document.querySelectorAll('.text-marker');
+                
+                // Keep only the matching number of pins in description array
+                if (descList.length > remainingPins.length) {
+                    descList.splice(remainingPins.length);
+                }
+                
+                remainingPins.forEach((pin, idx) => {
+                    // Update index ID to keep them contiguous and sorted
+                    pin.id = 'v4-pin-' + idx;
+                    
+                    const editable = pin.querySelector('.v4-editable-cell');
+                    const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                    const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                    
+                    if (!descList[idx]) {
+                        descList[idx] = {};
+                    }
+                    
+                    descList[idx].text = textContent;
+                    descList[idx].html = htmlContent;
+                    descList[idx].x = parseFloat(pin.style.left) || 0;
+                    descList[idx].y = parseFloat(pin.style.top) || 0;
+                    descList[idx].standardized = true;
+                });
+                
+                // Re-render parent description sidebar to stay perfectly aligned
+                if (typeof window.parent.renderDescriptionList === 'function') {
+                    window.parent.renderDescriptionList();
+                }
+            }
+
             console.log("[UndoManager] Undo performed (HTML + Connectors). Remaining stack:", undoStack.length);
         },
 

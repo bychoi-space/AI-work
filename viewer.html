@@ -480,45 +480,8 @@
                     <span style="font-size: 10px; font-weight: 800; color: #818cf8; letter-spacing: 1.5px;">SHAPE</span>
                 </div>
                 <div class="components-body" style="padding: 12px;">
-                    <div class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
-                        <div class="component-item v4-card sidebar-tool-btn" data-tool="text" title="텍스트 추가" style="background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(255, 255, 255, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <span class="material-icons-outlined" style="font-size: 18px; color: var(--accent);">title</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Text</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-data-table')" style="background: rgba(99, 102, 241, 0.05); border: 1.6px solid rgba(99, 102, 241, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <span class="material-icons-outlined" style="font-size: 18px; color: #818cf8;">table_chart</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Table</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-rect')" style="background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <span class="material-icons-outlined" style="font-size: 18px; color: #00e5ff;">crop_square</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Rect</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-circle')" style="background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <span class="material-icons-outlined" style="font-size: 18px; color: #00e5ff;">panorama_fish_eye</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Circle</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-triangle')" style="background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <span class="material-icons-outlined" style="font-size: 18px; color: #00e5ff;">change_history</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Triangle</span>
-                        </div>
-
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-diamond')" style="background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <span class="material-icons-outlined" style="font-size: 18px; color: #00e5ff; transform: rotate(45deg);">crop_square</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Diamond</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="window.ConnectorEngine && window.ConnectorEngine.spawnLine('straight')" title="Line (Straight)" style="background: rgba(148, 163, 184, 0.1); border: 1.6px solid rgba(148, 163, 184, 0.2) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Line (Straight)</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="window.ConnectorEngine && window.ConnectorEngine.spawnLine('elbow')" title="Line (Elbow)" style="background: rgba(148, 163, 184, 0.1); border: 1.6px solid rgba(148, 163, 184, 0.2) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="9 10 9 19 18 19"></polyline><polyline points="14 14 19 19 14 24"></polyline></svg>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Line (Elbow)</span>
-                        </div>
-
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-shape-pattern-grid')" style="background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(255, 255, 255, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <span class="material-icons-outlined" style="font-size: 18px; color: #fff;">grid_4x4</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Pattern</span>
-                        </div>
+                    <div id="v4-shapes-container" class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
+                        <!-- Dynamic shapes will be rendered here -->
                     </div>
 
                     <!-- V4 Inspectors -->
@@ -1026,14 +989,14 @@
     <script src="assets/app.js?v=V106_SEQ_SAVE"></script>
     
     <!-- Modularized Engine -->
-    <script src="assets/vctrl_iframe_script.js?v=V109_COMMON_OBJ"></script>
-    <script src="assets/vctrl_core.js?v=V108_NO_GET"></script>
+    <script src="assets/vctrl_iframe_script.js?v=V110_SYMMETRIC"></script>
+    <script src="assets/vctrl_core.js?v=V110_SYMMETRIC"></script>
     <script src="assets/vctrl_smartguide.js?v=V106_FILEFIX_V5"></script>
-    <script src="assets/vctrl_grouping.js?v=V109_COMMON_OBJ"></script>
+    <script src="assets/vctrl_grouping.js?v=V110_SYMMETRIC"></script>
     <script src="assets/vctrl_inspector.js?v=V106_FILEFIX_V5"></script>
     <script src="assets/vctrl_v3.js?v=V106_FILEFIX_V5"></script>
     <script src="assets/vctrl_properties.js?v=V106_V5"></script>
-    <script src="assets/vctrl_connectors.js?v=V109_COMMON_OBJ"></script>
+    <script src="assets/vctrl_connectors.js?v=V110_SYMMETRIC"></script>
     
     <!-- V4 Premium Addons -->
     <script src="enhanced_v4/component_library_v4.js"></script>

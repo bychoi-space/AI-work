@@ -330,24 +330,28 @@ window.handleTextCreation = function() {
     if (state.isReadOnly) return window.showAuthModal?.();
     if (!state.activeFile) return window.Notification?.alert("스크린을 선택해주세요.", "알림", "warning");
     
-    const id = 'v4-pin-' + Date.now();
-    const contentHtml = '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;">Edit Text</div>';
-    const defaultStyle = { width: 'auto', height: 'auto' };
-
-    const host = document.body;
-    const comp = document.createElement('div');
-    comp.id = id;
-    comp.className = 'lf-component text-marker';
-    Object.assign(comp.style, defaultStyle);
+    if (!state.activeFile.meta.description) {
+        state.activeFile.meta.description = [];
+    }
     
-    // Initial center placement relative to body
-    const vw = window.innerWidth, vh = window.innerHeight;
-    comp.style.left = (window.scrollX + (vw - 100)/2) + 'px';
-    comp.style.top = (window.scrollY + (vh - 40)/2) + 'px';
-    comp.style.transform = 'none !important';
-
-    comp.innerHTML = contentHtml + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div><div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>';
-    host.appendChild(comp);
+    const newIdx = state.activeFile.meta.description.length;
+    state.activeFile.meta.description.push({
+        text: "Edit Text",
+        html: "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\">Edit Text</div>",
+        x: 670,
+        y: 430,
+        standardized: true
+    });
+    
+    if (typeof window.renderDescriptionList === 'function') {
+        window.renderDescriptionList();
+    }
+    
+    if (typeof window.insertV4ComponentById === 'function') {
+        window.insertV4ComponentById('v4-tool-text', newIdx);
+    } else {
+        console.error("[V4 Core] insertV4ComponentById not available for Text Creation.");
+    }
     markAsDirty();
 };
 
@@ -553,6 +557,13 @@ window.MessageHub = {
                     if (typeof window.renderDescriptionList === 'function') {
                         window.renderDescriptionList(window.state.activeFile.meta.description);
                     }
+                    
+                    // Trigger child iframe to re-order and re-index all remaining text-markers
+                    const DOM = window.DOM;
+                    if (DOM && DOM.iframe && DOM.iframe.contentWindow) {
+                        MessageHub.send(DOM.iframe.contentWindow, 'LF_REORDER_PINS', {});
+                    }
+                    
                     markAsDirty();
                 }
             } else if (data.type === 'LF_COMP_SELECTED') {
@@ -803,9 +814,17 @@ window.init = async function() {
             };
         }
 
-        // Shortcuts
+        // Shortcuts & Key Event Proxying to Canvas Iframe
         window.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); handleGlobalSave(); }
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (isInput) return;
+
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { 
+                e.preventDefault(); 
+                handleGlobalSave(); 
+                return;
+            }
+
             if (e.key === 'Escape') {
                 if (document.body.classList.contains('fullscreen-mode')) {
                     if (typeof window.toggleFullscreen === 'function') window.toggleFullscreen(true);
@@ -814,6 +833,47 @@ window.init = async function() {
                 if (DOM.addScreenModal) DOM.addScreenModal.classList.remove('active');
                 if (DOM.editScreenModal) DOM.editScreenModal.classList.remove('active');
                 if (typeof window.hideAuthModal === 'function') window.hideAuthModal();
+                return;
+            }
+
+            // Proxy canvas shortcuts if we have active selections or targets
+            const proxiedCodes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Delete', 'Backspace', 'Space'];
+            const isCtrlShortcut = (e.ctrlKey || e.metaKey) && ['z', 'y', 'g'].includes(e.key.toLowerCase());
+            
+            if (proxiedCodes.includes(e.code) || isCtrlShortcut) {
+                if (DOM.iframe && DOM.iframe.contentWindow) {
+                    DOM.iframe.contentWindow.postMessage({
+                        type: 'LF_SHORTCUT_KEY_PROXY',
+                        code: e.code,
+                        key: e.key,
+                        shiftKey: e.shiftKey,
+                        ctrlKey: e.ctrlKey,
+                        metaKey: e.metaKey
+                    }, '*');
+                    
+                    // Prevent default browser behaviors for layout movement keys
+                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Backspace', 'Space'].includes(e.code)) {
+                        e.preventDefault();
+                    }
+                }
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (isInput) return;
+
+            if (e.code === 'Space') {
+                if (DOM.iframe && DOM.iframe.contentWindow) {
+                    DOM.iframe.contentWindow.postMessage({
+                        type: 'LF_SHORTCUT_KEY_PROXY',
+                        code: e.code,
+                        key: e.key,
+                        shiftKey: e.shiftKey,
+                        ctrlKey: e.ctrlKey,
+                        metaKey: e.metaKey
+                    }, '*');
+                }
             }
         });
 
