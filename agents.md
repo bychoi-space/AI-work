@@ -23,6 +23,7 @@
 - **아톰 컴포넌트 표준 (Atomic Component Standard)**:
   - 모든 아이콘 및 아톰 컴포넌트(SVG 포함)는 인스펙터와의 호환성을 위해 반드시 **`.lf-icon`** 클래스를 포함해야 합니다.
   - SVG 아톰의 경우, 선명한 프리미엄 UI 유지를 위해 기본 `stroke-width`를 **`1.6`**으로 설정하는 것을 원칙으로 합니다.
+  - **스프라이트 아톰 반응형 크기 조절 규칙 (Responsive Sprite Sizing)**: 스프라이트 이미지 기반 아톰의 경우, 고정 픽셀(px) 단위 대신 백분율(%) 기반의 `background-size` 및 `background-position`을 사용하여 객체 크기를 조절할 때 스프라이트 내 다른 영역이 노출(bleeding)되지 않고 단일 객체의 크기만 반응형으로 완벽하게 조절되도록 구현해야 합니다. (예: 3열 2행 구조 스프라이트의 경우 `background-size: 300% 200% !important;`와 백분율 좌표 활용)
 - **디자인 시스템 강제화 (1.6px Border)**: 모든 V4 컴포넌트의 보더 굵기는 **1.6px**로 고정합니다. 인라인 스타일의 간섭을 막기 위해 CSS에 `!important`를 사용하고, `MutationObserver`를 통해 실시간으로 굵기를 감시 및 보정해야 합니다.
 
 ## 🎨 UI 및 컴포넌트 규칙

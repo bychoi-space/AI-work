@@ -702,6 +702,34 @@
                             <div class="lf-icon lf-icon-my" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
                             <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">My Page</span>
                         </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust Gift')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-cust-gift" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">선물/혜택</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust 1to1')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-cust-1to1" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">1:1 문의</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust Chatbot')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-cust-chatbot" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">챗봇 상담</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust FAQ')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-cust-faq" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">자주묻는질문</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust Truck')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-cust-truck" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">배송 조회</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Rv Write')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-rv-write" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">리뷰 쓰기</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Rv My')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-rv-my" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">내 리뷰</span>
+                        </div>
 
                         <!-- New UI Controls -->
                         <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Arrow Left')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
@@ -989,14 +1017,14 @@
     <script src="assets/app.js?v=V106_SEQ_SAVE"></script>
     
     <!-- Modularized Engine -->
-    <script src="assets/vctrl_iframe_script.js?v=V110_SYMMETRIC"></script>
-    <script src="assets/vctrl_core.js?v=V110_SYMMETRIC"></script>
+    <script src="assets/vctrl_iframe_script.js?v=V114_UNDO_STABLE"></script>
+    <script src="assets/vctrl_core.js?v=V114_UNDO_STABLE"></script>
     <script src="assets/vctrl_smartguide.js?v=V106_FILEFIX_V5"></script>
     <script src="assets/vctrl_grouping.js?v=V110_SYMMETRIC"></script>
     <script src="assets/vctrl_inspector.js?v=V106_FILEFIX_V5"></script>
     <script src="assets/vctrl_v3.js?v=V106_FILEFIX_V5"></script>
     <script src="assets/vctrl_properties.js?v=V106_V5"></script>
-    <script src="assets/vctrl_connectors.js?v=V110_SYMMETRIC"></script>
+    <script src="assets/vctrl_connectors.js?v=V114_UNDO_STABLE"></script>
     
     <!-- V4 Premium Addons -->
     <script src="enhanced_v4/component_library_v4.js"></script>

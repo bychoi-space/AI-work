@@ -2388,6 +2388,27 @@ body.drag-active #drop-overlay {
 .lf-icon-share { background-position: -160px -40px; }
 .lf-icon-party { background-position: 0 -120px; }
 
+.lf-cust-gift, .lf-cust-1to1, .lf-cust-chatbot, .lf-cust-faq, .lf-cust-truck {
+    background-image: url("https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/customer/icon_customer_my_btn.png") !important;
+    background-size: 300% 200% !important;
+}
+.lf-cust-gift { background-position: 0% 0% !important; }
+.lf-cust-1to1 { background-position: 50% 0% !important; }
+.lf-cust-chatbot { background-position: 100% 0% !important; }
+.lf-cust-faq { background-position: 0% 100% !important; }
+.lf-cust-truck { background-position: 50% 100% !important; }
+
+.lf-rv-write, .lf-rv-my {
+    background-image: url("https://img.lfmall.co.kr/file/WAS/apps/2021/front/review_new/m/icon_rv_mp.png") !important;
+    background-size: 200% 100% !important;
+    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px;
+}
+.lf-rv-write { background-position: 0% 0% !important; }
+.lf-rv-my { background-position: 100% 0% !important; }
+
+
 /* --- Restored Component Handles --- */
 .lf-drag-handle { position: absolute; top: -10px; left: -10px; width: 22px; height: 22px; background: #6366f1; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 14px; cursor: move; border: 2px solid #1e2128; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 2000; pointer-events: auto; }
 .lf-delete-trigger { position: absolute; top: -10px; right: -10px; width: 22px; height: 22px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid #1e2128; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 2000; pointer-events: auto; }

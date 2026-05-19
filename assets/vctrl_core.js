@@ -270,6 +270,12 @@ window.insertAtomicComponent = function(type, name) {
             contentHtml = `<div class="v4-radio lf-icon" style="width:100%; height:100%; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center;"><div style="width:45%; height:45%; background:#ffffff; border-radius:50%;"></div></div>`;
         } else if (name === 'Share Premium') {
             contentHtml = `<img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width:100%; height:100%; object-fit:contain; pointer-events:none;">`;
+        } else if (name.startsWith('Cust ')) {
+            const iconClass = 'lf-' + name.toLowerCase().replace(' ', '-');
+            contentHtml = `<div class="lf-icon ${iconClass}"></div>`;
+        } else if (name.startsWith('Rv ')) {
+            const iconClass = 'lf-' + name.toLowerCase().replace(' ', '-');
+            contentHtml = `<div class="lf-icon ${iconClass}"></div>`;
         } else {
             const iconClass = name.toLowerCase().split(' ')[0];
             contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="filter: brightness(0);"></div>`;
@@ -609,6 +615,22 @@ window.MessageHub = {
     }
 };
 
+// --- Virtual Undo Manager Proxy (Parent to Child bridge) ---
+window.V4UndoManager = {
+    saveState: function() {
+        const iframe = document.getElementById('main-iframe');
+        if (iframe && iframe.contentWindow && window.MessageHub) {
+            MessageHub.send(iframe.contentWindow, 'LF_SAVE_UNDO');
+        }
+    },
+    undo: function() {
+        const iframe = document.getElementById('main-iframe');
+        if (iframe && iframe.contentWindow && window.MessageHub) {
+            MessageHub.send(iframe.contentWindow, 'LF_TRIGGER_UNDO');
+        }
+    }
+};
+
 // 3. Central Event Helpers
 window.markAsDirty = function() {
     if (state.hasUnsavedChanges) return;
@@ -619,7 +641,6 @@ window.markAsDirty = function() {
     const iframe = document.getElementById('main-iframe');
     if (iframe && iframe.contentWindow && window.state && window.state.connectors) {
         MessageHub.send(iframe.contentWindow, 'LF_SYNC_CONNECTORS', { connectors: window.state.connectors });
-        MessageHub.send(iframe.contentWindow, 'LF_SAVE_UNDO'); // Explicitly capture synced state
     }
 
     // UI Feedback
@@ -628,6 +649,7 @@ window.markAsDirty = function() {
         btnSave.style.boxShadow = "0 0 20px rgba(0, 229, 255, 0.6)";
     }
 };
+
 
 window.markAsClean = function() {
     state.hasUnsavedChanges = false;
@@ -721,6 +743,18 @@ window.init = async function() {
         document.addEventListener('click', (e) => {
             if (e.target && e.target.closest('#btn-global-save')) {
                 handleGlobalSave();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (state.isReadOnly) return;
+            // Ignore if typing in editable areas, input, select, textarea
+            if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+            
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                e.preventDefault();
+                console.log("[V4 Core] Parent Ctrl+Z caught. Triggering child undo.");
+                if (window.V4UndoManager) window.V4UndoManager.undo();
             }
         });
         

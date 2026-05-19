@@ -42,6 +42,21 @@ window.v4Styles = `
 .lf-icon-brand { background-position: 25% 0%; }
 .lf-icon-bell { background-position: 25% 33.33%; }
 .lf-icon-back { background-position: 0% 33.33%; }
+.lf-cust-gift, .lf-cust-1to1, .lf-cust-chatbot, .lf-cust-faq, .lf-cust-truck {
+    background-image: url("https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/customer/icon_customer_my_btn.png") !important;
+    background-size: 300% 200% !important;
+}
+.lf-cust-gift { background-position: 0% 0% !important; }
+.lf-cust-1to1 { background-position: 50% 0% !important; }
+.lf-cust-chatbot { background-position: 100% 0% !important; }
+.lf-cust-faq { background-position: 0% 100% !important; }
+.lf-cust-truck { background-position: 50% 100% !important; }
+.lf-rv-write, .lf-rv-my {
+    background-image: url("https://img.lfmall.co.kr/file/WAS/apps/2021/front/review_new/m/icon_rv_mp.png") !important;
+    background-size: 200% 100% !important;
+}
+.lf-rv-write { background-position: 0% 0% !important; }
+.lf-rv-my { background-position: 100% 0% !important; }
 .v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; object-fit: contain; }
 .v4-shape-rect { border-radius: 8px; }
@@ -161,6 +176,7 @@ window.V4UndoManager = (function() {
         },
         init: function() {
             document.addEventListener('keydown', (e) => {
+                if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
                 if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
                     e.preventDefault();
                     this.undo();
@@ -172,6 +188,8 @@ window.V4UndoManager = (function() {
                     currentConnectors = e.data.connectors || [];
                 } else if (e.data && e.data.type === 'LF_SAVE_UNDO') {
                     this.saveState();
+                } else if (e.data && e.data.type === 'LF_TRIGGER_UNDO') {
+                    this.undo();
                 }
             });
         }
@@ -771,6 +789,7 @@ window.v4Script = `
             const comps = d.components || [];
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             comps.forEach(c => {
                 const v = document.createElement('div');
                 v.id = c.id || ('v4-comp-' + Date.now() + Math.random());
@@ -804,6 +823,7 @@ window.v4Script = `
             if (selected) {
                 const cell = selected.querySelector('.v4-editable-cell');
                 if (cell) {
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
                     cell.innerHTML = d.html;
                     markDirty();
                 }
@@ -1141,7 +1161,7 @@ window.v4Script = `
         }
     });
 
-    const initHandles = () => {
+    window.initHandles = () => {
         document.querySelectorAll('.lf-component').forEach(c => {
             if (!c.querySelector('.lf-drag-handle')) {
                 const h = document.createElement('div');
@@ -1162,9 +1182,10 @@ window.v4Script = `
             }
         });
     };
+    const initHandles = window.initHandles;
 
     // High-Persistence Border Standardization & Coordinate Migration
-    const enforceDesignSystem = () => {
+    window.enforceDesignSystem = () => {
         initHandles();
         
         // --- Coordinate Migration: % to px ---
@@ -1206,6 +1227,7 @@ window.v4Script = `
             if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
         });
     };
+    const enforceDesignSystem = window.enforceDesignSystem;
 
     // Run immediately and setup observer for dynamic changes
     enforceDesignSystem();

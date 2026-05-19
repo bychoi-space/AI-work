@@ -206,6 +206,7 @@ window.ConnectorEngine = (function() {
     }
 
     function spawnLine(type = 'straight') {
+        if (window.V4UndoManager) window.V4UndoManager.saveState();
         const id = 'conn_' + Date.now();
         const iframe = window.DOM.iframe;
         const rect = iframe.getBoundingClientRect();
