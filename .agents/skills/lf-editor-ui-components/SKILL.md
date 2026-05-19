@@ -37,7 +37,11 @@ description: Use when editing V4 components, .lf-icon SVG atoms, premium buttons
 - **Dedicated Inspector Sections**: 에디터 내의 서로 다른 유형의 컴포넌트(도형, 선, 표 등)는 독립적인 `#*-inspector-section`을 가져야 한다. 각 섹션은 `display: none`으로 시작하며, `toggleInspectors` 로직을 통해 상호 배타적으로 표시되어야 UI 복잡도와 이벤트 충돌을 줄일 수 있다.
 - **Color Picker Clipping**: `.v4-color-wrapper`를 사용할 때는 반드시 `overflow: hidden`과 `border-radius: 4px`를 유지해야 한다. 내부의 `input[type="color"]`는 브라우저 기본 테두리를 숨기기 위해 부모 박스보다 크게 설정되어 있으므로, 클리핑 처리가 빠지면 레이아웃이 깨지고 주변 라벨과 겹치게 된다.
 - **Inspector Layout Consistency**: 속성 편집기(Inspector) 내의 컬러 선택기나 수치 입력창은 가급적 `grid-template-columns: repeat(3, 1fr)` 레이아웃을 사용하여 다른 편집기 섹션과 시각적 일관성을 유지하고 컴팩트한 디자인을 제공한다.
-- **Atomic Icon Unification**: 새로운 아이콘(특히 외부 이미지 `<img>` 태그를 사용하는 경우)을 아톰 라이브러리에 추가할 때는 반드시 기존 `.lf-icon` 계열과 시각적 크기가 일치하도록 처리해야 한다. 40x40 컨테이너 내에서 이미지 그래픽 크기가 약 60~65% 수준(약 24~26px)이 되도록 `padding` 또는 `width/height` 조정을 통해 적절한 여백을 확보하여 시각적 균형을 맞춘다. 또한, 에디터 로직이 이를 아이콘으로 인식할 수 있도록 컨테이너에 반드시 `.lf-icon` 클래스를 부여해야 한다.
+- **아톰 이미지/아이콘 표준 및 채색 가이드 (Definitive Atom Image & Masking Unification)**:
+  - **1. Replaced Element (<img>) 사용 절대 금지**: 브라우저 그래픽 최적화 특성상 `<img>` 태그에 `-webkit-mask-image`를 주입하고 `src`를 투명화하여 `background-color`를 주입하는 동적 조색 기법은 엘리먼트 증발을 초래합니다. 따라서 신규 이미지 기반 아톰은 절대 `<img>` 태그로 작성해서는 안 되며, **`<div>` 엘리먼트와 `background-image` 스타일 조합**으로 설계해야 합니다.
+  - **2. <img>-to-<div> 자동 실시간 마이그레이션**: 스크린 로딩 및 DOM 감시(`enforceDesignSystem()`) 시 레거시 스크린 내의 구형 `<img>` 기반 아톰/로고는 스타일과 클래스를 100% 보존한 채 표준 `<div>`로 실시간 치환되도록 설계해야 합니다.
+  - **3. 여백(Padding) 및 마스크 영역 정합 표준**: 여백이 내장된 스프라이트 기반 아이콘들과의 시각적 크기/균형 조화를 위해, 꽉 차게 잘린 신규 이미지 아톰(예: Share 등) 및 커스텀 아톰에는 반드시 **`padding: 8px !important;`** 및 **`box-sizing: border-box !important;`**를 적용해야 합니다. 여백 안쪽으로 마스크와 배경, 채색 영역이 완벽히 수축 안착하도록 **`background-origin/clip: content-box`**와 **`mask-origin/clip: content-box`** (및 `-webkit-` 프리픽스) 스타일 속성을 생성 템플릿(`vctrl_core.js`) 및 스타일 업데이트 핸들러(`LF_UPDATE_STYLE` in `vctrl_iframe_script.js`) 양쪽에 모두 누락 없이 강제 적용 및 보존해야 합니다.
+  - **4. 인라인 brightness 필터 금지**: 생성 템플릿에 `filter: brightness(0)`와 같은 하드코딩 필터 주입을 배제해야 하며, 스타일 업데이트 시 `t.style.filter = 'none'`을 우선 처리하여 채색 렌더러가 온전한 원색을 왜곡 없이 표현할 수 있게 보장합니다.
 
 ## Text And Layout
 - Use font sizes within the project scale: 18-20px for main titles, 15-16px for section/table headers, 14-15px for body/table cells, 13px for labels/help text, and 12px for tiny markers/tags.
