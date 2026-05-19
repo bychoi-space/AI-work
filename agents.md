@@ -20,10 +20,12 @@
 - **인코딩 보안 규칙 (Encoding Safety)**: 
   - **금지**: 소스 코드 내부에 하드코딩된 한글 문자열 사용을 지양합니다. 파일 저장 시 인코딩 변환 문제로 코드가 깨지는 것을 방지해야 합니다.
   - **권장**: UI에 노출되는 특수문자는 반드시 HTML 엔티티(`&times;` 등)를 사용하고, 경고 문구 등은 ASCII 안전 문자열로 작성하거나, 수정 시 파일 인코딩이 `UTF-8`로 유지되는지 엄격히 확인하세요.
-- **아톰 컴포넌트 표준 (Atomic Component Standard)**:
+- **아톰 컴포넌트 표준 (Atomic Component Standard & Definitive Masking Unification)**:
   - 모든 아이콘 및 아톰 컴포넌트(SVG 포함)는 인스펙터와의 호환성을 위해 반드시 **`.lf-icon`** 클래스를 포함해야 합니다.
   - SVG 아톰의 경우, 선명한 프리미엄 UI 유지를 위해 기본 `stroke-width`를 **`1.6`**으로 설정하는 것을 원칙으로 합니다.
   - **스프라이트 아톰 반응형 크기 조절 규칙 (Responsive Sprite Sizing)**: 스프라이트 이미지 기반 아톰의 경우, 고정 픽셀(px) 단위 대신 백분율(%) 기반의 `background-size` 및 `background-position`을 사용하여 객체 크기를 조절할 때 스프라이트 내 다른 영역이 노출(bleeding)되지 않고 단일 객체의 크기만 반응형으로 완벽하게 조절되도록 구현해야 합니다. (예: 3열 2행 구조 스프라이트의 경우 `background-size: 300% 200% !important;`와 백분율 좌표 활용)
+  - **Replaced Element (<img>) 금지 및 <div> 대체**: 브라우저 그래픽 최적화 특성상 `<img>` 태그에 `-webkit-mask-image`를 입히는 동적 채색 기법은 엘리먼트 증발을 초래하므로 신규 이미지 기반 아톰은 절대 `<img>` 태그로 작성해서는 안 되며, **`<div>` 엘리먼트와 `background-image` 스타일 조합**으로 설계해야 합니다. (레거시 스크린의 `<img>`는 `enforceDesignSystem()` 내의 `img-to-div` 동적 마이그레이션 모듈에 의해 로딩 시 자동으로 `<div>`로 치환됩니다.)
+  - **여백(Padding) 및 마스크 영역 정합 표준**: 여백이 내장된 스프라이트 기반 아이콘들과의 시각적 크기/균형 조화를 위해, 꽉 차게 잘린 신규 이미지 아톰(예: Share 등) 및 커스텀 아톰에는 반드시 **`padding: 8px !important;`** 및 **`box-sizing: border-box !important;`**를 적용해야 합니다. 또한, 조색 시 마스크 영역이 팽창하여 커지지 않고 여백 안쪽으로 수축 안착하도록 **`background-origin/clip: content-box`**와 **`mask-origin/clip: content-box`** (및 `-webkit-` 프리픽스) 스타일 속성을 생성 템플릿(`vctrl_core.js`) 및 스타일 업데이트 핸들러(`LF_UPDATE_STYLE` in `vctrl_iframe_script.js`) 양쪽에 모두 누락 없이 강제 적용 및 보존해야 합니다.
 - **디자인 시스템 강제화 (1.6px Border)**: 모든 V4 컴포넌트의 보더 굵기는 **1.6px**로 고정합니다. 인라인 스타일의 간섭을 막기 위해 CSS에 `!important`를 사용하고, `MutationObserver`를 통해 실시간으로 굵기를 감시 및 보정해야 합니다.
 
 ## 🎨 UI 및 컴포넌트 규칙
