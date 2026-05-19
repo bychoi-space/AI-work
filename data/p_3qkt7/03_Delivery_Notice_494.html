@@ -47,7 +47,7 @@
         <!-- Title Shape -->
         <div class="lf-component" id="comp-title-shape" style="top:40px; left:40px; width:400px; height:56px;">
             <div class="v4-shape-container" style="background:#4b5563; color:#fff; font-size:18px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
-                <div class="v4-editable-cell" contenteditable="true">배송예정일 설정 (5/22 ~ 5/27)</div>
+                <div class="v4-editable-cell" contenteditable="true">배송예정일 설정 (5/22 ~ 5/26)</div>
             </div>
         </div>
 
@@ -59,13 +59,11 @@
                         <tr>
                             <th style="width:180px;">YMD</th>
                             <th style="width:180px;">일자</th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">5/22 (D-Day)</div></th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">5/23 (D+1)</div></th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">5/24 (D+2)</div></th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">5/25 (D+3)</div></th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">5/26 (D+4)</div></th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">5/27 (D+5)</div></th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">5/28 (D+6)</div></th>
+                            <th class="h-blue" style="width:200px;"><div class="v4-editable-cell" contenteditable="true">5/22 (금)</div></th>
+                            <th class="h-red" style="width:200px;"><div class="v4-editable-cell" contenteditable="true">5/23 (토)</div></th>
+                            <th class="h-red" style="width:200px;"><div class="v4-editable-cell" contenteditable="true">5/24 (일)</div></th>
+                            <th class="h-blue" style="width:200px;"><div class="v4-editable-cell" contenteditable="true">5/25 (월)</div></th>
+                            <th class="h-blue" style="width:200px;"><div class="v4-editable-cell" contenteditable="true">5/26 (화)</div></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,23 +71,19 @@
                             <td style="background:#f9fafb;">WRHS_GI_YN</td>
                             <td>안산 출고 여부</td>
                             <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">N</div></td>
+                            <td class="bg-peach"><div class="v4-editable-cell" contenteditable="true">N</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
                         </tr>
                         <tr>
                             <td style="background:#f9fafb;">DLSR_GOFG_YN</td>
                             <td>택배 집하 여부</td>
                             <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">N</div></td>
+                            <td class="bg-peach"><div class="v4-editable-cell" contenteditable="true">N</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
                         </tr>
                         <tr>
                             <td style="background:#f9fafb;">DLSR_MVMN_YN</td>
@@ -99,8 +93,6 @@
                             <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
                         </tr>
                         <tr>
                             <td style="background:#f9fafb;">GI_CLSN_HR</td>
@@ -110,13 +102,11 @@
                             <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
                         </tr>
                         <tr>
                             <td style="background:#f9fafb;">HODY_YN</td>
                             <td>연휴 여부</td>
-                            <td colspan="7" rowspan="6" class="bg-gray-area"></td>
+                            <td colspan="5" rowspan="6" class="bg-gray-area"></td>
                         </tr>
                         <tr><td style="background:#f9fafb;">HODY_NM</td><td>연휴 구분</td></tr>
                         <tr><td style="background:#f9fafb;">HODY_GDNC_STRT_HR</td><td>연휴 안내 시작 시간</td></tr>
@@ -132,8 +122,6 @@
                             <td><div class="v4-editable-cell" contenteditable="true">5/26</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">5/26</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">5/27</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">5/28</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
                         </tr>
                         <tr>
                             <td style="background:#f3f4f6;">출고 마감 이후</td>
@@ -142,8 +130,6 @@
                             <td><div class="v4-editable-cell" contenteditable="true">5/26</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">5/27</div></td>
                             <td><div class="v4-editable-cell" contenteditable="true">5/28</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">5/29</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
                         </tr>
                     </tbody>
                 </table>

@@ -10,7 +10,7 @@
       "connectors": []
     },
     "03_Delivery_Notice_494.html": {
-      "title": "배송예정일 설정 (5/22 ~ 5/27)",
+      "title": "배송예정일 설정 (5/22 ~ 5/26)",
       "type": "plan-delivery",
       "updatedAt": "2026-05-19T07:05:03.374Z",
       "template": "template_plan_delivery.html"
