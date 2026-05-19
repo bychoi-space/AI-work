@@ -109,8 +109,9 @@ window.V4UndoManager = (function() {
     function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
     
     function getCleanHTML() {
-        const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+        const host = document.body;
         const clone = host.cloneNode(true);
+        clone.querySelectorAll('script').forEach(el => el.remove());
         clone.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
         clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
         return clone.innerHTML;
@@ -132,8 +133,28 @@ window.V4UndoManager = (function() {
             try {
                 if (undoStack.length === 0) return;
                 const prevState = JSON.parse(undoStack.pop());
-                const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
-                host.innerHTML = prevState.html;
+                
+                // Keep scripts from current body intact to prevent losing closures/context
+                const currentScripts = Array.from(document.body.querySelectorAll('script'));
+                
+                // Create temporary container to parse restored body innerHTML
+                const temp = document.createElement('div');
+                temp.innerHTML = prevState.html;
+                temp.querySelectorAll('script').forEach(el => el.remove());
+                
+                // Clear body
+                document.body.innerHTML = '';
+                
+                // Restore new layout elements
+                while (temp.firstChild) {
+                    document.body.appendChild(temp.firstChild);
+                }
+                
+                // Restore original script elements safely
+                currentScripts.forEach(script => {
+                    document.body.appendChild(script);
+                });
+
                 if (prevState.connectors) {
                     currentConnectors = prevState.connectors;
                     notifyParent({ type: 'LF_RESTORE_CONNECTORS', connectors: prevState.connectors });
@@ -179,7 +200,7 @@ window.V4UndoManager = (function() {
                 if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
                 if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
                     e.preventDefault();
-                    this.undo();
+                    window.V4UndoManager.undo();
                 }
             });
             // Handle cross-origin safe sync
@@ -187,9 +208,9 @@ window.V4UndoManager = (function() {
                 if (e.data && e.data.type === 'LF_SYNC_CONNECTORS') {
                     currentConnectors = e.data.connectors || [];
                 } else if (e.data && e.data.type === 'LF_SAVE_UNDO') {
-                    this.saveState();
+                    window.V4UndoManager.saveState();
                 } else if (e.data && e.data.type === 'LF_TRIGGER_UNDO') {
-                    this.undo();
+                    window.V4UndoManager.undo();
                 }
             });
         }

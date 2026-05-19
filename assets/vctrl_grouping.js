@@ -254,6 +254,7 @@ window.GroupingManager = (function() {
 
     const alignSelected = (type) => {
         if (selectedIds.length < 2) return;
+        if (window.V4UndoManager) window.V4UndoManager.saveState();
         const iframe = document.getElementById('main-iframe');
         if (iframe && iframe.contentWindow && window.MessageHub) {
             window.MessageHub.send(iframe.contentWindow, 'LF_ALIGN_SELECTED', { ids: selectedIds, type });
@@ -262,6 +263,7 @@ window.GroupingManager = (function() {
 
     const groupSelected = () => {
         if (selectedIds.length < 2) return;
+        if (window.V4UndoManager) window.V4UndoManager.saveState();
         const iframe = document.getElementById('main-iframe');
         if (iframe && iframe.contentWindow && window.MessageHub) {
             window.MessageHub.send(iframe.contentWindow, 'LF_GROUP_SELECTED', { ids: selectedIds });
@@ -270,6 +272,7 @@ window.GroupingManager = (function() {
 
     const ungroupSelected = () => {
         if (selectedIds.length < 1) return;
+        if (window.V4UndoManager) window.V4UndoManager.saveState();
         const iframe = document.getElementById('main-iframe');
         if (iframe && iframe.contentWindow && window.MessageHub) {
             window.MessageHub.send(iframe.contentWindow, 'LF_UNGROUP_SELECTED', { ids: selectedIds });

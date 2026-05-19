@@ -283,35 +283,8 @@ window.insertAtomicComponent = function(type, name) {
         defaultStyle = { width: '40px', height: '40px' };
     }
 
-    const isFileProtocol = window.location.protocol === 'file:';
-    if (isFileProtocol) {
-        if (DOM.iframe && DOM.iframe.contentWindow) {
-            MessageHub.send(DOM.iframe.contentWindow, 'LF_INSERT_V4_COMP', { id, html: contentHtml, style: defaultStyle });
-        }
-        return;
-    }
-
-    const iframeDoc = DOM.iframe.contentDocument || DOM.iframe.contentWindow.document;
-    if (!iframeDoc) return;
-    injectIframeInteractions(iframeDoc);
-    const host = document.body;
-    
-    if (contentHtml) {
-        const comp = document.createElement('div');
-        comp.id = id; comp.className = 'lf-component';
-        Object.assign(comp.style, defaultStyle);
-        
-        // Initial center placement relative to body
-        const vw = window.innerWidth, vh = window.innerHeight;
-        const cw = parseInt(defaultStyle.width) || 40, ch = parseInt(defaultStyle.height) || 40;
-        comp.style.left = (window.scrollX + (vw - cw)/2) + 'px';
-        comp.style.top = (window.scrollY + (vh - ch)/2) + 'px';
-        comp.style.transform = 'none !important';
-
-        comp.innerHTML = `${contentHtml}<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div><div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>`;
-        host.appendChild(comp);
-        if (typeof enforceDesignSystem === 'function') enforceDesignSystem();
-        markAsDirty();
+    if (DOM.iframe && DOM.iframe.contentWindow && window.MessageHub) {
+        MessageHub.send(DOM.iframe.contentWindow, 'LF_INSERT_V4_COMP', { id, html: contentHtml, style: defaultStyle });
     }
 };
 
@@ -633,15 +606,15 @@ window.V4UndoManager = {
 
 // 3. Central Event Helpers
 window.markAsDirty = function() {
-    if (state.hasUnsavedChanges) return;
-    state.hasUnsavedChanges = true;
-    console.log("[Status] Unsaved changes detected.");
-    
     // Sync connectors to iframe for Undo support
     const iframe = document.getElementById('main-iframe');
     if (iframe && iframe.contentWindow && window.state && window.state.connectors) {
         MessageHub.send(iframe.contentWindow, 'LF_SYNC_CONNECTORS', { connectors: window.state.connectors });
     }
+
+    if (state.hasUnsavedChanges) return;
+    state.hasUnsavedChanges = true;
+    console.log("[Status] Unsaved changes detected.");
 
     // UI Feedback
     const btnSave = document.getElementById('btn-global-save');
@@ -872,7 +845,7 @@ window.init = async function() {
 
             // Proxy canvas shortcuts if we have active selections or targets
             const proxiedCodes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Delete', 'Backspace', 'Space'];
-            const isCtrlShortcut = (e.ctrlKey || e.metaKey) && ['z', 'y', 'g'].includes(e.key.toLowerCase());
+            const isCtrlShortcut = (e.ctrlKey || e.metaKey) && ['g'].includes(e.key.toLowerCase());
             
             if (proxiedCodes.includes(e.code) || isCtrlShortcut) {
                 if (DOM.iframe && DOM.iframe.contentWindow) {
