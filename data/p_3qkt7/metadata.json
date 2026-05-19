@@ -20,7 +20,7 @@
     "03_Delivery_Notice_926.html": {
       "title": "배송예정일 설정 (6/2 ~ 6/9)",
       "type": "plan-delivery",
-      "updatedAt": "2026-05-19T08:15:06.952Z",
+      "updatedAt": "2026-05-19T08:37:25.918Z",
       "template": "template_plan_delivery.html",
       "description": [],
       "connectors": []
