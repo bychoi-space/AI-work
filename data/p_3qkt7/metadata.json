@@ -16,7 +16,7 @@
       "template": "template_plan_delivery.html"
     },
     "03_Delivery_Notice_926.html": {
-      "title": "03_Delivery_Notice_926",
+      "title": "배송예정일 설정 (6/2 ~ 6/9)",
       "type": "plan-delivery",
       "updatedAt": "2026-05-19T07:05:57.304Z",
       "template": "template_plan_delivery.html"
