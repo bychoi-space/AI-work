@@ -74,6 +74,21 @@
 .lf-icon-brand { background-position: 25% 0%; }
 .lf-icon-bell { background-position: 25% 33.33%; }
 .lf-icon-back { background-position: 0% 33.33%; }
+.lf-cust-gift, .lf-cust-1to1, .lf-cust-chatbot, .lf-cust-faq, .lf-cust-truck {
+    background-image: url("https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/customer/icon_customer_my_btn.png") !important;
+    background-size: 300% 200% !important;
+}
+.lf-cust-gift { background-position: 0% 0% !important; }
+.lf-cust-1to1 { background-position: 50% 0% !important; }
+.lf-cust-chatbot { background-position: 100% 0% !important; }
+.lf-cust-faq { background-position: 0% 100% !important; }
+.lf-cust-truck { background-position: 50% 100% !important; }
+.lf-rv-write, .lf-rv-my {
+    background-image: url("https://img.lfmall.co.kr/file/WAS/apps/2021/front/review_new/m/icon_rv_mp.png") !important;
+    background-size: 200% 100% !important;
+}
+.lf-rv-write { background-position: 0% 0% !important; }
+.lf-rv-my { background-position: 100% 0% !important; }
 .v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; object-fit: contain; }
 .v4-shape-rect { border-radius: 8px; }
@@ -161,12 +176,6 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
             </div></div><div id="v4-comp-1778568521238" class="lf-component" style="position: absolute; top: 499px; left: 195.532px; z-index: 1000; width: 200px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(226, 232, 240); border: 1.6px solid rgb(255, 255, 255); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;">리뷰 작성 바로가기</div>
-            </div></div><div id="v4-comp-1778568592046" class="lf-component" style="position: absolute; top: 638px; left: 145.469px; z-index: 1000; width: 300px; height: 60px;">
-            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div></div><div id="v4-comp-1778568607181" class="lf-component" style="position: absolute; top: 729.141px; left: 195.032px; z-index: 1000; width: 200px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(226, 232, 240); border: 1.6px solid rgb(255, 255, 255); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;">추가 혜택 신청</div>
             </div></div></div>
 <script id="v4-inlined-script">
 
@@ -208,6 +217,37 @@ window.V4UndoManager = (function() {
                     currentConnectors = prevState.connectors;
                     notifyParent({ type: 'LF_RESTORE_CONNECTORS', connectors: prevState.connectors });
                 }
+                
+                if (window.parent && window.parent.state && window.parent.state.activeFile) {
+                    const descList = window.parent.state.activeFile.meta.description || [];
+                    const remainingPins = document.querySelectorAll('.text-marker');
+                    
+                    if (descList.length > remainingPins.length) {
+                        descList.splice(remainingPins.length);
+                    }
+                    
+                    remainingPins.forEach((pin, idx) => {
+                        pin.id = 'v4-pin-' + idx;
+                        const editable = pin.querySelector('.v4-editable-cell');
+                        const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                        const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                        
+                        if (!descList[idx]) {
+                            descList[idx] = {};
+                        }
+                        
+                        descList[idx].text = textContent;
+                        descList[idx].html = htmlContent;
+                        descList[idx].x = parseFloat(pin.style.left) || 0;
+                        descList[idx].y = parseFloat(pin.style.top) || 0;
+                        descList[idx].standardized = true;
+                    });
+                    
+                    if (typeof window.parent.renderDescriptionList === 'function') {
+                        window.parent.renderDescriptionList();
+                    }
+                }
+
                 if (typeof window.initHandles === 'function') window.initHandles();
                 markDirty();
                 console.log("[V4 Undo] Undo Performed");
@@ -215,6 +255,7 @@ window.V4UndoManager = (function() {
         },
         init: function() {
             document.addEventListener('keydown', (e) => {
+                if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
                 if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
                     e.preventDefault();
                     this.undo();
@@ -226,6 +267,8 @@ window.V4UndoManager = (function() {
                     currentConnectors = e.data.connectors || [];
                 } else if (e.data && e.data.type === 'LF_SAVE_UNDO') {
                     this.saveState();
+                } else if (e.data && e.data.type === 'LF_TRIGGER_UNDO') {
+                    this.undo();
                 }
             });
         }
@@ -464,6 +507,25 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     standardized: true
                 });
             }
+            if (activeEl.classList.contains('lf-group')) {
+                const scale = (window.parent && window.parent.state && window.parent.state.transform) ? window.parent.state.transform.scale : 1;
+                const hostRect = document.body.getBoundingClientRect();
+                activeEl.querySelectorAll('.text-marker').forEach(child => {
+                    const idx = parseInt(child.id.replace('v4-pin-', ''));
+                    if (!isNaN(idx)) {
+                        const childRect = child.getBoundingClientRect();
+                        const absX = (childRect.left - hostRect.left) / scale;
+                        const absY = (childRect.top - hostRect.top) / scale;
+                        notifyParent({
+                            type: 'LF_UPDATE_PIN_POS',
+                            index: idx,
+                            x: absX,
+                            y: absY,
+                            standardized: true
+                        });
+                    }
+                });
+            }
         }
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
         isDragging = false; isResizing = false; activeEl = null; 
@@ -471,7 +533,17 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
     let isArrowMoving = false;
     document.addEventListener('keydown', e => {
-        if (e.code === 'Space') {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'g') {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                e.preventDefault();
+                notifyParent({
+                    type: 'LF_SHORTCUT_TRIGGERED',
+                    shortcut: e.shiftKey ? 'ungroup' : 'group'
+                });
+            }
+        }
+        else if (e.code === 'Space') {
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
             if (!isInput) {
                 e.preventDefault();
@@ -541,6 +613,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         } else if (c.classList.contains('text-marker')) {
                             const idx = parseInt(c.id.replace('v4-pin-', ''));
                             notifyParent({ type: 'LF_DELETE_PIN', index: idx });
+                            c.remove();
                         } else {
                             c.remove();
                         }
@@ -561,6 +634,26 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     });
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
+        if (d.type === 'LF_SHORTCUT_KEY_PROXY') {
+            const eventType = d.code === 'Space' ? 'keyup' : 'keydown';
+            const event = new KeyboardEvent(eventType, {
+                code: d.code,
+                key: d.key,
+                shiftKey: !!d.shiftKey,
+                ctrlKey: !!d.ctrlKey,
+                metaKey: !!d.metaKey,
+                bubbles: true
+            });
+            document.dispatchEvent(event);
+            return;
+        }
+        if (d.type === 'LF_REORDER_PINS') {
+            const pins = document.querySelectorAll('.text-marker');
+            pins.forEach((pin, idx) => {
+                pin.id = 'v4-pin-' + idx;
+            });
+            return;
+        }
         if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
             const currentRect = activeEl.getBoundingClientRect();
             const snapDx = d.x - currentRect.left;
@@ -774,6 +867,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const comps = d.components || [];
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
             comps.forEach(c => {
                 const v = document.createElement('div');
                 v.id = c.id || ('v4-comp-' + Date.now() + Math.random());
@@ -807,6 +901,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (selected) {
                 const cell = selected.querySelector('.v4-editable-cell');
                 if (cell) {
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
                     cell.innerHTML = d.html;
                     markDirty();
                 }
@@ -1144,7 +1239,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
     });
 
-    const initHandles = () => {
+    window.initHandles = () => {
         document.querySelectorAll('.lf-component').forEach(c => {
             if (!c.querySelector('.lf-drag-handle')) {
                 const h = document.createElement('div');
@@ -1165,9 +1260,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         });
     };
+    const initHandles = window.initHandles;
 
     // High-Persistence Border Standardization & Coordinate Migration
-    const enforceDesignSystem = () => {
+    window.enforceDesignSystem = () => {
         initHandles();
         
         // --- Coordinate Migration: % to px ---
@@ -1209,6 +1305,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
         });
     };
+    const enforceDesignSystem = window.enforceDesignSystem;
 
     // Run immediately and setup observer for dynamic changes
     enforceDesignSystem();
@@ -1221,7 +1318,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 </script>
 
-<div id="v4-pin-0" class="lf-component text-marker" style="left: 250.795px; top: 142.792px; width: fit-content; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p><span style="font-size: 12px;"><span class="ql-cursor">﻿﻿﻿﻿﻿</span></span><strong style="font-size: 24px;">TITLE</strong></p></div></div><div id="v4-pin-1" class="lf-component text-marker" style="left: 236.611px; top: 182.705px; width: fit-content; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>DESCRIPTION</p></div></div><div id="v4-pin-3" class="lf-component text-marker" style="left: 243.549px; top: 564.948px; width: fit-content; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p><strong style="font-size: 16px;">SUB TITLE123</strong></p></div></div><div id="v4-pin-4" class="lf-component text-marker" style="left: 221.427px; top: 593.451px; width: fit-content; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>SUB DESCRIPTION</p></div></div><div id="v4-comp-1779064600770" class="lf-component lf-group" style="position: absolute; top: 74px; left: 540px; z-index: 1000; transform: none; width: 360px; height: 50px;"><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; width: 360px; height: 50px;">
+<div id="v4-pin-0" class="lf-component text-marker" style="left: 250.795px; top: 142.792px; width: fit-content; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p><span style="font-size: 12px;"><span class="ql-cursor">﻿﻿﻿﻿﻿</span></span><strong style="font-size: 24px;">TITLE</strong></p></div></div><div id="v4-pin-1" class="lf-component text-marker" style="left: 236.611px; top: 182.705px; width: fit-content; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>DESCRIPTION</p></div></div><div id="v4-comp-1779064600770" class="lf-component lf-group" style="position: absolute; top: 74px; left: 540px; z-index: 1000; transform: none; width: 360px; height: 50px;"><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; width: 360px; height: 50px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(100, 100, 100); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><br></div>
             </div></div><div class="lf-component text-marker" style="left: 52.823px; top: 9.6493px; width: 92px; height: 28px; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div class="lf-component" style="position: absolute; top: 10px; left: 14px; z-index: 1000; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="lf-component" style="position: absolute; top: 5px; left: 262px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding: 9px; box-sizing: border-box;"><img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width:100%; height:100%; object-fit:contain; pointer-events:none;"></div></div><div class="lf-component" style="position: absolute; top: 5px; left: 303px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div><div id="v4-comp-1779064609193" class="lf-component lf-group" style="position: absolute; top: 73.775px; left: 116.95px; z-index: 1000; transform: none; width: 360px; height: 50px;"><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; width: 360px; height: 50px;">
@@ -1230,4 +1327,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             </div></div><div class="lf-component text-marker" style="left: 52.823px; top: 9.6493px; width: 92px; height: 28px; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div class="lf-component" style="position: absolute; top: 10px; left: 14px; z-index: 1000; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="lf-component" style="position: absolute; top: 5px; left: 262px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding: 9px; box-sizing: border-box;"><img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width:100%; height:100%; object-fit:contain; pointer-events:none;"></div></div><div class="lf-component" style="position: absolute; top: 5px; left: 303px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div><div id="v4-pin-2" class="lf-component text-marker" style="width: fit-content; height: auto; z-index: 1000; left: 168.823px; top: 83.6493px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div id="v4-comp-1779066983233" class="lf-component" style="position: absolute; top: 301px; left: 308.127px; z-index: 1000; transform: none; width: 137px; height: 173px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><p>Edit Text</p></div>
-            </div></div></body></html>
+            </div></div><div id="v4-comp-1778568607181" class="lf-component" style="position: absolute; top: 729.141px; left: 195.032px; z-index: 1000; width: 200px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(226, 232, 240); border: 1.6px solid rgb(255, 255, 255); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><p>추가 혜택 신청</p></div>
+            </div></div><div id="v4-comp-1778568592046" class="lf-component" style="position: absolute; top: 638px; left: 145.469px; z-index: 1000; width: 300px; height: 60px;">
+            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+            </div></div><div id="v4-pin-4" class="lf-component text-marker" style="left: 221.427px; top: 593.451px; width: 148px; height: 27px; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>SUB DESCRIPTION</p></div></div><div id="v4-pin-3" class="lf-component text-marker" style="left: 243.549px; top: 564.948px; width: 130px; height: 29px; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p><strong style="font-size: 16px;">SUB TITLE</strong></p></div></div></body></html>
