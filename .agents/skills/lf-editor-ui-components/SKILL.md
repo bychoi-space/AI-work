@@ -47,6 +47,9 @@ description: Use when editing V4 components, .lf-icon SVG atoms, premium buttons
 - Use font sizes within the project scale: 18-20px for main titles, 15-16px for section/table headers, 14-15px for body/table cells, 13px for labels/help text, and 12px for tiny markers/tags.
 - Apply `white-space: nowrap;` to dates and short labels that must stay on one line.
 - In polygon/shape text, calculate padding and `line-height` so text remains centered.
+- **양측 여백 및 테이블 크기 균형 가이드 (Balanced Layout Breathing Room)**:
+  - 열(Column) 개수가 줄어들거나 증가하더라도 테이블을 캔버스 크기에 꽉 채우기 위해 개별 열의 가로폭을 과도하게 늘려서 화면 끝단에 닿아 우측 여백이 잘리는 답답한 배치를 만들어서는 안 된다.
+  - 컨텐츠 양에 맞게 각 열의 가로폭을 최적의 픽셀(예: 날짜 열 `140px` ~ `160px`)로 차분히 줄이고, 테이블 전체 가로폭(`comp-main-table`의 `width` 값) 역시 컴팩트하게 축소하여 좌측 여백(`40px`)과 우측 여백이 조화롭고 대칭적인 여백미를 갖추도록 균형 있게 정비해야 한다.
 
 ## Molecules
 - When saving grouped elements to Molecules, store the container `innerHTML` only and save `width`, `height`, and `isGroup` as metadata.
