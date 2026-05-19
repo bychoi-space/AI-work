@@ -26,6 +26,65 @@ window.state = {
     editingIndex: -1
 };
 
+// --- Cover Template Metadata Sync & Version Auto-Increment Helper ---
+function syncCoverMetadata(html, metadata, isSave = false, currentActiveFile = null) {
+    if (!html) return html;
+    
+    // 1. Title
+    const titleValue = metadata.title || '';
+    if (html.match(/(<div[^>]*id="cover-project-title"[^>]*>)/i)) {
+        html = html.replace(/(<div[^>]*id="cover-project-title"[^>]*>)[^<]*(<\/div>)/i, `$1${titleValue}$2`);
+    } else {
+        html = html.replace(/(<div[^>]*id="cover-title"[^>]*>[\s\S]*?<div[^>]*class="v4-editable-cell"[^>]*>)[^<]*(<\/div>)/i, `$1${titleValue}$2`);
+    }
+    
+    // 2. JIRA
+    const jiraValue = metadata.jira || '-';
+    html = html.replace(/(<div[^>]*id="cover-jira-id"[^>]*>)[^<]*(<\/div>)/i, `$1${jiraValue}$2`);
+    
+    // 3. Author
+    const authorValue = metadata.assignee || '-';
+    if (html.match(/(<td[^>]*id="cover-author"[^>]*>)/i)) {
+        html = html.replace(/(<td[^>]*id="cover-author"[^>]*>)[^<]*(<\/td>)/i, `$1${authorValue}$2`);
+    } else {
+        html = html.replace(/(Lead Designer \/ Author[\s\S]*?<td[^>]*class="v4-editable-cell"[^>]*>)[^<]*(<\/td>)/i, `$1${authorValue}$2`);
+    }
+    
+    // 4. Date
+    const dateValue = metadata.period || '-';
+    if (html.match(/(<td[^>]*id="cover-date"[^>]*>)/i)) {
+        html = html.replace(/(<td[^>]*id="cover-date"[^>]*>)[^<]*(<\/td>)/i, `$1${dateValue}$2`);
+    } else {
+        html = html.replace(/(Publication Date[\s\S]*?<td[^>]*class="v4-editable-cell"[^>]*>)[^<]*(<\/td>)/i, `$1${dateValue}$2`);
+    }
+    
+    // 5. Version
+    if (currentActiveFile) {
+        let currentVer = 0.1;
+        const verMatch = html.match(/(<div[^>]*id="cover-version-val"[^>]*>v?)([\d.]+)(<\/div>)/i) || 
+                         html.match(/(<div[^>]*id="cover-version"[^>]*>[\s\S]*?<div[^>]*class="v4-editable-cell"[^>]*>v?)([\d.]+)(<\/div>)/i);
+        
+        if (verMatch && verMatch[2]) {
+            currentVer = parseFloat(verMatch[2]);
+        } else if (metadata.screens && metadata.screens[currentActiveFile] && metadata.screens[currentActiveFile].version !== undefined) {
+            currentVer = parseFloat(metadata.screens[currentActiveFile].version);
+        }
+        
+        let nextVerStr = currentVer.toFixed(1);
+        if (isSave) {
+            nextVerStr = (currentVer + 0.1).toFixed(1);
+        }
+        
+        if (html.match(/(<div[^>]*id="cover-version-val"[^>]*>)/i)) {
+            html = html.replace(/(<div[^>]*id="cover-version-val"[^>]*>v?)[^<]*(<\/div>)/i, `$1${nextVerStr}$2`);
+        } else {
+            html = html.replace(/(<div[^>]*id="cover-version"[^>]*>[\s\S]*?<div[^>]*class="v4-editable-cell")([^>]*>v?)([^<]*)(<\/div>)/i, `$1 id="cover-version-val" $2${nextVerStr}$4`);
+        }
+    }
+    
+    return html;
+}
+
 
 // --- Core Logic ---
 window.loadScreen = async function(fileName) {
@@ -62,10 +121,10 @@ window.loadScreen = async function(fileName) {
         finalContent = finalContent.replace('</body>', scriptBlock + '\n</body>');
     }
 
-    // Auto-update JIRA IDENTIFIER for Cover Template
-    if (finalContent.includes('cover-jira-id')) {
-        const jiraValue = state.projectMetadata.jira || '-';
-        finalContent = finalContent.replace(/(<div[^>]*id="cover-jira-id"[^>]*>)[^<]*(<\/div>)/i, `$1${jiraValue}$2`);
+    // Auto-update Project Cover template metadata upon loading
+    const isCoverScreen = (state.projectMetadata && state.projectMetadata.screens && state.projectMetadata.screens[fileName]?.type === 'cover') || finalContent.includes('cover-jira-id') || finalContent.includes('cover-version');
+    if (isCoverScreen && state.projectMetadata) {
+        finalContent = syncCoverMetadata(finalContent, state.projectMetadata, false, fileName);
     }
 
     if (DOM.iframe) {
@@ -226,7 +285,7 @@ window.injectIframeInteractions = function(doc) {
             activeEl.style.left = `${startLeft + (e.clientX - startX)}px`;
             
             // Sync for pins if moved via this fallback logic
-            if (activeEl.classList.contains('text-marker')) {
+            if (activeEl.classList.contains('text-marker') || activeEl.classList.contains('pin-marker')) {
                 const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
                 window.parent.postMessage({ type: 'LF_UPDATE_PIN_POS', index: idx, x: parseFloat(activeEl.style.left), y: parseFloat(activeEl.style.top) }, '*');
             }
@@ -414,16 +473,35 @@ window.handleGlobalSave = async function() {
 
         let htmlContent = await getIframeHTML();
         
-        if (htmlContent && htmlContent.includes('cover-jira-id')) {
+        let nextVer = undefined;
+        const activeFileName = state.activeFile ? state.activeFile.name : null;
+        const isCoverScreenSave = activeFileName && ((state.projectMetadata && state.projectMetadata.screens && state.projectMetadata.screens[activeFileName]?.type === 'cover') || (htmlContent && (htmlContent.includes('cover-version') || htmlContent.includes('cover-jira-id'))));
+        
+        if (htmlContent && isCoverScreenSave) {
+            // Parse current version to determine next version
+            let currentVer = 0.1;
+            const verMatch = htmlContent.match(/(<div[^>]*id="cover-version-val"[^>]*>v?)([\d.]+)(<\/div>)/i) || 
+                             htmlContent.match(/(<div[^>]*id="cover-version"[^>]*>[\s\S]*?<div[^>]*class="v4-editable-cell"[^>]*>v?)([\d.]+)(<\/div>)/i);
+            
+            if (verMatch && verMatch[2]) {
+                currentVer = parseFloat(verMatch[2]);
+            } else if (state.projectMetadata && state.projectMetadata.screens && state.projectMetadata.screens[activeFileName]?.version !== undefined) {
+                currentVer = parseFloat(state.projectMetadata.screens[activeFileName].version);
+            }
+            
+            nextVer = parseFloat((currentVer + 0.1).toFixed(1));
+            
+            // Sync all cover metadata and auto-increment version
+            htmlContent = syncCoverMetadata(htmlContent, Object.assign({}, state.projectMetadata, projectMeta), true, activeFileName);
+        } else if (htmlContent && htmlContent.includes('cover-jira-id')) {
             const jiraValue = projectMeta.jira || '-';
             htmlContent = htmlContent.replace(/(<div[^>]*id="cover-jira-id"[^>]*>)[^<]*(<\/div>)/i, `$1${jiraValue}$2`);
         }
 
-        const activeFileName = state.activeFile ? state.activeFile.name : null;
-
         const success = await updateScreenMetadata(state.currentProject, activeFileName, { 
             projectMeta, 
             htmlContent,
+            version: nextVer,
             description: state.activeFile ? state.activeFile.meta.description : [],
             existingMetadata: state.projectMetadata
         }, () => {});
@@ -807,8 +885,13 @@ window.init = async function() {
 
                 const template = selectedCard.dataset.template;
                 const success = await createScreenFromTemplate(state.currentProject, screenName, template, {
-                    PROJECT_TITLE: state.projectMetadata.title,
-                    SCREEN_NAME: screenName
+                    PROJECT_TITLE: state.projectMetadata.title || '',
+                    PROJECT_NAME: state.projectMetadata.title || '',
+                    SCREEN_NAME: screenName,
+                    VERSION: '0.1',
+                    JIRA: state.projectMetadata.jira || '-',
+                    AUTHOR: state.projectMetadata.assignee || '-',
+                    DATE: state.projectMetadata.period || new Date().toLocaleDateString('ko-KR')
                 }, msg => { if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = msg; });
 
                 if (success) {

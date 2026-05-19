@@ -91,6 +91,44 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 .text-marker:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
 .text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
 
+/* Premium Pin Marker Styling */
+.pin-marker {
+    position: absolute !important;
+    width: 28px !important;
+    height: 28px !important;
+    background: #fb7185 !important; /* Rose accent matching --accent-data */
+    color: #000000 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 4px 12px rgba(251, 113, 133, 0.4) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: 13px !important;
+    z-index: 1000 !important;
+    cursor: grab !important;
+    box-sizing: border-box !important;
+}
+.pin-marker.selected {
+    outline: 2px solid #6366f1 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.3) !important;
+}
+.pin-marker:hover {
+    box-shadow: 0 6px 16px rgba(251, 113, 133, 0.6) !important;
+    background: #fda4af !important; /* Lighter rose color on hover */
+}
+.pin-marker .lf-drag-handle {
+    top: -14px !important;
+    left: -14px !important;
+}
+.pin-marker .lf-delete-trigger {
+    top: -14px !important;
+    right: -14px !important;
+}
+
 body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; }
 /* Force disable transitions during drag for maximum smoothness */
 .lf-component.dragging-now, .lf-component.dragging-now * { 
@@ -162,7 +200,7 @@ window.V4UndoManager = (function() {
                 
                 if (window.parent && window.parent.state && window.parent.state.activeFile) {
                     const descList = window.parent.state.activeFile.meta.description || [];
-                    const remainingPins = document.querySelectorAll('.text-marker');
+                    const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
                     
                     if (descList.length > remainingPins.length) {
                         descList.splice(remainingPins.length);
@@ -170,19 +208,31 @@ window.V4UndoManager = (function() {
                     
                     remainingPins.forEach((pin, idx) => {
                         pin.id = 'v4-pin-' + idx;
-                        const editable = pin.querySelector('.v4-editable-cell');
-                        const textContent = editable ? editable.innerText.trim() : "Edit Text";
-                        const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                        const isPinType = pin.classList.contains('pin-marker');
                         
                         if (!descList[idx]) {
                             descList[idx] = {};
                         }
                         
-                        descList[idx].text = textContent;
-                        descList[idx].html = htmlContent;
-                        descList[idx].x = parseFloat(pin.style.left) || 0;
-                        descList[idx].y = parseFloat(pin.style.top) || 0;
-                        descList[idx].standardized = true;
+                        if (isPinType) {
+                            // Circular Pin: Only sync coordinates, preserve type and text from parent state
+                            descList[idx].x = parseFloat(pin.style.left) || 0;
+                            descList[idx].y = parseFloat(pin.style.top) || 0;
+                            descList[idx].type = 'pin';
+                            descList[idx].standardized = true;
+                        } else {
+                            // Inline Text Component: Sync full content and style
+                            const editable = pin.querySelector('.v4-editable-cell');
+                            const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                            const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                            
+                            descList[idx].text = textContent;
+                            descList[idx].html = htmlContent;
+                            descList[idx].x = parseFloat(pin.style.left) || 0;
+                            descList[idx].y = parseFloat(pin.style.top) || 0;
+                            descList[idx].type = 'text';
+                            descList[idx].standardized = true;
+                        }
                     });
                     
                     if (typeof window.parent.renderDescriptionList === 'function') {
@@ -248,7 +298,7 @@ window.v4Script = `
         const table = c.querySelector('table');
         const icon = c.querySelector('.lf-icon') || c.querySelector('img');
         const textCell = c.querySelector('.v4-editable-cell');
-        const isPin = c.classList.contains('text-marker');
+        const isPin = c.classList.contains('text-marker') || c.classList.contains('pin-marker');
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
@@ -340,7 +390,7 @@ window.v4Script = `
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
             // Sync deletion for pins
-            if (c.classList.contains('text-marker')) {
+            if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
                 const idx = parseInt(c.id.replace('v4-pin-', ''));
                 notifyParent({ type: 'LF_DELETE_PIN', index: idx });
             }
@@ -454,7 +504,7 @@ window.v4Script = `
             notifyParent({ type: 'LF_SNAP_END' });
             
             // Sync position for pins (text markers) - now using px directly
-            if (activeEl.classList.contains('text-marker')) {
+            if (activeEl.classList.contains('text-marker') || activeEl.classList.contains('pin-marker')) {
                 const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
                 notifyParent({
                     type: 'LF_UPDATE_PIN_POS',
@@ -467,7 +517,7 @@ window.v4Script = `
             if (activeEl.classList.contains('lf-group')) {
                 const scale = (window.parent && window.parent.state && window.parent.state.transform) ? window.parent.state.transform.scale : 1;
                 const hostRect = document.body.getBoundingClientRect();
-                activeEl.querySelectorAll('.text-marker').forEach(child => {
+                activeEl.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
                     const idx = parseInt(child.id.replace('v4-pin-', ''));
                     if (!isNaN(idx)) {
                         const childRect = child.getBoundingClientRect();
@@ -530,7 +580,7 @@ window.v4Script = `
                         c.style.top = (t + dy) + 'px';
                         updateHandles(c);
                         
-                        if (c.classList.contains('text-marker')) {
+                        if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
                             const idx = parseInt(c.id.replace('v4-pin-', ''));
                             notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: l + dx, y: t + dy });
                         }
@@ -541,7 +591,7 @@ window.v4Script = `
                         
                         // Sync children if it's a group
                         if (c.classList.contains('lf-group')) {
-                            c.querySelectorAll('.text-marker').forEach(child => {
+                            c.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
                                 const idx = parseInt(child.id.replace('v4-pin-', ''));
                                 const childRect = child.getBoundingClientRect();
                                 const hostRect = document.body.getBoundingClientRect();
@@ -567,7 +617,7 @@ window.v4Script = `
                     selected.forEach(c => {
                         if (c.classList.contains('connector-line')) {
                             notifyParent({ type: 'LF_DELETE_CONNECTOR', id: c.id });
-                        } else if (c.classList.contains('text-marker')) {
+                        } else if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
                             const idx = parseInt(c.id.replace('v4-pin-', ''));
                             notifyParent({ type: 'LF_DELETE_PIN', index: idx });
                             c.remove();
@@ -605,9 +655,13 @@ window.v4Script = `
             return;
         }
         if (d.type === 'LF_REORDER_PINS') {
-            const pins = document.querySelectorAll('.text-marker');
+            const pins = document.querySelectorAll('.text-marker, .pin-marker');
             pins.forEach((pin, idx) => {
                 pin.id = 'v4-pin-' + idx;
+                const badge = pin.querySelector('.pin-number-badge');
+                if (badge) {
+                    badge.innerText = idx + 1;
+                }
             });
             return;
         }
@@ -631,21 +685,39 @@ window.v4Script = `
                 if (!div) {
                     div = document.createElement('div');
                     div.id = 'v4-pin-' + idx;
-                    div.className = 'lf-component text-marker';
                     host.appendChild(div);
                 }
                 
-                div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
-                                '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
-                                '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+                const isPinType = (pin.type === 'pin' || pin.type === undefined);
+                div.className = 'lf-component ' + (isPinType ? 'pin-marker' : 'text-marker');
                 
-                div.style.width = 'fit-content';
-                div.style.height = 'auto';
+                if (isPinType) {
+                    div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                                    '<div class="pin-number-badge" style="pointer-events:none; font-weight:800; font-size:14px; color:#000;">' + (idx + 1) + '</div>' +
+                                    '<div class="lf-delete-trigger" style="right:-10px; top:-10px;">&times;</div>';
+                    div.style.width = '28px';
+                    div.style.height = '28px';
+                } else {
+                    div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                                    '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
+                                    '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+                    div.style.width = 'fit-content';
+                    div.style.height = 'auto';
+                }
                 div.style.zIndex = '1000';
 
+                let xVal = parseFloat(pin.x) || 0;
+                let yVal = parseFloat(pin.y) || 0;
+                
+                // Convert legacy percentage coordinates to absolute pixels based on 1440x900 canvas
+                if (!pin.standardized && xVal <= 100 && yVal <= 100) {
+                    xVal = xVal * 14.4;
+                    yVal = yVal * 9.0;
+                }
+
                 // Global absolute position relative to body
-                div.style.left = (parseFloat(pin.x) || 0) + 'px';
-                div.style.top = (parseFloat(pin.y) || 0) + 'px';
+                div.style.left = xVal + 'px';
+                div.style.top = yVal + 'px';
                 
                 updateHandles(div);
             });

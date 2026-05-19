@@ -405,6 +405,9 @@ async function updateScreenMetadata(project, screenFilename, data, statusCallbac
         metadata.screens[screenFilename] = metadata.screens[screenFilename] || {};
         metadata.screens[screenFilename].description = data.description;
         metadata.screens[screenFilename].updatedAt = new Date().toISOString();
+        if (data.version !== undefined) {
+            metadata.screens[screenFilename].version = data.version;
+        }
     }
     
     if (statusCallback) statusCallback('Saving...', '#facc15');
@@ -466,7 +469,8 @@ async function createScreenFromTemplate(project, screenName, templateName, injec
                 title: injectData.SCREEN_NAME || filename,
                 type: type,
                 updatedAt: new Date().toISOString(), 
-                template: templateName 
+                template: templateName,
+                version: (type === 'cover') ? 0.1 : undefined
             };
             
             // Add to screenOrder if exists

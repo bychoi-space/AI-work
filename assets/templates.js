@@ -103,7 +103,7 @@ window.LF_TEMPLATES = {
         <div id="cover-title" class="lf-component" style="top: 220px; left: 80px; min-width: 800px;">
             <div class="lf-drag-handle"><span class="material-icons-outlined" style="font-size:14px;">drag_indicator</span></div>
             <div class="lf-delete-trigger">×</div>
-            <div contenteditable="true" class="v4-editable-cell" style="font-size: 64px; font-weight: 900; line-height: 1.15; letter-spacing: -2px; color: var(--v4-text); margin-bottom: 28px;">{{PROJECT_NAME}}</div>
+            <div id="cover-project-title" contenteditable="true" class="v4-editable-cell" style="font-size: 64px; font-weight: 900; line-height: 1.15; letter-spacing: -2px; color: var(--v4-text); margin-bottom: 28px;">{{PROJECT_NAME}}</div>
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div style="width: 40px; height: 3px; background: var(--v4-accent);"></div>
                 <div contenteditable="true" class="v4-editable-cell" style="font-size: 24px; color: var(--v4-text-sub); font-weight: 500; letter-spacing: 1px; text-transform: uppercase;">Technical Design Specification</div>
@@ -117,7 +117,7 @@ window.LF_TEMPLATES = {
             <div style="display: flex; align-items: center; gap: 24px;">
                 <div style="display: flex; flex-direction: column; gap: 4px;">
                     <span style="font-size: 14px; font-weight: 800; color: var(--v4-text-sub);">DOCUMENT VERSION</span>
-                    <div contenteditable="true" class="v4-editable-cell" style="font-size: 28px; font-weight: 800; color: var(--v4-accent);">v{{VERSION}}</div>
+                    <div id="cover-version-val" contenteditable="true" class="v4-editable-cell" style="font-size: 28px; font-weight: 800; color: var(--v4-accent);">v{{VERSION}}</div>
                 </div>
                 <div style="width: 1px; height: 40px; background: var(--v4-border);"></div>
                 <div style="display: flex; flex-direction: column; gap: 4px;">
@@ -141,11 +141,11 @@ window.LF_TEMPLATES = {
                 <tbody>
                     <tr>
                         <td style="font-weight: 600; color: #6d7175;">Lead Designer / Author</td>
-                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700; color: #1a1c1e !important;">{{AUTHOR}}</td>
+                        <td id="cover-author" contenteditable="true" class="v4-editable-cell" style="font-weight: 700; color: #1a1c1e !important;">{{AUTHOR}}</td>
                     </tr>
                     <tr>
                         <td style="font-weight: 600; color: #6d7175;">Publication Date</td>
-                        <td contenteditable="true" class="v4-editable-cell" style="font-weight: 700; color: #1a1c1e !important;">{{DATE}}</td>
+                        <td id="cover-date" contenteditable="true" class="v4-editable-cell" style="font-weight: 700; color: #1a1c1e !important;">{{DATE}}</td>
                     </tr>
                     <tr>
                         <td style="font-weight: 600; color: #6d7175;">System Context</td>
