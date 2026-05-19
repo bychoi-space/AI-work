@@ -72,6 +72,7 @@ window.DOM = {
     tablePropSection: get('table-inspector-section'),
     shapePropSection: get('shape-inspector-section'),
     linePropSection: get('line-editor-section'),
+    iconPropSection: get('icon-inspector-section'),
     textColorPicker: get('text-color-picker'),
     colorPresets: document.querySelectorAll('.color-preset'),
 
@@ -202,16 +203,17 @@ window.updateProperties = function(compStyles) {
 
         state.isEditing = true;
         state.editingIndex = (compStyles.pinIndex !== undefined && compStyles.pinIndex !== -1) ? compStyles.pinIndex : compStyles.id;
-        state.editingType = compStyles.isPin ? 'pin' : (compStyles.isTable ? 'table' : (compStyles.isShape ? 'shape' : (compStyles.isConnector ? 'line' : 'comp')));
+        state.editingType = compStyles.isPin ? 'pin' : (compStyles.isTable ? 'table' : (compStyles.isShape ? 'shape' : (compStyles.isConnector ? 'line' : (compStyles.isIcon ? 'icon' : 'comp'))));
 
         // Hide all sections first
         if (DOM.textPropSection) DOM.textPropSection.style.display = 'none';
         if (DOM.tablePropSection) DOM.tablePropSection.style.display = 'none';
         if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'none';
         if (DOM.linePropSection) DOM.linePropSection.style.display = 'none';
+        if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'none';
 
         // Show relevant section
-        if (state.editingType === 'pin' || compStyles.html !== undefined) {
+        if (state.editingType === 'pin') {
             if (DOM.textPropSection) DOM.textPropSection.style.display = 'block';
         } 
         
@@ -221,10 +223,12 @@ window.updateProperties = function(compStyles) {
             if (DOM.tablePropSection) DOM.tablePropSection.style.display = 'block';
         } else if (state.editingType === 'line') {
             if (DOM.linePropSection) DOM.linePropSection.style.display = 'block';
+        } else if (state.editingType === 'icon') {
+            if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'block';
         }
 
         // Load content to Quill
-        if (compStyles.html !== undefined && window.quillEditor) {
+        if (state.editingType === 'pin' && compStyles.html !== undefined && window.quillEditor) {
             setTimeout(() => {
                 window.quillEditor.root.innerHTML = compStyles.html;
                 console.log("[Inspector] Loaded HTML to Quill:", compStyles.html);
@@ -234,20 +238,7 @@ window.updateProperties = function(compStyles) {
         // Sync Property Controls
         const s = compStyles.currentStyles || {};
         if (DOM.textColorPicker) DOM.textColorPicker.value = s.text || "#000000";
-        
-        // Show Selection Bar
-        if (DOM.selectionBar) {
-            DOM.selectionBar.style.display = 'flex';
-            if (DOM.selectionNumber) DOM.selectionNumber.innerText = "1";
-            if (DOM.selectionLabel) {
-                let label = "COMPONENT";
-                if (compStyles.isPin) label = "TEXT MARKER";
-                else if (compStyles.isShape) label = "SHAPE";
-                else if (compStyles.isTable) label = "TABLE";
-                else if (compStyles.isConnector) label = "CONNECTOR";
-                DOM.selectionLabel.innerText = label;
-            }
-        }
+
     } else {
         state.isEditing = false;
         state.editingIndex = -1;
@@ -257,6 +248,7 @@ window.updateProperties = function(compStyles) {
         if (DOM.tablePropSection) DOM.tablePropSection.style.display = 'none';
         if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'none';
         if (DOM.linePropSection) DOM.linePropSection.style.display = 'none';
+        if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'none';
     }
 };
 

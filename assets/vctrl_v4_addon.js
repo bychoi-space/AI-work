@@ -144,18 +144,10 @@
     }));
 
     // Icon Editor Bindings
-    const btnIconBlack = document.getElementById('btn-icon-black');
-    const btnIconWhite = document.getElementById('btn-icon-white');
-    if (btnIconBlack) {
-        btnIconBlack.onclick = () => notifyIframe({ type: 'LF_UPDATE_STYLE', selector: 'img, .lf-icon', style: { color: 'black' } });
-    }
-    if (btnIconWhite) {
-        btnIconWhite.onclick = () => notifyIframe({ type: 'LF_UPDATE_STYLE', selector: 'img, .lf-icon', style: { color: 'white' } });
-    }
-    bindStyleUpdate('icon-border-color', (val) => ({
+    bindStyleUpdate('icon-color', (val) => ({
         type: 'LF_UPDATE_STYLE',
         selector: 'img, .lf-icon',
-        style: { borderColor: val, borderStyle: 'solid', borderWidth: '1px' }
+        style: { color: val }
     }));
 
     // Universal Transparency Logic
@@ -249,7 +241,7 @@
                 syncColor('table-border-color', 'table-border-wrapper', s.border, s.isBorderTransparent);
                 syncColor('table-text-color', '', s.text, false);
 
-                syncColor('icon-border-color', 'icon-border-wrapper', s.border, s.isBorderTransparent);
+                syncColor('icon-color', 'icon-color-wrapper', s.iconColor, false);
                 
                 // Sync Text Marker Color Picker
                 if (data.isPin) {

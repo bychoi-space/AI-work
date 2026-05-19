@@ -48,6 +48,9 @@ window.GroupingManager = (function() {
             MessageHub.subscribe('LF_DESELECT', () => {
                 selectedIds = [];
                 updateSelectionUI();
+                if (typeof window.updateProperties === 'function') {
+                    window.updateProperties();
+                }
             });
             MessageHub.subscribe('LF_MOLECULE_EXTRACTED', async (data) => {
                 const mol = data.moleculeData;
@@ -215,10 +218,6 @@ window.GroupingManager = (function() {
         if (!DOM || !DOM.selectionBar) return;
 
         if (selectedIds.length > 0) {
-            DOM.selectionBar.style.display = 'flex';
-            if (DOM.selectionNumber) DOM.selectionNumber.innerText = selectedIds.length;
-            if (DOM.selectionLabel) DOM.selectionLabel.innerText = selectedIds.length > 1 ? 'OBJECTS' : 'OBJECT';
-            
             // Show Group button if 2+ selected
             DOM.btnGroup.style.display = selectedIds.length > 1 ? 'flex' : 'none';
             
@@ -233,6 +232,13 @@ window.GroupingManager = (function() {
             }
             DOM.btnUngroup.style.display = showUngroup ? 'flex' : 'none';
             if (DOM.btnAddToMolecules) DOM.btnAddToMolecules.style.display = showUngroup ? 'flex' : 'none';
+
+            // Show Selection Bar only if multiple objects selected OR it's a group
+            const shouldShowSelectionBar = (selectedIds.length > 1) || showUngroup;
+            DOM.selectionBar.style.display = shouldShowSelectionBar ? 'flex' : 'none';
+
+            if (DOM.selectionNumber) DOM.selectionNumber.innerText = selectedIds.length;
+            if (DOM.selectionLabel) DOM.selectionLabel.innerText = selectedIds.length > 1 ? 'OBJECTS' : 'OBJECT';
 
             // Show Align Bar if 2+ selected (RESTORED)
             if (DOM.alignBar) {

@@ -246,7 +246,7 @@ window.v4Script = `
     const _getCompStyles = (c) => {
         const shape = c.querySelector('.v4-shape');
         const table = c.querySelector('table');
-        const icon = c.querySelector('.lf-icon');
+        const icon = c.querySelector('.lf-icon') || c.querySelector('img');
         const textCell = c.querySelector('.v4-editable-cell');
         const isPin = c.classList.contains('text-marker');
         
@@ -258,6 +258,19 @@ window.v4Script = `
             }
             return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
         };
+
+        let detectedIconColor = "";
+        if (icon) {
+            const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
+            const dot = icon.querySelector('.v4-radio div');
+            if (poly) {
+                detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || "";
+            } else if (dot) {
+                detectedIconColor = dot.style.backgroundColor || "";
+            } else {
+                detectedIconColor = icon.style.color || icon.getAttribute('stroke') || "";
+            }
+        }
 
         return {
             id: c.id,
@@ -277,6 +290,7 @@ window.v4Script = `
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
+                iconColor: _rgb2hex(detectedIconColor || "#000000"),
                 isBgTransparent: (() => {
                     const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
@@ -794,15 +808,10 @@ window.v4Script = `
             host.appendChild(v);
             document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             v.classList.add('selected');
-            const isPin = v.classList.contains('text-marker');
+            const styles = _getCompStyles(v);
             notifyParent({ 
                 type: 'LF_COMP_SELECTED', 
-                id: v.id, 
-                isTable: !!v.querySelector('table'), 
-                isShape: !!v.querySelector('.v4-shape'),
-                isIcon: !!v.querySelector('.lf-icon') || !!v.querySelector('img'),
-                isPin: isPin,
-                pinIndex: isPin ? parseInt(v.id.replace('v4-pin-', '')) : -1
+                ...styles
             });
             markDirty();
         } else if (d.type === 'LF_INSERT_COMPONENTS') {
@@ -878,6 +887,108 @@ window.v4Script = `
                     if (d.style.borderColor) {
                         svgShape.style.stroke = d.style.borderColor;
                         svgShape.style.strokeWidth = "1.6";
+                    }
+                }
+
+                // --- ICON COLOR SPECIAL INTEGRATION ---
+                const isIconComp = s.querySelector('.lf-icon') || s.querySelector('img');
+                if (isIconComp && d.style.color) {
+                    const iconColor = d.style.color;
+                    
+                    // 1. SVG coloring (Arrows, Close, Checkbox SVG)
+                    const innerSvg = t.querySelector('svg') || (t.tagName.toLowerCase() === 'svg' ? t : null);
+                    if (innerSvg) {
+                        innerSvg.style.color = iconColor;
+                        
+                        // Also apply stroke and fill overrides to the SVG root if it has stroke/fill attributes
+                        if (innerSvg.getAttribute('stroke') && innerSvg.getAttribute('stroke') !== 'none') {
+                            innerSvg.style.stroke = iconColor;
+                        }
+                        if (innerSvg.getAttribute('fill') && innerSvg.getAttribute('fill') !== 'none') {
+                            innerSvg.style.fill = iconColor;
+                        }
+                        
+                        // Checkbox custom handling: only color the stroke of checkmark
+                        if (t.classList.contains('v4-checkbox')) {
+                            const checkmark = innerSvg.querySelector('polyline, path');
+                            if (checkmark) checkmark.style.stroke = iconColor;
+                        } else {
+                            const paths = innerSvg.querySelectorAll('path, line, polyline, polygon, rect, circle');
+                            paths.forEach(p => {
+                                if (p.getAttribute('stroke') && p.getAttribute('stroke') !== 'none') {
+                                    p.style.stroke = iconColor;
+                                }
+                                if (p.getAttribute('fill') && p.getAttribute('fill') !== 'none') {
+                                    p.style.fill = iconColor;
+                                }
+                            });
+                        }
+                    }
+                    
+                    // 2. Radio Button dot coloring
+                    const innerDot = t.querySelector('.v4-radio div') || (t.classList.contains('v4-radio') ? t.querySelector('div') : null);
+                    if (innerDot) {
+                        innerDot.style.backgroundColor = iconColor;
+                    }
+                    
+                    // 3. Sprite / Image mask-based coloring for non-SVG icons
+                    if (!innerSvg && !innerDot) {
+                        t.style.filter = 'none';
+                        if (t.tagName.toLowerCase() === 'img') {
+                            let origSrc = t.getAttribute('data-original-src');
+                            if (!origSrc) {
+                                origSrc = t.src;
+                                t.setAttribute('data-original-src', origSrc);
+                            }
+                            t.style.webkitMaskImage = 'url("' + origSrc + '")';
+                            t.style.webkitMaskSize = 'contain';
+                            t.style.webkitMaskPosition = 'center';
+                            t.style.webkitMaskRepeat = 'no-repeat';
+                            
+                            t.style.maskImage = 'url("' + origSrc + '")';
+                            t.style.maskSize = 'contain';
+                            t.style.maskPosition = 'center';
+                            t.style.maskRepeat = 'no-repeat';
+                            
+                            t.style.backgroundColor = iconColor;
+                            t.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'/>";
+                        } else {
+                            const origBg = t.getAttribute('data-original-bg') || window.getComputedStyle(t).backgroundImage;
+                            const origPos = t.getAttribute('data-original-pos') || window.getComputedStyle(t).backgroundPosition;
+                            const origSize = t.getAttribute('data-original-size') || window.getComputedStyle(t).backgroundSize;
+                            
+                            if (origBg && origBg !== 'none') {
+                                if (!t.getAttribute('data-original-bg')) {
+                                    t.setAttribute('data-original-bg', origBg);
+                                    t.setAttribute('data-original-pos', origPos);
+                                    t.setAttribute('data-original-size', origSize);
+                                }
+                                
+                                t.style.setProperty('webkit-mask-image', origBg, 'important');
+                                t.style.setProperty('webkit-mask-position', origPos, 'important');
+                                t.style.setProperty('webkit-mask-size', origSize, 'important');
+                                t.style.setProperty('webkit-mask-repeat', 'no-repeat', 'important');
+                                
+                                t.style.setProperty('mask-image', origBg, 'important');
+                                t.style.setProperty('mask-position', origPos, 'important');
+                                t.style.setProperty('mask-size', origSize, 'important');
+                                t.style.setProperty('mask-repeat', 'no-repeat', 'important');
+                                
+                                t.style.setProperty('background-color', iconColor, 'important');
+                                t.style.setProperty('background-image', 'none', 'important');
+                                
+                                const computedPadding = window.getComputedStyle(t).paddingTop;
+                                const hasPadding = (t.style.padding && t.style.padding !== '0px') || (computedPadding && computedPadding !== '0px' && computedPadding !== '0');
+                                if (hasPadding) {
+                                    t.style.setProperty('webkit-mask-origin', 'content-box', 'important');
+                                    t.style.setProperty('webkit-mask-clip', 'content-box', 'important');
+                                    t.style.setProperty('mask-origin', 'content-box', 'important');
+                                    t.style.setProperty('mask-clip', 'content-box', 'important');
+                                    t.style.setProperty('background-origin', 'content-box', 'important');
+                                    t.style.setProperty('background-clip', 'content-box', 'important');
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1228,6 +1339,73 @@ window.v4Script = `
                 const px = (val / 100) * window.innerHeight;
                 c.style.top = px + 'px';
                 console.log("[V4 Migration] Migrated " + c.id + " top: " + tStr + " -> " + c.style.top);
+            }
+        });
+
+        // --- Image-to-Div Icon Migration for robust CSS Masking ---
+        document.querySelectorAll('.lf-component img').forEach(img => {
+            const parent = img.parentElement;
+            if (!parent) return;
+            
+            const isLogo = img.classList.contains('v4-logo-img');
+            const isShare = img.src && img.src.includes('iconShare');
+            const isIcon = img.classList.contains('lf-icon');
+            
+            if (isLogo || isShare || isIcon) {
+                const div = document.createElement('div');
+                div.className = img.className;
+                if (!div.classList.contains('lf-icon')) {
+                    div.classList.add('lf-icon');
+                }
+                
+                const origSrc = img.getAttribute('data-original-src') || img.src;
+                div.setAttribute('data-original-src', origSrc);
+                
+                const origBg = img.getAttribute('data-original-bg');
+                if (origBg) div.setAttribute('data-original-bg', origBg);
+                
+                div.style.cssText = img.style.cssText;
+                div.style.width = '100%';
+                div.style.height = '100%';
+                div.style.pointerEvents = 'none';
+                
+                if (!isLogo) {
+                    div.style.setProperty('padding', '8px', 'important');
+                    div.style.setProperty('box-sizing', 'border-box', 'important');
+                    div.style.setProperty('background-origin', 'content-box', 'important');
+                    div.style.setProperty('background-clip', 'content-box', 'important');
+                    div.style.setProperty('mask-origin', 'content-box', 'important');
+                    div.style.setProperty('webkit-mask-origin', 'content-box', 'important');
+                    div.style.setProperty('mask-clip', 'content-box', 'important');
+                    div.style.setProperty('webkit-mask-clip', 'content-box', 'important');
+                }
+                
+                const isColored = img.style.backgroundColor || img.getAttribute('data-original-bg');
+                if (isColored) {
+                    const color = img.style.backgroundColor || '';
+                    div.style.setProperty('background-color', color, 'important');
+                    div.style.setProperty('background-image', 'none', 'important');
+                    
+                    const bgUrl = 'url("' + origSrc + '")';
+                    div.setAttribute('data-original-bg', bgUrl);
+                    div.style.setProperty('webkit-mask-image', bgUrl, 'important');
+                    div.style.setProperty('webkit-mask-position', 'center', 'important');
+                    div.style.setProperty('webkit-mask-size', 'contain', 'important');
+                    div.style.setProperty('webkit-mask-repeat', 'no-repeat', 'important');
+                    
+                    div.style.setProperty('mask-image', bgUrl, 'important');
+                    div.style.setProperty('mask-position', 'center', 'important');
+                    div.style.setProperty('mask-size', 'contain', 'important');
+                    div.style.setProperty('mask-repeat', 'no-repeat', 'important');
+                } else {
+                    div.style.setProperty('background-image', 'url("' + origSrc + '")', 'important');
+                    div.style.setProperty('background-size', 'contain', 'important');
+                    div.style.setProperty('background-position', 'center', 'important');
+                    div.style.setProperty('background-repeat', 'no-repeat', 'important');
+                }
+                
+                parent.replaceChild(div, img);
+                console.log("[V4 Migration] Migrated image icon/logo to div element:", origSrc);
             }
         });
 

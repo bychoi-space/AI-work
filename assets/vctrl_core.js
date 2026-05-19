@@ -245,7 +245,7 @@ window.insertAtomicComponent = function(type, name) {
     let defaultStyle = { width: '120px', height: '100px' };
 
     if (name === 'LF Logo') {
-        contentHtml = `<img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" class="v4-logo-img">`;
+        contentHtml = `<div class="v4-logo-img lf-icon" style="width:100%; height:100%; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png'); background-size: contain; background-position: center; background-repeat: no-repeat; pointer-events: none;"></div>`;
         defaultStyle = { width: '140px', height: '40px' };
     } else if (name === 'Primary Button') {
         contentHtml = `<div style="background:#00e5ff; color:#000; border:none; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(0,229,255,0.3); pointer-events:none;">BUTTON</div>`;
@@ -269,7 +269,7 @@ window.insertAtomicComponent = function(type, name) {
         } else if (name === 'Radio Button') {
             contentHtml = `<div class="v4-radio lf-icon" style="width:100%; height:100%; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center;"><div style="width:45%; height:45%; background:#ffffff; border-radius:50%;"></div></div>`;
         } else if (name === 'Share Premium') {
-            contentHtml = `<img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width:100%; height:100%; object-fit:contain; pointer-events:none;">`;
+            contentHtml = `<div class="lf-icon" style="width:100%; height:100%; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 8px; box-sizing: border-box; background-origin: content-box; background-clip: content-box; pointer-events: none;"></div>`;
         } else if (name.startsWith('Cust ')) {
             const iconClass = 'lf-' + name.toLowerCase().replace(' ', '-');
             contentHtml = `<div class="lf-icon ${iconClass}"></div>`;
