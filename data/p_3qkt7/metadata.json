@@ -4,11 +4,14 @@
     "00_Cover_422.html": {
       "title": "00_Cover_422",
       "type": "cover",
-      "updatedAt": "2026-05-19T06:23:07.534Z",
-      "template": "template_cover.html"
+      "updatedAt": "2026-05-19T07:00:09.660Z",
+      "template": "template_cover.html",
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
-  "developer": "",
-  "period": "2026.05.19(화) ~ 2026.06.07(일)"
+  "developer": "우성룡",
+  "period": "2026.05.19(화) ~ 2026.06.07(일)",
+  "jira": "LFML-143641"
 }
