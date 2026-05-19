@@ -8,6 +8,12 @@
       "template": "template_cover.html",
       "description": [],
       "connectors": []
+    },
+    "03_Delivery_Notice_494.html": {
+      "title": "03_Delivery_Notice_494",
+      "type": "plan-delivery",
+      "updatedAt": "2026-05-19T07:05:03.374Z",
+      "template": "template_plan_delivery.html"
     }
   },
   "assignee": "최범열",
