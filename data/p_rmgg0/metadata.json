@@ -6,74 +6,15 @@
       "type": "cover",
       "updatedAt": "2026-05-11T08:42:45.222Z",
       "template": "template_cover.html",
-      "description": []
+      "description": [],
+      "connectors": []
     },
     "06_Mobile_Design_3_773.html": {
       "title": "06_Mobile_Design_3_773",
       "type": "mobile-ui",
-      "updatedAt": "2026-05-19T02:04:20.400Z",
+      "updatedAt": "2026-05-20T05:23:25.982Z",
       "template": "template_mobile_ui_3.html",
-      "description": [
-        {
-          "html": "<p><span style=\"font-size: 12px;\"><span class=\"ql-cursor\">﻿﻿﻿﻿﻿</span></span><strong style=\"font-size: 24px;\">TITLE</strong></p>",
-          "text": "TITLE",
-          "x": 250.795,
-          "y": 142.792,
-          "type": "text",
-          "color": "#000000",
-          "standardized": true
-        },
-        {
-          "html": "<p>DESCRIPTION</p>",
-          "text": "DESCRIPTION",
-          "x": 236.611,
-          "y": 182.705,
-          "type": "text",
-          "color": "#000000",
-          "standardized": true
-        },
-        {
-          "html": "<p>기획전 명칭</p>",
-          "text": "기획전 명칭",
-          "x": 52.823,
-          "y": 9.6493,
-          "type": "text",
-          "color": "#000000",
-          "standardized": true
-        },
-        {
-          "html": "<p>기획전 명칭</p>",
-          "text": "기획전 명칭",
-          "x": 52.823,
-          "y": 9.6493,
-          "type": "text",
-          "color": "#000000",
-          "standardized": true
-        },
-        {
-          "html": "<p>기획전 명칭</p>",
-          "text": "기획전 명칭",
-          "x": 168.823,
-          "y": 83.6493,
-          "type": "text",
-          "color": "#000000",
-          "standardized": true
-        },
-        {
-          "text": "SUB DESCRIPTION",
-          "html": "<p>SUB DESCRIPTION</p>",
-          "x": 221.427,
-          "y": 593.451,
-          "standardized": true
-        },
-        {
-          "text": "SUB TITLE123",
-          "html": "<p><strong style=\"font-size: 16px;\">SUB TITLE123</strong></p>",
-          "x": 243.549,
-          "y": 564.948,
-          "standardized": true
-        }
-      ],
+      "description": [],
       "connectors": []
     }
   },
