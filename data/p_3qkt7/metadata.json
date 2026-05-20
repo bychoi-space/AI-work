@@ -12,9 +12,16 @@
     "03_Delivery_Notice_494.html": {
       "title": "배송예정일 설정 (5/22 ~ 5/26)",
       "type": "plan",
-      "updatedAt": "2026-05-20T01:02:30.784Z",
+      "updatedAt": "2026-05-20T01:24:52.180Z",
       "template": "template_plan_delivery.html",
-      "description": "[object Object]",
+      "description": [
+        {
+          "text": "정상적으로는 5/25(월) 배송예정일 안내가 되어야 합니다.\n\n물류에서 '미출고 이슈' 리스크로 인하여, 5/26(화) 배송예정일 안내를 요구하고 있습니다.",
+          "x": 415,
+          "y": 726,
+          "standardized": true
+        }
+      ],
       "connectors": [],
       "defaultTab": "description"
     },
