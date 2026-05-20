@@ -441,6 +441,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const icon = c.querySelector('.lf-icon') || c.querySelector('img');
         const textCell = c.querySelector('.v4-editable-cell');
         const isPin = c.classList.contains('text-marker') || c.classList.contains('pin-marker');
+        const isDescriptionPin = c.classList.contains('pin-marker');
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
@@ -470,6 +471,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             isShape: !!shape,
             isIcon: !!icon,
             isPin: isPin,
+            isDescriptionPin: isDescriptionPin,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? shape.innerHTML : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
@@ -971,8 +973,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const sY = window.scrollY;
             const sX = window.scrollX;
             
-            const compW = (d.style && d.style.width) ? parseInt(d.style.width) || 200 : 200;
-            const compH = (d.style && d.style.height) ? parseInt(d.style.height) || 100 : 100;
+            // pin-marker 타입인 경우 규격(28px * 28px)을 강제 지정
+            const isPinMarker = d.className && d.className.includes('pin-marker');
+            const compW = isPinMarker ? 28 : ((d.style && d.style.width) ? parseInt(d.style.width) || 200 : 200);
+            const compH = isPinMarker ? 28 : ((d.style && d.style.height) ? parseInt(d.style.height) || 100 : 100);
             
             const centerTop = sY + (vh - compH) / 2;
             const centerLeft = sX + (vw - compW) / 2;
@@ -980,16 +984,25 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             const v = document.createElement('div'); 
             v.id = d.id || ('v4-comp-' + Date.now()); 
-            v.className = 'lf-component' + (d.isGroup ? ' lf-group' : '') + (d.className ? ' ' + d.className : ''); 
             v.style.position = 'absolute'; 
             v.style.top = centerTop + 'px'; 
             v.style.left = centerLeft + 'px'; 
             v.style.zIndex = '1000';
-            v.style.transform = 'none'; // Prevent drift during grouping
-            
-            if (d.style) Object.assign(v.style, d.style);
-            
-            v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+
+            if (isPinMarker) {
+                const idx = parseInt(d.id.replace('v4-pin-', '')) || 0;
+                v.className = 'lf-component pin-marker';
+                v.style.width = '28px';
+                v.style.height = '28px';
+                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                              '<div class="pin-number-badge" style="pointer-events:none; font-weight:800; font-size:14px; color:#000;">' + (idx + 1) + '</div>' +
+                              '<div class="lf-delete-trigger" style="right:-10px; top:-10px;">&times;</div>';
+            } else {
+                v.className = 'lf-component' + (d.isGroup ? ' lf-group' : '') + (d.className ? ' ' + d.className : ''); 
+                v.style.transform = 'none'; // Prevent drift during grouping
+                if (d.style) Object.assign(v.style, d.style);
+                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+            }
             
             // Smart Scaling based on Parent Viewport
             if (window.parent.state && window.parent.state.transform) {
@@ -1651,4 +1664,4 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     setTimeout(enforceDesignSystem, 500);
 })();
 
-</script></body></html>
+</script><div id="v4-pin-0" class="lf-component pin-marker" style="position: absolute; top: 719.703px; left: 415.5px; z-index: 1000; width: 28px; height: 28px;"><div class="pin-number-badge" style="pointer-events:none; font-weight:800; font-size:14px; color:#000;">1</div></div></body></html>
