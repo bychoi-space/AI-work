@@ -12,7 +12,7 @@
     "03_Delivery_Notice_494.html": {
       "title": "배송예정일 설정 (5/22 ~ 5/26)",
       "type": "plan",
-      "updatedAt": "2026-05-20T01:46:34.597Z",
+      "updatedAt": "2026-05-20T01:02:30.784Z",
       "template": "template_plan_delivery.html",
       "description": [
         {
@@ -28,11 +28,11 @@
     "03_Delivery_Notice_926.html": {
       "title": "배송예정일 설정 (6/2 ~ 6/9)",
       "type": "plan",
-      "updatedAt": "2026-05-20T01:27:10.385Z",
+      "updatedAt": "2026-05-20T01:47:17.340Z",
       "template": "template_plan_delivery.html",
       "description": [
         {
-          "text": "6/3(수) 택배가 배달을 하지 않기 때문에, 정상적으로 처리할 경우 6/4(목) 배송예정일 안내가 맞습니다.\n\n물류에서 '미출고 이슈' 리스크로 인하여, 6/5(금) 배송예정일 안내를 요구하고 있습니다.",
+          "text": "정상적으로 처리할 경우 6/4(목) 배송예정일 안내가 맞습니다.\n\n'미출고 이슈' 를 고려하여, 6/5(금) 배송예정일 안내로 진행하려 합니다.",
           "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\">Edit Text</div>",
           "x": 378.5,
           "y": 734,
