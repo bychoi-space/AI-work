@@ -12,9 +12,58 @@
     "06_Mobile_Design_3_773.html": {
       "title": "06_Mobile_Design_3_773",
       "type": "mobile-ui",
-      "updatedAt": "2026-05-20T05:23:25.982Z",
+      "updatedAt": "2026-05-20T07:04:55.665Z",
       "template": "template_mobile_ui_3.html",
-      "description": [],
+      "description": [
+        {
+          "text": "TITLE",
+          "html": "<p><span style=\"font-size: 12px;\"><span class=\"ql-cursor\">﻿﻿﻿﻿﻿﻿</span></span><strong style=\"font-size: 24px;\">TITLE</strong></p>",
+          "x": 250.795,
+          "y": 142.792,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "DESCRIPTION",
+          "html": "<p>DESCRIPTION</p>",
+          "x": 236.611,
+          "y": 182.705,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
+          "x": 52.823,
+          "y": 9.6493,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
+          "x": 52.823,
+          "y": 9.6493,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
+          "x": 168.823,
+          "y": 83.6493,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "SUB TITLE",
+          "html": "<p><strong style=\"font-size: 16px;\">SUB TITLE</strong></p>",
+          "x": 242.923,
+          "y": 566.438,
+          "type": "text",
+          "standardized": true
+        }
+      ],
       "connectors": []
     }
   },
