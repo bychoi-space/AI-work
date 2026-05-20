@@ -399,6 +399,7 @@ async function updateScreenMetadata(project, screenFilename, data, statusCallbac
         metadata.jira = data.projectMeta.jira || metadata.jira;
         metadata.figmaUrl = data.projectMeta.figmaUrl || metadata.figmaUrl;
         metadata.pubUrl = data.projectMeta.pubUrl || metadata.pubUrl;
+        metadata.themeIndex = data.projectMeta.themeIndex !== undefined ? data.projectMeta.themeIndex : metadata.themeIndex;
     }
     if (screenFilename) {
         metadata.screens = metadata.screens || {};

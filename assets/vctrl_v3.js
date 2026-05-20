@@ -248,7 +248,7 @@ function initV3Listeners() {
         }
         if (e.code === 'KeyV') setTool('select');
         if (e.code === 'KeyH') setTool('hand');
-        if (e.code === 'KeyT') { if (window.handleTextCreation) window.handleTextCreation(); }
+        if (e.code === 'KeyT') { if (window.handleTextboxCreation) window.handleTextboxCreation(); }
         if (e.code === 'KeyF') toggleFullscreen();
     });
 

@@ -374,7 +374,7 @@ window.renderV4Shapes = function() {
             classList += ' sidebar-tool-btn';
             dataAttrs = `data-tool="${item.toolName}"`;
             titleAttr = `${item.name} 추가`;
-            onclickAttr = `onclick="if (typeof window.handleTextCreation === 'function') window.handleTextCreation();"`;
+            onclickAttr = `onclick="if (typeof window.handleTextboxCreation === 'function') window.handleTextboxCreation();"`;
         } 
         // 2) 클릭 액션이 명시된 경우 (선그리기 등)
         else if (item.onclick) {

@@ -114,7 +114,7 @@ window.loadScreen = async function(fileName) {
     }
 
     // Inject/Update Script
-    const scriptBlock = '<script id="v4-inlined-script">\n' + window.v4UndoScript + '\n' + window.v4Script + '\n</script>';
+    const scriptBlock = '<script id="v4-inlined-script">\n' + window.v4UndoScript + '\n' + (window.v4TableScript || '') + '\n' + window.v4Script + '\n</script>';
     if (finalContent.includes('id="v4-inlined-script"')) {
         finalContent = finalContent.replace(/<script id="v4-inlined-script">[\s\S]*?<\/script>/i, scriptBlock);
     } else {
@@ -393,6 +393,19 @@ window.handleTextCreation = function() {
         window.insertV4ComponentById('v4-tool-text', newIdx);
     } else {
         console.error("[V4 Core] insertV4ComponentById not available for Text Creation.");
+    }
+    markAsDirty();
+};
+
+// Textbox Creation (NOT a description pin - pure editable text box on canvas)
+window.handleTextboxCreation = function() {
+    if (state.isReadOnly) return window.showAuthModal?.();
+    if (!state.activeFile) return window.Notification?.alert("스크린을 선택해주세요.", "알림", "warning");
+    
+    if (typeof window.insertV4ComponentById === 'function') {
+        window.insertV4ComponentById('v4-tool-text');
+    } else {
+        console.error("[V4 Core] insertV4ComponentById not available for Textbox Creation.");
     }
     markAsDirty();
 };
@@ -847,7 +860,7 @@ window.init = async function() {
                 if (tool) {
                     btn.onclick = () => {
                         if (tool === 'text') {
-                            if (typeof window.handleTextCreation === 'function') window.handleTextCreation();
+                            if (typeof window.handleTextboxCreation === 'function') window.handleTextboxCreation();
                         } else if (typeof window.setTool === 'function') {
                             window.setTool(tool);
                         }

@@ -1,0 +1,548 @@
+/* ==========================================================================
+   bychoi Workspace - Premium Light Theme (dashboard.css)
+   ========================================================================== */
+
+:root {
+    --bg-base: #f8fafc; /* Slate 50 */
+    --panel-bg: rgba(255, 255, 255, 0.75);
+    --border-color: rgba(226, 232, 240, 0.8);
+    --text-primary: #0f172a; /* Slate 900 */
+    --text-secondary: #64748b; /* Slate 500 */
+    --accent: #4f46e5; /* Indigo 600 */
+    --accent-hover: #4338ca;
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    --hover-shadow: 0 20px 40px -10px rgba(79, 70, 229, 0.12), 0 10px 15px -5px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    margin: 0; padding: 0;
+    background: var(--bg-base) !important;
+    background-image: none !important;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden !important;
+    display: flex;
+    flex-direction: column;
+}
+
+#dashboard-view {
+    background: transparent !important;
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    overflow-y: auto;
+}
+
+/* Premium Animated Background - Light Mesh Version */
+.bg-mesh-container {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1; overflow: hidden;
+    background: #f1f5f9; /* Slate 100 base */
+}
+.bg-image-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: transparent;
+    z-index: -1;
+}
+
+/* Light Soft Blobs */
+.bg-blob-1 {
+    position: absolute; width: 1100px; height: 1100px;
+    top: -350px; left: -250px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, rgba(56, 189, 248, 0) 70%); /* Light Sky Blue */
+    filter: blur(100px);
+    border-radius: 50%;
+    animation: moveBlob 40s infinite alternate ease-in-out;
+}
+.bg-blob-2 {
+    position: absolute; width: 1200px; height: 1200px;
+    bottom: -400px; right: -300px;
+    background: radial-gradient(circle, rgba(165, 180, 252, 0.2) 0%, rgba(165, 180, 252, 0) 70%); /* Light Indigo */
+    filter: blur(120px);
+    border-radius: 50%;
+    animation: moveBlob 50s infinite alternate-reverse ease-in-out;
+}
+.bg-blob-3 {
+    position: absolute; width: 850px; height: 850px;
+    top: 35%; left: 25%;
+    background: radial-gradient(circle, rgba(244, 63, 94, 0.05) 0%, rgba(244, 63, 94, 0) 70%); /* Soft Rose */
+    filter: blur(90px);
+    border-radius: 50%;
+    animation: moveBlob 60s infinite alternate ease-in-out;
+}
+@keyframes moveBlob {
+    0% { transform: translate(-3%, -3%) scale(1); }
+    50% { transform: translate(7%, 10%) scale(1.1); }
+    100% { transform: translate(-7%, -10%) scale(0.95); }
+}
+
+.bg-noise {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 5; opacity: 0; pointer-events: none;
+}
+
+/* Header & Navigation Bar */
+.toolbar { 
+    background: rgba(255, 255, 255, 0.8) !important; 
+    backdrop-filter: blur(20px) !important; 
+    border-bottom: 1px solid var(--border-color) !important; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+}
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-primary);
+}
+.brand-name {
+    font-weight: 600; 
+    letter-spacing: 0.5px;
+    font-size: 16px;
+}
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.gh-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+#gh-status {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Dashboard Content Grid */
+.dashboard-header {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    position: relative; 
+    margin-bottom: 40px;
+    margin-top: 10px;
+}
+.dashboard-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Center Capsule Search Bar Wrap */
+.search-container {
+    position: absolute; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 440px; 
+    z-index: 50;
+}
+.search-icon {
+    position: absolute; 
+    left: 18px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    color: var(--text-secondary); 
+    font-size: 20px; 
+    pointer-events: none;
+}
+#project-search-input {
+    width: 100%; 
+    height: 46px; 
+    padding: 0 20px 0 48px; 
+    border-radius: 23px; 
+    border: 1px solid var(--border-color); 
+    background: rgba(255, 255, 255, 0.7); 
+    color: var(--text-primary); 
+    font-size: 14px; 
+    font-weight: 500; 
+    outline: none; 
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+    box-sizing: border-box; 
+    box-shadow: var(--card-shadow); 
+    backdrop-filter: blur(12px);
+}
+#project-search-input:focus {
+    border-color: var(--accent) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15), 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Auto-complete Dropdown */
+.search-dropdown {
+    display: none; position: absolute; top: 100%; left: 0; width: 100%;
+    background: rgba(255, 255, 255, 0.95); border: 1px solid var(--border-color);
+    border-radius: 12px; margin-top: 8px; z-index: 100; max-height: 300px;
+    overflow-y: auto; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(16px);
+}
+.search-dropdown.active { display: block; }
+.search-item {
+    padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.03);
+    cursor: pointer; transition: background 0.2s;
+    display: flex; align-items: center; gap: 12px;
+}
+.search-item:last-child { border-bottom: none; }
+.search-item:hover { background: rgba(79, 70, 229, 0.04); }
+.search-item-icon { color: var(--accent); opacity: 0.8; font-size: 20px; }
+.search-item-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.search-item-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+/* Plus SVG Icon for New Project Button */
+.plus-icon {
+    flex-shrink: 0;
+}
+
+/* Cards Grid */
+.card-grid {
+    padding-bottom: 100px; 
+    display: grid !important; 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+    gap: 24px !important;
+}
+
+/* Premium Light Glassmorphism File Card */
+.file-card { 
+    position: relative !important; 
+    overflow: hidden; 
+    background: var(--panel-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    backdrop-filter: blur(12px);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: var(--card-shadow);
+    border-radius: 16px;
+    padding: 24px;
+}
+.file-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    border-color: rgba(79, 70, 229, 0.3) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    box-shadow: var(--hover-shadow);
+}
+
+/* Edit / Delete Buttons on Hover (Card) */
+.edit-btn-card, .delete-btn-card {
+    position: absolute !important;
+    top: 12px;
+    z-index: 20;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border-color);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+.edit-btn-card { right: 52px; color: var(--accent); }
+.delete-btn-card { right: 12px; color: #ef4444; }
+.edit-btn-card:hover { background: var(--accent); color: #fff; }
+.delete-btn-card:hover { background: #ef4444; color: #fff; }
+.file-card:hover .edit-btn-card, .file-card:hover .delete-btn-card { opacity: 1; }
+.dashboard-header .edit-btn-card, .dashboard-header .delete-btn-card { display: none !important; }
+
+/* Metadata & Auth Modal overlay */
+.modal-overlay {
+    background: rgba(15, 23, 42, 0.25) !important; /* Soft backdrop blur */
+    backdrop-filter: blur(8px) !important;
+}
+.modal-card {
+    background: var(--panel-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 30px 60px -15px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.4) !important;
+    border-radius: 20px !important;
+    padding: 32px !important;
+}
+.modal-title {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+}
+.modal-filename {
+    font-size: 12px; 
+    color: var(--text-secondary); 
+    margin-top: 4px;
+}
+.modal-card-narrow {
+    max-width: 400px;
+}
+.modal-subtitle {
+    font-size: 13px; 
+    color: var(--text-secondary); 
+    margin-top: 4px;
+}
+
+/* Modals Notice */
+.form-notice {
+    font-size: 10px; 
+    color: var(--accent); 
+    margin-top: 4px;
+}
+.required-star {
+    color: #ef4444;
+}
+
+/* Connection Test Button */
+.btn-auth-test {
+    margin-right: auto; 
+    color: var(--accent);
+}
+#modal-auth-status {
+    font-size: 11px; 
+    margin-top: 8px;
+}
+
+/* General Buttons Standardization to Pill shape */
+.btn-primary {
+    background: var(--accent) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 20px !important;
+    padding: 8px 18px !important;
+    font-weight: 500 !important;
+    transition: all 0.2s !important;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2) !important;
+}
+.btn-primary:hover {
+    background: var(--accent-hover) !important;
+    box-shadow: 0 6px 14px rgba(79, 70, 229, 0.3) !important;
+    transform: translateY(-1px);
+}
+.btn-secondary {
+    background: rgba(0, 0, 0, 0.04) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 20px !important;
+    padding: 8px 18px !important;
+    transition: all 0.2s !important;
+}
+.btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Form Inputs */
+.form-input {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+    transition: all 0.2s !important;
+}
+.form-input:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
+    background: #fff !important;
+}
+.form-label {
+    color: var(--text-primary) !important;
+    font-weight: 500 !important;
+    margin-bottom: 6px !important;
+    font-size: 13px !important;
+}
+
+/* Loading Overlay and Animations */
+#global-loader {
+    background: rgba(248, 250, 252, 0.85) !important; /* Soft Light Backdrop */
+    backdrop-filter: blur(12px) !important;
+}
+.loader-status {
+    color: var(--text-primary) !important;
+}
+.progress-container {
+    background: rgba(0, 0, 0, 0.05) !important;
+}
+#progress-bar {
+    background: var(--accent) !important;
+}
+
+/* Intro Splash Overlay */
+.intro-overlay {
+    background: var(--bg-base) !important;
+}
+.intro-title {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+}
+.intro-loader {
+    border-top-color: var(--accent) !important;
+    border-right-color: rgba(79, 70, 229, 0.1) !important;
+    border-bottom-color: rgba(79, 70, 229, 0.1) !important;
+    border-left-color: rgba(79, 70, 229, 0.1) !important;
+}
+
+/* Override properties to support custom components */
+.file-card-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#group-project-id {
+    display: none;
+}
+
+/* ==========================================================================
+   Project Premium Theme Custom Visuals & Preset Selector Styles
+   ========================================================================== */
+
+/* Card hover transitions for child elements */
+.file-card:hover .frosted-glass-pane {
+    transform: scale(1.1) translateY(-2px);
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.45) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+}
+
+.file-card:hover .thumbnail-glow-orb {
+    transform: scale(1.3);
+    opacity: 0.95 !important;
+}
+
+.file-card:hover .thumbnail-wrapper {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Theme Presets Selector in Modal */
+.theme-presets {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    background: rgba(0, 0, 0, 0.02);
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.theme-preset-item {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    position: relative;
+}
+
+.theme-preset-item:hover {
+    transform: scale(1.15) translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.theme-preset-item.active {
+    border-color: var(--accent) !important;
+    transform: scale(1.2);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25), 0 8px 18px rgba(0, 0, 0, 0.15) !important;
+    z-index: 5;
+}
+
+/* ==========================================================================
+   Dashboard Project Cards Metadata Badges / Chips Styles
+   ========================================================================== */
+.card-meta-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.meta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+.meta-chip .material-icons-outlined {
+    font-size: 13px !important;
+}
+
+/* 1. 담당자 (Teal) */
+.meta-chip.meta-chip-assignee {
+    color: #0f766e !important;
+    background: rgba(13, 148, 136, 0.08) !important;
+    border: 1px solid rgba(13, 148, 136, 0.15) !important;
+}
+
+/* 2. 기간 (Amber) */
+.meta-chip.meta-chip-period {
+    color: #b45309 !important;
+    background: rgba(245, 158, 11, 0.08) !important;
+    border: 1px solid rgba(245, 158, 11, 0.15) !important;
+}
+
+/* 3. Jira ID (Blue) */
+.meta-chip.meta-chip-jira {
+    color: #1d4ed8 !important;
+    background: rgba(59, 130, 246, 0.08) !important;
+    border: 1px solid rgba(59, 130, 246, 0.15) !important;
+}
+
+/* 4. Figma Link (Indigo - Interactive) */
+.meta-chip.meta-chip-figma {
+    color: #4f46e5 !important;
+    background: rgba(79, 70, 229, 0.08) !important;
+    border: 1px solid rgba(79, 70, 229, 0.15) !important;
+    cursor: pointer;
+    text-decoration: none;
+}
+.meta-chip.meta-chip-figma:hover {
+    color: #ffffff !important;
+    background: #4f46e5 !important;
+    border-color: #4f46e5 !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    transform: translateY(-1px);
+}
+
+/* 5. 마지막 업데이트 상대 시간 (Slate) */
+.meta-chip.meta-chip-update {
+    color: #475569 !important;
+    background: rgba(100, 116, 139, 0.08) !important;
+    border: 1px solid rgba(100, 116, 139, 0.15) !important;
+}
+
+/* 6. 정보 입력하기 CTA (점선 Indigo - Interactive) */
+.meta-chip.meta-chip-add-cta {
+    color: #4f46e5 !important;
+    background: transparent !important;
+    border: 1px dashed rgba(79, 70, 229, 0.45) !important;
+    cursor: pointer;
+    font-weight: 600 !important;
+}
+.meta-chip.meta-chip-add-cta:hover {
+    background: rgba(79, 70, 229, 0.08) !important;
+    border-color: #4f46e5 !important;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.12);
+    transform: translateY(-1px);
+}
+
+/* Ensure global-loader shows as a flex container when active */
+#global-loader.active {
+    display: flex !important;
+}
+

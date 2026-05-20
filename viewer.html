@@ -504,41 +504,10 @@
                             <button id="btn-del-row" class="v4-inspector-btn danger" style="font-size: 11px;">Row-</button>
                             <button id="btn-del-col" class="v4-inspector-btn danger" style="font-size: 11px;">Col-</button>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                        
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 8px;">
                             <div class="prop-group">
-                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">헤더컬러</label>
-                                <div style="display: flex; gap: 4px; align-items: center;">
-                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="table-header-wrapper">
-                                        <input type="color" id="table-header-color" value="#334155">
-                                    </div>
-                                    <button class="v4-color-none-btn" id="btn-table-header-none" title="Transparent"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
-                                </div>
-                            </div>
-                            <div class="prop-group">
-                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">헤더텍스트</label>
-                                <div class="v4-color-wrapper v4-checkerboard-bg">
-                                    <input type="color" id="table-header-text-color" value="#ffffff">
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                            <div class="prop-group">
-                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">메인컬러</label>
-                                <div style="display: flex; gap: 4px; align-items: center;">
-                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="table-bg-wrapper">
-                                        <input type="color" id="table-bg-color" value="#1e293b">
-                                    </div>
-                                    <button class="v4-color-none-btn" id="btn-table-bg-none" title="Transparent"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
-                                </div>
-                            </div>
-                            <div class="prop-group">
-                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">메인텍스트</label>
-                                <input type="color" id="table-text-color" value="#ffffff" style="width:100%; height:24px; border:none; padding:0; background:none;">
-                            </div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 12px;">
-                            <div class="prop-group">
-                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">테두리</label>
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">표 테두리</label>
                                 <div style="display: flex; gap: 4px; align-items: center;">
                                     <div class="v4-color-wrapper v4-checkerboard-bg" id="table-border-wrapper">
                                         <input type="color" id="table-border-color" value="#475569">
@@ -547,10 +516,42 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="prop-group">
+
+                        <div class="prop-group" style="margin-bottom: 12px;">
                             <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Font Size (<span id="txt-table-font-size">13</span>px)</label>
                             <input type="range" id="table-font-size" min="10" max="30" value="13" style="width:100%;">
                         </div>
+
+                        <!-- CELL PROPERTIES (셀 편집) -->
+                        <div style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 12px; margin-bottom: 12px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #38bdf8; display: block; margin-bottom: 8px;">CELL PROPERTIES (셀 편집)</span>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                                <div class="prop-group">
+                                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">셀 배경색</label>
+                                    <div style="display: flex; gap: 4px; align-items: center;">
+                                        <div class="v4-color-wrapper v4-checkerboard-bg" id="cell-bg-wrapper">
+                                            <input type="color" id="cell-bg-color" value="#ffffff">
+                                        </div>
+                                        <button class="v4-color-none-btn" id="btn-cell-bg-none" title="Transparent"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                    </div>
+                                </div>
+                                <div class="prop-group">
+                                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">셀 글자색</label>
+                                    <div class="v4-color-wrapper v4-checkerboard-bg">
+                                        <input type="color" id="cell-text-color" value="#000000">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="prop-group" style="margin-bottom: 8px;">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">선택 열 너비 (<span id="txt-cell-col-width">150</span>px)</label>
+                                <input type="range" id="cell-col-width" min="30" max="600" value="150" style="width:100%;">
+                            </div>
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">선택 행 높이 (<span id="txt-cell-row-height">50</span>px)</label>
+                                <input type="range" id="cell-row-height" min="20" max="200" value="50" style="width:100%;">
+                            </div>
+                        </div>
+
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
                             <div class="prop-group">
                                 <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">WIDTH (px)</label>
@@ -1012,10 +1013,10 @@
     <script src="assets/app.js?v=V130_COVER_SYNC"></script>
     
     <!-- Modularized Engine -->
-    <script src="assets/vctrl_iframe_script.js?v=V129_PIN_SELECT"></script>
-    <script src="assets/vctrl_core.js?v=V132_VERSION_FIX"></script>
+    <script src="assets/vctrl_iframe_script.js?v=V135_CELL_SYNTAX_FIX"></script>
+    <script src="assets/vctrl_core.js?v=V134_CELL_FIX"></script>
     <script src="assets/vctrl_smartguide.js?v=V106_FILEFIX_V5"></script>
-    <script src="assets/vctrl_grouping.js?v=V110_SYMMETRIC"></script>
+    <script src="assets/vctrl_grouping.js?v=V133_ALIGN_FIX"></script>
     <script src="assets/vctrl_inspector.js?v=V130_PIN_RESTORE"></script>
     <script src="assets/vctrl_v3.js?v=V107_AUTORESIZE"></script>
     <script src="assets/vctrl_properties.js?v=V106_V5"></script>
@@ -1023,6 +1024,7 @@
     
     <!-- V4 Premium Addons -->
     <script src="enhanced_v4/component_library_v4.js"></script>
-    <script src="assets/vctrl_v4_addon.js"></script>
+    <script src="assets/vctrl_table.js?v=V134_CELL_FIX"></script>
+    <script src="assets/vctrl_v4_addon.js?v=V134_CELL_FIX"></script>
 </body>
 </html>

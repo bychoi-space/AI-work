@@ -263,7 +263,7 @@ window.GroupingManager = (function() {
         if (window.V4UndoManager) window.V4UndoManager.saveState();
         const iframe = document.getElementById('main-iframe');
         if (iframe && iframe.contentWindow && window.MessageHub) {
-            window.MessageHub.send(iframe.contentWindow, 'LF_ALIGN_SELECTED', { ids: selectedIds, type });
+            window.MessageHub.send(iframe.contentWindow, 'LF_ALIGN_SELECTED', { ids: selectedIds, alignType: type });
         }
     };
 

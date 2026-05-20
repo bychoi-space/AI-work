@@ -49,12 +49,13 @@
         }
 
         const isTextTool = item.id === 'v4-tool-text';
+        
+        // Separate description pins (customIdx present) from pure textboxes (no customIdx)
+        const isDescriptionPin = isTextTool && (customIdx !== undefined);
         const targetId = isTextTool 
-            ? ('v4-pin-' + (customIdx !== undefined ? customIdx : Date.now())) 
+            ? (isDescriptionPin ? ('v4-pin-' + customIdx) : ('v4-text-' + Date.now()))
             : ('v4-comp-' + Date.now());
 
-        // 설명 핀(customIdx가 명시된 경우)과 일반 텍스트 상자를 선명하게 분리
-        const isDescriptionPin = isTextTool && (customIdx !== undefined);
 
         notifyIframe({
             type: 'LF_INSERT_COMPONENT',
@@ -82,32 +83,23 @@
         }
     };
 
+    function _rgb2hex(rgb) {
+        if (!rgb) return '#ffffff';
+        if (rgb.startsWith('#')) return rgb;
+        const match = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)$/);
+        if (!match) return '#ffffff';
+        const r = parseInt(match[1]).toString(16).padStart(2, '0');
+        const g = parseInt(match[2]).toString(16).padStart(2, '0');
+        const b = parseInt(match[3]).toString(16).padStart(2, '0');
+        return '#' + r + g + b;
+    }
+
     // Table Style Bindings
     bindStyleUpdate('table-font-size', (val) => ({
         type: 'LF_UPDATE_STYLE',
         selector: 'table',
         subSelector: 'td, th',
         subStyle: { fontSize: val + 'px' }
-    }));
-    bindStyleUpdate('table-bg-color', { type: 'LF_UPDATE_STYLE', selector: 'table', prop: 'background' });
-    bindStyleUpdate('table-text-color', (val) => ({
-        type: 'LF_UPDATE_STYLE',
-        selector: 'table',
-        style: { color: val },
-        subSelector: 'td',
-        subStyle: { color: val }
-    }));
-    bindStyleUpdate('table-header-color', (val) => ({
-        type: 'LF_UPDATE_STYLE',
-        selector: 'table',
-        subSelector: 'th',
-        subStyle: { background: val }
-    }));
-    bindStyleUpdate('table-header-text-color', (val) => ({
-        type: 'LF_UPDATE_STYLE',
-        selector: 'table',
-        subSelector: 'th',
-        subStyle: { color: val }
     }));
     bindStyleUpdate('table-border-color', (val) => ({
         type: 'LF_UPDATE_STYLE',
@@ -116,6 +108,59 @@
         subSelector: 'td, th',
         subStyle: { borderColor: val }
     }));
+
+    // Cell Style & Dimension Direct Actions
+    const bindCellColorInput = (id, prop) => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', function() {
+                const style = {};
+                style[prop] = this.value;
+                notifyIframe({ type: 'LF_UPDATE_CELL_STYLE', style });
+            });
+        }
+    };
+
+    bindCellColorInput('cell-bg-color', 'backgroundColor');
+    bindCellColorInput('cell-text-color', 'color');
+
+    // Cell Background Transparency Button
+    const btnCellBgNone = document.getElementById('btn-cell-bg-none');
+    if (btnCellBgNone) {
+        btnCellBgNone.onclick = () => {
+            const wrapper = document.getElementById('cell-bg-wrapper');
+            if (wrapper) wrapper.classList.add('transparent-active');
+            notifyIframe({ type: 'LF_UPDATE_CELL_STYLE', style: { backgroundColor: 'transparent' } });
+        };
+    }
+
+    const cellBgColorEl = document.getElementById('cell-bg-color');
+    if (cellBgColorEl) {
+        cellBgColorEl.addEventListener('input', () => {
+            const wrapper = document.getElementById('cell-bg-wrapper');
+            if (wrapper) wrapper.classList.remove('transparent-active');
+        });
+    }
+
+    // Cell Width Slider
+    const cellColWidthEl = document.getElementById('cell-col-width');
+    if (cellColWidthEl) {
+        cellColWidthEl.addEventListener('input', function() {
+            notifyIframe({ type: 'LF_UPDATE_CELL_DIMENSION', width: parseInt(this.value) });
+            const txt = document.getElementById('txt-cell-col-width');
+            if (txt) txt.innerText = this.value;
+        });
+    }
+
+    // Cell Height Slider
+    const cellRowHeightEl = document.getElementById('cell-row-height');
+    if (cellRowHeightEl) {
+        cellRowHeightEl.addEventListener('input', function() {
+            notifyIframe({ type: 'LF_UPDATE_CELL_DIMENSION', height: parseInt(this.value) });
+            const txt = document.getElementById('txt-cell-row-height');
+            if (txt) txt.innerText = this.value;
+        });
+    }
 
     // Shape Style Bindings
     bindStyleUpdate('shape-font-size', (val) => ({
@@ -157,8 +202,6 @@
     const transparencyConfig = [
         { btn: 'btn-shape-bg-none', wrapper: 'shape-bg-wrapper', selector: '.v4-shape', style: { background: 'transparent', backgroundColor: 'transparent' } },
         { btn: 'btn-shape-border-none', wrapper: 'shape-border-wrapper', selector: '.v4-shape', style: { borderColor: 'transparent' } },
-        { btn: 'btn-table-header-none', wrapper: 'table-header-wrapper', selector: '.v4-table th', style: { backgroundColor: 'transparent' } },
-        { btn: 'btn-table-bg-none', wrapper: 'table-bg-wrapper', selector: '.v4-table-body td', style: { backgroundColor: 'transparent' } },
         { btn: 'btn-table-border-none', wrapper: 'table-border-wrapper', selector: '.v4-table', style: { borderColor: 'transparent' } },
         { btn: 'btn-icon-border-none', wrapper: 'icon-border-wrapper', selector: '.lf-icon', style: { borderColor: 'transparent' } }
     ];
@@ -182,8 +225,6 @@
     const colorIds = [
         { id: 'shape-bg-color', wrapper: 'shape-bg-wrapper' },
         { id: 'shape-border-color', wrapper: 'shape-border-wrapper' },
-        { id: 'table-header-color', wrapper: 'table-header-wrapper' },
-        { id: 'table-bg-color', wrapper: 'table-bg-wrapper' },
         { id: 'table-border-color', wrapper: 'table-border-wrapper' },
         { id: 'icon-border-color', wrapper: 'icon-border-wrapper' }
     ];
@@ -216,7 +257,6 @@
     bindAction('btn-layout-h', 'LAYOUT_H');
     bindAction('btn-layout-v', 'LAYOUT_V');
 
-    // 4. Message Listener (Show/Hide Inspectors)
     window.addEventListener('message', e => {
         const data = e.data;
         if (!data) return;
@@ -238,11 +278,7 @@
                 syncColor('shape-border-color', 'shape-border-wrapper', s.border, s.isBorderTransparent);
                 syncColor('shape-text-color', '', s.text, false);
                 
-                syncColor('table-header-color', 'table-header-wrapper', s.tableHeader, false);
-                syncColor('table-header-text-color', '', s.tableHeaderText, false);
-                syncColor('table-bg-color', 'table-bg-wrapper', s.bg, s.isBgTransparent);
                 syncColor('table-border-color', 'table-border-wrapper', s.border, s.isBorderTransparent);
-                syncColor('table-text-color', '', s.text, false);
 
                 syncColor('icon-color', 'icon-color-wrapper', s.iconColor, false);
                 
@@ -260,6 +296,46 @@
                 }
             }
         } 
+        else if (data.type === 'LF_CELL_SELECTED') {
+            if (data.cellData) {
+                const cd = data.cellData;
+                
+                // Sync Cell Background
+                const bgPicker = document.getElementById('cell-bg-color');
+                const bgWrapper = document.getElementById('cell-bg-wrapper');
+                const isBgTransparent = cd.backgroundColor === 'transparent' || cd.backgroundColor === 'rgba(0, 0, 0, 0)' || cd.backgroundColor === '';
+                if (bgPicker) {
+                    if (isBgTransparent) {
+                        bgPicker.value = '#ffffff'; // Default visible color when active again
+                    } else {
+                        bgPicker.value = _rgb2hex(cd.backgroundColor);
+                    }
+                }
+                if (bgWrapper) bgWrapper.classList.toggle('transparent-active', isBgTransparent);
+
+                // Sync Cell Text Color
+                const textPicker = document.getElementById('cell-text-color');
+                if (textPicker && cd.color) {
+                    textPicker.value = _rgb2hex(cd.color);
+                }
+
+                // Sync Width Slider
+                const widthInput = document.getElementById('cell-col-width');
+                if (widthInput && cd.width) {
+                    widthInput.value = cd.width;
+                    const txt = document.getElementById('txt-cell-col-width');
+                    if (txt) txt.innerText = cd.width;
+                }
+
+                // Sync Height Slider
+                const heightInput = document.getElementById('cell-row-height');
+                if (heightInput && cd.height) {
+                    heightInput.value = cd.height;
+                    const txt = document.getElementById('txt-cell-row-height');
+                    if (txt) txt.innerText = cd.height;
+                }
+            }
+        }
         else if (data.type === 'LF_DESELECT' || data.type === 'LF_COMP_DESELECTED') {
             // Deselection UI sync is handled by vctrl_inspector.js
         }

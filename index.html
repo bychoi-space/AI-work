@@ -9,146 +9,11 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
     <link rel="stylesheet" href="assets/theme.css">
+    <link rel="stylesheet" href="assets/dashboard.css">
     <!-- Flatpickr (Date Picker) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
-    <style>
-        /* Premium Animated Background - Mega Boost */
-        body {
-            margin: 0; padding: 0;
-            background: #090e17 !important; /* Soft dark navy base */
-            background-image: none !important; /* Disable legacy style.css gradients */
-            overflow-x: hidden;
-            min-height: 100vh;
-            animation: none !important;
-        }
-        #dashboard-view {
-            background: transparent !important;
-            position: relative;
-            z-index: 10;
-        }
-        .bg-mesh-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; overflow: hidden;
-            background: #0f172a; /* Slate 900 */
-        }
-        .bg-image-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)), url('assets/stock_optimization_bg_minimal.png');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.3;
-            animation: slowZoom 60s infinite alternate ease-in-out;
-            z-index: -1;
-        }
-        @keyframes slowZoom {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.15); }
-        }
-        /* Top Left - Sky Blue */
-        .bg-blob-1 {
-            position: absolute; width: 1200px; height: 1200px;
-            top: -400px; left: -300px;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, rgba(56, 189, 248, 0) 70%);
-            filter: blur(120px);
-            border-radius: 50%;
-            animation: moveBlob 40s infinite alternate ease-in-out;
-            mix-blend-mode: screen;
-        }
-        /* Bottom Right - Violet */
-        .bg-blob-2 {
-            position: absolute; width: 1400px; height: 1400px;
-            bottom: -500px; right: -400px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 70%);
-            filter: blur(140px);
-            border-radius: 50%;
-            animation: moveBlob 50s infinite alternate-reverse ease-in-out;
-            mix-blend-mode: screen;
-        }
-        /* Middle - Rose Flow */
-        .bg-blob-3 {
-            position: absolute; width: 900px; height: 900px;
-            top: 40%; left: 30%;
-            background: radial-gradient(circle, rgba(236, 72, 153, 0.15) 0%, rgba(236, 72, 153, 0) 70%);
-            filter: blur(110px);
-            border-radius: 50%;
-            animation: moveBlob 60s infinite alternate ease-in-out;
-            opacity: 0.8;
-        }
-        @keyframes moveBlob {
-            0% { transform: translate(-5%, -5%) scale(1); }
-            50% { transform: translate(10%, 15%) scale(1.2); }
-            100% { transform: translate(-10%, -15%) scale(0.9); }
-        }
-        .bg-noise {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 5; opacity: 0.04; pointer-events: none;
-            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
-            mix-blend-mode: overlay;
-        }
-        .toolbar { background: rgba(30, 41, 59, 0.6) !important; backdrop-filter: blur(20px) !important; border-bottom: 1px solid rgba(255,255,255,0.08) !important; }
-        .card-grid { padding-bottom: 100px; display: grid !important; gap: 24px; }
-        .file-card { 
-            position: relative !important; 
-            overflow: hidden; 
-            background: rgba(30, 41, 59, 0.4) !important;
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
-            backdrop-filter: blur(12px);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.05);
-        }
-        .file-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: rgba(99, 102, 241, 0.4) !important;
-            background: rgba(30, 41, 59, 0.6) !important;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 15px rgba(99, 102, 241, 0.15);
-        }
-        .edit-btn-card, .delete-btn-card {
-            position: absolute !important;
-            top: 12px;
-            z-index: 20;
-            width: 32px; height: 32px;
-            border-radius: 50%;
-            background: rgba(15, 17, 21, 0.8);
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0;
-            transition: all 0.2s ease;
-        }
-        .edit-btn-card { right: 52px; color: var(--accent); }
-        .delete-btn-card { right: 12px; color: #f87171; }
-        .file-card:hover .edit-btn-card, .file-card:hover .delete-btn-card { opacity: 1; }
-        
-        /* Ensure no ghost buttons at the top */
-        .dashboard-header .edit-btn-card, .dashboard-header .delete-btn-card { display: none !important; }
-        
-        /* Search Bar Focus State */
-        #project-search-input:focus {
-            border-color: var(--accent) !important;
-            background: rgba(30, 41, 59, 0.95) !important;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25), 0 8px 20px rgba(0,0,0,0.4) !important;
-        }
-        
-        /* Auto-complete Dropdown */
-        .search-dropdown {
-            display: none; position: absolute; top: 100%; left: 0; width: 100%;
-            background: rgba(15, 17, 21, 0.95); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px; margin-top: 8px; z-index: 100; max-height: 300px;
-            overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            backdrop-filter: blur(16px);
-        }
-        .search-dropdown.active { display: block; }
-        .search-item {
-            padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
-            cursor: pointer; transition: background 0.2s;
-            display: flex; align-items: center; gap: 12px;
-        }
-        .search-item:last-child { border-bottom: none; }
-        .search-item:hover { background: rgba(255,255,255,0.08); }
-        .search-item-icon { color: var(--accent); opacity: 0.8; font-size: 20px; }
-        .search-item-title { font-size: 13px; font-weight: 600; color: #fff; }
-        .search-item-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-    </style>
 </head>
 <body>
     <!-- Premium Animated Background -->
@@ -164,31 +29,31 @@
     <header class="toolbar">
         <a href="index.html" class="brand">
             <img src="assets/logo.svg" class="brand-logo" alt="Logo" loading="lazy">
-            <span style="font-weight: 600; letter-spacing: 0.5px;">bychoi workspace</span>
+            <span class="brand-name">bychoi workspace</span>
         </a>
         
         <div class="actions">
-             <div style="display:flex; align-items:center; gap:8px;">
-                <span id="gh-status" style="font-size:10px; color:var(--text-secondary); margin-right:4px;"></span>
+             <div class="gh-wrapper">
+                <span id="gh-status"></span>
             </div>
         </div>
     </header>
 
     <!-- Dashboard View -->
     <div id="dashboard-view">
-        <div class="dashboard-header" style="display: flex; align-items: center; justify-content: space-between; position: relative; margin-bottom: 48px;">
-            <h2 class="dashboard-title" style="margin: 0;">My Projects</h2>
+        <div class="dashboard-header">
+            <h2 class="dashboard-title">My Projects</h2>
             
             <!-- Search Bar (Centered & Highlighted) -->
-            <div class="search-container" style="position: absolute; left: 50%; transform: translateX(-50%); width: 440px; z-index: 50;">
-                <span class="material-icons-outlined" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.8); font-size: 20px; pointer-events: none;">search</span>
-                <input type="text" id="project-search-input" placeholder="프로젝트명 또는 제목으로 검색..." autocomplete="off" style="width: 100%; height: 46px; padding: 0 20px 0 48px; border-radius: 23px; border: 1px solid rgba(255,255,255,0.2); background: rgba(30, 41, 59, 0.7); color: #fff; font-size: 15px; font-weight: 500; outline: none; transition: all 0.2s ease; box-sizing: border-box; box-shadow: 0 6px 16px rgba(0,0,0,0.4); backdrop-filter: blur(12px);">
+            <div class="search-container">
+                <span class="material-icons-outlined search-icon">search</span>
+                <input type="text" id="project-search-input" placeholder="프로젝트명 또는 제목으로 검색..." autocomplete="off">
                 <!-- Auto-complete dropdown -->
                 <div id="search-dropdown" class="search-dropdown"></div>
             </div>
 
             <button class="btn-primary btn-new-project" id="btn-create-project" title="새 프로젝트 생성">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="plus-icon">
                     <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                     <line x1="12" y1="11" x2="12" y2="17"></line>
                     <line x1="9" y1="14" x2="15" y2="14"></line>
@@ -205,18 +70,18 @@
         <div class="modal-card">
             <div class="modal-header">
                 <h3 class="modal-title" id="modal-main-title">파일 정보 수정</h3>
-                <p id="modal-filename" style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;"></p>
+                <p id="modal-filename" class="modal-filename"></p>
             </div>
             <div class="modal-body">
-                <div id="group-project-id" style="display:none;">
+                <div id="group-project-id">
                     <div class="form-group">
                         <label class="form-label">프로젝트 ID (영문 폴더명)</label>
                         <input type="text" id="meta-project-id" class="form-input" placeholder="예: event_promotion_2024">
-                        <p style="font-size:10px; color:var(--accent); margin-top:4px;">* 한글 입력 시 자동으로 변환됩니다.</p>
+                        <p class="form-notice">* 한글 입력 시 자동으로 변환됩니다.</p>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">프로젝트명 / 제목 <span style="color: #f87171;">*</span></label>
+                    <label class="form-label">프로젝트명 / 제목 <span class="required-star">*</span></label>
                     <input type="text" id="meta-title" class="form-input" placeholder="예: 메인 페이지 개편안">
                 </div>
                 <div class="form-group">
@@ -226,6 +91,19 @@
                 <div class="form-group">
                     <label class="form-label">담당자</label>
                     <input type="text" id="meta-assignee" class="form-input" placeholder="예: 홍길동">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Jira ID</label>
+                    <input type="text" id="meta-jira" class="form-input" placeholder="예: LF-1234">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Figma Link</label>
+                    <input type="text" id="meta-figma" class="form-input" placeholder="예: https://www.figma.com/file/... ">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">프로젝트 테마 디자인</label>
+                    <div id="theme-presets" class="theme-presets"></div>
+                    <input type="hidden" id="meta-theme-index" value="-1">
                 </div>
             </div>
             <div class="modal-footer">
@@ -237,10 +115,10 @@
 
     <!-- Auth Modal -->
     <div id="auth-modal" class="modal-overlay">
-        <div class="modal-card" style="max-width: 400px;">
+        <div class="modal-card modal-card-narrow">
             <div class="modal-header">
                 <h3 class="modal-title">에디터 인증</h3>
-                <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">관리 권한이 필요한 작업입니다.</p>
+                <p class="modal-subtitle">관리 권한이 필요한 작업입니다.</p>
             </div>
             <div class="modal-body">
                 <div class="form-group">
@@ -254,12 +132,12 @@
                 <div class="form-group">
                     <label class="form-label">GitHub Personal Access Token</label>
                     <input type="password" id="modal-gh-token" class="form-input" placeholder="ghp_ 또는 github_pat_ ...">
-                    <p id="modal-auth-status" style="font-size: 11px; margin-top: 8px;"></p>
+                    <p id="modal-auth-status"></p>
                 </div>
             </div>
             <div class="modal-footer">
                 <button id="btn-modal-auth-cancel" class="btn-secondary">닫기</button>
-                <button id="btn-modal-auth-test" class="btn-secondary" style="margin-right: auto; color: var(--accent);">연결 테스트</button>
+                <button id="btn-modal-auth-test" class="btn-secondary btn-auth-test">연결 테스트</button>
                 <button id="btn-modal-auth-submit" class="btn-primary">설정 저장</button>
             </div>
         </div>

@@ -25,6 +25,11 @@ window.v4Styles = `
 .v4-premium-table tr:last-child td { border-bottom: none !important; }
 .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: #475569; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #e2e8f0; color: #0f172a; }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
+.selected-cell {
+    outline: 1.6px dashed #6366f1 !important;
+    outline-offset: -1.6px !important;
+    background-color: rgba(99, 102, 241, 0.08) !important;
+}
 .lf-icon { 
     background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png"); 
     background-size: 500% 400%; 
@@ -1375,6 +1380,19 @@ window.v4Script = `
                 Array.from(table.rows).forEach(r => { if (r.cells[idx]) r.cells[idx].remove(); });
             }
             markDirty();
+        } else if (d.type === 'LF_UPDATE_CELL_STYLE') {
+            if (window.TableManager) {
+                window.TableManager.updateSelectedCellsStyle(d.style);
+            }
+        } else if (d.type === 'LF_UPDATE_CELL_DIMENSION') {
+            if (window.TableManager) {
+                if (d.width !== undefined) {
+                    window.TableManager.updateSelectedColumnWidth(d.width);
+                }
+                if (d.height !== undefined) {
+                    window.TableManager.updateSelectedRowHeight(d.height);
+                }
+            }
         }
     });
 
@@ -1503,6 +1521,7 @@ window.v4Script = `
         });
         document.querySelectorAll('table.v4-premium-table').forEach(t => {
             if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
+            if (window.TableSelection) window.TableSelection.bindEvents(t);
         });
         document.querySelectorAll('polygon, path, rect, circle').forEach(svg => {
             if (svg.closest('.connector-line')) return;
