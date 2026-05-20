@@ -28,7 +28,7 @@
     "03_Delivery_Notice_926.html": {
       "title": "배송예정일 설정 (6/2 ~ 6/9)",
       "type": "plan",
-      "updatedAt": "2026-05-20T01:47:17.340Z",
+      "updatedAt": "2026-05-20T02:07:30.936Z",
       "template": "template_plan_delivery.html",
       "description": [
         {
