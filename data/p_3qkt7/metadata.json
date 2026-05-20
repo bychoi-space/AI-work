@@ -12,7 +12,7 @@
     "03_Delivery_Notice_494.html": {
       "title": "배송예정일 설정 (5/22 ~ 5/26)",
       "type": "plan",
-      "updatedAt": "2026-05-20T01:24:52.180Z",
+      "updatedAt": "2026-05-20T01:02:30.784Z",
       "template": "template_plan_delivery.html",
       "description": [
         {
@@ -27,11 +27,13 @@
     },
     "03_Delivery_Notice_926.html": {
       "title": "배송예정일 설정 (6/2 ~ 6/9)",
-      "type": "plan-delivery",
-      "updatedAt": "2026-05-19T08:37:25.918Z",
+      "type": "plan",
+      "updatedAt": "2026-05-20T01:25:43.446Z",
       "template": "template_plan_delivery.html",
       "description": [],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "description",
+      "screenDesc": ""
     }
   },
   "assignee": "최범열",
