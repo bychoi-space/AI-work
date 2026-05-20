@@ -11,19 +11,12 @@
     },
     "03_Delivery_Notice_494.html": {
       "title": "배송예정일 설정 (5/22 ~ 5/26)",
-      "type": "plan-delivery",
-      "updatedAt": "2026-05-20T00:44:22.532Z",
+      "type": "plan",
+      "updatedAt": "2026-05-20T01:02:30.784Z",
       "template": "template_plan_delivery.html",
-      "description": [
-        {
-          "text": "5/25(월) 도착 안내가 되어야 하나, 물류에서 미출고 이슈에 대한 리스크를 고려하여 5/26(화) 로 안내 부탁 받음",
-          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\">Edit Text</div>",
-          "x": 415.5,
-          "y": 719.703,
-          "standardized": true
-        }
-      ],
-      "connectors": []
+      "description": "[object Object]",
+      "connectors": [],
+      "defaultTab": "description"
     },
     "03_Delivery_Notice_926.html": {
       "title": "배송예정일 설정 (6/2 ~ 6/9)",
