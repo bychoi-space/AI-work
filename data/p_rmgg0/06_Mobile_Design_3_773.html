@@ -123,6 +123,44 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 .text-marker:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
 .text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
 
+/* Premium Pin Marker Styling */
+.pin-marker {
+    position: absolute !important;
+    width: 28px !important;
+    height: 28px !important;
+    background: #fb7185 !important; /* Rose accent matching --accent-data */
+    color: #000000 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 4px 12px rgba(251, 113, 133, 0.4) !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: 13px !important;
+    z-index: 1000 !important;
+    cursor: grab !important;
+    box-sizing: border-box !important;
+}
+.pin-marker.selected {
+    outline: 2px solid #6366f1 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.3) !important;
+}
+.pin-marker:hover {
+    box-shadow: 0 6px 16px rgba(251, 113, 133, 0.6) !important;
+    background: #fda4af !important; /* Lighter rose color on hover */
+}
+.pin-marker .lf-drag-handle {
+    top: -14px !important;
+    left: -14px !important;
+}
+.pin-marker .lf-delete-trigger {
+    top: -14px !important;
+    right: -14px !important;
+}
+
 body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; }
 /* Force disable transitions during drag for maximum smoothness */
 .lf-component.dragging-now, .lf-component.dragging-now * { 
@@ -182,10 +220,10 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
 <div id="v4-pin-0" class="lf-component text-marker" style="left: 250.795px; top: 142.792px; width: fit-content; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p><span style="font-size: 12px;"><span class="ql-cursor">﻿﻿﻿﻿﻿</span></span><strong style="font-size: 24px;">TITLE</strong></p></div></div><div id="v4-pin-1" class="lf-component text-marker" style="left: 236.611px; top: 182.705px; width: fit-content; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>DESCRIPTION</p></div></div><div id="v4-comp-1779064600770" class="lf-component lf-group" style="position: absolute; top: 74px; left: 540px; z-index: 1000; transform: none; width: 360px; height: 50px;"><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; width: 360px; height: 50px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(100, 100, 100); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><br></div>
-            </div></div><div class="lf-component text-marker" style="left: 52.823px; top: 9.6493px; width: 92px; height: 28px; z-index: 1000;" id="v4-pin-2"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div class="lf-component" style="position: absolute; top: 10px; left: 14px; z-index: 1000; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="lf-component" style="position: absolute; top: 5px; left: 262px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding: 9px; box-sizing: border-box;"><img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width:100%; height:100%; object-fit:contain; pointer-events:none;"></div></div><div class="lf-component" style="position: absolute; top: 5px; left: 303px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div><div id="v4-comp-1779064609193" class="lf-component lf-group" style="position: absolute; top: 73.775px; left: 116.95px; z-index: 1000; transform: none; width: 360px; height: 50px;"><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; width: 360px; height: 50px;">
+            </div></div><div class="lf-component text-marker" style="left: 52.823px; top: 9.6493px; width: fit-content; height: auto; z-index: 1000;" id="v4-pin-2"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div class="lf-component" style="position: absolute; top: 10px; left: 14px; z-index: 1000; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="lf-component" style="position: absolute; top: 5px; left: 262px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding: 9px; box-sizing: border-box;"><div class="lf-icon" data-original-src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none; padding: 8px !important; box-sizing: border-box !important; background-origin: content-box !important; background-clip: content-box !important; mask-origin: content-box !important; mask-clip: content-box !important; background-image: url(&quot;https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png&quot;) !important; background-size: contain !important; background-position: center center !important; background-repeat: no-repeat !important;"></div></div></div><div class="lf-component" style="position: absolute; top: 5px; left: 303px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div><div id="v4-comp-1779064609193" class="lf-component lf-group" style="position: absolute; top: 73.775px; left: 116.95px; z-index: 1000; transform: none; width: 360px; height: 50px;"><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; width: 360px; height: 50px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(100, 100, 100); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><br></div>
-            </div></div><div class="lf-component text-marker" style="left: 52.823px; top: 9.6493px; width: 92px; height: 28px; z-index: 1000;" id="v4-pin-3"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div class="lf-component" style="position: absolute; top: 10px; left: 14px; z-index: 1000; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="lf-component" style="position: absolute; top: 5px; left: 262px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding: 9px; box-sizing: border-box;"><img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width:100%; height:100%; object-fit:contain; pointer-events:none;"></div></div><div class="lf-component" style="position: absolute; top: 5px; left: 303px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div><div id="v4-pin-4" class="lf-component text-marker" style="width: fit-content; height: auto; z-index: 1000; left: 168.823px; top: 83.6493px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div id="v4-comp-1779066983233" class="lf-component" style="position: absolute; top: 301px; left: 308.127px; z-index: 1000; transform: none; width: 137px; height: 173px;">
+            </div></div><div class="lf-component text-marker" style="left: 52.823px; top: 9.6493px; width: fit-content; height: auto; z-index: 1000;" id="v4-pin-3"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div class="lf-component" style="position: absolute; top: 10px; left: 14px; z-index: 1000; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="lf-component" style="position: absolute; top: 5px; left: 262px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding: 9px; box-sizing: border-box;"><div class="lf-icon" data-original-src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none; padding: 8px !important; box-sizing: border-box !important; background-origin: content-box !important; background-clip: content-box !important; mask-origin: content-box !important; mask-clip: content-box !important; background-image: url(&quot;https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png&quot;) !important; background-size: contain !important; background-position: center center !important; background-repeat: no-repeat !important;"></div></div></div><div class="lf-component" style="position: absolute; top: 5px; left: 303px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div><div id="v4-pin-4" class="lf-component text-marker" style="width: fit-content; height: auto; z-index: 1000; left: 168.823px; top: 83.6493px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div id="v4-comp-1779066983233" class="lf-component" style="position: absolute; top: 301px; left: 308.127px; z-index: 1000; transform: none; width: 137px; height: 173px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><p>Edit Text</p></div>
             </div></div><div id="v4-comp-1778568607181" class="lf-component" style="position: absolute; top: 729.141px; left: 195.032px; z-index: 1000; width: 200px; height: 40px;">
@@ -194,7 +232,7 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
             </div></div><div id="v4-comp-1778568592046" class="lf-component" style="position: absolute; top: 638px; left: 145.469px; z-index: 1000; width: 300px; height: 60px;">
             <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div></div><div id="v4-pin-5" class="lf-component text-marker" style="left: 221.427px; top: 593.451px; width: fit-content; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>SUB DESCRIPTION</p></div></div><div id="v4-pin-6" class="lf-component text-marker" style="left: 243.549px; top: 564.948px; width: fit-content; height: auto; z-index: 1000;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p><strong style="font-size: 16px;">SUB TITLE123</strong></p></div></div><script id="v4-inlined-script">
+            </div></div><div id="v4-pin-5" class="lf-component pin-marker" style="left: 221.427px; top: 593.451px; width: 28px; height: 28px; z-index: 1000;"><div class="pin-number-badge" style="pointer-events:none; font-weight:800; font-size:14px; color:#000;">6</div></div><div id="v4-pin-6" class="lf-component pin-marker" style="left: 243.549px; top: 564.948px; width: 28px; height: 28px; z-index: 1000;"><div class="pin-number-badge" style="pointer-events:none; font-weight:800; font-size:14px; color:#000;">7</div></div><script id="v4-inlined-script">
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -258,7 +296,7 @@ window.V4UndoManager = (function() {
                 
                 if (window.parent && window.parent.state && window.parent.state.activeFile) {
                     const descList = window.parent.state.activeFile.meta.description || [];
-                    const remainingPins = document.querySelectorAll('.text-marker');
+                    const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
                     
                     if (descList.length > remainingPins.length) {
                         descList.splice(remainingPins.length);
@@ -266,19 +304,31 @@ window.V4UndoManager = (function() {
                     
                     remainingPins.forEach((pin, idx) => {
                         pin.id = 'v4-pin-' + idx;
-                        const editable = pin.querySelector('.v4-editable-cell');
-                        const textContent = editable ? editable.innerText.trim() : "Edit Text";
-                        const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                        const isPinType = pin.classList.contains('pin-marker');
                         
                         if (!descList[idx]) {
                             descList[idx] = {};
                         }
                         
-                        descList[idx].text = textContent;
-                        descList[idx].html = htmlContent;
-                        descList[idx].x = parseFloat(pin.style.left) || 0;
-                        descList[idx].y = parseFloat(pin.style.top) || 0;
-                        descList[idx].standardized = true;
+                        if (isPinType) {
+                            // Circular Pin: Only sync coordinates, preserve type and text from parent state
+                            descList[idx].x = parseFloat(pin.style.left) || 0;
+                            descList[idx].y = parseFloat(pin.style.top) || 0;
+                            descList[idx].type = 'pin';
+                            descList[idx].standardized = true;
+                        } else {
+                            // Inline Text Component: Sync full content and style
+                            const editable = pin.querySelector('.v4-editable-cell');
+                            const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                            const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                            
+                            descList[idx].text = textContent;
+                            descList[idx].html = htmlContent;
+                            descList[idx].x = parseFloat(pin.style.left) || 0;
+                            descList[idx].y = parseFloat(pin.style.top) || 0;
+                            descList[idx].type = 'text';
+                            descList[idx].standardized = true;
+                        }
                     });
                     
                     if (typeof window.parent.renderDescriptionList === 'function') {
@@ -341,9 +391,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     const _getCompStyles = (c) => {
         const shape = c.querySelector('.v4-shape');
         const table = c.querySelector('table');
-        const icon = c.querySelector('.lf-icon');
+        const icon = c.querySelector('.lf-icon') || c.querySelector('img');
         const textCell = c.querySelector('.v4-editable-cell');
-        const isPin = c.classList.contains('text-marker');
+        const isPin = c.classList.contains('text-marker') || c.classList.contains('pin-marker');
+        const isDescriptionPin = c.classList.contains('pin-marker');
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
@@ -354,12 +405,26 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
         };
 
+        let detectedIconColor = "";
+        if (icon) {
+            const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
+            const dot = icon.querySelector('.v4-radio div');
+            if (poly) {
+                detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || "";
+            } else if (dot) {
+                detectedIconColor = dot.style.backgroundColor || "";
+            } else {
+                detectedIconColor = icon.style.color || icon.getAttribute('stroke') || "";
+            }
+        }
+
         return {
             id: c.id,
             isTable: !!table,
             isShape: !!shape,
             isIcon: !!icon,
             isPin: isPin,
+            isDescriptionPin: isDescriptionPin,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? shape.innerHTML : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
@@ -372,6 +437,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
+                iconColor: _rgb2hex(detectedIconColor || "#000000"),
                 isBgTransparent: (() => {
                     const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
@@ -421,7 +487,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
             // Sync deletion for pins
-            if (c.classList.contains('text-marker')) {
+            if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
                 const idx = parseInt(c.id.replace('v4-pin-', ''));
                 notifyParent({ type: 'LF_DELETE_PIN', index: idx });
             }
@@ -535,7 +601,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             notifyParent({ type: 'LF_SNAP_END' });
             
             // Sync position for pins (text markers) - now using px directly
-            if (activeEl.classList.contains('text-marker')) {
+            if (activeEl.classList.contains('text-marker') || activeEl.classList.contains('pin-marker')) {
                 const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
                 notifyParent({
                     type: 'LF_UPDATE_PIN_POS',
@@ -548,7 +614,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (activeEl.classList.contains('lf-group')) {
                 const scale = (window.parent && window.parent.state && window.parent.state.transform) ? window.parent.state.transform.scale : 1;
                 const hostRect = document.body.getBoundingClientRect();
-                activeEl.querySelectorAll('.text-marker').forEach(child => {
+                activeEl.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
                     const idx = parseInt(child.id.replace('v4-pin-', ''));
                     if (!isNaN(idx)) {
                         const childRect = child.getBoundingClientRect();
@@ -611,7 +677,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         c.style.top = (t + dy) + 'px';
                         updateHandles(c);
                         
-                        if (c.classList.contains('text-marker')) {
+                        if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
                             const idx = parseInt(c.id.replace('v4-pin-', ''));
                             notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: l + dx, y: t + dy });
                         }
@@ -622,7 +688,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         
                         // Sync children if it's a group
                         if (c.classList.contains('lf-group')) {
-                            c.querySelectorAll('.text-marker').forEach(child => {
+                            c.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
                                 const idx = parseInt(child.id.replace('v4-pin-', ''));
                                 const childRect = child.getBoundingClientRect();
                                 const hostRect = document.body.getBoundingClientRect();
@@ -648,7 +714,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     selected.forEach(c => {
                         if (c.classList.contains('connector-line')) {
                             notifyParent({ type: 'LF_DELETE_CONNECTOR', id: c.id });
-                        } else if (c.classList.contains('text-marker')) {
+                        } else if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
                             const idx = parseInt(c.id.replace('v4-pin-', ''));
                             notifyParent({ type: 'LF_DELETE_PIN', index: idx });
                             c.remove();
@@ -686,9 +752,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             return;
         }
         if (d.type === 'LF_REORDER_PINS') {
-            const pins = document.querySelectorAll('.text-marker');
+            const pins = document.querySelectorAll('.text-marker, .pin-marker');
             pins.forEach((pin, idx) => {
                 pin.id = 'v4-pin-' + idx;
+                const badge = pin.querySelector('.pin-number-badge');
+                if (badge) {
+                    badge.innerText = idx + 1;
+                }
             });
             return;
         }
@@ -712,21 +782,39 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 if (!div) {
                     div = document.createElement('div');
                     div.id = 'v4-pin-' + idx;
-                    div.className = 'lf-component text-marker';
                     host.appendChild(div);
                 }
                 
-                div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
-                                '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
-                                '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+                const isPinType = (pin.type === 'pin' || pin.type === undefined);
+                div.className = 'lf-component ' + (isPinType ? 'pin-marker' : 'text-marker');
                 
-                div.style.width = 'fit-content';
-                div.style.height = 'auto';
+                if (isPinType) {
+                    div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                                    '<div class="pin-number-badge" style="pointer-events:none; font-weight:800; font-size:14px; color:#000;">' + (idx + 1) + '</div>' +
+                                    '<div class="lf-delete-trigger" style="right:-10px; top:-10px;">&times;</div>';
+                    div.style.width = '28px';
+                    div.style.height = '28px';
+                } else {
+                    div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                                    '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
+                                    '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+                    div.style.width = 'fit-content';
+                    div.style.height = 'auto';
+                }
                 div.style.zIndex = '1000';
 
+                let xVal = parseFloat(pin.x) || 0;
+                let yVal = parseFloat(pin.y) || 0;
+                
+                // Convert legacy percentage coordinates to absolute pixels based on 1440x900 canvas
+                if (!pin.standardized && xVal <= 100 && yVal <= 100) {
+                    xVal = xVal * 14.4;
+                    yVal = yVal * 9.0;
+                }
+
                 // Global absolute position relative to body
-                div.style.left = (parseFloat(pin.x) || 0) + 'px';
-                div.style.top = (parseFloat(pin.y) || 0) + 'px';
+                div.style.left = xVal + 'px';
+                div.style.top = yVal + 'px';
                 
                 updateHandles(div);
             });
@@ -838,8 +926,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const sY = window.scrollY;
             const sX = window.scrollX;
             
-            const compW = (d.style && d.style.width) ? parseInt(d.style.width) || 200 : 200;
-            const compH = (d.style && d.style.height) ? parseInt(d.style.height) || 100 : 100;
+            // pin-marker 타입인 경우 규격(28px * 28px)을 강제 지정
+            const isPinMarker = d.className && d.className.includes('pin-marker');
+            const compW = isPinMarker ? 28 : ((d.style && d.style.width) ? parseInt(d.style.width) || 200 : 200);
+            const compH = isPinMarker ? 28 : ((d.style && d.style.height) ? parseInt(d.style.height) || 100 : 100);
             
             const centerTop = sY + (vh - compH) / 2;
             const centerLeft = sX + (vw - compW) / 2;
@@ -847,16 +937,25 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             const v = document.createElement('div'); 
             v.id = d.id || ('v4-comp-' + Date.now()); 
-            v.className = 'lf-component' + (d.isGroup ? ' lf-group' : '') + (d.className ? ' ' + d.className : ''); 
             v.style.position = 'absolute'; 
             v.style.top = centerTop + 'px'; 
             v.style.left = centerLeft + 'px'; 
             v.style.zIndex = '1000';
-            v.style.transform = 'none'; // Prevent drift during grouping
-            
-            if (d.style) Object.assign(v.style, d.style);
-            
-            v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+
+            if (isPinMarker) {
+                const idx = parseInt(d.id.replace('v4-pin-', '')) || 0;
+                v.className = 'lf-component pin-marker';
+                v.style.width = '28px';
+                v.style.height = '28px';
+                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                              '<div class="pin-number-badge" style="pointer-events:none; font-weight:800; font-size:14px; color:#000;">' + (idx + 1) + '</div>' +
+                              '<div class="lf-delete-trigger" style="right:-10px; top:-10px;">&times;</div>';
+            } else {
+                v.className = 'lf-component' + (d.isGroup ? ' lf-group' : '') + (d.className ? ' ' + d.className : ''); 
+                v.style.transform = 'none'; // Prevent drift during grouping
+                if (d.style) Object.assign(v.style, d.style);
+                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+            }
             
             // Smart Scaling based on Parent Viewport
             if (window.parent.state && window.parent.state.transform) {
@@ -889,15 +988,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             host.appendChild(v);
             document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             v.classList.add('selected');
-            const isPin = v.classList.contains('text-marker');
+            const styles = _getCompStyles(v);
             notifyParent({ 
                 type: 'LF_COMP_SELECTED', 
-                id: v.id, 
-                isTable: !!v.querySelector('table'), 
-                isShape: !!v.querySelector('.v4-shape'),
-                isIcon: !!v.querySelector('.lf-icon') || !!v.querySelector('img'),
-                isPin: isPin,
-                pinIndex: isPin ? parseInt(v.id.replace('v4-pin-', '')) : -1
+                ...styles
             });
             markDirty();
         } else if (d.type === 'LF_INSERT_COMPONENTS') {
@@ -973,6 +1067,108 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     if (d.style.borderColor) {
                         svgShape.style.stroke = d.style.borderColor;
                         svgShape.style.strokeWidth = "1.6";
+                    }
+                }
+
+                // --- ICON COLOR SPECIAL INTEGRATION ---
+                const isIconComp = s.querySelector('.lf-icon') || s.querySelector('img');
+                if (isIconComp && d.style.color) {
+                    const iconColor = d.style.color;
+                    
+                    // 1. SVG coloring (Arrows, Close, Checkbox SVG)
+                    const innerSvg = t.querySelector('svg') || (t.tagName.toLowerCase() === 'svg' ? t : null);
+                    if (innerSvg) {
+                        innerSvg.style.color = iconColor;
+                        
+                        // Also apply stroke and fill overrides to the SVG root if it has stroke/fill attributes
+                        if (innerSvg.getAttribute('stroke') && innerSvg.getAttribute('stroke') !== 'none') {
+                            innerSvg.style.stroke = iconColor;
+                        }
+                        if (innerSvg.getAttribute('fill') && innerSvg.getAttribute('fill') !== 'none') {
+                            innerSvg.style.fill = iconColor;
+                        }
+                        
+                        // Checkbox custom handling: only color the stroke of checkmark
+                        if (t.classList.contains('v4-checkbox')) {
+                            const checkmark = innerSvg.querySelector('polyline, path');
+                            if (checkmark) checkmark.style.stroke = iconColor;
+                        } else {
+                            const paths = innerSvg.querySelectorAll('path, line, polyline, polygon, rect, circle');
+                            paths.forEach(p => {
+                                if (p.getAttribute('stroke') && p.getAttribute('stroke') !== 'none') {
+                                    p.style.stroke = iconColor;
+                                }
+                                if (p.getAttribute('fill') && p.getAttribute('fill') !== 'none') {
+                                    p.style.fill = iconColor;
+                                }
+                            });
+                        }
+                    }
+                    
+                    // 2. Radio Button dot coloring
+                    const innerDot = t.querySelector('.v4-radio div') || (t.classList.contains('v4-radio') ? t.querySelector('div') : null);
+                    if (innerDot) {
+                        innerDot.style.backgroundColor = iconColor;
+                    }
+                    
+                    // 3. Sprite / Image mask-based coloring for non-SVG icons
+                    if (!innerSvg && !innerDot) {
+                        t.style.filter = 'none';
+                        if (t.tagName.toLowerCase() === 'img') {
+                            let origSrc = t.getAttribute('data-original-src');
+                            if (!origSrc) {
+                                origSrc = t.src;
+                                t.setAttribute('data-original-src', origSrc);
+                            }
+                            t.style.webkitMaskImage = 'url("' + origSrc + '")';
+                            t.style.webkitMaskSize = 'contain';
+                            t.style.webkitMaskPosition = 'center';
+                            t.style.webkitMaskRepeat = 'no-repeat';
+                            
+                            t.style.maskImage = 'url("' + origSrc + '")';
+                            t.style.maskSize = 'contain';
+                            t.style.maskPosition = 'center';
+                            t.style.maskRepeat = 'no-repeat';
+                            
+                            t.style.backgroundColor = iconColor;
+                            t.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'/>";
+                        } else {
+                            const origBg = t.getAttribute('data-original-bg') || window.getComputedStyle(t).backgroundImage;
+                            const origPos = t.getAttribute('data-original-pos') || window.getComputedStyle(t).backgroundPosition;
+                            const origSize = t.getAttribute('data-original-size') || window.getComputedStyle(t).backgroundSize;
+                            
+                            if (origBg && origBg !== 'none') {
+                                if (!t.getAttribute('data-original-bg')) {
+                                    t.setAttribute('data-original-bg', origBg);
+                                    t.setAttribute('data-original-pos', origPos);
+                                    t.setAttribute('data-original-size', origSize);
+                                }
+                                
+                                t.style.setProperty('webkit-mask-image', origBg, 'important');
+                                t.style.setProperty('webkit-mask-position', origPos, 'important');
+                                t.style.setProperty('webkit-mask-size', origSize, 'important');
+                                t.style.setProperty('webkit-mask-repeat', 'no-repeat', 'important');
+                                
+                                t.style.setProperty('mask-image', origBg, 'important');
+                                t.style.setProperty('mask-position', origPos, 'important');
+                                t.style.setProperty('mask-size', origSize, 'important');
+                                t.style.setProperty('mask-repeat', 'no-repeat', 'important');
+                                
+                                t.style.setProperty('background-color', iconColor, 'important');
+                                t.style.setProperty('background-image', 'none', 'important');
+                                
+                                const computedPadding = window.getComputedStyle(t).paddingTop;
+                                const hasPadding = (t.style.padding && t.style.padding !== '0px') || (computedPadding && computedPadding !== '0px' && computedPadding !== '0');
+                                if (hasPadding) {
+                                    t.style.setProperty('webkit-mask-origin', 'content-box', 'important');
+                                    t.style.setProperty('webkit-mask-clip', 'content-box', 'important');
+                                    t.style.setProperty('mask-origin', 'content-box', 'important');
+                                    t.style.setProperty('mask-clip', 'content-box', 'important');
+                                    t.style.setProperty('background-origin', 'content-box', 'important');
+                                    t.style.setProperty('background-clip', 'content-box', 'important');
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1323,6 +1519,73 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 const px = (val / 100) * window.innerHeight;
                 c.style.top = px + 'px';
                 console.log("[V4 Migration] Migrated " + c.id + " top: " + tStr + " -> " + c.style.top);
+            }
+        });
+
+        // --- Image-to-Div Icon Migration for robust CSS Masking ---
+        document.querySelectorAll('.lf-component img').forEach(img => {
+            const parent = img.parentElement;
+            if (!parent) return;
+            
+            const isLogo = img.classList.contains('v4-logo-img');
+            const isShare = img.src && img.src.includes('iconShare');
+            const isIcon = img.classList.contains('lf-icon');
+            
+            if (isLogo || isShare || isIcon) {
+                const div = document.createElement('div');
+                div.className = img.className;
+                if (!div.classList.contains('lf-icon')) {
+                    div.classList.add('lf-icon');
+                }
+                
+                const origSrc = img.getAttribute('data-original-src') || img.src;
+                div.setAttribute('data-original-src', origSrc);
+                
+                const origBg = img.getAttribute('data-original-bg');
+                if (origBg) div.setAttribute('data-original-bg', origBg);
+                
+                div.style.cssText = img.style.cssText;
+                div.style.width = '100%';
+                div.style.height = '100%';
+                div.style.pointerEvents = 'none';
+                
+                if (!isLogo) {
+                    div.style.setProperty('padding', '8px', 'important');
+                    div.style.setProperty('box-sizing', 'border-box', 'important');
+                    div.style.setProperty('background-origin', 'content-box', 'important');
+                    div.style.setProperty('background-clip', 'content-box', 'important');
+                    div.style.setProperty('mask-origin', 'content-box', 'important');
+                    div.style.setProperty('webkit-mask-origin', 'content-box', 'important');
+                    div.style.setProperty('mask-clip', 'content-box', 'important');
+                    div.style.setProperty('webkit-mask-clip', 'content-box', 'important');
+                }
+                
+                const isColored = img.style.backgroundColor || img.getAttribute('data-original-bg');
+                if (isColored) {
+                    const color = img.style.backgroundColor || '';
+                    div.style.setProperty('background-color', color, 'important');
+                    div.style.setProperty('background-image', 'none', 'important');
+                    
+                    const bgUrl = 'url("' + origSrc + '")';
+                    div.setAttribute('data-original-bg', bgUrl);
+                    div.style.setProperty('webkit-mask-image', bgUrl, 'important');
+                    div.style.setProperty('webkit-mask-position', 'center', 'important');
+                    div.style.setProperty('webkit-mask-size', 'contain', 'important');
+                    div.style.setProperty('webkit-mask-repeat', 'no-repeat', 'important');
+                    
+                    div.style.setProperty('mask-image', bgUrl, 'important');
+                    div.style.setProperty('mask-position', 'center', 'important');
+                    div.style.setProperty('mask-size', 'contain', 'important');
+                    div.style.setProperty('mask-repeat', 'no-repeat', 'important');
+                } else {
+                    div.style.setProperty('background-image', 'url("' + origSrc + '")', 'important');
+                    div.style.setProperty('background-size', 'contain', 'important');
+                    div.style.setProperty('background-position', 'center', 'important');
+                    div.style.setProperty('background-repeat', 'no-repeat', 'important');
+                }
+                
+                parent.replaceChild(div, img);
+                console.log("[V4 Migration] Migrated image icon/logo to div element:", origSrc);
             }
         });
 
