@@ -28,7 +28,7 @@
     "03_Delivery_Notice_926.html": {
       "title": "배송예정일 설정 (6/2 ~ 6/9)",
       "type": "plan",
-      "updatedAt": "2026-05-20T01:44:55.445Z",
+      "updatedAt": "2026-05-20T01:45:59.366Z",
       "template": "template_plan_delivery.html",
       "description": [
         {
@@ -36,6 +36,13 @@
           "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\">Edit Text</div>",
           "x": 378.5,
           "y": 734,
+          "standardized": true
+        },
+        {
+          "text": "물류 출고 마감 시간이 13:00 입니다.",
+          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\">Edit Text</div>",
+          "x": 505,
+          "y": 368,
           "standardized": true
         }
       ],
