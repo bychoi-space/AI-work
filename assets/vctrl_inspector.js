@@ -135,6 +135,11 @@ window.switchSidebarTab = function(tabName) {
     
     // Ensure sidebar is open when switching tabs
     window.toggleSidebar('right', true);
+    
+    if (tabName === 'description' && typeof window.autoResizeDescriptionInputs === 'function') {
+        setTimeout(window.autoResizeDescriptionInputs, 50);
+    }
+    
     console.log(`[Inspector] switchSidebarTab END: ${tabName}`);
 };
 
@@ -500,10 +505,76 @@ window.initQuillEditor = function() {
     });
 };
 
+window.handleEditScreen = async function(fileName) {
+    const state = window.state || {};
+    const DOM = window.DOM || {};
+    if (state.isReadOnly) {
+        if (typeof window.showAuthModal === 'function') window.showAuthModal();
+        return;
+    }
+    const meta = (state.projectMetadata.screens || {})[fileName] || {};
+    
+    if (DOM.editScreenFilename) DOM.editScreenFilename.innerText = fileName;
+    if (DOM.editScreenTitle) DOM.editScreenTitle.value = meta.title || "";
+    if (DOM.editScreenType) DOM.editScreenType.value = meta.type || "default";
+    if (DOM.editScreenDefaultTab) DOM.editScreenDefaultTab.value = meta.defaultTab || "editor";
+    if (DOM.editScreenDesc) DOM.editScreenDesc.value = meta.screenDesc || meta.description || "";
+    if (DOM.editScreenModal) DOM.editScreenModal.classList.add('active');
+    
+    if (DOM.btnSubmitEdit) {
+        DOM.btnSubmitEdit.onclick = async () => {
+            const newTitle = DOM.editScreenTitle ? DOM.editScreenTitle.value.trim() : "";
+            const newType = DOM.editScreenType ? DOM.editScreenType.value : "default";
+            const newDefaultTab = DOM.editScreenDefaultTab ? DOM.editScreenDefaultTab.value : "editor";
+            const newDesc = DOM.editScreenDesc ? DOM.editScreenDesc.value.trim() : "";
+            
+            DOM.btnSubmitEdit.disabled = true;
+            DOM.btnSubmitEdit.innerText = "Saving...";
+            
+            if (!state.projectMetadata.screens) state.projectMetadata.screens = {};
+            state.projectMetadata.screens[fileName] = {
+                ...state.projectMetadata.screens[fileName],
+                title: newTitle,
+                type: newType,
+                defaultTab: newDefaultTab,
+                screenDesc: newDesc,
+                updatedAt: new Date().toISOString()
+            };
+            
+            if (typeof window.saveProjectMetadata === 'function') {
+                const success = await window.saveProjectMetadata(state.currentProject, state.projectMetadata);
+                if (success) {
+                    if (DOM.editScreenModal) DOM.editScreenModal.classList.remove('active');
+                    location.reload(); 
+                } else {
+                    alert("Failed to save project metadata. Please check authentication token.");
+                    DOM.btnSubmitEdit.disabled = false;
+                    DOM.btnSubmitEdit.innerText = "Save Changes";
+                }
+            } else {
+                console.error("[Inspector] saveProjectMetadata is not defined on window.");
+                DOM.btnSubmitEdit.disabled = false;
+                DOM.btnSubmitEdit.innerText = "Save Changes";
+            }
+        };
+    }
+};
+
 // --- 5. Init Events & Listeners ---
 if (DOM.btnToggleLeft) DOM.btnToggleLeft.onclick = () => window.toggleSidebar('left');
 if (DOM.btnToggleRight) DOM.btnToggleRight.onclick = () => window.toggleSidebar('right');
 document.querySelectorAll('.tab-btn').forEach(btn => btn.onclick = () => window.switchSidebarTab(btn.dataset.tab));
+if (DOM.btnAddDescription) {
+    DOM.btnAddDescription.onclick = () => {
+        if (typeof window.handleTextCreation === 'function') window.handleTextCreation();
+    };
+}
+if (DOM.btnCancelEdit) {
+    DOM.btnCancelEdit.onclick = () => {
+        if (DOM.editScreenModal) DOM.editScreenModal.classList.remove('active');
+    };
+}
+
 
 window.showLoading = (text) => { const overlay = get('loading-overlay'); if (overlay) { const txt = overlay.querySelector('.loading-text'); if (txt) txt.innerText = text; overlay.classList.remove('fade-out'); } };
 window.hideLoading = () => { const overlay = get('loading-overlay'); if (overlay) overlay.classList.add('fade-out'); setTimeout(() => { if (typeof window.centerView === 'function') window.centerView(); }, 600); };

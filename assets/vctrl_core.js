@@ -154,8 +154,12 @@ window.loadScreen = async function(fileName) {
     };
 
     let scMeta = (state.projectMetadata.screens || {})[fileName] || {};
-    if (!scMeta.description) scMeta.description = [];
-    if (!scMeta.connectors) scMeta.connectors = [];
+    if (!scMeta.description || !Array.isArray(scMeta.description)) {
+        scMeta.description = (typeof scMeta.description === 'string' && scMeta.description.trim())
+            ? [{ text: scMeta.description, x: 50, y: 50 }]
+            : [];
+    }
+    if (!scMeta.connectors || !Array.isArray(scMeta.connectors)) scMeta.connectors = [];
 
     state.activeFile = { 
         name: fileName, 
@@ -624,10 +628,19 @@ window.MessageHub = {
                     markAsDirty();
                 }
             } else if (data.type === 'LF_COMP_SELECTED') {
-                state.isEditing = true;
-                state.editingIndex = data.id;
-                if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab('editor');
-                if (typeof window.updateProperties === 'function') window.updateProperties(data);
+                if (data.isDescriptionPin) {
+                    state.isEditing = false;
+                    state.editingIndex = -1;
+                    if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab('description');
+                    if (typeof window.focusDescriptionRow === 'function') {
+                        window.focusDescriptionRow(data.pinIndex);
+                    }
+                } else {
+                    state.isEditing = true;
+                    state.editingIndex = data.id;
+                    if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab('editor');
+                    if (typeof window.updateProperties === 'function') window.updateProperties(data);
+                }
             } else if (data.type === 'LF_SPACE_DOWN') {
                 const DOM = window.DOM;
                 if (DOM && DOM.canvas) DOM.canvas.classList.add('hand-active');

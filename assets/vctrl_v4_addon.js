@@ -53,12 +53,15 @@
             ? ('v4-pin-' + (customIdx !== undefined ? customIdx : Date.now())) 
             : ('v4-comp-' + Date.now());
 
+        // 설명 핀(customIdx가 명시된 경우)과 일반 텍스트 상자를 선명하게 분리
+        const isDescriptionPin = isTextTool && (customIdx !== undefined);
+
         notifyIframe({
             type: 'LF_INSERT_COMPONENT',
             id: targetId,
             html: item.html,
             style: style,
-            className: isTextTool ? 'text-marker' : '',
+            className: isDescriptionPin ? 'pin-marker' : (isTextTool ? 'text-marker' : ''),
             isGroup: !!item.isGroup
         });
     };
