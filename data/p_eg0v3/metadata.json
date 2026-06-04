@@ -1,6 +1,14 @@
 {
   "title": "[기획전] 랭킹 카드",
-  "screens": {},
+  "screens": {
+    "프로젝트 커버.html": {
+      "title": "프로젝트 커버",
+      "type": "cover",
+      "updatedAt": "2026-06-04T00:50:05.290Z",
+      "template": "template_cover.html",
+      "version": 0.1
+    }
+  },
   "assignee": "최범열",
   "developer": "",
   "period": "2026.06.04(목) ~ 2026.07.09(목)",
