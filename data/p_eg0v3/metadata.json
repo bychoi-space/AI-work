@@ -13,57 +13,9 @@
     "06_Mobile_Design_2_793.html": {
       "title": "06_Mobile_Design_2_793",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-04T05:48:50.319Z",
+      "updatedAt": "2026-06-04T05:50:28.389Z",
       "template": "template_mobile_ui_2.html",
       "description": [
-        {
-          "text": "기획전 명칭",
-          "html": "<p>기획전 명칭</p>",
-          "x": 52.823,
-          "y": 11.6493,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Card Title",
-          "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>",
-          "x": 433,
-          "y": 136,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Card Description",
-          "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>",
-          "x": 420,
-          "y": 168,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "전체",
-          "html": "<p><strong>전체</strong></p>",
-          "x": 315.5,
-          "y": 226.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "여성의류",
-          "html": "<p>여성의류</p>",
-          "x": 359.5,
-          "y": 226.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "남성의류",
-          "html": "<p>남성의류</p>",
-          "x": 432.5,
-          "y": 226.5,
-          "type": "text",
-          "standardized": true
-        },
         {
           "text": "가방/잡화",
           "html": "<p>가방/잡화</p>",
