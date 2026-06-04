@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "06_Mobile_Design_2_793",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-04T05:46:46.859Z",
+      "updatedAt": "2026-06-04T05:48:50.319Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -44,7 +44,7 @@
           "text": "전체",
           "html": "<p><strong>전체</strong></p>",
           "x": 315.5,
-          "y": 228.009,
+          "y": 226.5,
           "type": "text",
           "standardized": true
         },
@@ -107,48 +107,48 @@
         {
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>",
-          "x": 0,
-          "y": 183.5,
+          "x": 520.942760942761,
+          "y": 544.6464646464647,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 0,
-          "y": 204.5,
+          "x": 520.942760942761,
+          "y": 567.2727272727273,
           "type": "text",
           "standardized": true
         },
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 0,
-          "y": 243.5,
+          "x": 520.942760942761,
+          "y": 609.2929292929293,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>",
-          "x": 0,
-          "y": 183.5,
+          "x": 337.77777777777777,
+          "y": 544.6464646464647,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 0,
-          "y": 204.5,
+          "x": 337.77777777777777,
+          "y": 567.2727272727273,
           "type": "text",
           "standardized": true
         },
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 0,
-          "y": 243.5,
+          "x": 337.77777777777777,
+          "y": 609.2929292929293,
           "type": "text",
           "standardized": true
         }
