@@ -94,6 +94,15 @@
         return '#' + r + g + b;
     }
 
+    function hexToRgba(hex, opacity) {
+        if (!hex) return 'rgba(30, 41, 59, 1)';
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        const a = (opacity / 100).toFixed(2);
+        return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
+    }
+
     // Table Style Bindings
     bindStyleUpdate('table-font-size', (val) => ({
         type: 'LF_UPDATE_STYLE',
@@ -168,11 +177,52 @@
         selector: '.v4-shape .v4-editable-cell',
         style: { fontSize: val + 'px' }
     }));
-    bindStyleUpdate('shape-bg-color', (val) => ({
-        type: 'LF_UPDATE_STYLE',
-        selector: '.v4-shape',
-        style: { background: val, backgroundColor: val }
-    }));
+    const shapeBgColorEl = document.getElementById('shape-bg-color');
+    if (shapeBgColorEl) {
+        shapeBgColorEl.addEventListener('input', function() {
+            const colorHex = this.value;
+            const opacitySlider = document.getElementById('shape-bg-opacity');
+            const opacityVal = opacitySlider ? opacitySlider.value : 100;
+            const rgbaColor = hexToRgba(colorHex, opacityVal);
+            
+            notifyIframe({
+                type: 'LF_UPDATE_STYLE',
+                selector: '.v4-shape',
+                style: { background: rgbaColor, backgroundColor: rgbaColor }
+            });
+            
+            const wrapper = document.getElementById('shape-bg-wrapper');
+            if (wrapper) wrapper.classList.remove('transparent-active');
+        });
+    }
+
+    const shapeBgOpacityEl = document.getElementById('shape-bg-opacity');
+    if (shapeBgOpacityEl) {
+        shapeBgOpacityEl.addEventListener('input', function() {
+            const opacityVal = this.value;
+            const txt = document.getElementById('txt-shape-bg-opacity');
+            if (txt) txt.innerText = opacityVal;
+            
+            const colorPicker = document.getElementById('shape-bg-color');
+            const colorHex = colorPicker ? colorPicker.value : '#1e293b';
+            const rgbaColor = hexToRgba(colorHex, opacityVal);
+            
+            notifyIframe({
+                type: 'LF_UPDATE_STYLE',
+                selector: '.v4-shape',
+                style: { background: rgbaColor, backgroundColor: rgbaColor }
+            });
+            
+            const wrapper = document.getElementById('shape-bg-wrapper');
+            if (wrapper) {
+                if (parseInt(opacityVal) === 0) {
+                    wrapper.classList.add('transparent-active');
+                } else {
+                    wrapper.classList.remove('transparent-active');
+                }
+            }
+        });
+    }
     bindStyleUpdate('shape-text-color', (val) => ({
         type: 'LF_UPDATE_STYLE',
         selector: '.v4-shape .v4-editable-cell',
@@ -267,6 +317,15 @@
             btn.onclick = () => {
                 const wrapper = document.getElementById(conf.wrapper);
                 if (wrapper) wrapper.classList.add('transparent-active');
+                
+                // shape-bg-opacity sync if shape bg is none
+                if (conf.btn === 'btn-shape-bg-none') {
+                    const slider = document.getElementById('shape-bg-opacity');
+                    const txt = document.getElementById('txt-shape-bg-opacity');
+                    if (slider) slider.value = 0;
+                    if (txt) txt.innerText = 0;
+                }
+
                 notifyIframe({
                     type: 'LF_UPDATE_STYLE',
                     selector: conf.selector,
@@ -332,6 +391,14 @@
                 syncColor('shape-bg-color', 'shape-bg-wrapper', s.bg, s.isBgTransparent);
                 syncColor('shape-border-color', 'shape-border-wrapper', s.border, s.isBorderTransparent);
                 syncColor('shape-text-color', '', s.text, false);
+                
+                // Sync Shape Opacity
+                if (data.isShape && s.bgOpacity !== undefined) {
+                    const slider = document.getElementById('shape-bg-opacity');
+                    const txt = document.getElementById('txt-shape-bg-opacity');
+                    if (slider) slider.value = s.bgOpacity;
+                    if (txt) txt.innerText = s.bgOpacity;
+                }
                 
                 syncColor('table-border-color', 'table-border-wrapper', s.border, s.isBorderTransparent);
 
