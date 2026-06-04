@@ -13,10 +13,31 @@
     "06_Mobile_Design_2_793.html": {
       "title": "06_Mobile_Design_2_793",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-04T04:58:49.528Z",
+      "updatedAt": "2026-06-04T05:00:01.718Z",
       "template": "template_mobile_ui_2.html",
       "description": [],
-      "connectors": []
+      "connectors": [
+        {
+          "id": "conn_1780549136682",
+          "type": "straight",
+          "start": {
+            "x": 324,
+            "y": 278.2895622895623,
+            "targetId": null,
+            "side": null
+          },
+          "end": {
+            "x": 355.2282231445725,
+            "y": 278.320590794304,
+            "targetId": null,
+            "side": null
+          },
+          "style": {
+            "stroke": "#1e1e1e",
+            "strokeWidth": 3
+          }
+        }
+      ]
     }
   },
   "assignee": "최범열",
