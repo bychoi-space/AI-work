@@ -11,9 +11,9 @@
       "connectors": []
     },
     "06_Mobile_Design_2_793.html": {
-      "title": "06_Mobile_Design_2_793",
+      "title": "Mobile 화면설계 1",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-04T07:48:27.215Z",
+      "updatedAt": "2026-06-04T07:51:36.178Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -426,7 +426,9 @@
             "strokeWidth": 1.6
           }
         }
-      ]
+      ],
+      "defaultTab": "editor",
+      "screenDesc": ""
     }
   },
   "assignee": "최범열",
