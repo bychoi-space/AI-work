@@ -1,6 +1,8 @@
 // --- Core Constants for V4 Injection ---
 window.v4Styles = `
 :root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg-dark: #0f172a; --v4-panel-bg: rgba(30, 41, 59, 0.7); --v4-border: rgba(255, 255, 255, 0.15); --v4-text-main: #ffffff; --v4-text-dim: #94a3b8; }
+body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+.v4-editable-cell, [contenteditable="true"] { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
 .lf-component { 
     position: absolute; cursor: pointer; transition: outline 0.2s; 
     box-sizing: border-box; z-index: 100;
@@ -277,7 +279,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 window.v4Script = `
 (function() {
-    console.log("[V4 Iframe] Script initialized (V141_COPY_PASTE)");
+    console.log("[V4 Iframe] Script initialized (V142_TEXT_SELECT_FIX)");
     let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
     let startX, startY, startW, startH, startTop, startLeft, startRect;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
@@ -595,6 +597,7 @@ window.v4Script = `
     document.addEventListener('mousemove', e => {
         if (isMarquee) {
             notifyParent({ type: 'LF_MARQUEE_MOVE', x: e.clientX, y: e.clientY });
+            window.getSelection()?.removeAllRanges();
             return;
         }
         if (rafId) cancelAnimationFrame(rafId);
