@@ -954,7 +954,7 @@ window.init = async function() {
 
             // Proxy canvas shortcuts if we have active selections or targets
             const proxiedCodes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Delete', 'Backspace', 'Space'];
-            const isCtrlShortcut = (e.ctrlKey || e.metaKey) && ['g'].includes(e.key.toLowerCase());
+            const isCtrlShortcut = (e.ctrlKey || e.metaKey) && ['g', 'c', 'v'].includes(e.key.toLowerCase());
             
             if (proxiedCodes.includes(e.code) || isCtrlShortcut) {
                 if (DOM.iframe && DOM.iframe.contentWindow) {
@@ -967,8 +967,8 @@ window.init = async function() {
                         metaKey: e.metaKey
                     }, '*');
                     
-                    // Prevent default browser behaviors for layout movement keys
-                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Backspace', 'Space'].includes(e.code)) {
+                    // Prevent default browser behaviors for layout movement keys and ctrl shortcuts
+                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Backspace', 'Space'].includes(e.code) || isCtrlShortcut) {
                         e.preventDefault();
                     }
                 }

@@ -277,7 +277,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 window.v4Script = `
 (function() {
-    console.log("[V4 Iframe] Script initialized (V140_SHAPE_OPACITY)");
+    console.log("[V4 Iframe] Script initialized (V141_COPY_PASTE)");
     let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
     let startX, startY, startW, startH, startTop, startLeft, startRect;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
@@ -308,6 +308,120 @@ window.v4Script = `
             }
         }
         return 100;
+    };
+
+    let v4Clipboard = [];
+
+    const reorderAllPins = () => {
+        const pins = document.querySelectorAll('.text-marker, .pin-marker');
+        pins.forEach((pin, idx) => {
+            pin.id = 'v4-pin-' + idx;
+            const badge = pin.querySelector('.pin-number-badge');
+            if (badge) {
+                badge.innerText = idx + 1;
+            }
+        });
+        if (window.parent && window.parent.state && window.parent.state.activeFile) {
+            const descList = window.parent.state.activeFile.meta.description || [];
+            const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
+            if (descList.length > remainingPins.length) {
+                descList.splice(remainingPins.length);
+            }
+            remainingPins.forEach((pin, idx) => {
+                const isPinType = pin.classList.contains('pin-marker');
+                if (!descList[idx]) {
+                    descList[idx] = {};
+                }
+                descList[idx].x = parseFloat(pin.style.left) || 0;
+                descList[idx].y = parseFloat(pin.style.top) || 0;
+                descList[idx].standardized = true;
+                if (isPinType) {
+                    descList[idx].type = 'pin';
+                } else {
+                    const editable = pin.querySelector('.v4-editable-cell');
+                    const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                    const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                    descList[idx].type = 'text';
+                    descList[idx].text = textContent;
+                    descList[idx].html = htmlContent;
+                }
+            });
+            if (typeof window.parent.renderDescriptionList === 'function') {
+                window.parent.renderDescriptionList();
+            }
+        }
+    };
+
+    const copySelectedObjects = () => {
+        const selected = document.querySelectorAll('.lf-component.selected');
+        if (selected.length === 0) return;
+        v4Clipboard = [];
+        const topLevelSelected = Array.from(selected).filter(el => {
+            let parent = el.parentElement;
+            while (parent && parent !== document.body) {
+                if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
+                    return false;
+                }
+                parent = parent.parentElement;
+            }
+            return true;
+        });
+        topLevelSelected.forEach(el => {
+            v4Clipboard.push({
+                html: el.innerHTML,
+                className: el.className.replace(/\\bselected\\b/g, '').replace(/\\bdragging-now\\b/g, '').trim(),
+                styleCssText: el.style.cssText,
+                left: parseFloat(el.style.left) || 0,
+                top: parseFloat(el.style.top) || 0,
+                isGroup: el.classList.contains('lf-group'),
+                isPinMarker: el.classList.contains('pin-marker'),
+                isTextMarker: el.classList.contains('text-marker')
+            });
+        });
+        console.log("[V4 Iframe] Copied " + v4Clipboard.length + " object(s).");
+    };
+
+    const pasteCopiedObjects = () => {
+        if (!v4Clipboard || v4Clipboard.length === 0) return;
+        if (window.V4UndoManager) window.V4UndoManager.saveState();
+        document.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+        const host = document.body;
+        const newSelectedIds = [];
+        const offset = 15;
+        v4Clipboard.forEach(item => {
+            const v = document.createElement('div');
+            const newId = item.isPinMarker ? ('v4-pin-' + Date.now() + Math.floor(Math.random() * 1000)) : ('v4-comp-' + Date.now() + Math.floor(Math.random() * 1000));
+            v.id = newId;
+            v.className = item.className + ' selected';
+            v.style.cssText = item.styleCssText;
+            v.style.left = (item.left + offset) + 'px';
+            v.style.top = (item.top + offset) + 'px';
+            v.innerHTML = item.html;
+            v.querySelectorAll('.lf-component').forEach(child => child.classList.remove('selected'));
+            v.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
+            host.appendChild(v);
+            newSelectedIds.push(newId);
+        });
+        if (typeof enforceDesignSystem === 'function') {
+            enforceDesignSystem();
+        } else if (typeof initHandles === 'function') {
+            initHandles();
+        }
+        const hasPin = v4Clipboard.some(item => item.isPinMarker || item.isTextMarker);
+        if (hasPin) {
+            reorderAllPins();
+        }
+        if (newSelectedIds.length > 0) {
+            const firstNewEl = document.getElementById(newSelectedIds[0]);
+            if (firstNewEl) {
+                notifyParent({
+                    type: "LF_COMP_SELECTED",
+                    ..._getCompStyles(firstNewEl)
+                });
+            }
+        }
+        markDirty();
+        console.log("[V4 Iframe] Pasted " + v4Clipboard.length + " object(s).");
     };
 
     const _getCompStyles = (c) => {
@@ -561,6 +675,22 @@ window.v4Script = `
     document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
     let isArrowMoving = false;
     document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                e.preventDefault();
+                copySelectedObjects();
+                return;
+            }
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                e.preventDefault();
+                pasteCopiedObjects();
+                return;
+            }
+        }
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'g') {
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
             if (!isInput) {
