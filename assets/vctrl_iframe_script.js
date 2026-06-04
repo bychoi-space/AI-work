@@ -279,7 +279,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 window.v4Script = `
 (function() {
-    console.log("[V4 Iframe] Script initialized (V142_TEXT_SELECT_FIX)");
+    console.log("[V4 Iframe] Script initialized (V143_LINE_DELETE_FIX)");
     let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
     let startX, startY, startW, startH, startTop, startLeft, startRect;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
@@ -526,13 +526,20 @@ window.v4Script = `
         if (d && c) { 
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
+            // Sync deletion for connectors
+            if (c.classList.contains('connector-line')) {
+                notifyParent({ type: 'LF_DELETE_CONNECTOR', id: c.id });
+                c.remove();
+            }
             // Sync deletion for pins
-            if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
+            else if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
                 const idx = parseInt(c.id.replace('v4-pin-', ''));
                 notifyParent({ type: 'LF_DELETE_PIN', index: idx });
+                c.remove();
+            } else {
+                c.remove();
             }
 
-            c.remove(); 
             markDirty(); 
             notifyParent({ type: 'LF_DESELECT' });
             return; 
