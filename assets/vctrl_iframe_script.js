@@ -68,6 +68,7 @@ img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; o
 .v4-shape-circle { border-radius: 50%; }
 .v4-shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); border: none !important; }
 .v4-shape-diamond { border: none !important; }
+.v4-shape-wave { border: none !important; }
 .v4-shape-pattern-grid { 
     background-color: #ffffff !important; 
     background-image: 
@@ -276,7 +277,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 window.v4Script = `
 (function() {
-    console.log("[V4 Iframe] Script initialized (V106_CONNECTORS)");
+    console.log("[V4 Iframe] Script initialized (V139_GLOBAL_COORD_FIX)");
     let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
     let startX, startY, startW, startH, startTop, startLeft, startRect;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
@@ -308,7 +309,7 @@ window.v4Script = `
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
-            if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle')) {
+            if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle') || shape.classList.contains('v4-shape-wave')) {
                 const svg = shape.querySelector('polygon, path, rect, circle');
                 if (svg) return prop === 'backgroundColor' ? svg.style.fill : svg.style.stroke;
             }
@@ -690,11 +691,15 @@ window.v4Script = `
             const host = document.body;
             d.pins.forEach((pin, idx) => {
                 let div = document.getElementById('v4-pin-' + idx);
-                if (!div) {
-                    div = document.createElement('div');
-                    div.id = 'v4-pin-' + idx;
-                    host.appendChild(div);
+                if (div) {
+                    // 이미 존재하는 핀마커는 기존 HTML 구조(상대 좌표 및 그룹화 구조)를 
+                    // 온전히 신뢰하므로 좌표 덮어쓰기를 방지하고 스킵합니다.
+                    return;
                 }
+                
+                div = document.createElement('div');
+                div.id = 'v4-pin-' + idx;
+                host.appendChild(div);
                 
                 const isPinType = (pin.type === 'pin' || pin.type === undefined);
                 div.className = 'lf-component ' + (isPinType ? 'pin-marker' : 'text-marker');
@@ -971,7 +976,7 @@ window.v4Script = `
                     if (d.style.backgroundColor || d.style.background) {
                         svgShape.style.fill = d.style.backgroundColor || d.style.background;
                         // For non-rectangular shapes, container must stay transparent to avoid square fill leakage
-                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle')) {
+                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave')) {
                             t.style.backgroundColor = 'transparent';
                         }
                     }
@@ -1434,13 +1439,13 @@ window.v4Script = `
             
             if (lStr.includes('%')) {
                 const val = parseFloat(lStr);
-                const px = (val / 100) * window.innerWidth;
+                const px = (val / 100) * 1440;
                 c.style.left = px + 'px';
                 console.log("[V4 Migration] Migrated " + c.id + " left: " + lStr + " -> " + c.style.left);
             }
             if (tStr.includes('%')) {
                 const val = parseFloat(tStr);
-                const px = (val / 100) * window.innerHeight;
+                const px = (val / 100) * 900;
                 c.style.top = px + 'px';
                 console.log("[V4 Migration] Migrated " + c.id + " top: " + tStr + " -> " + c.style.top);
             }
