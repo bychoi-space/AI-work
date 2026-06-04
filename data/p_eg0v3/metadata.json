@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "06_Mobile_Design_2_793",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-04T05:11:03.861Z",
+      "updatedAt": "2026-06-04T05:17:49.866Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -90,7 +90,7 @@
         },
         {
           "text": "남성 · 40대",
-          "html": "<p>남성 · 40대</p>",
+          "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>",
           "x": 475.5,
           "y": 296,
           "type": "text",
