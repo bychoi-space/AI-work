@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "06_Mobile_Design_2_793",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-04T07:41:21.878Z",
+      "updatedAt": "2026-06-04T07:45:30.939Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -219,24 +219,24 @@
         {
           "text": "전체",
           "html": "<p><strong>전체</strong></p>",
-          "x": 839.8653198653199,
-          "y": 244.04040404040404,
+          "x": 961.0774410774411,
+          "y": 478.92255892255895,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>",
-          "x": 777.5,
-          "y": 444.5,
+          "x": 961.0774410774411,
+          "y": 501.54882154882154,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 777.5,
-          "y": 465.5,
+          "x": 961.0774410774411,
+          "y": 543.5690235690236,
           "type": "text",
           "standardized": true
         },
