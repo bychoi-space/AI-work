@@ -184,6 +184,61 @@
         style: { borderColor: val }
     }));
 
+    // Corner Radius Slider
+    bindStyleUpdate('shape-border-radius', (val) => ({
+        type: 'LF_UPDATE_STYLE',
+        selector: '.v4-shape',
+        style: { borderRadius: val + 'px' }
+    }));
+
+    // Corner Style Toggle Buttons (Sharp / Round)
+    const _syncCornerBtns = (radiusVal) => {
+        const btnSharp = document.getElementById('btn-shape-corner-sharp');
+        const btnRound = document.getElementById('btn-shape-corner-round');
+        const isSharp = parseInt(radiusVal) === 0;
+        if (btnSharp) {
+            btnSharp.style.background = isSharp ? 'rgba(0,229,255,0.25)' : 'rgba(255,255,255,0.05)';
+            btnSharp.style.borderColor = isSharp ? 'rgba(0,229,255,0.6)' : 'rgba(255,255,255,0.15)';
+            btnSharp.style.color = isSharp ? '#00e5ff' : '#94a3b8';
+        }
+        if (btnRound) {
+            btnRound.style.background = !isSharp ? 'rgba(0,229,255,0.25)' : 'rgba(255,255,255,0.05)';
+            btnRound.style.borderColor = !isSharp ? 'rgba(0,229,255,0.6)' : 'rgba(255,255,255,0.15)';
+            btnRound.style.color = !isSharp ? '#00e5ff' : '#94a3b8';
+        }
+    };
+
+    const _applyCornerRadius = (val) => {
+        const slider = document.getElementById('shape-border-radius');
+        const txt = document.getElementById('txt-shape-border-radius');
+        if (slider) slider.value = val;
+        if (txt) txt.innerText = val;
+        _syncCornerBtns(val);
+        notifyIframe({
+            type: 'LF_UPDATE_STYLE',
+            selector: '.v4-shape',
+            style: { borderRadius: val + 'px' }
+        });
+    };
+
+    const btnSharp = document.getElementById('btn-shape-corner-sharp');
+    if (btnSharp) {
+        btnSharp.onclick = () => _applyCornerRadius(0);
+    }
+
+    const btnRound = document.getElementById('btn-shape-corner-round');
+    if (btnRound) {
+        btnRound.onclick = () => _applyCornerRadius(8);
+    }
+
+    // Also sync button states when slider changes
+    const radiusSlider = document.getElementById('shape-border-radius');
+    if (radiusSlider) {
+        radiusSlider.addEventListener('input', function() {
+            _syncCornerBtns(this.value);
+        });
+    }
+
     // Text Marker Bindings
     bindStyleUpdate('text-color-picker', (val) => ({
         type: 'LF_UPDATE_STYLE',
@@ -294,6 +349,17 @@
                     const txt = document.getElementById('txt-' + fontSizeInput.id);
                     if (txt) txt.innerText = data.currentStyles.fontSize;
                 }
+
+                // Sync Corner Radius (Shape only)
+                if (data.isShape && data.currentStyles.borderRadius !== undefined) {
+                    const radiusVal = data.currentStyles.borderRadius;
+                    const slider = document.getElementById('shape-border-radius');
+                    const txt = document.getElementById('txt-shape-border-radius');
+                    if (slider) slider.value = radiusVal;
+                    if (txt) txt.innerText = radiusVal;
+                    _syncCornerBtns(radiusVal);
+                }
+
             }
         } 
         else if (data.type === 'LF_CELL_SELECTED') {
