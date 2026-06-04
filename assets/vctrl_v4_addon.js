@@ -477,6 +477,11 @@
                 window.markAsDirty();
             }
         }
+        else if (data.type === 'LF_TRIGGER_SAVE') {
+            if (typeof window.handleGlobalSave === 'function') {
+                window.handleGlobalSave();
+            }
+        }
     });
 
     window.closeAllV4Inspectors = function() {
