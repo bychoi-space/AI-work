@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "06_Mobile_Design_2_793",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-04T05:45:13.763Z",
+      "updatedAt": "2026-06-04T05:46:46.859Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -44,7 +44,7 @@
           "text": "전체",
           "html": "<p><strong>전체</strong></p>",
           "x": 315.5,
-          "y": 226.009,
+          "y": 228.009,
           "type": "text",
           "standardized": true
         },
