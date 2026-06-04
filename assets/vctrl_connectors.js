@@ -4,7 +4,7 @@
  */
 
 window.ConnectorEngine = (function() {
-    console.log("%c [CONNECTOR ENGINE] Finalizing with Zero-Lag Dragging... ", "background: #3b82f6; color: #fff; font-weight: bold; padding: 4px; border-radius: 4px;");
+    console.log("%c [CONNECTOR ENGINE] Finalizing with Zero-Lag Dragging (V116_LINE_PERSIST_FIX)... ", "background: #3b82f6; color: #fff; font-weight: bold; padding: 4px; border-radius: 4px;");
 
     let isDrawing = false;
     let selectedConnectorIds = [];
@@ -85,6 +85,9 @@ window.ConnectorEngine = (function() {
             window.MessageHub.subscribe('LF_DELETE_CONNECTOR', (data) => {
                 if (data.id) {
                     window.state.connectors = window.state.connectors.filter(c => c.id !== data.id);
+                    if (window.state.activeFile && window.state.activeFile.meta) {
+                        window.state.activeFile.meta.connectors = window.state.connectors;
+                    }
                     selectedConnectorIds = selectedConnectorIds.filter(id => id !== data.id);
                     redrawAll();
                     if (window.markAsDirty) window.markAsDirty();
@@ -318,6 +321,9 @@ window.ConnectorEngine = (function() {
     function deleteSelectedLine() {
         if (selectedConnectorIds.length === 0) return;
         window.state.connectors = window.state.connectors.filter(c => !selectedConnectorIds.includes(c.id));
+        if (window.state.activeFile && window.state.activeFile.meta) {
+            window.state.activeFile.meta.connectors = window.state.connectors;
+        }
         selectedConnectorIds = [];
         const lineEditor = document.getElementById('line-editor-section');
         if (lineEditor) lineEditor.style.display = 'none';
