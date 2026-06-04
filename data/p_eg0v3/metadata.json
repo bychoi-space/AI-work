@@ -13,150 +13,14 @@
     "06_Mobile_Design_2_793.html": {
       "title": "06_Mobile_Design_2_793",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-04T07:47:48.868Z",
+      "updatedAt": "2026-06-04T07:48:27.215Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
           "text": "기획전 명칭",
           "html": "<p>기획전 명칭</p>",
-          "x": 387.67676767676767,
-          "y": 90.11784511784512,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Card Title",
-          "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>",
-          "x": 433,
-          "y": 136,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Card Description",
-          "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>",
-          "x": 420,
-          "y": 168,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "가방/잡화",
-          "html": "<p>가방/잡화</p>",
-          "x": 539.2592592592592,
-          "y": 244.04040404040404,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "슈즈",
-          "html": "<p>슈즈</p>",
-          "x": 624.3771043771044,
-          "y": 244.04040404040404,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "골프",
-          "html": "<p>골프</p>",
-          "x": 666.9360269360269,
-          "y": 244.04040404040404,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "남성의류",
-          "html": "<p>남성의류</p>",
-          "x": 465.993265993266,
-          "y": 244.04040404040404,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "여성의류",
-          "html": "<p>여성의류</p>",
-          "x": 387.3400673400673,
-          "y": 244.04040404040404,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "전체",
-          "html": "<p><strong>전체</strong></p>",
-          "x": 339.93265993265993,
-          "y": 244.04040404040404,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
-          "x": 313.5,
-          "y": 505.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 313.5,
-          "y": 526.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 313.5,
-          "y": 565.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
-          "x": 520.942760942761,
-          "y": 544.6464646464647,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 520.942760942761,
-          "y": 567.2727272727273,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 520.942760942761,
-          "y": 609.2929292929293,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "실시간",
-          "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>",
-          "x": 631.9191919191919,
-          "y": 303.83838383838383,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "남성 · 40대",
-          "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>",
-          "x": 522.0202020202021,
-          "y": 303.83838383838383,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "기획전 명칭",
-          "html": "<p>기획전 명칭</p>",
-          "x": 887.6094276094276,
-          "y": 90.11784511784512,
+          "x": 52.823,
+          "y": 11.6493,
           "type": "text",
           "standardized": true
         },
@@ -179,88 +43,344 @@
         {
           "text": "가방/잡화",
           "html": "<p>가방/잡화</p>",
-          "x": 1039.1919191919192,
-          "y": 244.04040404040404,
+          "x": 193.5,
+          "y": 11.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "슈즈",
           "html": "<p>슈즈</p>",
-          "x": 1124.3097643097644,
-          "y": 244.04040404040404,
+          "x": 272.5,
+          "y": 11.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "골프",
           "html": "<p>골프</p>",
-          "x": 1166.8686868686868,
-          "y": 244.04040404040404,
+          "x": 312,
+          "y": 11.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "남성의류",
           "html": "<p>남성의류</p>",
-          "x": 965.925925925926,
-          "y": 244.04040404040404,
+          "x": 125.5,
+          "y": 11.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "여성의류",
           "html": "<p>여성의류</p>",
-          "x": 887.2727272727273,
-          "y": 244.04040404040404,
+          "x": 52.5,
+          "y": 11.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "전체",
           "html": "<p><strong>전체</strong></p>",
-          "x": 961.0774410774411,
-          "y": 478.92255892255895,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
-          "x": 961.0774410774411,
-          "y": 501.54882154882154,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 961.0774410774411,
-          "y": 543.5690235690236,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 777.5,
-          "y": 504.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 1020.8754208754209,
-          "y": 567.2727272727273,
+          "x": 8.5,
+          "y": 11.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "실시간",
           "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>",
-          "x": 1131.851851851852,
-          "y": 303.83838383838383,
+          "x": 102,
+          "y": 0,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "남성 · 40대",
+          "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>",
+          "x": 0,
+          "y": 0,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
+          "x": 52.823,
+          "y": 11.6493,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Card Title",
+          "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>",
+          "x": 433,
+          "y": 136,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Card Description",
+          "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>",
+          "x": 420,
+          "y": 168,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "가방/잡화",
+          "html": "<p>가방/잡화</p>",
+          "x": 193.5,
+          "y": 11.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "슈즈",
+          "html": "<p>슈즈</p>",
+          "x": 272.5,
+          "y": 11.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "골프",
+          "html": "<p>골프</p>",
+          "x": 312,
+          "y": 11.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "남성의류",
+          "html": "<p>남성의류</p>",
+          "x": 125.5,
+          "y": 11.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "여성의류",
+          "html": "<p>여성의류</p>",
+          "x": 52.5,
+          "y": 11.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "전체",
+          "html": "<p><strong>전체</strong></p>",
+          "x": 8.5,
+          "y": 11.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 0,
+          "y": 183.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 0,
+          "y": 204.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 0,
+          "y": 243.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "실시간",
+          "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>",
+          "x": 102,
+          "y": 0,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "남성 · 40대",
+          "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>",
+          "x": 0,
+          "y": 0,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 0,
+          "y": 183.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 0,
+          "y": 204.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 0,
+          "y": 243.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 0,
+          "y": 0,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 0,
+          "y": 21,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 0,
+          "y": 60,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 0,
+          "y": 0,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 0,
+          "y": 21,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 0,
+          "y": 60,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 0,
+          "y": 0,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 0,
+          "y": 21,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 0,
+          "y": 60,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 0,
+          "y": 0,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 0,
+          "y": 21,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 0,
+          "y": 60,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 0,
+          "y": 0,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 0,
+          "y": 21,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 0,
+          "y": 60,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 0,
+          "y": 0,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 0,
+          "y": 21,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 0,
+          "y": 60,
           "type": "text",
           "standardized": true
         }
