@@ -13,53 +13,245 @@
     "06_Mobile_Design_2_793.html": {
       "title": "06_Mobile_Design_2_793",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-04T06:33:55.516Z",
+      "updatedAt": "2026-06-04T06:54:25.328Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
+          "x": 387.67676767676767,
+          "y": 90.11784511784512,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Card Title",
+          "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>",
+          "x": 433,
+          "y": 136,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Card Description",
+          "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>",
+          "x": 420,
+          "y": 168,
+          "type": "text",
+          "standardized": true
+        },
+        {
           "text": "가방/잡화",
           "html": "<p>가방/잡화</p>",
-          "x": 500.5,
-          "y": 226.5,
+          "x": 539.2592592592592,
+          "y": 244.04040404040404,
           "type": "text",
           "standardized": true
         },
         {
           "text": "슈즈",
           "html": "<p>슈즈</p>",
-          "x": 579.5,
-          "y": 226.5,
+          "x": 624.3771043771044,
+          "y": 244.04040404040404,
           "type": "text",
           "standardized": true
         },
         {
           "text": "골프",
           "html": "<p>골프</p>",
-          "x": 619,
-          "y": 226.5,
+          "x": 666.9360269360269,
+          "y": 244.04040404040404,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "남성의류",
+          "html": "<p>남성의류</p>",
+          "x": 465.993265993266,
+          "y": 244.04040404040404,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "여성의류",
+          "html": "<p>여성의류</p>",
+          "x": 387.3400673400673,
+          "y": 244.04040404040404,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "전체",
+          "html": "<p><strong>전체</strong></p>",
+          "x": 339.93265993265993,
+          "y": 244.04040404040404,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 313.5,
+          "y": 505.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 313.5,
+          "y": 526.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 313.5,
+          "y": 565.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 520.942760942761,
+          "y": 544.6464646464647,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 520.942760942761,
+          "y": 567.2727272727273,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 520.942760942761,
+          "y": 609.2929292929293,
           "type": "text",
           "standardized": true
         },
         {
           "text": "실시간",
           "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>",
-          "x": 586.5,
-          "y": 282,
+          "x": 631.9191919191919,
+          "y": 303.83838383838383,
           "type": "text",
           "standardized": true
         },
         {
           "text": "남성 · 40대",
           "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>",
-          "x": 484.5,
-          "y": 282,
+          "x": 522.0202020202021,
+          "y": 303.83838383838383,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
+          "x": 887.6094276094276,
+          "y": 90.11784511784512,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Card Title",
+          "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>",
+          "x": 897,
+          "y": 136,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Card Description",
+          "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>",
+          "x": 884,
+          "y": 168,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "가방/잡화",
+          "html": "<p>가방/잡화</p>",
+          "x": 1039.1919191919192,
+          "y": 244.04040404040404,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "슈즈",
+          "html": "<p>슈즈</p>",
+          "x": 1124.3097643097644,
+          "y": 244.04040404040404,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "골프",
+          "html": "<p>골프</p>",
+          "x": 1166.8686868686868,
+          "y": 244.04040404040404,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "남성의류",
+          "html": "<p>남성의류</p>",
+          "x": 965.925925925926,
+          "y": 244.04040404040404,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "여성의류",
+          "html": "<p>여성의류</p>",
+          "x": 887.2727272727273,
+          "y": 244.04040404040404,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "전체",
+          "html": "<p><strong>전체</strong></p>",
+          "x": 839.8653198653199,
+          "y": 244.04040404040404,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>",
-          "x": 520.942760942761,
+          "x": 777.5,
+          "y": 444.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 777.5,
+          "y": 465.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 777.5,
+          "y": 504.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 1020.8754208754209,
           "y": 544.6464646464647,
           "type": "text",
           "standardized": true
@@ -67,7 +259,7 @@
         {
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 520.942760942761,
+          "x": 1020.8754208754209,
           "y": 567.2727272727273,
           "type": "text",
           "standardized": true
@@ -75,32 +267,24 @@
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 520.942760942761,
+          "x": 1020.8754208754209,
           "y": 609.2929292929293,
           "type": "text",
           "standardized": true
         },
         {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
-          "x": 337.77777777777777,
-          "y": 544.6464646464647,
+          "text": "실시간",
+          "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>",
+          "x": 1131.851851851852,
+          "y": 303.83838383838383,
           "type": "text",
           "standardized": true
         },
         {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 337.77777777777777,
-          "y": 567.2727272727273,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 337.77777777777777,
-          "y": 609.2929292929293,
+          "text": "남성 · 40대",
+          "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>",
+          "x": 1021.952861952862,
+          "y": 303.83838383838383,
           "type": "text",
           "standardized": true
         }
@@ -110,8 +294,8 @@
           "id": "conn_1780549136682",
           "type": "straight",
           "start": {
-            "x": 324,
-            "y": 263.2895622895623,
+            "x": 137.91285881815963,
+            "y": 106.75784553092478,
             "targetId": null,
             "side": null
           },
@@ -124,6 +308,26 @@
           "style": {
             "stroke": "#1e1e1e",
             "strokeWidth": 3
+          }
+        },
+        {
+          "id": "conn_1780554881690",
+          "type": "straight",
+          "start": {
+            "x": 696.9360269360269,
+            "y": 419.8316498316498,
+            "targetId": null,
+            "side": null
+          },
+          "end": {
+            "x": 796.9360269360269,
+            "y": 419.8316498316498,
+            "targetId": null,
+            "side": null
+          },
+          "style": {
+            "stroke": "#475569",
+            "strokeWidth": 1.6
           }
         }
       ]
