@@ -357,13 +357,16 @@ window.renderV4Shapes = function() {
     const container = document.getElementById('v4-shapes-container');
     if (!container || !window.V4_COMPONENT_LIBRARY) {
         console.warn("[Inspector] #v4-shapes-container or V4_COMPONENT_LIBRARY not found!");
-        return;
+        return 0;
     }
 
     const molecules = window.V4_COMPONENT_LIBRARY.molecules || [];
     const shapes = molecules.filter(item => item.category === 'Shapes');
 
-    container.innerHTML = shapes.map(item => {
+    const query = (window.editorSearchQuery || '').toLowerCase().trim();
+    const filteredShapes = query ? shapes.filter(item => item.name.toLowerCase().includes(query)) : shapes;
+
+    container.innerHTML = filteredShapes.map(item => {
         let onclickAttr = '';
         let classList = 'component-item v4-card';
         let dataAttrs = '';
@@ -407,17 +410,31 @@ window.renderV4Shapes = function() {
             </div>
         `;
     }).join('');
+
+    return filteredShapes.length;
 };
 
 window.renderAtomicLibrary = function() {
-    if (typeof window.renderV4Shapes === 'function') window.renderV4Shapes();
+    const query = (window.editorSearchQuery || '').toLowerCase().trim();
+
+    // 1. Shapes 렌더링 및 매치 카운트 획득
+    let shapesCount = 0;
+    if (typeof window.renderV4Shapes === 'function') {
+        shapesCount = window.renderV4Shapes();
+    }
+
+    // 2. Custom Components (Molecules) 필터링 및 렌더링
     const customComps = window.state.globalComponents || [];
+    const filteredCustomComps = query ? customComps.filter(m => m.name.toLowerCase().includes(query)) : customComps;
+
     const compHeader = document.getElementById('molecules-header-text');
-    if (compHeader) compHeader.innerHTML = `COMPONENTS <b style="color:var(--accent); margin-left: 4px;">(${customComps.length})</b>`;
+    if (compHeader) {
+        compHeader.innerHTML = `COMPONENTS <b style="color:var(--accent); margin-left: 4px;">(${filteredCustomComps.length})</b>`;
+    }
 
     const molContainer = document.getElementById('custom-molecules-container');
     if (molContainer) {
-        molContainer.innerHTML = customComps.map(m => `
+        molContainer.innerHTML = filteredCustomComps.map(m => `
             <div class="v4-component-item">
                 <div class="v4-component-name-wrap" onclick="insertV4ComponentById('${m.id}')">
                     <span class="material-icons-outlined" style="font-size:14px; margin-right:8px; color:var(--accent); flex-shrink:0;">category</span>
@@ -431,6 +448,53 @@ window.renderAtomicLibrary = function() {
         `).join('');
     }
 
+    // 3. Static Atomic Library 필터링
+    let atomicCount = 0;
+    const atomicContainer = document.getElementById('atomic-library-container');
+    if (atomicContainer) {
+        const cards = atomicContainer.querySelectorAll('.component-item');
+        cards.forEach(card => {
+            const nameSpan = card.querySelector('span');
+            const nameText = nameSpan ? nameSpan.innerText : '';
+            const isMatch = nameText.toLowerCase().includes(query);
+            card.style.setProperty('display', isMatch ? 'flex' : 'none', 'important');
+            if (isMatch) atomicCount++;
+        });
+    }
+
+    // 4. Section Visibility 조절
+    const shapesHeader = document.getElementById('v4-shapes-header');
+    const shapesBody = document.getElementById('v4-shapes-body');
+    if (shapesHeader && shapesBody) {
+        const hasShapes = shapesCount > 0;
+        shapesHeader.style.setProperty('display', hasShapes ? 'flex' : 'none', 'important');
+        shapesBody.style.setProperty('display', hasShapes ? 'block' : 'none', 'important');
+    }
+
+    const atomicHeader = document.getElementById('atomic-library-header');
+    const atomicBody = document.getElementById('atomic-library-body');
+    if (atomicHeader && atomicBody) {
+        const hasAtomic = atomicCount > 0;
+        atomicHeader.style.setProperty('display', hasAtomic ? 'flex' : 'none', 'important');
+        atomicBody.style.setProperty('display', hasAtomic ? 'block' : 'none', 'important');
+    }
+
+    const moleculesHeader = document.getElementById('molecules-header');
+    const moleculesBody = document.getElementById('molecules-body');
+    if (moleculesHeader && moleculesBody) {
+        const hasMolecules = filteredCustomComps.length > 0;
+        moleculesHeader.style.setProperty('display', hasMolecules ? 'flex' : 'none', 'important');
+        moleculesBody.style.setProperty('display', hasMolecules ? 'block' : 'none', 'important');
+    }
+
+    // 5. Empty State 처리
+    const totalMatch = shapesCount + atomicCount + filteredCustomComps.length;
+    const emptyState = document.getElementById('sidebar-search-empty');
+    if (emptyState) {
+        emptyState.style.setProperty('display', totalMatch === 0 ? 'flex' : 'none', 'important');
+    }
+
+    // Legacy unused code
     if (!window.V4_COMPONENT_LIBRARY) return;
     const lib = window.V4_COMPONENT_LIBRARY;
     const atomsPane = document.getElementById('pane-atoms');
@@ -580,5 +644,31 @@ window.showLoading = (text) => { const overlay = get('loading-overlay'); if (ove
 window.hideLoading = () => { const overlay = get('loading-overlay'); if (overlay) overlay.classList.add('fade-out'); setTimeout(() => { if (typeof window.centerView === 'function') window.centerView(); }, 600); };
 window.showAuthModal = () => { const modal = get('auth-modal'); if (modal) modal.classList.add('active'); };
 window.hideAuthModal = () => { const modal = get('auth-modal'); if (modal) modal.classList.remove('active'); };
+
+// --- 6. Search Event Handling ---
+window.editorSearchQuery = '';
+const searchInput = document.getElementById('sidebar-search-input');
+const searchClear = document.getElementById('sidebar-search-clear');
+if (searchInput) {
+    searchInput.oninput = () => {
+        const val = searchInput.value;
+        window.editorSearchQuery = val;
+        if (searchClear) {
+            searchClear.style.setProperty('display', val ? 'block' : 'none', 'important');
+        }
+        window.renderAtomicLibrary();
+    };
+}
+if (searchClear) {
+    searchClear.onclick = () => {
+        if (searchInput) {
+            searchInput.value = '';
+            window.editorSearchQuery = '';
+            searchClear.style.setProperty('display', 'none', 'important');
+            searchInput.focus();
+            window.renderAtomicLibrary();
+        }
+    };
+}
 
 console.log("[VCTRL INSPECTOR] UI Controller fully loaded and cleaned.");

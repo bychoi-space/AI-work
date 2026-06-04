@@ -1,0 +1,1786 @@
+﻿/**
+ * vctrl_undo.js - Undo/Redo Manager for LF Editor Studio
+ * Responsibility: Canvas snapshot management and Ctrl+Z restoration.
+ */
+
+window.V4UndoManager = (function() {
+    const MAX_HISTORY = 10;
+    let undoStack = [];
+    let currentConnectors = []; // Locally synced connectors for secure undo
+
+    // Notify parent that content is dirty
+    function notifyParent(data) { if (window.parent) window.parent.postMessage(data, '*'); }
+    function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
+
+    // Clean up HTML before saving (remove UI handles)
+    function getCleanHTML() {
+        const host = document.body;
+        const clone = host.cloneNode(true);
+        clone.querySelectorAll('script').forEach(el => el.remove());
+        clone.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
+        clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+        return clone.innerHTML;
+    }
+
+    return {
+        saveState: function() {
+            try {
+                const html = getCleanHTML();
+                const connectors = JSON.parse(JSON.stringify(currentConnectors));
+                const currentState = JSON.stringify({ html, connectors });
+                if (undoStack.length > 0 && undoStack[undoStack.length - 1] === currentState) return;
+                undoStack.push(currentState);
+                if (undoStack.length > MAX_HISTORY) undoStack.shift();
+                console.log("[V4 Undo] State Saved (HTML + " + connectors.length + " Connectors)");
+            } catch (e) { console.warn("[V4 Undo] Save failed:", e); }
+        },
+
+        undo: function() {
+            try {
+                if (undoStack.length === 0) return;
+                const prevState = JSON.parse(undoStack.pop());
+                
+                // Keep scripts from current body intact to prevent losing closures/context
+                const currentScripts = Array.from(document.body.querySelectorAll('script'));
+                
+                // Create temporary container to parse restored body innerHTML
+                const temp = document.createElement('div');
+                temp.innerHTML = prevState.html;
+                temp.querySelectorAll('script').forEach(el => el.remove());
+                
+                // Clear body
+                document.body.innerHTML = '';
+                
+                // Restore new layout elements
+                while (temp.firstChild) {
+                    document.body.appendChild(temp.firstChild);
+                }
+                
+                // Restore original script elements safely
+                currentScripts.forEach(script => {
+                    document.body.appendChild(script);
+                });
+
+                if (prevState.connectors) {
+                    currentConnectors = prevState.connectors;
+                    notifyParent({ type: 'LF_RESTORE_CONNECTORS', connectors: prevState.connectors });
+                }
+                
+                if (window.parent && window.parent.state && window.parent.state.activeFile) {
+                    const descList = window.parent.state.activeFile.meta.description || [];
+                    const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
+                    
+                    if (descList.length > remainingPins.length) {
+                        descList.splice(remainingPins.length);
+                    }
+                    
+                    remainingPins.forEach((pin, idx) => {
+                        pin.id = 'v4-pin-' + idx;
+                        const isPinType = pin.classList.contains('pin-marker');
+                        
+                        if (!descList[idx]) {
+                            descList[idx] = {};
+                        }
+                        
+                        if (isPinType) {
+                            // Circular Pin: Only sync coordinates, preserve type and text from parent state
+                            descList[idx].x = parseFloat(pin.style.left) || 0;
+                            descList[idx].y = parseFloat(pin.style.top) || 0;
+                            descList[idx].type = 'pin';
+                            descList[idx].standardized = true;
+                        } else {
+                            // Inline Text Component: Sync full content and style
+                            const editable = pin.querySelector('.v4-editable-cell');
+                            const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                            const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                            
+                            descList[idx].text = textContent;
+                            descList[idx].html = htmlContent;
+                            descList[idx].x = parseFloat(pin.style.left) || 0;
+                            descList[idx].y = parseFloat(pin.style.top) || 0;
+                            descList[idx].type = 'text';
+                            descList[idx].standardized = true;
+                        }
+                    });
+                    
+                    if (typeof window.parent.renderDescriptionList === 'function') {
+                        window.parent.renderDescriptionList();
+                    }
+                }
+
+                if (typeof window.initHandles === 'function') window.initHandles();
+                markDirty();
+                console.log("[V4 Undo] Undo Performed");
+            } catch (e) { console.warn("[V4 Undo] Undo failed:", e); }
+        },
+
+        init: function() {
+            document.addEventListener('keydown', (e) => {
+                if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                    e.preventDefault();
+                    window.V4UndoManager.undo();
+                }
+            });
+            // Handle cross-origin safe sync
+            window.addEventListener('message', (e) => {
+                if (e.data && e.data.type === 'LF_SYNC_CONNECTORS') {
+                    currentConnectors = e.data.connectors || [];
+                } else if (e.data && e.data.type === 'LF_SAVE_UNDO') {
+                    window.V4UndoManager.saveState();
+                } else if (e.data && e.data.type === 'LF_TRIGGER_UNDO') {
+                    window.V4UndoManager.undo();
+                }
+            });
+        }
+    };
+})();
+
+// Auto-initialize when loaded inside iframe
+if (window.V4UndoManager) {
+    window.V4UndoManager.init();
+}
+
+
+(function() {
+    // Table Selection Engine
+    const TableSelection = {
+        isDragging: false,
+        startRow: -1,
+        startCol: -1,
+        activeTable: null,
+
+        bindEvents(table) {
+            if (table.dataset.tableSelectionBound) return;
+            table.dataset.tableSelectionBound = "true";
+
+            table.addEventListener('mousedown', (e) => {
+                // Ignore right clicks
+                if (e.button !== 0) return;
+                const cell = e.target.closest('td, th');
+                if (!cell) return;
+
+                // If editing text inside cell, don't trigger drag selection
+                if (e.target.isContentEditable && e.target === document.activeElement) {
+                    return; 
+                }
+
+                this.activeTable = table;
+                this.isDragging = true;
+                this.startRow = cell.parentElement.rowIndex;
+                this.startCol = cell.cellIndex;
+
+                if (!e.shiftKey) {
+                    // Clear other selections
+                    TableSelection.clearSelection(table);
+                    cell.classList.add('selected-cell');
+                } else {
+                    // Toggle selection with shift key
+                    cell.classList.toggle('selected-cell');
+                }
+
+                // Prevent default text selection during drag
+                e.preventDefault();
+                this.notifySelectionChanged();
+            });
+
+            table.addEventListener('mouseenter', (e) => {
+                if (!this.isDragging || this.activeTable !== table) return;
+                const cell = e.target.closest('td, th');
+                if (!cell) return;
+
+                const currentRow = cell.parentElement.rowIndex;
+                const currentCol = cell.cellIndex;
+
+                const minRow = Math.min(this.startRow, currentRow);
+                const maxRow = Math.max(this.startRow, currentRow);
+                const minCol = Math.min(this.startCol, currentCol);
+                const maxCol = Math.max(this.startCol, currentCol);
+
+                // Apply selection rectangle
+                Array.from(table.rows).forEach((row, rIdx) => {
+                    Array.from(row.cells).forEach((colCell, cIdx) => {
+                        const inRange = rIdx >= minRow && rIdx <= maxRow && cIdx >= minCol && cIdx <= maxCol;
+                        if (inRange) {
+                            colCell.classList.add('selected-cell');
+                        } else {
+                            colCell.classList.remove('selected-cell');
+                        }
+                    });
+                });
+                this.notifySelectionChanged();
+            }, true); // Use capture phase for cell events
+        },
+
+        clearSelection(table) {
+            const targetTable = table || document;
+            targetTable.querySelectorAll('.selected-cell').forEach(c => {
+                c.classList.remove('selected-cell');
+            });
+            this.notifySelectionChanged();
+        },
+
+        notifySelectionChanged() {
+            const selected = document.querySelectorAll('.selected-cell');
+            if (selected.length === 0) {
+                if (window.notifyParent) {
+                    window.notifyParent({ type: 'LF_CELL_SELECTED', cellData: null });
+                }
+                return;
+            }
+            // Get representative cell (first selected)
+            const repCell = selected[0];
+            const bg = repCell.style.backgroundColor || repCell.style.background || '';
+            const color = repCell.style.color || '';
+            
+            // Measure actual dimensions
+            const width = repCell.style.width ? parseInt(repCell.style.width) : repCell.offsetWidth;
+            const height = repCell.parentElement.style.height ? parseInt(repCell.parentElement.style.height) : repCell.offsetHeight;
+
+            if (window.notifyParent) {
+                window.notifyParent({
+                    type: 'LF_CELL_SELECTED',
+                    cellData: {
+                        count: selected.length,
+                        backgroundColor: bg,
+                        color: color,
+                        width: width,
+                        height: height
+                    }
+                });
+            }
+        }
+    };
+
+    // Global listener to end dragging
+    document.addEventListener('mouseup', () => {
+        if (TableSelection.isDragging) {
+            TableSelection.isDragging = false;
+            TableSelection.activeTable = null;
+        }
+    });
+
+    // Clear selection when clicking empty spaces inside canvas
+    document.addEventListener('mousedown', (e) => {
+        if (!e.target.closest('table.v4-premium-table') && !e.target.closest('.lf-delete-trigger') && !e.target.closest('.lf-drag-handle') && !e.target.closest('.lf-resizer')) {
+            TableSelection.clearSelection();
+        }
+    });
+
+    // Table Style & Dimension Modifier
+    const TableManager = {
+        updateSelectedCellsStyle(style) {
+            const selected = document.querySelectorAll('.selected-cell');
+            if (selected.length === 0) return;
+            
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            selected.forEach(cell => {
+                if (style.backgroundColor !== undefined) {
+                    if (style.backgroundColor === 'none' || style.backgroundColor === 'transparent' || style.backgroundColor === '') {
+                        cell.style.setProperty('background-color', 'transparent', 'important');
+                        cell.style.setProperty('background', 'transparent', 'important');
+                    } else {
+                        cell.style.setProperty('background-color', style.backgroundColor, 'important');
+                        cell.style.setProperty('background', style.backgroundColor, 'important');
+                    }
+                }
+                if (style.color !== undefined) {
+                    cell.style.setProperty('color', style.color, 'important');
+                }
+            });
+
+            if (window.markDirty) window.markDirty();
+            TableSelection.notifySelectionChanged();
+        },
+
+        updateSelectedColumnWidth(width) {
+            const selected = document.querySelectorAll('.selected-cell');
+            if (selected.length === 0) return;
+            
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            const tables = new Set();
+            const colIndicesByTable = new Map();
+
+            selected.forEach(cell => {
+                const table = cell.closest('table');
+                if (!table) return;
+                tables.add(table);
+
+                if (!colIndicesByTable.has(table)) {
+                    colIndicesByTable.set(table, new Set());
+                }
+                colIndicesByTable.get(table).add(cell.cellIndex);
+            });
+
+            tables.forEach(table => {
+                const cols = colIndicesByTable.get(table);
+                Array.from(table.rows).forEach(row => {
+                    cols.forEach(colIndex => {
+                        const cell = row.cells[colIndex];
+                        if (cell) {
+                            cell.style.setProperty('width', width + 'px', 'important');
+                        }
+                    });
+                });
+            });
+
+            if (window.markDirty) window.markDirty();
+            TableSelection.notifySelectionChanged();
+        },
+
+        updateSelectedRowHeight(height) {
+            const selected = document.querySelectorAll('.selected-cell');
+            if (selected.length === 0) return;
+            
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            const rows = new Set();
+            selected.forEach(cell => {
+                const row = cell.parentElement;
+                if (row && row.tagName === 'TR') {
+                    rows.add(row);
+                }
+            });
+
+            rows.forEach(row => {
+                row.style.setProperty('height', height + 'px', 'important');
+            });
+
+            if (window.markDirty) window.markDirty();
+            TableSelection.notifySelectionChanged();
+        }
+    };
+
+    // Export to window
+    window.TableSelection = TableSelection;
+    window.TableManager = TableManager;
+})();
+
+
+(function() {
+    console.log("[V4 Iframe] Script initialized (V144_SHORTCUT_SAVE_FIX)");
+    let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
+    let startX, startY, startW, startH, startTop, startLeft, startRect;
+    function notifyParent(data) { window.parent.postMessage(data, '*'); }
+    function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
+
+    // Unified Utility inside v4Script
+    const _rgb2hex = (rgb) => {
+        if (!rgb || rgb === "transparent" || rgb === "none" || rgb.includes("rgba(0, 0, 0, 0)")) return null;
+        const parts = rgb.match(/\\d+/g);
+        if (!parts || parts.length < 3) return "#000000";
+        const r = Math.min(255, parseInt(parts[0])).toString(16).padStart(2, "0");
+        const g = Math.min(255, parseInt(parts[1])).toString(16).padStart(2, "0");
+        const b = Math.min(255, parseInt(parts[2])).toString(16).padStart(2, "0");
+        return "#" + r + g + b;
+    };
+
+    const _getVal = (el, prop) => {
+        if (!el) return "";
+        return el.style[prop] || window.getComputedStyle(el)[prop] || "";
+    };
+
+    const _getAlphaPercent = (rgb) => {
+        if (!rgb || rgb === "transparent" || rgb === "none" || rgb.includes("rgba(0, 0, 0, 0)")) return 0;
+        if (rgb.startsWith("rgba")) {
+            const parts = rgb.match(/rgba?\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*([\\d.]+)\\s*\\)/);
+            if (parts && parts[1] !== undefined) {
+                return Math.round(parseFloat(parts[1]) * 100);
+            }
+        }
+        return 100;
+    };
+
+    let v4Clipboard = [];
+
+    const reorderAllPins = () => {
+        const pins = document.querySelectorAll('.text-marker, .pin-marker');
+        pins.forEach((pin, idx) => {
+            pin.id = 'v4-pin-' + idx;
+            const badge = pin.querySelector('.pin-number-badge');
+            if (badge) {
+                badge.innerText = idx + 1;
+            }
+        });
+        if (window.parent && window.parent.state && window.parent.state.activeFile) {
+            const descList = window.parent.state.activeFile.meta.description || [];
+            const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
+            if (descList.length > remainingPins.length) {
+                descList.splice(remainingPins.length);
+            }
+            remainingPins.forEach((pin, idx) => {
+                const isPinType = pin.classList.contains('pin-marker');
+                if (!descList[idx]) {
+                    descList[idx] = {};
+                }
+                descList[idx].x = parseFloat(pin.style.left) || 0;
+                descList[idx].y = parseFloat(pin.style.top) || 0;
+                descList[idx].standardized = true;
+                if (isPinType) {
+                    descList[idx].type = 'pin';
+                } else {
+                    const editable = pin.querySelector('.v4-editable-cell');
+                    const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                    const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                    descList[idx].type = 'text';
+                    descList[idx].text = textContent;
+                    descList[idx].html = htmlContent;
+                }
+            });
+            if (typeof window.parent.renderDescriptionList === 'function') {
+                window.parent.renderDescriptionList();
+            }
+        }
+    };
+
+    const copySelectedObjects = () => {
+        const selected = document.querySelectorAll('.lf-component.selected');
+        if (selected.length === 0) return;
+        v4Clipboard = [];
+        const topLevelSelected = Array.from(selected).filter(el => {
+            let parent = el.parentElement;
+            while (parent && parent !== document.body) {
+                if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
+                    return false;
+                }
+                parent = parent.parentElement;
+            }
+            return true;
+        });
+        topLevelSelected.forEach(el => {
+            v4Clipboard.push({
+                html: el.innerHTML,
+                className: el.className.replace(/\\bselected\\b/g, '').replace(/\\bdragging-now\\b/g, '').trim(),
+                styleCssText: el.style.cssText,
+                left: parseFloat(el.style.left) || 0,
+                top: parseFloat(el.style.top) || 0,
+                isGroup: el.classList.contains('lf-group'),
+                isPinMarker: el.classList.contains('pin-marker'),
+                isTextMarker: el.classList.contains('text-marker')
+            });
+        });
+        console.log("[V4 Iframe] Copied " + v4Clipboard.length + " object(s).");
+    };
+
+    const pasteCopiedObjects = () => {
+        if (!v4Clipboard || v4Clipboard.length === 0) return;
+        if (window.V4UndoManager) window.V4UndoManager.saveState();
+        document.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+        const host = document.body;
+        const newSelectedIds = [];
+        const offset = 15;
+        v4Clipboard.forEach(item => {
+            const v = document.createElement('div');
+            const newId = item.isPinMarker ? ('v4-pin-' + Date.now() + Math.floor(Math.random() * 1000)) : ('v4-comp-' + Date.now() + Math.floor(Math.random() * 1000));
+            v.id = newId;
+            v.className = item.className + ' selected';
+            v.style.cssText = item.styleCssText;
+            v.style.left = (item.left + offset) + 'px';
+            v.style.top = (item.top + offset) + 'px';
+            v.innerHTML = item.html;
+            v.querySelectorAll('.lf-component').forEach(child => child.classList.remove('selected'));
+            v.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
+            host.appendChild(v);
+            newSelectedIds.push(newId);
+        });
+        if (typeof enforceDesignSystem === 'function') {
+            enforceDesignSystem();
+        } else if (typeof initHandles === 'function') {
+            initHandles();
+        }
+        const hasPin = v4Clipboard.some(item => item.isPinMarker || item.isTextMarker);
+        if (hasPin) {
+            reorderAllPins();
+        }
+        if (newSelectedIds.length > 0) {
+            const firstNewEl = document.getElementById(newSelectedIds[0]);
+            if (firstNewEl) {
+                notifyParent({
+                    type: "LF_COMP_SELECTED",
+                    ..._getCompStyles(firstNewEl)
+                });
+            }
+        }
+        markDirty();
+        console.log("[V4 Iframe] Pasted " + v4Clipboard.length + " object(s).");
+    };
+
+    const _getCompStyles = (c) => {
+        const shape = c.querySelector('.v4-shape');
+        const table = c.querySelector('table');
+        const icon = c.querySelector('.lf-icon') || c.querySelector('img');
+        const textCell = c.querySelector('.v4-editable-cell');
+        const isPin = c.classList.contains('text-marker') || c.classList.contains('pin-marker');
+        const isDescriptionPin = c.classList.contains('pin-marker');
+        
+        const getShapeColor = (prop) => {
+            if (!shape) return "";
+            if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle') || shape.classList.contains('v4-shape-wave')) {
+                const svg = shape.querySelector('polygon, path, rect, circle');
+                if (svg) return prop === 'backgroundColor' ? svg.style.fill : svg.style.stroke;
+            }
+            return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
+        };
+
+        let detectedIconColor = "";
+        if (icon) {
+            const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
+            const dot = icon.querySelector('.v4-radio div');
+            if (poly) {
+                detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || "";
+            } else if (dot) {
+                detectedIconColor = dot.style.backgroundColor || "";
+            } else {
+                detectedIconColor = icon.style.color || icon.getAttribute('stroke') || "";
+            }
+        }
+
+        return {
+            id: c.id,
+            isTable: !!table,
+            isShape: !!shape,
+            isIcon: !!icon,
+            isPin: isPin,
+            isDescriptionPin: isDescriptionPin,
+            pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
+            html: textCell ? textCell.innerHTML : (shape ? shape.innerHTML : (table ? table.innerHTML : "")),
+            isGroup: c.classList.contains('lf-group'),
+            w: c.offsetWidth,
+            h: c.offsetHeight,
+            currentStyles: {
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : "")))),
+                text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
+                fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
+                tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
+                tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
+                iconColor: _rgb2hex(detectedIconColor || "#000000"),
+                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : 0,
+                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
+                isBgTransparent: (() => {
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""));
+                    return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
+                })(),
+                isBorderTransparent: (() => {
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : ""));
+                    return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
+                })()
+            }
+        };
+    };
+
+    function updateHandles(c) {
+        if (!c) return;
+        const t = parseInt(c.style.top) || 0;
+        const l = parseInt(c.style.left) || 0;
+        const drag = c.querySelector('.lf-drag-handle');
+        const del = c.querySelector('.lf-delete-trigger');
+        if (drag) { drag.style.top = t < 16 ? '4px' : '-16px'; drag.style.left = l < 16 ? '4px' : '-16px'; }
+        if (del) { 
+            del.style.top = t < 16 ? '4px' : '-12px'; 
+            const rightDist = window.innerWidth - (l + c.offsetWidth);
+            del.style.right = rightDist < 16 ? '4px' : '-12px'; 
+        }
+    }
+    document.addEventListener('mouseover', e => {
+        const c = e.target.closest('.lf-component');
+        if (c) updateHandles(c);
+    });
+    let isMarquee = false;
+    document.addEventListener('mousedown', e => {
+        // Rule: Ignore clicks on sidebars, modals, or top panels to prevent unintended deselection/marquee
+        if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.header-metadata')) return;
+
+        let h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
+        
+        // If clicking inside a component, find the top-most component (for grouping)
+        if (c && !h && !r && !d) {
+            let parent = c.parentElement.closest('.lf-component');
+            while (parent) {
+                c = parent;
+                parent = c.parentElement.closest('.lf-component');
+            }
+        }
+
+        if (d && c) { 
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            // Sync deletion for connectors
+            if (c.classList.contains('connector-line')) {
+                notifyParent({ type: 'LF_DELETE_CONNECTOR', id: c.id });
+                c.remove();
+            }
+            // Sync deletion for pins
+            else if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
+                const idx = parseInt(c.id.replace('v4-pin-', ''));
+                notifyParent({ type: 'LF_DELETE_PIN', index: idx });
+                c.remove();
+            } else {
+                c.remove();
+            }
+
+            markDirty(); 
+            notifyParent({ type: 'LF_DESELECT' });
+            return; 
+        }
+        if (c) {
+            isMarquee = false;
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            c.classList.add('selected');
+            updateHandles(c);
+            notifyParent({ 
+                type: "LF_COMP_SELECTED", 
+                ..._getCompStyles(c)
+            });
+        } else {
+            isMarquee = true;
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            
+            const targets = [];
+            document.querySelectorAll('.lf-component').forEach(c => {
+                targets.push({
+                    id: c.id,
+                    x: parseFloat(c.style.left) || 0,
+                    y: parseFloat(c.style.top) || 0,
+                    w: c.offsetWidth,
+                    h: c.offsetHeight
+                });
+            });
+
+            notifyParent({ 
+                type: 'LF_MARQUEE_START', 
+                x: e.clientX, 
+                y: e.clientY,
+                shiftKey: e.shiftKey,
+                targets: targets
+            });
+            notifyParent({ type: 'LF_DESELECT' });
+        }
+        if (r) { 
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            isResizing = true; 
+            activeEl = r.parentElement; 
+            startX = e.clientX; startY = e.clientY; 
+            startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; 
+            e.preventDefault(); 
+        }
+        else if (h || (c && !e.target.closest('.v4-editable-cell'))) { 
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            isDragging = true; activeEl = c; 
+            startX = e.clientX; startY = e.clientY; 
+            startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
+            startRect = activeEl.getBoundingClientRect();
+            notifyParent({ type: 'LF_SNAP_START' });
+            if (h) e.preventDefault(); 
+            // Apply dragging class to all selected for smoothness
+            document.querySelectorAll('.lf-component.selected').forEach(s => s.classList.add('dragging-now'));
+        } else if (e.target.closest('.v4-editable-cell')) {
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            e.target.closest('.v4-editable-cell').focus();
+        }
+    });
+    let rafId = null;
+    document.addEventListener('mousemove', e => {
+        if (isMarquee) {
+            notifyParent({ type: 'LF_MARQUEE_MOVE', x: e.clientX, y: e.clientY });
+            window.getSelection()?.removeAllRanges();
+            return;
+        }
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+            if (isConnectorDragging) {
+                notifyParent({ type: 'LF_CONNECTOR_HANDLE_MOVE', clientX: e.clientX, clientY: e.clientY });
+            }
+            if (isDragging && activeEl) { 
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                const requestX = startRect.left + dx;
+                const requestY = startRect.top + dy;
+                
+                // Track delta for multi-move
+                const deltaX = dx; 
+                const deltaY = dy;
+
+                notifyParent({ type: 'LF_SNAP_REQUEST', x: requestX, y: requestY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
+                markDirty(); 
+            }
+            else if (isResizing && activeEl) { 
+                const nw = Math.max(10, startW + e.clientX - startX);
+                const nh = Math.max(10, startH + e.clientY - startY);
+                activeEl.style.width = nw + 'px'; 
+                activeEl.style.height = nh + 'px'; 
+                updateHandles(activeEl);
+                markDirty(); 
+                notifyParent({ type: 'LF_COMP_RESIZED', w: nw, h: nh });
+            }
+        });
+    });
+    document.addEventListener('mouseup', () => { 
+        if (isConnectorDragging) {
+            isConnectorDragging = false;
+            notifyParent({ type: 'LF_CONNECTOR_HANDLE_UP' });
+        }
+        if (isMarquee) {
+            isMarquee = false;
+            notifyParent({ type: 'LF_MARQUEE_END' });
+        }
+        if (isDragging && activeEl) {
+            notifyParent({ type: 'LF_SNAP_END' });
+            
+            // Sync position for pins (text markers) - now using px directly
+            if (activeEl.classList.contains('text-marker') || activeEl.classList.contains('pin-marker')) {
+                const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
+                notifyParent({
+                    type: 'LF_UPDATE_PIN_POS',
+                    index: idx,
+                    x: parseFloat(activeEl.style.left) || 0,
+                    y: parseFloat(activeEl.style.top) || 0,
+                    standardized: true
+                });
+            }
+            if (activeEl.classList.contains('lf-group')) {
+                const scale = (window.parent && window.parent.state && window.parent.state.transform) ? window.parent.state.transform.scale : 1;
+                const hostRect = document.body.getBoundingClientRect();
+                activeEl.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
+                    const idx = parseInt(child.id.replace('v4-pin-', ''));
+                    if (!isNaN(idx)) {
+                        const childRect = child.getBoundingClientRect();
+                        const absX = (childRect.left - hostRect.left) / scale;
+                        const absY = (childRect.top - hostRect.top) / scale;
+                        notifyParent({
+                            type: 'LF_UPDATE_PIN_POS',
+                            index: idx,
+                            x: absX,
+                            y: absY,
+                            standardized: true
+                        });
+                    }
+                });
+            }
+        }
+        document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
+        isDragging = false; isResizing = false; activeEl = null; 
+    });
+    document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
+    let isArrowMoving = false;
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+            e.preventDefault();
+            notifyParent({ type: 'LF_TRIGGER_SAVE' });
+            return;
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                e.preventDefault();
+                copySelectedObjects();
+                return;
+            }
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                e.preventDefault();
+                pasteCopiedObjects();
+                return;
+            }
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'g') {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                e.preventDefault();
+                notifyParent({
+                    type: 'LF_SHORTCUT_TRIGGERED',
+                    shortcut: e.shiftKey ? 'ungroup' : 'group'
+                });
+            }
+        }
+        else if (e.code === 'Space') {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                e.preventDefault();
+                notifyParent({ type: 'LF_SPACE_DOWN' });
+            }
+        } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                const selected = document.querySelectorAll('.lf-component.selected');
+                if (selected.length > 0) {
+                    e.preventDefault();
+                    if (window.V4UndoManager && !isArrowMoving) {
+                        window.V4UndoManager.saveState();
+                        isArrowMoving = true;
+                    }
+                    const step = e.shiftKey ? 10 : 1;
+                    let dx = 0, dy = 0;
+                    if (e.code === 'ArrowUp') dy = -step;
+                    if (e.code === 'ArrowDown') dy = step;
+                    if (e.code === 'ArrowLeft') dx = -step;
+                    if (e.code === 'ArrowRight') dx = step;
+
+                    selected.forEach(c => {
+                        const l = parseFloat(c.style.left) || 0;
+                        const t = parseFloat(c.style.top) || 0;
+                        c.style.left = (l + dx) + 'px';
+                        c.style.top = (t + dy) + 'px';
+                        updateHandles(c);
+                        
+                        if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
+                            const idx = parseInt(c.id.replace('v4-pin-', ''));
+                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: l + dx, y: t + dy });
+                        }
+                        
+                        if (c.classList.contains('connector-line')) {
+                            notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: c.id, dx: dx, dy: dy });
+                        }
+                        
+                        // Sync children if it's a group
+                        if (c.classList.contains('lf-group')) {
+                            c.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
+                                const idx = parseInt(child.id.replace('v4-pin-', ''));
+                                const childRect = child.getBoundingClientRect();
+                                const hostRect = document.body.getBoundingClientRect();
+                                const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
+                                const absX = (childRect.left - hostRect.left) / scale;
+                                const absY = (childRect.top - hostRect.top) / scale;
+                                notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: absX, y: absY });
+                            });
+                        }
+                    });
+                    
+                    notifyParent({ type: 'LF_SNAP_END' });
+                }
+            }
+        } else if (e.code === 'Delete' || e.code === 'Backspace') {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                const selected = document.querySelectorAll('.lf-component.selected');
+                if (selected.length > 0) {
+                    e.preventDefault();
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    
+                    selected.forEach(c => {
+                        if (c.classList.contains('connector-line')) {
+                            notifyParent({ type: 'LF_DELETE_CONNECTOR', id: c.id });
+                        } else if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
+                            const idx = parseInt(c.id.replace('v4-pin-', ''));
+                            notifyParent({ type: 'LF_DELETE_PIN', index: idx });
+                            c.remove();
+                        } else {
+                            c.remove();
+                        }
+                    });
+                    
+                    notifyParent({ type: 'LF_DESELECT' });
+                    markDirty();
+                }
+            }
+        }
+    });
+    document.addEventListener('keyup', e => {
+        if (e.code === 'Space') {
+            notifyParent({ type: 'LF_SPACE_UP' });
+        } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+            isArrowMoving = false;
+        }
+    });
+    window.addEventListener('message', e => {
+        const d = e.data; if (!d) return;
+        if (d.type === 'LF_SHORTCUT_KEY_PROXY') {
+            const eventType = d.code === 'Space' ? 'keyup' : 'keydown';
+            const event = new KeyboardEvent(eventType, {
+                code: d.code,
+                key: d.key,
+                shiftKey: !!d.shiftKey,
+                ctrlKey: !!d.ctrlKey,
+                metaKey: !!d.metaKey,
+                bubbles: true
+            });
+            document.dispatchEvent(event);
+            return;
+        }
+        if (d.type === 'LF_REORDER_PINS') {
+            const pins = document.querySelectorAll('.text-marker, .pin-marker');
+            pins.forEach((pin, idx) => {
+                pin.id = 'v4-pin-' + idx;
+                const badge = pin.querySelector('.pin-number-badge');
+                if (badge) {
+                    badge.innerText = idx + 1;
+                }
+            });
+            return;
+        }
+        if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
+            const currentRect = activeEl.getBoundingClientRect();
+            const snapDx = d.x - currentRect.left;
+            const snapDy = d.y - currentRect.top;
+            if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
+                const comps = document.querySelectorAll('.lf-component.selected');
+                comps.forEach(c => {
+                    c.style.left = (parseInt(c.style.left || 0) + snapDx) + 'px';
+                    c.style.top = (parseInt(c.style.top || 0) + snapDy) + 'px';
+                    updateHandles(c);
+                });
+            }
+        }
+        else if (d.type === 'LF_IMPORT_PINS') {
+            const host = document.body;
+            d.pins.forEach((pin, idx) => {
+                let div = document.getElementById('v4-pin-' + idx);
+                if (div) {
+                    // 이미 존재하는 핀마커는 기존 HTML 구조(상대 좌표 및 그룹화 구조)를 
+                    // 온전히 신뢰하므로 좌표 덮어쓰기를 방지하고 스킵합니다.
+                    return;
+                }
+                
+                div = document.createElement('div');
+                div.id = 'v4-pin-' + idx;
+                host.appendChild(div);
+                
+                const isPinType = (pin.type === 'pin' || pin.type === undefined);
+                div.className = 'lf-component ' + (isPinType ? 'pin-marker' : 'text-marker');
+                
+                if (isPinType) {
+                    div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                                    '<div class="pin-number-badge" style="pointer-events:none; font-weight:800; font-size:14px; color:#000;">' + (idx + 1) + '</div>' +
+                                    '<div class="lf-delete-trigger" style="right:-10px; top:-10px;">&times;</div>';
+                    div.style.width = '28px';
+                    div.style.height = '28px';
+                } else {
+                    div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                                    '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
+                                    '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+                    div.style.width = 'fit-content';
+                    div.style.height = 'auto';
+                }
+                div.style.zIndex = '1000';
+
+                let xVal = parseFloat(pin.x) || 0;
+                let yVal = parseFloat(pin.y) || 0;
+                
+                // Convert legacy percentage coordinates to absolute pixels based on 1440x900 canvas
+                if (!pin.standardized && xVal <= 100 && yVal <= 100) {
+                    xVal = xVal * 14.4;
+                    yVal = yVal * 9.0;
+                }
+
+                // Global absolute position relative to body
+                div.style.left = xVal + 'px';
+                div.style.top = yVal + 'px';
+                
+                updateHandles(div);
+            });
+        }
+        else if (d.type === 'LF_RENDER_CONNECTORS') {
+            console.log("[V4 Iframe] LF_RENDER_CONNECTORS received:", d);
+            const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+            console.log("[V4 Iframe] Host for connectors:", host);
+            document.querySelectorAll('.connector-line').forEach(el => el.remove());
+            const connectors = d.connectors || [];
+            const selectedIds = d.selectedIds || [];
+            
+            connectors.forEach(conn => {
+                const isSelected = selectedIds.includes(conn.id);
+                const baseWidth = parseFloat(conn.style.strokeWidth || 1.6);
+                const width = isSelected ? (baseWidth + 1) : baseWidth;
+                const color = conn.style.stroke || '#475569';
+                
+                const headLength = Math.max(12, baseWidth * 4.5);
+                const padding = headLength + 10;
+                const minX = Math.min(conn.start.x, conn.end.x) - padding;
+                const minY = Math.min(conn.start.y, conn.end.y) - padding;
+                const maxX = Math.max(conn.start.x, conn.end.x) + padding;
+                const maxY = Math.max(conn.start.y, conn.end.y) + padding;
+                const w = maxX - minX;
+                const h = maxY - minY;
+
+                if (isNaN(w) || isNaN(h)) return;
+
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.id = conn.id;
+                svg.setAttribute("class", "lf-component connector-line" + (isSelected ? " selected" : ""));
+                Object.assign(svg.style, {
+                    position: 'absolute',
+                    left: minX + 'px',
+                    top: minY + 'px',
+                    width: w + 'px',
+                    height: h + 'px',
+                    pointerEvents: 'none',
+                    zIndex: isSelected ? '10001' : '9999',
+                    overflow: 'visible'
+                });
+
+                const rel = (pt) => ({ x: pt.x - minX, y: pt.y - minY });
+                const rStart = rel(conn.start);
+                const rEnd = rel(conn.end);
+
+                const calculatePathData = (c, s, e) => {
+                    if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
+                    const midX = (s.x + e.x) / 2;
+                    return 'M ' + s.x + ' ' + s.y + ' H ' + midX + ' V ' + e.y + ' H ' + e.x;
+                };
+                const pathData = calculatePathData(conn, rStart, rEnd);
+
+                const startMId = 'm-start-' + conn.id;
+                const endMId = 'm-end-' + conn.id;
+
+                svg.innerHTML = '<defs>' +
+                    '<marker id="' + startMId + '" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">' +
+                        '<path d="M 0 0 L 10 5 L 0 10 z" fill="' + color + '" />' +
+                    '</marker>' +
+                    '<marker id="' + endMId + '" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
+                        '<path d="M 0 0 L 10 5 L 0 10 z" fill="' + color + '" />' +
+                    '</marker>' +
+                '</defs>' +
+                '<path d="' + pathData + '" stroke="transparent" stroke-width="40" fill="none" style="cursor:pointer; pointer-events:auto;" class="connector-hit-area" />' +
+                '<path d="' + pathData + '" stroke="' + color + '" stroke-width="' + width + '" fill="none" ' +
+                      'marker-start="' + (conn.style.markerStart ? 'url(#' + startMId + ')' : '') + '" ' +
+                      'marker-end="' + (conn.style.markerEnd ? 'url(#' + endMId + ')' : '') + '" ' +
+                      'style="pointer-events:none;" ' +
+                      (conn.style.dashArray ? 'stroke-dasharray="' + conn.style.dashArray + '"' : '') + ' />';
+
+                const hitArea = svg.querySelector('.connector-hit-area');
+                if (hitArea) {
+                    hitArea.onmousedown = (e) => {
+                        e.stopPropagation();
+                        notifyParent({ type: 'LF_CONNECTOR_CLICKED', id: conn.id, shiftKey: e.shiftKey });
+                    };
+                }
+
+                if (isSelected) {
+                    ['start', 'end'].forEach(type => {
+                        const pt = rel(conn[type]);
+                        const handle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                        handle.setAttribute("cx", pt.x); handle.setAttribute("cy", pt.y);
+                        handle.setAttribute("r", 6); handle.setAttribute("fill", "#3b82f6");
+                        handle.setAttribute("stroke", "#fff"); handle.setAttribute("stroke-width", "2");
+                        handle.style.cursor = 'crosshair'; handle.style.pointerEvents = 'auto';
+                        handle.onmousedown = (e) => {
+                            e.stopPropagation();
+                            isConnectorDragging = true;
+                            notifyParent({ type: 'LF_CONNECTOR_HANDLE_DOWN', id: conn.id, pointType: type });
+                        };
+                        svg.appendChild(handle);
+                    });
+                }
+                host.appendChild(svg);
+            });
+        }
+        else if (d.type === 'LF_REQUEST_SAVE_CONTENT') {
+            const c = document.documentElement.cloneNode(true);
+            c.querySelectorAll('.lf-resizer, .lf-delete-trigger, .lf-drag-handle').forEach(el => el.remove());
+            c.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+            notifyParent({ type: 'LF_SAVE_CONTENT_RESPONSE', html: "<!DOCTYPE html>\\n" + c.outerHTML });
+        } else if (d.type === 'LF_INSERT_COMPONENT' || d.type === 'LF_INSERT_V4_COMP') {
+            const host = document.body;
+            const vh = window.innerHeight;
+            const vw = window.innerWidth;
+            const sY = window.scrollY;
+            const sX = window.scrollX;
+            
+            // pin-marker 타입인 경우 규격(28px * 28px)을 강제 지정
+            const isPinMarker = d.className && d.className.includes('pin-marker');
+            const compW = isPinMarker ? 28 : ((d.style && d.style.width) ? parseInt(d.style.width) || 200 : 200);
+            const compH = isPinMarker ? 28 : ((d.style && d.style.height) ? parseInt(d.style.height) || 100 : 100);
+            
+            const centerTop = sY + (vh - compH) / 2;
+            const centerLeft = sX + (vw - compW) / 2;
+            
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const v = document.createElement('div'); 
+            v.id = d.id || ('v4-comp-' + Date.now()); 
+            v.style.position = 'absolute'; 
+            v.style.top = centerTop + 'px'; 
+            v.style.left = centerLeft + 'px'; 
+            v.style.zIndex = '1000';
+
+            if (isPinMarker) {
+                const idx = parseInt(d.id.replace('v4-pin-', '')) || 0;
+                v.className = 'lf-component pin-marker';
+                v.style.width = '28px';
+                v.style.height = '28px';
+                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                              '<div class="pin-number-badge" style="pointer-events:none; font-weight:800; font-size:14px; color:#000;">' + (idx + 1) + '</div>' +
+                              '<div class="lf-delete-trigger" style="right:-10px; top:-10px;">&times;</div>';
+            } else {
+                v.className = 'lf-component' + (d.isGroup ? ' lf-group' : '') + (d.className ? ' ' + d.className : ''); 
+                v.style.transform = 'none'; // Prevent drift during grouping
+                if (d.style) Object.assign(v.style, d.style);
+                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+            }
+            
+            // Smart Scaling based on Parent Viewport
+            if (window.parent.state && window.parent.state.transform) {
+                const s = window.parent.state.transform.scale || 1;
+                if (s < 1) {
+                    const bw = parseInt(v.style.width) || 200;
+                    const bh = parseInt(v.style.height) || 100;
+                    // Auto-boost size if zoomed out to keep visually consistent, but NOT for groups which have absolute positioned children
+                    if (s < 0.8 && !d.isGroup) {
+                        v.style.width = Math.round(bw / s) + 'px';
+                        v.style.height = Math.round(bh / s) + 'px';
+                    }
+                }
+            }
+            
+            // Legacy Compatibility: Detect old-style molecule with absolute coordinates
+            const children = Array.from(v.children).filter(c => c.classList.contains('lf-component') || c.classList.contains('lf-group'));
+            if (children.length === 1) {
+                const inner = children[0];
+                const l = parseInt(inner.style.left) || 0;
+                const t = parseInt(inner.style.top) || 0;
+                if (l !== 0 || t !== 0) {
+                    inner.style.left = '0px';
+                    inner.style.top = '0px';
+                    if (inner.style.width) v.style.width = inner.style.width;
+                    if (inner.style.height) v.style.height = inner.style.height;
+                }
+            }
+            
+            host.appendChild(v);
+            document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
+            v.classList.add('selected');
+            const styles = _getCompStyles(v);
+            notifyParent({ 
+                type: 'LF_COMP_SELECTED', 
+                ...styles
+            });
+            markDirty();
+        } else if (d.type === 'LF_INSERT_COMPONENTS') {
+            const host = document.body;
+            const comps = d.components || [];
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            comps.forEach(c => {
+                const v = document.createElement('div');
+                v.id = c.id || ('v4-comp-' + Date.now() + Math.random());
+                v.className = 'lf-component selected' + (c.isGroup ? ' lf-group' : '') + (c.className ? ' ' + c.className : '');
+                
+                v.style.position = 'absolute';
+                v.style.left = (parseFloat(c.x) || 0) + 'px';
+                v.style.top = (parseFloat(c.y) || 0) + 'px';
+                v.style.width = c.width || '200px';
+                v.style.height = c.height || '100px';
+                v.style.zIndex = '1000';
+                v.style.transform = 'none !important'; // Critical fix for atoms
+
+                if (c.style) Object.assign(v.style, c.style);
+
+                v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + (c.html || '') + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+                host.appendChild(v);
+                updateHandles(v);
+            });
+            markDirty();
+        } else if (d.type === 'LF_SELECT_ID') {
+            const el = document.getElementById(d.id);
+            if (el) {
+                document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                el.classList.add('selected');
+                updateHandles(el);
+            }
+        }
+        else if (d.type === 'LF_UPDATE_PIN_CONTENT') {
+            const selected = document.querySelector('.lf-component.text-marker.selected');
+            if (selected) {
+                const cell = selected.querySelector('.v4-editable-cell');
+                if (cell) {
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    cell.innerHTML = d.html;
+                    markDirty();
+                }
+            }
+        }
+        else if (d.type === 'LF_UPDATE_STYLE') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            
+            // If it's a text marker, target the editable cell for content/style updates if needed
+            let t = d.selector ? s.querySelector(d.selector) : s;
+            if (!t && s.classList.contains('text-marker')) {
+                t = s.querySelector('.v4-editable-cell') || s;
+            }
+            if (!t) return;
+            
+            if (d.style) {
+                if (d.style.html !== undefined) t.innerHTML = d.style.html;
+                Object.assign(t.style, d.style);
+                
+                // SVG Sync: If the element contains an SVG, sync stroke/fill
+                const svgShape = t.querySelector('path, polygon, rect, circle');
+                if (svgShape) {
+                    if (d.style.backgroundColor || d.style.background) {
+                        svgShape.style.fill = d.style.backgroundColor || d.style.background;
+                        // For non-rectangular shapes, container must stay transparent to avoid square fill leakage
+                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave')) {
+                            t.style.backgroundColor = 'transparent';
+                        }
+                    }
+                    if (d.style.borderColor) {
+                        svgShape.style.stroke = d.style.borderColor;
+                        svgShape.style.strokeWidth = "1.6";
+                    }
+                }
+
+                // --- ICON COLOR SPECIAL INTEGRATION ---
+                const isIconComp = s.querySelector('.lf-icon') || s.querySelector('img');
+                if (isIconComp && d.style.color) {
+                    const iconColor = d.style.color;
+                    
+                    // 1. SVG coloring (Arrows, Close, Checkbox SVG)
+                    const innerSvg = t.querySelector('svg') || (t.tagName.toLowerCase() === 'svg' ? t : null);
+                    if (innerSvg) {
+                        innerSvg.style.color = iconColor;
+                        
+                        // Also apply stroke and fill overrides to the SVG root if it has stroke/fill attributes
+                        if (innerSvg.getAttribute('stroke') && innerSvg.getAttribute('stroke') !== 'none') {
+                            innerSvg.style.stroke = iconColor;
+                        }
+                        if (innerSvg.getAttribute('fill') && innerSvg.getAttribute('fill') !== 'none') {
+                            innerSvg.style.fill = iconColor;
+                        }
+                        
+                        // Checkbox custom handling: only color the stroke of checkmark
+                        if (t.classList.contains('v4-checkbox')) {
+                            const checkmark = innerSvg.querySelector('polyline, path');
+                            if (checkmark) checkmark.style.stroke = iconColor;
+                        } else {
+                            const paths = innerSvg.querySelectorAll('path, line, polyline, polygon, rect, circle');
+                            paths.forEach(p => {
+                                if (p.getAttribute('stroke') && p.getAttribute('stroke') !== 'none') {
+                                    p.style.stroke = iconColor;
+                                }
+                                if (p.getAttribute('fill') && p.getAttribute('fill') !== 'none') {
+                                    p.style.fill = iconColor;
+                                }
+                            });
+                        }
+                    }
+                    
+                    // 2. Radio Button dot coloring
+                    const innerDot = t.querySelector('.v4-radio div') || (t.classList.contains('v4-radio') ? t.querySelector('div') : null);
+                    if (innerDot) {
+                        innerDot.style.backgroundColor = iconColor;
+                    }
+                    
+                    // 3. Sprite / Image mask-based coloring for non-SVG icons
+                    if (!innerSvg && !innerDot) {
+                        t.style.filter = 'none';
+                        if (t.tagName.toLowerCase() === 'img') {
+                            let origSrc = t.getAttribute('data-original-src');
+                            if (!origSrc) {
+                                origSrc = t.src;
+                                t.setAttribute('data-original-src', origSrc);
+                            }
+                            t.style.webkitMaskImage = 'url("' + origSrc + '")';
+                            t.style.webkitMaskSize = 'contain';
+                            t.style.webkitMaskPosition = 'center';
+                            t.style.webkitMaskRepeat = 'no-repeat';
+                            
+                            t.style.maskImage = 'url("' + origSrc + '")';
+                            t.style.maskSize = 'contain';
+                            t.style.maskPosition = 'center';
+                            t.style.maskRepeat = 'no-repeat';
+                            
+                            t.style.backgroundColor = iconColor;
+                            t.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'/>";
+                        } else {
+                            const origBg = t.getAttribute('data-original-bg') || window.getComputedStyle(t).backgroundImage;
+                            const origPos = t.getAttribute('data-original-pos') || window.getComputedStyle(t).backgroundPosition;
+                            const origSize = t.getAttribute('data-original-size') || window.getComputedStyle(t).backgroundSize;
+                            
+                            if (origBg && origBg !== 'none') {
+                                if (!t.getAttribute('data-original-bg')) {
+                                    t.setAttribute('data-original-bg', origBg);
+                                    t.setAttribute('data-original-pos', origPos);
+                                    t.setAttribute('data-original-size', origSize);
+                                }
+                                
+                                t.style.setProperty('webkit-mask-image', origBg, 'important');
+                                t.style.setProperty('webkit-mask-position', origPos, 'important');
+                                t.style.setProperty('webkit-mask-size', origSize, 'important');
+                                t.style.setProperty('webkit-mask-repeat', 'no-repeat', 'important');
+                                
+                                t.style.setProperty('mask-image', origBg, 'important');
+                                t.style.setProperty('mask-position', origPos, 'important');
+                                t.style.setProperty('mask-size', origSize, 'important');
+                                t.style.setProperty('mask-repeat', 'no-repeat', 'important');
+                                
+                                t.style.setProperty('background-color', iconColor, 'important');
+                                t.style.setProperty('background-image', 'none', 'important');
+                                
+                                const computedPadding = window.getComputedStyle(t).paddingTop;
+                                const hasPadding = (t.style.padding && t.style.padding !== '0px') || (computedPadding && computedPadding !== '0px' && computedPadding !== '0');
+                                if (hasPadding) {
+                                    t.style.setProperty('webkit-mask-origin', 'content-box', 'important');
+                                    t.style.setProperty('webkit-mask-clip', 'content-box', 'important');
+                                    t.style.setProperty('mask-origin', 'content-box', 'important');
+                                    t.style.setProperty('mask-clip', 'content-box', 'important');
+                                    t.style.setProperty('background-origin', 'content-box', 'important');
+                                    t.style.setProperty('background-clip', 'content-box', 'important');
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if (d.subSelector && d.subStyle) {
+                t.querySelectorAll(d.subSelector).forEach(sub => Object.assign(sub.style, d.subStyle));
+            }
+            markDirty();
+        } else if (d.type === 'LF_DELETE_SELECTED') {
+            const s = document.querySelector('.lf-component.selected'); 
+            if (s) { 
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                s.remove(); 
+                markDirty(); 
+                notifyParent({ type: 'LF_DESELECT' });
+            }
+        } else if (d.type === 'LF_DESELECT_ALL') {
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+        } else if (d.type === 'LF_UPDATE_MARQUEE_SELECTION') {
+            const ids = d.ids || [];
+            document.querySelectorAll('.lf-component').forEach(x => {
+                if (ids.includes(x.id)) {
+                    x.classList.add('selected');
+                } else {
+                    x.classList.remove('selected');
+                }
+            });
+        } else if (d.type === 'LF_ALIGN_SELECTED') {
+            const ids = d.ids || [];
+            const alignType = d.alignType || d.type;
+            if (ids.length < 2) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            const doc = document;
+            const items = [];
+            const allHandles = doc.querySelectorAll('.lf-drag-handle, .lf-resizer, .lf-delete-trigger');
+            const handleStates = Array.from(allHandles).map(h => h.style.display);
+            allHandles.forEach(h => h.style.display = 'none');
+
+            ids.forEach(id => {
+                const isMarker = id.startsWith('v4-pin-');
+                const el = doc.getElementById(id);
+                if (el) {
+                    const l = parseFloat(el.style.left) || 0;
+                    const t = parseFloat(el.style.top) || 0;
+                    const w = el.offsetWidth;
+                    const h = el.offsetHeight;
+                    items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: l, y: t, w, h });
+                }
+            });
+
+            allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+
+            if (items.length < 2) return;
+
+            let minX = Math.min(...items.map(i => i.x));
+            let minY = Math.min(...items.map(i => i.y));
+            let maxX = Math.max(...items.map(i => i.x + i.w));
+            let maxY = Math.max(...items.map(i => i.y + i.h));
+
+            items.forEach(item => {
+                let dx = 0, dy = 0;
+                switch(alignType) {
+                    case 'left':   dx = minX - item.x; break;
+                    case 'right':  dx = maxX - item.w - item.x; break;
+                    case 'center': dx = (minX + maxX)/2 - item.w/2 - item.x; break;
+                    case 'top':    dy = minY - item.y; break;
+                    case 'bottom': dy = maxY - item.h - item.y; break;
+                    case 'middle': dy = (minY + maxY)/2 - item.h/2 - item.y; break;
+                }
+
+                if (dx === 0 && dy === 0) return;
+
+                item.el.style.left = (item.x + dx) + 'px';
+                item.el.style.top = (item.y + dy) + 'px';
+                
+                if (item.type === 'marker') {
+                    const idx = parseInt(item.id.replace('v4-pin-', ''));
+                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: item.x + dx, y: item.y + dy });
+                }
+            });
+            markDirty();
+        } else if (d.type === 'LF_GROUP_SELECTED') {
+            const ids = d.ids || [];
+            if (ids.length < 2) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            
+            const doc = document;
+            const host = doc.body;
+            
+            const allHandles = doc.querySelectorAll('.lf-drag-handle, .lf-resizer, .lf-delete-trigger');
+            const handleStates = Array.from(allHandles).map(h => h.style.display);
+            allHandles.forEach(h => h.style.display = 'none');
+
+            const comps = ids.map(id => doc.getElementById(id)).filter(el => el && !el.classList.contains('connector-line'));
+            if (comps.length < 2) return;
+
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            const items = comps.map(c => {
+                const l = parseFloat(c.style.left) || 0;
+                const t = parseFloat(c.style.top) || 0;
+                const w = c.offsetWidth;
+                const h = c.offsetHeight;
+                minX = Math.min(minX, l);
+                minY = Math.min(minY, t);
+                maxX = Math.max(maxX, l + w);
+                maxY = Math.max(maxY, t + h);
+                return { el: c, l, t, w, h };
+            });
+
+            allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+
+            const groupBaseL = minX;
+            const groupBaseT = minY;
+            const groupBaseW = maxX - minX;
+            const groupBaseH = maxY - minY;
+
+            const groupId = 'group-' + Date.now();
+            const group = doc.createElement('div');
+            group.id = groupId;
+            group.className = 'lf-component lf-group selected';
+            Object.assign(group.style, {
+                position: 'absolute', left: groupBaseL + 'px', top: groupBaseT + 'px',
+                width: groupBaseW + 'px', height: groupBaseH + 'px',
+                background: 'transparent', border: 'none', zIndex: '1000'
+            });
+
+            group.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                              '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+
+            host.appendChild(group);
+
+            items.forEach(item => {
+                item.el.style.left = (item.l - minX) + 'px';
+                item.el.style.top = (item.t - minY) + 'px';
+                item.el.style.width = item.w + 'px';
+                item.el.style.height = item.h + 'px';
+                item.el.classList.remove('selected');
+                group.appendChild(item.el);
+            });
+
+            notifyParent({ type: 'LF_SELECT_ID', id: groupId });
+            markDirty();
+        } else if (d.type === 'LF_UNGROUP_SELECTED') {
+            const ids = d.ids || [];
+            if (ids.length < 1) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            const doc = document;
+            const host = doc.body;
+            const group = doc.getElementById(ids[0]);
+            if (!group || !group.classList.contains('lf-group')) return;
+
+            const groupL = parseFloat(group.style.left) || 0;
+            const groupT = parseFloat(group.style.top) || 0;
+
+            const children = Array.from(group.children).filter(c => c.classList.contains('lf-component'));
+            const newIds = [];
+
+            children.forEach((c, idx) => {
+                if (!c.id) {
+                    c.id = 'v4-comp-ug-' + Date.now() + '-' + idx;
+                }
+
+                const relL = parseFloat(c.style.left) || 0;
+                const relT = parseFloat(c.style.top) || 0;
+                const w = c.offsetWidth;
+                const h = c.offsetHeight;
+
+                const absL = groupL + relL;
+                const absT = groupT + relT;
+
+                c.style.left = absL + 'px';
+                c.style.top = absT + 'px';
+                c.style.width = w + 'px';
+                c.style.height = h + 'px';
+
+                const isMarker = c.classList.contains('text-marker');
+                if (isMarker && c.id.startsWith('v4-pin-')) {
+                    const pinIdx = parseInt(c.id.replace('v4-pin-', ''));
+                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: pinIdx, x: absL, y: absT });
+                }
+                c.classList.add('selected');
+                newIds.push(c.id);
+                host.appendChild(c);
+            });
+
+            group.remove();
+            
+            // To ensure parent updates selectedIds array, send them
+            notifyParent({ type: 'LF_DESELECT' });
+            markDirty();
+        } else if (d.type === 'LF_EXTRACT_MOLECULE') {
+            const group = document.getElementById(d.id);
+            if (!group || !group.classList.contains('lf-group')) return;
+
+            const clone = group.cloneNode(true);
+            clone.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
+            clone.removeAttribute('id');
+            clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+
+            const moleculeData = {
+                id: 'mol-' + Date.now(),
+                name: d.name,
+                category: 'Custom',
+                width: group.style.width,
+                height: group.style.height,
+                isGroup: true,
+                previewHtml: '<div style="font-size: 10px; font-weight: 700; color: #6366f1;">' + d.name + '</div>',
+                html: clone.innerHTML
+            };
+
+            notifyParent({ type: 'LF_MOLECULE_EXTRACTED', moleculeData });
+        } else if (d.type === 'LF_REQUEST_SNAP_TARGETS') {
+            const targets = [];
+            document.querySelectorAll('.lf-component:not(.selected)').forEach(c => {
+                const l = parseFloat(c.style.left) || 0;
+                const t = parseFloat(c.style.top) || 0;
+                const w = c.offsetWidth;
+                const h = c.offsetHeight;
+                const name = c.id.replace('v4-comp-', 'Comp ');
+                targets.push({ x: l, label: name, part: 'Left', type: 'h' });
+                targets.push({ x: l + w / 2, label: name, part: 'Center', type: 'h' });
+                targets.push({ x: l + w, label: name, part: 'Right', type: 'h' });
+                targets.push({ y: t, label: name, part: 'Top', type: 'v' });
+                targets.push({ y: t + h / 2, label: name, part: 'Middle', type: 'v' });
+                targets.push({ y: t + h, label: name, part: 'Bottom', type: 'v' });
+            });
+
+            // Add Inner Screens as Snap Targets (Focus on actual UI area)
+            document.querySelectorAll('.mobile-frame').forEach((f, idx) => {
+                const content = f.querySelector('.mobile-content');
+                if (content) {
+                    let el = content;
+                    let l = 0, t = 0;
+                    while(el) {
+                        l += el.offsetLeft;
+                        t += el.offsetTop;
+                        el = el.offsetParent;
+                    }
+                    const w = content.offsetWidth;
+                    const h = content.offsetHeight;
+                    const sName = 'UI Area ' + (idx + 1);
+                    const bezel = 8; // Inset shadow bezel width
+                    targets.push({ x: l + bezel, label: sName, part: 'Left', type: 'h' });
+                    targets.push({ x: l + w - bezel, label: sName, part: 'Right', type: 'h' });
+                    targets.push({ y: t + bezel, label: sName, part: 'Top', type: 'v' });
+                    targets.push({ y: t + h - bezel, label: sName, part: 'Bottom', type: 'v' });
+                    targets.push({ x: l + w / 2, label: sName, part: 'Center', type: 'h' });
+                    targets.push({ y: t + h / 2, label: sName, part: 'Middle', type: 'v' });
+                }
+            });
+
+            notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
+        } else if (d.type === 'LF_TABLE_ACTION') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const table = s.querySelector('table'); if (!table) return;
+            const focused = table.querySelector('.v4-editable-cell:focus') || table.querySelector('td, th');
+            const row = focused ? focused.closest('tr') : null;
+            const cell = focused ? focused.closest('td, th') : null;
+            const act = (d.action || "").toLowerCase();
+            
+            if (act === 'add-row' || act === 'add_row') {
+                const newRow = table.insertRow(row ? row.rowIndex + 1 : -1);
+                const colCount = table.rows[0].cells.length;
+                for (let i = 0; i < colCount; i++) {
+                    const c = newRow.insertCell();
+                    c.className = 'v4-editable-cell';
+                    c.contentEditable = 'true';
+                    c.innerText = 'New';
+                    c.style.borderBottom = '1.6px solid #cbd5e1';
+                    c.style.padding = '16px';
+                }
+            } else if (act === 'add-col' || act === 'add_col') {
+                Array.from(table.rows).forEach((r, idx) => {
+                    const c = idx === 0 ? r.insertCell(-1) : r.insertCell(-1);
+                    if (idx === 0) {
+                        const th = document.createElement('th');
+                        th.className = 'v4-editable-cell';
+                        th.contentEditable = 'true';
+                        th.innerText = 'Header';
+                        th.style.background = '#cbd5e1';
+                        th.style.borderBottom = '1.6px solid #475569';
+                        th.style.padding = '16px';
+                        r.replaceChild(th, c);
+                    } else {
+                        c.className = 'v4-editable-cell';
+                        c.contentEditable = 'true';
+                        c.innerText = 'Data';
+                        c.style.borderBottom = '1.6px solid #cbd5e1';
+                        c.style.padding = '16px';
+                    }
+                });
+            } else if ((act === 'del-row' || act === 'del_row') && row && table.rows.length > 1) {
+                row.remove();
+            } else if ((act === 'del-col' || act === 'del_col') && cell) {
+                const idx = cell.cellIndex;
+                Array.from(table.rows).forEach(r => { if (r.cells[idx]) r.cells[idx].remove(); });
+            }
+            markDirty();
+        } else if (d.type === 'LF_UPDATE_CELL_STYLE') {
+            if (window.TableManager) {
+                window.TableManager.updateSelectedCellsStyle(d.style);
+            }
+        } else if (d.type === 'LF_UPDATE_CELL_DIMENSION') {
+            if (window.TableManager) {
+                if (d.width !== undefined) {
+                    window.TableManager.updateSelectedColumnWidth(d.width);
+                }
+                if (d.height !== undefined) {
+                    window.TableManager.updateSelectedRowHeight(d.height);
+                }
+            }
+        }
+    });
+
+    window.initHandles = () => {
+        document.querySelectorAll('.lf-component').forEach(c => {
+            if (!c.querySelector('.lf-drag-handle')) {
+                const h = document.createElement('div');
+                h.className = 'lf-drag-handle';
+                h.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg>';
+                c.appendChild(h);
+            }
+            if (!c.querySelector('.lf-resizer')) {
+                const r = document.createElement('div');
+                r.className = 'lf-resizer';
+                c.appendChild(r);
+            }
+            if (!c.querySelector('.lf-delete-trigger')) {
+                const d = document.createElement('div');
+                d.className = 'lf-delete-trigger';
+                d.innerHTML = '&times;';
+                c.appendChild(d);
+            }
+        });
+    };
+    const initHandles = window.initHandles;
+
+    // High-Persistence Border Standardization & Coordinate Migration
+    window.enforceDesignSystem = () => {
+        initHandles();
+        
+        // --- Coordinate Migration: % to px ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            // Only migrate if not in a group (groups already handle their children)
+            if (c.parentElement !== document.body) return;
+            
+            const lStr = c.style.left || "";
+            const tStr = c.style.top || "";
+            
+            if (lStr.includes('%')) {
+                const val = parseFloat(lStr);
+                const px = (val / 100) * 1440;
+                c.style.left = px + 'px';
+                console.log("[V4 Migration] Migrated " + c.id + " left: " + lStr + " -> " + c.style.left);
+            }
+            if (tStr.includes('%')) {
+                const val = parseFloat(tStr);
+                const px = (val / 100) * 900;
+                c.style.top = px + 'px';
+                console.log("[V4 Migration] Migrated " + c.id + " top: " + tStr + " -> " + c.style.top);
+            }
+        });
+
+        // --- Image-to-Div Icon Migration for robust CSS Masking ---
+        document.querySelectorAll('.lf-component img').forEach(img => {
+            const parent = img.parentElement;
+            if (!parent) return;
+            
+            const isLogo = img.classList.contains('v4-logo-img');
+            const isShare = img.src && img.src.includes('iconShare');
+            const isIcon = img.classList.contains('lf-icon');
+            
+            if (isLogo || isShare || isIcon) {
+                const div = document.createElement('div');
+                div.className = img.className;
+                if (!div.classList.contains('lf-icon')) {
+                    div.classList.add('lf-icon');
+                }
+                
+                const origSrc = img.getAttribute('data-original-src') || img.src;
+                div.setAttribute('data-original-src', origSrc);
+                
+                const origBg = img.getAttribute('data-original-bg');
+                if (origBg) div.setAttribute('data-original-bg', origBg);
+                
+                div.style.cssText = img.style.cssText;
+                div.style.width = '100%';
+                div.style.height = '100%';
+                div.style.pointerEvents = 'none';
+                
+                if (!isLogo) {
+                    div.style.setProperty('padding', '8px', 'important');
+                    div.style.setProperty('box-sizing', 'border-box', 'important');
+                    div.style.setProperty('background-origin', 'content-box', 'important');
+                    div.style.setProperty('background-clip', 'content-box', 'important');
+                    div.style.setProperty('mask-origin', 'content-box', 'important');
+                    div.style.setProperty('webkit-mask-origin', 'content-box', 'important');
+                    div.style.setProperty('mask-clip', 'content-box', 'important');
+                    div.style.setProperty('webkit-mask-clip', 'content-box', 'important');
+                }
+                
+                const isColored = img.style.backgroundColor || img.getAttribute('data-original-bg');
+                if (isColored) {
+                    const color = img.style.backgroundColor || '';
+                    div.style.setProperty('background-color', color, 'important');
+                    div.style.setProperty('background-image', 'none', 'important');
+                    
+                    const bgUrl = 'url("' + origSrc + '")';
+                    div.setAttribute('data-original-bg', bgUrl);
+                    div.style.setProperty('webkit-mask-image', bgUrl, 'important');
+                    div.style.setProperty('webkit-mask-position', 'center', 'important');
+                    div.style.setProperty('webkit-mask-size', 'contain', 'important');
+                    div.style.setProperty('webkit-mask-repeat', 'no-repeat', 'important');
+                    
+                    div.style.setProperty('mask-image', bgUrl, 'important');
+                    div.style.setProperty('mask-position', 'center', 'important');
+                    div.style.setProperty('mask-size', 'contain', 'important');
+                    div.style.setProperty('mask-repeat', 'no-repeat', 'important');
+                } else {
+                    div.style.setProperty('background-image', 'url("' + origSrc + '")', 'important');
+                    div.style.setProperty('background-size', 'contain', 'important');
+                    div.style.setProperty('background-position', 'center', 'important');
+                    div.style.setProperty('background-repeat', 'no-repeat', 'important');
+                }
+                
+                parent.replaceChild(div, img);
+                console.log("[V4 Migration] Migrated image icon/logo to div element:", origSrc);
+            }
+        });
+
+        document.querySelectorAll('.v4-shape').forEach(s => {
+            if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle')) {
+                s.style.setProperty('border-width', '0px', 'important');
+                return;
+            }
+            if (s.style.borderWidth !== '1.6px') s.style.setProperty('border-width', '1.6px', 'important');
+        });
+        document.querySelectorAll('table.v4-premium-table').forEach(t => {
+            if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
+            if (window.TableSelection) window.TableSelection.bindEvents(t);
+        });
+        document.querySelectorAll('polygon, path, rect, circle').forEach(svg => {
+            if (svg.closest('.connector-line')) return;
+            if (svg.getAttribute('stroke-width') !== '1.6') svg.setAttribute('stroke-width', '1.6');
+            if (svg.style.strokeWidth !== '1.6') svg.style.strokeWidth = '1.6';
+            if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
+        });
+    };
+    const enforceDesignSystem = window.enforceDesignSystem;
+
+    // Run immediately and setup observer for dynamic changes
+    enforceDesignSystem();
+    const observer = new MutationObserver(enforceDesignSystem);
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    
+    // Safety fallback for slow loads
+    setTimeout(enforceDesignSystem, 500);
+})();

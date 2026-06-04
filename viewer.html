@@ -264,6 +264,15 @@
             color: #fff !important;
             border-color: #ef4444 !important;
         }
+        /* Search Input Premium Styles */
+        #sidebar-search-input:focus {
+            border-color: var(--accent) !important;
+            background: rgba(0, 0, 0, 0.35) !important;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.15);
+        }
+        #sidebar-search-clear:hover {
+            color: #fff !important;
+        }
     </style>
     <script>
         window.onerror = function(msg, url, line, col, error) {
@@ -475,11 +484,27 @@
                     </div>
                 </div>
                 
+                <!-- Search Bar -->
+                <div class="sidebar-search-container" style="padding: 14px 14px 8px 14px; background: rgba(0,0,0,0.1); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 10;">
+                    <div class="v4-search-wrapper" style="position: relative; display: flex; align-items: center; width: 100%;">
+                        <span class="material-icons-outlined" style="position: absolute; left: 10px; font-size: 16px; color: var(--text-secondary); pointer-events: none;">search</span>
+                        <input type="text" id="sidebar-search-input" placeholder="검색어를 입력하세요..." style="width: 100%; height: 32px; padding: 0 32px 0 32px; background: rgba(0, 0, 0, 0.2); border: 1.6px solid var(--border-color); border-radius: 16px; color: #fff; font-size: 11px; font-family: inherit; transition: all 0.2s; box-sizing: border-box; outline: none;">
+                        <span id="sidebar-search-clear" class="material-icons-outlined" style="position: absolute; right: 10px; font-size: 16px; color: var(--text-secondary); cursor: pointer; display: none; transition: color 0.2s;">close</span>
+                    </div>
+                </div>
+
+                <!-- Empty Search State -->
+                <div id="sidebar-search-empty" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; color: var(--text-secondary);">
+                    <span class="material-icons-outlined" style="font-size: 40px; margin-bottom: 8px; color: rgba(255,255,255,0.15);">search_off</span>
+                    <div style="font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.6);">검색 결과가 없습니다.</div>
+                    <div style="font-size: 11px; margin-top: 4px; color: rgba(255,255,255,0.35);">다른 검색어를 입력해 보세요.</div>
+                </div>
+
                 <!-- Part 1: COMPONENTS -->
-                <div class="panel-header" style="background: rgba(99, 102, 241, 0.03); padding: 18px 20px;">
+                <div id="v4-shapes-header" class="panel-header" style="background: rgba(99, 102, 241, 0.03); padding: 18px 20px;">
                     <span style="font-size: 10px; font-weight: 800; color: #818cf8; letter-spacing: 1.5px;">SHAPE</span>
                 </div>
-                <div class="components-body" style="padding: 12px;">
+                <div id="v4-shapes-body" class="components-body" style="padding: 12px;">
                     <div id="v4-shapes-container" class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
                         <!-- Dynamic shapes will be rendered here -->
                     </div>
@@ -679,11 +704,11 @@
                 </div>
 
                 <!-- Part 2: ATOMIC LIBRARY -->
-                <div class="panel-header" style="border-top: 1px solid rgba(255, 255, 255, 0.08); background: rgba(52, 211, 153, 0.03); padding: 18px 20px;">
+                <div id="atomic-library-header" class="panel-header" style="border-top: 1px solid rgba(255, 255, 255, 0.08); background: rgba(52, 211, 153, 0.03); padding: 18px 20px;">
                     <span style="font-size: 10px; font-weight: 800; color: #34d399; letter-spacing: 1.5px;">ATOMIC LIBRARY</span>
                 </div>
-                <div class="components-body" style="padding: 12px;">
-                    <div class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                <div id="atomic-library-body" class="components-body" style="padding: 12px;">
+                    <div id="atomic-library-container" class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
                         <div class="component-item v4-card" onclick="insertAtomicComponent('image', 'LF Logo')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <div style="height: 18px; display: flex; align-items: center; justify-content: center;">
                                 <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width: 18px; filter: brightness(0) invert(1);" loading="lazy">
@@ -818,10 +843,10 @@
                 </div>
 
                 <!-- Part 3: MOLECULES -->
-                <div class="panel-header" style="border-top: 1px solid rgba(255, 255, 255, 0.08); background: rgba(244, 63, 94, 0.03); padding: 18px 20px;">
+                <div id="molecules-header" class="panel-header" style="border-top: 1px solid rgba(255, 255, 255, 0.08); background: rgba(244, 63, 94, 0.03); padding: 18px 20px;">
                     <span id="molecules-header-text" style="font-size: 10px; font-weight: 800; color: #f43f5e; letter-spacing: 1.5px; text-transform: uppercase;">COMPONENTS</span>
                 </div>
-                <div class="components-body" style="padding: 12px;">
+                <div id="molecules-body" class="components-body" style="padding: 12px;">
                     <div id="custom-molecules-container" class="v4-tool-grid" style="display: grid; grid-template-columns: 1fr; gap: 8px;">
                         <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LFmall Header')" style="height: 40px; font-weight: 700;">LFmall Header</button>
                         <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LFmall MO Header (Detail)')" style="height: 40px; font-weight: 700; margin-top: 8px;">LFmall MO Header (Detail)</button>
@@ -1036,7 +1061,7 @@
     <script src="assets/vctrl_core.js?v=V134_CELL_FIX"></script>
     <script src="assets/vctrl_smartguide.js?v=V106_FILEFIX_V5"></script>
     <script src="assets/vctrl_grouping.js?v=V133_ALIGN_FIX"></script>
-    <script src="assets/vctrl_inspector.js?v=V130_PIN_RESTORE"></script>
+    <script src="assets/vctrl_inspector.js?v=V145_SEARCH_FILTER"></script>
     <script src="assets/vctrl_v3.js?v=V107_AUTORESIZE"></script>
     <script src="assets/vctrl_properties.js?v=V106_V5"></script>
     <script src="assets/vctrl_connectors.js?v=V116_LINE_PERSIST_FIX"></script>
