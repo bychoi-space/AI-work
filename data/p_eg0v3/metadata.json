@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "06_Mobile_Design_2_793",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-04T06:32:24.938Z",
+      "updatedAt": "2026-06-04T06:33:55.516Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -111,13 +111,13 @@
           "type": "straight",
           "start": {
             "x": 324,
-            "y": 278.2895622895623,
+            "y": 263.2895622895623,
             "targetId": null,
             "side": null
           },
           "end": {
             "x": 355.2282231445725,
-            "y": 278.320590794304,
+            "y": 263.320590794304,
             "targetId": null,
             "side": null
           },
