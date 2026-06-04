@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "화면설계 1",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-04T09:01:03.409Z",
+      "updatedAt": "2026-06-04T09:35:37.472Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -385,48 +385,7 @@
           "standardized": true
         }
       ],
-      "connectors": [
-        {
-          "id": "conn_1780549136682",
-          "type": "straight",
-          "start": {
-            "x": 137.91285881815963,
-            "y": 106.75784553092478,
-            "targetId": null,
-            "side": null
-          },
-          "end": {
-            "x": 355.2282231445725,
-            "y": 263.320590794304,
-            "targetId": null,
-            "side": null
-          },
-          "style": {
-            "stroke": "#1e1e1e",
-            "strokeWidth": 3
-          }
-        },
-        {
-          "id": "conn_1780554881690",
-          "type": "straight",
-          "start": {
-            "x": 696.9360269360269,
-            "y": 419.8316498316498,
-            "targetId": null,
-            "side": null
-          },
-          "end": {
-            "x": 796.9360269360269,
-            "y": 419.8316498316498,
-            "targetId": null,
-            "side": null
-          },
-          "style": {
-            "stroke": "#475569",
-            "strokeWidth": 1.6
-          }
-        }
-      ],
+      "connectors": [],
       "defaultTab": "editor",
       "screenDesc": ""
     }
