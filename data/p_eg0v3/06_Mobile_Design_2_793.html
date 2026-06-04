@@ -629,7 +629,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 
 (function() {
-    console.log("[V4 Iframe] Script initialized (V143_LINE_DELETE_FIX)");
+    console.log("[V4 Iframe] Script initialized (V144_SHORTCUT_SAVE_FIX)");
     let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
     let startX, startY, startW, startH, startTop, startLeft, startRect;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
@@ -1035,6 +1035,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
     let isArrowMoving = false;
     document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+            e.preventDefault();
+            notifyParent({ type: 'LF_TRIGGER_SAVE' });
+            return;
+        }
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
             if (!isInput) {
