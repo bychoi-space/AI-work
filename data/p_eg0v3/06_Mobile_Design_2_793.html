@@ -570,7 +570,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 
 (function() {
-    console.log("[V4 Iframe] Script initialized (V140_SHAPE_OPACITY)");
+    console.log("[V4 Iframe] Script initialized (V139_GLOBAL_COORD_FIX)");
     let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
     let startX, startY, startW, startH, startTop, startLeft, startRect;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
@@ -590,17 +590,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     const _getVal = (el, prop) => {
         if (!el) return "";
         return el.style[prop] || window.getComputedStyle(el)[prop] || "";
-    };
-
-    const _getAlphaPercent = (rgb) => {
-        if (!rgb || rgb === "transparent" || rgb === "none" || rgb.includes("rgba(0, 0, 0, 0)")) return 0;
-        if (rgb.startsWith("rgba")) {
-            const parts = rgb.match(/rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*([\d.]+)\s*\)/);
-            if (parts && parts[1] !== undefined) {
-                return Math.round(parseFloat(parts[1]) * 100);
-            }
-        }
-        return 100;
     };
 
     const _getCompStyles = (c) => {
@@ -654,7 +643,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
                 borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : 0,
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
                 isBgTransparent: (() => {
                     const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
