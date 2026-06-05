@@ -388,12 +388,6 @@
       "connectors": [],
       "defaultTab": "editor",
       "screenDesc": ""
-    },
-    "03_UI_Screen_555.html": {
-      "title": "03_UI_Screen_555",
-      "type": "ui",
-      "updatedAt": "2026-06-05T08:23:20.130Z",
-      "template": "template_front_ui.html"
     }
   },
   "assignee": "최범열",
@@ -403,7 +397,6 @@
   "themeIndex": 5,
   "screenOrder": [
     "프로젝트 커버.html",
-    "06_Mobile_Design_2_793.html",
-    "03_UI_Screen_555.html"
+    "06_Mobile_Design_2_793.html"
   ]
 }
