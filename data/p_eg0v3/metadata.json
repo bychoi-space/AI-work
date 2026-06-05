@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "화면설계 1",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-04T09:35:42.050Z",
+      "updatedAt": "2026-06-05T00:30:11.973Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -131,48 +131,48 @@
         {
           "text": "가방/잡화",
           "html": "<p>가방/잡화</p>",
-          "x": 193.5,
-          "y": 11.5,
+          "x": 500.5,
+          "y": 226.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "슈즈",
           "html": "<p>슈즈</p>",
-          "x": 272.5,
-          "y": 11.5,
+          "x": 579.5,
+          "y": 226.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "골프",
           "html": "<p>골프</p>",
-          "x": 312,
-          "y": 11.5,
+          "x": 619,
+          "y": 226.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "남성의류",
           "html": "<p>남성의류</p>",
-          "x": 125.5,
-          "y": 11.5,
+          "x": 432.5,
+          "y": 226.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "여성의류",
           "html": "<p>여성의류</p>",
-          "x": 52.5,
-          "y": 11.5,
+          "x": 359.5,
+          "y": 226.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "전체",
           "html": "<p><strong>전체</strong></p>",
-          "x": 8.5,
-          "y": 11.5,
+          "x": 315.5,
+          "y": 226.5,
           "type": "text",
           "standardized": true
         },
