@@ -639,6 +639,96 @@ if (DOM.btnCancelEdit) {
     };
 }
 
+// Revision History Rendering & Event Binding
+window.renderHistoryPopup = function(history) {
+    const listContainer = document.getElementById('history-popup-list');
+    if (!listContainer) return;
+    
+    if (!history || history.length === 0) {
+        listContainer.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; color: var(--text-secondary);">
+                <span class="material-icons-outlined" style="font-size: 32px; margin-bottom: 8px; opacity: 0.3;">history</span>
+                <div style="font-size: 12px;">기록된 재개정 이력이 없습니다.</div>
+            </div>
+        `;
+    } else {
+        listContainer.innerHTML = history.map(item => `
+            <div class="history-item-card" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 12px; font-size: 12px; display: flex; flex-direction: column; gap: 6px; transition: all 0.2s;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 6px; margin-bottom: 2px;">
+                    <span style="font-weight: 700; color: var(--accent-nav); font-size: 11px; background: rgba(34, 211, 238, 0.1); padding: 1px 6px; border-radius: 4px;">v${item.version || '0.1'}</span>
+                    <span style="color: var(--text-secondary); font-size: 10px; font-family: monospace;">${item.date}</span>
+                </div>
+                <div style="color: #fff; font-weight: 500; word-break: break-all; line-height: 1.4;">${item.message || '-'}</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; font-size: 10px; color: var(--text-secondary); opacity: 0.85;">
+                    ${item.jira ? `<span style="background: rgba(99, 102, 241, 0.15); color: #818cf8; padding: 1px 5px; border-radius: 3px; font-weight: 500;">${item.jira}</span>` : ''}
+                    ${item.assignee ? `<span>담당: ${item.assignee}</span>` : ''}
+                    ${item.developer ? `<span>개발: ${item.developer}</span>` : ''}
+                    ${item.file ? `<span>파일: ${item.file.replace('.html', '')}</span>` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    const modal = document.getElementById('history-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        modal.offsetHeight; // Reflow
+        modal.style.opacity = '1';
+        
+        const closeOnEsc = (e) => {
+            if (e.key === 'Escape') {
+                window.closeHistoryPopup();
+                window.removeEventListener('keydown', closeOnEsc);
+            }
+        };
+        window.addEventListener('keydown', closeOnEsc);
+    }
+};
+
+window.closeHistoryPopup = function() {
+    const modal = document.getElementById('history-modal');
+    if (modal) {
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+};
+
+const btnShowHistory = document.getElementById('btn-show-history');
+if (btnShowHistory) {
+    btnShowHistory.onclick = async () => {
+        if (typeof window.showLoading === 'function') window.showLoading("Loading history...");
+        try {
+            const historyList = (typeof window.fetchProjectHistory === 'function')
+                ? await window.fetchProjectHistory(state.currentProject)
+                : [];
+            if (typeof window.hideLoading === 'function') window.hideLoading();
+            window.renderHistoryPopup(historyList);
+        } catch (e) {
+            if (typeof window.hideLoading === 'function') window.hideLoading();
+            console.error("Failed to load history:", e);
+            if (window.Notification) window.Notification.alert("이력을 불러오는 중 오류가 발생했습니다.", "오류", "error");
+        }
+    };
+}
+
+const btnCloseHistory = document.getElementById('btn-close-history');
+if (btnCloseHistory) {
+    btnCloseHistory.onclick = () => {
+        window.closeHistoryPopup();
+    };
+}
+
+const historyModal = document.getElementById('history-modal');
+if (historyModal) {
+    historyModal.onclick = (e) => {
+        if (e.target === historyModal) {
+            window.closeHistoryPopup();
+        }
+    };
+}
+
 
 window.showLoading = (text) => { const overlay = get('loading-overlay'); if (overlay) { const txt = overlay.querySelector('.loading-text'); if (txt) txt.innerText = text; overlay.classList.remove('fade-out'); } };
 window.hideLoading = () => { const overlay = get('loading-overlay'); if (overlay) overlay.classList.add('fade-out'); setTimeout(() => { if (typeof window.centerView === 'function') window.centerView(); }, 600); };

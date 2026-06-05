@@ -153,6 +153,20 @@ async function saveProjectMetadata(project, metadata, statusCallback) {
     return await uploadToProject(project, 'metadata.json', content, statusCallback);
 }
 
+async function fetchProjectHistory(project) {
+    const content = await fetchFileContent(`${project}/history.json`);
+    try {
+        return content ? JSON.parse(content) : [];
+    } catch(e) {
+        return [];
+    }
+}
+
+async function saveProjectHistory(project, history, statusCallback) {
+    const content = JSON.stringify(history, null, 2);
+    return await uploadToProject(project, 'history.json', content, statusCallback);
+}
+
 async function fetchGlobalComponents() {
     const content = await fetchFileContent(`global_components.json`);
     try {
@@ -400,6 +414,7 @@ async function updateScreenMetadata(project, screenFilename, data, statusCallbac
         metadata.figmaUrl = data.projectMeta.figmaUrl || metadata.figmaUrl;
         metadata.pubUrl = data.projectMeta.pubUrl || metadata.pubUrl;
         metadata.themeIndex = data.projectMeta.themeIndex !== undefined ? data.projectMeta.themeIndex : metadata.themeIndex;
+        metadata.updated = data.projectMeta.updated || metadata.updated;
     }
     if (screenFilename) {
         metadata.screens = metadata.screens || {};
@@ -543,7 +558,22 @@ const Notification = {
                 this.DOM.footer.appendChild(el);
             });
             this.DOM.overlay.classList.add('active');
-            if (hasInput) setTimeout(() => document.getElementById('notification-prompt-input').focus(), 100);
+            if (hasInput) {
+                setTimeout(() => {
+                    const inputEl = document.getElementById('notification-prompt-input');
+                    if (inputEl) {
+                        inputEl.focus();
+                        inputEl.onkeydown = (e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                const val = inputEl.value;
+                                this.DOM.overlay.classList.remove('active');
+                                resolve(val);
+                            }
+                        };
+                    }
+                }, 100);
+            }
         });
     },
     alert(message, title = 'Alert', type = 'info') {

@@ -449,16 +449,31 @@ window.getIframeHTML = async function() {
 };
 
 window.handleGlobalSave = async function() {
+    const btn = document.getElementById('btn-global-save');
+    if (!btn || btn.disabled) return;
+
+    if (state.isReadOnly) return window.showAuthModal?.();
+    
+    // 1. Get revision history message with Prompt (Default "Y")
+    let changeMsg = "Y";
+    if (window.Notification && typeof window.Notification.prompt === 'function') {
+        const res = await window.Notification.prompt(
+            "이번 재개정(저장)의 상세 변경 사유를 입력해주세요.", 
+            "Y", 
+            "재개정 이력 기록"
+        );
+        if (res === null) {
+            console.log("[Save] Save cancelled by user in prompt.");
+            return; // Cancel saving
+        }
+        changeMsg = res.trim() || "Y";
+    }
+
     const overlay = document.getElementById('save-overlay');
     try {
-        if (state.isReadOnly) return window.showAuthModal?.();
-        
         if (state.isEditing && typeof window.closeActiveEditor === 'function') {
             window.closeActiveEditor(true);
         }
-        
-        const btn = document.getElementById('btn-global-save');
-        if (!btn || btn.disabled) return;
 
         // Show premium glassmorphic lock overlay
         if (overlay) {
@@ -480,12 +495,26 @@ window.handleGlobalSave = async function() {
             if (bar) bar.style.width = '90%';
         });
 
+        // 2. Format DateTime KST
+        const getFormattedKST = () => {
+            const now = new Date();
+            const yyyy = now.getFullYear();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            const hh = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+        };
+        const updatedTimeStr = getFormattedKST();
+
         const projectMeta = {
             title: document.getElementById('viewer-meta-title')?.value || '',
             assignee: document.getElementById('viewer-meta-assignee')?.value || '',
             developer: document.getElementById('viewer-meta-developer')?.value || '',
             period: document.getElementById('viewer-meta-period')?.value || '',
-            jira: document.getElementById('viewer-meta-jira')?.value || ''
+            jira: document.getElementById('viewer-meta-jira')?.value || '',
+            updated: updatedTimeStr
         };
 
         let htmlContent = await getIframeHTML();
@@ -539,6 +568,33 @@ window.handleGlobalSave = async function() {
             Object.assign(state.projectMetadata, projectMeta);
             if (projectMeta.title && DOM.fileName) DOM.fileName.innerText = projectMeta.title;
             
+            // 실시간 좌측 하단 UI 업데이트
+            const updatedTxt = document.getElementById('meta-updated-txt');
+            if (updatedTxt) {
+                updatedTxt.innerText = `최종 업데이트: ${updatedTimeStr}`;
+            }
+
+            // history.json 이력 저장 처리
+            try {
+                const historyEntry = {
+                    date: updatedTimeStr,
+                    file: activeFileName || 'n/a',
+                    version: nextVer || (state.projectMetadata.screens?.[activeFileName]?.version || '0.1'),
+                    assignee: projectMeta.assignee,
+                    developer: projectMeta.developer,
+                    jira: projectMeta.jira,
+                    message: changeMsg
+                };
+
+                if (typeof window.fetchProjectHistory === 'function' && typeof window.saveProjectHistory === 'function') {
+                    const historyList = await window.fetchProjectHistory(state.currentProject);
+                    historyList.unshift(historyEntry); // 최신이 가장 위로
+                    await window.saveProjectHistory(state.currentProject, historyList, null);
+                }
+            } catch (err) {
+                console.error("Failed to append project revision history:", err);
+            }
+            
             btn.style.setProperty('background', 'linear-gradient(135deg, #22c55e, #16a34a)', 'important');
             btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">check_circle</span> 저장 완료`;
             setTimeout(() => {
@@ -558,7 +614,6 @@ window.handleGlobalSave = async function() {
             overlay.style.opacity = '0';
             setTimeout(() => { overlay.style.display = 'none'; }, 300);
         }
-        const btn = document.getElementById('btn-global-save');
         if (btn) {
             btn.innerHTML = `<span class="material-icons-outlined" style="font-size:15px;">error</span> 저장 실패`;
             btn.style.setProperty('background', '#ef4444', 'important');
