@@ -388,6 +388,12 @@
       "connectors": [],
       "defaultTab": "editor",
       "screenDesc": ""
+    },
+    "05_Admin_Onesphere_152.html": {
+      "title": "05_Admin_Onesphere_152",
+      "type": "admin-onesphere",
+      "updatedAt": "2026-06-05T08:21:56.236Z",
+      "template": "template_onesphere.html"
     }
   },
   "assignee": "최범열",
@@ -397,6 +403,7 @@
   "themeIndex": 5,
   "screenOrder": [
     "프로젝트 커버.html",
-    "06_Mobile_Design_2_793.html"
+    "06_Mobile_Design_2_793.html",
+    "05_Admin_Onesphere_152.html"
   ]
 }
