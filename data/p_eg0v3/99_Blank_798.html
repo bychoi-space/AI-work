@@ -176,6 +176,18 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
     pointer-events: none !important;
 }
 
+/* Checkbox / Radio Checked & Text Toggle styling */
+.v4-checkbox-container[data-checked="false"] svg { display: none !important; }
+.v4-radio-container[data-checked="false"] .v4-radio-dot { display: none !important; }
+.v4-checkbox-container[data-text-enabled="false"] .v4-checkbox-text { display: none !important; }
+.v4-radio-container[data-text-enabled="false"] .v4-radio-text { display: none !important; }
+.v4-checkbox-text, .v4-radio-text { color: #000000 !important; }
+.v4-checkbox-container[data-text-enabled="false"], 
+.v4-radio-container[data-text-enabled="false"] {
+    width: 24px !important;
+    height: 24px !important;
+}
+
 </style>
 </head>
 <body>
@@ -189,10 +201,9 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(100, 100, 100); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed; text-align: center;"><span style="color: rgb(255, 255, 255); font-size: 12px;">텍스트 설정 (선택사항)</span></p></div></div></div><div id="v4-comp-178090136910630" class="lf-component" style="position: absolute; top: 136px; left: 20px; z-index: 1000; transform: none; width: 150px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 14px;">배경색상</span></p></div></div></div><div id="v4-comp-1780903943233323" class="lf-component" style="position: absolute; top: 252px; left: 20px; z-index: 1000; transform: none; width: 150px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 14px;">하단 설명 문구</span></p></div></div></div><div id="v4-comp-1780903943233323" class="lf-component" style="position: absolute; top: 174px; left: 20px; z-index: 1000; transform: none; width: 150px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 14px;">상단 설명 문구</span></p></div></div></div><div id="v4-comp-1780903943233756" class="lf-component" style="position: absolute; top: 173.5px; left: 171px; z-index: 1000; transform: none; width: 300px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 14px;">상단 설명 문구</span></p></div></div></div><div id="v4-comp-1780903943233756" class="lf-component" style="position: absolute; top: 173.5px; left: 169px; z-index: 1000; transform: none; width: 300px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div id="v4-comp-1780903943233323" class="lf-component" style="position: absolute; top: 211.5px; left: 20px; z-index: 1000; transform: none; width: 150px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 14px;">타이틀</span></p></div></div></div><div id="v4-comp-1780903943233756" class="lf-component" style="position: absolute; top: 212.5px; left: 171px; z-index: 1000; transform: none; width: 500px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><script id="v4-inlined-script">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 14px;">타이틀</span></p></div></div></div><script id="v4-inlined-script">
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -698,6 +709,16 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const isPin = c.classList.contains('text-marker') || c.classList.contains('pin-marker');
         const isDescriptionPin = c.classList.contains('pin-marker');
         
+        // Checkbox / Radio Atom Detection
+        const isCheckbox = !!c.querySelector('.v4-checkbox') || c.classList.contains('v4-checkbox') || !!c.querySelector('.v4-checkbox-container') || c.classList.contains('v4-checkbox-container');
+        const isRadio = !!c.querySelector('.v4-radio') || c.classList.contains('v4-radio') || !!c.querySelector('.v4-radio-container') || c.classList.contains('v4-radio-container');
+        const container = c.querySelector('.v4-checkbox-container, .v4-radio-container') || (c.classList.contains('v4-checkbox-container') || c.classList.contains('v4-radio-container') ? c : null);
+        const checked = container ? container.getAttribute('data-checked') !== 'false' : true;
+        const textEnabled = container ? container.getAttribute('data-text-enabled') !== 'false' : false;
+        
+        // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
+        const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
+        
         const getShapeColor = (prop) => {
             if (!shape) return "";
             if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle') || shape.classList.contains('v4-shape-wave')) {
@@ -710,7 +731,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         let detectedIconColor = "";
         if (icon) {
             const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
-            const dot = icon.querySelector('.v4-radio div');
+            const dot = icon.querySelector('.v4-radio div, .v4-radio-dot');
             if (poly) {
                 detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || "";
             } else if (dot) {
@@ -727,27 +748,31 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             isIcon: !!icon,
             isPin: isPin,
             isDescriptionPin: isDescriptionPin,
+            isCheckbox: isCheckbox,
+            isRadio: isRadio,
+            checked: checked,
+            textEnabled: textEnabled,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : "")))),
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
-                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : 0,
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
+                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : 0),
+                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")))),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""));
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : ""));
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : "")));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
@@ -768,6 +793,28 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             del.style.right = rightDist < 16 ? '4px' : '-12px'; 
         }
     }
+    
+    const resizeAtomToFitText = (s) => {
+        if (!s) return;
+        const container = s.querySelector('.v4-checkbox-container, .v4-radio-container');
+        if (!container) return;
+        
+        const textEnabled = container.getAttribute('data-text-enabled') !== 'false';
+        if (textEnabled) {
+            const textEl = container.querySelector('.v4-checkbox-text, .v4-radio-text');
+            if (textEl) {
+                const textWidth = textEl.scrollWidth || 35;
+                const totalWidth = 24 + 8 + textWidth + 8; // 24px icon + 8px gap + text + 8px padding/border buffer
+                s.style.width = totalWidth + 'px';
+                s.style.height = '32px';
+            }
+        } else {
+            s.style.width = '24px';
+            s.style.height = '24px';
+        }
+        updateHandles(s);
+    };
+
     document.addEventListener('mouseover', e => {
         const c = e.target.closest('.lf-component');
         if (c) updateHandles(c);
@@ -947,7 +994,15 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
         isDragging = false; isResizing = false; activeEl = null; 
     });
-    document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
+    document.addEventListener('input', e => { 
+        if (e.target.classList.contains('v4-editable-cell')) {
+            markDirty();
+            const comp = e.target.closest('.lf-component');
+            if (comp && (comp.querySelector('.v4-checkbox-container') || comp.querySelector('.v4-radio-container'))) {
+                resizeAtomToFitText(comp);
+            }
+        } 
+    });
     let isArrowMoving = false;
     document.addEventListener('keydown', e => {
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
@@ -1449,6 +1504,25 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
             markDirty();
         }
+        else if (d.type === 'LF_UPDATE_ATOM_STATE') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
+            if (container) {
+                container.setAttribute('data-checked', d.checked ? 'true' : 'false');
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_ATOM_TEXT_ENABLED') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
+            if (container) {
+                container.setAttribute('data-text-enabled', d.enabled ? 'true' : 'false');
+                resizeAtomToFitText(s);
+                markDirty();
+            }
+        }
         else if (d.type === 'LF_UPDATE_STYLE') {
 
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
@@ -1458,6 +1532,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             let t = d.selector ? s.querySelector(d.selector) : s;
             if (!t && s.classList.contains('text-marker')) {
                 t = s.querySelector('.v4-editable-cell') || s;
+            }
+            // Checkbox / Radio box style redirection for BG & Border coloring
+            const boxEl = s.querySelector('.v4-checkbox, .v4-radio');
+            if (boxEl && !d.selector) {
+                t = boxEl;
             }
             if (!t) return;
             
@@ -1953,6 +2032,15 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     window.enforceDesignSystem = () => {
         initHandles();
         
+        // --- Auto-resize Checkbox / Radio to fit text dynamically ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.querySelector('.v4-checkbox-container') || c.querySelector('.v4-radio-container')) {
+                if (typeof resizeAtomToFitText === 'function') {
+                    resizeAtomToFitText(c);
+                }
+            }
+        });
+        
         // --- Coordinate Migration: % to px ---
         document.querySelectorAll('.lf-component').forEach(c => {
             // Only migrate if not in a group (groups already handle their children)
@@ -2071,6 +2159,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     setTimeout(enforceDesignSystem, 500);
 })();
 
-</script><div id="v4-comp-1780903943233756" class="lf-component" style="position: absolute; top: 252px; left: 171px; z-index: 1000; transform: none; width: 500px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div id="v4-comp-1780901508754862" class="lf-component" style="position: absolute; top: 134.5px; left: 171px; z-index: 1000; transform: none; width: 300px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div id="v4-pin-0" class="lf-component text-marker" style="position: absolute; top: 141.5px; left: 252px; z-index: 1000; transform: none; width: 99px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>상단외부여백</p></div></div><div id="lf-comp-1780902141091" class="lf-component" style="position: absolute; top: 145px; left: 230px; z-index: 1000; transform: none; width: 20px; height: 20px;"><div class="v4-checkbox lf-icon" style="width:100%; height:100%; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; display:flex; align-items:center; justify-content:center; position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%;"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div></body></html>
+</script><div id="v4-comp-1780901508754862" class="lf-component" style="position: absolute; top: 134.5px; left: 169px; z-index: 1000; transform: none; width: 300px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div id="v4-pin-0" class="lf-component text-marker" style="position: absolute; top: 141.5px; left: 252px; z-index: 1000; transform: none; width: 99px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>상단외부여백</p></div></div><div id="lf-comp-1780902141091" class="lf-component" style="position: absolute; top: 145px; left: 230px; z-index: 1000; transform: none; width: 20px; height: 20px;"><div class="v4-checkbox lf-icon" style="width:100%; height:100%; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; display:flex; align-items:center; justify-content:center; position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%;"><polyline points="20 6 9 17 4 12"></polyline></svg></div></div><div id="v4-comp-1780905586293913" class="lf-component" style="position: absolute; top: 211.5px; left: 169px; z-index: 1000; transform: none; width: 300px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div id="v4-comp-1780905589157601" class="lf-component" style="position: absolute; top: 251.5px; left: 169px; z-index: 1000; transform: none; width: 300px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div></body></html>
