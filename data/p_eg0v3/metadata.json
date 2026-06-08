@@ -392,18 +392,9 @@
     "99_Blank_798.html": {
       "title": "99_Blank_798",
       "type": "blank",
-      "updatedAt": "2026-06-08T08:00:02.543Z",
+      "updatedAt": "2026-06-08T08:00:56.058Z",
       "template": "template_blank.html",
-      "description": [
-        {
-          "text": "상단외부여백",
-          "html": "<p>상단외부여백</p>",
-          "x": 252,
-          "y": 141.5,
-          "type": "text",
-          "standardized": true
-        }
-      ],
+      "description": [],
       "connectors": []
     }
   },
@@ -417,5 +408,5 @@
     "06_Mobile_Design_2_793.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-08 17:00:02"
+  "updated": "2026-06-08 17:00:56"
 }
