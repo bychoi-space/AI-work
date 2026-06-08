@@ -392,8 +392,10 @@
     "99_Blank_798.html": {
       "title": "99_Blank_798",
       "type": "blank",
-      "updatedAt": "2026-06-08T02:14:13.902Z",
-      "template": "template_blank.html"
+      "updatedAt": "2026-06-08T02:14:26.803Z",
+      "template": "template_blank.html",
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
@@ -405,5 +407,6 @@
     "프로젝트 커버.html",
     "06_Mobile_Design_2_793.html",
     "99_Blank_798.html"
-  ]
+  ],
+  "updated": "2026-06-08 11:14:26"
 }
