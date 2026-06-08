@@ -985,6 +985,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     if (window.V4UndoManager && !isArrowMoving) {
                         window.V4UndoManager.saveState();
                         isArrowMoving = true;
+                        notifyParent({ type: 'LF_SNAP_START' });
                     }
                     const step = e.shiftKey ? 10 : 1;
                     let dx = 0, dy = 0;
@@ -992,6 +993,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     if (e.code === 'ArrowDown') dy = step;
                     if (e.code === 'ArrowLeft') dx = -step;
                     if (e.code === 'ArrowRight') dx = step;
+
+                    const activeEl = selected[0];
 
                     selected.forEach(c => {
                         const l = parseFloat(c.style.left) || 0;
@@ -1023,7 +1026,22 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         }
                     });
                     
-                    notifyParent({ type: 'LF_SNAP_END' });
+                    if (activeEl) {
+                        const activeRect = activeEl.getBoundingClientRect();
+                        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
+                        const parentRect = document.body.getBoundingClientRect();
+                        
+                        const relativeX = (activeRect.left - parentRect.left) / scale;
+                        const relativeY = (activeRect.top - parentRect.top) / scale;
+                        
+                        notifyParent({ 
+                            type: 'LF_SNAP_REQUEST', 
+                            x: relativeX, 
+                            y: relativeY, 
+                            w: activeEl.offsetWidth, 
+                            h: activeEl.offsetHeight 
+                        });
+                    }
                 }
             }
         } else if (e.code === 'Delete' || e.code === 'Backspace') {
@@ -1057,6 +1075,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             notifyParent({ type: 'LF_SPACE_UP' });
         } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
             isArrowMoving = false;
+            notifyParent({ type: 'LF_SNAP_END' });
         }
     });
     window.addEventListener('message', e => {
@@ -1754,6 +1773,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             notifyParent({ type: 'LF_MOLECULE_EXTRACTED', moleculeData });
         } else if (d.type === 'LF_REQUEST_SNAP_TARGETS') {
             const targets = [];
+            const rects = [];
             document.querySelectorAll('.lf-component:not(.selected)').forEach(c => {
                 const l = parseFloat(c.style.left) || 0;
                 const t = parseFloat(c.style.top) || 0;
@@ -1766,6 +1786,17 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 targets.push({ y: t, label: name, part: 'Top', type: 'v' });
                 targets.push({ y: t + h / 2, label: name, part: 'Middle', type: 'v' });
                 targets.push({ y: t + h, label: name, part: 'Bottom', type: 'v' });
+                
+                rects.push({
+                    id: c.id,
+                    label: name,
+                    left: l,
+                    top: t,
+                    width: w,
+                    height: h,
+                    right: l + w,
+                    bottom: t + h
+                });
             });
 
             // Add Inner Screens as Snap Targets (Focus on actual UI area)
@@ -1783,16 +1814,33 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     const h = content.offsetHeight;
                     const sName = 'UI Area ' + (idx + 1);
                     const bezel = 8; // Inset shadow bezel width
-                    targets.push({ x: l + bezel, label: sName, part: 'Left', type: 'h' });
-                    targets.push({ x: l + w - bezel, label: sName, part: 'Right', type: 'h' });
-                    targets.push({ y: t + bezel, label: sName, part: 'Top', type: 'v' });
-                    targets.push({ y: t + h - bezel, label: sName, part: 'Bottom', type: 'v' });
+                    
+                    const leftVal = l + bezel;
+                    const rightVal = l + w - bezel;
+                    const topVal = t + bezel;
+                    const bottomVal = t + h - bezel;
+                    
+                    targets.push({ x: leftVal, label: sName, part: 'Left', type: 'h' });
+                    targets.push({ x: rightVal, label: sName, part: 'Right', type: 'h' });
+                    targets.push({ y: topVal, label: sName, part: 'Top', type: 'v' });
+                    targets.push({ y: bottomVal, label: sName, part: 'Bottom', type: 'v' });
                     targets.push({ x: l + w / 2, label: sName, part: 'Center', type: 'h' });
                     targets.push({ y: t + h / 2, label: sName, part: 'Middle', type: 'v' });
+
+                    rects.push({
+                        id: 'mobile-frame-' + idx,
+                        label: sName,
+                        left: leftVal,
+                        top: topVal,
+                        width: rightVal - leftVal,
+                        height: bottomVal - topVal,
+                        right: rightVal,
+                        bottom: bottomVal
+                    });
                 }
             });
 
-            notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
+            notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets, rects });
         } else if (d.type === 'LF_TABLE_ACTION') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -2005,4 +2053,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 <div id="v4-comp-1780885191134" class="lf-component" style="position: absolute; top: 17px; left: 20px; z-index: 1000; transform: none; width: 200px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(50, 50, 50); border: 1.6px solid rgb(71, 85, 105); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 14px; font-family: &quot;맑은 고딕&quot;; color: rgb(255, 255, 255);">Default Value</span></p></div></div></div><div id="v4-comp-1780899798423826" class="lf-component" style="position: absolute; top: 96px; left: 20px; z-index: 1000; transform: none; width: 202px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(100, 100, 100); border: 1.6px solid rgb(200, 200, 200); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed; text-align: center;"><span style="color: rgb(255, 255, 255); font-size: 12px;">텍스트 설정 (선택사항)</span></p></div></div></div></body></html>
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(100, 100, 100); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed; text-align: center;"><span style="color: rgb(255, 255, 255); font-size: 12px;">텍스트 설정 (선택사항)</span></p></div></div></div><div id="v4-comp-178090136910630" class="lf-component" style="position: absolute; top: 136px; left: 20px; z-index: 1000; transform: none; width: 202px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 14px;">배경색상</span></p></div></div></div><div id="v4-comp-1780901508754862" class="lf-component" style="position: absolute; top: 136px; left: 220px; z-index: 1000; transform: none; width: 202px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div></body></html>
