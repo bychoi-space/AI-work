@@ -696,6 +696,9 @@ window.MessageHub = {
                     markAsDirty();
                 }
             } else if (data.type === 'LF_COMP_SELECTED') {
+                if (window.SmartGuide) {
+                    window.SmartGuide.findSnapTargets();
+                }
                 if (data.isDescriptionPin) {
                     state.isEditing = false;
                     state.editingIndex = -1;

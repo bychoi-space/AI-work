@@ -9,21 +9,31 @@
 
     window.SmartGuide = {
         targets: [],
+        spacingTargets: [], // Spacing용 컴포넌트 전체 Bounding Box
         threshold: 10,
+        spacingThreshold: 50, // 50px 간격 임계값
         activeLines: { x: null, y: null },
+        clearTimer: null,
 
         /**
-         * Collects snapping targets from canvas and requests from iframe.
+         * Collects snapping targets and spacing targets from canvas and requests from iframe.
          */
         findSnapTargets() {
+            if (this.clearTimer) {
+                clearTimeout(this.clearTimer);
+                this.clearTimer = null;
+            }
             const DOM = window.DOM;
             if (!DOM || !DOM.iframe) return;
 
-            this.targets = [];
             const cw = parseInt(DOM.iframe.style.width) || 1440;
             const ch = parseInt(DOM.iframe.style.height) || 900;
 
-            // 1. Canvas Center & Edges
+            // 기존 targets 중 iframe이 아닌 로컬(Canvas, Pin 등) 요소만 리셋하고, 비동기 응답 도착 전까지 iframe targets는 보존하여 레이턴시 해결
+            const otherTargets = this.targets.filter(t => t.source === 'iframe');
+            this.targets = [...otherTargets];
+
+            // 1. Canvas Center & Edges (for snapping)
             this.targets.push({ x: 0, label: 'Canvas', part: 'Left', type: 'h' });
             this.targets.push({ x: cw / 2, label: 'Canvas', part: 'Center', type: 'h' });
             this.targets.push({ x: cw, label: 'Canvas', part: 'Right', type: 'h' });
@@ -31,18 +41,42 @@
             this.targets.push({ y: ch / 2, label: 'Canvas', part: 'Middle', type: 'v' });
             this.targets.push({ y: ch, label: 'Canvas', part: 'Bottom', type: 'v' });
 
+            // 1-2. 가상의 Bounding Box로 캔버스 테두리 스페이싱 타겟 정의 (기존 iframe spacingTargets 보존)
+            const otherSpacing = this.spacingTargets.filter(t => t.source === 'iframe');
+            this.spacingTargets = [
+                ...otherSpacing,
+                { id: 'canvas-left', label: 'Canvas', left: -1, top: 0, right: 0, bottom: ch, width: 1, height: ch },
+                { id: 'canvas-right', label: 'Canvas', left: cw, top: 0, right: cw + 1, bottom: ch, width: 1, height: ch },
+                { id: 'canvas-top', label: 'Canvas', left: 0, top: -1, right: cw, bottom: 0, width: cw, height: 1 },
+                { id: 'canvas-bottom', label: 'Canvas', left: 0, top: ch, right: cw, bottom: ch + 1, width: cw, height: 1 }
+            ];
+
             // 2. Local Pins & Text Markers (Parent Layer)
             if (DOM.pinsLayer) {
                 const pins = DOM.pinsLayer.querySelectorAll('.pin-marker, .text-marker');
-                pins.forEach(p => {
+                pins.forEach((p, idx) => {
                     if (p.classList.contains('dragging-now')) return;
                     const l = p.style.left || '';
                     const t = p.style.top || '';
                     const x = l.includes('%') ? (parseFloat(l) / 100) * cw : parseFloat(l) || 0;
                     const y = t.includes('%') ? (parseFloat(t) / 100) * ch : parseFloat(t) || 0;
                     const name = p.classList.contains('text-marker') ? 'Text' : `Pin ${p.innerText}`;
+                    
+                    // Snapping targets
                     this.targets.push({ x, label: name, part: 'Center', type: 'h' });
                     this.targets.push({ y, label: name, part: 'Center', type: 'v' });
+
+                    // Spacing targets
+                    this.spacingTargets.push({
+                        id: `pin-local-${idx}`,
+                        label: name,
+                        left: x,
+                        top: y,
+                        width: 32, // Pin 기준 크기
+                        height: 32,
+                        right: x + 32,
+                        bottom: y + 32
+                    });
                 });
             }
 
@@ -51,25 +85,111 @@
                 window.MessageHub.send(DOM.iframe.contentWindow, 'LF_REQUEST_SNAP_TARGETS');
             }
 
-            console.log(`[SmartGuide] Local targets collected: ${this.targets.length}`);
+            console.log(`[SmartGuide] Local targets collected: snap=${this.targets.length}, spacing=${this.spacingTargets.length}`);
         },
 
         /**
          * Merges targets received from Iframe.
          */
         handleIframeTargets(data) {
-            if (!data || !data.targets) return;
+            if (!data) return;
             
-            // Add iframe targets to the list (Merge with unique label/type/line signature)
-            const iframeTargets = data.targets.map(t => ({
-                ...t,
-                source: 'iframe'
-            }));
+            // 1. Snapping targets merge
+            if (data.targets) {
+                const iframeTargets = data.targets.map(t => ({
+                    ...t,
+                    source: 'iframe'
+                }));
+                const otherTargets = this.targets.filter(t => t.source !== 'iframe');
+                this.targets = [...otherTargets, ...iframeTargets];
+            }
 
-            // Filter out existing iframe targets to avoid duplication
-            const otherTargets = this.targets.filter(t => t.source !== 'iframe');
-            this.targets = [...otherTargets, ...iframeTargets];
-            console.log(`[SmartGuide] Total targets synchronized: ${this.targets.length}`);
+            // 2. Spacing targets merge
+            if (data.rects) {
+                const iframeSpacing = data.rects.map(r => ({
+                    ...r,
+                    source: 'iframe'
+                }));
+                const otherSpacing = this.spacingTargets.filter(t => t.source !== 'iframe');
+                this.spacingTargets = [...otherSpacing, ...iframeSpacing];
+            }
+            
+            console.log(`[SmartGuide] Total targets synchronized: snap=${this.targets.length}, spacing=${this.spacingTargets.length}`);
+        },
+
+        /**
+         * Spacing calculation logic (Within 50px threshold to closest targets)
+         */
+        calculateSpacing(x, y, w, h) {
+            const thresh = this.spacingThreshold;
+            const active = {
+                left: x,
+                top: y,
+                right: x + w,
+                bottom: y + h,
+                width: w,
+                height: h,
+                centerX: x + w / 2,
+                centerY: y + h / 2
+            };
+
+            let leftMatch = null;
+            let rightMatch = null;
+            let topMatch = null;
+            let bottomMatch = null;
+
+            this.spacingTargets.forEach(t => {
+                // Left Spacing (Target on the left of active)
+                if (t.right <= active.left) {
+                    const overlapY = !(t.bottom < active.top || t.top > active.bottom);
+                    if (overlapY) {
+                        const dist = Math.round(active.left - t.right);
+                        if (dist >= 0 && dist <= thresh) {
+                            if (!leftMatch || dist < leftMatch.dist) {
+                                leftMatch = { target: t, dist: dist };
+                            }
+                        }
+                    }
+                }
+                // Right Spacing (Target on the right of active)
+                if (t.left >= active.right) {
+                    const overlapY = !(t.bottom < active.top || t.top > active.bottom);
+                    if (overlapY) {
+                        const dist = Math.round(t.left - active.right);
+                        if (dist >= 0 && dist <= thresh) {
+                            if (!rightMatch || dist < rightMatch.dist) {
+                                rightMatch = { target: t, dist: dist };
+                            }
+                        }
+                    }
+                }
+                // Top Spacing (Target above active)
+                if (t.bottom <= active.top) {
+                    const overlapX = !(t.right < active.left || t.left > active.right);
+                    if (overlapX) {
+                        const dist = Math.round(active.top - t.bottom);
+                        if (dist >= 0 && dist <= thresh) {
+                            if (!topMatch || dist < topMatch.dist) {
+                                topMatch = { target: t, dist: dist };
+                            }
+                        }
+                    }
+                }
+                // Bottom Spacing (Target below active)
+                if (t.top >= active.bottom) {
+                    const overlapX = !(t.right < active.left || t.left > active.right);
+                    if (overlapX) {
+                        const dist = Math.round(t.top - active.bottom);
+                        if (dist >= 0 && dist <= thresh) {
+                            if (!bottomMatch || dist < bottomMatch.dist) {
+                                bottomMatch = { target: t, dist: dist };
+                            }
+                        }
+                    }
+                }
+            });
+
+            return { leftMatch, rightMatch, topMatch, bottomMatch, active };
         },
 
         /**
@@ -118,13 +238,20 @@
                 if (snapYData) break;
             }
 
-            return { x: snappedX, y: snappedY, snapXData, snapYData };
+            // 스냅된 위치를 기준으로 스마트 거리(스페이싱)도 동시 계산
+            const spacing = this.calculateSpacing(snappedX, snappedY, w, h);
+
+            return { x: snappedX, y: snappedY, snapXData, snapYData, spacing };
         },
 
         /**
          * Renders guide lines and labels on the SVG layer.
          */
         drawGuides(data) {
+            if (this.clearTimer) {
+                clearTimeout(this.clearTimer);
+                this.clearTimer = null;
+            }
             const DOM = window.DOM;
             if (!DOM || !DOM.guideLayer) return;
 
@@ -158,17 +285,116 @@
                     </g>`;
             }
 
-            DOM.guideLayer.innerHTML = html;
+            const htmlList = [html];
+            if (data.spacing) {
+                this.drawSpacingGuides(data.spacing, htmlList);
+            }
+
+            DOM.guideLayer.innerHTML = htmlList.join('');
+        },
+
+        /**
+         * Renders Figma-style Spacing visual helpers.
+         */
+        drawSpacingGuides(spacing, htmlList) {
+            if (!spacing) return;
+            const { leftMatch, rightMatch, topMatch, bottomMatch, active } = spacing;
+            
+            const lineCol = "#ec4899";
+            const badgeBg = "#ec4899";
+            const textCol = "#ffffff";
+            
+            const drawHorizontalSpacing = (match, side) => {
+                if (!match) return;
+                const target = match.target;
+                const dist = match.dist;
+                if (dist <= 0) return;
+                
+                const x1 = side === 'left' ? target.right : active.right;
+                const x2 = side === 'left' ? active.left : target.left;
+                
+                let y = active.centerY;
+                if (y < target.top) y = target.top + 6;
+                if (y > target.bottom) y = target.bottom - 6;
+                
+                // Connection line
+                htmlList.push(`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${lineCol}" stroke-width="1.2" />`);
+                
+                // Edge ticks
+                htmlList.push(`<line x1="${x1}" y1="${y - 4}" x2="${x1}" y2="${y + 4}" stroke="${lineCol}" stroke-width="1.2" />`);
+                htmlList.push(`<line x1="${x2}" y1="${y - 4}" x2="${x2}" y2="${y + 4}" stroke="${lineCol}" stroke-width="1.2" />`);
+                
+                // Measurement badge
+                const cx = (x1 + x2) / 2;
+                const label = `${dist}`;
+                const textWidth = label.length * 6.5 + 8;
+                const rectX = cx - textWidth / 2;
+                const rectY = y - 8;
+                
+                htmlList.push(`
+                    <g>
+                        <rect x="${rectX}" y="${rectY}" width="${textWidth}" height="16" rx="3" fill="${badgeBg}" />
+                        <text x="${cx}" y="${y + 4.5}" fill="${textCol}" font-size="9px" font-weight="700" text-anchor="middle" font-family="'Inter', sans-serif">${label}</text>
+                    </g>
+                `);
+            };
+
+            const drawVerticalSpacing = (match, side) => {
+                if (!match) return;
+                const target = match.target;
+                const dist = match.dist;
+                if (dist <= 0) return;
+                
+                const y1 = side === 'top' ? target.bottom : active.bottom;
+                const y2 = side === 'top' ? active.top : target.top;
+                
+                let x = active.centerX;
+                if (x < target.left) x = target.left + 6;
+                if (x > target.right) x = target.right - 6;
+                
+                // Connection line
+                htmlList.push(`<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="${lineCol}" stroke-width="1.2" />`);
+                
+                // Edge ticks
+                htmlList.push(`<line x1="${x - 4}" y1="${y1}" x2="${x + 4}" y2="${y1}" stroke="${lineCol}" stroke-width="1.2" />`);
+                htmlList.push(`<line x1="${x - 4}" y1="${y2}" x2="${x + 4}" y2="${y2}" stroke="${lineCol}" stroke-width="1.2" />`);
+                
+                // Measurement badge
+                const cy = (y1 + y2) / 2;
+                const label = `${dist}`;
+                const textWidth = label.length * 6.5 + 8;
+                const rectX = x - textWidth / 2;
+                const rectY = cy - 8;
+                
+                htmlList.push(`
+                    <g>
+                        <rect x="${rectX}" y="${rectY}" width="${textWidth}" height="16" rx="3" fill="${badgeBg}" />
+                        <text x="${x}" y="${cy + 4.5}" fill="${textCol}" font-size="9px" font-weight="700" text-anchor="middle" font-family="'Inter', sans-serif">${label}</text>
+                    </g>
+                `);
+            };
+
+            drawHorizontalSpacing(leftMatch, 'left');
+            drawHorizontalSpacing(rightMatch, 'right');
+            drawVerticalSpacing(topMatch, 'top');
+            drawVerticalSpacing(bottomMatch, 'bottom');
         },
 
         /**
          * Clears all guide lines from the SVG layer.
          */
         clearGuides() {
-            const DOM = window.DOM;
-            if (DOM && DOM.guideLayer) {
-                DOM.guideLayer.innerHTML = '';
+            if (this.clearTimer) {
+                clearTimeout(this.clearTimer);
+                this.clearTimer = null;
             }
+            this.clearTimer = setTimeout(() => {
+                const DOM = window.DOM;
+                if (DOM && DOM.guideLayer) {
+                    DOM.guideLayer.innerHTML = '';
+                }
+                this.clearTimer = null;
+            }, 1500); // 1.5초 동안 가이드라인 유지 후 소멸
         }
     };
 

@@ -731,6 +731,7 @@ window.v4Script = `
                     if (window.V4UndoManager && !isArrowMoving) {
                         window.V4UndoManager.saveState();
                         isArrowMoving = true;
+                        notifyParent({ type: 'LF_SNAP_START' });
                     }
                     const step = e.shiftKey ? 10 : 1;
                     let dx = 0, dy = 0;
@@ -738,6 +739,8 @@ window.v4Script = `
                     if (e.code === 'ArrowDown') dy = step;
                     if (e.code === 'ArrowLeft') dx = -step;
                     if (e.code === 'ArrowRight') dx = step;
+
+                    const activeEl = selected[0];
 
                     selected.forEach(c => {
                         const l = parseFloat(c.style.left) || 0;
@@ -769,7 +772,22 @@ window.v4Script = `
                         }
                     });
                     
-                    notifyParent({ type: 'LF_SNAP_END' });
+                    if (activeEl) {
+                        const activeRect = activeEl.getBoundingClientRect();
+                        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
+                        const parentRect = document.body.getBoundingClientRect();
+                        
+                        const relativeX = (activeRect.left - parentRect.left) / scale;
+                        const relativeY = (activeRect.top - parentRect.top) / scale;
+                        
+                        notifyParent({ 
+                            type: 'LF_SNAP_REQUEST', 
+                            x: relativeX, 
+                            y: relativeY, 
+                            w: activeEl.offsetWidth, 
+                            h: activeEl.offsetHeight 
+                        });
+                    }
                 }
             }
         } else if (e.code === 'Delete' || e.code === 'Backspace') {
@@ -803,6 +821,7 @@ window.v4Script = `
             notifyParent({ type: 'LF_SPACE_UP' });
         } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
             isArrowMoving = false;
+            notifyParent({ type: 'LF_SNAP_END' });
         }
     });
     window.addEventListener('message', e => {
@@ -1500,6 +1519,7 @@ window.v4Script = `
             notifyParent({ type: 'LF_MOLECULE_EXTRACTED', moleculeData });
         } else if (d.type === 'LF_REQUEST_SNAP_TARGETS') {
             const targets = [];
+            const rects = [];
             document.querySelectorAll('.lf-component:not(.selected)').forEach(c => {
                 const l = parseFloat(c.style.left) || 0;
                 const t = parseFloat(c.style.top) || 0;
@@ -1512,6 +1532,17 @@ window.v4Script = `
                 targets.push({ y: t, label: name, part: 'Top', type: 'v' });
                 targets.push({ y: t + h / 2, label: name, part: 'Middle', type: 'v' });
                 targets.push({ y: t + h, label: name, part: 'Bottom', type: 'v' });
+                
+                rects.push({
+                    id: c.id,
+                    label: name,
+                    left: l,
+                    top: t,
+                    width: w,
+                    height: h,
+                    right: l + w,
+                    bottom: t + h
+                });
             });
 
             // Add Inner Screens as Snap Targets (Focus on actual UI area)
@@ -1529,16 +1560,33 @@ window.v4Script = `
                     const h = content.offsetHeight;
                     const sName = 'UI Area ' + (idx + 1);
                     const bezel = 8; // Inset shadow bezel width
-                    targets.push({ x: l + bezel, label: sName, part: 'Left', type: 'h' });
-                    targets.push({ x: l + w - bezel, label: sName, part: 'Right', type: 'h' });
-                    targets.push({ y: t + bezel, label: sName, part: 'Top', type: 'v' });
-                    targets.push({ y: t + h - bezel, label: sName, part: 'Bottom', type: 'v' });
+                    
+                    const leftVal = l + bezel;
+                    const rightVal = l + w - bezel;
+                    const topVal = t + bezel;
+                    const bottomVal = t + h - bezel;
+                    
+                    targets.push({ x: leftVal, label: sName, part: 'Left', type: 'h' });
+                    targets.push({ x: rightVal, label: sName, part: 'Right', type: 'h' });
+                    targets.push({ y: topVal, label: sName, part: 'Top', type: 'v' });
+                    targets.push({ y: bottomVal, label: sName, part: 'Bottom', type: 'v' });
                     targets.push({ x: l + w / 2, label: sName, part: 'Center', type: 'h' });
                     targets.push({ y: t + h / 2, label: sName, part: 'Middle', type: 'v' });
+
+                    rects.push({
+                        id: 'mobile-frame-' + idx,
+                        label: sName,
+                        left: leftVal,
+                        top: topVal,
+                        width: rightVal - leftVal,
+                        height: bottomVal - topVal,
+                        right: rightVal,
+                        bottom: bottomVal
+                    });
                 }
             });
 
-            notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
+            notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets, rects });
         } else if (d.type === 'LF_TABLE_ACTION') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
