@@ -144,6 +144,8 @@
             border-radius: 4px;
             overflow: hidden;
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+            background-clip: padding-box;
+            -webkit-background-clip: padding-box;
         }
         .v4-color-wrapper {
             position: relative;
@@ -171,7 +173,7 @@
         }
         .v4-color-wrapper input[type="color"]::-webkit-color-swatch {
             border: none !important;
-            border-radius: 4px;
+            border-radius: 0;
             padding: 0;
         }
         .v4-color-wrapper.transparent-active input[type="color"] {
@@ -490,7 +492,7 @@
                 </div>
                 
                 <!-- Search Bar -->
-                <div class="sidebar-search-container" style="padding: 14px 14px 8px 14px; background: rgba(0,0,0,0.1); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 10;">
+                <div class="sidebar-search-container" style="padding: 14px 14px 8px 14px; background: var(--panel-bg); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 10;">
                     <div class="v4-search-wrapper" style="position: relative; display: flex; align-items: center; width: 100%;">
                         <span class="material-icons-outlined" style="position: absolute; left: 10px; font-size: 16px; color: var(--text-secondary); pointer-events: none;">search</span>
                         <input type="text" id="sidebar-search-input" placeholder="검색어를 입력하세요..." style="width: 100%; height: 32px; padding: 0 32px 0 32px; background: rgba(0, 0, 0, 0.2); border: 1.6px solid var(--border-color); border-radius: 16px; color: #fff; font-size: 11px; font-family: inherit; transition: all 0.2s; box-sizing: border-box; outline: none;">
@@ -517,7 +519,7 @@
                     <!-- V4 Inspectors -->
                     <div id="text-editor-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--accent); border-radius: 12px; padding: 14px; margin-bottom: 12px;">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
-                            <span style="font-size: 10px; font-weight: 900; color: var(--accent);">CONTENT EDITOR</span>
+                            <span id="content-editor-label" style="font-size: 10px; font-weight: 900; color: var(--accent);">CONTENT EDITOR</span>
                             <button id="btn-editor-delete" class="v4-inspector-btn danger" style="width: 24px; height: 24px; padding: 0;"><span class="material-icons-outlined" style="font-size: 14px;">delete</span></button>
                         </div>
                         <div id="editor-container" style="height: 120px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 12px;"></div>
@@ -602,7 +604,7 @@
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
                             <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">SHAPE EDITOR</span>
                         </div>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;">
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
                             <div class="prop-group">
                                 <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">BG</label>
                                 <div style="display: flex; gap: 4px; align-items: center;">
@@ -621,10 +623,6 @@
                                     <button id="btn-shape-border-none" title="No Border" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
                                 </div>
                             </div>
-                            <div class="prop-group">
-                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Text</label>
-                                <input type="color" id="shape-text-color" value="#ffffff" style="width:100%; height:24px; border:none; padding:0; background:none;">
-                            </div>
                         </div>
                         <div class="prop-group" style="margin-bottom: 12px; margin-top: 4px;">
                             <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">BG Opacity (<span id="txt-shape-bg-opacity">100</span>%)</label>
@@ -640,10 +638,7 @@
                                 <input type="number" id="prop-height" value="0" class="v4-prop-input" data-prop="height" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
                             </div>
                         </div>
-                        <div class="prop-group">
-                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Font Size (<span id="txt-shape-font-size">16</span>px)</label>
-                            <input type="range" id="shape-font-size" min="10" max="80" value="16" style="width:100%;">
-                        </div>
+
                         <div class="prop-group" style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
                             <label style="font-size: 9px; color: #00e5ff; font-weight: 800; letter-spacing: 0.8px; display: block; margin-bottom: 8px;">CORNER STYLE</label>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;">
@@ -1086,7 +1081,7 @@
     <script src="assets/app.js?v=V150_HISTORY"></script>
     
     <!-- Modularized Engine -->
-    <script src="assets/vctrl_iframe_script.js?v=V144_SHORTCUT_SAVE_FIX"></script>
+    <script src="assets/vctrl_iframe_script.js?v=V146_SHAPE_TEXT_BUGFIX"></script>
     <script src="assets/vctrl_core.js?v=V150_HISTORY"></script>
     <script src="assets/vctrl_smartguide.js?v=V106_FILEFIX_V5"></script>
     <script src="assets/vctrl_grouping.js?v=V133_ALIGN_FIX"></script>
@@ -1098,6 +1093,6 @@
     <!-- V4 Premium Addons -->
     <script src="enhanced_v4/component_library_v4.js"></script>
     <script src="assets/vctrl_table.js?v=V134_CELL_FIX"></script>
-    <script src="assets/vctrl_v4_addon.js?v=V134_CELL_FIX"></script>
+    <script src="assets/vctrl_v4_addon.js?v=V147_OPACITY_FIX"></script>
 </body>
 </html>

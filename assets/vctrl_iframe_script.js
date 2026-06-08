@@ -464,7 +464,7 @@ window.v4Script = `
             isPin: isPin,
             isDescriptionPin: isDescriptionPin,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
-            html: textCell ? textCell.innerHTML : (shape ? shape.innerHTML : (table ? table.innerHTML : "")),
+            html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
@@ -1112,7 +1112,50 @@ window.v4Script = `
                 }
             }
         }
+        else if (d.type === 'LF_UPDATE_SHAPE_TEXT') {
+            // Shape 내부 텍스트/HTML을 Quill 에디터 결과로 업데이트
+            const s = document.querySelector('.lf-component.selected'); 
+            if (!s) return;
+            const shape = s.querySelector('.v4-shape');
+            if (!shape) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            // SVG 기반 도형(diamond, triangle, wave)은 SVG를 보존하고 텍스트 레이어에만 삽입
+            const isSvgShape = shape.classList.contains('v4-shape-diamond') || 
+                               shape.classList.contains('v4-shape-triangle') || 
+                               shape.classList.contains('v4-shape-wave');
+
+            if (isSvgShape) {
+                // SVG 기반: 텍스트 오버레이 div를 찾거나 생성
+                let textOverlay = shape.querySelector('.v4-shape-text-overlay');
+                if (!textOverlay) {
+                    textOverlay = document.createElement('div');
+                    textOverlay.className = 'v4-shape-text-overlay';
+                    textOverlay.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;text-align:center;pointer-events:none;padding:4px;box-sizing:border-box;z-index:2;';
+                    shape.style.position = 'relative';
+                    shape.appendChild(textOverlay);
+                }
+                textOverlay.innerHTML = d.html;
+            } else {
+                // 일반 도형(rect, circle): shape 내부에 직접 HTML 주입
+                // 기존 SVG 요소는 보존하고, 텍스트 컨테이너만 업데이트
+                let textContainer = shape.querySelector('.v4-shape-text-content');
+                if (!textContainer) {
+                    // 최초 1회: 기존 innerHTML(순수 텍스트/HTML)을 컨테이너로 감싸기
+                    const existingContent = shape.innerHTML;
+                    textContainer = document.createElement('div');
+                    textContainer.className = 'v4-shape-text-content';
+                    textContainer.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;overflow:hidden;';
+                    shape.innerHTML = '';
+                    textContainer.innerHTML = existingContent;
+                    shape.appendChild(textContainer);
+                }
+                textContainer.innerHTML = d.html;
+            }
+            markDirty();
+        }
         else if (d.type === 'LF_UPDATE_STYLE') {
+
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             

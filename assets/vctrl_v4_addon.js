@@ -182,7 +182,16 @@
         shapeBgColorEl.addEventListener('input', function() {
             const colorHex = this.value;
             const opacitySlider = document.getElementById('shape-bg-opacity');
-            const opacityVal = opacitySlider ? opacitySlider.value : 100;
+            let opacityVal = opacitySlider ? parseInt(opacitySlider.value) : 100;
+            
+            // 만약 불투명도가 0인 상태(투명)에서 색상을 다시 조작하면 불투명도를 100으로 자동 복구
+            if (opacityVal === 0 && opacitySlider) {
+                opacityVal = 100;
+                opacitySlider.value = 100;
+                const txt = document.getElementById('txt-shape-bg-opacity');
+                if (txt) txt.innerText = 100;
+            }
+            
             const rgbaColor = hexToRgba(colorHex, opacityVal);
             
             notifyIframe({

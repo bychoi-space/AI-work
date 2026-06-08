@@ -220,10 +220,12 @@ window.updateProperties = function(compStyles) {
         // Show relevant section
         if (state.editingType === 'pin') {
             if (DOM.textPropSection) DOM.textPropSection.style.display = 'block';
-        } 
-        
+        }
+
         if (state.editingType === 'shape') {
             if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'block';
+            // Shape도 CONTENT EDITOR 공유 사용
+            if (DOM.textPropSection) DOM.textPropSection.style.display = 'block';
         } else if (state.editingType === 'table') {
             if (DOM.tablePropSection) DOM.tablePropSection.style.display = 'block';
         } else if (state.editingType === 'line') {
@@ -232,11 +234,35 @@ window.updateProperties = function(compStyles) {
             if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'block';
         }
 
+        // CONTENT EDITOR 헤더 레이블 동적 변경
+        const editorLabel = document.getElementById('content-editor-label');
+        if (editorLabel) {
+            editorLabel.innerText = state.editingType === 'shape' ? 'SHAPE TEXT' : 'CONTENT EDITOR';
+        }
+
         // Load content to Quill
         if (state.editingType === 'pin' && compStyles.html !== undefined && window.quillEditor) {
             setTimeout(() => {
                 window.quillEditor.root.innerHTML = compStyles.html;
                 console.log("[Inspector] Loaded HTML to Quill:", compStyles.html);
+            }, 50);
+        } else if (state.editingType === 'shape' && window.quillEditor) {
+            // shape 내부 텍스트를 Quill에 로드 (wrapper div 벗겨내기)
+            const rawHtml = compStyles.html || '';
+            const parser = new DOMParser();
+            const parsed = parser.parseFromString(rawHtml, 'text/html');
+            const textContent = parsed.querySelector('.v4-shape-text-content') || parsed.querySelector('.v4-shape-text-overlay');
+            const cleanHtml = textContent ? textContent.innerHTML : rawHtml;
+
+            // 초기 로드 중에는 text-change → LF_UPDATE_SHAPE_TEXT 루프를 방지
+            state._isLoadingShapeContent = true;
+            setTimeout(() => {
+                window.quillEditor.root.innerHTML = cleanHtml;
+                console.log("[Inspector] Loaded Shape HTML to Quill:", cleanHtml);
+                // 다음 틱에 가드 해제 (text-change가 먼저 발사된 후 해제)
+                requestAnimationFrame(() => {
+                    state._isLoadingShapeContent = false;
+                });
             }, 50);
         }
 
@@ -549,7 +575,7 @@ window.initQuillEditor = function() {
                 list[state.editingIndex].html = html;
                 list[state.editingIndex].text = window.quillEditor.getText().trim();
             }
-            // Phase 3: Also sync to iframe DOM directly
+            // Also sync to iframe DOM directly
             const iframe = document.getElementById('main-iframe');
             if (iframe && iframe.contentWindow) {
                 const compId = state.editingIndex;
@@ -559,6 +585,15 @@ window.initQuillEditor = function() {
                 });
             }
             markAsDirty();
+        } else if (state.editingType === 'shape') {
+            // 초기 로드 중 발사된 text-change는 무시 (루프 방지)
+            if (state._isLoadingShapeContent) return;
+            // Shape 텍스트 업데이트: 선택된 shape 내부 innerHTML 교체
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow) {
+                MessageHub.send(iframe.contentWindow, 'LF_UPDATE_SHAPE_TEXT', { html: html });
+                markAsDirty();
+            }
         } else {
             const iframe = document.getElementById('main-iframe');
             if (iframe && iframe.contentWindow) {
