@@ -143,6 +143,18 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
     transition: none !important; 
     pointer-events: none !important;
 }
+
+/* Checkbox / Radio Checked & Text Toggle styling */
+.v4-checkbox-container[data-checked="false"] svg { display: none !important; }
+.v4-radio-container[data-checked="false"] .v4-radio-dot { display: none !important; }
+.v4-checkbox-container[data-text-enabled="false"] .v4-checkbox-text { display: none !important; }
+.v4-radio-container[data-text-enabled="false"] .v4-radio-text { display: none !important; }
+.v4-checkbox-text, .v4-radio-text { color: #000000 !important; }
+.v4-checkbox-container[data-text-enabled="false"], 
+.v4-radio-container[data-text-enabled="false"] {
+    width: 24px !important;
+    height: 24px !important;
+}
 `;
 
 window.v4UndoScript = `
@@ -434,6 +446,16 @@ window.v4Script = `
         const isPin = c.classList.contains('text-marker') || c.classList.contains('pin-marker');
         const isDescriptionPin = c.classList.contains('pin-marker');
         
+        // Checkbox / Radio Atom Detection
+        const isCheckbox = !!c.querySelector('.v4-checkbox') || c.classList.contains('v4-checkbox') || !!c.querySelector('.v4-checkbox-container') || c.classList.contains('v4-checkbox-container');
+        const isRadio = !!c.querySelector('.v4-radio') || c.classList.contains('v4-radio') || !!c.querySelector('.v4-radio-container') || c.classList.contains('v4-radio-container');
+        const container = c.querySelector('.v4-checkbox-container, .v4-radio-container') || (c.classList.contains('v4-checkbox-container') || c.classList.contains('v4-radio-container') ? c : null);
+        const checked = container ? container.getAttribute('data-checked') !== 'false' : true;
+        const textEnabled = container ? container.getAttribute('data-text-enabled') !== 'false' : false;
+        
+        // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
+        const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
+        
         const getShapeColor = (prop) => {
             if (!shape) return "";
             if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle') || shape.classList.contains('v4-shape-wave')) {
@@ -446,7 +468,7 @@ window.v4Script = `
         let detectedIconColor = "";
         if (icon) {
             const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
-            const dot = icon.querySelector('.v4-radio div');
+            const dot = icon.querySelector('.v4-radio div, .v4-radio-dot');
             if (poly) {
                 detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || "";
             } else if (dot) {
@@ -463,29 +485,34 @@ window.v4Script = `
             isIcon: !!icon,
             isPin: isPin,
             isDescriptionPin: isDescriptionPin,
+            isCheckbox: isCheckbox,
+            isRadio: isRadio,
+            checked: checked,
+            textEnabled: textEnabled,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : "")))),
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
-                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : 0,
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
+                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : 0),
+                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")))),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""));
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : ""));
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : "")));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
-                })()
+                })(),
+                textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
             }
         };
     };
@@ -503,6 +530,28 @@ window.v4Script = `
             del.style.right = rightDist < 16 ? '4px' : '-12px'; 
         }
     }
+    
+    const resizeAtomToFitText = (s) => {
+        if (!s) return;
+        const container = s.querySelector('.v4-checkbox-container, .v4-radio-container');
+        if (!container) return;
+        
+        const textEnabled = container.getAttribute('data-text-enabled') !== 'false';
+        if (textEnabled) {
+            const textEl = container.querySelector('.v4-checkbox-text, .v4-radio-text');
+            if (textEl) {
+                const textWidth = textEl.scrollWidth || 35;
+                const totalWidth = 24 + 8 + textWidth + 8; // 24px icon + 8px gap + text + 8px padding/border buffer
+                s.style.width = totalWidth + 'px';
+                s.style.height = '32px';
+            }
+        } else {
+            s.style.width = '24px';
+            s.style.height = '24px';
+        }
+        updateHandles(s);
+    };
+
     document.addEventListener('mouseover', e => {
         const c = e.target.closest('.lf-component');
         if (c) updateHandles(c);
@@ -546,11 +595,17 @@ window.v4Script = `
         }
         if (c) {
             isMarquee = false;
-            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
-            c.classList.add('selected');
+            const isMulti = e.shiftKey || e.ctrlKey;
+            if (isMulti) {
+                c.classList.toggle('selected');
+            } else {
+                document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                c.classList.add('selected');
+            }
             updateHandles(c);
             notifyParent({ 
                 type: "LF_COMP_SELECTED", 
+                shiftKey: isMulti,
                 ..._getCompStyles(c)
             });
         } else {
@@ -682,7 +737,15 @@ window.v4Script = `
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
         isDragging = false; isResizing = false; activeEl = null; 
     });
-    document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
+    document.addEventListener('input', e => { 
+        if (e.target.classList.contains('v4-editable-cell')) {
+            markDirty();
+            const comp = e.target.closest('.lf-component');
+            if (comp && (comp.querySelector('.v4-checkbox-container') || comp.querySelector('.v4-radio-container'))) {
+                resizeAtomToFitText(comp);
+            }
+        } 
+    });
     let isArrowMoving = false;
     document.addEventListener('keydown', e => {
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
@@ -824,6 +887,17 @@ window.v4Script = `
             notifyParent({ type: 'LF_SNAP_END' });
         }
     });
+    document.addEventListener('wheel', e => {
+        if (e.ctrlKey) {
+            e.preventDefault();
+            notifyParent({
+                type: 'LF_IFRAME_WHEEL_ZOOM',
+                deltaY: e.deltaY,
+                clientX: e.clientX,
+                clientY: e.clientY
+            });
+        }
+    }, { passive: false });
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
         if (d.type === 'LF_SHORTCUT_KEY_PROXY') {
@@ -1173,6 +1247,25 @@ window.v4Script = `
             }
             markDirty();
         }
+        else if (d.type === 'LF_UPDATE_ATOM_STATE') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
+            if (container) {
+                container.setAttribute('data-checked', d.checked ? 'true' : 'false');
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_ATOM_TEXT_ENABLED') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
+            if (container) {
+                container.setAttribute('data-text-enabled', d.enabled ? 'true' : 'false');
+                resizeAtomToFitText(s);
+                markDirty();
+            }
+        }
         else if (d.type === 'LF_UPDATE_STYLE') {
 
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
@@ -1182,6 +1275,11 @@ window.v4Script = `
             let t = d.selector ? s.querySelector(d.selector) : s;
             if (!t && s.classList.contains('text-marker')) {
                 t = s.querySelector('.v4-editable-cell') || s;
+            }
+            // Checkbox / Radio box style redirection for BG & Border coloring
+            const boxEl = s.querySelector('.v4-checkbox, .v4-radio');
+            if (boxEl && !d.selector) {
+                t = boxEl;
             }
             if (!t) return;
             
@@ -1343,15 +1441,42 @@ window.v4Script = `
             const handleStates = Array.from(allHandles).map(h => h.style.display);
             allHandles.forEach(h => h.style.display = 'none');
 
-            ids.forEach(id => {
+            // 1. Filter out connector lines and sub-components of selected groups to prevent double offsets
+            const validIds = ids.filter(id => {
+                if (id.startsWith('conn_')) return false;
+                const el = doc.getElementById(id);
+                if (!el) return false;
+                
+                let parent = el.parentElement;
+                while (parent && parent !== doc.body) {
+                    if (parent.classList.contains('lf-group') && ids.includes(parent.id)) {
+                        return false; // Parent group is already selected, skip individual child
+                    }
+                    parent = parent.parentElement;
+                }
+                return true;
+            });
+
+            validIds.forEach(id => {
                 const isMarker = id.startsWith('v4-pin-');
                 const el = doc.getElementById(id);
                 if (el) {
-                    const l = parseFloat(el.style.left) || 0;
-                    const t = parseFloat(el.style.top) || 0;
+                    // Accumulate parent offsets to calculate absolute position in canvas coordinates
+                    let absL = parseFloat(el.style.left) || 0;
+                    let absT = parseFloat(el.style.top) || 0;
+                    
+                    let parent = el.parentElement;
+                    while (parent && parent !== doc.body) {
+                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                            absL += parseFloat(parent.style.left) || 0;
+                            absT += parseFloat(parent.style.top) || 0;
+                        }
+                        parent = parent.parentElement;
+                    }
+
                     const w = el.offsetWidth;
                     const h = el.offsetHeight;
-                    items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: l, y: t, w, h });
+                    items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: absL, y: absT, w, h });
                 }
             });
 
@@ -1377,12 +1502,27 @@ window.v4Script = `
 
                 if (dx === 0 && dy === 0) return;
 
-                item.el.style.left = (item.x + dx) + 'px';
-                item.el.style.top = (item.y + dy) + 'px';
+                const newAbsX = item.x + dx;
+                const newAbsY = item.y + dy;
+
+                // Restore back to parent relative coordinate space if inside a group
+                let parentL = 0;
+                let parentT = 0;
+                let parent = item.el.parentElement;
+                while (parent && parent !== doc.body) {
+                    if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                        parentL += parseFloat(parent.style.left) || 0;
+                        parentT += parseFloat(parent.style.top) || 0;
+                    }
+                    parent = parent.parentElement;
+                }
+
+                item.el.style.left = (newAbsX - parentL) + 'px';
+                item.el.style.top = (newAbsY - parentT) + 'px';
                 
                 if (item.type === 'marker') {
                     const idx = parseInt(item.id.replace('v4-pin-', ''));
-                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: item.x + dx, y: item.y + dy });
+                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: newAbsY });
                 }
             });
             markDirty();
@@ -1676,6 +1816,31 @@ window.v4Script = `
     // High-Persistence Border Standardization & Coordinate Migration
     window.enforceDesignSystem = () => {
         initHandles();
+        
+        // --- Self-healing: Deduplicate IDs in DOM if duplicates exist ---
+        const seenIds = new Set();
+        document.querySelectorAll('.lf-component').forEach((c, idx) => {
+            if (!c.id) {
+                const isPin = c.classList.contains('pin-marker') || c.classList.contains('text-marker');
+                c.id = (isPin ? 'v4-pin-' : 'v4-comp-') + Date.now() + '-' + idx;
+            }
+            if (seenIds.has(c.id)) {
+                const isPin = c.classList.contains('pin-marker') || c.classList.contains('text-marker');
+                const oldId = c.id;
+                c.id = (isPin ? 'v4-pin-' : 'v4-comp-') + Date.now() + '-dedup-' + Math.floor(Math.random() * 1000) + '-' + idx;
+                console.log("[V4 Self-healing] Deduplicated ID from: " + oldId + " to: " + c.id);
+            }
+            seenIds.add(c.id);
+        });
+        
+        // --- Auto-resize Checkbox / Radio to fit text dynamically ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.querySelector('.v4-checkbox-container') || c.querySelector('.v4-radio-container')) {
+                if (typeof resizeAtomToFitText === 'function') {
+                    resizeAtomToFitText(c);
+                }
+            }
+        });
         
         // --- Coordinate Migration: % to px ---
         document.querySelectorAll('.lf-component').forEach(c => {

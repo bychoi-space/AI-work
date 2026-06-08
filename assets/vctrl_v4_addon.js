@@ -298,6 +298,54 @@
         });
     }
 
+    // Text Align Presets Sync
+    const _syncAlignBtns = (alignVal) => {
+        const btnLeft = document.getElementById('btn-shape-align-left');
+        const btnCenter = document.getElementById('btn-shape-align-center');
+        const btnRight = document.getElementById('btn-shape-align-right');
+        
+        const align = alignVal || 'center';
+        
+        if (btnLeft) {
+            btnLeft.style.background = align === 'left' ? 'rgba(0,229,255,0.25)' : 'rgba(255,255,255,0.05)';
+            btnLeft.style.borderColor = align === 'left' ? 'rgba(0,229,255,0.6)' : 'rgba(255,255,255,0.15)';
+            btnLeft.style.color = align === 'left' ? '#00e5ff' : '#94a3b8';
+        }
+        if (btnCenter) {
+            btnCenter.style.background = align === 'center' ? 'rgba(0,229,255,0.25)' : 'rgba(255,255,255,0.05)';
+            btnCenter.style.borderColor = align === 'center' ? 'rgba(0,229,255,0.6)' : 'rgba(255,255,255,0.15)';
+            btnCenter.style.color = align === 'center' ? '#00e5ff' : '#94a3b8';
+        }
+        if (btnRight) {
+            btnRight.style.background = align === 'right' ? 'rgba(0,229,255,0.25)' : 'rgba(255,255,255,0.05)';
+            btnRight.style.borderColor = align === 'right' ? 'rgba(0,229,255,0.6)' : 'rgba(255,255,255,0.15)';
+            btnRight.style.color = align === 'right' ? '#00e5ff' : '#94a3b8';
+        }
+    };
+
+    const _applyTextAlign = (align) => {
+        _syncAlignBtns(align);
+        const jc = align === 'left' ? 'flex-start' : (align === 'right' ? 'flex-end' : 'center');
+        
+        notifyIframe({
+            type: 'LF_UPDATE_STYLE',
+            selector: '.v4-shape .v4-shape-text-content',
+            style: {
+                justifyContent: jc,
+                textAlign: align
+            }
+        });
+    };
+
+    const btnAlignLeft = document.getElementById('btn-shape-align-left');
+    if (btnAlignLeft) btnAlignLeft.onclick = () => _applyTextAlign('left');
+
+    const btnAlignCenter = document.getElementById('btn-shape-align-center');
+    if (btnAlignCenter) btnAlignCenter.onclick = () => _applyTextAlign('center');
+
+    const btnAlignRight = document.getElementById('btn-shape-align-right');
+    if (btnAlignRight) btnAlignRight.onclick = () => _applyTextAlign('right');
+
     // Text Marker Bindings
     bindStyleUpdate('text-color-picker', (val) => ({
         type: 'LF_UPDATE_STYLE',
@@ -436,6 +484,17 @@
                     _syncCornerBtns(radiusVal);
                 }
 
+                // Sync Text Align (Shape only)
+                if (data.isShape && data.currentStyles.textAlign !== undefined) {
+                    _syncAlignBtns(data.currentStyles.textAlign);
+                }
+
+                // Sync Checkbox / Radio BG & Border colors
+                if (data.isCheckbox || data.isRadio) {
+                    syncColor('atom-bg-color', 'atom-bg-wrapper', s.bg, s.isBgTransparent);
+                    syncColor('atom-border-color', 'atom-border-wrapper', s.border, s.isBorderTransparent);
+                }
+
             }
         } 
         else if (data.type === 'LF_CELL_SELECTED') {
@@ -492,6 +551,104 @@
             }
         }
     });
+
+    // Checkbox / Radio Button Option Actions
+    const initCheckboxRadioEvents = () => {
+        const notifyIframe = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                MessageHub.send(iframe.contentWindow, data.type, data);
+            }
+        };
+        
+        const activeY = document.getElementById('btn-atom-active-y');
+        const activeN = document.getElementById('btn-atom-active-n');
+        const textY = document.getElementById('btn-atom-text-y');
+        const textN = document.getElementById('btn-atom-text-n');
+        
+        const highlightActive = (btn, isActive) => {
+            if (!btn) return;
+            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+            btn.style.fontWeight = isActive ? 'bold' : 'normal';
+        };
+
+        if (activeY) {
+            activeY.onclick = () => {
+                highlightActive(activeY, true);
+                highlightActive(activeN, false);
+                notifyIframe({ type: 'LF_UPDATE_ATOM_STATE', checked: true });
+            };
+        }
+        if (activeN) {
+            activeN.onclick = () => {
+                highlightActive(activeN, true);
+                highlightActive(activeY, false);
+                notifyIframe({ type: 'LF_UPDATE_ATOM_STATE', checked: false });
+            };
+        }
+        
+        if (textY) {
+            textY.onclick = () => {
+                highlightActive(textY, true);
+                highlightActive(textN, false);
+                notifyIframe({ type: 'LF_UPDATE_ATOM_TEXT_ENABLED', enabled: true });
+            };
+        }
+        if (textN) {
+            textN.onclick = () => {
+                highlightActive(textN, true);
+                highlightActive(textY, false);
+                notifyIframe({ type: 'LF_UPDATE_ATOM_TEXT_ENABLED', enabled: false });
+            };
+        }
+        
+        // Color Pickers
+        const bgColor = document.getElementById('atom-bg-color');
+        const borderCol = document.getElementById('atom-border-color');
+        
+        if (bgColor) {
+            bgColor.oninput = () => {
+                notifyIframe({
+                    type: 'LF_UPDATE_STYLE',
+                    style: { backgroundColor: bgColor.value, background: bgColor.value }
+                });
+            };
+        }
+        const btnBgNone = document.getElementById('btn-atom-bg-none');
+        if (btnBgNone) {
+            btnBgNone.onclick = () => {
+                const wrapper = document.getElementById('atom-bg-wrapper');
+                if (wrapper) wrapper.classList.add('transparent-active');
+                notifyIframe({
+                    type: 'LF_UPDATE_STYLE',
+                    style: { backgroundColor: 'transparent', background: 'transparent' }
+                });
+            };
+        }
+        
+        if (borderCol) {
+            borderCol.oninput = () => {
+                notifyIframe({
+                    type: 'LF_UPDATE_STYLE',
+                    style: { borderColor: borderCol.value }
+                });
+            };
+        }
+        const btnBorderNone = document.getElementById('btn-atom-border-none');
+        if (btnBorderNone) {
+            btnBorderNone.onclick = () => {
+                const wrapper = document.getElementById('atom-border-wrapper');
+                if (wrapper) wrapper.classList.add('transparent-active');
+                notifyIframe({
+                    type: 'LF_UPDATE_STYLE',
+                    style: { borderColor: 'transparent' }
+                });
+            };
+        }
+    };
+    initCheckboxRadioEvents();
 
     window.closeAllV4Inspectors = function() {
         const tableSect = document.getElementById('table-inspector-section');

@@ -268,15 +268,17 @@ function initV3Listeners() {
         DOM.canvas.addEventListener('wheel', function(e) {
             var state = window.state;
             if (!state) return;
-            e.preventDefault();
-            var s = state.transform.scale;
-            var ns = Math.max(0.1, Math.min(s * (1 + (e.deltaY > 0 ? -0.1 : 0.1)), 20));
-            var r = DOM.canvas.getBoundingClientRect();
-            var mx = e.clientX - r.left, my = e.clientY - r.top;
-            state.transform.x = mx - (mx - state.transform.x) * (ns / s);
-            state.transform.y = my - (my - state.transform.y) * (ns / s);
-            state.transform.scale = ns;
-            updateTransform();
+            if (e.ctrlKey) {
+                e.preventDefault();
+                var s = state.transform.scale;
+                var ns = Math.max(0.1, Math.min(s * (1 + (e.deltaY > 0 ? -0.1 : 0.1)), 20));
+                var r = DOM.canvas.getBoundingClientRect();
+                var mx = e.clientX - r.left, my = e.clientY - r.top;
+                state.transform.x = mx - (mx - state.transform.x) * (ns / s);
+                state.transform.y = my - (my - state.transform.y) * (ns / s);
+                state.transform.scale = ns;
+                updateTransform();
+            }
         }, { passive: false });
 
         DOM.canvas.addEventListener('mousedown', function(e) {

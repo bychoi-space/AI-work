@@ -515,6 +515,16 @@ if (window.V4UndoManager) {
         const isPin = c.classList.contains('text-marker') || c.classList.contains('pin-marker');
         const isDescriptionPin = c.classList.contains('pin-marker');
         
+        // Checkbox / Radio Atom Detection
+        const isCheckbox = !!c.querySelector('.v4-checkbox') || c.classList.contains('v4-checkbox') || !!c.querySelector('.v4-checkbox-container') || c.classList.contains('v4-checkbox-container');
+        const isRadio = !!c.querySelector('.v4-radio') || c.classList.contains('v4-radio') || !!c.querySelector('.v4-radio-container') || c.classList.contains('v4-radio-container');
+        const container = c.querySelector('.v4-checkbox-container, .v4-radio-container') || (c.classList.contains('v4-checkbox-container') || c.classList.contains('v4-radio-container') ? c : null);
+        const checked = container ? container.getAttribute('data-checked') !== 'false' : true;
+        const textEnabled = container ? container.getAttribute('data-text-enabled') !== 'false' : false;
+        
+        // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
+        const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
+        
         const getShapeColor = (prop) => {
             if (!shape) return "";
             if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle') || shape.classList.contains('v4-shape-wave')) {
@@ -527,7 +537,7 @@ if (window.V4UndoManager) {
         let detectedIconColor = "";
         if (icon) {
             const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
-            const dot = icon.querySelector('.v4-radio div');
+            const dot = icon.querySelector('.v4-radio div, .v4-radio-dot');
             if (poly) {
                 detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || "";
             } else if (dot) {
@@ -544,29 +554,34 @@ if (window.V4UndoManager) {
             isIcon: !!icon,
             isPin: isPin,
             isDescriptionPin: isDescriptionPin,
+            isCheckbox: isCheckbox,
+            isRadio: isRadio,
+            checked: checked,
+            textEnabled: textEnabled,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
-            html: textCell ? textCell.innerHTML : (shape ? shape.innerHTML : (table ? table.innerHTML : "")),
+            html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : "")))),
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
-                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : 0,
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
+                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : 0),
+                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")))),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""));
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : ""));
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : "")));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
-                })()
+                })(),
+                textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
             }
         };
     };
@@ -584,6 +599,28 @@ if (window.V4UndoManager) {
             del.style.right = rightDist < 16 ? '4px' : '-12px'; 
         }
     }
+    
+    const resizeAtomToFitText = (s) => {
+        if (!s) return;
+        const container = s.querySelector('.v4-checkbox-container, .v4-radio-container');
+        if (!container) return;
+        
+        const textEnabled = container.getAttribute('data-text-enabled') !== 'false';
+        if (textEnabled) {
+            const textEl = container.querySelector('.v4-checkbox-text, .v4-radio-text');
+            if (textEl) {
+                const textWidth = textEl.scrollWidth || 35;
+                const totalWidth = 24 + 8 + textWidth + 8; // 24px icon + 8px gap + text + 8px padding/border buffer
+                s.style.width = totalWidth + 'px';
+                s.style.height = '32px';
+            }
+        } else {
+            s.style.width = '24px';
+            s.style.height = '24px';
+        }
+        updateHandles(s);
+    };
+
     document.addEventListener('mouseover', e => {
         const c = e.target.closest('.lf-component');
         if (c) updateHandles(c);
@@ -627,11 +664,17 @@ if (window.V4UndoManager) {
         }
         if (c) {
             isMarquee = false;
-            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
-            c.classList.add('selected');
+            const isMulti = e.shiftKey || e.ctrlKey;
+            if (isMulti) {
+                c.classList.toggle('selected');
+            } else {
+                document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                c.classList.add('selected');
+            }
             updateHandles(c);
             notifyParent({ 
                 type: "LF_COMP_SELECTED", 
+                shiftKey: isMulti,
                 ..._getCompStyles(c)
             });
         } else {
@@ -763,7 +806,15 @@ if (window.V4UndoManager) {
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
         isDragging = false; isResizing = false; activeEl = null; 
     });
-    document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
+    document.addEventListener('input', e => { 
+        if (e.target.classList.contains('v4-editable-cell')) {
+            markDirty();
+            const comp = e.target.closest('.lf-component');
+            if (comp && (comp.querySelector('.v4-checkbox-container') || comp.querySelector('.v4-radio-container'))) {
+                resizeAtomToFitText(comp);
+            }
+        } 
+    });
     let isArrowMoving = false;
     document.addEventListener('keydown', e => {
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
@@ -812,6 +863,7 @@ if (window.V4UndoManager) {
                     if (window.V4UndoManager && !isArrowMoving) {
                         window.V4UndoManager.saveState();
                         isArrowMoving = true;
+                        notifyParent({ type: 'LF_SNAP_START' });
                     }
                     const step = e.shiftKey ? 10 : 1;
                     let dx = 0, dy = 0;
@@ -819,6 +871,8 @@ if (window.V4UndoManager) {
                     if (e.code === 'ArrowDown') dy = step;
                     if (e.code === 'ArrowLeft') dx = -step;
                     if (e.code === 'ArrowRight') dx = step;
+
+                    const activeEl = selected[0];
 
                     selected.forEach(c => {
                         const l = parseFloat(c.style.left) || 0;
@@ -850,7 +904,22 @@ if (window.V4UndoManager) {
                         }
                     });
                     
-                    notifyParent({ type: 'LF_SNAP_END' });
+                    if (activeEl) {
+                        const activeRect = activeEl.getBoundingClientRect();
+                        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
+                        const parentRect = document.body.getBoundingClientRect();
+                        
+                        const relativeX = (activeRect.left - parentRect.left) / scale;
+                        const relativeY = (activeRect.top - parentRect.top) / scale;
+                        
+                        notifyParent({ 
+                            type: 'LF_SNAP_REQUEST', 
+                            x: relativeX, 
+                            y: relativeY, 
+                            w: activeEl.offsetWidth, 
+                            h: activeEl.offsetHeight 
+                        });
+                    }
                 }
             }
         } else if (e.code === 'Delete' || e.code === 'Backspace') {
@@ -884,8 +953,20 @@ if (window.V4UndoManager) {
             notifyParent({ type: 'LF_SPACE_UP' });
         } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
             isArrowMoving = false;
+            notifyParent({ type: 'LF_SNAP_END' });
         }
     });
+    document.addEventListener('wheel', e => {
+        if (e.ctrlKey) {
+            e.preventDefault();
+            notifyParent({
+                type: 'LF_IFRAME_WHEEL_ZOOM',
+                deltaY: e.deltaY,
+                clientX: e.clientX,
+                clientY: e.clientY
+            });
+        }
+    }, { passive: false });
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
         if (d.type === 'LF_SHORTCUT_KEY_PROXY') {
@@ -1193,7 +1274,69 @@ if (window.V4UndoManager) {
                 }
             }
         }
+        else if (d.type === 'LF_UPDATE_SHAPE_TEXT') {
+            // Shape 내부 텍스트/HTML을 Quill 에디터 결과로 업데이트
+            const s = document.querySelector('.lf-component.selected'); 
+            if (!s) return;
+            const shape = s.querySelector('.v4-shape');
+            if (!shape) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            // SVG 기반 도형(diamond, triangle, wave)은 SVG를 보존하고 텍스트 레이어에만 삽입
+            const isSvgShape = shape.classList.contains('v4-shape-diamond') || 
+                               shape.classList.contains('v4-shape-triangle') || 
+                               shape.classList.contains('v4-shape-wave');
+
+            if (isSvgShape) {
+                // SVG 기반: 텍스트 오버레이 div를 찾거나 생성
+                let textOverlay = shape.querySelector('.v4-shape-text-overlay');
+                if (!textOverlay) {
+                    textOverlay = document.createElement('div');
+                    textOverlay.className = 'v4-shape-text-overlay';
+                    textOverlay.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;text-align:center;pointer-events:none;padding:4px;box-sizing:border-box;z-index:2;';
+                    shape.style.position = 'relative';
+                    shape.appendChild(textOverlay);
+                }
+                textOverlay.innerHTML = d.html;
+            } else {
+                // 일반 도형(rect, circle): shape 내부에 직접 HTML 주입
+                // 기존 SVG 요소는 보존하고, 텍스트 컨테이너만 업데이트
+                let textContainer = shape.querySelector('.v4-shape-text-content');
+                if (!textContainer) {
+                    // 최초 1회: 기존 innerHTML(순수 텍스트/HTML)을 컨테이너로 감싸기
+                    const existingContent = shape.innerHTML;
+                    textContainer = document.createElement('div');
+                    textContainer.className = 'v4-shape-text-content';
+                    textContainer.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;overflow:hidden;';
+                    shape.innerHTML = '';
+                    textContainer.innerHTML = existingContent;
+                    shape.appendChild(textContainer);
+                }
+                textContainer.innerHTML = d.html;
+            }
+            markDirty();
+        }
+        else if (d.type === 'LF_UPDATE_ATOM_STATE') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
+            if (container) {
+                container.setAttribute('data-checked', d.checked ? 'true' : 'false');
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_ATOM_TEXT_ENABLED') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
+            if (container) {
+                container.setAttribute('data-text-enabled', d.enabled ? 'true' : 'false');
+                resizeAtomToFitText(s);
+                markDirty();
+            }
+        }
         else if (d.type === 'LF_UPDATE_STYLE') {
+
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             
@@ -1201,6 +1344,11 @@ if (window.V4UndoManager) {
             let t = d.selector ? s.querySelector(d.selector) : s;
             if (!t && s.classList.contains('text-marker')) {
                 t = s.querySelector('.v4-editable-cell') || s;
+            }
+            // Checkbox / Radio box style redirection for BG & Border coloring
+            const boxEl = s.querySelector('.v4-checkbox, .v4-radio');
+            if (boxEl && !d.selector) {
+                t = boxEl;
             }
             if (!t) return;
             
@@ -1362,15 +1510,42 @@ if (window.V4UndoManager) {
             const handleStates = Array.from(allHandles).map(h => h.style.display);
             allHandles.forEach(h => h.style.display = 'none');
 
-            ids.forEach(id => {
+            // 1. Filter out connector lines and sub-components of selected groups to prevent double offsets
+            const validIds = ids.filter(id => {
+                if (id.startsWith('conn_')) return false;
+                const el = doc.getElementById(id);
+                if (!el) return false;
+                
+                let parent = el.parentElement;
+                while (parent && parent !== doc.body) {
+                    if (parent.classList.contains('lf-group') && ids.includes(parent.id)) {
+                        return false; // Parent group is already selected, skip individual child
+                    }
+                    parent = parent.parentElement;
+                }
+                return true;
+            });
+
+            validIds.forEach(id => {
                 const isMarker = id.startsWith('v4-pin-');
                 const el = doc.getElementById(id);
                 if (el) {
-                    const l = parseFloat(el.style.left) || 0;
-                    const t = parseFloat(el.style.top) || 0;
+                    // Accumulate parent offsets to calculate absolute position in canvas coordinates
+                    let absL = parseFloat(el.style.left) || 0;
+                    let absT = parseFloat(el.style.top) || 0;
+                    
+                    let parent = el.parentElement;
+                    while (parent && parent !== doc.body) {
+                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                            absL += parseFloat(parent.style.left) || 0;
+                            absT += parseFloat(parent.style.top) || 0;
+                        }
+                        parent = parent.parentElement;
+                    }
+
                     const w = el.offsetWidth;
                     const h = el.offsetHeight;
-                    items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: l, y: t, w, h });
+                    items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: absL, y: absT, w, h });
                 }
             });
 
@@ -1396,12 +1571,27 @@ if (window.V4UndoManager) {
 
                 if (dx === 0 && dy === 0) return;
 
-                item.el.style.left = (item.x + dx) + 'px';
-                item.el.style.top = (item.y + dy) + 'px';
+                const newAbsX = item.x + dx;
+                const newAbsY = item.y + dy;
+
+                // Restore back to parent relative coordinate space if inside a group
+                let parentL = 0;
+                let parentT = 0;
+                let parent = item.el.parentElement;
+                while (parent && parent !== doc.body) {
+                    if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                        parentL += parseFloat(parent.style.left) || 0;
+                        parentT += parseFloat(parent.style.top) || 0;
+                    }
+                    parent = parent.parentElement;
+                }
+
+                item.el.style.left = (newAbsX - parentL) + 'px';
+                item.el.style.top = (newAbsY - parentT) + 'px';
                 
                 if (item.type === 'marker') {
                     const idx = parseInt(item.id.replace('v4-pin-', ''));
-                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: item.x + dx, y: item.y + dy });
+                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: newAbsY });
                 }
             });
             markDirty();
@@ -1538,6 +1728,7 @@ if (window.V4UndoManager) {
             notifyParent({ type: 'LF_MOLECULE_EXTRACTED', moleculeData });
         } else if (d.type === 'LF_REQUEST_SNAP_TARGETS') {
             const targets = [];
+            const rects = [];
             document.querySelectorAll('.lf-component:not(.selected)').forEach(c => {
                 const l = parseFloat(c.style.left) || 0;
                 const t = parseFloat(c.style.top) || 0;
@@ -1550,6 +1741,17 @@ if (window.V4UndoManager) {
                 targets.push({ y: t, label: name, part: 'Top', type: 'v' });
                 targets.push({ y: t + h / 2, label: name, part: 'Middle', type: 'v' });
                 targets.push({ y: t + h, label: name, part: 'Bottom', type: 'v' });
+                
+                rects.push({
+                    id: c.id,
+                    label: name,
+                    left: l,
+                    top: t,
+                    width: w,
+                    height: h,
+                    right: l + w,
+                    bottom: t + h
+                });
             });
 
             // Add Inner Screens as Snap Targets (Focus on actual UI area)
@@ -1567,16 +1769,33 @@ if (window.V4UndoManager) {
                     const h = content.offsetHeight;
                     const sName = 'UI Area ' + (idx + 1);
                     const bezel = 8; // Inset shadow bezel width
-                    targets.push({ x: l + bezel, label: sName, part: 'Left', type: 'h' });
-                    targets.push({ x: l + w - bezel, label: sName, part: 'Right', type: 'h' });
-                    targets.push({ y: t + bezel, label: sName, part: 'Top', type: 'v' });
-                    targets.push({ y: t + h - bezel, label: sName, part: 'Bottom', type: 'v' });
+                    
+                    const leftVal = l + bezel;
+                    const rightVal = l + w - bezel;
+                    const topVal = t + bezel;
+                    const bottomVal = t + h - bezel;
+                    
+                    targets.push({ x: leftVal, label: sName, part: 'Left', type: 'h' });
+                    targets.push({ x: rightVal, label: sName, part: 'Right', type: 'h' });
+                    targets.push({ y: topVal, label: sName, part: 'Top', type: 'v' });
+                    targets.push({ y: bottomVal, label: sName, part: 'Bottom', type: 'v' });
                     targets.push({ x: l + w / 2, label: sName, part: 'Center', type: 'h' });
                     targets.push({ y: t + h / 2, label: sName, part: 'Middle', type: 'v' });
+
+                    rects.push({
+                        id: 'mobile-frame-' + idx,
+                        label: sName,
+                        left: leftVal,
+                        top: topVal,
+                        width: rightVal - leftVal,
+                        height: bottomVal - topVal,
+                        right: rightVal,
+                        bottom: bottomVal
+                    });
                 }
             });
 
-            notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
+            notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets, rects });
         } else if (d.type === 'LF_TABLE_ACTION') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -1666,6 +1885,31 @@ if (window.V4UndoManager) {
     // High-Persistence Border Standardization & Coordinate Migration
     window.enforceDesignSystem = () => {
         initHandles();
+        
+        // --- Self-healing: Deduplicate IDs in DOM if duplicates exist ---
+        const seenIds = new Set();
+        document.querySelectorAll('.lf-component').forEach((c, idx) => {
+            if (!c.id) {
+                const isPin = c.classList.contains('pin-marker') || c.classList.contains('text-marker');
+                c.id = (isPin ? 'v4-pin-' : 'v4-comp-') + Date.now() + '-' + idx;
+            }
+            if (seenIds.has(c.id)) {
+                const isPin = c.classList.contains('pin-marker') || c.classList.contains('text-marker');
+                const oldId = c.id;
+                c.id = (isPin ? 'v4-pin-' : 'v4-comp-') + Date.now() + '-dedup-' + Math.floor(Math.random() * 1000) + '-' + idx;
+                console.log("[V4 Self-healing] Deduplicated ID from: " + oldId + " to: " + c.id);
+            }
+            seenIds.add(c.id);
+        });
+        
+        // --- Auto-resize Checkbox / Radio to fit text dynamically ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.querySelector('.v4-checkbox-container') || c.querySelector('.v4-radio-container')) {
+                if (typeof resizeAtomToFitText === 'function') {
+                    resizeAtomToFitText(c);
+                }
+            }
+        });
         
         // --- Coordinate Migration: % to px ---
         document.querySelectorAll('.lf-component').forEach(c => {

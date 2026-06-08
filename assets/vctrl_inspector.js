@@ -73,6 +73,7 @@ window.DOM = {
     shapePropSection: get('shape-inspector-section'),
     linePropSection: get('line-editor-section'),
     iconPropSection: get('icon-inspector-section'),
+    checkboxRadioPropSection: get('checkbox-radio-inspector-section'),
     textColorPicker: get('text-color-picker'),
     colorPresets: document.querySelectorAll('.color-preset'),
 
@@ -216,6 +217,7 @@ window.updateProperties = function(compStyles) {
         if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'none';
         if (DOM.linePropSection) DOM.linePropSection.style.display = 'none';
         if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'none';
+        if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'none';
 
         // Show relevant section
         if (state.editingType === 'pin') {
@@ -232,6 +234,10 @@ window.updateProperties = function(compStyles) {
             if (DOM.linePropSection) DOM.linePropSection.style.display = 'block';
         } else if (state.editingType === 'icon') {
             if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'block';
+            if (compStyles.isCheckbox || compStyles.isRadio) {
+                if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'block';
+                _syncCheckboxRadioProps(compStyles);
+            }
         }
 
         // CONTENT EDITOR 헤더 레이블 동적 변경
@@ -280,8 +286,43 @@ window.updateProperties = function(compStyles) {
         if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'none';
         if (DOM.linePropSection) DOM.linePropSection.style.display = 'none';
         if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'none';
+        if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'none';
     }
 };
+
+function _syncCheckboxRadioProps(comp) {
+    const activeY = document.getElementById('btn-atom-active-y');
+    const activeN = document.getElementById('btn-atom-active-n');
+    const textY = document.getElementById('btn-atom-text-y');
+    const textN = document.getElementById('btn-atom-text-n');
+    
+    const highlightActive = (btn, isActive) => {
+        if (!btn) return;
+        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+    };
+
+    if (activeY && activeN) {
+        highlightActive(activeY, comp.checked === true);
+        highlightActive(activeN, comp.checked === false);
+    }
+    if (textY && textN) {
+        highlightActive(textY, comp.textEnabled === true);
+        highlightActive(textN, comp.textEnabled === false);
+    }
+    
+    const s = comp.currentStyles || {};
+    const syncColor = (id, wrapperId, color, isTransparent) => {
+        const picker = document.getElementById(id);
+        const wrapper = document.getElementById(wrapperId);
+        if (picker && color) picker.value = color;
+        if (wrapper) wrapper.classList.toggle('transparent-active', isTransparent);
+    };
+    syncColor('atom-bg-color', 'atom-bg-wrapper', s.bg, s.isBgTransparent);
+    syncColor('atom-border-color', 'atom-border-wrapper', s.border, s.isBorderTransparent);
+}
 
 window.renderScreenList = function(screens, activeName) {
     DOM.screensList.innerHTML = '';
@@ -561,7 +602,7 @@ window.initQuillEditor = function() {
         theme: 'snow',
         placeholder: '내용을 입력하세요...',
         modules: {
-            toolbar: [[{ 'size': Size.whitelist }], ['bold', 'italic', 'underline'], [{ 'color': [] }, { 'background': [] }], [{ 'align': [] }], ['clean']]
+            toolbar: [[{ 'size': Size.whitelist }], ['bold', 'italic', 'underline'], [{ 'color': [] }, { 'background': [] }], ['clean']]
         }
     });
 

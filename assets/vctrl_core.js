@@ -328,9 +328,11 @@ window.insertAtomicComponent = function(type, name) {
         } else if (name === 'Close X') {
             contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
         } else if (name === 'Check Box') {
-            contentHtml = `<div class="v4-checkbox lf-icon" style="width:100%; height:100%; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; display:flex; align-items:center; justify-content:center; position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%;"><polyline points="20 6 9 17 4 12"></polyline></svg></div>`;
+            contentHtml = `<div class="v4-checkbox-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-checkbox lf-icon" style="width:24px; height:24px; background:#1e293b; border:1.6px solid rgba(255,255,255,0.15); border-radius:6px; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%; pointer-events:none;"><polyline points="20 6 9 17 4 12"></polyline></svg></div><div class="v4-checkbox-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:14px; font-family:\'Inter\',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">TEXT</div></div>`;
+            defaultStyle = { width: '80px', height: '32px' };
         } else if (name === 'Radio Button') {
-            contentHtml = `<div class="v4-radio lf-icon" style="width:100%; height:100%; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center;"><div style="width:45%; height:45%; background:#ffffff; border-radius:50%;"></div></div>`;
+            contentHtml = `<div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:24px; height:24px; background:#1e293b; border:1.6px solid rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:14px; font-family:\'Inter\',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">TEXT</div></div>`;
+            defaultStyle = { width: '80px', height: '32px' };
         } else if (name === 'Share Premium') {
             contentHtml = `<div class="lf-icon" style="width:100%; height:100%; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 8px; box-sizing: border-box; background-origin: content-box; background-clip: content-box; pointer-events: none;"></div>`;
         } else if (name.startsWith('Cust ')) {
@@ -722,6 +724,28 @@ window.MessageHub = {
                 if (DOM && DOM.canvas) DOM.canvas.classList.remove('hand-active');
                 if (DOM && DOM.iframe) DOM.iframe.style.pointerEvents = 'auto';
                 window.state.isHandMode = false;
+            } else if (data.type === 'LF_IFRAME_WHEEL_ZOOM') {
+                const DOM = window.DOM;
+                if (DOM && DOM.iframe && DOM.canvas && window.state) {
+                    const iframeRect = DOM.iframe.getBoundingClientRect();
+                    const parentClientX = data.clientX + iframeRect.left;
+                    const parentClientY = data.clientY + iframeRect.top;
+                    
+                    const canvasRect = DOM.canvas.getBoundingClientRect();
+                    const mx = parentClientX - canvasRect.left;
+                    const my = parentClientY - canvasRect.top;
+                    
+                    const state = window.state;
+                    const s = state.transform.scale;
+                    const ns = Math.max(0.1, Math.min(s * (1 + (data.deltaY > 0 ? -0.1 : 0.1)), 20));
+                    
+                    state.transform.x = mx - (mx - state.transform.x) * (ns / s);
+                    state.transform.y = my - (my - state.transform.y) * (ns / s);
+                    state.transform.scale = ns;
+                    if (typeof window.updateTransform === 'function') {
+                        window.updateTransform();
+                    }
+                }
             }
 
             // Call all registered subscribers

@@ -641,6 +641,24 @@
                         </div>
 
                         <div class="prop-group" style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <label style="font-size: 9px; color: #00e5ff; font-weight: 800; letter-spacing: 0.8px; display: block; margin-bottom: 8px;">TEXT ALIGN</label>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px;">
+                                <button id="btn-shape-align-left" title="Align Left" style="height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.15); border-radius: 6px; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;">
+                                    <span class="material-icons-outlined" style="font-size: 14px;">format_align_left</span>
+                                    좌측
+                                </button>
+                                <button id="btn-shape-align-center" title="Align Center" style="height: 28px; background: rgba(0,229,255,0.15); border: 1.6px solid rgba(0,229,255,0.4); border-radius: 6px; color: #00e5ff; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;">
+                                    <span class="material-icons-outlined" style="font-size: 14px;">format_align_center</span>
+                                    중앙
+                                </button>
+                                <button id="btn-shape-align-right" title="Align Right" style="height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.15); border-radius: 6px; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;">
+                                    <span class="material-icons-outlined" style="font-size: 14px;">format_align_right</span>
+                                    우측
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="prop-group" style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
                             <label style="font-size: 9px; color: #00e5ff; font-weight: 800; letter-spacing: 0.8px; display: block; margin-bottom: 8px;">CORNER STYLE</label>
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;">
                                 <button id="btn-shape-corner-sharp" title="Sharp Corners" style="height: 28px; background: rgba(0,229,255,0.15); border: 1.6px solid rgba(0,229,255,0.4); border-radius: 6px; color: #00e5ff; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;">
@@ -838,6 +856,53 @@
                             <div class="prop-group">
                                 <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">HEIGHT (px)</label>
                                 <input type="number" id="prop-height-icon" value="0" class="v4-prop-input" data-prop="height" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Checkbox / Radio Inspector Section -->
+                    <div id="checkbox-radio-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 14px; margin-top: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">CHECKBOX / RADIO OPTION</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">
+                            <!-- Checked/Unchecked Toggle -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">ACTIVATED (활성화)</label>
+                                <div style="display: flex; gap: 4px;">
+                                    <button id="btn-atom-active-y" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                                    <button id="btn-atom-active-n" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                                </div>
+                            </div>
+                            <!-- Text Enabled Toggle -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">TEXT ON (텍스트 사용)</label>
+                                <div style="display: flex; gap: 4px;">
+                                    <button id="btn-atom-text-y" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                                    <button id="btn-atom-text-n" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <!-- Background Color -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">BG COLOR</label>
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="atom-bg-wrapper">
+                                        <input type="color" id="atom-bg-color" value="#1e293b">
+                                    </div>
+                                    <button id="btn-atom-bg-none" title="Transparent BG" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
+                            </div>
+                            <!-- Border Color -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">BORDER COLOR</label>
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="atom-border-wrapper">
+                                        <input type="color" id="atom-border-color" value="#ffffff">
+                                    </div>
+                                    <button id="btn-atom-border-none" title="Transparent Border" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1082,18 +1147,18 @@
     <script src="assets/app.js?v=V150_HISTORY"></script>
     
     <!-- Modularized Engine -->
-    <script src="assets/vctrl_iframe_script.js?v=V149_KEYBOARD_SPACING"></script>
-    <script src="assets/vctrl_core.js?v=V151_COMP_SELECT_SNAP"></script>
+    <script src="assets/vctrl_iframe_script.js?v=V158_ALIGNMENT_DUP_FIX"></script>
+    <script src="assets/vctrl_core.js?v=V158_ALIGNMENT_DUP_FIX"></script>
     <script src="assets/vctrl_smartguide.js?v=V151_SPACING_CACHE"></script>
     <script src="assets/vctrl_grouping.js?v=V133_ALIGN_FIX"></script>
-    <script src="assets/vctrl_inspector.js?v=V150_HISTORY"></script>
-    <script src="assets/vctrl_v3.js?v=V107_AUTORESIZE"></script>
+    <script src="assets/vctrl_inspector.js?v=V156_MULTI_SELECT_REFINEMENT"></script>
+    <script src="assets/vctrl_v3.js?v=V156_MULTI_SELECT_REFINEMENT"></script>
     <script src="assets/vctrl_properties.js?v=V106_V5"></script>
     <script src="assets/vctrl_connectors.js?v=V116_LINE_PERSIST_FIX"></script>
     
     <!-- V4 Premium Addons -->
     <script src="enhanced_v4/component_library_v4.js"></script>
     <script src="assets/vctrl_table.js?v=V134_CELL_FIX"></script>
-    <script src="assets/vctrl_v4_addon.js?v=V147_OPACITY_FIX"></script>
+    <script src="assets/vctrl_v4_addon.js?v=V156_MULTI_SELECT_REFINEMENT"></script>
 </body>
 </html>

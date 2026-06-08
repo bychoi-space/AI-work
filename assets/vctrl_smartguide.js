@@ -394,7 +394,7 @@
                     DOM.guideLayer.innerHTML = '';
                 }
                 this.clearTimer = null;
-            }, 1500); // 1.5초 동안 가이드라인 유지 후 소멸
+            }, 700); // 0.7초 동안 가이드라인 유지 후 소멸
         }
     };
 
