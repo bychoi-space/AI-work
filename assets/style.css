@@ -2126,18 +2126,22 @@ body.drag-active #drop-overlay {
     display: flex;
 }
 .dialog-card {
-    background: rgba(30, 41, 59, 0.85);
+    background: rgba(30, 41, 59, 0.9);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1.6px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 20px;
     width: 90%;
     max-width: 420px;
-    padding: 32px;
+    padding: 32px 24px;
     text-align: center;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     transform: scale(0.9);
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-sizing: border-box;
 }
 .dialog-overlay.active .dialog-card {
     transform: scale(1);
@@ -2147,11 +2151,15 @@ body.drag-active #drop-overlay {
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 32px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto 20px !important;
+    font-size: 32px !important;
+    line-height: 1 !important;
+    position: relative !important;
+    text-align: center !important;
+    box-sizing: border-box;
 }
 .dialog-icon.success { background: rgba(0, 229, 255, 0.1); color: var(--accent); }
 .dialog-icon.error { background: rgba(244, 63, 94, 0.1); color: #f43f5e; }
@@ -2161,34 +2169,69 @@ body.drag-active #drop-overlay {
     font-size: 18px;
     font-weight: 600;
     color: #fff;
-    margin-bottom: 12px;
+    margin: 0 0 12px 0;
+    text-align: center;
 }
 .dialog-message {
     font-size: 14px;
     line-height: 1.6;
     color: var(--text-secondary);
-    margin-bottom: 28px;
+    margin: 0 0 20px 0;
     white-space: pre-wrap;
+    text-align: center;
 }
 .dialog-footer {
     display: flex;
     gap: 12px;
     justify-content: center;
+    width: 100%;
+}
+.dialog-footer button {
+    height: 32px !important;
+    border-radius: 16px !important;
+    padding: 0 24px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    border: none !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box;
+}
+.dialog-footer button.btn-primary {
+    background: var(--accent) !important;
+    color: #000000 !important;
+    box-shadow: 0 4px 12px rgba(0, 229, 255, 0.2) !important;
+}
+.dialog-footer button.btn-secondary {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+    border: 1.6px solid rgba(255, 255, 255, 0.15) !important;
+}
+.dialog-footer button:hover {
+    transform: translateY(-1px) !important;
+    filter: brightness(1.1) !important;
+}
+.dialog-footer button:active {
+    transform: translateY(0) !important;
 }
 .dialog-input {
     width: 100%;
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1.6px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 10px;
     padding: 12px 16px;
     color: #fff;
     font-size: 14px;
-    margin-bottom: 20px;
+    margin: 8px 0 24px 0;
     transition: border-color 0.2s;
+    box-sizing: border-box;
 }
 .dialog-input:focus {
     outline: none;
-    border-color: var(--accent);
+    border-color: var(--accent) !important;
     background: rgba(255, 255, 255, 0.08);
 }
 

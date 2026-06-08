@@ -480,6 +480,7 @@ async function createScreenFromTemplate(project, screenName, templateName, injec
             else if (templateName.includes('mobile_ui')) type = 'mobile-ui';
             else if (templateName.includes('nbos')) type = 'admin-nbos';
             else if (templateName.includes('onesphere')) type = 'admin-onesphere';
+            else if (templateName.includes('blank')) type = 'blank';
 
             meta.screens[filename] = { 
                 title: injectData.SCREEN_NAME || filename,
@@ -541,7 +542,7 @@ const Notification = {
         this.DOM.icon.className = `material-icons-outlined dialog-icon ${type || 'info'}`;
         this.DOM.icon.innerText = iconMap[type] || 'info_outline';
         
-        this.DOM.inputContainer.innerHTML = hasInput ? `<input type="text" id="notification-prompt-input" class="form-input" style="margin-top:20px; width:100%;" value="${defaultValue}">` : '';
+        this.DOM.inputContainer.innerHTML = hasInput ? `<input type="text" id="notification-prompt-input" class="dialog-input" style="width:100%; box-sizing:border-box;" value="${defaultValue}">` : '';
         this.DOM.footer.innerHTML = '';
         return new Promise((resolve) => {
             buttons.forEach(btn => {
@@ -549,9 +550,14 @@ const Notification = {
                 el.className = btn.danger ? 'btn-danger' : (btn.primary ? 'btn-primary' : 'btn-secondary');
                 el.innerText = btn.text;
                 el.onclick = () => {
-                    let value = true;
-                    if (hasInput) value = document.getElementById('notification-prompt-input').value;
-                    else if (btn.value !== undefined) value = btn.value;
+                    let value;
+                    if (btn.value !== undefined) {
+                        value = btn.value;
+                    } else if (hasInput) {
+                        value = document.getElementById('notification-prompt-input').value;
+                    } else {
+                        value = true;
+                    }
                     this.DOM.overlay.classList.remove('active');
                     resolve(value);
                 };
