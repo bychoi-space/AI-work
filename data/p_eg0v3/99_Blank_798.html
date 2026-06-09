@@ -181,11 +181,16 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
 .v4-radio-container[data-checked="false"] .v4-radio-dot { display: none !important; }
 .v4-checkbox-container[data-text-enabled="false"] .v4-checkbox-text { display: none !important; }
 .v4-radio-container[data-text-enabled="false"] .v4-radio-text { display: none !important; }
-.v4-checkbox-text, .v4-radio-text { color: #000000 !important; }
+.v4-checkbox-text, .v4-radio-text { color: #000000 !important; font-size: 12px !important; }
 .v4-checkbox-container[data-text-enabled="false"], 
 .v4-radio-container[data-text-enabled="false"] {
-    width: 24px !important;
-    height: 24px !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+.v4-checkbox-container[data-text-enabled="false"] .v4-checkbox,
+.v4-radio-container[data-text-enabled="false"] .v4-radio {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 </style>
@@ -200,7 +205,7 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(50, 50, 50); border: 1.6px solid rgb(71, 85, 105); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 14px; font-family: &quot;맑은 고딕&quot;; color: rgb(255, 255, 255);">Default Value</span></p></div></div></div><div id="v4-comp-1780899798423826" class="lf-component" style="position: absolute; top: 96px; left: 20px; z-index: 1000; transform: none; width: 500px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(100, 100, 100); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed; text-align: center;"><span style="color: rgb(255, 255, 255); font-size: 12px;">텍스트 설정 (선택사항)</span></p></div></div></div><div id="group-1780907751982" class="lf-component lf-group" style="position: absolute; left: 20px; top: 135.25px; width: 499px; height: 40px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div id="v4-comp-178090136910630" class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 150px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 12px;">배경색상</span></p></div></div></div><div id="v4-comp-1780901508754862" class="lf-component" style="position: absolute; top: 0px; left: 149px; z-index: 1000; transform: none; width: 350px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div></div><div id="v4-comp-1780966442202-dedup-265-5" class="lf-component" style="position: absolute; top: 174.25px; left: 19.5px; z-index: 1000; transform: none; width: 150px; height: 38px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div></div><div id="v4-comp-1780966442202-dedup-265-5" class="lf-component" style="position: absolute; top: 175px; left: 19.5px; z-index: 1000; transform: none; width: 150px; height: 38px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 12px;">여백 선택</span></p></div></div></div><div id="v4-comp-1780966442202-dedup-184-6" class="lf-component" style="position: absolute; top: 174.25px; left: 168.5px; z-index: 1000; transform: none; width: 350px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div id="v4-comp-1780966442202-dedup-401-7" class="lf-component" style="position: absolute; top: 272px; left: 19.5px; z-index: 1000; transform: none; width: 150px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 12px;">타이틀</span></p></div></div></div><div id="v4-comp-1780966442202-dedup-707-8" class="lf-component" style="position: absolute; top: 272px; left: 168.5px; z-index: 1000; transform: none; width: 350px; height: 40px;">
@@ -213,7 +218,7 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
                 <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: rgb(163, 163, 163); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;">예시 : #757575</div>
                 <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;" data-events-bound="true"></div>
                 <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: rgb(163, 163, 163); user-select: none; display: block; font-family: inherit;">0/100</div>
-            </div></div><script id="v4-inlined-script">
+            </div></div><div id="lf-comp-1780970100535" class="lf-component" style="position: absolute; top: 178.25px; left: 174px; z-index: 1000; transform: none; width: 66px; height: 32px;" data-resized="true"><div class="v4-checkbox-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-checkbox lf-icon" style="width: 20px; height: 20px; background: rgb(30, 41, 59); border: 1.6px solid rgba(255, 255, 255, 0.15); border-radius: 6px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%; pointer-events:none;"><polyline points="20 6 9 17 4 12"></polyline></svg></div><div class="v4-checkbox-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">TEXT</div></div></div><script id="v4-inlined-script">
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -823,18 +828,32 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const container = s.querySelector('.v4-checkbox-container, .v4-radio-container');
         if (!container) return;
         
+        const boxEl = container.querySelector('.v4-checkbox, .v4-radio');
+        if (!boxEl) return;
+
         const textEnabled = container.getAttribute('data-text-enabled') !== 'false';
         if (textEnabled) {
             const textEl = container.querySelector('.v4-checkbox-text, .v4-radio-text');
             if (textEl) {
+                const boxW = parseFloat(boxEl.style.width) || 24;
+                const boxH = parseFloat(boxEl.style.height) || 24;
                 const textWidth = textEl.scrollWidth || 35;
-                const totalWidth = 24 + 8 + textWidth + 8; // 24px icon + 8px gap + text + 8px padding/border buffer
+                const totalWidth = boxW + 8 + textWidth + 8; // 아이콘 크기 + 8px 간격 + 텍스트 너비 + 8px 패딩 버퍼
                 s.style.width = totalWidth + 'px';
-                s.style.height = '32px';
+                s.style.height = Math.max(32, boxH + 8) + 'px';
             }
         } else {
-            s.style.width = '24px';
-            s.style.height = '24px';
+            if (s.getAttribute('data-resized') === 'true') {
+                const parentW = parseFloat(s.style.width) || s.offsetWidth;
+                const parentH = parseFloat(s.style.height) || s.offsetHeight;
+                boxEl.style.width = parentW + 'px';
+                boxEl.style.height = parentH + 'px';
+            } else {
+                const boxW = parseFloat(boxEl.style.width) || 24;
+                const boxH = parseFloat(boxEl.style.height) || 24;
+                s.style.width = boxW + 'px';
+                s.style.height = boxH + 'px';
+            }
         }
         updateHandles(s);
     };
@@ -1020,6 +1039,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     }
                 });
             }
+        }
+        if (isResizing && activeEl) {
+            activeEl.setAttribute('data-resized', 'true');
         }
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
         isDragging = false; isResizing = false; activeEl = null; 
@@ -1549,6 +1571,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
             if (container) {
                 container.setAttribute('data-text-enabled', d.enabled ? 'true' : 'false');
+                s.removeAttribute('data-resized');
                 resizeAtomToFitText(s);
                 markDirty();
             }
@@ -1620,22 +1643,37 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (!t) return;
             
             if (d.style) {
+                if (d.style.width !== undefined || d.style.height !== undefined) {
+                    s.setAttribute('data-resized', 'true');
+                }
                 if (d.style.html !== undefined) t.innerHTML = d.style.html;
                 
+                const isInnerBox = t.classList.contains('v4-checkbox') || t.classList.contains('v4-radio');
+                
                 // CRITICAL: Dimension style changes (width, height) must apply to the outermost .lf-component (s)
-                // so that selection resizers and handles scale and align properly.
+                // unless it is an atomic inner box of Checkbox/Radio, in which case it targets the box itself.
                 if (d.style.width !== undefined) {
-                    s.style.width = d.style.width;
-                    if (inputContainer) inputContainer.style.width = '100%';
+                    if (isInnerBox) {
+                        t.style.width = d.style.width;
+                    } else {
+                        s.style.width = d.style.width;
+                        if (inputContainer) inputContainer.style.width = '100%';
+                    }
                 }
                 if (d.style.height !== undefined) {
-                    s.style.height = d.style.height;
-                    if (inputContainer) inputContainer.style.height = '100%';
+                    if (isInnerBox) {
+                        t.style.height = d.style.height;
+                    } else {
+                        s.style.height = d.style.height;
+                        if (inputContainer) inputContainer.style.height = '100%';
+                    }
                 }
 
                 const styleToAssign = { ...d.style };
-                delete styleToAssign.width;
-                delete styleToAssign.height;
+                if (!isInnerBox) {
+                    delete styleToAssign.width;
+                    delete styleToAssign.height;
+                }
                 Object.assign(t.style, styleToAssign);
                 
                 // SVG Sync: If the element contains an SVG, sync stroke/fill
