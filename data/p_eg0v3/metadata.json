@@ -390,12 +390,14 @@
       "screenDesc": ""
     },
     "99_Blank_798.html": {
-      "title": "99_Blank_798",
-      "type": "blank",
-      "updatedAt": "2026-06-08T08:42:09.428Z",
+      "title": "화면설계 2",
+      "type": "admin-nbos",
+      "updatedAt": "2026-06-09T00:00:57.393Z",
       "template": "template_blank.html",
       "description": [],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": ""
     }
   },
   "assignee": "최범열",
