@@ -758,6 +758,15 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const placeholderText = inputContainer ? (inputContainer.getAttribute('data-placeholder') || inputContainer.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder')?.textContent || "Placeholder") : "";
         const maxLength = inputContainer ? (parseInt(inputContainer.getAttribute('data-maxlength')) || 100) : 100;
         const showCounter = inputContainer ? (inputContainer.getAttribute('data-show-counter') !== 'false') : false;
+
+        // Stepper Atom Detection
+        const isStepper = !!c.querySelector('.v4-stepper-container') || c.classList.contains('v4-stepper-container');
+        const stepperContainer = c.querySelector('.v4-stepper-container') || (isStepper ? c : null);
+        const minVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-min')) || 1 : 1;
+        const maxVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-max')) || 99 : 99;
+        const stepperVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-val')) || minVal : minVal;
+        const stepperBtnEnabled = stepperContainer ? stepperContainer.getAttribute('data-btn-enabled') !== 'false' : true;
+        const stepperBtnText = stepperContainer ? stepperContainer.getAttribute('data-btn-text') || "적용" : "적용";
         
         // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
         const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
@@ -800,14 +809,20 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             placeholderText: placeholderText,
             maxLength: maxLength,
             showCounter: showCounter,
+            isStepper: isStepper,
+            minVal: minVal,
+            maxVal: maxVal,
+            val: stepperVal,
+            btnEnabled: stepperBtnEnabled,
+            btnText: stepperBtnText,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : ""))))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : "")))))),
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : "")))))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))))),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 12 : 12),
                 fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
@@ -815,13 +830,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
                 borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : 0),
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : ""))))),
+                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : "")))))),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : ""))));
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : "")))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : ""))));
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : "")))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
@@ -1596,6 +1611,68 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 markDirty();
             }
         }
+        else if (d.type === 'LF_UPDATE_STEPPER_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-stepper-container') || (s.classList.contains('v4-stepper-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.minVal !== undefined) {
+                    container.setAttribute('data-min', d.minVal);
+                }
+                if (d.maxVal !== undefined) {
+                    container.setAttribute('data-max', d.maxVal);
+                }
+                if (d.btnEnabled !== undefined) {
+                    container.setAttribute('data-btn-enabled', d.btnEnabled ? 'true' : 'false');
+                    const actBtn = container.querySelector('.v4-stepper-action');
+                    if (actBtn) {
+                        actBtn.style.display = d.btnEnabled ? 'inline-flex' : 'none';
+                    }
+                    if (d.btnEnabled) {
+                        s.style.width = '170px';
+                    } else {
+                        s.style.width = '112px';
+                    }
+                }
+                if (d.btnText !== undefined) {
+                    container.setAttribute('data-btn-text', d.btnText);
+                    const actBtn = container.querySelector('.v4-stepper-action');
+                    if (actBtn) {
+                        actBtn.innerText = d.btnText;
+                    }
+                }
+                
+                const min = parseInt(container.getAttribute('data-min')) || 1;
+                const max = parseInt(container.getAttribute('data-max')) || 99;
+                let curVal = parseInt(container.getAttribute('data-val')) || min;
+                
+                if (d.minVal !== undefined) {
+                    curVal = min;
+                }
+                
+                curVal = Math.max(min, Math.min(max, curVal));
+                container.setAttribute('data-val', curVal);
+                
+                const valEl = container.querySelector('.v4-stepper-value');
+                if (valEl) valEl.innerText = curVal;
+                
+                const decBtn = container.querySelector('.v4-stepper-dec');
+                const incBtn = container.querySelector('.v4-stepper-inc');
+                if (decBtn) {
+                    decBtn.style.backgroundColor = curVal === min ? '#f3f4f6' : '#ffffff';
+                    decBtn.style.color = curVal === min ? '#9ca3af' : '#374151';
+                    decBtn.style.cursor = curVal === min ? 'not-allowed' : 'pointer';
+                }
+                if (incBtn) {
+                    incBtn.style.backgroundColor = curVal === max ? '#f3f4f6' : '#ffffff';
+                    incBtn.style.color = curVal === max ? '#9ca3af' : '#374151';
+                    incBtn.style.cursor = curVal === max ? 'not-allowed' : 'pointer';
+                }
+                
+                markDirty();
+            }
+        }
         else if (d.type === 'LF_UPDATE_TEXTBOX_PROPERTIES') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-textbox-container, .v4-textarea-container') || (s.classList.contains('v4-textbox-container') || s.classList.contains('v4-textarea-container') ? s : null);
@@ -1832,6 +1909,60 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         } else if (d.type === 'LF_DESELECT_ALL') {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+        } else if (d.type === 'LF_BRING_FRONT') {
+            const selected = document.querySelectorAll('.lf-component.selected');
+            const topLevelSelected = Array.from(selected).filter(el => {
+                let parent = el.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
+                        return false;
+                    }
+                    parent = parent.parentElement;
+                }
+                return true;
+            });
+            if (topLevelSelected.length > 0) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                const firstScript = document.body.querySelector('script');
+                topLevelSelected.forEach(el => {
+                    if (firstScript) {
+                        document.body.insertBefore(el, firstScript);
+                    } else {
+                        document.body.appendChild(el);
+                    }
+                });
+                markDirty();
+                if (typeof reorderAllPins === 'function') {
+                    reorderAllPins();
+                }
+            }
+        } else if (d.type === 'LF_SEND_BACK') {
+            const selected = document.querySelectorAll('.lf-component.selected');
+            const topLevelSelected = Array.from(selected).filter(el => {
+                let parent = el.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
+                        return false;
+                    }
+                    parent = parent.parentElement;
+                }
+                return true;
+            });
+            if (topLevelSelected.length > 0) {
+                const firstUnselected = Array.from(document.body.children).find(el => {
+                    return el.classList.contains('lf-component') && !el.classList.contains('selected');
+                });
+                if (firstUnselected) {
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    topLevelSelected.forEach(el => {
+                        document.body.insertBefore(el, firstUnselected);
+                    });
+                    markDirty();
+                    if (typeof reorderAllPins === 'function') {
+                        reorderAllPins();
+                    }
+                }
+            }
         } else if (d.type === 'LF_UPDATE_MARQUEE_SELECTION') {
             const ids = d.ids || [];
             document.querySelectorAll('.lf-component').forEach(x => {
@@ -2225,9 +2356,77 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     };
     const initHandles = window.initHandles;
 
+    const bindStepperEvents = () => {
+        document.querySelectorAll('.v4-stepper-container').forEach(container => {
+            const min = parseInt(container.getAttribute('data-min')) || 1;
+            const max = parseInt(container.getAttribute('data-max')) || 99;
+            const cur = parseInt(container.getAttribute('data-val')) || min;
+
+            const decBtn = container.querySelector('.v4-stepper-dec');
+            const incBtn = container.querySelector('.v4-stepper-inc');
+            const valEl = container.querySelector('.v4-stepper-value');
+
+            if (container.dataset.eventsBound === "true") {
+                if (decBtn) {
+                    decBtn.style.backgroundColor = cur === min ? '#f3f4f6' : '#ffffff';
+                    decBtn.style.color = cur === min ? '#9ca3af' : '#374151';
+                    decBtn.style.cursor = cur === min ? 'not-allowed' : 'pointer';
+                }
+                if (incBtn) {
+                    incBtn.style.backgroundColor = cur === max ? '#f3f4f6' : '#ffffff';
+                    incBtn.style.color = cur === max ? '#9ca3af' : '#374151';
+                    incBtn.style.cursor = cur === max ? 'not-allowed' : 'pointer';
+                }
+                return;
+            }
+            container.dataset.eventsBound = "true";
+            
+            const updateVal = (newVal) => {
+                const currentMin = parseInt(container.getAttribute('data-min')) || 1;
+                const currentMax = parseInt(container.getAttribute('data-max')) || 99;
+                let val = Math.max(currentMin, Math.min(currentMax, newVal));
+                container.setAttribute('data-val', val);
+                if (valEl) valEl.innerText = val;
+                
+                if (decBtn) {
+                    decBtn.style.backgroundColor = val === currentMin ? '#f3f4f6' : '#ffffff';
+                    decBtn.style.color = val === currentMin ? '#9ca3af' : '#374151';
+                    decBtn.style.cursor = val === currentMin ? 'not-allowed' : 'pointer';
+                }
+                if (incBtn) {
+                    incBtn.style.backgroundColor = val === currentMax ? '#f3f4f6' : '#ffffff';
+                    incBtn.style.color = val === currentMax ? '#9ca3af' : '#374151';
+                    incBtn.style.cursor = val === currentMax ? 'not-allowed' : 'pointer';
+                }
+            };
+            
+            if (decBtn) {
+                decBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    const currentVal = parseInt(container.getAttribute('data-val')) || 1;
+                    updateVal(currentVal - 1);
+                    markDirty();
+                };
+            }
+            if (incBtn) {
+                incBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    const currentVal = parseInt(container.getAttribute('data-val')) || 1;
+                    updateVal(currentVal + 1);
+                    markDirty();
+                };
+            }
+            
+            updateVal(cur);
+        });
+    };
+
     // High-Persistence Border Standardization & Coordinate Migration
     window.enforceDesignSystem = () => {
         initHandles();
+        bindStepperEvents();
         
         // --- Self-healing: Deduplicate IDs in DOM if duplicates exist ---
         const seenIds = new Set();
@@ -2487,4 +2686,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div id="v4-comp-1780982346891475" class="lf-component" style="position: absolute; top: 570px; left: 244.5px; z-index: 1000; transform: none; width: 62px; height: 32px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">숨김</div></div></div><div id="v4-comp-1780982338805104" class="lf-component" style="position: absolute; top: 570px; left: 174px; z-index: 1000; transform: none; width: 62px; height: 32px;"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:24px; height:24px; background:#1e293b; border:1.6px solid rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">표시</div></div></div><div id="v4-comp-1780982280309793" class="lf-component" style="position: absolute; top: 566px; left: 20px; z-index: 1000; transform: none; width: 150px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 12px;">순위 표시 여부</span></p></div></div></div><div id="v4-comp-1780980491499322" class="lf-component" style="position: absolute; top: 526.5px; left: 20px; z-index: 1000; transform: none; width: 150px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 12px;">랭킹 종류</span></p></div></div></div><div id="v4-comp-1780980499582995" class="lf-component" style="position: absolute; top: 526.5px; left: 169px; z-index: 1000; transform: none; width: 450px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div id="v4-comp-1780980521230589" class="lf-component" style="position: absolute; top: 530.5px; left: 174px; z-index: 1000; transform: none; width: 73px; height: 32px;"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:24px; height:24px; background:#1e293b; border:1.6px solid rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">판매순</div></div></div><div id="v4-comp-178098113011216" class="lf-component" style="position: absolute; top: 530.5px; left: 257.5px; z-index: 1000; transform: none; width: 73px; height: 32px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">조회순</div></div></div><div id="v4-comp-178098114269451" class="lf-component" style="position: absolute; top: 530.5px; left: 339.5px; z-index: 1000; transform: none; width: 158px; height: 32px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">장바구니/위시리스트 순</div></div></div></body></html>
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div id="v4-comp-1780980521230589" class="lf-component" style="position: absolute; top: 530.5px; left: 174px; z-index: 1000; transform: none; width: 73px; height: 32px;"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:24px; height:24px; background:#1e293b; border:1.6px solid rgba(255,255,255,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">판매순</div></div></div><div id="v4-comp-178098113011216" class="lf-component" style="position: absolute; top: 530.5px; left: 257.5px; z-index: 1000; transform: none; width: 73px; height: 32px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">조회순</div></div></div><div id="v4-comp-178098114269451" class="lf-component" style="position: absolute; top: 530.5px; left: 339.5px; z-index: 1000; transform: none; width: 158px; height: 32px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">장바구니/위시리스트 순</div></div></div><div id="v4-comp-1780986381607" class="lf-component" style="position: absolute; top: 492px; left: 174px; z-index: 1000; transform: none; width: 170px; height: 32px;">
+            <div class="v4-stepper-container" data-min="1" data-max="99" data-val="1" data-btn-enabled="true" data-btn-text="적용" style="position: relative; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; pointer-events: auto; user-select: none;" data-events-bound="true">
+                <div class="v4-stepper-control" style="display: inline-flex; align-items: center; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; overflow: hidden; height: 32px; box-sizing: border-box;">
+                    <button class="v4-stepper-dec" style="width: 32px; height: 100%; border: none; background: #f3f4f6; color: #9ca3af; font-size: 14px; font-weight: bold; cursor: not-allowed; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">—</button>
+                    <div class="v4-stepper-value" style="width: 48px; text-align: center; font-size: 14px; font-weight: 600; color: #111827; user-select: none; font-family: inherit;">1</div>
+                    <button class="v4-stepper-inc" style="width: 32px; height: 100%; border: none; background: #ffffff; border-left: 1.6px solid #e5e7eb; color: #374151; font-size: 14px; font-weight: bold; cursor: pointer; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">+</button>
+                </div>
+                <button class="v4-stepper-action" style="height: 32px; padding: 0 16px; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; font-size: 12px; font-weight: 600; color: #374151; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">적용</button>
+            </div></div></body></html>
