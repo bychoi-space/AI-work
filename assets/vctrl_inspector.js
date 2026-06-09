@@ -74,6 +74,7 @@ window.DOM = {
     linePropSection: get('line-editor-section'),
     iconPropSection: get('icon-inspector-section'),
     checkboxRadioPropSection: get('checkbox-radio-inspector-section'),
+    textboxTextareaPropSection: get('textbox-textarea-inspector-section'),
     textColorPicker: get('text-color-picker'),
     colorPresets: document.querySelectorAll('.color-preset'),
 
@@ -209,7 +210,7 @@ window.updateProperties = function(compStyles) {
 
         state.isEditing = true;
         state.editingIndex = (compStyles.pinIndex !== undefined && compStyles.pinIndex !== -1) ? compStyles.pinIndex : compStyles.id;
-        state.editingType = compStyles.isPin ? 'pin' : (compStyles.isTable ? 'table' : (compStyles.isShape ? 'shape' : (compStyles.isConnector ? 'line' : (compStyles.isIcon ? 'icon' : 'comp'))));
+        state.editingType = compStyles.isPin ? 'pin' : (compStyles.isTable ? 'table' : (compStyles.isShape ? 'shape' : (compStyles.isConnector ? 'line' : (compStyles.isIcon ? 'icon' : (compStyles.isTextbox ? 'textbox' : (compStyles.isTextarea ? 'textarea' : 'comp'))))));
 
         // Hide all sections first
         if (DOM.textPropSection) DOM.textPropSection.style.display = 'none';
@@ -218,6 +219,7 @@ window.updateProperties = function(compStyles) {
         if (DOM.linePropSection) DOM.linePropSection.style.display = 'none';
         if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'none';
         if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'none';
+        if (DOM.textboxTextareaPropSection) DOM.textboxTextareaPropSection.style.display = 'none';
 
         // Show relevant section
         if (state.editingType === 'pin') {
@@ -238,6 +240,9 @@ window.updateProperties = function(compStyles) {
                 if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'block';
                 _syncCheckboxRadioProps(compStyles);
             }
+        } else if (state.editingType === 'textbox' || state.editingType === 'textarea') {
+            if (DOM.textboxTextareaPropSection) DOM.textboxTextareaPropSection.style.display = 'block';
+            _syncTextboxTextareaProps(compStyles);
         }
 
         // CONTENT EDITOR 헤더 레이블 동적 변경
@@ -287,8 +292,71 @@ window.updateProperties = function(compStyles) {
         if (DOM.linePropSection) DOM.linePropSection.style.display = 'none';
         if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'none';
         if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'none';
+        if (DOM.textboxTextareaPropSection) DOM.textboxTextareaPropSection.style.display = 'none';
     }
 };
+
+function _syncTextboxTextareaProps(comp) {
+    const activeY = document.getElementById('btn-input-counter-y');
+    const activeN = document.getElementById('btn-input-counter-n');
+    
+    const highlightActive = (btn, isActive) => {
+        if (!btn) return;
+        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+    };
+
+    if (activeY && activeN) {
+        highlightActive(activeY, comp.showCounter === true);
+        highlightActive(activeN, comp.showCounter === false);
+    }
+    
+    const phInput = document.getElementById('prop-input-placeholder');
+    if (phInput && comp.placeholderText !== undefined) {
+        phInput.value = comp.placeholderText;
+    }
+    
+    const mlInput = document.getElementById('prop-input-maxlength');
+    const mlTxt = document.getElementById('txt-input-maxlength');
+    if (mlInput && comp.maxLength !== undefined) {
+        mlInput.value = comp.maxLength;
+        if (mlTxt) mlTxt.innerText = comp.maxLength;
+    }
+    
+    const s = comp.currentStyles || {};
+    const syncColor = (id, wrapperId, color, isTransparent) => {
+        const picker = document.getElementById(id);
+        const wrapper = document.getElementById(wrapperId);
+        if (picker && color) picker.value = color;
+        if (wrapper) wrapper.classList.toggle('transparent-active', isTransparent);
+    };
+    syncColor('input-bg-color', 'input-bg-wrapper', s.bg, s.isBgTransparent);
+    syncColor('input-border-color', 'input-border-wrapper', s.border, s.isBorderTransparent);
+
+    // Sync Font Size & Font Family
+    const fsInput = document.getElementById('prop-input-fontsize');
+    if (fsInput && s.fontSize !== undefined) {
+        fsInput.value = s.fontSize;
+    }
+    const ffInput = document.getElementById('prop-input-fontfamily');
+    if (ffInput && s.fontFamily !== undefined) {
+        const normalizedFont = s.fontFamily.replace(/['"]/g, '');
+        let matched = false;
+        for (let i = 0; i < ffInput.options.length; i++) {
+            const optVal = ffInput.options[i].value.replace(/['"]/g, '');
+            if (optVal === normalizedFont) {
+                ffInput.selectedIndex = i;
+                matched = true;
+                break;
+            }
+        }
+        if (!matched) {
+            ffInput.value = 'inherit';
+        }
+    }
+}
 
 function _syncCheckboxRadioProps(comp) {
     const activeY = document.getElementById('btn-atom-active-y');

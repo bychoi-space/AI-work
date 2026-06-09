@@ -21,6 +21,7 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 - **Nested Backtick Precaution**: `vctrl_core.js`의 `v4Script`와 같이 백틱(`)으로 감싸진 템플릿 리터럴 내부에서 다시 백틱을 사용하면 구문 에러가 발생한다. 내부에서는 반드시 일반 따옴표(`"` 또는 `'`)를 사용하거나 이스케이프(`\``) 처리를 해야 한다.
 - **Iframe State Initialization**: iframe 컨텍스트에서는 부모 창의 전역 변수(예: `window.state`)가 자동으로 공유되지 않는다. iframe 내부에 주입되는 스크립트(예: `v4UndoScript`)에서 상태를 참조하거나 저장할 때는 반드시 참조 전 초기화 여부(예: `if (!window.state) window.state = {};`)를 확인하여 `TypeError`를 방지하라.
 - **`vctrl_iframe_script.js` 외부 분리 및 캐시 무효화 (Cache Busting)**: iframe 내부 렌더링 로직인 `vctrl_iframe_script.js`는 인라인 문자열(v4Script)에서 독립된 외부 파일로 완전히 분리되었다. 따라서 이 파일을 수정하는 경우, 브라우저가 이전 버전을 캐싱하여 변경 사항이 반영되지 않는 문제를 방지하기 위해 **반드시 `viewer.html` 내의 스크립트 로드 태그에 버전 쿼리 파라미터(예: `vctrl_iframe_script.js?v=YYYYMMDD_HHMM` 또는 `vctrl_iframe_script.js?v=V109_COMMON_OBJ`)를 즉시 업데이트**하여 캐시를 무효화해야 한다.
+- **MutationObserver 무한 재귀 루프 방지 (Preventing Infinite Mutation Loops)**: `enforceDesignSystem()` 등 MutationObserver가 활성화된 루프 내에서 카운터 textContent, placeholder display, 또는 폰트 크기 등의 DOM 쓰기 연산을 수행할 경우 다시 MutationObserver가 발동하여 브라우저가 정지하는 무한 재귀 상태에 빠지기 쉽다. 이를 예방하기 위해, 모든 DOM 쓰기 작업은 반드시 **현재 DOM 값과 대입하려는 신규 값을 엄격히 비교(Value Comparison Guard)**하여, 값이 변경된 경우에만 실행되도록 보호해야 한다.
 
 ## Interaction Integrity
 - Keep marker drag and click-to-edit separate.

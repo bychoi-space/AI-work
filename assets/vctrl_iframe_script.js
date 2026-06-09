@@ -453,6 +453,14 @@ window.v4Script = `
         const checked = container ? container.getAttribute('data-checked') !== 'false' : true;
         const textEnabled = container ? container.getAttribute('data-text-enabled') !== 'false' : false;
         
+        // Textbox / Textarea Atom Detection
+        const isTextbox = !!c.querySelector('.v4-textbox-container') || c.classList.contains('v4-textbox-container');
+        const isTextarea = !!c.querySelector('.v4-textarea-container') || c.classList.contains('v4-textarea-container');
+        const inputContainer = c.querySelector('.v4-textbox-container, .v4-textarea-container') || (isTextbox || isTextarea ? c : null);
+        const placeholderText = inputContainer ? (inputContainer.getAttribute('data-placeholder') || inputContainer.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder')?.textContent || "Placeholder") : "";
+        const maxLength = inputContainer ? (parseInt(inputContainer.getAttribute('data-maxlength')) || 100) : 100;
+        const showCounter = inputContainer ? (inputContainer.getAttribute('data-show-counter') !== 'false') : false;
+        
         // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
         const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
         
@@ -489,27 +497,33 @@ window.v4Script = `
             isRadio: isRadio,
             checked: checked,
             textEnabled: textEnabled,
+            isTextbox: isTextbox,
+            isTextarea: isTextarea,
+            placeholderText: placeholderText,
+            maxLength: maxLength,
+            showCounter: showCounter,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))),
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : ""))))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : "")))))),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
-                fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
+                fontSize: parseInt(_getVal(textCell, "fontSize")) || (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 12 : 12),
+                fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
                 borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : 0),
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")))),
+                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : ""))))),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")));
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : ""))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : "")));
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : ""))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
@@ -1266,6 +1280,49 @@ window.v4Script = `
                 markDirty();
             }
         }
+        else if (d.type === 'LF_UPDATE_TEXTBOX_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-textbox-container, .v4-textarea-container') || (s.classList.contains('v4-textbox-container') || s.classList.contains('v4-textarea-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.placeholderText !== undefined) {
+                    const ph = container.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder');
+                    if (ph) ph.textContent = d.placeholderText;
+                    container.setAttribute('data-placeholder', d.placeholderText);
+                }
+                if (d.maxLength !== undefined) {
+                    container.setAttribute('data-maxlength', d.maxLength);
+                }
+                if (d.showCounter !== undefined) {
+                    container.setAttribute('data-show-counter', d.showCounter ? 'true' : 'false');
+                }
+                if (d.fontSize !== undefined) {
+                    const input = container.querySelector('.v4-textbox-input, .v4-textarea-input');
+                    const placeholder = container.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder');
+                    if (input) input.style.fontSize = d.fontSize + 'px';
+                    if (placeholder) placeholder.style.fontSize = d.fontSize + 'px';
+                    container.setAttribute('data-fontsize', d.fontSize);
+                }
+                if (d.fontFamily !== undefined) {
+                    const input = container.querySelector('.v4-textbox-input, .v4-textarea-input');
+                    const placeholder = container.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder');
+                    const counter = container.querySelector('.v4-textbox-counter, .v4-textarea-counter');
+                    if (input) input.style.fontFamily = d.fontFamily;
+                    if (placeholder) placeholder.style.fontFamily = d.fontFamily;
+                    if (counter) counter.style.fontFamily = d.fontFamily;
+                    container.setAttribute('data-fontfamily', d.fontFamily);
+                }
+                
+                // Trigger re-sync by resetting dataset flag
+                const input = container.querySelector('.v4-textbox-input, .v4-textarea-input');
+                if (input) {
+                    input.dataset.eventsBound = "false";
+                }
+                if (typeof enforceDesignSystem === 'function') enforceDesignSystem();
+                markDirty();
+            }
+        }
         else if (d.type === 'LF_UPDATE_STYLE') {
 
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
@@ -1281,11 +1338,32 @@ window.v4Script = `
             if (boxEl && !d.selector) {
                 t = boxEl;
             }
+            
+            // Textbox / Textarea style redirection for BG & Border coloring
+            const inputContainer = s.querySelector('.v4-textbox-container, .v4-textarea-container');
+            if (inputContainer && !d.selector) {
+                t = inputContainer;
+            }
             if (!t) return;
             
             if (d.style) {
                 if (d.style.html !== undefined) t.innerHTML = d.style.html;
-                Object.assign(t.style, d.style);
+                
+                // CRITICAL: Dimension style changes (width, height) must apply to the outermost .lf-component (s)
+                // so that selection resizers and handles scale and align properly.
+                if (d.style.width !== undefined) {
+                    s.style.width = d.style.width;
+                    if (inputContainer) inputContainer.style.width = '100%';
+                }
+                if (d.style.height !== undefined) {
+                    s.style.height = d.style.height;
+                    if (inputContainer) inputContainer.style.height = '100%';
+                }
+
+                const styleToAssign = { ...d.style };
+                delete styleToAssign.width;
+                delete styleToAssign.height;
+                Object.assign(t.style, styleToAssign);
                 
                 // SVG Sync: If the element contains an SVG, sync stroke/fill
                 const svgShape = t.querySelector('path, polygon, rect, circle');
@@ -1408,6 +1486,9 @@ window.v4Script = `
             
             if (d.subSelector && d.subStyle) {
                 t.querySelectorAll(d.subSelector).forEach(sub => Object.assign(sub.style, d.subStyle));
+            }
+            if (typeof updateHandles === 'function') {
+                updateHandles(s);
             }
             markDirty();
         } else if (d.type === 'LF_DELETE_SELECTED') {
@@ -1840,6 +1921,115 @@ window.v4Script = `
                     resizeAtomToFitText(c);
                 }
             }
+        });
+
+        // --- Setup Textbox / Textarea Interactive Events ---
+        document.querySelectorAll('.v4-textbox-container, .v4-textarea-container').forEach(container => {
+            const isTextarea = container.classList.contains('v4-textarea-container');
+            const input = container.querySelector(isTextarea ? '.v4-textarea-input' : '.v4-textbox-input');
+            const placeholder = container.querySelector(isTextarea ? '.v4-textarea-placeholder' : '.v4-textbox-placeholder');
+            const counter = container.querySelector(isTextarea ? '.v4-textarea-counter' : '.v4-textbox-counter');
+            
+            if (!input) return;
+
+            const restoreFonts = () => {
+                const fs = container.getAttribute('data-fontsize');
+                const ff = container.getAttribute('data-fontfamily');
+                if (fs) {
+                    const fsVal = fs + 'px';
+                    if (input.style.fontSize !== fsVal) input.style.fontSize = fsVal;
+                    if (placeholder && placeholder.style.fontSize !== fsVal) placeholder.style.fontSize = fsVal;
+                }
+                if (ff) {
+                    if (input.style.fontFamily !== ff) input.style.fontFamily = ff;
+                    if (placeholder && placeholder.style.fontFamily !== ff) placeholder.style.fontFamily = ff;
+                    if (counter && counter.style.fontFamily !== ff) counter.style.fontFamily = ff;
+                }
+            };
+
+            if (input.dataset.eventsBound === "true") {
+                // Keep values updated in case max-length/show-counter changed via inspector
+                // CRITICAL: Guard all DOM writes with value comparison to prevent MutationObserver infinite loop
+                const max = parseInt(container.getAttribute('data-maxlength')) || 100;
+                const showCounter = container.getAttribute('data-show-counter') !== 'false';
+                const text = input.innerText || "";
+                if (counter) {
+                    const currentLen = Math.min(text.length, max);
+                    const newText = currentLen + '/' + max;
+                    const newDisplay = showCounter ? 'block' : 'none';
+                    if (counter.textContent !== newText) counter.textContent = newText;
+                    if (counter.style.display !== newDisplay) counter.style.display = newDisplay;
+                }
+                restoreFonts();
+                return;
+            }
+            input.dataset.eventsBound = "true";
+            restoreFonts();
+            
+            // Get initial values from HTML state
+            const getMaxLength = () => parseInt(container.getAttribute('data-maxlength')) || 100;
+            const getShowCounter = () => container.getAttribute('data-show-counter') !== 'false';
+            
+            // Initial placeholder state
+            const updateUI = () => {
+                const text = input.innerText || "";
+                
+                // Show/hide placeholder (guarded to prevent MutationObserver loop)
+                if (placeholder) {
+                    const phDisplay = text.length === 0 ? 'block' : 'none';
+                    if (placeholder.style.display !== phDisplay) placeholder.style.display = phDisplay;
+                }
+                
+                // Character limit check
+                const max = getMaxLength();
+                if (text.length > max) {
+                    // Truncate to max length and restore cursor
+                    const selection = window.getSelection();
+                    const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+                    const offset = range ? range.startOffset : 0;
+                    
+                    input.innerText = text.substring(0, max);
+                    
+                    // Restore caret position
+                    if (range && input.firstChild) {
+                        try {
+                            const newRange = document.createRange();
+                            newRange.setStart(input.firstChild, Math.min(offset, max));
+                            newRange.collapse(true);
+                            selection.removeAllRanges();
+                            selection.addRange(newRange);
+                        } catch(e) {}
+                    }
+                }
+                
+                // Update counter text (guarded)
+                if (counter) {
+                    const currentLen = Math.min(input.innerText.length, max);
+                    const newCounterText = currentLen + '/' + max;
+                    const newCounterDisplay = getShowCounter() ? 'block' : 'none';
+                    if (counter.textContent !== newCounterText) counter.textContent = newCounterText;
+                    if (counter.style.display !== newCounterDisplay) counter.style.display = newCounterDisplay;
+                }
+                
+                // Input text color adjustment (guarded)
+                const newColor = text.length === 0 ? '#a3a3a3' : '#374151';
+                if (input.style.color !== newColor) input.style.color = newColor;
+            };
+            
+            // Bind input listener
+            input.addEventListener('input', () => {
+                updateUI();
+                markDirty();
+            });
+            input.addEventListener('focus', () => {
+                if (placeholder) placeholder.style.display = 'none';
+            });
+            input.addEventListener('blur', () => {
+                updateUI();
+            });
+            
+            // Run initially
+            updateUI();
         });
         
         // --- Coordinate Migration: % to px ---

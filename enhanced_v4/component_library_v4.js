@@ -35,6 +35,30 @@ window.V4_COMPONENT_LIBRARY = {
             category: 'Atoms',
             previewHtml: `<img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width: 24px;">`,
             html: `<img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;">`
+        },
+        {
+            id: 'v4-atom-textbox',
+            name: 'Textbox',
+            category: 'Atoms',
+            previewHtml: `<div style="width: 80px; height: 20px; background: #fafaf2; border: 1.6px solid #cccccc; border-radius: 4px; display: flex; align-items: center; padding: 0 4px; font-size: 8px; color: #a3a3a3; font-family: inherit;">Placeholder</div>`,
+            html: `
+            <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: #fafaf2; border: 1.6px solid #cccccc; border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;">
+                <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: #a3a3a3; pointer-events: none; font-size: 12px; user-select: none; font-family: inherit;">Placeholder</div>
+                <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border: none; outline: none; background: transparent; color: #374151; font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 0; box-sizing: border-box; padding-right: 48px; font-family: inherit;"></div>
+                <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: #a3a3a3; user-select: none; display: none; font-family: inherit;">0/100</div>
+            </div>`
+        },
+        {
+            id: 'v4-atom-textarea',
+            name: 'Textarea',
+            category: 'Atoms',
+            previewHtml: `<div style="width: 80px; height: 30px; background: #fafaf2; border: 1.6px solid #cccccc; border-radius: 4px; padding: 2px; font-size: 8px; color: #a3a3a3; box-sizing: border-box; font-family: inherit;">Placeholder</div>`,
+            html: `
+            <div class="v4-textarea-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: #fafaf2; border: 1.6px solid #cccccc; border-radius: 8px; display: flex; flex-direction: column; padding: 10px 12px; pointer-events: auto;">
+                <div class="v4-textarea-placeholder" style="position: absolute; left: 12px; top: 10px; color: #a3a3a3; pointer-events: none; font-size: 12px; user-select: none; font-family: inherit;">Placeholder</div>
+                <div contenteditable="true" class="v4-editable-cell v4-textarea-input" style="width: 100%; height: 100%; border: none; outline: none; background: transparent; color: #374151; font-size: 12px; resize: none; overflow-y: auto; padding: 0 0 20px 0; word-break: break-all; white-space: pre-wrap; box-sizing: border-box; font-family: inherit;"></div>
+                <div class="v4-textarea-counter" style="position: absolute; right: 12px; bottom: 8px; font-size: 11px; color: #a3a3a3; user-select: none; display: none; font-family: inherit;">0/100</div>
+            </div>`
         }
     ],
     molecules: [

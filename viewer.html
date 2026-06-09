@@ -728,6 +728,14 @@
                 </div>
                 <div id="atomic-library-body" class="components-body" style="padding: 12px;">
                     <div id="atomic-library-container" class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-textbox')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">input</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Textbox</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-textarea')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">notes</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Textarea</span>
+                        </div>
                         <div class="component-item v4-card" onclick="insertAtomicComponent('image', 'LF Logo')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <div style="height: 18px; display: flex; align-items: center; justify-content: center;">
                                 <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width: 18px; filter: brightness(0) invert(1);" loading="lazy">
@@ -903,6 +911,85 @@
                                     </div>
                                     <button id="btn-atom-border-none" title="Transparent Border" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Textbox / Textarea Inspector Section -->
+                    <div id="textbox-textarea-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 14px; margin-top: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">INPUT FIELD PROPERTIES</span>
+                        </div>
+                        <div class="prop-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">Placeholder 텍스트</label>
+                            <input type="text" id="prop-input-placeholder" placeholder="Placeholder 내용을 입력하세요" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">
+                            <!-- Show Counter Toggle -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">글자수 제한 표시</label>
+                                <div style="display: flex; gap: 4px;">
+                                    <button id="btn-input-counter-y" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                                    <button id="btn-input-counter-n" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                                </div>
+                            </div>
+                            <!-- Max Length -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">최대 글자수 (<span id="txt-input-maxlength">100</span>자)</label>
+                                <input type="number" id="prop-input-maxlength" value="100" min="1" max="1000" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <!-- Background Color -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">배경 컬러</label>
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="input-bg-wrapper">
+                                        <input type="color" id="input-bg-color" value="#fafaf2">
+                                    </div>
+                                    <button id="btn-input-bg-none" title="Transparent BG" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
+                            </div>
+                            <!-- Border Color -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">보더 컬러</label>
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="input-border-wrapper">
+                                        <input type="color" id="input-border-color" value="#cccccc">
+                                    </div>
+                                    <button id="btn-input-border-none" title="Transparent Border" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 12px;">
+                            <!-- Width -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">가로 크기 (px)</label>
+                                <input type="number" class="v4-prop-input" data-prop="width" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                            </div>
+                            <!-- Height -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">세로 크기 (px)</label>
+                                <input type="number" class="v4-prop-input" data-prop="height" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 12px;">
+                            <!-- Font Size -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">폰트 크기 (px)</label>
+                                <input type="number" id="prop-input-fontsize" min="10" max="60" value="12" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                            </div>
+                            <!-- Font Family -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">폰트 종류</label>
+                                <select id="prop-input-fontfamily" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit; height: 23px;">
+                                    <option value="inherit">Default</option>
+                                    <option value="'Inter', sans-serif">Inter</option>
+                                    <option value="system-ui, -apple-system, sans-serif">System UI</option>
+                                    <option value="monospace">Monospace</option>
+                                    <option value="'Roboto', sans-serif">Roboto</option>
+                                    <option value="Arial, sans-serif">Arial</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -1147,7 +1234,7 @@
     <script src="assets/app.js?v=V150_HISTORY"></script>
     
     <!-- Modularized Engine -->
-    <script src="assets/vctrl_iframe_script.js?v=V158_ALIGNMENT_DUP_FIX"></script>
+    <script src="assets/vctrl_iframe_script.js?v=V163_TEXTBOX_DIMENSION_ALIGNMENT_FIX"></script>
     <script src="assets/vctrl_core.js?v=V158_ALIGNMENT_DUP_FIX"></script>
     <script src="assets/vctrl_smartguide.js?v=V151_SPACING_CACHE"></script>
     <script src="assets/vctrl_grouping.js?v=V133_ALIGN_FIX"></script>
@@ -1159,6 +1246,6 @@
     <!-- V4 Premium Addons -->
     <script src="enhanced_v4/component_library_v4.js"></script>
     <script src="assets/vctrl_table.js?v=V134_CELL_FIX"></script>
-    <script src="assets/vctrl_v4_addon.js?v=V156_MULTI_SELECT_REFINEMENT"></script>
+    <script src="assets/vctrl_v4_addon.js?v=V162_DIMENSION_AND_DEFAULT_FONT_FIX"></script>
 </body>
 </html>
