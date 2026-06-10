@@ -400,9 +400,9 @@
       "screenDesc": ""
     },
     "06_Mobile_Design_2_901.html": {
-      "title": "랭킹카드 - 기능",
+      "title": "랭킹카드 - 옵션",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-10T01:44:12.983Z",
+      "updatedAt": "2026-06-10T01:44:52.199Z",
       "template": "template_mobile_ui_2.html",
       "description": [],
       "connectors": [],
