@@ -402,7 +402,7 @@
     "06_Mobile_Design_2_901.html": {
       "title": "랭킹카드 - 옵션",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-10T01:49:21.985Z",
+      "updatedAt": "2026-06-10T01:51:06.175Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -558,5 +558,5 @@
     "06_Mobile_Design_2_901.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-10 10:49:21"
+  "updated": "2026-06-10 10:51:06"
 }
