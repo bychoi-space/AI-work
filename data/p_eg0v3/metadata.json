@@ -392,7 +392,7 @@
     "99_Blank_798.html": {
       "title": "화면설계 2",
       "type": "admin-nbos",
-      "updatedAt": "2026-06-10T04:57:43.403Z",
+      "updatedAt": "2026-06-10T05:56:52.995Z",
       "template": "template_blank.html",
       "description": [],
       "connectors": [],
@@ -718,5 +718,5 @@
     "06_Mobile_Design_2_901.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-10 13:57:43"
+  "updated": "2026-06-10 14:56:52"
 }
