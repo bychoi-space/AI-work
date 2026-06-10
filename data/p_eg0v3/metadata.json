@@ -392,7 +392,7 @@
     "99_Blank_798.html": {
       "title": "화면설계 2",
       "type": "admin-nbos",
-      "updatedAt": "2026-06-10T05:56:52.995Z",
+      "updatedAt": "2026-06-09T08:59:55.591Z",
       "template": "template_blank.html",
       "description": [],
       "connectors": [],
@@ -402,7 +402,7 @@
     "06_Mobile_Design_2_901.html": {
       "title": "랭킹카드 - 옵션",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-10T01:44:52.199Z",
+      "updatedAt": "2026-06-10T06:03:45.909Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -694,12 +694,20 @@
           "standardized": true
         },
         {
-          "x": 872.7272727272727,
-          "y": 659.3939393939394,
+          "x": 780.5,
+          "y": 664.5,
           "standardized": true,
           "type": "text",
-          "text": "성별",
-          "html": "<p><span style=\"font-size: 16px;\">성별</span></p>"
+          "text": "베스트 상품은 판매 데이터와 상품 조회 수를 종합해 산정됩니다.\n\n최근 업데이트 : 06/10 09:52 갱신",
+          "html": "<p><span style=\"font-size: 12px;\">베스트 상품은 판매 데이터와 상품 조회 수를 종합해 산정됩니다.</span></p><p><span style=\"font-size: 12px;\">최근 업데이트 : 06/10 09:52 갱신</span></p>"
+        },
+        {
+          "text": "조회 기간",
+          "html": "<p><span style=\"font-size: 16px;\">조회 기간</span></p>",
+          "x": 781,
+          "y": 573,
+          "type": "text",
+          "standardized": true
         }
       ],
       "connectors": [],
@@ -718,5 +726,5 @@
     "06_Mobile_Design_2_901.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-10 14:56:52"
+  "updated": "2026-06-10 15:03:45"
 }
