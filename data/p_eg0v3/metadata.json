@@ -402,7 +402,7 @@
     "06_Mobile_Design_2_901.html": {
       "title": "랭킹카드 - 기능",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-10T01:44:21.249Z",
+      "updatedAt": "2026-06-10T01:44:12.983Z",
       "template": "template_mobile_ui_2.html",
       "description": [],
       "connectors": [],
@@ -418,8 +418,8 @@
   "screenOrder": [
     "프로젝트 커버.html",
     "06_Mobile_Design_2_793.html",
-    "99_Blank_798.html",
-    "06_Mobile_Design_2_901.html"
+    "06_Mobile_Design_2_901.html",
+    "99_Blank_798.html"
   ],
   "updated": "2026-06-10 10:44:21"
 }
