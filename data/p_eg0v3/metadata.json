@@ -398,6 +398,12 @@
       "connectors": [],
       "defaultTab": "editor",
       "screenDesc": ""
+    },
+    "06_Mobile_Design_2_901.html": {
+      "title": "06_Mobile_Design_2_901",
+      "type": "mobile-ui",
+      "updatedAt": "2026-06-10T01:43:10.798Z",
+      "template": "template_mobile_ui_2.html"
     }
   },
   "assignee": "최범열",
@@ -408,7 +414,8 @@
   "screenOrder": [
     "프로젝트 커버.html",
     "06_Mobile_Design_2_793.html",
-    "99_Blank_798.html"
+    "99_Blank_798.html",
+    "06_Mobile_Design_2_901.html"
   ],
   "updated": "2026-06-09 17:59:55"
 }
