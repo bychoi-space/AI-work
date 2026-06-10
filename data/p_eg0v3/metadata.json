@@ -400,10 +400,14 @@
       "screenDesc": ""
     },
     "06_Mobile_Design_2_901.html": {
-      "title": "06_Mobile_Design_2_901",
+      "title": "랭킹카드 - 기능",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-10T01:43:10.798Z",
-      "template": "template_mobile_ui_2.html"
+      "updatedAt": "2026-06-10T01:44:12.983Z",
+      "template": "template_mobile_ui_2.html",
+      "description": [],
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": ""
     }
   },
   "assignee": "최범열",
