@@ -402,7 +402,7 @@
     "06_Mobile_Design_2_901.html": {
       "title": "랭킹카드 - 옵션",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-10T02:37:00.216Z",
+      "updatedAt": "2026-06-10T02:40:51.592Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -543,17 +543,17 @@
         },
         {
           "x": 317.5,
-          "y": 490,
+          "y": 672,
           "standardized": true,
           "type": "text",
-          "text": "성별",
-          "html": "<p><span style=\"font-size: 16px;\">성별</span></p>"
+          "text": "연령",
+          "html": "<p>연령</p>"
         },
         {
-          "text": "연령",
-          "html": "<p>연령</p>",
+          "text": "성별",
+          "html": "<p><span style=\"font-size: 16px;\">성별</span></p>",
           "x": 317.5,
-          "y": 589,
+          "y": 573,
           "type": "text",
           "standardized": true
         }
@@ -574,5 +574,5 @@
     "06_Mobile_Design_2_901.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-10 11:37:00"
+  "updated": "2026-06-10 11:40:51"
 }
