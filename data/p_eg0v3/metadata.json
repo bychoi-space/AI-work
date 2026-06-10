@@ -402,7 +402,7 @@
     "06_Mobile_Design_2_901.html": {
       "title": "랭킹카드 - 옵션",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-10T06:03:45.909Z",
+      "updatedAt": "2026-06-10T06:24:30.698Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -694,18 +694,18 @@
           "standardized": true
         },
         {
-          "x": 780.5,
-          "y": 664.5,
+          "x": 775.75,
+          "y": 766.5,
           "standardized": true,
           "type": "text",
-          "text": "베스트 상품은 판매 데이터와 상품 조회 수를 종합해 산정됩니다.\n\n최근 업데이트 : 06/10 09:52 갱신",
-          "html": "<p><span style=\"font-size: 12px;\">베스트 상품은 판매 데이터와 상품 조회 수를 종합해 산정됩니다.</span></p><p><span style=\"font-size: 12px;\">최근 업데이트 : 06/10 09:52 갱신</span></p>"
+          "text": "베스트 상품은 판매 데이터와 상품 조회 수를 종합해서 산정됩니다.\n최근 업데이트 : 06/10 09:52 갱신",
+          "html": "<p><span style=\"font-size: 12px; color: rgb(136, 136, 136);\">베스트 상품은 판매 데이터와 상품 조회 수를 종합해서 산정됩니다.</span></p><p><span style=\"font-size: 12px; color: rgb(136, 136, 136);\">최근 업데이트 : 06/10 09:52 갱신</span></p>"
         },
         {
           "text": "조회 기간",
           "html": "<p><span style=\"font-size: 16px;\">조회 기간</span></p>",
           "x": 781,
-          "y": 573,
+          "y": 675,
           "type": "text",
           "standardized": true
         }
@@ -726,5 +726,5 @@
     "06_Mobile_Design_2_901.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-10 15:03:45"
+  "updated": "2026-06-10 15:24:30"
 }
