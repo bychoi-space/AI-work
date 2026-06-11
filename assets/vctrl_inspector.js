@@ -78,6 +78,8 @@ window.DOM = {
     stepperPropSection: get('stepper-inspector-section'),
     selectboxPropSection: get('selectbox-inspector-section'),
     fileuploadPropSection: get('fileupload-inspector-section'),
+    alertPropSection: get('alert-inspector-section'),
+    buttonPropSection: get('button-inspector-section'),
     textColorPicker: get('text-color-picker'),
     colorPresets: document.querySelectorAll('.color-preset'),
 
@@ -213,7 +215,20 @@ window.updateProperties = function(compStyles) {
 
         state.isEditing = true;
         state.editingIndex = (compStyles.pinIndex !== undefined && compStyles.pinIndex !== -1) ? compStyles.pinIndex : compStyles.id;
-        state.editingType = compStyles.isPin ? 'pin' : (compStyles.isTable ? 'table' : (compStyles.isShape ? 'shape' : (compStyles.isConnector ? 'line' : (compStyles.isIcon ? 'icon' : (compStyles.isTextbox ? 'textbox' : (compStyles.isTextarea ? 'textarea' : (compStyles.isStepper ? 'stepper' : (compStyles.isSelectbox ? 'selectbox' : (compStyles.isFileUpload ? 'fileupload' : 'comp')))))))));
+        let type = 'comp';
+        if (compStyles.isPin) type = 'pin';
+        else if (compStyles.isTable) type = 'table';
+        else if (compStyles.isShape) type = 'shape';
+        else if (compStyles.isConnector) type = 'line';
+        else if (compStyles.isIcon) type = 'icon';
+        else if (compStyles.isTextbox) type = 'textbox';
+        else if (compStyles.isTextarea) type = 'textarea';
+        else if (compStyles.isStepper) type = 'stepper';
+        else if (compStyles.isSelectbox) type = 'selectbox';
+        else if (compStyles.isFileUpload) type = 'fileupload';
+        else if (compStyles.isAlert) type = 'alert';
+        else if (compStyles.isButton) type = 'button';
+        state.editingType = type;
 
         // Hide all sections first
         if (DOM.textPropSection) DOM.textPropSection.style.display = 'none';
@@ -226,6 +241,8 @@ window.updateProperties = function(compStyles) {
         if (DOM.stepperPropSection) DOM.stepperPropSection.style.display = 'none';
         if (DOM.selectboxPropSection) DOM.selectboxPropSection.style.display = 'none';
         if (DOM.fileuploadPropSection) DOM.fileuploadPropSection.style.display = 'none';
+        if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'none';
+        if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'none';
 
         // Show relevant section
         if (state.editingType === 'pin') {
@@ -258,6 +275,12 @@ window.updateProperties = function(compStyles) {
         } else if (state.editingType === 'fileupload') {
             if (DOM.fileuploadPropSection) DOM.fileuploadPropSection.style.display = 'block';
             _syncFileuploadProps(compStyles);
+        } else if (state.editingType === 'alert') {
+            if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'block';
+            _syncAlertProps(compStyles);
+        } else if (state.editingType === 'button') {
+            if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'block';
+            _syncButtonProps(compStyles);
         }
 
         // CONTENT EDITOR 헤더 레이블 동적 변경
@@ -311,6 +334,8 @@ window.updateProperties = function(compStyles) {
         if (DOM.stepperPropSection) DOM.stepperPropSection.style.display = 'none';
         if (DOM.selectboxPropSection) DOM.selectboxPropSection.style.display = 'none';
         if (DOM.fileuploadPropSection) DOM.fileuploadPropSection.style.display = 'none';
+        if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'none';
+        if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'none';
     }
 };
 
@@ -440,6 +465,83 @@ function _syncFileuploadProps(comp) {
     }
 }
 
+function _syncAlertProps(comp) {
+    const msgText = document.getElementById('prop-alert-message');
+    if (msgText && comp.alertMessage !== undefined) {
+        msgText.value = comp.alertMessage;
+    }
+    
+    const count = comp.alertBtnCount || 1;
+    for (let i = 1; i <= 3; i++) {
+        const btn = document.getElementById('btn-alert-count-' + i);
+        if (btn) {
+            const isActive = count === i;
+            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+            btn.style.fontWeight = isActive ? 'bold' : 'normal';
+        }
+    }
+    
+    const btn1 = document.getElementById('prop-alert-btn-1');
+    if (btn1 && comp.alertBtnText1 !== undefined) btn1.value = comp.alertBtnText1;
+    const style1 = comp.alertBtnStyle1 || 'normal';
+    const sel1 = document.getElementById('prop-alert-btn-style-1');
+    if (sel1) sel1.value = style1;
+    
+    const btn2 = document.getElementById('prop-alert-btn-2');
+    if (btn2 && comp.alertBtnText2 !== undefined) btn2.value = comp.alertBtnText2;
+    const style2 = comp.alertBtnStyle2 || 'normal';
+    const sel2 = document.getElementById('prop-alert-btn-style-2');
+    if (sel2) sel2.value = style2;
+    const btn2Container = document.getElementById('prop-alert-btn-2-container');
+    if (btn2Container) btn2Container.style.display = count >= 2 ? 'flex' : 'none';
+    
+    const btn3 = document.getElementById('prop-alert-btn-3');
+    if (btn3 && comp.alertBtnText3 !== undefined) btn3.value = comp.alertBtnText3;
+    const style3 = comp.alertBtnStyle3 || 'normal';
+    const sel3 = document.getElementById('prop-alert-btn-style-3');
+    if (sel3) sel3.value = style3;
+    const btn3Container = document.getElementById('prop-alert-btn-3-container');
+    if (btn3Container) btn3Container.style.display = count >= 3 ? 'flex' : 'none';
+}
+
+function _syncButtonProps(comp) {
+    const txtInput = document.getElementById('prop-button-text');
+    if (txtInput && comp.buttonText !== undefined) {
+        txtInput.value = comp.buttonText;
+    }
+    
+    const selStyle = document.getElementById('prop-button-style');
+    if (selStyle && comp.buttonStyle !== undefined) {
+        selStyle.value = comp.buttonStyle;
+        const customColorsDiv = document.getElementById('prop-button-custom-colors');
+        if (customColorsDiv) {
+            customColorsDiv.style.display = (comp.buttonStyle === 'custom') ? 'block' : 'none';
+        }
+    }
+    
+    const radiusSlider = document.getElementById('prop-button-border-radius');
+    const radiusTxt = document.getElementById('txt-button-border-radius');
+    if (radiusSlider && comp.buttonRadius !== undefined) {
+        const r = parseInt(comp.buttonRadius) || 0;
+        radiusSlider.value = r;
+        if (radiusTxt) radiusTxt.innerText = r;
+    }
+
+    if (comp.buttonStyle === 'custom' && comp.currentStyles) {
+        const s = comp.currentStyles;
+        const syncColorLocal = (id, wrapperId, color, isTransparent) => {
+            const picker = document.getElementById(id);
+            const wrapper = document.getElementById(wrapperId);
+            if (picker && color) picker.value = color;
+            if (wrapper) wrapper.classList.toggle('transparent-active', isTransparent);
+        };
+        syncColorLocal('prop-button-bg-color', 'button-bg-wrapper', s.bg, s.isBgTransparent);
+        syncColorLocal('prop-button-border-color', 'button-border-wrapper', s.border, s.isBorderTransparent);
+        syncColorLocal('prop-button-text-color', 'button-text-wrapper', s.text, false);
+    }
+}
 
 function _syncTextboxTextareaProps(comp) {
     const activeY = document.getElementById('btn-input-counter-y');

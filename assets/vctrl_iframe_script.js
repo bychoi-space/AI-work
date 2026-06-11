@@ -172,6 +172,26 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
     width: 100% !important;
     height: 100% !important;
 }
+.v4-alert-btn.style-primary { background: #4f46e5 !important; border-color: #4f46e5 !important; color: #ffffff !important; }
+.v4-alert-btn.style-normal { background: #ffffff !important; border-color: #cbd5e1 !important; color: #1f2937 !important; }
+.v4-alert-btn.style-negative { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #475569 !important; }
+.v4-custom-btn {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18) !important;
+    transition: all 0.2s ease !important;
+}
+.v4-custom-btn:hover {
+    filter: brightness(0.95);
+    transform: translateY(-1.2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25) !important;
+}
+.v4-custom-btn:active {
+    transform: translateY(0.8px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) !important;
+}
+.v4-custom-btn.style-primary { background: #4f46e5 !important; border-color: #4f46e5 !important; color: #ffffff !important; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35) !important; }
+.v4-custom-btn.style-primary:hover { box-shadow: 0 6px 18px rgba(79, 70, 229, 0.5) !important; }
+.v4-custom-btn.style-normal { background: #ffffff !important; border-color: #cbd5e1 !important; color: #1f2937 !important; }
+.v4-custom-btn.style-negative { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #475569 !important; }
 `;
 
 window.v4UndoScript = `
@@ -504,8 +524,28 @@ window.v4Script = `
         const fileButtonText = fileuploadContainer ? (fileuploadContainer.getAttribute('data-button-text') || "파일첨부") : "파일첨부";
         const filePlaceholder = fileuploadContainer ? (fileuploadContainer.getAttribute('data-placeholder') || "선택된 파일 없음") : "선택된 파일 없음";
 
+        // Alert Atom Detection
+        const isAlert = !!c.querySelector('.v4-alert-container') || c.classList.contains('v4-alert-container');
+        const alertContainer = c.querySelector('.v4-alert-container') || (isAlert ? c : null);
+        const alertMessage = alertContainer ? (alertContainer.getAttribute('data-message') || "얼럿 메시지 입력 표시") : "얼럿 메시지 입력 표시";
+        const alertBtnCount = alertContainer ? parseInt(alertContainer.getAttribute('data-btn-count')) || 1 : 1;
+        const alertBtnText1 = alertContainer ? (alertContainer.getAttribute('data-btn-text-1') || "확인") : "확인";
+        const alertBtnText2 = alertContainer ? (alertContainer.getAttribute('data-btn-text-2') || "취소") : "취소";
+        const alertBtnText3 = alertContainer ? (alertContainer.getAttribute('data-btn-text-3') || "저장") : "저장";
+        const alertBtnStyle1 = alertContainer ? (alertContainer.getAttribute('data-btn-style-1') || "normal") : "normal";
+        const alertBtnStyle2 = alertContainer ? (alertContainer.getAttribute('data-btn-style-2') || "normal") : "normal";
+        const alertBtnStyle3 = alertContainer ? (alertContainer.getAttribute('data-btn-style-3') || "normal") : "normal";
+
+        // Button Atom Detection
+        const isButton = !!c.querySelector('.v4-btn-container') || c.classList.contains('v4-btn-container');
+        const btnContainer = c.querySelector('.v4-btn-container') || (isButton ? c : null);
+        const buttonText = btnContainer ? (btnContainer.getAttribute('data-text') || "버튼") : "버튼";
+        const buttonStyle = btnContainer ? (btnContainer.getAttribute('data-btn-style') || "normal") : "normal";
+        const buttonRadius = btnContainer ? (btnContainer.getAttribute('data-btn-radius') || "6") : "6";
+
         // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
         const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
+        const buttonEl = c.querySelector('.v4-custom-btn');
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
@@ -561,28 +601,41 @@ window.v4Script = `
             fileName: fileName,
             fileButtonText: fileButtonText,
             filePlaceholder: filePlaceholder,
+            isAlert: isAlert,
+            alertMessage: alertMessage,
+            alertBtnCount: alertBtnCount,
+            alertBtnText1: alertBtnText1,
+            alertBtnText2: alertBtnText2,
+            alertBtnText3: alertBtnText3,
+            alertBtnStyle1: alertBtnStyle1,
+            alertBtnStyle2: alertBtnStyle2,
+            alertBtnStyle3: alertBtnStyle3,
+            isButton: isButton,
+            buttonText: buttonText,
+            buttonStyle: buttonStyle,
+            buttonRadius: buttonRadius,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : "")))))))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))))))),
-                text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : (alertContainer ? _getVal(alertContainer, "backgroundColor") : "")))))))))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (buttonEl ? _getVal(buttonEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor") : (alertContainer ? _getVal(alertContainer, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))))))))),
+                text: _rgb2hex(textCell ? _getVal(textCell, "color") : (buttonEl ? _getVal(buttonEl, "color") : "")),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 12 : 12),
                 fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
-                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : 0),
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : "")))))))),
+                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : (buttonEl ? (parseInt(_getVal(buttonEl, "borderRadius")) || 0) : 0)),
+                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : (alertContainer ? _getVal(alertContainer, "backgroundColor") : "")))))))))),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : ""))))));
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : "")))))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : ""))))));
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (buttonEl ? _getVal(buttonEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : "")))))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
@@ -1525,6 +1578,100 @@ window.v4Script = `
                 markDirty();
             }
         }
+        else if (d.type === 'LF_UPDATE_ALERT_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-alert-container') || (s.classList.contains('v4-alert-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.messageText !== undefined) {
+                    container.setAttribute('data-message', d.messageText);
+                    const msgEl = container.querySelector('.v4-alert-message');
+                    if (msgEl) msgEl.innerHTML = d.messageText.replace(/\\n/g, '<br>');
+                }
+                if (d.btnCount !== undefined) {
+                    container.setAttribute('data-btn-count', d.btnCount);
+                }
+                if (d.btnText1 !== undefined) {
+                    container.setAttribute('data-btn-text-1', d.btnText1);
+                    const btn = container.querySelector('.v4-alert-btn-1');
+                    if (btn) btn.innerText = d.btnText1;
+                }
+                if (d.btnText2 !== undefined) {
+                    container.setAttribute('data-btn-text-2', d.btnText2);
+                    const btn = container.querySelector('.v4-alert-btn-2');
+                    if (btn) btn.innerText = d.btnText2;
+                }
+                if (d.btnText3 !== undefined) {
+                    container.setAttribute('data-btn-text-3', d.btnText3);
+                    const btn = container.querySelector('.v4-alert-btn-3');
+                    if (btn) btn.innerText = d.btnText3;
+                }
+                if (d.btnStyle1 !== undefined) container.setAttribute('data-btn-style-1', d.btnStyle1);
+                if (d.btnStyle2 !== undefined) container.setAttribute('data-btn-style-2', d.btnStyle2);
+                if (d.btnStyle3 !== undefined) container.setAttribute('data-btn-style-3', d.btnStyle3);
+                
+                // Update button visibility and style classes
+                const count = parseInt(container.getAttribute('data-btn-count')) || 1;
+                const btn1 = container.querySelector('.v4-alert-btn-1');
+                const btn2 = container.querySelector('.v4-alert-btn-2');
+                const btn3 = container.querySelector('.v4-alert-btn-3');
+                if (btn1) {
+                    btn1.style.display = count >= 1 ? 'flex' : 'none';
+                    const style1 = container.getAttribute('data-btn-style-1') || 'normal';
+                    btn1.className = 'v4-alert-btn v4-alert-btn-1 style-' + style1;
+                }
+                if (btn2) {
+                    btn2.style.display = count >= 2 ? 'flex' : 'none';
+                    const style2 = container.getAttribute('data-btn-style-2') || 'normal';
+                    btn2.className = 'v4-alert-btn v4-alert-btn-2 style-' + style2;
+                }
+                if (btn3) {
+                    btn3.style.display = count >= 3 ? 'flex' : 'none';
+                    const style3 = container.getAttribute('data-btn-style-3') || 'normal';
+                    btn3.className = 'v4-alert-btn v4-alert-btn-3 style-' + style3;
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_BUTTON_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-btn-container') || (s.classList.contains('v4-btn-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.buttonText !== undefined) {
+                    container.setAttribute('data-text', d.buttonText);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) btn.innerText = d.buttonText;
+                }
+                if (d.buttonStyle !== undefined) {
+                    container.setAttribute('data-btn-style', d.buttonStyle);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) {
+                        const targetClass = 'v4-custom-btn style-' + d.buttonStyle;
+                        if (btn.className !== targetClass) btn.className = targetClass;
+                    }
+                }
+                if (d.buttonRadius !== undefined) {
+                    container.setAttribute('data-btn-radius', d.buttonRadius);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) {
+                        const targetRadius = d.buttonRadius + 'px';
+                        if (btn.style.borderRadius !== targetRadius) btn.style.borderRadius = targetRadius;
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                markDirty();
+            }
+        }
         else if (d.type === 'LF_UPDATE_TEXTBOX_PROPERTIES') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-textbox-container, .v4-textarea-container') || (s.classList.contains('v4-textbox-container') || s.classList.contains('v4-textarea-container') ? s : null);
@@ -1589,6 +1736,17 @@ window.v4Script = `
             if (inputContainer && !d.selector) {
                 t = inputContainer;
             }
+            // Alert style redirection for BG & Border coloring
+            const alertContainer = s.querySelector('.v4-alert-container');
+            if (alertContainer && !d.selector) {
+                t = alertContainer;
+            }
+            // Button style redirection for BG & Border coloring
+            const buttonContainer = s.querySelector('.v4-btn-container');
+            const customBtn = s.querySelector('.v4-custom-btn');
+            if (buttonContainer && customBtn && !d.selector) {
+                t = customBtn;
+            }
             if (!t) return;
             
             if (d.style) {
@@ -1607,6 +1765,8 @@ window.v4Script = `
                     } else {
                         s.style.width = d.style.width;
                         if (inputContainer) inputContainer.style.width = '100%';
+                        if (alertContainer) alertContainer.style.width = '100%';
+                        if (buttonContainer) buttonContainer.style.width = '100%';
                     }
                 }
                 if (d.style.height !== undefined) {
@@ -1615,6 +1775,8 @@ window.v4Script = `
                     } else {
                         s.style.height = d.style.height;
                         if (inputContainer) inputContainer.style.height = '100%';
+                        if (alertContainer) alertContainer.style.height = '100%';
+                        if (buttonContainer) buttonContainer.style.height = '100%';
                     }
                 }
 
@@ -2433,6 +2595,95 @@ window.v4Script = `
                 
                 if (fileupload.style.width !== '100%') fileupload.style.width = '100%';
                 if (fileupload.style.height !== '100%') fileupload.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize Alert to fit content dynamically ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const alert = c.querySelector('.v4-alert-container');
+            if (alert) {
+                const btn1 = alert.querySelector('.v4-alert-btn-1');
+                const btn2 = alert.querySelector('.v4-alert-btn-2');
+                const btn3 = alert.querySelector('.v4-alert-btn-3');
+                if (btn1) {
+                    const style1 = alert.getAttribute('data-btn-style-1') || 'normal';
+                    const targetClass = 'v4-alert-btn v4-alert-btn-1 style-' + style1;
+                    if (btn1.className !== targetClass) btn1.className = targetClass;
+                }
+                if (btn2) {
+                    const style2 = alert.getAttribute('data-btn-style-2') || 'normal';
+                    const targetClass = 'v4-alert-btn v4-alert-btn-2 style-' + style2;
+                    if (btn2.className !== targetClass) btn2.className = targetClass;
+                }
+                if (btn3) {
+                    const style3 = alert.getAttribute('data-btn-style-3') || 'normal';
+                    const targetClass = 'v4-alert-btn v4-alert-btn-3 style-' + style3;
+                    if (btn3.className !== targetClass) btn3.className = targetClass;
+                }
+
+                if (c.getAttribute('data-resized') !== 'true') {
+                    const header = alert.querySelector('.v4-alert-header');
+                    const msgEl = alert.querySelector('.v4-alert-message');
+                    const buttonsEl = alert.querySelector('.v4-alert-buttons');
+                    
+                    const headerH = header ? header.offsetHeight : 32;
+                    const msgH = msgEl ? msgEl.scrollHeight : 21;
+                    const msgMargin = msgEl ? 14 : 0;
+                    const buttonsH = buttonsEl ? buttonsEl.offsetHeight : 28;
+                    const paddingH = 32; // 16px top + 16px bottom
+                    
+                    const targetH = headerH + paddingH + msgH + msgMargin + buttonsH + 2; // +2 for border
+                    const finalHeight = Math.max(120, targetH) + 'px';
+                    
+                    if (c.style.height !== finalHeight) c.style.height = finalHeight;
+                    if (alert.style.height !== '100%') alert.style.height = '100%';
+                    if (alert.style.width !== '100%') alert.style.width = '100%';
+                } else {
+                    if (alert.style.width !== '100%') alert.style.width = '100%';
+                    if (alert.style.height !== '100%') alert.style.height = '100%';
+                }
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize & sync Custom Button Atom ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const btnContainer = c.querySelector('.v4-btn-container');
+            if (btnContainer) {
+                const btn = btnContainer.querySelector('.v4-custom-btn');
+                if (btn) {
+                    const style = btnContainer.getAttribute('data-btn-style') || 'normal';
+                    const text = btnContainer.getAttribute('data-text') || '버튼';
+                    const radius = btnContainer.getAttribute('data-btn-radius') || '6';
+                    
+                    const targetClass = 'v4-custom-btn style-' + style;
+                    const targetRadius = radius + 'px';
+                    
+                    if (btn.className !== targetClass) btn.className = targetClass;
+                    if (btn.style.borderRadius !== targetRadius) btn.style.borderRadius = targetRadius;
+                    if (btn.innerText !== text) btn.innerText = text;
+
+                    if (style !== 'custom') {
+                        if (btn.style.backgroundColor !== '') btn.style.backgroundColor = '';
+                        if (btn.style.borderColor !== '') btn.style.borderColor = '';
+                        if (btn.style.color !== '') btn.style.color = '';
+                    }
+
+                    if (btn.style.borderWidth !== '1.6px') btn.style.setProperty('border-width', '1.6px', 'important');
+                    if (btn.style.borderStyle !== 'solid') btn.style.setProperty('border-style', 'solid', 'important');
+                }
+                
+                if (c.getAttribute('data-resized') !== 'true') {
+                    const targetW = '80px';
+                    const targetH = '40px';
+                    if (c.style.width !== targetW) c.style.width = targetW;
+                    if (c.style.height !== targetH) c.style.height = targetH;
+                }
+                
+                if (btnContainer.style.width !== '100%') btnContainer.style.width = '100%';
+                if (btnContainer.style.height !== '100%') btnContainer.style.height = '100%';
                 
                 updateHandles(c);
             }

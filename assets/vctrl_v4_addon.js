@@ -51,6 +51,12 @@
             } else if (item.id === 'v4-atom-fileupload') {
                 style.width = '300px';
                 style.height = '30px';
+            } else if (item.id === 'v4-atom-alert') {
+                style.width = '250px';
+                style.height = '120px';
+            } else if (item.id === 'v4-atom-button') {
+                style.width = '80px';
+                style.height = '40px';
             } else {
                 style.width = isIcon ? '40px' : '120px';
                 style.height = '40px';
@@ -382,7 +388,9 @@
         { btn: 'btn-shape-bg-none', wrapper: 'shape-bg-wrapper', selector: '.v4-shape', style: { background: 'transparent', backgroundColor: 'transparent' } },
         { btn: 'btn-shape-border-none', wrapper: 'shape-border-wrapper', selector: '.v4-shape', style: { borderColor: 'transparent' } },
         { btn: 'btn-table-border-none', wrapper: 'table-border-wrapper', selector: '.v4-table', style: { borderColor: 'transparent' } },
-        { btn: 'btn-icon-border-none', wrapper: 'icon-border-wrapper', selector: '.lf-icon', style: { borderColor: 'transparent' } }
+        { btn: 'btn-icon-border-none', wrapper: 'icon-border-wrapper', selector: '.lf-icon', style: { borderColor: 'transparent' } },
+        { btn: 'btn-button-bg-none', wrapper: 'button-bg-wrapper', selector: '', style: { background: 'transparent', backgroundColor: 'transparent' } },
+        { btn: 'btn-button-border-none', wrapper: 'button-border-wrapper', selector: '', style: { borderColor: 'transparent' } }
     ];
 
     transparencyConfig.forEach(conf => {
@@ -414,7 +422,9 @@
         { id: 'shape-bg-color', wrapper: 'shape-bg-wrapper' },
         { id: 'shape-border-color', wrapper: 'shape-border-wrapper' },
         { id: 'table-border-color', wrapper: 'table-border-wrapper' },
-        { id: 'icon-border-color', wrapper: 'icon-border-wrapper' }
+        { id: 'icon-border-color', wrapper: 'icon-border-wrapper' },
+        { id: 'prop-button-bg-color', wrapper: 'button-bg-wrapper' },
+        { id: 'prop-button-border-color', wrapper: 'button-border-wrapper' }
     ];
 
     colorIds.forEach(item => {
@@ -540,6 +550,72 @@
                     if (activeY && activeN && data.showCounter !== undefined) {
                         highlightActive(activeY, data.showCounter === true);
                         highlightActive(activeN, data.showCounter === false);
+                    }
+                }
+
+                // Sync Alert BG & Border colors and Properties
+                if (data.isAlert) {
+                    const msgInput = document.getElementById('prop-alert-message');
+                    if (msgInput && data.alertMessage !== undefined) {
+                        msgInput.value = data.alertMessage;
+                    }
+                    
+                    const count = data.alertBtnCount || 1;
+                    for (let i = 1; i <= 3; i++) {
+                        const btn = document.getElementById('btn-alert-count-' + i);
+                        if (btn) {
+                            const isActive = count === i;
+                            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+                            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+                            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+                            btn.style.fontWeight = isActive ? 'bold' : 'normal';
+                        }
+                    }
+                    
+                    const btn1 = document.getElementById('prop-alert-btn-1');
+                    if (btn1 && data.alertBtnText1 !== undefined) btn1.value = data.alertBtnText1;
+                    const sel1 = document.getElementById('prop-alert-btn-style-1');
+                    if (sel1 && data.alertBtnStyle1 !== undefined) sel1.value = data.alertBtnStyle1;
+                    
+                    const btn2 = document.getElementById('prop-alert-btn-2');
+                    if (btn2 && data.alertBtnText2 !== undefined) btn2.value = data.alertBtnText2;
+                    const sel2 = document.getElementById('prop-alert-btn-style-2');
+                    if (sel2 && data.alertBtnStyle2 !== undefined) sel2.value = data.alertBtnStyle2;
+                    const btn2Container = document.getElementById('prop-alert-btn-2-container');
+                    if (btn2Container) btn2Container.style.display = count >= 2 ? 'flex' : 'none';
+                    
+                    const btn3 = document.getElementById('prop-alert-btn-3');
+                    if (btn3 && data.alertBtnText3 !== undefined) btn3.value = data.alertBtnText3;
+                    const sel3 = document.getElementById('prop-alert-btn-style-3');
+                    if (sel3 && data.alertBtnStyle3 !== undefined) sel3.value = data.alertBtnStyle3;
+                    const btn3Container = document.getElementById('prop-alert-btn-3-container');
+                    if (btn3Container) btn3Container.style.display = count >= 3 ? 'flex' : 'none';
+                }
+
+                // Sync Button BG & Border colors and Properties
+                if (data.isButton) {
+                    const txtInput = document.getElementById('prop-button-text');
+                    if (txtInput && data.buttonText !== undefined) {
+                        txtInput.value = data.buttonText;
+                    }
+                    const selStyle = document.getElementById('prop-button-style');
+                    if (selStyle && data.buttonStyle !== undefined) {
+                        selStyle.value = data.buttonStyle;
+                        const customColorsDiv = document.getElementById('prop-button-custom-colors');
+                        if (customColorsDiv) {
+                            customColorsDiv.style.display = (data.buttonStyle === 'custom') ? 'block' : 'none';
+                        }
+                    }
+                    const radiusSlider = document.getElementById('prop-button-border-radius');
+                    const radiusTxt = document.getElementById('txt-button-border-radius');
+                    if (radiusSlider && data.buttonRadius !== undefined) {
+                        radiusSlider.value = data.buttonRadius;
+                        if (radiusTxt) radiusTxt.innerText = data.buttonRadius;
+                    }
+                    if (data.buttonStyle === 'custom') {
+                        syncColor('prop-button-bg-color', 'button-bg-wrapper', s.bg, s.isBgTransparent);
+                        syncColor('prop-button-border-color', 'button-border-wrapper', s.border, s.isBorderTransparent);
+                        syncColor('prop-button-text-color', 'button-text-wrapper', s.text, false);
                     }
                 }
 
@@ -1062,6 +1138,142 @@
     };
     initFileuploadEvents();
 
+    // Alert Inspector Events
+    const initAlertEvents = () => {
+        const notifyIframe = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                MessageHub.send(iframe.contentWindow, data.type, data);
+            }
+        };
+
+        const msgInput = document.getElementById('prop-alert-message');
+        if (msgInput) {
+            msgInput.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', messageText: msgInput.value });
+            };
+        }
+
+        const countBtns = [1, 2, 3];
+        countBtns.forEach(c => {
+            const btn = document.getElementById('btn-alert-count-' + c);
+            if (btn) {
+                btn.onclick = () => {
+                    // Update active styles
+                    countBtns.forEach(idx => {
+                        const b = document.getElementById('btn-alert-count-' + idx);
+                        if (b) {
+                            const isActive = idx === c;
+                            b.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+                            b.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+                            b.style.color = isActive ? '#00e5ff' : '#94a3b8';
+                            b.style.fontWeight = isActive ? 'bold' : 'normal';
+                        }
+                    });
+                    
+                    // Show/hide containers
+                    const btn2Container = document.getElementById('prop-alert-btn-2-container');
+                    if (btn2Container) btn2Container.style.display = c >= 2 ? 'flex' : 'none';
+                    const btn3Container = document.getElementById('prop-alert-btn-3-container');
+                    if (btn3Container) btn3Container.style.display = c >= 3 ? 'flex' : 'none';
+                    
+                    notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', btnCount: c });
+                };
+            }
+        });
+
+        const btn1Input = document.getElementById('prop-alert-btn-1');
+        if (btn1Input) {
+            btn1Input.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', btnText1: btn1Input.value });
+            };
+        }
+        const btn1Style = document.getElementById('prop-alert-btn-style-1');
+        if (btn1Style) {
+            btn1Style.onchange = () => {
+                notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', btnStyle1: btn1Style.value });
+            };
+        }
+
+        const btn2Input = document.getElementById('prop-alert-btn-2');
+        if (btn2Input) {
+            btn2Input.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', btnText2: btn2Input.value });
+            };
+        }
+        const btn2Style = document.getElementById('prop-alert-btn-style-2');
+        if (btn2Style) {
+            btn2Style.onchange = () => {
+                notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', btnStyle2: btn2Style.value });
+            };
+        }
+
+        const btn3Input = document.getElementById('prop-alert-btn-3');
+        if (btn3Input) {
+            btn3Input.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', btnText3: btn3Input.value });
+            };
+        }
+        const btn3Style = document.getElementById('prop-alert-btn-style-3');
+        if (btn3Style) {
+            btn3Style.onchange = () => {
+                notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', btnStyle3: btn3Style.value });
+            };
+        }
+    };
+    initAlertEvents();
+
+    // Button Inspector Events
+    const initButtonEvents = () => {
+        const notifyIframe = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                MessageHub.send(iframe.contentWindow, data.type, data);
+            }
+        };
+
+        const textInput = document.getElementById('prop-button-text');
+        if (textInput) {
+            textInput.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_BUTTON_PROPERTIES', buttonText: textInput.value });
+            };
+        }
+
+        const styleSelect = document.getElementById('prop-button-style');
+        if (styleSelect) {
+            styleSelect.onchange = () => {
+                const isCustom = styleSelect.value === 'custom';
+                const customColorsDiv = document.getElementById('prop-button-custom-colors');
+                if (customColorsDiv) customColorsDiv.style.display = isCustom ? 'block' : 'none';
+                notifyIframe({ type: 'LF_UPDATE_BUTTON_PROPERTIES', buttonStyle: styleSelect.value });
+            };
+        }
+
+        bindStyleUpdate('prop-button-bg-color', (val) => ({
+            type: 'LF_UPDATE_STYLE',
+            style: { background: val, backgroundColor: val }
+        }));
+        bindStyleUpdate('prop-button-border-color', (val) => ({
+            type: 'LF_UPDATE_STYLE',
+            style: { borderColor: val }
+        }));
+        bindStyleUpdate('prop-button-text-color', (val) => ({
+            type: 'LF_UPDATE_STYLE',
+            style: { color: val }
+        }));
+
+        const radiusSlider = document.getElementById('prop-button-border-radius');
+        if (radiusSlider) {
+            radiusSlider.oninput = () => {
+                const val = radiusSlider.value;
+                const txt = document.getElementById('txt-button-border-radius');
+                if (txt) txt.innerText = val;
+                notifyIframe({ type: 'LF_UPDATE_BUTTON_PROPERTIES', buttonRadius: val });
+            };
+        }
+    };
+    initButtonEvents();
+
     // Layer Ordering Actions (Bring Front / Send Back)
     const btnBringFront = document.getElementById('btn-bring-front-action');
     if (btnBringFront) {
@@ -1081,10 +1293,14 @@
         const shapeSect = document.getElementById('shape-inspector-section');
         const actions = document.getElementById('comp-actions-section');
         const fileuploadSect = document.getElementById('fileupload-inspector-section');
+        const alertSect = document.getElementById('alert-inspector-section');
+        const buttonSect = document.getElementById('button-inspector-section');
         if (tableSect) tableSect.style.display = 'none';
         if (shapeSect) shapeSect.style.display = 'none';
         if (actions) actions.style.display = 'none';
         if (fileuploadSect) fileuploadSect.style.display = 'none';
+        if (alertSect) alertSect.style.display = 'none';
+        if (buttonSect) buttonSect.style.display = 'none';
         notifyIframe({ type: 'LF_DESELECT_ALL' });
     };
 

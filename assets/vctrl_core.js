@@ -464,19 +464,19 @@ window.handleGlobalSave = async function() {
 
     if (state.isReadOnly) return window.showAuthModal?.();
     
-    // 1. Get revision history message with Prompt (Default "Y")
-    let changeMsg = "Y";
+    // 1. Get revision history message with Prompt (Default "")
+    let changeMsg = "";
     if (window.Notification && typeof window.Notification.prompt === 'function') {
         const res = await window.Notification.prompt(
-            "이번 재개정(저장)의 상세 변경 사유를 입력해주세요.", 
-            "Y", 
+            "이번 재개정(저장)의 상세 변경 사유를 입력해주세요. (입력하지 않으면 이력이 기록되지 않습니다.)", 
+            "", 
             "재개정 이력 기록"
         );
         if (res === null) {
             console.log("[Save] Save cancelled by user in prompt.");
             return; // Cancel saving
         }
-        changeMsg = res.trim() || "Y";
+        changeMsg = res.trim();
     }
 
     const overlay = document.getElementById('save-overlay');
@@ -586,20 +586,24 @@ window.handleGlobalSave = async function() {
 
             // history.json 이력 저장 처리
             try {
-                const historyEntry = {
-                    date: updatedTimeStr,
-                    file: activeFileName || 'n/a',
-                    version: nextVer || (state.projectMetadata.screens?.[activeFileName]?.version || '0.1'),
-                    assignee: projectMeta.assignee,
-                    developer: projectMeta.developer,
-                    jira: projectMeta.jira,
-                    message: changeMsg
-                };
+                if (changeMsg) {
+                    const historyEntry = {
+                        date: updatedTimeStr,
+                        file: activeFileName || 'n/a',
+                        version: nextVer || (state.projectMetadata.screens?.[activeFileName]?.version || '0.1'),
+                        assignee: projectMeta.assignee,
+                        developer: projectMeta.developer,
+                        jira: projectMeta.jira,
+                        message: changeMsg
+                    };
 
-                if (typeof window.fetchProjectHistory === 'function' && typeof window.saveProjectHistory === 'function') {
-                    const historyList = await window.fetchProjectHistory(state.currentProject);
-                    historyList.unshift(historyEntry); // 최신이 가장 위로
-                    await window.saveProjectHistory(state.currentProject, historyList, null);
+                    if (typeof window.fetchProjectHistory === 'function' && typeof window.saveProjectHistory === 'function') {
+                        const historyList = await window.fetchProjectHistory(state.currentProject);
+                        historyList.unshift(historyEntry); // 최신이 가장 위로
+                        await window.saveProjectHistory(state.currentProject, historyList, null);
+                    }
+                } else {
+                    console.log("[Save] Save completed without writing history (reason is empty).");
                 }
             } catch (err) {
                 console.error("Failed to append project revision history:", err);

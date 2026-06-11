@@ -758,6 +758,14 @@
                             <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">file_upload</span>
                             <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">파일업로드</span>
                         </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-alert')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">report_problem</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">얼럿창</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-button')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">smart_button</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">버튼</span>
+                        </div>
                         <div class="component-item v4-card" onclick="insertAtomicComponent('image', 'LF Logo')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <div style="height: 18px; display: flex; align-items: center; justify-content: center;">
                                 <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width: 18px; filter: brightness(0) invert(1);" loading="lazy">
@@ -1136,6 +1144,138 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Alert Inspector Section -->
+                    <div id="alert-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 14px; margin-top: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">ALERT PROPERTIES</span>
+                        </div>
+                        <div class="prop-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">얼럿 메시지</label>
+                            <textarea id="prop-alert-message" rows="3" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                        <div class="prop-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">버튼 개수 설정 (1~3개)</label>
+                            <div style="display: flex; gap: 4px;">
+                                <button id="btn-alert-count-1" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">1개</button>
+                                <button id="btn-alert-count-2" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">2개</button>
+                                <button id="btn-alert-count-3" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">3개</button>
+                            </div>
+                        </div>
+                        <div class="prop-group" style="margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">버튼 설정</label>
+                            <div style="display: flex; flex-direction: column; gap: 10px;">
+                                <div style="display: flex; flex-direction: column; gap: 4px;">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 10px; color: #94a3b8; width: 45px; flex-shrink: 0;">버튼 1명</span>
+                                        <input type="text" id="prop-alert-btn-1" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; outline: none; font-family: inherit;">
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 10px; color: #94a3b8; width: 45px; flex-shrink: 0;">타입</span>
+                                        <select id="prop-alert-btn-style-1" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; outline: none; font-family: inherit; cursor: pointer;">
+                                            <option value="normal">일반형 (흰배경+검정글씨)</option>
+                                            <option value="primary">강조형 (진한배경+흰글씨)</option>
+                                            <option value="negative">부정형 (회색배경+검정글씨)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div id="prop-alert-btn-2-container" style="display: none; flex-direction: column; gap: 4px;">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 10px; color: #94a3b8; width: 45px; flex-shrink: 0;">버튼 2명</span>
+                                        <input type="text" id="prop-alert-btn-2" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; outline: none; font-family: inherit;">
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 10px; color: #94a3b8; width: 45px; flex-shrink: 0;">타입</span>
+                                        <select id="prop-alert-btn-style-2" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; outline: none; font-family: inherit; cursor: pointer;">
+                                            <option value="normal">일반형 (흰배경+검정글씨)</option>
+                                            <option value="primary">강조형 (진한배경+흰글씨)</option>
+                                            <option value="negative">부정형 (회색배경+검정글씨)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div id="prop-alert-btn-3-container" style="display: none; flex-direction: column; gap: 4px;">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 10px; color: #94a3b8; width: 45px; flex-shrink: 0;">버튼 3명</span>
+                                        <input type="text" id="prop-alert-btn-3" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; outline: none; font-family: inherit;">
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 10px; color: #94a3b8; width: 45px; flex-shrink: 0;">타입</span>
+                                        <select id="prop-alert-btn-style-3" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; outline: none; font-family: inherit; cursor: pointer;">
+                                            <option value="normal">일반형 (흰배경+검정글씨)</option>
+                                            <option value="primary">강조형 (진한배경+흰글씨)</option>
+                                            <option value="negative">부정형 (회색배경+검정글씨)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Button Inspector Section -->
+                    <div id="button-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 14px; margin-top: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">BUTTON PROPERTIES</span>
+                        </div>
+                        <div class="prop-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">버튼 텍스트</label>
+                            <input type="text" id="prop-button-text" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                        </div>
+                        <div class="prop-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">버튼 타입 설정</label>
+                            <select id="prop-button-style" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 10px; border-radius: 4px; font-size: 11px; outline: none; font-family: inherit; cursor: pointer;">
+                                <option value="normal">일반형 (흰배경+검정글씨)</option>
+                                <option value="primary">강조형 (진한배경+흰글씨)</option>
+                                <option value="negative">부정형 (회색배경+검정글씨)</option>
+                                <option value="custom">직접 설정</option>
+                            </select>
+                        </div>
+                        <!-- Custom Button Colors -->
+                        <div id="prop-button-custom-colors" style="display: none; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 12px; margin-bottom: 12px;">
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                                <div class="prop-group">
+                                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">배경색 (BG)</label>
+                                    <div style="display: flex; gap: 4px; align-items: center;">
+                                        <div class="v4-color-wrapper v4-checkerboard-bg" id="button-bg-wrapper">
+                                            <input type="color" id="prop-button-bg-color" value="#ffffff">
+                                        </div>
+                                        <button id="btn-button-bg-none" title="Transparent BG" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; box-sizing: border-box;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                    </div>
+                                </div>
+                                <div class="prop-group">
+                                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">테두리색 (Border)</label>
+                                    <div style="display: flex; gap: 4px; align-items: center;">
+                                        <div class="v4-color-wrapper v4-checkerboard-bg" id="button-border-wrapper">
+                                            <input type="color" id="prop-button-border-color" value="#cbd5e1">
+                                        </div>
+                                        <button id="btn-button-border-none" title="No Border" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; box-sizing: border-box;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                    </div>
+                                </div>
+                                <div class="prop-group">
+                                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">글자색 (Text)</label>
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="button-text-wrapper">
+                                        <input type="color" id="prop-button-text-color" value="#1f2937">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="prop-group" style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <label style="font-size: 9px; color: #94a3b8;">둥근 모서리 (Radius)</label>
+                                <span id="txt-button-border-radius" style="font-size: 10px; font-weight: bold; color: #00e5ff;">6</span>
+                            </div>
+                            <input type="range" id="prop-button-border-radius" min="0" max="100" value="6" style="width:100%; cursor: pointer;">
+                        </div>
+                        <!-- Button Dimensions -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">가로 크기 (WIDTH px)</label>
+                                <input type="number" id="prop-width-button" value="0" class="v4-prop-input" data-prop="width" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                            </div>
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">세로 크기 (HEIGHT px)</label>
+                                <input type="number" id="prop-height-button" value="0" class="v4-prop-input" data-prop="height" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Part 3: MOLECULES -->
@@ -1377,18 +1517,18 @@
     <script src="assets/app.js?v=V150_HISTORY"></script>
     
     <!-- Modularized Engine -->
-    <script src="assets/vctrl_iframe_script.js?v=V172_FILEUPLOAD_ATOM_ADD"></script>
-    <script src="assets/vctrl_core.js?v=V172_FILEUPLOAD_ATOM_ADD"></script>
+    <script src="assets/vctrl_iframe_script.js?v=V179_BUTTON_SHADOW_INTENSE"></script>
+    <script src="assets/vctrl_core.js?v=V179_BUTTON_SHADOW_INTENSE"></script>
     <script src="assets/vctrl_smartguide.js?v=V151_SPACING_CACHE"></script>
-    <script src="assets/vctrl_grouping.js?v=V172_FILEUPLOAD_ATOM_ADD"></script>
-    <script src="assets/vctrl_inspector.js?v=V172_FILEUPLOAD_ATOM_ADD"></script>
+    <script src="assets/vctrl_grouping.js?v=V179_BUTTON_SHADOW_INTENSE"></script>
+    <script src="assets/vctrl_inspector.js?v=V179_BUTTON_SHADOW_INTENSE"></script>
     <script src="assets/vctrl_v3.js?v=V156_MULTI_SELECT_REFINEMENT"></script>
     <script src="assets/vctrl_properties.js?v=V106_V5"></script>
     <script src="assets/vctrl_connectors.js?v=V116_LINE_PERSIST_FIX"></script>
     
     <!-- V4 Premium Addons -->
-    <script src="enhanced_v4/component_library_v4.js?v=V172_FILEUPLOAD_ATOM_ADD"></script>
+    <script src="enhanced_v4/component_library_v4.js?v=V179_BUTTON_SHADOW_INTENSE"></script>
     <script src="assets/vctrl_table.js?v=V134_CELL_FIX"></script>
-    <script src="assets/vctrl_v4_addon.js?v=V172_FILEUPLOAD_ATOM_ADD"></script>
+    <script src="assets/vctrl_v4_addon.js?v=V179_BUTTON_SHADOW_INTENSE"></script>
 </body>
 </html>

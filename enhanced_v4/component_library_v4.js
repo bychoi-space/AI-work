@@ -106,6 +106,37 @@ window.V4_COMPONENT_LIBRARY = {
                 </div>
                 <button class="v4-fileupload-button" style="height: 30px; padding: 0 14px; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; font-size: 12px; font-weight: 600; color: #374151; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">파일첨부</button>
             </div>`
+        },
+        {
+            id: 'v4-atom-alert',
+            name: 'Alert Window',
+            category: 'Atoms',
+            previewHtml: `<div style="display: flex; flex-direction: column; width: 80px; height: 50px; background: #ffffff; border: 1.6px solid #cccccc; border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); overflow: hidden; font-size: 8px; box-sizing: border-box;"><div style="background: #e5e7eb; height: 12px; display: flex; align-items: center; padding: 0 4px; border-bottom: 1px solid #ccc; font-weight: bold;">Alert</div><div style="flex: 1; display: flex; align-items: center; justify-content: center; font-size: 6px; color: #666; padding: 2px; text-align: center;">Message</div></div>`,
+            html: `
+            <div class="v4-alert-container" data-message="얼럿 메시지 입력 표시" data-btn-count="1" data-btn-text-1="확인" data-btn-text-2="취소" data-btn-text-3="저장" data-btn-style-1="normal" data-btn-style-2="normal" data-btn-style-3="normal" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; background: #ffffff; border: 1.6px solid #cccccc !important; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); overflow: hidden; display: flex; flex-direction: column;">
+                <div class="v4-alert-header" style="height: 32px; flex-shrink: 0; background: #e5e7eb; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1.6px solid #cccccc !important; box-sizing: border-box; width: 100%;">
+                    <span class="v4-alert-title" style="font-size: 12px; font-weight: 600; color: #374151;">Alert</span>
+                    <span class="v4-alert-close" style="cursor: pointer; color: #9ca3af; font-size: 16px; font-weight: bold; line-height: 1; display: flex; align-items: center; justify-content: center;">&times;</span>
+                </div>
+                <div class="v4-alert-content" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px 12px; box-sizing: border-box; width: 100%;">
+                    <div class="v4-alert-message" style="font-size: 13px; color: #1f2937; text-align: center; line-height: 1.4; white-space: pre-wrap; font-family: inherit; margin-bottom: 14px; word-break: break-all; width: 100%;">얼럿 메시지 입력 표시</div>
+                    <div class="v4-alert-buttons" style="display: flex; gap: 8px; justify-content: center; width: 100%; flex-wrap: nowrap; flex-shrink: 0;">
+                        <button class="v4-alert-btn v4-alert-btn-1 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">확인</button>
+                        <button class="v4-alert-btn v4-alert-btn-2 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">취소</button>
+                        <button class="v4-alert-btn v4-alert-btn-3 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">저장</button>
+                    </div>
+                </div>
+            </div>`
+        },
+        {
+            id: 'v4-atom-button',
+            name: 'Button',
+            category: 'Atoms',
+            previewHtml: `<div style="display: flex; align-items: center; justify-content: center; width: 60px; height: 30px; background: #ffffff; border: 1.6px solid #cccccc; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-size: 8px; font-weight: bold; color: #333; box-sizing: border-box;">Button</div>`,
+            html: `
+            <div class="v4-btn-container" data-text="버튼" data-btn-style="normal" data-btn-radius="6" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
+                <button class="v4-custom-btn style-normal" style="width: 100%; height: 100%; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); box-sizing: border-box; transition: all 0.2s; font-family: inherit;">버튼</button>
+            </div>`
         }
     ],
     molecules: [
