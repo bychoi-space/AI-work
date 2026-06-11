@@ -119,6 +119,10 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 .v4-stepper-container[data-disabled="true"] .v4-stepper-value { color: #9ca3af !important; }
 .v4-stepper-container[data-disabled="true"] .v4-stepper-dec, .v4-stepper-container[data-disabled="true"] .v4-stepper-inc { background-color: #e5e7eb !important; color: #9ca3af !important; }
 .v4-stepper-container[data-disabled="true"] .v4-stepper-action { background-color: #e5e7eb !important; border-color: #9ca3af !important; color: #9ca3af !important; box-shadow: none !important; }
+.v4-selectbox-container[data-dropdown-active="true"] .v4-selectbox-header { border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; }
+.v4-selectbox-container[data-dropdown-active="true"] svg { transform: rotate(180deg); }
+.v4-selectbox-option:hover { background-color: #f3f4f6 !important; cursor: pointer; }
+.v4-selectbox-option:last-child { border-bottom: none !important; }
 
 /* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
 .text-marker { 
@@ -794,8 +798,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             host.appendChild(v);
             newSelectedIds.push(newId);
         });
-        if (typeof enforceDesignSystem === 'function') {
-            enforceDesignSystem();
+        if (typeof window.enforceDesignSystem === 'function') {
+            window.enforceDesignSystem();
         } else if (typeof initHandles === 'function') {
             initHandles();
         }
@@ -849,6 +853,14 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const stepperBtnText = stepperContainer ? stepperContainer.getAttribute('data-btn-text') || "적용" : "적용";
         const stepperDisabled = stepperContainer ? stepperContainer.getAttribute('data-disabled') === 'true' : false;
         
+        // Selectbox Atom Detection
+        const isSelectbox = !!c.querySelector('.v4-selectbox-container') || c.classList.contains('v4-selectbox-container');
+        const selectboxContainer = c.querySelector('.v4-selectbox-container') || (isSelectbox ? c : null);
+        const selectboxDefaultText = selectboxContainer ? (selectboxContainer.getAttribute('data-default-text') || "선택하세요") : "선택하세요";
+        const selectboxDropdownActive = selectboxContainer ? selectboxContainer.getAttribute('data-dropdown-active') === 'true' : false;
+        const selectboxOptionsRaw = selectboxContainer ? (selectboxContainer.getAttribute('data-options') || "Option 1,Option 2,Option 3") : "Option 1,Option 2,Option 3";
+        const selectboxOptions = selectboxOptionsRaw.split(',').map(s => s.trim()).filter(Boolean);
+
         // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
         const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
         
@@ -897,14 +909,18 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             btnEnabled: stepperBtnEnabled,
             btnText: stepperBtnText,
             disabled: stepperDisabled,
+            isSelectbox: isSelectbox,
+            selectboxDefaultText: selectboxDefaultText,
+            selectboxDropdownActive: selectboxDropdownActive,
+            selectboxOptions: selectboxOptions,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : "")))))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))))),
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : ""))))))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : "")))))))),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 12 : 12),
                 fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
@@ -912,13 +928,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
                 borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : 0),
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : "")))))),
+                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : ""))))))),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : "")))));
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : ""))))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : "")))));
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : ""))))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
@@ -1159,8 +1175,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
         if (isResizing && activeEl) {
             activeEl.setAttribute('data-resized', 'true');
-            if (typeof enforceDesignSystem === 'function') {
-                enforceDesignSystem();
+            if (typeof window.enforceDesignSystem === 'function') {
+                window.enforceDesignSystem();
             }
         }
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
@@ -1776,6 +1792,48 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 markDirty();
             }
         }
+        else if (d.type === 'LF_UPDATE_SELECTBOX_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-selectbox-container') || (s.classList.contains('v4-selectbox-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.defaultText !== undefined) {
+                    container.setAttribute('data-default-text', d.defaultText);
+                    const selectedText = container.querySelector('.v4-selectbox-selected-text');
+                    if (selectedText) selectedText.innerText = d.defaultText;
+                }
+                
+                if (d.dropdownActive !== undefined) {
+                    container.setAttribute('data-dropdown-active', d.dropdownActive ? 'true' : 'false');
+                    const optionsList = container.querySelector('.v4-selectbox-options');
+                    if (optionsList) {
+                        optionsList.style.display = d.dropdownActive ? 'block' : 'none';
+                    }
+                }
+                
+                if (d.options !== undefined) {
+                    const optionsArr = Array.isArray(d.options) ? d.options : d.options.split(',');
+                    const cleanOptions = optionsArr.map(o => o.trim()).filter(Boolean);
+                    container.setAttribute('data-options', cleanOptions.join(','));
+                    
+                    const optionsList = container.querySelector('.v4-selectbox-options');
+                    if (optionsList) {
+                        optionsList.innerHTML = cleanOptions.map((opt, idx) => {
+                            const isLast = idx === cleanOptions.length - 1;
+                            const borderStyle = isLast ? '' : ' border-bottom: 1.6px solid #f3f4f6;';
+                            return '<div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151;' + borderStyle + ' box-sizing: border-box;">' + opt + '</div>';
+                        }).join('');
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                
+                markDirty();
+            }
+        }
         else if (d.type === 'LF_UPDATE_TEXTBOX_PROPERTIES') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-textbox-container, .v4-textarea-container') || (s.classList.contains('v4-textbox-container') || s.classList.contains('v4-textarea-container') ? s : null);
@@ -1815,7 +1873,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 if (input) {
                     input.dataset.eventsBound = "false";
                 }
-                if (typeof enforceDesignSystem === 'function') enforceDesignSystem();
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
             }
         }
@@ -2604,6 +2662,27 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         });
 
+        // --- Auto-resize Selectbox to fit its state container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const selectbox = c.querySelector('.v4-selectbox-container');
+            if (selectbox) {
+                const dropdownActive = selectbox.getAttribute('data-dropdown-active') === 'true';
+                const optionsRaw = selectbox.getAttribute('data-options') || "";
+                const optionsArr = optionsRaw.split(',').map(s => s.trim()).filter(Boolean);
+                
+                const targetW = '150px';
+                const targetH = dropdownActive ? (30 + (optionsArr.length * 30)) + 'px' : '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (selectbox.style.width !== '100%') selectbox.style.width = '100%';
+                if (selectbox.style.height !== '100%') selectbox.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
         // --- Setup Textbox / Textarea Interactive Events ---
         document.querySelectorAll('.v4-textbox-container, .v4-textarea-container').forEach(container => {
             const isTextarea = container.classList.contains('v4-textarea-container');
@@ -2820,15 +2899,15 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
         });
     };
-    const enforceDesignSystem = window.enforceDesignSystem;
-
     // Run immediately and setup observer for dynamic changes
-    enforceDesignSystem();
-    const observer = new MutationObserver(enforceDesignSystem);
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
-    
-    // Safety fallback for slow loads
-    setTimeout(enforceDesignSystem, 500);
+    if (typeof window.enforceDesignSystem === 'function') {
+        window.enforceDesignSystem();
+        const observer = new MutationObserver(() => window.enforceDesignSystem());
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        
+        // Safety fallback for slow loads
+        setTimeout(() => window.enforceDesignSystem(), 500);
+    }
 })();
 
 </script><div id="v4-comp-1781138009449" class="lf-component" style="position: absolute; top: 492.75px; left: 1065.5px; z-index: 1000; transform: none; width: 154px; height: 30px;">
@@ -2839,4 +2918,15 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     <button class="v4-stepper-inc" style="width: 30px; height: 100%; border: none; background: #ffffff; border-left: 1.6px solid #e5e7eb; color: #374151; font-size: 14px; font-weight: bold; cursor: pointer; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">+</button>
                 </div>
                 <button class="v4-stepper-action" style="height: 30px; padding: 0 12px; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; font-size: 12px; font-weight: 600; color: #374151; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">적용</button>
+            </div></div><div id="v4-comp-1781139638911" class="lf-component" style="position: absolute; top: 690px; left: 174px; z-index: 1000; transform: none; width: 150px; height: 30px;">
+            <div class="v4-selectbox-container" data-default-text="선택하세요" data-dropdown-active="false" data-options="Option 1,Option 2,Option 3" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
+                <div class="v4-selectbox-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; height: 30px; padding: 0 12px; box-sizing: border-box; font-size: 12px; color: #374151; cursor: pointer;">
+                    <span class="v4-selectbox-selected-text">선택하세요</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px; transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+                <div class="v4-selectbox-options" style="display: none; position: absolute; top: 28px; left: 0; width: 100%; background-color: #ffffff; border: 1.6px solid #cccccc; border-top: none; border-radius: 0 0 8px 8px; box-sizing: border-box; z-index: 1000; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 1</div>
+                    <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 2</div>
+                    <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; box-sizing: border-box;">Option 3</div>
+                </div>
             </div></div></body></html>
