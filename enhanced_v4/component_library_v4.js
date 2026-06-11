@@ -59,6 +59,53 @@ window.V4_COMPONENT_LIBRARY = {
                 <div contenteditable="true" class="v4-editable-cell v4-textarea-input" style="width: 100%; height: 100%; border: none; outline: none; background: transparent; color: #374151; font-size: 12px; resize: none; overflow-y: auto; padding: 0 0 20px 0; word-break: break-all; white-space: pre-wrap; box-sizing: border-box; font-family: inherit;"></div>
                 <div class="v4-textarea-counter" style="position: absolute; right: 12px; bottom: 8px; font-size: 11px; color: #a3a3a3; user-select: none; display: none; font-family: inherit;">0/100</div>
             </div>`
+        },
+        {
+            id: 'v4-atom-stepper',
+            name: 'Quantity Stepper',
+            category: 'Atoms',
+            previewHtml: `<div style="display: flex; align-items: center; background: #ffffff; border: 1.6px solid #cccccc; border-radius: 6px; font-size: 10px; height: 20px; padding: 0 4px; box-sizing: border-box; width: 80px; justify-content: space-between;"><span style="color: #9ca3af; font-weight: bold; cursor: default;">—</span><span style="font-weight: bold; color: #111827;">1</span><span style="color: #374151; font-weight: bold; cursor: default;">+</span></div>`,
+            html: `
+            <div class="v4-stepper-container" data-min="1" data-max="99" data-val="1" data-btn-enabled="true" data-btn-text="적용" data-disabled="false" style="position: relative; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; pointer-events: auto; user-select: none;">
+                <div class="v4-stepper-control" style="display: inline-flex; align-items: center; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; overflow: hidden; height: 30px; box-sizing: border-box;">
+                    <button class="v4-stepper-dec" style="width: 30px; height: 100%; border: none; background: #f3f4f6; color: #9ca3af; font-size: 14px; font-weight: bold; cursor: not-allowed; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">—</button>
+                    <div class="v4-stepper-value" style="width: 40px; text-align: center; font-size: 14px; font-weight: 600; color: #111827; user-select: none; font-family: inherit;">1</div>
+                    <button class="v4-stepper-inc" style="width: 30px; height: 100%; border: none; background: #ffffff; border-left: 1.6px solid #e5e7eb; color: #374151; font-size: 14px; font-weight: bold; cursor: pointer; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">+</button>
+                </div>
+                <button class="v4-stepper-action" style="height: 30px; padding: 0 12px; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; font-size: 12px; font-weight: 600; color: #374151; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">적용</button>
+            </div>`
+        },
+        {
+            id: 'v4-atom-selectbox',
+            name: 'Select Box',
+            category: 'Atoms',
+            previewHtml: `<div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 1.6px solid #cccccc; border-radius: 6px; font-size: 10px; height: 20px; padding: 0 6px; box-sizing: border-box; width: 80px;"><span style="color: #374151;">선택하세요</span><span style="font-size: 8px; color: #9ca3af;">▼</span></div>`,
+            html: `
+            <div class="v4-selectbox-container" data-default-text="선택하세요" data-dropdown-active="false" data-options="Option 1,Option 2,Option 3" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
+                <div class="v4-selectbox-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; height: 30px; padding: 0 12px; box-sizing: border-box; font-size: 12px; color: #374151; cursor: pointer;">
+                    <span class="v4-selectbox-selected-text">선택하세요</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px; transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+                <div class="v4-selectbox-options" style="display: none; position: absolute; top: 28px; left: 0; width: 100%; background-color: #ffffff; border: 1.6px solid #cccccc; border-top: none; border-radius: 0 0 8px 8px; box-sizing: border-box; z-index: 1000; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 1</div>
+                    <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 2</div>
+                    <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; box-sizing: border-box;">Option 3</div>
+                </div>
+            </div>`
+        },
+        {
+            id: 'v4-atom-fileupload',
+            name: 'File Upload',
+            category: 'Atoms',
+            previewHtml: `<div style="display: flex; align-items: center; background: #ffffff; border: 1.6px solid #cccccc; border-radius: 6px; font-size: 10px; height: 20px; padding: 0 4px; box-sizing: border-box; width: 80px; gap: 4px;"><div style="flex: 1; border: 1px solid #eee; height: 12px; background: #fafafa;"></div><div style="background: #eee; font-size: 8px; padding: 1px 3px; border-radius: 2px;">첨부</div></div>`,
+            html: `
+            <div class="v4-fileupload-container" data-selected="false" data-file-name="" data-button-text="파일첨부" data-placeholder="선택된 파일 없음" style="position: relative; display: flex; align-items: center; gap: 6px; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
+                <div class="v4-fileupload-textbox-wrapper" style="position: relative; display: flex; align-items: center; flex: 1; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; height: 30px; padding: 0 10px; box-sizing: border-box;">
+                    <div class="v4-fileupload-textbox" style="font-size: 12px; color: #9ca3af; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; cursor: not-allowed; font-family: inherit;">선택된 파일 없음</div>
+                    <span class="v4-fileupload-delete" style="display: none; cursor: pointer; color: #9ca3af; font-size: 14px; font-weight: bold; margin-left: 8px; flex-shrink: 0; transition: color 0.2s;">&times;</span>
+                </div>
+                <button class="v4-fileupload-button" style="height: 30px; padding: 0 14px; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; font-size: 12px; font-weight: 600; color: #374151; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">파일첨부</button>
+            </div>`
         }
     ],
     molecules: [

@@ -75,6 +75,9 @@ window.DOM = {
     iconPropSection: get('icon-inspector-section'),
     checkboxRadioPropSection: get('checkbox-radio-inspector-section'),
     textboxTextareaPropSection: get('textbox-textarea-inspector-section'),
+    stepperPropSection: get('stepper-inspector-section'),
+    selectboxPropSection: get('selectbox-inspector-section'),
+    fileuploadPropSection: get('fileupload-inspector-section'),
     textColorPicker: get('text-color-picker'),
     colorPresets: document.querySelectorAll('.color-preset'),
 
@@ -210,7 +213,7 @@ window.updateProperties = function(compStyles) {
 
         state.isEditing = true;
         state.editingIndex = (compStyles.pinIndex !== undefined && compStyles.pinIndex !== -1) ? compStyles.pinIndex : compStyles.id;
-        state.editingType = compStyles.isPin ? 'pin' : (compStyles.isTable ? 'table' : (compStyles.isShape ? 'shape' : (compStyles.isConnector ? 'line' : (compStyles.isIcon ? 'icon' : (compStyles.isTextbox ? 'textbox' : (compStyles.isTextarea ? 'textarea' : 'comp'))))));
+        state.editingType = compStyles.isPin ? 'pin' : (compStyles.isTable ? 'table' : (compStyles.isShape ? 'shape' : (compStyles.isConnector ? 'line' : (compStyles.isIcon ? 'icon' : (compStyles.isTextbox ? 'textbox' : (compStyles.isTextarea ? 'textarea' : (compStyles.isStepper ? 'stepper' : (compStyles.isSelectbox ? 'selectbox' : (compStyles.isFileUpload ? 'fileupload' : 'comp')))))))));
 
         // Hide all sections first
         if (DOM.textPropSection) DOM.textPropSection.style.display = 'none';
@@ -220,6 +223,9 @@ window.updateProperties = function(compStyles) {
         if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'none';
         if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'none';
         if (DOM.textboxTextareaPropSection) DOM.textboxTextareaPropSection.style.display = 'none';
+        if (DOM.stepperPropSection) DOM.stepperPropSection.style.display = 'none';
+        if (DOM.selectboxPropSection) DOM.selectboxPropSection.style.display = 'none';
+        if (DOM.fileuploadPropSection) DOM.fileuploadPropSection.style.display = 'none';
 
         // Show relevant section
         if (state.editingType === 'pin') {
@@ -243,6 +249,15 @@ window.updateProperties = function(compStyles) {
         } else if (state.editingType === 'textbox' || state.editingType === 'textarea') {
             if (DOM.textboxTextareaPropSection) DOM.textboxTextareaPropSection.style.display = 'block';
             _syncTextboxTextareaProps(compStyles);
+        } else if (state.editingType === 'stepper') {
+            if (DOM.stepperPropSection) DOM.stepperPropSection.style.display = 'block';
+            _syncStepperProps(compStyles);
+        } else if (state.editingType === 'selectbox') {
+            if (DOM.selectboxPropSection) DOM.selectboxPropSection.style.display = 'block';
+            _syncSelectboxProps(compStyles);
+        } else if (state.editingType === 'fileupload') {
+            if (DOM.fileuploadPropSection) DOM.fileuploadPropSection.style.display = 'block';
+            _syncFileuploadProps(compStyles);
         }
 
         // CONTENT EDITOR 헤더 레이블 동적 변경
@@ -293,8 +308,138 @@ window.updateProperties = function(compStyles) {
         if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'none';
         if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'none';
         if (DOM.textboxTextareaPropSection) DOM.textboxTextareaPropSection.style.display = 'none';
+        if (DOM.stepperPropSection) DOM.stepperPropSection.style.display = 'none';
+        if (DOM.selectboxPropSection) DOM.selectboxPropSection.style.display = 'none';
+        if (DOM.fileuploadPropSection) DOM.fileuploadPropSection.style.display = 'none';
     }
 };
+
+function _syncStepperProps(comp) {
+    const activeY = document.getElementById('btn-stepper-btn-y');
+    const activeN = document.getElementById('btn-stepper-btn-n');
+    const disabledY = document.getElementById('btn-stepper-disabled-y');
+    const disabledN = document.getElementById('btn-stepper-disabled-n');
+    
+    const highlightActive = (btn, isActive) => {
+        if (!btn) return;
+        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+    };
+
+    if (activeY && activeN) {
+        highlightActive(activeY, comp.btnEnabled === true);
+        highlightActive(activeN, comp.btnEnabled === false);
+    }
+    if (disabledY && disabledN) {
+        highlightActive(disabledY, comp.disabled === true);
+        highlightActive(disabledN, comp.disabled === false);
+    }
+    
+    const minInput = document.getElementById('prop-stepper-min');
+    if (minInput && comp.minVal !== undefined) {
+        minInput.value = comp.minVal;
+    }
+    
+    const maxInput = document.getElementById('prop-stepper-max');
+    if (maxInput && comp.maxVal !== undefined) {
+        maxInput.value = comp.maxVal;
+    }
+    
+    const btnTextInput = document.getElementById('prop-stepper-btn-text');
+    if (btnTextInput && comp.btnText !== undefined) {
+        btnTextInput.value = comp.btnText;
+    }
+}
+
+function _syncSelectboxProps(comp) {
+    const activeY = document.getElementById('btn-selectbox-dropdown-y');
+    const activeN = document.getElementById('btn-selectbox-dropdown-n');
+    
+    const highlightActive = (btn, isActive) => {
+        if (!btn) return;
+        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+    };
+
+    const isDropdown = comp.selectboxDropdownActive === true;
+
+    if (activeY && activeN) {
+        highlightActive(activeY, isDropdown);
+        highlightActive(activeN, !isDropdown);
+    }
+
+    const defaultControls = document.getElementById('selectbox-default-controls');
+    const dropdownControls = document.getElementById('selectbox-dropdown-controls');
+    if (defaultControls) defaultControls.style.display = isDropdown ? 'none' : 'block';
+    if (dropdownControls) dropdownControls.style.display = isDropdown ? 'block' : 'none';
+
+    const defaultTextInput = document.getElementById('prop-selectbox-default-text');
+    if (defaultTextInput && comp.selectboxDefaultText !== undefined) {
+        defaultTextInput.value = comp.selectboxDefaultText;
+    }
+
+    const options = comp.selectboxOptions || [];
+    const countInput = document.getElementById('prop-selectbox-option-count');
+    if (countInput) {
+        countInput.value = options.length;
+    }
+
+    const inputsContainer = document.getElementById('selectbox-options-inputs-container');
+    if (inputsContainer) {
+        inputsContainer.innerHTML = options.map((optText, idx) => {
+            return `
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 10px; color: #94a3b8; width: 45px; flex-shrink: 0;">Item ${idx + 1}</span>
+                <input type="text" class="selectbox-option-input" data-index="${idx}" value="${optText}" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; outline: none; font-family: inherit;">
+            </div>`;
+        }).join('');
+    }
+}
+
+function _syncFileuploadProps(comp) {
+    const activeY = document.getElementById('btn-fileupload-selected-y');
+    const activeN = document.getElementById('btn-fileupload-selected-n');
+    
+    const highlightActive = (btn, isActive) => {
+        if (!btn) return;
+        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+    };
+
+    const isSelected = comp.fileSelected === true;
+
+    if (activeY && activeN) {
+        highlightActive(activeY, isSelected);
+        highlightActive(activeN, !isSelected);
+    }
+
+    const nameControls = document.getElementById('fileupload-name-controls');
+    const placeholderControls = document.getElementById('fileupload-placeholder-controls');
+    if (nameControls) nameControls.style.display = isSelected ? 'block' : 'none';
+    if (placeholderControls) placeholderControls.style.display = isSelected ? 'none' : 'block';
+
+    const nameInput = document.getElementById('prop-fileupload-file-name');
+    if (nameInput && comp.fileName !== undefined) {
+        nameInput.value = comp.fileName;
+    }
+
+    const placeholderInput = document.getElementById('prop-fileupload-placeholder');
+    if (placeholderInput && comp.filePlaceholder !== undefined) {
+        placeholderInput.value = comp.filePlaceholder;
+    }
+
+    const btnTextInput = document.getElementById('prop-fileupload-btn-text');
+    if (btnTextInput && comp.fileButtonText !== undefined) {
+        btnTextInput.value = comp.fileButtonText;
+    }
+}
+
 
 function _syncTextboxTextareaProps(comp) {
     const activeY = document.getElementById('btn-input-counter-y');

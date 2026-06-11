@@ -233,8 +233,8 @@ window.GroupingManager = (function() {
             DOM.btnUngroup.style.display = showUngroup ? 'flex' : 'none';
             if (DOM.btnAddToMolecules) DOM.btnAddToMolecules.style.display = showUngroup ? 'flex' : 'none';
 
-            // Show Selection Bar only if multiple objects selected OR it's a group
-            const shouldShowSelectionBar = (selectedIds.length > 1) || showUngroup;
+            // Show Selection Bar if any object is selected
+            const shouldShowSelectionBar = selectedIds.length > 0;
             DOM.selectionBar.style.display = shouldShowSelectionBar ? 'flex' : 'none';
 
             if (DOM.selectionNumber) DOM.selectionNumber.innerText = selectedIds.length;

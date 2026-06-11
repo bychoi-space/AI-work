@@ -456,10 +456,20 @@
                                 UNGROUP
                             </button>
                         </div>
-                        <button id="btn-add-molecules-action" class="v4-inspector-btn btn-primary" style="width: 100%; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; gap: 8px; background: #1e293b; color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
+                        <button id="btn-add-molecules-action" class="v4-inspector-btn btn-primary" style="width: 100%; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; gap: 8px; background: #1e293b; color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0; margin-bottom: 8px;">
                             <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M12 5v14M5 12h14"></path></svg>
                             ADD TO MOLECULES
                         </button>
+                        <div style="display: flex; gap: 8px; width: 100%;">
+                            <button id="btn-bring-front-action" class="v4-inspector-btn btn-secondary" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
+                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><polyline points="17 11 12 6 7 11"></polyline><polyline points="17 18 12 13 7 18"></polyline></svg>
+                                BRING FRONT
+                            </button>
+                            <button id="btn-send-back-action" class="v4-inspector-btn btn-secondary" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
+                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><polyline points="17 13 12 18 7 13"></polyline><polyline points="17 6 12 11 7 6"></polyline></svg>
+                                SEND BACK
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Part 0: ALIGNMENT (RESTORED) -->
@@ -736,6 +746,18 @@
                             <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">notes</span>
                             <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Textarea</span>
                         </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-stepper')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">unfold_more</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">수량선택기</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-selectbox')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">arrow_drop_down_circle</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">셀렉트박스</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-fileupload')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">file_upload</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">파일업로드</span>
+                        </div>
                         <div class="component-item v4-card" onclick="insertAtomicComponent('image', 'LF Logo')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <div style="height: 18px; display: flex; align-items: center; justify-content: center;">
                                 <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width: 18px; filter: brightness(0) invert(1);" loading="lazy">
@@ -993,6 +1015,127 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Stepper Inspector Section -->
+                    <div id="stepper-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 14px; margin-top: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">STEPPER PROPERTIES</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">
+                            <!-- Min Value -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">MIN VALUE (최소값)</label>
+                                <input type="number" id="prop-stepper-min" value="1" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none;">
+                            </div>
+                            <!-- Max Value -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">MAX VALUE (최대값)</label>
+                                <input type="number" id="prop-stepper-max" value="99" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none;">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <!-- Button Enabled Toggle -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">BUTTON ON (버튼 노출)</label>
+                                <div style="display: flex; gap: 4px;">
+                                    <button id="btn-stepper-btn-y" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                                    <button id="btn-stepper-btn-n" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                                </div>
+                            </div>
+                            <!-- Button Text -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">BUTTON TEXT (버튼 명칭)</label>
+                                <input type="text" id="prop-stepper-btn-text" value="적용" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <!-- Stepper Disabled Toggle -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">DISABLE (비활성화)</label>
+                                <div style="display: flex; gap: 4px;">
+                                    <button id="btn-stepper-disabled-y" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                                    <button id="btn-stepper-disabled-n" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selectbox Inspector Section -->
+                    <div id="selectbox-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 14px; margin-top: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">SELECTBOX PROPERTIES</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">
+                            <!-- Dropdown Active Toggle -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">DROPDOWN ON (활성화)</label>
+                                <div style="display: flex; gap: 4px;">
+                                    <button id="btn-selectbox-dropdown-y" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                                    <button id="btn-selectbox-dropdown-n" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Default State Controls -->
+                        <div id="selectbox-default-controls" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-bottom: 12px;">
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">DEFAULT TEXT (기본 텍스트)</label>
+                                <input type="text" id="prop-selectbox-default-text" value="선택하세요" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                            </div>
+                        </div>
+                        
+                        <!-- Dropdown Option List Controls -->
+                        <div id="selectbox-dropdown-controls" style="display: none; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <div class="prop-group" style="margin-bottom: 12px;">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">ITEM COUNT (항목 개수)</label>
+                                <input type="number" id="prop-selectbox-option-count" min="1" max="10" value="3" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none;">
+                            </div>
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">OPTION ITEMS (항목 설정)</label>
+                                <div id="selectbox-options-inputs-container" style="display: flex; flex-direction: column; gap: 8px;">
+                                    <!-- Dynamic Inputs for options will go here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Upload Inspector Section -->
+                    <div id="fileupload-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 14px; margin-top: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">FILE UPLOAD PROPERTIES</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">
+                            <!-- File Selected Toggle -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">FILE SELECTED (파일 선택됨)</label>
+                                <div style="display: flex; gap: 4px;">
+                                    <button id="btn-fileupload-selected-y" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                                    <button id="btn-fileupload-selected-n" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                                </div>
+                            </div>
+                            <!-- Button Text -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">BUTTON TEXT (버튼 명칭)</label>
+                                <input type="text" id="prop-fileupload-btn-text" value="파일첨부" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                            </div>
+                        </div>
+                        
+                        <!-- File Name (Visible only when selected=Y) -->
+                        <div id="fileupload-name-controls" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-bottom: 12px; display: none;">
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">FILE NAME (파일명)</label>
+                                <input type="text" id="prop-fileupload-file-name" value="" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                            </div>
+                        </div>
+
+                        <!-- Placeholder (Visible only when selected=N) -->
+                        <div id="fileupload-placeholder-controls" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-bottom: 12px;">
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">PLACEHOLDER (선택 전 텍스트)</label>
+                                <input type="text" id="prop-fileupload-placeholder" value="선택된 파일 없음" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Part 3: MOLECULES -->
@@ -1234,18 +1377,18 @@
     <script src="assets/app.js?v=V150_HISTORY"></script>
     
     <!-- Modularized Engine -->
-    <script src="assets/vctrl_iframe_script.js?v=V163_TEXTBOX_DIMENSION_ALIGNMENT_FIX"></script>
-    <script src="assets/vctrl_core.js?v=V158_ALIGNMENT_DUP_FIX"></script>
+    <script src="assets/vctrl_iframe_script.js?v=V172_FILEUPLOAD_ATOM_ADD"></script>
+    <script src="assets/vctrl_core.js?v=V172_FILEUPLOAD_ATOM_ADD"></script>
     <script src="assets/vctrl_smartguide.js?v=V151_SPACING_CACHE"></script>
-    <script src="assets/vctrl_grouping.js?v=V133_ALIGN_FIX"></script>
-    <script src="assets/vctrl_inspector.js?v=V156_MULTI_SELECT_REFINEMENT"></script>
+    <script src="assets/vctrl_grouping.js?v=V172_FILEUPLOAD_ATOM_ADD"></script>
+    <script src="assets/vctrl_inspector.js?v=V172_FILEUPLOAD_ATOM_ADD"></script>
     <script src="assets/vctrl_v3.js?v=V156_MULTI_SELECT_REFINEMENT"></script>
     <script src="assets/vctrl_properties.js?v=V106_V5"></script>
     <script src="assets/vctrl_connectors.js?v=V116_LINE_PERSIST_FIX"></script>
     
     <!-- V4 Premium Addons -->
-    <script src="enhanced_v4/component_library_v4.js"></script>
+    <script src="enhanced_v4/component_library_v4.js?v=V172_FILEUPLOAD_ATOM_ADD"></script>
     <script src="assets/vctrl_table.js?v=V134_CELL_FIX"></script>
-    <script src="assets/vctrl_v4_addon.js?v=V162_DIMENSION_AND_DEFAULT_FONT_FIX"></script>
+    <script src="assets/vctrl_v4_addon.js?v=V172_FILEUPLOAD_ATOM_ADD"></script>
 </body>
 </html>

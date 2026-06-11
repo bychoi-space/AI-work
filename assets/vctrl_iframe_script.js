@@ -82,6 +82,18 @@ img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; o
 /* Reset background for new SVG/Custom atoms to prevent sprite leakage */
 svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
+.v4-stepper-container[data-disabled="true"] { pointer-events: none !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-control { background-color: #e5e7eb !important; border-color: #9ca3af !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-value { color: #9ca3af !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-dec, .v4-stepper-container[data-disabled="true"] .v4-stepper-inc { background-color: #e5e7eb !important; color: #9ca3af !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-action { background-color: #e5e7eb !important; border-color: #9ca3af !important; color: #9ca3af !important; box-shadow: none !important; }
+.v4-selectbox-container[data-dropdown-active="true"] .v4-selectbox-header { border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; }
+.v4-selectbox-container[data-dropdown-active="true"] svg { transform: rotate(180deg); }
+.v4-selectbox-option:hover { background-color: #f3f4f6 !important; cursor: pointer; }
+.v4-selectbox-option:last-child { border-bottom: none !important; }
+.v4-fileupload-container[data-selected="true"] .v4-fileupload-delete { display: block !important; }
+.v4-fileupload-delete:hover { color: #ef4444 !important; }
+.v4-fileupload-button:hover { background-color: #f9fafb !important; border-color: #babcbe !important; }
 
 /* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
 .text-marker { 
@@ -149,11 +161,16 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
 .v4-radio-container[data-checked="false"] .v4-radio-dot { display: none !important; }
 .v4-checkbox-container[data-text-enabled="false"] .v4-checkbox-text { display: none !important; }
 .v4-radio-container[data-text-enabled="false"] .v4-radio-text { display: none !important; }
-.v4-checkbox-text, .v4-radio-text { color: #000000 !important; }
+.v4-checkbox-text, .v4-radio-text { color: #000000 !important; font-size: 12px !important; }
 .v4-checkbox-container[data-text-enabled="false"], 
 .v4-radio-container[data-text-enabled="false"] {
-    width: 24px !important;
-    height: 24px !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+.v4-checkbox-container[data-text-enabled="false"] .v4-checkbox,
+.v4-radio-container[data-text-enabled="false"] .v4-radio {
+    width: 100% !important;
+    height: 100% !important;
 }
 `;
 
@@ -416,8 +433,8 @@ window.v4Script = `
             host.appendChild(v);
             newSelectedIds.push(newId);
         });
-        if (typeof enforceDesignSystem === 'function') {
-            enforceDesignSystem();
+        if (typeof window.enforceDesignSystem === 'function') {
+            window.enforceDesignSystem();
         } else if (typeof initHandles === 'function') {
             initHandles();
         }
@@ -460,7 +477,33 @@ window.v4Script = `
         const placeholderText = inputContainer ? (inputContainer.getAttribute('data-placeholder') || inputContainer.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder')?.textContent || "Placeholder") : "";
         const maxLength = inputContainer ? (parseInt(inputContainer.getAttribute('data-maxlength')) || 100) : 100;
         const showCounter = inputContainer ? (inputContainer.getAttribute('data-show-counter') !== 'false') : false;
+
+        // Stepper Atom Detection
+        const isStepper = !!c.querySelector('.v4-stepper-container') || c.classList.contains('v4-stepper-container');
+        const stepperContainer = c.querySelector('.v4-stepper-container') || (isStepper ? c : null);
+        const minVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-min')) || 1 : 1;
+        const maxVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-max')) || 99 : 99;
+        const stepperVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-val')) || minVal : minVal;
+        const stepperBtnEnabled = stepperContainer ? stepperContainer.getAttribute('data-btn-enabled') !== 'false' : true;
+        const stepperBtnText = stepperContainer ? stepperContainer.getAttribute('data-btn-text') || "적용" : "적용";
+        const stepperDisabled = stepperContainer ? stepperContainer.getAttribute('data-disabled') === 'true' : false;
         
+        // Selectbox Atom Detection
+        const isSelectbox = !!c.querySelector('.v4-selectbox-container') || c.classList.contains('v4-selectbox-container');
+        const selectboxContainer = c.querySelector('.v4-selectbox-container') || (isSelectbox ? c : null);
+        const selectboxDefaultText = selectboxContainer ? (selectboxContainer.getAttribute('data-default-text') || "선택하세요") : "선택하세요";
+        const selectboxDropdownActive = selectboxContainer ? selectboxContainer.getAttribute('data-dropdown-active') === 'true' : false;
+        const selectboxOptionsRaw = selectboxContainer ? (selectboxContainer.getAttribute('data-options') || "Option 1,Option 2,Option 3") : "Option 1,Option 2,Option 3";
+        const selectboxOptions = selectboxOptionsRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+        // File Upload Atom Detection
+        const isFileUpload = !!c.querySelector('.v4-fileupload-container') || c.classList.contains('v4-fileupload-container');
+        const fileuploadContainer = c.querySelector('.v4-fileupload-container') || (isFileUpload ? c : null);
+        const fileSelected = fileuploadContainer ? fileuploadContainer.getAttribute('data-selected') === 'true' : false;
+        const fileName = fileuploadContainer ? (fileuploadContainer.getAttribute('data-file-name') || "") : "";
+        const fileButtonText = fileuploadContainer ? (fileuploadContainer.getAttribute('data-button-text') || "파일첨부") : "파일첨부";
+        const filePlaceholder = fileuploadContainer ? (fileuploadContainer.getAttribute('data-placeholder') || "선택된 파일 없음") : "선택된 파일 없음";
+
         // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
         const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
         
@@ -472,7 +515,7 @@ window.v4Script = `
             }
             return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
         };
-
+ 
         let detectedIconColor = "";
         if (icon) {
             const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
@@ -485,7 +528,7 @@ window.v4Script = `
                 detectedIconColor = icon.style.color || icon.getAttribute('stroke') || "";
             }
         }
-
+ 
         return {
             id: c.id,
             isTable: !!table,
@@ -502,14 +545,30 @@ window.v4Script = `
             placeholderText: placeholderText,
             maxLength: maxLength,
             showCounter: showCounter,
+            isStepper: isStepper,
+            minVal: minVal,
+            maxVal: maxVal,
+            val: stepperVal,
+            btnEnabled: stepperBtnEnabled,
+            btnText: stepperBtnText,
+            disabled: stepperDisabled,
+            isSelectbox: isSelectbox,
+            selectboxDefaultText: selectboxDefaultText,
+            selectboxDropdownActive: selectboxDropdownActive,
+            selectboxOptions: selectboxOptions,
+            isFileUpload: isFileUpload,
+            fileSelected: fileSelected,
+            fileName: fileName,
+            fileButtonText: fileButtonText,
+            filePlaceholder: filePlaceholder,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : ""))))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : "")))))),
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : "")))))))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))))))),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 12 : 12),
                 fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
@@ -517,13 +576,13 @@ window.v4Script = `
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
                 borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : 0),
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : ""))))),
+                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : "")))))))),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : ""))));
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : ""))))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : ""))));
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : ""))))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
@@ -550,18 +609,32 @@ window.v4Script = `
         const container = s.querySelector('.v4-checkbox-container, .v4-radio-container');
         if (!container) return;
         
+        const boxEl = container.querySelector('.v4-checkbox, .v4-radio');
+        if (!boxEl) return;
+
         const textEnabled = container.getAttribute('data-text-enabled') !== 'false';
         if (textEnabled) {
             const textEl = container.querySelector('.v4-checkbox-text, .v4-radio-text');
             if (textEl) {
+                const boxW = parseFloat(boxEl.style.width) || 24;
+                const boxH = parseFloat(boxEl.style.height) || 24;
                 const textWidth = textEl.scrollWidth || 35;
-                const totalWidth = 24 + 8 + textWidth + 8; // 24px icon + 8px gap + text + 8px padding/border buffer
+                const totalWidth = boxW + 8 + textWidth + 8; // 아이콘 크기 + 8px 간격 + 텍스트 너비 + 8px 패딩 버퍼
                 s.style.width = totalWidth + 'px';
-                s.style.height = '32px';
+                s.style.height = Math.max(32, boxH + 8) + 'px';
             }
         } else {
-            s.style.width = '24px';
-            s.style.height = '24px';
+            if (s.getAttribute('data-resized') === 'true') {
+                const parentW = parseFloat(s.style.width) || s.offsetWidth;
+                const parentH = parseFloat(s.style.height) || s.offsetHeight;
+                boxEl.style.width = parentW + 'px';
+                boxEl.style.height = parentH + 'px';
+            } else {
+                const boxW = parseFloat(boxEl.style.width) || 24;
+                const boxH = parseFloat(boxEl.style.height) || 24;
+                s.style.width = boxW + 'px';
+                s.style.height = boxH + 'px';
+            }
         }
         updateHandles(s);
     };
@@ -746,6 +819,12 @@ window.v4Script = `
                         });
                     }
                 });
+            }
+        }
+        if (isResizing && activeEl) {
+            activeEl.setAttribute('data-resized', 'true');
+            if (typeof window.enforceDesignSystem === 'function') {
+                window.enforceDesignSystem();
             }
         }
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
@@ -1276,7 +1355,173 @@ window.v4Script = `
             const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
             if (container) {
                 container.setAttribute('data-text-enabled', d.enabled ? 'true' : 'false');
+                s.removeAttribute('data-resized');
                 resizeAtomToFitText(s);
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_STEPPER_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-stepper-container') || (s.classList.contains('v4-stepper-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.minVal !== undefined) {
+                    container.setAttribute('data-min', d.minVal);
+                }
+                if (d.maxVal !== undefined) {
+                    container.setAttribute('data-max', d.maxVal);
+                }
+                if (d.disabled !== undefined) {
+                    container.setAttribute('data-disabled', d.disabled ? 'true' : 'false');
+                }
+                if (d.btnEnabled !== undefined) {
+                    container.setAttribute('data-btn-enabled', d.btnEnabled ? 'true' : 'false');
+                    const actBtn = container.querySelector('.v4-stepper-action');
+                    if (actBtn) {
+                        actBtn.style.display = d.btnEnabled ? 'inline-flex' : 'none';
+                    }
+                    if (d.btnEnabled) {
+                        s.style.width = '154px';
+                    } else {
+                        s.style.width = '100px';
+                    }
+                }
+                if (d.btnText !== undefined) {
+                    container.setAttribute('data-btn-text', d.btnText);
+                    const actBtn = container.querySelector('.v4-stepper-action');
+                    if (actBtn) {
+                        actBtn.innerText = d.btnText;
+                    }
+                }
+                
+                const min = parseInt(container.getAttribute('data-min')) || 1;
+                const max = parseInt(container.getAttribute('data-max')) || 99;
+                let curVal = parseInt(container.getAttribute('data-val')) || min;
+                
+                if (d.minVal !== undefined) {
+                    curVal = min;
+                }
+                
+                curVal = Math.max(min, Math.min(max, curVal));
+                container.setAttribute('data-val', curVal);
+                
+                const valEl = container.querySelector('.v4-stepper-value');
+                if (valEl) valEl.innerText = curVal;
+                
+                const decBtn = container.querySelector('.v4-stepper-dec');
+                const incBtn = container.querySelector('.v4-stepper-inc');
+                const isDisabled = container.getAttribute('data-disabled') === 'true';
+                
+                if (isDisabled) {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = '';
+                        decBtn.style.color = '';
+                        decBtn.style.cursor = 'not-allowed';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = '';
+                        incBtn.style.color = '';
+                        incBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = curVal === min ? '#f3f4f6' : '#ffffff';
+                        decBtn.style.color = curVal === min ? '#9ca3af' : '#374151';
+                        decBtn.style.cursor = curVal === min ? 'not-allowed' : 'pointer';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = curVal === max ? '#f3f4f6' : '#ffffff';
+                        incBtn.style.color = curVal === max ? '#9ca3af' : '#374151';
+                        incBtn.style.cursor = curVal === max ? 'not-allowed' : 'pointer';
+                    }
+                }
+                
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_SELECTBOX_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-selectbox-container') || (s.classList.contains('v4-selectbox-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.defaultText !== undefined) {
+                    container.setAttribute('data-default-text', d.defaultText);
+                    const selectedText = container.querySelector('.v4-selectbox-selected-text');
+                    if (selectedText) selectedText.innerText = d.defaultText;
+                }
+                
+                if (d.dropdownActive !== undefined) {
+                    container.setAttribute('data-dropdown-active', d.dropdownActive ? 'true' : 'false');
+                    const optionsList = container.querySelector('.v4-selectbox-options');
+                    if (optionsList) {
+                        optionsList.style.display = d.dropdownActive ? 'block' : 'none';
+                    }
+                }
+                
+                if (d.options !== undefined) {
+                    const optionsArr = Array.isArray(d.options) ? d.options : d.options.split(',');
+                    const cleanOptions = optionsArr.map(o => o.trim()).filter(Boolean);
+                    container.setAttribute('data-options', cleanOptions.join(','));
+                    
+                    const optionsList = container.querySelector('.v4-selectbox-options');
+                    if (optionsList) {
+                        optionsList.innerHTML = cleanOptions.map((opt, idx) => {
+                            const isLast = idx === cleanOptions.length - 1;
+                            const borderStyle = isLast ? '' : ' border-bottom: 1.6px solid #f3f4f6;';
+                            return '<div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151;' + borderStyle + ' box-sizing: border-box;">' + opt + '</div>';
+                        }).join('');
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_FILEUPLOAD_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-fileupload-container') || (s.classList.contains('v4-fileupload-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.fileSelected !== undefined) {
+                    container.setAttribute('data-selected', d.fileSelected ? 'true' : 'false');
+                }
+                if (d.fileName !== undefined) {
+                    container.setAttribute('data-file-name', d.fileName);
+                }
+                if (d.fileButtonText !== undefined) {
+                    container.setAttribute('data-button-text', d.fileButtonText);
+                    const btn = container.querySelector('.v4-fileupload-button');
+                    if (btn) btn.innerText = d.fileButtonText;
+                }
+                if (d.filePlaceholder !== undefined) {
+                    container.setAttribute('data-placeholder', d.filePlaceholder);
+                }
+                
+                // Update internal text display based on selection state
+                const isSel = container.getAttribute('data-selected') === 'true';
+                const fName = container.getAttribute('data-file-name') || '';
+                const placeholder = container.getAttribute('data-placeholder') || '선택된 파일 없음';
+                const txt = container.querySelector('.v4-fileupload-textbox');
+                if (txt) {
+                    if (isSel) {
+                        txt.innerText = fName;
+                        txt.style.color = '#374151';
+                    } else {
+                        txt.innerText = placeholder;
+                        txt.style.color = '#9ca3af';
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                
                 markDirty();
             }
         }
@@ -1319,7 +1564,7 @@ window.v4Script = `
                 if (input) {
                     input.dataset.eventsBound = "false";
                 }
-                if (typeof enforceDesignSystem === 'function') enforceDesignSystem();
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
             }
         }
@@ -1347,22 +1592,37 @@ window.v4Script = `
             if (!t) return;
             
             if (d.style) {
+                if (d.style.width !== undefined || d.style.height !== undefined) {
+                    s.setAttribute('data-resized', 'true');
+                }
                 if (d.style.html !== undefined) t.innerHTML = d.style.html;
                 
+                const isInnerBox = t.classList.contains('v4-checkbox') || t.classList.contains('v4-radio');
+                
                 // CRITICAL: Dimension style changes (width, height) must apply to the outermost .lf-component (s)
-                // so that selection resizers and handles scale and align properly.
+                // unless it is an atomic inner box of Checkbox/Radio, in which case it targets the box itself.
                 if (d.style.width !== undefined) {
-                    s.style.width = d.style.width;
-                    if (inputContainer) inputContainer.style.width = '100%';
+                    if (isInnerBox) {
+                        t.style.width = d.style.width;
+                    } else {
+                        s.style.width = d.style.width;
+                        if (inputContainer) inputContainer.style.width = '100%';
+                    }
                 }
                 if (d.style.height !== undefined) {
-                    s.style.height = d.style.height;
-                    if (inputContainer) inputContainer.style.height = '100%';
+                    if (isInnerBox) {
+                        t.style.height = d.style.height;
+                    } else {
+                        s.style.height = d.style.height;
+                        if (inputContainer) inputContainer.style.height = '100%';
+                    }
                 }
 
                 const styleToAssign = { ...d.style };
-                delete styleToAssign.width;
-                delete styleToAssign.height;
+                if (!isInnerBox) {
+                    delete styleToAssign.width;
+                    delete styleToAssign.height;
+                }
                 Object.assign(t.style, styleToAssign);
                 
                 // SVG Sync: If the element contains an SVG, sync stroke/fill
@@ -1501,6 +1761,60 @@ window.v4Script = `
             }
         } else if (d.type === 'LF_DESELECT_ALL') {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+        } else if (d.type === 'LF_BRING_FRONT') {
+            const selected = document.querySelectorAll('.lf-component.selected');
+            const topLevelSelected = Array.from(selected).filter(el => {
+                let parent = el.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
+                        return false;
+                    }
+                    parent = parent.parentElement;
+                }
+                return true;
+            });
+            if (topLevelSelected.length > 0) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                const firstScript = document.body.querySelector('script');
+                topLevelSelected.forEach(el => {
+                    if (firstScript) {
+                        document.body.insertBefore(el, firstScript);
+                    } else {
+                        document.body.appendChild(el);
+                    }
+                });
+                markDirty();
+                if (typeof reorderAllPins === 'function') {
+                    reorderAllPins();
+                }
+            }
+        } else if (d.type === 'LF_SEND_BACK') {
+            const selected = document.querySelectorAll('.lf-component.selected');
+            const topLevelSelected = Array.from(selected).filter(el => {
+                let parent = el.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
+                        return false;
+                    }
+                    parent = parent.parentElement;
+                }
+                return true;
+            });
+            if (topLevelSelected.length > 0) {
+                const firstUnselected = Array.from(document.body.children).find(el => {
+                    return el.classList.contains('lf-component') && !el.classList.contains('selected');
+                });
+                if (firstUnselected) {
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    topLevelSelected.forEach(el => {
+                        document.body.insertBefore(el, firstUnselected);
+                    });
+                    markDirty();
+                    if (typeof reorderAllPins === 'function') {
+                        reorderAllPins();
+                    }
+                }
+            }
         } else if (d.type === 'LF_UPDATE_MARQUEE_SELECTION') {
             const ids = d.ids || [];
             document.querySelectorAll('.lf-component').forEach(x => {
@@ -1894,9 +2208,154 @@ window.v4Script = `
     };
     const initHandles = window.initHandles;
 
+    const bindStepperEvents = () => {
+        document.querySelectorAll('.v4-stepper-container').forEach(container => {
+            const min = parseInt(container.getAttribute('data-min')) || 1;
+            const max = parseInt(container.getAttribute('data-max')) || 99;
+            const cur = parseInt(container.getAttribute('data-val')) || min;
+
+            const decBtn = container.querySelector('.v4-stepper-dec');
+            const incBtn = container.querySelector('.v4-stepper-inc');
+            const valEl = container.querySelector('.v4-stepper-value');
+
+            if (container.dataset.eventsBound === "true") {
+                const isDisabled = container.getAttribute('data-disabled') === 'true';
+                if (isDisabled) {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = '';
+                        decBtn.style.color = '';
+                        decBtn.style.cursor = 'not-allowed';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = '';
+                        incBtn.style.color = '';
+                        incBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = cur === min ? '#f3f4f6' : '#ffffff';
+                        decBtn.style.color = cur === min ? '#9ca3af' : '#374151';
+                        decBtn.style.cursor = cur === min ? 'not-allowed' : 'pointer';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = cur === max ? '#f3f4f6' : '#ffffff';
+                        incBtn.style.color = cur === max ? '#9ca3af' : '#374151';
+                        incBtn.style.cursor = cur === max ? 'not-allowed' : 'pointer';
+                    }
+                }
+                return;
+            }
+            container.dataset.eventsBound = "true";
+            
+            const updateVal = (newVal) => {
+                const currentMin = parseInt(container.getAttribute('data-min')) || 1;
+                const currentMax = parseInt(container.getAttribute('data-max')) || 99;
+                let val = Math.max(currentMin, Math.min(currentMax, newVal));
+                container.setAttribute('data-val', val);
+                if (valEl) valEl.innerText = val;
+                
+                const isDisabled = container.getAttribute('data-disabled') === 'true';
+                if (isDisabled) {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = '';
+                        decBtn.style.color = '';
+                        decBtn.style.cursor = 'not-allowed';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = '';
+                        incBtn.style.color = '';
+                        incBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = val === currentMin ? '#f3f4f6' : '#ffffff';
+                        decBtn.style.color = val === currentMin ? '#9ca3af' : '#374151';
+                        decBtn.style.cursor = val === currentMin ? 'not-allowed' : 'pointer';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = val === currentMax ? '#f3f4f6' : '#ffffff';
+                        incBtn.style.color = val === currentMax ? '#9ca3af' : '#374151';
+                        incBtn.style.cursor = val === currentMax ? 'not-allowed' : 'pointer';
+                    }
+                }
+            };
+            
+            if (decBtn) {
+                decBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (container.getAttribute('data-disabled') === 'true') return;
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    const currentVal = parseInt(container.getAttribute('data-val')) || 1;
+                    updateVal(currentVal - 1);
+                    markDirty();
+                };
+            }
+            if (incBtn) {
+                incBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (container.getAttribute('data-disabled') === 'true') return;
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    const currentVal = parseInt(container.getAttribute('data-val')) || 1;
+                    updateVal(currentVal + 1);
+                    markDirty();
+                };
+            }
+            
+            updateVal(cur);
+        });
+    };
+    const bindFileuploadEvents = () => {
+        document.querySelectorAll('.v4-fileupload-container').forEach(container => {
+            const delBtn = container.querySelector('.v4-fileupload-delete');
+            const txt = container.querySelector('.v4-fileupload-textbox');
+            const isSel = container.getAttribute('data-selected') === 'true';
+            const fName = container.getAttribute('data-file-name') || '';
+            const placeholder = container.getAttribute('data-placeholder') || '선택된 파일 없음';
+            
+            // Sync current text display with comparison guards to prevent infinite MutationObserver loops
+            if (txt) {
+                const targetText = isSel ? fName : placeholder;
+                if (txt.innerText !== targetText) {
+                    txt.innerText = targetText;
+                }
+                const targetColor = isSel ? 'rgb(55, 65, 81)' : 'rgb(156, 163, 175)'; // browser returns rgb values for style.color
+                const hexColor = isSel ? '#374151' : '#9ca3af';
+                if (txt.style.color !== hexColor && txt.style.color !== targetColor) {
+                    txt.style.color = hexColor;
+                }
+            }
+
+            if (container.dataset.eventsBound === "true") return;
+            container.dataset.eventsBound = "true";
+            
+            if (delBtn) {
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    
+                    container.setAttribute('data-selected', 'false');
+                    if (txt) {
+                        txt.innerText = container.getAttribute('data-placeholder') || '선택된 파일 없음';
+                        txt.style.color = '#9ca3af';
+                    }
+                    
+                    markDirty();
+                    
+                    // Notify parent to re-sync inspector properties
+                    notifyParent({
+                        type: 'LF_COMP_SELECTED',
+                        ..._getCompStyles(container.closest('.lf-component'))
+                    });
+                };
+            }
+        });
+    };
+
     // High-Persistence Border Standardization & Coordinate Migration
     window.enforceDesignSystem = () => {
         initHandles();
+        bindStepperEvents();
+        bindFileuploadEvents();
         
         // --- Self-healing: Deduplicate IDs in DOM if duplicates exist ---
         const seenIds = new Set();
@@ -1920,6 +2379,62 @@ window.v4Script = `
                 if (typeof resizeAtomToFitText === 'function') {
                     resizeAtomToFitText(c);
                 }
+            }
+        });
+
+        // --- Auto-resize Stepper to fit its internal container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const stepper = c.querySelector('.v4-stepper-container');
+            if (stepper) {
+                const btnEnabled = stepper.getAttribute('data-btn-enabled') !== 'false';
+                const targetW = btnEnabled ? '154px' : '100px';
+                const targetH = '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (stepper.style.width !== '100%') stepper.style.width = '100%';
+                if (stepper.style.height !== '100%') stepper.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize Selectbox to fit its state container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const selectbox = c.querySelector('.v4-selectbox-container');
+            if (selectbox) {
+                const dropdownActive = selectbox.getAttribute('data-dropdown-active') === 'true';
+                const optionsRaw = selectbox.getAttribute('data-options') || "";
+                const optionsArr = optionsRaw.split(',').map(s => s.trim()).filter(Boolean);
+                
+                const targetW = '150px';
+                const targetH = dropdownActive ? (30 + (optionsArr.length * 30)) + 'px' : '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (selectbox.style.width !== '100%') selectbox.style.width = '100%';
+                if (selectbox.style.height !== '100%') selectbox.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize File Upload to fit its state container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const fileupload = c.querySelector('.v4-fileupload-container');
+            if (fileupload) {
+                const targetW = '300px';
+                const targetH = '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (fileupload.style.width !== '100%') fileupload.style.width = '100%';
+                if (fileupload.style.height !== '100%') fileupload.style.height = '100%';
+                
+                updateHandles(c);
             }
         });
 
@@ -2139,14 +2654,14 @@ window.v4Script = `
             if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
         });
     };
-    const enforceDesignSystem = window.enforceDesignSystem;
-
     // Run immediately and setup observer for dynamic changes
-    enforceDesignSystem();
-    const observer = new MutationObserver(enforceDesignSystem);
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
-    
-    // Safety fallback for slow loads
-    setTimeout(enforceDesignSystem, 500);
+    if (typeof window.enforceDesignSystem === 'function') {
+        window.enforceDesignSystem();
+        const observer = new MutationObserver(() => window.enforceDesignSystem());
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        
+        // Safety fallback for slow loads
+        setTimeout(() => window.enforceDesignSystem(), 500);
+    }
 })();
 `;

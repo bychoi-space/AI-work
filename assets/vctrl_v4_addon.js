@@ -42,6 +42,15 @@
             } else if (item.id === 'v4-atom-textarea') {
                 style.width = '150px';
                 style.height = '60px';
+            } else if (item.id === 'v4-atom-stepper') {
+                style.width = '154px';
+                style.height = '30px';
+            } else if (item.id === 'v4-atom-selectbox') {
+                style.width = '150px';
+                style.height = '30px';
+            } else if (item.id === 'v4-atom-fileupload') {
+                style.width = '300px';
+                style.height = '30px';
             } else {
                 style.width = isIcon ? '40px' : '120px';
                 style.height = '40px';
@@ -804,13 +813,278 @@
     };
     initTextboxTextareaEvents();
 
+    // Stepper Inspector Events
+    const initStepperEvents = () => {
+        const notifyIframe = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                MessageHub.send(iframe.contentWindow, data.type, data);
+            }
+        };
+
+        const minInput = document.getElementById('prop-stepper-min');
+        if (minInput) {
+            minInput.oninput = () => {
+                let val = parseInt(minInput.value);
+                if (isNaN(val)) val = 1;
+                notifyIframe({ type: 'LF_UPDATE_STEPPER_PROPERTIES', minVal: val });
+            };
+        }
+
+        const maxInput = document.getElementById('prop-stepper-max');
+        if (maxInput) {
+            maxInput.oninput = () => {
+                let val = parseInt(maxInput.value);
+                if (isNaN(val)) val = 99;
+                notifyIframe({ type: 'LF_UPDATE_STEPPER_PROPERTIES', maxVal: val });
+            };
+        }
+
+        const btnText = document.getElementById('prop-stepper-btn-text');
+        if (btnText) {
+            btnText.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_STEPPER_PROPERTIES', btnText: btnText.value });
+            };
+        }
+
+        const activeY = document.getElementById('btn-stepper-btn-y');
+        const activeN = document.getElementById('btn-stepper-btn-n');
+        const highlightActive = (btn, isActive) => {
+            if (!btn) return;
+            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+            btn.style.fontWeight = isActive ? 'bold' : 'normal';
+        };
+
+        if (activeY) {
+            activeY.onclick = () => {
+                highlightActive(activeY, true);
+                highlightActive(activeN, false);
+                notifyIframe({ type: 'LF_UPDATE_STEPPER_PROPERTIES', btnEnabled: true });
+            };
+        }
+        if (activeN) {
+            activeN.onclick = () => {
+                highlightActive(activeN, true);
+                highlightActive(activeY, false);
+                notifyIframe({ type: 'LF_UPDATE_STEPPER_PROPERTIES', btnEnabled: false });
+            };
+        }
+
+        const disabledY = document.getElementById('btn-stepper-disabled-y');
+        const disabledN = document.getElementById('btn-stepper-disabled-n');
+        
+        if (disabledY) {
+            disabledY.onclick = () => {
+                highlightActive(disabledY, true);
+                highlightActive(disabledN, false);
+                notifyIframe({ type: 'LF_UPDATE_STEPPER_PROPERTIES', disabled: true });
+            };
+        }
+        if (disabledN) {
+            disabledN.onclick = () => {
+                highlightActive(disabledN, true);
+                highlightActive(disabledY, false);
+                notifyIframe({ type: 'LF_UPDATE_STEPPER_PROPERTIES', disabled: false });
+            };
+        }
+    };
+    initStepperEvents();
+ 
+    // Selectbox Inspector Events
+    const initSelectboxEvents = () => {
+        const notifyIframe = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                MessageHub.send(iframe.contentWindow, data.type, data);
+            }
+        };
+
+        const activeY = document.getElementById('btn-selectbox-dropdown-y');
+        const activeN = document.getElementById('btn-selectbox-dropdown-n');
+        
+        const highlightActive = (btn, isActive) => {
+            if (!btn) return;
+            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+            btn.style.fontWeight = isActive ? 'bold' : 'normal';
+        };
+
+        if (activeY) {
+            activeY.onclick = () => {
+                highlightActive(activeY, true);
+                highlightActive(activeN, false);
+                
+                const defCtrls = document.getElementById('selectbox-default-controls');
+                const dropCtrls = document.getElementById('selectbox-dropdown-controls');
+                if (defCtrls) defCtrls.style.display = 'none';
+                if (dropCtrls) dropCtrls.style.display = 'block';
+                
+                notifyIframe({ type: 'LF_UPDATE_SELECTBOX_PROPERTIES', dropdownActive: true });
+            };
+        }
+        if (activeN) {
+            activeN.onclick = () => {
+                highlightActive(activeN, true);
+                highlightActive(activeY, false);
+                
+                const defCtrls = document.getElementById('selectbox-default-controls');
+                const dropCtrls = document.getElementById('selectbox-dropdown-controls');
+                if (defCtrls) defCtrls.style.display = 'block';
+                if (dropCtrls) dropCtrls.style.display = 'none';
+                
+                notifyIframe({ type: 'LF_UPDATE_SELECTBOX_PROPERTIES', dropdownActive: false });
+            };
+        }
+
+        const defaultTextInput = document.getElementById('prop-selectbox-default-text');
+        if (defaultTextInput) {
+            defaultTextInput.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_SELECTBOX_PROPERTIES', defaultText: defaultTextInput.value });
+            };
+        }
+
+        const countInput = document.getElementById('prop-selectbox-option-count');
+        if (countInput) {
+            countInput.oninput = () => {
+                let count = parseInt(countInput.value);
+                if (isNaN(count) || count < 1) count = 1;
+                if (count > 10) count = 10;
+                
+                const currentInputs = document.querySelectorAll('.selectbox-option-input');
+                let currentOptions = Array.from(currentInputs).map(inp => inp.value);
+                
+                if (currentOptions.length < count) {
+                    while (currentOptions.length < count) {
+                        currentOptions.push(`Option ${currentOptions.length + 1}`);
+                    }
+                } else if (currentOptions.length > count) {
+                    currentOptions = currentOptions.slice(0, count);
+                }
+                
+                const inputsContainer = document.getElementById('selectbox-options-inputs-container');
+                if (inputsContainer) {
+                    inputsContainer.innerHTML = currentOptions.map((optText, idx) => {
+                        return `
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 10px; color: #94a3b8; width: 45px; flex-shrink: 0;">Item ${idx + 1}</span>
+                            <input type="text" class="selectbox-option-input" data-index="${idx}" value="${optText}" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; outline: none; font-family: inherit;">
+                        </div>`;
+                    }).join('');
+                }
+                
+                notifyIframe({ type: 'LF_UPDATE_SELECTBOX_PROPERTIES', options: currentOptions });
+            };
+        }
+
+        const container = document.getElementById('selectbox-options-inputs-container');
+        if (container) {
+            container.addEventListener('input', (e) => {
+                if (e.target.classList.contains('selectbox-option-input')) {
+                    const optionInputs = document.querySelectorAll('.selectbox-option-input');
+                    const options = Array.from(optionInputs).map(inp => inp.value);
+                    notifyIframe({ type: 'LF_UPDATE_SELECTBOX_PROPERTIES', options: options });
+                }
+            });
+        }
+    };
+    initSelectboxEvents();
+
+    // File Upload Inspector Events
+    const initFileuploadEvents = () => {
+        const notifyIframe = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                MessageHub.send(iframe.contentWindow, data.type, data);
+            }
+        };
+
+        const activeY = document.getElementById('btn-fileupload-selected-y');
+        const activeN = document.getElementById('btn-fileupload-selected-n');
+        
+        const highlightActive = (btn, isActive) => {
+            if (!btn) return;
+            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+            btn.style.fontWeight = isActive ? 'bold' : 'normal';
+        };
+
+        if (activeY) {
+            activeY.onclick = () => {
+                highlightActive(activeY, true);
+                highlightActive(activeN, false);
+                
+                const nameCtrls = document.getElementById('fileupload-name-controls');
+                const placeholderCtrls = document.getElementById('fileupload-placeholder-controls');
+                if (nameCtrls) nameCtrls.style.display = 'block';
+                if (placeholderCtrls) placeholderCtrls.style.display = 'none';
+                
+                notifyIframe({ type: 'LF_UPDATE_FILEUPLOAD_PROPERTIES', fileSelected: true });
+            };
+        }
+        if (activeN) {
+            activeN.onclick = () => {
+                highlightActive(activeN, true);
+                highlightActive(activeY, false);
+                
+                const nameCtrls = document.getElementById('fileupload-name-controls');
+                const placeholderCtrls = document.getElementById('fileupload-placeholder-controls');
+                if (nameCtrls) nameCtrls.style.display = 'none';
+                if (placeholderCtrls) placeholderCtrls.style.display = 'block';
+                
+                notifyIframe({ type: 'LF_UPDATE_FILEUPLOAD_PROPERTIES', fileSelected: false });
+            };
+        }
+
+        const nameInput = document.getElementById('prop-fileupload-file-name');
+        if (nameInput) {
+            nameInput.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_FILEUPLOAD_PROPERTIES', fileName: nameInput.value });
+            };
+        }
+
+        const placeholderInput = document.getElementById('prop-fileupload-placeholder');
+        if (placeholderInput) {
+            placeholderInput.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_FILEUPLOAD_PROPERTIES', filePlaceholder: placeholderInput.value });
+            };
+        }
+
+        const btnTextInput = document.getElementById('prop-fileupload-btn-text');
+        if (btnTextInput) {
+            btnTextInput.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_FILEUPLOAD_PROPERTIES', fileButtonText: btnTextInput.value });
+            };
+        }
+    };
+    initFileuploadEvents();
+
+    // Layer Ordering Actions (Bring Front / Send Back)
+    const btnBringFront = document.getElementById('btn-bring-front-action');
+    if (btnBringFront) {
+        btnBringFront.onclick = () => {
+            notifyIframe({ type: 'LF_BRING_FRONT' });
+        };
+    }
+    const btnSendBack = document.getElementById('btn-send-back-action');
+    if (btnSendBack) {
+        btnSendBack.onclick = () => {
+            notifyIframe({ type: 'LF_SEND_BACK' });
+        };
+    }
+
     window.closeAllV4Inspectors = function() {
         const tableSect = document.getElementById('table-inspector-section');
         const shapeSect = document.getElementById('shape-inspector-section');
         const actions = document.getElementById('comp-actions-section');
+        const fileuploadSect = document.getElementById('fileupload-inspector-section');
         if (tableSect) tableSect.style.display = 'none';
         if (shapeSect) shapeSect.style.display = 'none';
         if (actions) actions.style.display = 'none';
+        if (fileuploadSect) fileuploadSect.style.display = 'none';
         notifyIframe({ type: 'LF_DESELECT_ALL' });
     };
 
