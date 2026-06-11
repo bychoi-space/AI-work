@@ -129,6 +129,18 @@ img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; o
 /* Reset background for new SVG/Custom atoms to prevent sprite leakage */
 svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
+.v4-stepper-container[data-disabled="true"] { pointer-events: none !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-control { background-color: #e5e7eb !important; border-color: #9ca3af !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-value { color: #9ca3af !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-dec, .v4-stepper-container[data-disabled="true"] .v4-stepper-inc { background-color: #e5e7eb !important; color: #9ca3af !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-action { background-color: #e5e7eb !important; border-color: #9ca3af !important; color: #9ca3af !important; box-shadow: none !important; }
+.v4-selectbox-container[data-dropdown-active="true"] .v4-selectbox-header { border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; }
+.v4-selectbox-container[data-dropdown-active="true"] svg { transform: rotate(180deg); }
+.v4-selectbox-option:hover { background-color: #f3f4f6 !important; cursor: pointer; }
+.v4-selectbox-option:last-child { border-bottom: none !important; }
+.v4-fileupload-container[data-selected="true"] .v4-fileupload-delete { display: block !important; }
+.v4-fileupload-delete:hover { color: #ef4444 !important; }
+.v4-fileupload-button:hover { background-color: #f9fafb !important; border-color: #babcbe !important; }
 
 /* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
 .text-marker { 
@@ -207,6 +219,12 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
     width: 100% !important;
     height: 100% !important;
 }
+.v4-alert-btn.style-primary { background: #4f46e5 !important; border-color: #4f46e5 !important; color: #ffffff !important; }
+.v4-alert-btn.style-normal { background: #ffffff !important; border-color: #cbd5e1 !important; color: #1f2937 !important; }
+.v4-alert-btn.style-negative { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #475569 !important; }
+.v4-custom-btn.style-primary { background: #4f46e5 !important; border-color: #4f46e5 !important; color: #ffffff !important; }
+.v4-custom-btn.style-normal { background: #ffffff !important; border-color: #cbd5e1 !important; color: #1f2937 !important; }
+.v4-custom-btn.style-negative { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #475569 !important; }
 
 </style>
 </head>
@@ -270,8 +288,7 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; color: rgb(255, 255, 255);"><span style="font-weight: normal;">더보기</span></div>
             </div></div></div><div id="v4-comp-1781056180884" class="lf-component" style="position: absolute; top: 73px; left: 307px; z-index: 1000; transform: none; width: 360px; height: 774px;" data-resized="true">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgba(100, 100, 100, 0.5); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><div id="v4-comp-1781056354004" class="lf-component" style="position: absolute; top: 527px; left: 307px; z-index: 1000; transform: none; width: 360px; height: 320px;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><div id="v4-comp-1781058943199" class="lf-component" style="position: absolute; top: 783.5px; left: 321.5px; z-index: 1000; transform: none; width: 330px; height: 50px;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(50, 50, 50); border: 1.6px solid rgb(255, 255, 255); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="color: rgb(255, 255, 255); font-size: 14px;">적용</span></p></div></div></div><div id="v4-comp-1781058399707399" class="lf-component" style="position: absolute; top: 709.25px; left: 581px; z-index: 1000; transform: none; width: 70px; height: 40px;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><div id="v4-comp-1781058399707399" class="lf-component" style="position: absolute; top: 709.25px; left: 581px; z-index: 1000; transform: none; width: 70px; height: 40px;" data-resized="true">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px; color: rgb(68, 68, 68);">50대 이상</span></p></div></div></div><div id="v4-comp-1781058394841833" class="lf-component" style="position: absolute; top: 709.25px; left: 523px; z-index: 1000; transform: none; width: 50px; height: 40px;" data-resized="true">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(50, 50, 50); border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px;">40대</span></p></div></div></div><div id="v4-comp-1781058141223313" class="lf-component" style="position: absolute; top: 709.25px; left: 464px; z-index: 1000; transform: none; width: 50px; height: 40px;" data-resized="true">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px; color: rgb(68, 68, 68);">30대</span></p></div></div></div><div id="v4-comp-1781058141223869" class="lf-component" style="position: absolute; top: 709.25px; left: 394.5px; z-index: 1000; transform: none; width: 60px; height: 40px;" data-resized="true">
@@ -312,7 +329,15 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; color: rgb(255, 255, 255);"><span style="font-weight: normal;">더보기</span></div>
             </div></div></div><div id="v4-comp-1781066140460804" class="lf-component" style="position: absolute; top: 73px; left: 771px; z-index: 1000; transform: none; width: 360px; height: 774px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgba(100, 100, 100, 0.5); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><div id="v4-comp-1781066302783141" class="lf-component" style="position: absolute; top: 627px; left: 771.25px; z-index: 1000; transform: none; width: 360px; height: 220px;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><script id="v4-inlined-script">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><div id="v4-pin-36" class="lf-component text-marker" style="position: absolute; top: 766.5px; left: 775.75px; z-index: 1000; transform: none; width: 85px; height: 29px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px; color: rgb(136, 136, 136);">베스트 상품은 판매 데이터와 상품 조회 수를 종합해서 산정됩니다.</span></p><p><span style="font-size: 12px; color: rgb(136, 136, 136);">최근 업데이트 : 06/10 09:52 갱신</span></p></div></div><div id="v4-comp-1781071396712657" class="lf-component" style="position: absolute; top: 713.25px; left: 980px; z-index: 1000; transform: none; width: 50px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px; color: rgb(68, 68, 68);">월간</span></p></div></div></div><div id="v4-comp-1781066327332680" class="lf-component" style="position: absolute; top: 712.25px; left: 918.5px; z-index: 1000; transform: none; width: 50px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px; color: rgb(68, 68, 68);">주간</span></p></div></div></div><div id="v4-comp-1781066327331707" class="lf-component" style="position: absolute; top: 712.75px; left: 858px; z-index: 1000; transform: none; width: 50px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px; color: rgb(68, 68, 68);">일간</span></p></div></div></div><div id="v4-comp-178106632733188" class="lf-component" style="position: absolute; top: 712.75px; left: 781px; z-index: 1000; transform: none; width: 70px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(50, 50, 50); border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px;">실시간</span></p></div></div></div><div id="v4-pin-37" class="lf-component text-marker" style="position: absolute; top: 675px; left: 781px; z-index: 1000; transform: none; width: 85px; height: 29px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 16px;">조회 기간</span></p></div></div><div id="v4-comp-1781071406299437" class="lf-component" style="position: absolute; top: 644px; left: 926px; z-index: 1000; transform: none; width: 50px; height: 5px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(150, 150, 150); border: 1.6px solid transparent; border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><div id="v4-comp-1781162025592" class="lf-component" style="position: absolute; top: 770.5px; left: 321.5px; z-index: 1000; transform: none; width: 330px; height: 50px;" data-resized="true">
+            <div class="v4-btn-container" data-text="적용" data-btn-style="custom" data-btn-radius="20" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
+                <button class="v4-custom-btn style-custom" style="width: 100%; height: 100%; border-radius: 20px; background: rgb(50, 50, 50); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px; box-sizing: border-box; transition: 0.2s; font-family: inherit; border-width: 1.6px !important; border-style: solid !important; border-image: initial !important; border-color: transparent; color: rgb(255, 255, 255);">적용</button>
+            </div></div><script id="v4-inlined-script">
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -788,8 +813,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             host.appendChild(v);
             newSelectedIds.push(newId);
         });
-        if (typeof enforceDesignSystem === 'function') {
-            enforceDesignSystem();
+        if (typeof window.enforceDesignSystem === 'function') {
+            window.enforceDesignSystem();
         } else if (typeof initHandles === 'function') {
             initHandles();
         }
@@ -841,9 +866,46 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const stepperVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-val')) || minVal : minVal;
         const stepperBtnEnabled = stepperContainer ? stepperContainer.getAttribute('data-btn-enabled') !== 'false' : true;
         const stepperBtnText = stepperContainer ? stepperContainer.getAttribute('data-btn-text') || "적용" : "적용";
+        const stepperDisabled = stepperContainer ? stepperContainer.getAttribute('data-disabled') === 'true' : false;
         
+        // Selectbox Atom Detection
+        const isSelectbox = !!c.querySelector('.v4-selectbox-container') || c.classList.contains('v4-selectbox-container');
+        const selectboxContainer = c.querySelector('.v4-selectbox-container') || (isSelectbox ? c : null);
+        const selectboxDefaultText = selectboxContainer ? (selectboxContainer.getAttribute('data-default-text') || "선택하세요") : "선택하세요";
+        const selectboxDropdownActive = selectboxContainer ? selectboxContainer.getAttribute('data-dropdown-active') === 'true' : false;
+        const selectboxOptionsRaw = selectboxContainer ? (selectboxContainer.getAttribute('data-options') || "Option 1,Option 2,Option 3") : "Option 1,Option 2,Option 3";
+        const selectboxOptions = selectboxOptionsRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+        // File Upload Atom Detection
+        const isFileUpload = !!c.querySelector('.v4-fileupload-container') || c.classList.contains('v4-fileupload-container');
+        const fileuploadContainer = c.querySelector('.v4-fileupload-container') || (isFileUpload ? c : null);
+        const fileSelected = fileuploadContainer ? fileuploadContainer.getAttribute('data-selected') === 'true' : false;
+        const fileName = fileuploadContainer ? (fileuploadContainer.getAttribute('data-file-name') || "") : "";
+        const fileButtonText = fileuploadContainer ? (fileuploadContainer.getAttribute('data-button-text') || "파일첨부") : "파일첨부";
+        const filePlaceholder = fileuploadContainer ? (fileuploadContainer.getAttribute('data-placeholder') || "선택된 파일 없음") : "선택된 파일 없음";
+
+        // Alert Atom Detection
+        const isAlert = !!c.querySelector('.v4-alert-container') || c.classList.contains('v4-alert-container');
+        const alertContainer = c.querySelector('.v4-alert-container') || (isAlert ? c : null);
+        const alertMessage = alertContainer ? (alertContainer.getAttribute('data-message') || "얼럿 메시지 입력 표시") : "얼럿 메시지 입력 표시";
+        const alertBtnCount = alertContainer ? parseInt(alertContainer.getAttribute('data-btn-count')) || 1 : 1;
+        const alertBtnText1 = alertContainer ? (alertContainer.getAttribute('data-btn-text-1') || "확인") : "확인";
+        const alertBtnText2 = alertContainer ? (alertContainer.getAttribute('data-btn-text-2') || "취소") : "취소";
+        const alertBtnText3 = alertContainer ? (alertContainer.getAttribute('data-btn-text-3') || "저장") : "저장";
+        const alertBtnStyle1 = alertContainer ? (alertContainer.getAttribute('data-btn-style-1') || "normal") : "normal";
+        const alertBtnStyle2 = alertContainer ? (alertContainer.getAttribute('data-btn-style-2') || "normal") : "normal";
+        const alertBtnStyle3 = alertContainer ? (alertContainer.getAttribute('data-btn-style-3') || "normal") : "normal";
+
+        // Button Atom Detection
+        const isButton = !!c.querySelector('.v4-btn-container') || c.classList.contains('v4-btn-container');
+        const btnContainer = c.querySelector('.v4-btn-container') || (isButton ? c : null);
+        const buttonText = btnContainer ? (btnContainer.getAttribute('data-text') || "버튼") : "버튼";
+        const buttonStyle = btnContainer ? (btnContainer.getAttribute('data-btn-style') || "normal") : "normal";
+        const buttonRadius = btnContainer ? (btnContainer.getAttribute('data-btn-radius') || "6") : "6";
+
         // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
         const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
+        const buttonEl = c.querySelector('.v4-custom-btn');
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
@@ -853,7 +915,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
             return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
         };
-
+ 
         let detectedIconColor = "";
         if (icon) {
             const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
@@ -866,7 +928,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 detectedIconColor = icon.style.color || icon.getAttribute('stroke') || "";
             }
         }
-
+ 
         return {
             id: c.id,
             isTable: !!table,
@@ -889,28 +951,51 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             val: stepperVal,
             btnEnabled: stepperBtnEnabled,
             btnText: stepperBtnText,
+            disabled: stepperDisabled,
+            isSelectbox: isSelectbox,
+            selectboxDefaultText: selectboxDefaultText,
+            selectboxDropdownActive: selectboxDropdownActive,
+            selectboxOptions: selectboxOptions,
+            isFileUpload: isFileUpload,
+            fileSelected: fileSelected,
+            fileName: fileName,
+            fileButtonText: fileButtonText,
+            filePlaceholder: filePlaceholder,
+            isAlert: isAlert,
+            alertMessage: alertMessage,
+            alertBtnCount: alertBtnCount,
+            alertBtnText1: alertBtnText1,
+            alertBtnText2: alertBtnText2,
+            alertBtnText3: alertBtnText3,
+            alertBtnStyle1: alertBtnStyle1,
+            alertBtnStyle2: alertBtnStyle2,
+            alertBtnStyle3: alertBtnStyle3,
+            isButton: isButton,
+            buttonText: buttonText,
+            buttonStyle: buttonStyle,
+            buttonRadius: buttonRadius,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : "")))))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))))),
-                text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : (alertContainer ? _getVal(alertContainer, "backgroundColor") : "")))))))))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (buttonEl ? _getVal(buttonEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor") : (alertContainer ? _getVal(alertContainer, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))))))))),
+                text: _rgb2hex(textCell ? _getVal(textCell, "color") : (buttonEl ? _getVal(buttonEl, "color") : "")),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 12 : 12),
                 fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
-                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : 0),
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : "")))))),
+                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : (buttonEl ? (parseInt(_getVal(buttonEl, "borderRadius")) || 0) : 0)),
+                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : (alertContainer ? _getVal(alertContainer, "backgroundColor") : "")))))))))),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : "")))));
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : "")))))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : "")))));
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (buttonEl ? _getVal(buttonEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : "")))))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
@@ -1151,6 +1236,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
         if (isResizing && activeEl) {
             activeEl.setAttribute('data-resized', 'true');
+            if (typeof window.enforceDesignSystem === 'function') {
+                window.enforceDesignSystem();
+            }
         }
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
         isDragging = false; isResizing = false; activeEl = null; 
@@ -1697,6 +1785,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 if (d.maxVal !== undefined) {
                     container.setAttribute('data-max', d.maxVal);
                 }
+                if (d.disabled !== undefined) {
+                    container.setAttribute('data-disabled', d.disabled ? 'true' : 'false');
+                }
                 if (d.btnEnabled !== undefined) {
                     container.setAttribute('data-btn-enabled', d.btnEnabled ? 'true' : 'false');
                     const actBtn = container.querySelector('.v4-stepper-action');
@@ -1704,9 +1795,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         actBtn.style.display = d.btnEnabled ? 'inline-flex' : 'none';
                     }
                     if (d.btnEnabled) {
-                        s.style.width = '170px';
+                        s.style.width = '154px';
                     } else {
-                        s.style.width = '112px';
+                        s.style.width = '100px';
                     }
                 }
                 if (d.btnText !== undefined) {
@@ -1733,17 +1824,211 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 const decBtn = container.querySelector('.v4-stepper-dec');
                 const incBtn = container.querySelector('.v4-stepper-inc');
-                if (decBtn) {
-                    decBtn.style.backgroundColor = curVal === min ? '#f3f4f6' : '#ffffff';
-                    decBtn.style.color = curVal === min ? '#9ca3af' : '#374151';
-                    decBtn.style.cursor = curVal === min ? 'not-allowed' : 'pointer';
-                }
-                if (incBtn) {
-                    incBtn.style.backgroundColor = curVal === max ? '#f3f4f6' : '#ffffff';
-                    incBtn.style.color = curVal === max ? '#9ca3af' : '#374151';
-                    incBtn.style.cursor = curVal === max ? 'not-allowed' : 'pointer';
+                const isDisabled = container.getAttribute('data-disabled') === 'true';
+                
+                if (isDisabled) {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = '';
+                        decBtn.style.color = '';
+                        decBtn.style.cursor = 'not-allowed';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = '';
+                        incBtn.style.color = '';
+                        incBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = curVal === min ? '#f3f4f6' : '#ffffff';
+                        decBtn.style.color = curVal === min ? '#9ca3af' : '#374151';
+                        decBtn.style.cursor = curVal === min ? 'not-allowed' : 'pointer';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = curVal === max ? '#f3f4f6' : '#ffffff';
+                        incBtn.style.color = curVal === max ? '#9ca3af' : '#374151';
+                        incBtn.style.cursor = curVal === max ? 'not-allowed' : 'pointer';
+                    }
                 }
                 
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_SELECTBOX_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-selectbox-container') || (s.classList.contains('v4-selectbox-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.defaultText !== undefined) {
+                    container.setAttribute('data-default-text', d.defaultText);
+                    const selectedText = container.querySelector('.v4-selectbox-selected-text');
+                    if (selectedText) selectedText.innerText = d.defaultText;
+                }
+                
+                if (d.dropdownActive !== undefined) {
+                    container.setAttribute('data-dropdown-active', d.dropdownActive ? 'true' : 'false');
+                    const optionsList = container.querySelector('.v4-selectbox-options');
+                    if (optionsList) {
+                        optionsList.style.display = d.dropdownActive ? 'block' : 'none';
+                    }
+                }
+                
+                if (d.options !== undefined) {
+                    const optionsArr = Array.isArray(d.options) ? d.options : d.options.split(',');
+                    const cleanOptions = optionsArr.map(o => o.trim()).filter(Boolean);
+                    container.setAttribute('data-options', cleanOptions.join(','));
+                    
+                    const optionsList = container.querySelector('.v4-selectbox-options');
+                    if (optionsList) {
+                        optionsList.innerHTML = cleanOptions.map((opt, idx) => {
+                            const isLast = idx === cleanOptions.length - 1;
+                            const borderStyle = isLast ? '' : ' border-bottom: 1.6px solid #f3f4f6;';
+                            return '<div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151;' + borderStyle + ' box-sizing: border-box;">' + opt + '</div>';
+                        }).join('');
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_FILEUPLOAD_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-fileupload-container') || (s.classList.contains('v4-fileupload-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.fileSelected !== undefined) {
+                    container.setAttribute('data-selected', d.fileSelected ? 'true' : 'false');
+                }
+                if (d.fileName !== undefined) {
+                    container.setAttribute('data-file-name', d.fileName);
+                }
+                if (d.fileButtonText !== undefined) {
+                    container.setAttribute('data-button-text', d.fileButtonText);
+                    const btn = container.querySelector('.v4-fileupload-button');
+                    if (btn) btn.innerText = d.fileButtonText;
+                }
+                if (d.filePlaceholder !== undefined) {
+                    container.setAttribute('data-placeholder', d.filePlaceholder);
+                }
+                
+                // Update internal text display based on selection state
+                const isSel = container.getAttribute('data-selected') === 'true';
+                const fName = container.getAttribute('data-file-name') || '';
+                const placeholder = container.getAttribute('data-placeholder') || '선택된 파일 없음';
+                const txt = container.querySelector('.v4-fileupload-textbox');
+                if (txt) {
+                    if (isSel) {
+                        txt.innerText = fName;
+                        txt.style.color = '#374151';
+                    } else {
+                        txt.innerText = placeholder;
+                        txt.style.color = '#9ca3af';
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_ALERT_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-alert-container') || (s.classList.contains('v4-alert-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.messageText !== undefined) {
+                    container.setAttribute('data-message', d.messageText);
+                    const msgEl = container.querySelector('.v4-alert-message');
+                    if (msgEl) msgEl.innerHTML = d.messageText.replace(/\n/g, '<br>');
+                }
+                if (d.btnCount !== undefined) {
+                    container.setAttribute('data-btn-count', d.btnCount);
+                }
+                if (d.btnText1 !== undefined) {
+                    container.setAttribute('data-btn-text-1', d.btnText1);
+                    const btn = container.querySelector('.v4-alert-btn-1');
+                    if (btn) btn.innerText = d.btnText1;
+                }
+                if (d.btnText2 !== undefined) {
+                    container.setAttribute('data-btn-text-2', d.btnText2);
+                    const btn = container.querySelector('.v4-alert-btn-2');
+                    if (btn) btn.innerText = d.btnText2;
+                }
+                if (d.btnText3 !== undefined) {
+                    container.setAttribute('data-btn-text-3', d.btnText3);
+                    const btn = container.querySelector('.v4-alert-btn-3');
+                    if (btn) btn.innerText = d.btnText3;
+                }
+                if (d.btnStyle1 !== undefined) container.setAttribute('data-btn-style-1', d.btnStyle1);
+                if (d.btnStyle2 !== undefined) container.setAttribute('data-btn-style-2', d.btnStyle2);
+                if (d.btnStyle3 !== undefined) container.setAttribute('data-btn-style-3', d.btnStyle3);
+                
+                // Update button visibility and style classes
+                const count = parseInt(container.getAttribute('data-btn-count')) || 1;
+                const btn1 = container.querySelector('.v4-alert-btn-1');
+                const btn2 = container.querySelector('.v4-alert-btn-2');
+                const btn3 = container.querySelector('.v4-alert-btn-3');
+                if (btn1) {
+                    btn1.style.display = count >= 1 ? 'flex' : 'none';
+                    const style1 = container.getAttribute('data-btn-style-1') || 'normal';
+                    btn1.className = 'v4-alert-btn v4-alert-btn-1 style-' + style1;
+                }
+                if (btn2) {
+                    btn2.style.display = count >= 2 ? 'flex' : 'none';
+                    const style2 = container.getAttribute('data-btn-style-2') || 'normal';
+                    btn2.className = 'v4-alert-btn v4-alert-btn-2 style-' + style2;
+                }
+                if (btn3) {
+                    btn3.style.display = count >= 3 ? 'flex' : 'none';
+                    const style3 = container.getAttribute('data-btn-style-3') || 'normal';
+                    btn3.className = 'v4-alert-btn v4-alert-btn-3 style-' + style3;
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_BUTTON_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-btn-container') || (s.classList.contains('v4-btn-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.buttonText !== undefined) {
+                    container.setAttribute('data-text', d.buttonText);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) btn.innerText = d.buttonText;
+                }
+                if (d.buttonStyle !== undefined) {
+                    container.setAttribute('data-btn-style', d.buttonStyle);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) {
+                        const targetClass = 'v4-custom-btn style-' + d.buttonStyle;
+                        if (btn.className !== targetClass) btn.className = targetClass;
+                    }
+                }
+                if (d.buttonRadius !== undefined) {
+                    container.setAttribute('data-btn-radius', d.buttonRadius);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) {
+                        const targetRadius = d.buttonRadius + 'px';
+                        if (btn.style.borderRadius !== targetRadius) btn.style.borderRadius = targetRadius;
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
                 markDirty();
             }
         }
@@ -1786,7 +2071,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 if (input) {
                     input.dataset.eventsBound = "false";
                 }
-                if (typeof enforceDesignSystem === 'function') enforceDesignSystem();
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
             }
         }
@@ -1811,6 +2096,17 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (inputContainer && !d.selector) {
                 t = inputContainer;
             }
+            // Alert style redirection for BG & Border coloring
+            const alertContainer = s.querySelector('.v4-alert-container');
+            if (alertContainer && !d.selector) {
+                t = alertContainer;
+            }
+            // Button style redirection for BG & Border coloring
+            const buttonContainer = s.querySelector('.v4-btn-container');
+            const customBtn = s.querySelector('.v4-custom-btn');
+            if (buttonContainer && customBtn && !d.selector) {
+                t = customBtn;
+            }
             if (!t) return;
             
             if (d.style) {
@@ -1829,6 +2125,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     } else {
                         s.style.width = d.style.width;
                         if (inputContainer) inputContainer.style.width = '100%';
+                        if (alertContainer) alertContainer.style.width = '100%';
+                        if (buttonContainer) buttonContainer.style.width = '100%';
                     }
                 }
                 if (d.style.height !== undefined) {
@@ -1837,6 +2135,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     } else {
                         s.style.height = d.style.height;
                         if (inputContainer) inputContainer.style.height = '100%';
+                        if (alertContainer) alertContainer.style.height = '100%';
+                        if (buttonContainer) buttonContainer.style.height = '100%';
                     }
                 }
 
@@ -2441,15 +2741,29 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const valEl = container.querySelector('.v4-stepper-value');
 
             if (container.dataset.eventsBound === "true") {
-                if (decBtn) {
-                    decBtn.style.backgroundColor = cur === min ? '#f3f4f6' : '#ffffff';
-                    decBtn.style.color = cur === min ? '#9ca3af' : '#374151';
-                    decBtn.style.cursor = cur === min ? 'not-allowed' : 'pointer';
-                }
-                if (incBtn) {
-                    incBtn.style.backgroundColor = cur === max ? '#f3f4f6' : '#ffffff';
-                    incBtn.style.color = cur === max ? '#9ca3af' : '#374151';
-                    incBtn.style.cursor = cur === max ? 'not-allowed' : 'pointer';
+                const isDisabled = container.getAttribute('data-disabled') === 'true';
+                if (isDisabled) {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = '';
+                        decBtn.style.color = '';
+                        decBtn.style.cursor = 'not-allowed';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = '';
+                        incBtn.style.color = '';
+                        incBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = cur === min ? '#f3f4f6' : '#ffffff';
+                        decBtn.style.color = cur === min ? '#9ca3af' : '#374151';
+                        decBtn.style.cursor = cur === min ? 'not-allowed' : 'pointer';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = cur === max ? '#f3f4f6' : '#ffffff';
+                        incBtn.style.color = cur === max ? '#9ca3af' : '#374151';
+                        incBtn.style.cursor = cur === max ? 'not-allowed' : 'pointer';
+                    }
                 }
                 return;
             }
@@ -2462,21 +2776,36 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 container.setAttribute('data-val', val);
                 if (valEl) valEl.innerText = val;
                 
-                if (decBtn) {
-                    decBtn.style.backgroundColor = val === currentMin ? '#f3f4f6' : '#ffffff';
-                    decBtn.style.color = val === currentMin ? '#9ca3af' : '#374151';
-                    decBtn.style.cursor = val === currentMin ? 'not-allowed' : 'pointer';
-                }
-                if (incBtn) {
-                    incBtn.style.backgroundColor = val === currentMax ? '#f3f4f6' : '#ffffff';
-                    incBtn.style.color = val === currentMax ? '#9ca3af' : '#374151';
-                    incBtn.style.cursor = val === currentMax ? 'not-allowed' : 'pointer';
+                const isDisabled = container.getAttribute('data-disabled') === 'true';
+                if (isDisabled) {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = '';
+                        decBtn.style.color = '';
+                        decBtn.style.cursor = 'not-allowed';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = '';
+                        incBtn.style.color = '';
+                        incBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = val === currentMin ? '#f3f4f6' : '#ffffff';
+                        decBtn.style.color = val === currentMin ? '#9ca3af' : '#374151';
+                        decBtn.style.cursor = val === currentMin ? 'not-allowed' : 'pointer';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = val === currentMax ? '#f3f4f6' : '#ffffff';
+                        incBtn.style.color = val === currentMax ? '#9ca3af' : '#374151';
+                        incBtn.style.cursor = val === currentMax ? 'not-allowed' : 'pointer';
+                    }
                 }
             };
             
             if (decBtn) {
                 decBtn.onclick = (e) => {
                     e.stopPropagation();
+                    if (container.getAttribute('data-disabled') === 'true') return;
                     if (window.V4UndoManager) window.V4UndoManager.saveState();
                     const currentVal = parseInt(container.getAttribute('data-val')) || 1;
                     updateVal(currentVal - 1);
@@ -2486,6 +2815,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (incBtn) {
                 incBtn.onclick = (e) => {
                     e.stopPropagation();
+                    if (container.getAttribute('data-disabled') === 'true') return;
                     if (window.V4UndoManager) window.V4UndoManager.saveState();
                     const currentVal = parseInt(container.getAttribute('data-val')) || 1;
                     updateVal(currentVal + 1);
@@ -2496,11 +2826,58 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             updateVal(cur);
         });
     };
+    const bindFileuploadEvents = () => {
+        document.querySelectorAll('.v4-fileupload-container').forEach(container => {
+            const delBtn = container.querySelector('.v4-fileupload-delete');
+            const txt = container.querySelector('.v4-fileupload-textbox');
+            const isSel = container.getAttribute('data-selected') === 'true';
+            const fName = container.getAttribute('data-file-name') || '';
+            const placeholder = container.getAttribute('data-placeholder') || '선택된 파일 없음';
+            
+            // Sync current text display with comparison guards to prevent infinite MutationObserver loops
+            if (txt) {
+                const targetText = isSel ? fName : placeholder;
+                if (txt.innerText !== targetText) {
+                    txt.innerText = targetText;
+                }
+                const targetColor = isSel ? 'rgb(55, 65, 81)' : 'rgb(156, 163, 175)'; // browser returns rgb values for style.color
+                const hexColor = isSel ? '#374151' : '#9ca3af';
+                if (txt.style.color !== hexColor && txt.style.color !== targetColor) {
+                    txt.style.color = hexColor;
+                }
+            }
+
+            if (container.dataset.eventsBound === "true") return;
+            container.dataset.eventsBound = "true";
+            
+            if (delBtn) {
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    
+                    container.setAttribute('data-selected', 'false');
+                    if (txt) {
+                        txt.innerText = container.getAttribute('data-placeholder') || '선택된 파일 없음';
+                        txt.style.color = '#9ca3af';
+                    }
+                    
+                    markDirty();
+                    
+                    // Notify parent to re-sync inspector properties
+                    notifyParent({
+                        type: 'LF_COMP_SELECTED',
+                        ..._getCompStyles(container.closest('.lf-component'))
+                    });
+                };
+            }
+        });
+    };
 
     // High-Persistence Border Standardization & Coordinate Migration
     window.enforceDesignSystem = () => {
         initHandles();
         bindStepperEvents();
+        bindFileuploadEvents();
         
         // --- Self-healing: Deduplicate IDs in DOM if duplicates exist ---
         const seenIds = new Set();
@@ -2524,6 +2901,151 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 if (typeof resizeAtomToFitText === 'function') {
                     resizeAtomToFitText(c);
                 }
+            }
+        });
+
+        // --- Auto-resize Stepper to fit its internal container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const stepper = c.querySelector('.v4-stepper-container');
+            if (stepper) {
+                const btnEnabled = stepper.getAttribute('data-btn-enabled') !== 'false';
+                const targetW = btnEnabled ? '154px' : '100px';
+                const targetH = '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (stepper.style.width !== '100%') stepper.style.width = '100%';
+                if (stepper.style.height !== '100%') stepper.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize Selectbox to fit its state container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const selectbox = c.querySelector('.v4-selectbox-container');
+            if (selectbox) {
+                const dropdownActive = selectbox.getAttribute('data-dropdown-active') === 'true';
+                const optionsRaw = selectbox.getAttribute('data-options') || "";
+                const optionsArr = optionsRaw.split(',').map(s => s.trim()).filter(Boolean);
+                
+                const targetW = '150px';
+                const targetH = dropdownActive ? (30 + (optionsArr.length * 30)) + 'px' : '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (selectbox.style.width !== '100%') selectbox.style.width = '100%';
+                if (selectbox.style.height !== '100%') selectbox.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize File Upload to fit its state container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const fileupload = c.querySelector('.v4-fileupload-container');
+            if (fileupload) {
+                const targetW = '300px';
+                const targetH = '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (fileupload.style.width !== '100%') fileupload.style.width = '100%';
+                if (fileupload.style.height !== '100%') fileupload.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize Alert to fit content dynamically ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const alert = c.querySelector('.v4-alert-container');
+            if (alert) {
+                const btn1 = alert.querySelector('.v4-alert-btn-1');
+                const btn2 = alert.querySelector('.v4-alert-btn-2');
+                const btn3 = alert.querySelector('.v4-alert-btn-3');
+                if (btn1) {
+                    const style1 = alert.getAttribute('data-btn-style-1') || 'normal';
+                    const targetClass = 'v4-alert-btn v4-alert-btn-1 style-' + style1;
+                    if (btn1.className !== targetClass) btn1.className = targetClass;
+                }
+                if (btn2) {
+                    const style2 = alert.getAttribute('data-btn-style-2') || 'normal';
+                    const targetClass = 'v4-alert-btn v4-alert-btn-2 style-' + style2;
+                    if (btn2.className !== targetClass) btn2.className = targetClass;
+                }
+                if (btn3) {
+                    const style3 = alert.getAttribute('data-btn-style-3') || 'normal';
+                    const targetClass = 'v4-alert-btn v4-alert-btn-3 style-' + style3;
+                    if (btn3.className !== targetClass) btn3.className = targetClass;
+                }
+
+                if (c.getAttribute('data-resized') !== 'true') {
+                    const header = alert.querySelector('.v4-alert-header');
+                    const msgEl = alert.querySelector('.v4-alert-message');
+                    const buttonsEl = alert.querySelector('.v4-alert-buttons');
+                    
+                    const headerH = header ? header.offsetHeight : 32;
+                    const msgH = msgEl ? msgEl.scrollHeight : 21;
+                    const msgMargin = msgEl ? 14 : 0;
+                    const buttonsH = buttonsEl ? buttonsEl.offsetHeight : 28;
+                    const paddingH = 32; // 16px top + 16px bottom
+                    
+                    const targetH = headerH + paddingH + msgH + msgMargin + buttonsH + 2; // +2 for border
+                    const finalHeight = Math.max(120, targetH) + 'px';
+                    
+                    if (c.style.height !== finalHeight) c.style.height = finalHeight;
+                    if (alert.style.height !== '100%') alert.style.height = '100%';
+                    if (alert.style.width !== '100%') alert.style.width = '100%';
+                } else {
+                    if (alert.style.width !== '100%') alert.style.width = '100%';
+                    if (alert.style.height !== '100%') alert.style.height = '100%';
+                }
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize & sync Custom Button Atom ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const btnContainer = c.querySelector('.v4-btn-container');
+            if (btnContainer) {
+                const btn = btnContainer.querySelector('.v4-custom-btn');
+                if (btn) {
+                    const style = btnContainer.getAttribute('data-btn-style') || 'normal';
+                    const text = btnContainer.getAttribute('data-text') || '버튼';
+                    const radius = btnContainer.getAttribute('data-btn-radius') || '6';
+                    
+                    const targetClass = 'v4-custom-btn style-' + style;
+                    const targetRadius = radius + 'px';
+                    
+                    if (btn.className !== targetClass) btn.className = targetClass;
+                    if (btn.style.borderRadius !== targetRadius) btn.style.borderRadius = targetRadius;
+                    if (btn.innerText !== text) btn.innerText = text;
+
+                    if (style !== 'custom') {
+                        if (btn.style.backgroundColor !== '') btn.style.backgroundColor = '';
+                        if (btn.style.borderColor !== '') btn.style.borderColor = '';
+                        if (btn.style.color !== '') btn.style.color = '';
+                    }
+
+                    if (btn.style.borderWidth !== '1.6px') btn.style.setProperty('border-width', '1.6px', 'important');
+                    if (btn.style.borderStyle !== 'solid') btn.style.setProperty('border-style', 'solid', 'important');
+                }
+                
+                if (c.getAttribute('data-resized') !== 'true') {
+                    const targetW = '80px';
+                    const targetH = '40px';
+                    if (c.style.width !== targetW) c.style.width = targetW;
+                    if (c.style.height !== targetH) c.style.height = targetH;
+                }
+                
+                if (btnContainer.style.width !== '100%') btnContainer.style.width = '100%';
+                if (btnContainer.style.height !== '100%') btnContainer.style.height = '100%';
+                
+                updateHandles(c);
             }
         });
 
@@ -2743,20 +3265,15 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
         });
     };
-    const enforceDesignSystem = window.enforceDesignSystem;
-
     // Run immediately and setup observer for dynamic changes
-    enforceDesignSystem();
-    const observer = new MutationObserver(enforceDesignSystem);
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
-    
-    // Safety fallback for slow loads
-    setTimeout(enforceDesignSystem, 500);
+    if (typeof window.enforceDesignSystem === 'function') {
+        window.enforceDesignSystem();
+        const observer = new MutationObserver(() => window.enforceDesignSystem());
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        
+        // Safety fallback for slow loads
+        setTimeout(() => window.enforceDesignSystem(), 500);
+    }
 })();
 
-</script><div id="v4-pin-36" class="lf-component text-marker" style="position: absolute; top: 766.5px; left: 775.75px; z-index: 1000; transform: none; width: 85px; height: 29px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px; color: rgb(136, 136, 136);">베스트 상품은 판매 데이터와 상품 조회 수를 종합해서 산정됩니다.</span></p><p><span style="font-size: 12px; color: rgb(136, 136, 136);">최근 업데이트 : 06/10 09:52 갱신</span></p></div></div><div id="v4-comp-1781071396712657" class="lf-component" style="position: absolute; top: 713.25px; left: 980px; z-index: 1000; transform: none; width: 50px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px; color: rgb(68, 68, 68);">월간</span></p></div></div></div><div id="v4-comp-1781066327332680" class="lf-component" style="position: absolute; top: 712.25px; left: 918.5px; z-index: 1000; transform: none; width: 50px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px; color: rgb(68, 68, 68);">주간</span></p></div></div></div><div id="v4-comp-1781066327331707" class="lf-component" style="position: absolute; top: 712.75px; left: 858px; z-index: 1000; transform: none; width: 50px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(150, 150, 150); border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px; color: rgb(68, 68, 68);">일간</span></p></div></div></div><div id="v4-comp-178106632733188" class="lf-component" style="position: absolute; top: 712.75px; left: 781px; z-index: 1000; transform: none; width: 70px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(50, 50, 50); border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px;">실시간</span></p></div></div></div><div id="v4-pin-37" class="lf-component text-marker" style="position: absolute; top: 675px; left: 781px; z-index: 1000; transform: none; width: 85px; height: 29px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 16px;">조회 기간</span></p></div></div><div id="v4-comp-1781071406299437" class="lf-component" style="position: absolute; top: 644px; left: 926px; z-index: 1000; transform: none; width: 50px; height: 5px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(150, 150, 150); border: 1.6px solid transparent; border-radius: 100px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div></body></html>
+</script></body></html>
