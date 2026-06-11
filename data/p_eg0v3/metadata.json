@@ -714,12 +714,6 @@
       "defaultTab": "editor",
       "screenDesc": ""
     },
-    "03_UI_Screen_71.html": {
-      "title": "03_UI_Screen_71",
-      "type": "ui",
-      "updatedAt": "2026-06-11T07:46:51.415Z",
-      "template": "template_front_ui.html"
-    },
     "07_PC_Design_266.html": {
       "title": "07_PC_Design_266",
       "type": "default",
@@ -739,8 +733,7 @@
     "06_Mobile_Design_2_793.html",
     "06_Mobile_Design_2_901.html",
     "07_PC_Design_266.html",
-    "99_Blank_798.html",
-    "03_UI_Screen_71.html"
+    "99_Blank_798.html"
   ],
   "updated": "2026-06-11 16:26:21"
 }
