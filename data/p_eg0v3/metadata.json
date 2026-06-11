@@ -713,6 +713,12 @@
       "connectors": [],
       "defaultTab": "editor",
       "screenDesc": ""
+    },
+    "03_UI_Screen_71.html": {
+      "title": "03_UI_Screen_71",
+      "type": "ui",
+      "updatedAt": "2026-06-11T07:46:51.415Z",
+      "template": "template_front_ui.html"
     }
   },
   "assignee": "최범열",
@@ -724,7 +730,8 @@
     "프로젝트 커버.html",
     "06_Mobile_Design_2_793.html",
     "06_Mobile_Design_2_901.html",
-    "99_Blank_798.html"
+    "99_Blank_798.html",
+    "03_UI_Screen_71.html"
   ],
   "updated": "2026-06-11 16:26:21"
 }
