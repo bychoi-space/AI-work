@@ -731,6 +731,12 @@
       "type": "default",
       "updatedAt": "2026-06-11T07:57:11.305Z",
       "template": "template_pc_ui.html"
+    },
+    "07_PC_Design_266.html": {
+      "title": "07_PC_Design_266",
+      "type": "default",
+      "updatedAt": "2026-06-11T08:04:39.267Z",
+      "template": "template_pc_ui.html"
     }
   },
   "assignee": "최범열",
@@ -745,7 +751,8 @@
     "99_Blank_798.html",
     "03_UI_Screen_71.html",
     "99_Blank_575.html",
-    "07_PC_Design_935.html"
+    "07_PC_Design_935.html",
+    "07_PC_Design_266.html"
   ],
   "updated": "2026-06-11 16:26:21"
 }
