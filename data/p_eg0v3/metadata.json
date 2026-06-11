@@ -390,9 +390,9 @@
       "screenDesc": ""
     },
     "99_Blank_798.html": {
-      "title": "화면설계 2",
+      "title": "카드 설정",
       "type": "admin-nbos",
-      "updatedAt": "2026-06-11T01:08:30.808Z",
+      "updatedAt": "2026-06-11T04:54:00.226Z",
       "template": "template_blank.html",
       "description": [],
       "connectors": [],
