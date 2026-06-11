@@ -402,7 +402,7 @@
     "06_Mobile_Design_2_901.html": {
       "title": "랭킹카드 - 옵션",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-10T01:44:52.199Z",
+      "updatedAt": "2026-06-11T07:16:02.335Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -698,7 +698,7 @@
           "y": 766.5,
           "standardized": true,
           "type": "text",
-          "text": "베스트 상품은 판매 데이터와 상품 조회 수를 종합해서 산정됩니다.\n최근 업데이트 : 06/10 09:52 갱신",
+          "text": "베스트 상품은 판매 데이터와 상품 조회 수를 종합해서 산정됩니다.\n\n최근 업데이트 : 06/10 09:52 갱신",
           "html": "<p><span style=\"font-size: 12px; color: rgb(136, 136, 136);\">베스트 상품은 판매 데이터와 상품 조회 수를 종합해서 산정됩니다.</span></p><p><span style=\"font-size: 12px; color: rgb(136, 136, 136);\">최근 업데이트 : 06/10 09:52 갱신</span></p>"
         },
         {
@@ -726,5 +726,5 @@
     "06_Mobile_Design_2_901.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-11 14:09:38"
+  "updated": "2026-06-11 16:16:02"
 }
