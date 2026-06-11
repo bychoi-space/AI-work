@@ -730,13 +730,17 @@
       "title": "07_PC_Design_935",
       "type": "default",
       "updatedAt": "2026-06-11T07:57:11.305Z",
-      "template": "template_pc_ui.html"
+      "template": "template_pc_ui.html",
+      "description": [],
+      "connectors": []
     },
     "07_PC_Design_266.html": {
       "title": "07_PC_Design_266",
       "type": "default",
       "updatedAt": "2026-06-11T08:04:39.267Z",
-      "template": "template_pc_ui.html"
+      "template": "template_pc_ui.html",
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
@@ -748,11 +752,11 @@
     "프로젝트 커버.html",
     "06_Mobile_Design_2_793.html",
     "06_Mobile_Design_2_901.html",
+    "07_PC_Design_266.html",
     "99_Blank_798.html",
     "03_UI_Screen_71.html",
     "99_Blank_575.html",
-    "07_PC_Design_935.html",
-    "07_PC_Design_266.html"
+    "07_PC_Design_935.html"
   ],
   "updated": "2026-06-11 16:26:21"
 }
