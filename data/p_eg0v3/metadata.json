@@ -392,7 +392,7 @@
     "99_Blank_798.html": {
       "title": "카드 설정",
       "type": "admin-nbos",
-      "updatedAt": "2026-06-11T04:58:10.844Z",
+      "updatedAt": "2026-06-11T05:09:38.999Z",
       "template": "template_blank.html",
       "description": [],
       "connectors": [],
@@ -726,5 +726,5 @@
     "06_Mobile_Design_2_901.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-11 13:58:10"
+  "updated": "2026-06-11 14:09:38"
 }
