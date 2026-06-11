@@ -719,6 +719,12 @@
       "type": "ui",
       "updatedAt": "2026-06-11T07:46:51.415Z",
       "template": "template_front_ui.html"
+    },
+    "99_Blank_575.html": {
+      "title": "99_Blank_575",
+      "type": "blank",
+      "updatedAt": "2026-06-11T07:47:26.973Z",
+      "template": "template_blank.html"
     }
   },
   "assignee": "최범열",
@@ -731,7 +737,8 @@
     "06_Mobile_Design_2_793.html",
     "06_Mobile_Design_2_901.html",
     "99_Blank_798.html",
-    "03_UI_Screen_71.html"
+    "03_UI_Screen_71.html",
+    "99_Blank_575.html"
   ],
   "updated": "2026-06-11 16:26:21"
 }
