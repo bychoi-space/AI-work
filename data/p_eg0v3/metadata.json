@@ -717,7 +717,7 @@
     "07_PC_Design_266.html": {
       "title": "07_PC_Design_266",
       "type": "default",
-      "updatedAt": "2026-06-12T02:14:37.542Z",
+      "updatedAt": "2026-06-12T02:34:50.103Z",
       "template": "template_pc_ui.html",
       "description": [
         {
@@ -745,7 +745,7 @@
           "html": "<p>가변탭2</p>"
         },
         {
-          "x": 487,
+          "x": 394,
           "y": 176.5,
           "standardized": true,
           "type": "text",
@@ -753,8 +753,8 @@
           "html": "<p>베스트</p>"
         },
         {
-          "x": 524,
-          "y": 189.5,
+          "x": 478,
+          "y": 176.5,
           "standardized": true,
           "type": "text",
           "text": "여성",
@@ -762,7 +762,7 @@
         },
         {
           "x": 614.5,
-          "y": 189.5,
+          "y": 176.5,
           "standardized": true,
           "type": "text",
           "text": "남성",
@@ -770,7 +770,7 @@
         },
         {
           "x": 663,
-          "y": 189.5,
+          "y": 176.5,
           "standardized": true,
           "type": "text",
           "text": "아울렛",
@@ -778,7 +778,7 @@
         },
         {
           "x": 735,
-          "y": 209.5,
+          "y": 176.5,
           "standardized": true,
           "type": "text",
           "text": "잡화/슈즈",
@@ -786,7 +786,7 @@
         },
         {
           "x": 783,
-          "y": 189.5,
+          "y": 176.5,
           "standardized": true,
           "type": "text",
           "text": "수입/명품",
@@ -794,7 +794,7 @@
         },
         {
           "x": 861.5,
-          "y": 189.5,
+          "y": 176.5,
           "standardized": true,
           "type": "text",
           "text": "골프",
@@ -802,7 +802,7 @@
         },
         {
           "x": 934.5,
-          "y": 189.5,
+          "y": 176.5,
           "standardized": true,
           "type": "text",
           "text": "스포츠",
@@ -818,7 +818,7 @@
         },
         {
           "x": 1120.5,
-          "y": 189.5,
+          "y": 176.5,
           "standardized": true,
           "type": "text",
           "text": "선물관",
@@ -829,6 +829,14 @@
           "html": "<p><strong style=\"font-size: 24px;\">mall</strong></p>",
           "x": 120,
           "y": 110.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "최근 본 상품",
+          "html": "<p><span style=\"color: rgb(68, 68, 68);\">최근 본 상품</span></p>",
+          "x": 1266,
+          "y": 176.5,
           "type": "text",
           "standardized": true
         }
@@ -848,5 +856,5 @@
     "07_PC_Design_266.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-12 11:14:37"
+  "updated": "2026-06-12 11:34:50"
 }
