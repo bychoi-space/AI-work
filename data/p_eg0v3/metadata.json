@@ -717,7 +717,7 @@
     "07_PC_Design_266.html": {
       "title": "07_PC_Design_266",
       "type": "default",
-      "updatedAt": "2026-06-12T02:34:50.103Z",
+      "updatedAt": "2026-06-12T02:39:26.357Z",
       "template": "template_pc_ui.html",
       "description": [
         {
@@ -761,7 +761,7 @@
           "html": "<p>여성</p>"
         },
         {
-          "x": 614.5,
+          "x": 545.5,
           "y": 176.5,
           "standardized": true,
           "type": "text",
@@ -769,7 +769,7 @@
           "html": "<p>남성</p>"
         },
         {
-          "x": 663,
+          "x": 613,
           "y": 176.5,
           "standardized": true,
           "type": "text",
@@ -777,7 +777,7 @@
           "html": "<p>아울렛</p>"
         },
         {
-          "x": 735,
+          "x": 694,
           "y": 176.5,
           "standardized": true,
           "type": "text",
@@ -785,15 +785,15 @@
           "html": "<p>잡화/슈즈</p>"
         },
         {
-          "x": 783,
+          "x": 793,
           "y": 176.5,
           "standardized": true,
           "type": "text",
           "text": "수입/명품",
-          "html": "<p>수입/명품</p>"
+          "html": "<p>&nbsp;수입/명품</p>"
         },
         {
-          "x": 861.5,
+          "x": 893.5,
           "y": 176.5,
           "standardized": true,
           "type": "text",
@@ -801,7 +801,7 @@
           "html": "<p>골프</p>"
         },
         {
-          "x": 934.5,
+          "x": 960.5,
           "y": 176.5,
           "standardized": true,
           "type": "text",
@@ -809,7 +809,7 @@
           "html": "<p>스포츠</p>"
         },
         {
-          "x": 990,
+          "x": 1039,
           "y": 176.5,
           "standardized": true,
           "type": "text",
@@ -817,7 +817,7 @@
           "html": "<p>기획전/혜택</p>"
         },
         {
-          "x": 1120.5,
+          "x": 1149.5,
           "y": 176.5,
           "standardized": true,
           "type": "text",
@@ -856,5 +856,5 @@
     "07_PC_Design_266.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-12 11:34:50"
+  "updated": "2026-06-12 11:39:26"
 }
