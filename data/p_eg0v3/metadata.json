@@ -717,7 +717,7 @@
     "07_PC_Design_266.html": {
       "title": "07_PC_Design_266",
       "type": "default",
-      "updatedAt": "2026-06-12T02:00:32.027Z",
+      "updatedAt": "2026-06-12T02:04:36.623Z",
       "template": "template_pc_ui.html",
       "description": [
         {
@@ -730,7 +730,7 @@
         },
         {
           "x": 333.5,
-          "y": 189.5,
+          "y": 176.5,
           "standardized": true,
           "type": "text",
           "text": "가변탭1",
@@ -738,7 +738,7 @@
         },
         {
           "x": 400.5,
-          "y": 209.5,
+          "y": 176.5,
           "standardized": true,
           "type": "text",
           "text": "가변탭2",
@@ -746,11 +746,83 @@
         },
         {
           "x": 487,
-          "y": 222.5,
+          "y": 176.5,
           "standardized": true,
           "type": "text",
-          "text": "가변탭2",
-          "html": "<p>가변탭2</p>"
+          "text": "베스트",
+          "html": "<p>베스트</p>"
+        },
+        {
+          "x": 524,
+          "y": 189.5,
+          "standardized": true,
+          "type": "text",
+          "text": "여성",
+          "html": "<p>여성</p>"
+        },
+        {
+          "x": 614.5,
+          "y": 189.5,
+          "standardized": true,
+          "type": "text",
+          "text": "남성",
+          "html": "<p>남성</p>"
+        },
+        {
+          "x": 663,
+          "y": 189.5,
+          "standardized": true,
+          "type": "text",
+          "text": "아울렛",
+          "html": "<p>아울렛</p>"
+        },
+        {
+          "x": 735,
+          "y": 209.5,
+          "standardized": true,
+          "type": "text",
+          "text": "잡화/슈즈",
+          "html": "<p>잡화/슈즈</p>"
+        },
+        {
+          "x": 783,
+          "y": 189.5,
+          "standardized": true,
+          "type": "text",
+          "text": "수입/명품",
+          "html": "<p>수입/명품</p>"
+        },
+        {
+          "x": 861.5,
+          "y": 189.5,
+          "standardized": true,
+          "type": "text",
+          "text": "골프",
+          "html": "<p>골프</p>"
+        },
+        {
+          "x": 934.5,
+          "y": 189.5,
+          "standardized": true,
+          "type": "text",
+          "text": "스포츠",
+          "html": "<p>스포츠</p>"
+        },
+        {
+          "x": 990,
+          "y": 176.5,
+          "standardized": true,
+          "type": "text",
+          "text": "기획전/혜택",
+          "html": "<p>기획전/혜택</p>"
+        },
+        {
+          "x": 1120.5,
+          "y": 189.5,
+          "standardized": true,
+          "type": "text",
+          "text": "선물관",
+          "html": "<p>선물관</p>"
         }
       ],
       "connectors": []
@@ -768,5 +840,5 @@
     "07_PC_Design_266.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-12 11:00:32"
+  "updated": "2026-06-12 11:04:36"
 }
