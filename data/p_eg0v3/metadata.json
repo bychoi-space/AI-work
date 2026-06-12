@@ -717,9 +717,42 @@
     "07_PC_Design_266.html": {
       "title": "07_PC_Design_266",
       "type": "default",
-      "updatedAt": "2026-06-11T09:25:17.158Z",
+      "updatedAt": "2026-06-12T02:00:32.027Z",
       "template": "template_pc_ui.html",
-      "description": [],
+      "description": [
+        {
+          "x": 256,
+          "y": 176.5,
+          "standardized": true,
+          "type": "text",
+          "text": "브랜드",
+          "html": "<p><span style=\"font-size: 14px;\">브랜드</span></p>"
+        },
+        {
+          "x": 333.5,
+          "y": 189.5,
+          "standardized": true,
+          "type": "text",
+          "text": "가변탭1",
+          "html": "<p>가변탭1</p>"
+        },
+        {
+          "x": 400.5,
+          "y": 209.5,
+          "standardized": true,
+          "type": "text",
+          "text": "가변탭2",
+          "html": "<p>가변탭2</p>"
+        },
+        {
+          "x": 487,
+          "y": 222.5,
+          "standardized": true,
+          "type": "text",
+          "text": "가변탭2",
+          "html": "<p>가변탭2</p>"
+        }
+      ],
       "connectors": []
     }
   },
@@ -735,5 +768,5 @@
     "07_PC_Design_266.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-11 18:25:17"
+  "updated": "2026-06-12 11:00:32"
 }
