@@ -717,7 +717,7 @@
     "07_PC_Design_266.html": {
       "title": "07_PC_Design_266",
       "type": "default",
-      "updatedAt": "2026-06-12T02:14:03.538Z",
+      "updatedAt": "2026-06-12T02:14:37.542Z",
       "template": "template_pc_ui.html",
       "description": [
         {
@@ -826,9 +826,9 @@
         },
         {
           "text": "mall",
-          "html": "<p><strong style=\"font-size: 20px;\">mall</strong></p>",
-          "x": 130,
-          "y": 112.5,
+          "html": "<p><strong style=\"font-size: 24px;\">mall</strong></p>",
+          "x": 120,
+          "y": 110.5,
           "type": "text",
           "standardized": true
         }
@@ -848,5 +848,5 @@
     "07_PC_Design_266.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-12 11:14:03"
+  "updated": "2026-06-12 11:14:37"
 }
