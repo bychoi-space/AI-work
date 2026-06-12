@@ -717,11 +717,11 @@
     "07_PC_Design_266.html": {
       "title": "07_PC_Design_266",
       "type": "default",
-      "updatedAt": "2026-06-12T02:04:36.623Z",
+      "updatedAt": "2026-06-12T02:14:03.538Z",
       "template": "template_pc_ui.html",
       "description": [
         {
-          "x": 256,
+          "x": 139,
           "y": 176.5,
           "standardized": true,
           "type": "text",
@@ -729,7 +729,7 @@
           "html": "<p><span style=\"font-size: 14px;\">브랜드</span></p>"
         },
         {
-          "x": 333.5,
+          "x": 219.5,
           "y": 176.5,
           "standardized": true,
           "type": "text",
@@ -737,7 +737,7 @@
           "html": "<p>가변탭1</p>"
         },
         {
-          "x": 400.5,
+          "x": 305.5,
           "y": 176.5,
           "standardized": true,
           "type": "text",
@@ -823,6 +823,14 @@
           "type": "text",
           "text": "선물관",
           "html": "<p>선물관</p>"
+        },
+        {
+          "text": "mall",
+          "html": "<p><strong style=\"font-size: 20px;\">mall</strong></p>",
+          "x": 130,
+          "y": 112.5,
+          "type": "text",
+          "standardized": true
         }
       ],
       "connectors": []
@@ -840,5 +848,5 @@
     "07_PC_Design_266.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-12 11:04:36"
+  "updated": "2026-06-12 11:14:03"
 }
