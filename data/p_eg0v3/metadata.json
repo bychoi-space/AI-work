@@ -91,16 +91,16 @@
         {
           "text": "실시간",
           "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>",
-          "x": 102,
-          "y": 0,
+          "x": 702.7909493588064,
+          "y": 188.65973128908465,
           "type": "text",
           "standardized": true
         },
         {
           "text": "남성 · 40대",
           "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>",
-          "x": 0,
-          "y": 0,
+          "x": 634.552323147861,
+          "y": 188.65973128908465,
           "type": "text",
           "standardized": true
         },
@@ -715,9 +715,9 @@
       "screenDesc": ""
     },
     "07_PC_Design_266.html": {
-      "title": "07_PC_Design_266",
-      "type": "default",
-      "updatedAt": "2026-06-15T02:21:07.090Z",
+      "title": "랭킹카드3",
+      "type": "ui",
+      "updatedAt": "2026-06-15T02:22:50.912Z",
       "template": "template_pc_ui.html",
       "description": [
         {
@@ -1057,7 +1057,9 @@
           "html": "<p>뷰티</p>"
         }
       ],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": "[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
     }
   },
   "assignee": "최범열",
