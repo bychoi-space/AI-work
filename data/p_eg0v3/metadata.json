@@ -1128,8 +1128,10 @@
     "얼럿 정리.html": {
       "title": "얼럿 정리",
       "type": "blank",
-      "updatedAt": "2026-06-15T05:18:36.196Z",
-      "template": "template_blank.html"
+      "updatedAt": "2026-06-15T05:56:52.854Z",
+      "template": "template_blank.html",
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
@@ -1145,5 +1147,5 @@
     "99_Blank_798.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-15 14:17:44"
+  "updated": "2026-06-15 14:56:52"
 }
