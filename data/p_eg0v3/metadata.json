@@ -1124,6 +1124,12 @@
       "connectors": [],
       "defaultTab": "editor",
       "screenDesc": "[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
+    },
+    "얼럿 정리.html": {
+      "title": "얼럿 정리",
+      "type": "blank",
+      "updatedAt": "2026-06-15T05:18:36.196Z",
+      "template": "template_blank.html"
     }
   },
   "assignee": "최범열",
@@ -1136,7 +1142,8 @@
     "06_Mobile_Design_2_793.html",
     "06_Mobile_Design_2_901.html",
     "07_PC_Design_266.html",
-    "99_Blank_798.html"
+    "99_Blank_798.html",
+    "얼럿 정리.html"
   ],
   "updated": "2026-06-15 14:17:44"
 }
