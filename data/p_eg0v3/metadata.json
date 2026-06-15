@@ -717,7 +717,7 @@
     "07_PC_Design_266.html": {
       "title": "랭킹카드 - PC",
       "type": "ui",
-      "updatedAt": "2026-06-15T05:12:30.492Z",
+      "updatedAt": "2026-06-15T05:13:00.632Z",
       "template": "template_pc_ui.html",
       "description": [
         {
@@ -826,9 +826,9 @@
         },
         {
           "text": "mall",
-          "html": "<p><strong style=\"font-size: 24px;\">mall</strong></p>",
-          "x": 129,
-          "y": 115.5,
+          "html": "<p><strong style=\"font-size: 30px;\">mall</strong></p>",
+          "x": 128,
+          "y": 109.5,
           "type": "text",
           "standardized": true
         },
@@ -1138,5 +1138,5 @@
     "07_PC_Design_266.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-15 14:12:30"
+  "updated": "2026-06-15 14:13:00"
 }
