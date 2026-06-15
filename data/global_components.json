@@ -1,5 +1,15 @@
 [
   {
+    "id": "mol-1781490088100",
+    "name": "이미시시",
+    "category": "Custom",
+    "width": "172px",
+    "height": "27px",
+    "isGroup": true,
+    "previewHtml": "<div style=\"font-size: 10px; font-weight: 700; color: #6366f1;\">이미시시</div>",
+    "html": "<div class=\"lf-component text-marker\" style=\"position: absolute; top: 0px; left: 102px; z-index: 1000; transform: none; width: 55px; height: 27px;\"><div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><p><span style=\"font-size: 12px;\">실시간</span></p></div></div><div class=\"lf-component\" style=\"position: absolute; top: 3.5px; left: 152px; z-index: 1000; transform: none; width: 20px; height: 20px;\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lf-icon\" style=\"width:100%; height:100%;\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg></div><div class=\"lf-component\" style=\"position: absolute; top: 3.5px; left: 75px; z-index: 1000; transform: none; width: 20px; height: 20px;\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lf-icon\" style=\"width:100%; height:100%;\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg></div><div class=\"lf-component text-marker\" style=\"position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 81px; height: 27px;\"><div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><p><span style=\"font-size: 12px;\">남성 · 40대</span></p></div></div>"
+  },
+  {
     "id": "mol-1781232128691",
     "name": "임시",
     "category": "Custom",
