@@ -717,7 +717,7 @@
     "07_PC_Design_266.html": {
       "title": "랭킹카드 - PC",
       "type": "ui",
-      "updatedAt": "2026-06-15T02:37:03.782Z",
+      "updatedAt": "2026-06-15T02:38:53.943Z",
       "template": "template_pc_ui.html",
       "description": [
         {
@@ -841,22 +841,6 @@
           "standardized": true
         },
         {
-          "x": 102,
-          "y": 0,
-          "standardized": true,
-          "type": "text",
-          "text": "실시간",
-          "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>"
-        },
-        {
-          "x": 0,
-          "y": 0,
-          "standardized": true,
-          "type": "text",
-          "text": "남성 · 40대",
-          "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>"
-        },
-        {
           "x": 652,
           "y": 252.5,
           "standardized": true,
@@ -961,34 +945,178 @@
           "html": "<p>키즈</p>"
         },
         {
-          "x": 86.1952861952862,
-          "y": 721.8855218855219,
+          "x": 0,
+          "y": 263.5,
           "standardized": true,
           "type": "text",
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 16px;\">Product Name</span></p><p><span style=\"font-size: 16px;\">2줄까지 표현</span></p>"
         },
         {
-          "x": 86.1952861952862,
-          "y": 691.7171717171717,
+          "x": 0,
+          "y": 235.5,
           "standardized": true,
           "type": "text",
           "text": "Brand Name",
           "html": "<p><strong style=\"font-size: 16px;\">Brand Name</strong></p>"
         },
         {
-          "x": 86.1952861952862,
-          "y": 770.3703703703704,
+          "x": 0,
+          "y": 308.5,
           "standardized": true,
           "type": "text",
           "text": "20% 123,000",
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 16px;\">20%</strong><strong style=\"font-size: 16px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿﻿﻿</span></strong></p>"
         },
         {
+          "x": 9.5,
+          "y": 191.5,
+          "standardized": true,
+          "type": "text",
           "text": "1",
-          "html": "<p><strong style=\"font-size: 36px;\">1</strong></p>",
-          "x": 96.43097643097643,
-          "y": 644.3097643097643,
+          "html": "<p><strong style=\"font-size: 36px;\">1</strong></p>"
+        },
+        {
+          "x": 0,
+          "y": 263.5,
+          "standardized": true,
+          "type": "text",
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 16px;\">Product Name</span></p><p><span style=\"font-size: 16px;\">2줄까지 표현</span></p>"
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong style=\"font-size: 16px;\">Brand Name</strong></p>",
+          "x": 0,
+          "y": 235.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 16px;\">20%</strong><strong style=\"font-size: 16px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿﻿﻿</span></strong></p>",
+          "x": 0,
+          "y": 308.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "2",
+          "html": "<p><strong style=\"font-size: 36px;\">2</strong></p>",
+          "x": 9.5,
+          "y": 191.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 16px;\">Product Name</span></p><p><span style=\"font-size: 16px;\">2줄까지 표현</span></p>",
+          "x": 0,
+          "y": 263.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong style=\"font-size: 16px;\">Brand Name</strong></p>",
+          "x": 0,
+          "y": 235.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 16px;\">20%</strong><strong style=\"font-size: 16px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿﻿﻿</span></strong></p>",
+          "x": 0,
+          "y": 308.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "3",
+          "html": "<p><strong style=\"font-size: 36px;\">3</strong></p>",
+          "x": 9.5,
+          "y": 191.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 16px;\">Product Name</span></p><p><span style=\"font-size: 16px;\">2줄까지 표현</span></p>",
+          "x": 0,
+          "y": 263.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong style=\"font-size: 16px;\">Brand Name</strong></p>",
+          "x": 0,
+          "y": 235.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 16px;\">20%</strong><strong style=\"font-size: 16px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿﻿﻿</span></strong></p>",
+          "x": 0,
+          "y": 308.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "4",
+          "html": "<p><strong style=\"font-size: 36px;\">4</strong></p>",
+          "x": 9.5,
+          "y": 191.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 16px;\">Product Name</span></p><p><span style=\"font-size: 16px;\">2줄까지 표현</span></p>",
+          "x": 0,
+          "y": 263.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong style=\"font-size: 16px;\">Brand Name</strong></p>",
+          "x": 0,
+          "y": 235.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 16px;\">20%</strong><strong style=\"font-size: 16px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿﻿﻿</span></strong></p>",
+          "x": 0,
+          "y": 308.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "5",
+          "html": "<p><strong style=\"font-size: 36px;\">5</strong></p>",
+          "x": 9.5,
+          "y": 191.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "실시간",
+          "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>",
+          "x": 1290,
+          "y": 366.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "남성 · 40대",
+          "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>",
+          "x": 1160,
+          "y": 366.5,
           "type": "text",
           "standardized": true
         }
@@ -1010,5 +1138,5 @@
     "07_PC_Design_266.html",
     "99_Blank_798.html"
   ],
-  "updated": "2026-06-15 11:37:03"
+  "updated": "2026-06-15 11:38:53"
 }
