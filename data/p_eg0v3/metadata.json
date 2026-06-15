@@ -715,9 +715,9 @@
       "screenDesc": ""
     },
     "07_PC_Design_266.html": {
-      "title": "랭킹카드3",
+      "title": "랭킹카드 - PC",
       "type": "ui",
-      "updatedAt": "2026-06-15T02:22:50.912Z",
+      "updatedAt": "2026-06-15T02:23:10.171Z",
       "template": "template_pc_ui.html",
       "description": [
         {
