@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "랭킹카드 - 기본",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-16T07:32:43.926Z",
+      "updatedAt": "2026-06-16T07:33:05.371Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -403,22 +403,22 @@
         {
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>",
-          "x": 0,
-          "y": 0,
+          "x": 892.25,
+          "y": 444.5,
           "type": "text",
           "standardized": true
         },
         {
-          "x": 0,
-          "y": 21,
+          "x": 892.25,
+          "y": 465.5,
           "standardized": true,
           "type": "text",
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>"
         },
         {
-          "x": 0,
-          "y": 60,
+          "x": 892.25,
+          "y": 504.5,
           "standardized": true,
           "type": "text",
           "text": "20% 123,000",
@@ -1187,5 +1187,5 @@
     "99_Blank_798.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-16 16:32:43"
+  "updated": "2026-06-16 16:33:05"
 }
