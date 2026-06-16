@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "랭킹카드 - 기본",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-16T05:49:02.212Z",
+      "updatedAt": "2026-06-16T07:24:39.639Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -125,30 +125,6 @@
           "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>",
           "x": 420,
           "y": 168,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
-          "x": 0,
-          "y": 183.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 0,
-          "y": 204.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 0,
-          "y": 243.5,
           "type": "text",
           "standardized": true
         },
@@ -292,7 +268,7 @@
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>",
           "x": 313.5,
-          "y": 505.5,
+          "y": 510.5,
           "type": "text",
           "standardized": true
         },
@@ -300,7 +276,7 @@
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
           "x": 313.5,
-          "y": 526.5,
+          "y": 531.5,
           "type": "text",
           "standardized": true
         },
@@ -308,7 +284,7 @@
           "text": "20% 123,000",
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
           "x": 313.5,
-          "y": 565.5,
+          "y": 570.5,
           "type": "text",
           "standardized": true
         },
@@ -386,11 +362,43 @@
         },
         {
           "text": "1",
-          "html": "<p><span style=\"font-size: 24px;\">1</span></p>",
+          "html": "<p><span style=\"font-size: 30px;\">1</span></p>",
           "x": 322.95,
-          "y": 479.017,
+          "y": 476.017,
           "type": "text",
           "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 483.5,
+          "y": 510.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 483.5,
+          "y": 531.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 483.5,
+          "y": 570.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "x": 493,
+          "y": 478.516,
+          "standardized": true,
+          "type": "text",
+          "text": "2",
+          "html": "<p><span style=\"font-size: 30px;\">2</span></p>"
         }
       ],
       "connectors": [],
@@ -1136,7 +1144,7 @@
     "얼럿 정리.html": {
       "title": "얼럿 정리",
       "type": "blank",
-      "updatedAt": "2026-06-16T07:14:25.612Z",
+      "updatedAt": "2026-06-15T05:56:52.854Z",
       "template": "template_blank.html",
       "description": [],
       "connectors": []
@@ -1155,5 +1163,5 @@
     "99_Blank_798.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-16 16:14:25"
+  "updated": "2026-06-16 16:24:39"
 }
