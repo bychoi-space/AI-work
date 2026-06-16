@@ -789,6 +789,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const alertBtnStyle1 = alertContainer ? (alertContainer.getAttribute('data-btn-style-1') || "normal") : "normal";
         const alertBtnStyle2 = alertContainer ? (alertContainer.getAttribute('data-btn-style-2') || "normal") : "normal";
         const alertBtnStyle3 = alertContainer ? (alertContainer.getAttribute('data-btn-style-3') || "normal") : "normal";
+        const alertShowDesc = alertContainer ? alertContainer.getAttribute('data-show-desc') === 'true' : false;
+        const alertDesc = alertContainer ? (alertContainer.getAttribute('data-desc') || "어떤어떤 경우에 얼럿이 표시됨") : "어떤어떤 경우에 얼럿이 표시됨";
 
         // Button Atom Detection
         const isButton = !!c.querySelector('.v4-btn-container') || c.classList.contains('v4-btn-container');
@@ -823,6 +825,41 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         }
  
+        const getCompBg = () => {
+            if (shape) return getShapeColor("backgroundColor");
+            if (table) return _getVal(table, "backgroundColor");
+            if (isPin) return _getVal(c, "backgroundColor");
+            if (boxEl) return _getVal(boxEl, "backgroundColor");
+            if (buttonEl) return _getVal(buttonEl, "backgroundColor");
+            if (inputContainer) return _getVal(inputContainer, "backgroundColor");
+            if (stepperContainer) return _getVal(stepperContainer, "backgroundColor");
+            if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor");
+            if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor");
+            if (alertContainer) {
+                const dialog = alertContainer.querySelector('.v4-alert-dialog');
+                return dialog ? _getVal(dialog, "backgroundColor") : _getVal(alertContainer, "backgroundColor");
+            }
+            return "";
+        };
+
+        const getCompBorder = () => {
+            if (shape) return getShapeColor("borderColor");
+            if (table) return _getVal(table, "borderColor");
+            if (isPin) return _getVal(c, "borderColor");
+            if (boxEl) return _getVal(boxEl, "borderColor");
+            if (buttonEl) return _getVal(buttonEl, "borderColor");
+            if (inputContainer) return _getVal(inputContainer, "borderColor");
+            if (stepperContainer) return _getVal(stepperContainer, "borderColor");
+            if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor");
+            if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor");
+            if (alertContainer) {
+                const dialog = alertContainer.querySelector('.v4-alert-dialog');
+                return dialog ? _getVal(dialog, "borderColor") : _getVal(alertContainer, "borderColor");
+            }
+            if (icon) return _getVal(icon.parentElement, "borderColor");
+            return "";
+        };
+
         return {
             id: c.id,
             isTable: !!table,
@@ -864,6 +901,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             alertBtnStyle1: alertBtnStyle1,
             alertBtnStyle2: alertBtnStyle2,
             alertBtnStyle3: alertBtnStyle3,
+            alertShowDesc: alertShowDesc,
+            alertDesc: alertDesc,
             isButton: isButton,
             buttonText: buttonText,
             buttonStyle: buttonStyle,
@@ -874,8 +913,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : (alertContainer ? _getVal(alertContainer, "backgroundColor") : "")))))))))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (buttonEl ? _getVal(buttonEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor") : (alertContainer ? _getVal(alertContainer, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))))))))),
+                bg: _rgb2hex(getCompBg()),
+                border: _rgb2hex(getCompBorder()),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : (buttonEl ? _getVal(buttonEl, "color") : "")),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 12 : 12),
                 fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
@@ -883,13 +922,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
                 borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : (buttonEl ? (parseInt(_getVal(buttonEl, "borderRadius")) || 0) : 0)),
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : (alertContainer ? _getVal(alertContainer, "backgroundColor") : "")))))))))),
+                bgOpacity: _getAlphaPercent(getCompBg()),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : "")))))));
+                    const colorVal = getCompBg();
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (buttonEl ? _getVal(buttonEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : "")))))));
+                    const colorVal = getCompBorder();
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
@@ -1843,6 +1882,18 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     const msgEl = container.querySelector('.v4-alert-message');
                     if (msgEl) msgEl.innerHTML = d.messageText.replace(/\n/g, '<br>');
                 }
+                if (d.showDesc !== undefined) {
+                    container.setAttribute('data-show-desc', d.showDesc ? 'true' : 'false');
+                    const descWrapper = container.querySelector('.v4-alert-desc-wrapper');
+                    if (descWrapper) {
+                        descWrapper.style.display = d.showDesc ? 'flex' : 'none';
+                    }
+                }
+                if (d.descText !== undefined) {
+                    container.setAttribute('data-desc', d.descText);
+                    const descBadge = container.querySelector('.v4-alert-desc-badge');
+                    if (descBadge) descBadge.innerText = d.descText;
+                }
                 if (d.btnCount !== undefined) {
                     container.setAttribute('data-btn-count', d.btnCount);
                 }
@@ -1992,7 +2043,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
             // Alert style redirection for BG & Border coloring
             const alertContainer = s.querySelector('.v4-alert-container');
-            if (alertContainer && !d.selector) {
+            const alertDialog = alertContainer ? alertContainer.querySelector('.v4-alert-dialog') : null;
+            if (alertDialog && !d.selector) {
+                t = alertDialog;
+            } else if (alertContainer && !d.selector) {
                 t = alertContainer;
             }
             // Button style redirection for BG & Border coloring
@@ -2882,13 +2936,26 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     const msgEl = alert.querySelector('.v4-alert-message');
                     const buttonsEl = alert.querySelector('.v4-alert-buttons');
                     
+                    const showDesc = alert.getAttribute('data-show-desc') === 'true';
+                    const descWrapper = alert.querySelector('.v4-alert-desc-wrapper');
+                    let descH = 0;
+                    if (descWrapper) {
+                        if (showDesc) {
+                            descWrapper.style.display = 'flex';
+                            descH = descWrapper.offsetHeight || 27;
+                            descH += 8; // Gap
+                        } else {
+                            descWrapper.style.display = 'none';
+                        }
+                    }
+                    
                     const headerH = header ? header.offsetHeight : 32;
                     const msgH = msgEl ? msgEl.scrollHeight : 21;
                     const msgMargin = msgEl ? 14 : 0;
                     const buttonsH = buttonsEl ? buttonsEl.offsetHeight : 28;
                     const paddingH = 32; // 16px top + 16px bottom
                     
-                    const targetH = headerH + paddingH + msgH + msgMargin + buttonsH + 2; // +2 for border
+                    const targetH = headerH + paddingH + msgH + msgMargin + buttonsH + 2 + descH; // +2 for border
                     const finalHeight = Math.max(120, targetH) + 'px';
                     
                     if (c.style.height !== finalHeight) c.style.height = finalHeight;
@@ -3172,47 +3239,62 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 </script>
 
-<div id="v4-comp-1781502808979" class="lf-component" style="position: absolute; top: 72px; left: 39px; z-index: 1000; transform: none; width: 250px; height: 126px;">
-            <div class="v4-alert-container" data-message="전관행사ID 를 입력해주세요." data-btn-count="1" data-btn-text-1="확인" data-btn-text-2="취소" data-btn-text-3="저장" data-btn-style-1="normal" data-btn-style-2="normal" data-btn-style-3="normal" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; background: #ffffff; border: 1.6px solid #cccccc !important; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); overflow: hidden; display: flex; flex-direction: column;">
-                <div class="v4-alert-header" style="height: 32px; flex-shrink: 0; background: #e5e7eb; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1.6px solid #cccccc !important; box-sizing: border-box; width: 100%;">
-                    <span class="v4-alert-title" style="font-size: 12px; font-weight: 600; color: #374151;">Alert</span>
-                    <span class="v4-alert-close" style="cursor: pointer; color: #9ca3af; font-size: 16px; font-weight: bold; line-height: 1; display: flex; align-items: center; justify-content: center;">×</span>
+<div id="v4-comp-1781593946766" class="lf-component" style="position: absolute; top: 72px; left: 66px; z-index: 1000; transform: none; width: 250px; height: 160px;">
+            <div class="v4-alert-container" data-message="전관행사ID 를 입력해주세요." data-btn-count="1" data-btn-text-1="확인" data-btn-text-2="취소" data-btn-text-3="저장" data-btn-style-1="normal" data-btn-style-2="normal" data-btn-style-3="normal" data-show-desc="true" data-desc="전관행사 ID 미입력" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; background: transparent; justify-content: flex-end;">
+                <div class="v4-alert-desc-wrapper" style="display: flex; justify-content: flex-start; width: 100%; flex-shrink: 0;">
+                    <div class="v4-alert-desc-badge" style="background: #1e3a8a; color: #ffffff; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1.6px solid #1e40af;">전관행사 ID 미입력</div>
                 </div>
-                <div class="v4-alert-content" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px 12px; box-sizing: border-box; width: 100%;">
-                    <div class="v4-alert-message" style="font-size: 13px; color: #1f2937; text-align: center; line-height: 1.4; white-space: pre-wrap; font-family: inherit; margin-bottom: 14px; word-break: break-all; width: 100%;">전관행사ID 를 입력해주세요.</div>
-                    <div class="v4-alert-buttons" style="display: flex; gap: 8px; justify-content: center; width: 100%; flex-wrap: nowrap; flex-shrink: 0;">
-                        <button class="v4-alert-btn v4-alert-btn-1 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">확인</button>
-                        <button class="v4-alert-btn v4-alert-btn-2 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">취소</button>
-                        <button class="v4-alert-btn v4-alert-btn-3 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">저장</button>
+                <div class="v4-alert-dialog" style="flex: 1; width: 100%; background: #ffffff; border: 1.6px solid #cccccc !important; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); overflow: hidden; display: flex; flex-direction: column; box-sizing: border-box;">
+                    <div class="v4-alert-header" style="height: 32px; flex-shrink: 0; background: #e5e7eb; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1.6px solid #cccccc !important; box-sizing: border-box; width: 100%;">
+                        <span class="v4-alert-title" style="font-size: 12px; font-weight: 600; color: #374151;">Alert</span>
+                        <span class="v4-alert-close" style="cursor: pointer; color: #9ca3af; font-size: 16px; font-weight: bold; line-height: 1; display: flex; align-items: center; justify-content: center;">×</span>
+                    </div>
+                    <div class="v4-alert-content" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px 12px; box-sizing: border-box; width: 100%;">
+                        <div class="v4-alert-message" style="font-size: 13px; color: #1f2937; text-align: center; line-height: 1.4; white-space: pre-wrap; font-family: inherit; margin-bottom: 14px; word-break: break-all; width: 100%;">전관행사ID 를 입력해주세요.</div>
+                        <div class="v4-alert-buttons" style="display: flex; gap: 8px; justify-content: center; width: 100%; flex-wrap: nowrap; flex-shrink: 0;">
+                            <button class="v4-alert-btn v4-alert-btn-1 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">확인</button>
+                            <button class="v4-alert-btn v4-alert-btn-2 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">취소</button>
+                            <button class="v4-alert-btn v4-alert-btn-3 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">저장</button>
+                        </div>
                     </div>
                 </div>
-            </div></div><div id="v4-comp-1781502925287" class="lf-component" style="position: absolute; top: 72px; left: 316px; z-index: 1000; transform: none; width: 250px; height: 126px;">
-            <div class="v4-alert-container" data-message="이벤트 번호를 입력해주세요." data-btn-count="1" data-btn-text-1="확인" data-btn-text-2="취소" data-btn-text-3="저장" data-btn-style-1="normal" data-btn-style-2="normal" data-btn-style-3="normal" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; background: #ffffff; border: 1.6px solid #cccccc !important; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); overflow: hidden; display: flex; flex-direction: column;">
-                <div class="v4-alert-header" style="height: 32px; flex-shrink: 0; background: #e5e7eb; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1.6px solid #cccccc !important; box-sizing: border-box; width: 100%;">
-                    <span class="v4-alert-title" style="font-size: 12px; font-weight: 600; color: #374151;">Alert</span>
-                    <span class="v4-alert-close" style="cursor: pointer; color: #9ca3af; font-size: 16px; font-weight: bold; line-height: 1; display: flex; align-items: center; justify-content: center;">×</span>
+            </div></div><div id="v4-comp-1781593983311" class="lf-component" style="position: absolute; top: 72px; left: 356px; z-index: 1000; transform: none; width: 250px; height: 160px;">
+            <div class="v4-alert-container" data-message="이벤트 번호를 입력해주세요." data-btn-count="1" data-btn-text-1="확인" data-btn-text-2="취소" data-btn-text-3="저장" data-btn-style-1="normal" data-btn-style-2="normal" data-btn-style-3="normal" data-show-desc="true" data-desc="이벤트 번호 미입력" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; background: transparent; justify-content: flex-end;">
+                <div class="v4-alert-desc-wrapper" style="display: flex; justify-content: flex-start; width: 100%; flex-shrink: 0;">
+                    <div class="v4-alert-desc-badge" style="background: #1e3a8a; color: #ffffff; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1.6px solid #1e40af;">이벤트 번호 미입력</div>
                 </div>
-                <div class="v4-alert-content" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px 12px; box-sizing: border-box; width: 100%;">
-                    <div class="v4-alert-message" style="font-size: 13px; color: #1f2937; text-align: center; line-height: 1.4; white-space: pre-wrap; font-family: inherit; margin-bottom: 14px; word-break: break-all; width: 100%;">이벤트 번호를 입력해주세요.</div>
-                    <div class="v4-alert-buttons" style="display: flex; gap: 8px; justify-content: center; width: 100%; flex-wrap: nowrap; flex-shrink: 0;">
-                        <button class="v4-alert-btn v4-alert-btn-1 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">확인</button>
-                        <button class="v4-alert-btn v4-alert-btn-2 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">취소</button>
-                        <button class="v4-alert-btn v4-alert-btn-3 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">저장</button>
+                <div class="v4-alert-dialog" style="flex: 1; width: 100%; background: #ffffff; border: 1.6px solid #cccccc !important; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); overflow: hidden; display: flex; flex-direction: column; box-sizing: border-box;">
+                    <div class="v4-alert-header" style="height: 32px; flex-shrink: 0; background: #e5e7eb; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1.6px solid #cccccc !important; box-sizing: border-box; width: 100%;">
+                        <span class="v4-alert-title" style="font-size: 12px; font-weight: 600; color: #374151;">Alert</span>
+                        <span class="v4-alert-close" style="cursor: pointer; color: #9ca3af; font-size: 16px; font-weight: bold; line-height: 1; display: flex; align-items: center; justify-content: center;">×</span>
+                    </div>
+                    <div class="v4-alert-content" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px 12px; box-sizing: border-box; width: 100%;">
+                        <div class="v4-alert-message" style="font-size: 13px; color: #1f2937; text-align: center; line-height: 1.4; white-space: pre-wrap; font-family: inherit; margin-bottom: 14px; word-break: break-all; width: 100%;">이벤트 번호를 입력해주세요.</div>
+                        <div class="v4-alert-buttons" style="display: flex; gap: 8px; justify-content: center; width: 100%; flex-wrap: nowrap; flex-shrink: 0;">
+                            <button class="v4-alert-btn v4-alert-btn-1 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">확인</button>
+                            <button class="v4-alert-btn v4-alert-btn-2 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">취소</button>
+                            <button class="v4-alert-btn v4-alert-btn-3 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">저장</button>
+                        </div>
                     </div>
                 </div>
-            </div></div><div id="v4-comp-1781502971581" class="lf-component" style="position: absolute; top: 72px; left: 595px; z-index: 1000; transform: none; width: 278px; height: 163px;" data-resized="true">
+            </div></div><div id="v4-comp-1781594010286" class="lf-component" style="position: absolute; top: 71.5px; left: 646px; z-index: 1000; transform: none; width: 285px; height: 197px;" data-resized="true">
             <div class="v4-alert-container" data-message="수기 상품 선택은 카드 저장 후 가능합니다.
-[전체 상품 대상] 으로 저장 후 [수기 상품] 으로 선택하여 상품을 등록해주세요." data-btn-count="1" data-btn-text-1="확인" data-btn-text-2="취소" data-btn-text-3="저장" data-btn-style-1="normal" data-btn-style-2="normal" data-btn-style-3="normal" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; background: #ffffff; border: 1.6px solid #cccccc !important; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); overflow: hidden; display: flex; flex-direction: column;">
-                <div class="v4-alert-header" style="height: 32px; flex-shrink: 0; background: #e5e7eb; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1.6px solid #cccccc !important; box-sizing: border-box; width: 100%;">
-                    <span class="v4-alert-title" style="font-size: 12px; font-weight: 600; color: #374151;">Alert</span>
-                    <span class="v4-alert-close" style="cursor: pointer; color: #9ca3af; font-size: 16px; font-weight: bold; line-height: 1; display: flex; align-items: center; justify-content: center;">×</span>
+[전체 상품 대상] 으로 저장 후 [수기 상품] 으로 변경하여 상품을 등록해주세요." data-btn-count="1" data-btn-text-1="확인" data-btn-text-2="취소" data-btn-text-3="저장" data-btn-style-1="normal" data-btn-style-2="normal" data-btn-style-3="normal" data-show-desc="true" data-desc="수기 상품 선택" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; background: transparent; justify-content: flex-end;">
+                <div class="v4-alert-desc-wrapper" style="display: flex; justify-content: flex-start; width: 100%; flex-shrink: 0;">
+                    <div class="v4-alert-desc-badge" style="background: #1e3a8a; color: #ffffff; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1.6px solid #1e40af;">수기 상품 선택</div>
                 </div>
-                <div class="v4-alert-content" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px 12px; box-sizing: border-box; width: 100%;">
-                    <div class="v4-alert-message" style="font-size: 13px; color: #1f2937; text-align: center; line-height: 1.4; white-space: pre-wrap; font-family: inherit; margin-bottom: 14px; word-break: break-all; width: 100%;">수기 상품 선택은 카드 저장 후 가능합니다.<br>[전체 상품 대상] 으로 저장 후 [수기 상품] 으로 선택하여 상품을 등록해주세요.</div>
-                    <div class="v4-alert-buttons" style="display: flex; gap: 8px; justify-content: center; width: 100%; flex-wrap: nowrap; flex-shrink: 0;">
-                        <button class="v4-alert-btn v4-alert-btn-1 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">확인</button>
-                        <button class="v4-alert-btn v4-alert-btn-2 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">취소</button>
-                        <button class="v4-alert-btn v4-alert-btn-3 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">저장</button>
+                <div class="v4-alert-dialog" style="flex: 1; width: 100%; background: #ffffff; border: 1.6px solid #cccccc !important; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); overflow: hidden; display: flex; flex-direction: column; box-sizing: border-box;">
+                    <div class="v4-alert-header" style="height: 32px; flex-shrink: 0; background: #e5e7eb; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1.6px solid #cccccc !important; box-sizing: border-box; width: 100%;">
+                        <span class="v4-alert-title" style="font-size: 12px; font-weight: 600; color: #374151;">Alert</span>
+                        <span class="v4-alert-close" style="cursor: pointer; color: #9ca3af; font-size: 16px; font-weight: bold; line-height: 1; display: flex; align-items: center; justify-content: center;">×</span>
+                    </div>
+                    <div class="v4-alert-content" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px 12px; box-sizing: border-box; width: 100%;">
+                        <div class="v4-alert-message" style="font-size: 13px; color: #1f2937; text-align: center; line-height: 1.4; white-space: pre-wrap; font-family: inherit; margin-bottom: 14px; word-break: break-all; width: 100%;">수기 상품 선택은 카드 저장 후 가능합니다.<br>[전체 상품 대상] 으로 저장 후 [수기 상품] 으로 변경하여 상품을 등록해주세요.</div>
+                        <div class="v4-alert-buttons" style="display: flex; gap: 8px; justify-content: center; width: 100%; flex-wrap: nowrap; flex-shrink: 0;">
+                            <button class="v4-alert-btn v4-alert-btn-1 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">확인</button>
+                            <button class="v4-alert-btn v4-alert-btn-2 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">취소</button>
+                            <button class="v4-alert-btn v4-alert-btn-3 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">저장</button>
+                        </div>
                     </div>
                 </div>
             </div></div></body></html>
