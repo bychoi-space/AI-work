@@ -66,8 +66,8 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -16px; left: -16px; }
 .lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #6366f1; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10002; }
 .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
-.lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10002; font-size: 14px; font-weight: bold; }
-.lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
+.lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none !important; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10002; font-size: 14px; font-weight: bold; }
+.lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: none !important; }
 .v4-premium-table { table-layout: fixed; border-collapse: collapse; overflow: hidden; border-radius: 8px; border: 1.6px solid #475569 !important; font-family: 'Inter', sans-serif; }
 .v4-premium-table th { padding: 14px 16px; text-align: left; border-bottom: 1.6px solid #475569 !important; font-weight: 700; white-space: nowrap; }
 .v4-premium-table td { padding: 14px 16px; border-bottom: 1.6px solid #cbd5e1 !important; }
@@ -129,6 +129,18 @@ img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; o
 /* Reset background for new SVG/Custom atoms to prevent sprite leakage */
 svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
+.v4-stepper-container[data-disabled="true"] { pointer-events: none !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-control { background-color: #e5e7eb !important; border-color: #9ca3af !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-value { color: #9ca3af !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-dec, .v4-stepper-container[data-disabled="true"] .v4-stepper-inc { background-color: #e5e7eb !important; color: #9ca3af !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-action { background-color: #e5e7eb !important; border-color: #9ca3af !important; color: #9ca3af !important; box-shadow: none !important; }
+.v4-selectbox-container[data-dropdown-active="true"] .v4-selectbox-header { border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; }
+.v4-selectbox-container[data-dropdown-active="true"] svg { transform: rotate(180deg); }
+.v4-selectbox-option:hover { background-color: #f3f4f6 !important; cursor: pointer; }
+.v4-selectbox-option:last-child { border-bottom: none !important; }
+.v4-fileupload-container[data-selected="true"] .v4-fileupload-delete { display: block !important; }
+.v4-fileupload-delete:hover { color: #ef4444 !important; }
+.v4-fileupload-button:hover { background-color: #f9fafb !important; border-color: #babcbe !important; }
 
 /* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
 .text-marker { 
@@ -191,6 +203,43 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
     pointer-events: none !important;
 }
 
+/* Checkbox / Radio Checked & Text Toggle styling */
+.v4-checkbox-container[data-checked="false"] svg { display: none !important; }
+.v4-radio-container[data-checked="false"] .v4-radio-dot { display: none !important; }
+.v4-checkbox-container[data-text-enabled="false"] .v4-checkbox-text { display: none !important; }
+.v4-radio-container[data-text-enabled="false"] .v4-radio-text { display: none !important; }
+.v4-checkbox-text, .v4-radio-text { color: #000000 !important; font-size: 12px !important; }
+.v4-checkbox-container[data-text-enabled="false"], 
+.v4-radio-container[data-text-enabled="false"] {
+    width: 100% !important;
+    height: 100% !important;
+}
+.v4-checkbox-container[data-text-enabled="false"] .v4-checkbox,
+.v4-radio-container[data-text-enabled="false"] .v4-radio {
+    width: 100% !important;
+    height: 100% !important;
+}
+.v4-alert-btn.style-primary { background: #4f46e5 !important; border-color: #4f46e5 !important; color: #ffffff !important; }
+.v4-alert-btn.style-normal { background: #ffffff !important; border-color: #cbd5e1 !important; color: #1f2937 !important; }
+.v4-alert-btn.style-negative { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #475569 !important; }
+.v4-custom-btn {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18) !important;
+    transition: all 0.2s ease !important;
+}
+.v4-custom-btn:hover {
+    filter: brightness(0.95);
+    transform: translateY(-1.2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25) !important;
+}
+.v4-custom-btn:active {
+    transform: translateY(0.8px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15) !important;
+}
+.v4-custom-btn.style-primary { background: #4f46e5 !important; border-color: #4f46e5 !important; color: #ffffff !important; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35) !important; }
+.v4-custom-btn.style-primary:hover { box-shadow: 0 6px 18px rgba(79, 70, 229, 0.5) !important; }
+.v4-custom-btn.style-normal { background: #ffffff !important; border-color: #cbd5e1 !important; color: #1f2937 !important; }
+.v4-custom-btn.style-negative { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #475569 !important; }
+
 </style>
 </head>
 <body>
@@ -221,16 +270,16 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
     </div>
 
 
-<div class="lf-component lf-group" style="position: absolute; left: 771px; top: 72px; width: 359px; height: 50px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;" id="v4-comp-ug-1780555937630-0"><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; width: 360px; height: 50px;">
+<div class="lf-component lf-group" style="position: absolute; left: 771px; top: 72px; width: 359px; height: 50px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;" id="v4-comp-ug-1780555937630-0"><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; width: 360px; height: 50px;" id="v4-comp-1781585371436-1">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(100, 100, 100); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><br></div>
-            </div></div><div class="lf-component" style="position: absolute; top: 10px; left: 14px; z-index: 1000; width: 30px; height: 30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="lf-component text-marker" style="left: 52.823px; top: 11.6493px; width: 90px; height: 28px; z-index: 1000;" id="v4-pin-0"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div class="lf-component" style="position: absolute; top: 5px; left: 263px; z-index: 1000; transform: none; width: 40px; height: 40px;"><div class="lf-icon" style="width:100%; height:100%; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 8px; box-sizing: border-box; background-origin: content-box; background-clip: content-box; pointer-events: none;"></div></div><div class="lf-component" style="position: absolute; top: 5px; left: 303px; z-index: 1000; width: 40px; height: 40px;"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div><div class="lf-component text-marker" style="position: absolute; top: 136px; left: 897px; z-index: 1000; transform: none; width: 107px; height: 32px;" id="v4-pin-1"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="font-size: 18px;">Card Title</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 168px; left: 884px; z-index: 1000; transform: none; width: 133px; height: 27px;" id="v4-pin-2"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p style="text-align: center;"><span style="font-size: 14px;">Card Description</span></p></div></div><div class="lf-component lf-group" style="position: absolute; left: 771px; top: 215px; width: 364px; height: 50px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;" id="v4-comp-ug-1780555937632-3"><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 360px; height: 50px;">
+            </div></div><div class="lf-component" style="position: absolute; top: 10px; left: 14px; z-index: 1000; width: 30px; height: 30px;" id="v4-comp-1781585371436-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="lf-component text-marker" style="left: 52.823px; top: 11.6493px; width: 90px; height: 28px; z-index: 1000;" id="v4-pin-0"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div class="lf-component" style="position: absolute; top: 5px; left: 263px; z-index: 1000; transform: none; width: 40px; height: 40px;" id="v4-comp-1781585371436-4"><div class="lf-icon" style="width:100%; height:100%; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 8px; box-sizing: border-box; background-origin: content-box; background-clip: content-box; pointer-events: none;"></div></div><div class="lf-component" style="position: absolute; top: 5px; left: 303px; z-index: 1000; width: 40px; height: 40px;" id="v4-comp-1781585371436-5"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div><div class="lf-component text-marker" style="position: absolute; top: 136px; left: 897px; z-index: 1000; transform: none; width: 107px; height: 32px;" id="v4-pin-1"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="font-size: 18px;">Card Title</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 168px; left: 884px; z-index: 1000; transform: none; width: 133px; height: 27px;" id="v4-pin-2"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p style="text-align: center;"><span style="font-size: 14px;">Card Description</span></p></div></div><div class="lf-component lf-group" style="position: absolute; left: 771px; top: 215px; width: 364px; height: 50px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;" id="v4-comp-ug-1780555937632-3"><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 360px; height: 50px;" id="v4-comp-1781585371436-9">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(200, 200, 200); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><br></div>
-            </div></div><div class="lf-component text-marker" style="position: absolute; top: 11.5px; left: 193.5px; z-index: 1000; transform: none; width: 79px; height: 27px;" id="v4-pin-3"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>가방/잡화</p></div></div><div class="lf-component text-marker" style="position: absolute; top: 11.5px; left: 272.5px; z-index: 1000; transform: none; width: 48px; height: 27px;" id="v4-pin-4"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>슈즈</p></div></div><div class="lf-component text-marker" style="position: absolute; top: 11.5px; left: 312px; z-index: 1000; transform: none; width: 48px; height: 27px;" id="v4-pin-5"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>골프</p></div></div><div class="lf-component text-marker" style="position: absolute; top: 11.5px; left: 125.5px; z-index: 1000; transform: none; width: 74px; height: 27px;" id="v4-pin-6"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>남성의류</p></div></div><div class="lf-component text-marker" style="position: absolute; top: 11.5px; left: 52.5px; z-index: 1000; transform: none; width: 74px; height: 27px;" id="v4-pin-7"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>여성의류</p></div></div><div class="lf-component text-marker" style="position: absolute; top: 11.5px; left: 8.5px; z-index: 1000; transform: none; width: 48px; height: 27px;" id="v4-pin-8"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>전체</strong></p></div></div><div class="lf-component" style="position: absolute; top: 45px; left: 18px; z-index: 1000; transform: none; width: 30px; height: 3px;">
+            </div></div><div class="lf-component text-marker" style="position: absolute; top: 11.5px; left: 193.5px; z-index: 1000; transform: none; width: 79px; height: 27px;" id="v4-pin-3"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>가방/잡화</p></div></div><div class="lf-component text-marker" style="position: absolute; top: 11.5px; left: 272.5px; z-index: 1000; transform: none; width: 48px; height: 27px;" id="v4-pin-4"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>슈즈</p></div></div><div class="lf-component text-marker" style="position: absolute; top: 11.5px; left: 312px; z-index: 1000; transform: none; width: 48px; height: 27px;" id="v4-pin-5"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>골프</p></div></div><div class="lf-component text-marker" style="position: absolute; top: 11.5px; left: 125.5px; z-index: 1000; transform: none; width: 74px; height: 27px;" id="v4-pin-6"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>남성의류</p></div></div><div class="lf-component text-marker" style="position: absolute; top: 11.5px; left: 52.5px; z-index: 1000; transform: none; width: 74px; height: 27px;" id="v4-pin-7"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>여성의류</p></div></div><div class="lf-component text-marker" style="position: absolute; top: 11.5px; left: 8.5px; z-index: 1000; transform: none; width: 48px; height: 27px;" id="v4-pin-8"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>전체</strong></p></div></div><div class="lf-component" style="position: absolute; top: 45px; left: 18px; z-index: 1000; transform: none; width: 30px; height: 3px;" id="v4-comp-1781585371436-16">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(0, 0, 0); border: 1.6px solid rgb(0, 0, 0); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; color: rgb(255, 255, 255);"><br></div>
-            </div></div></div><div class="lf-component lf-group" style="position: absolute; left: 948.5px; top: 282px; width: 172px; height: 27px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;" id="v4-comp-ug-1780555937634-6"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 102px; z-index: 1000; transform: none; width: 55px; height: 27px;" id="v4-pin-9"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">실시간</span></p></div></div><div class="lf-component" style="position: absolute; top: 3.5px; left: 152px; z-index: 1000; transform: none; width: 20px; height: 20px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div class="lf-component" style="position: absolute; top: 3.5px; left: 75px; z-index: 1000; transform: none; width: 20px; height: 20px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 81px; height: 27px;" id="v4-pin-10"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">남성 · 40대</span></p></div></div></div><div class="lf-component" style="position: absolute; top: 747px; left: 771px; z-index: 1000; transform: none; width: 360px; height: 20px;" id="v4-comp-ug-1780555937636-9">
+            </div></div></div><div class="lf-component lf-group" style="position: absolute; left: 948.5px; top: 282px; width: 172px; height: 27px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;" id="v4-comp-ug-1780555937634-6"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 102px; z-index: 1000; transform: none; width: 55px; height: 27px;" id="v4-pin-9"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">실시간</span></p></div></div><div class="lf-component" style="position: absolute; top: 3.5px; left: 152px; z-index: 1000; transform: none; width: 20px; height: 20px;" id="v4-comp-1781585371436-19"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div class="lf-component" style="position: absolute; top: 3.5px; left: 75px; z-index: 1000; transform: none; width: 20px; height: 20px;" id="v4-comp-1781585371436-20"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 81px; height: 27px;" id="v4-pin-10"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">남성 · 40대</span></p></div></div></div><div class="lf-component" style="position: absolute; top: 747px; left: 771px; z-index: 1000; transform: none; width: 360px; height: 20px;" id="v4-comp-ug-1780555937636-9">
             <div class="v4-shape v4-shape-wave" style="width: 100%; height: 100%; background: transparent; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: visible; box-sizing: border-box; position: relative; border: 1.6px !important;">
                 <svg viewBox="0 0 360 20" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible;">
                     <polygon points="0,6 45,2 90,6 135,2 180,6 225,2 270,6 315,2 360,6 360,16 315,12 270,16 225,12 180,16 135,12 90,16 45,12 0,16" style="fill: #ffedd5; stroke: #fb923c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" stroke-width="1.6"></polygon>
@@ -242,10 +291,10 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
             </div></div><div id="group-1780534852248" class="lf-component lf-group" style="position: absolute; left: 307px; top: 72px; width: 359px; height: 50px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; width: 360px; height: 50px;" id="v4-comp-ug-1780534818219-0">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(100, 100, 100); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><br></div>
-            </div></div><div class="lf-component" style="position: absolute; top: 10px; left: 14px; z-index: 1000; width: 30px; height: 30px;" id="v4-comp-ug-1780534818219-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="lf-component text-marker" style="left: 52.823px; top: 11.6493px; width: 90px; height: 28px; z-index: 1000;" id="v4-pin-11"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div id="lf-comp-1780534812400" class="lf-component" style="position: absolute; top: 5px; left: 263px; z-index: 1000; transform: none; width: 40px; height: 40px;"><div class="lf-icon" style="width:100%; height:100%; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 8px; box-sizing: border-box; background-origin: content-box; background-clip: content-box; pointer-events: none;"></div></div><div class="lf-component" style="position: absolute; top: 5px; left: 303px; z-index: 1000; width: 40px; height: 40px;" id="v4-comp-ug-1780534818220-4"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div><div id="v4-pin-12" class="lf-component text-marker" style="position: absolute; top: 136px; left: 433px; z-index: 1000; transform: none; width: 107px; height: 32px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="font-size: 18px;">Card Title</strong></p></div></div><div id="v4-pin-13" class="lf-component text-marker" style="position: absolute; top: 168px; left: 420px; z-index: 1000; transform: none; width: 133px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p style="text-align: center;"><span style="font-size: 14px;">Card Description</span></p></div></div><div id="v4-comp-1780551266927" class="lf-component lf-group" style="position: absolute; top: 322px; left: 483.5px; z-index: 1000; transform: none; width: 170px; height: 271px;"><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 160px; height: 180px;">
+            </div></div><div class="lf-component" style="position: absolute; top: 10px; left: 14px; z-index: 1000; width: 30px; height: 30px;" id="v4-comp-ug-1780534818219-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="15 18 9 12 15 6"></polyline></svg></div><div class="lf-component text-marker" style="left: 52.823px; top: 11.6493px; width: 90px; height: 28px; z-index: 1000;" id="v4-pin-11"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000"><p>기획전 명칭</p></div></div><div id="lf-comp-1780534812400" class="lf-component" style="position: absolute; top: 5px; left: 263px; z-index: 1000; transform: none; width: 40px; height: 40px;"><div class="lf-icon" style="width:100%; height:100%; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 8px; box-sizing: border-box; background-origin: content-box; background-clip: content-box; pointer-events: none;"></div></div><div class="lf-component" style="position: absolute; top: 5px; left: 303px; z-index: 1000; width: 40px; height: 40px;" id="v4-comp-ug-1780534818220-4"><div class="lf-icon lf-icon-cart" style="filter: brightness(0);"></div></div></div><div id="v4-pin-12" class="lf-component text-marker" style="position: absolute; top: 136px; left: 433px; z-index: 1000; transform: none; width: 107px; height: 32px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="font-size: 18px;">Card Title</strong></p></div></div><div id="v4-pin-13" class="lf-component text-marker" style="position: absolute; top: 168px; left: 420px; z-index: 1000; transform: none; width: 133px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p style="text-align: center;"><span style="font-size: 14px;">Card Description</span></p></div></div><div id="v4-comp-1780551266927" class="lf-component lf-group" style="position: absolute; top: 322px; left: 483.5px; z-index: 1000; transform: none; width: 170px; height: 271px;"><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 160px; height: 180px;" id="v4-comp-1781585371436-33">
             <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div></div><div class="lf-component text-marker" style="position: absolute; top: 183.5px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-20"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 204.5px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-21"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 243.5px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-22"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div><div id="group-1780555465100" class="lf-component lf-group" style="position: absolute; left: 484.5px; top: 282px; width: 172px; height: 27px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div id="v4-pin-23" class="lf-component text-marker" style="position: absolute; top: 0px; left: 102px; z-index: 1000; transform: none; width: 55px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">실시간</span></p></div></div><div id="lf-comp-1780549752092" class="lf-component" style="position: absolute; top: 3.5px; left: 152px; z-index: 1000; transform: none; width: 20px; height: 20px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div id="lf-comp-1780549539644" class="lf-component" style="position: absolute; top: 3.5px; left: 75px; z-index: 1000; transform: none; width: 20px; height: 20px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div id="v4-pin-24" class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 81px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">남성 · 40대</span></p></div></div></div><div class="lf-component" style="position: absolute; top: 609px; left: 323px; z-index: 1000; transform: none; width: 160px; height: 150px;" id="v4-comp-ug-1780552182490-0">
+            </div></div><div class="lf-component text-marker" style="position: absolute; top: 183.5px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-14"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 204.5px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-15"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 243.5px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-16"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div><div id="group-1780555465100" class="lf-component lf-group" style="position: absolute; left: 484.5px; top: 282px; width: 172px; height: 27px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div id="v4-pin-17" class="lf-component text-marker" style="position: absolute; top: 0px; left: 102px; z-index: 1000; transform: none; width: 55px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">실시간</span></p></div></div><div id="lf-comp-1780549752092" class="lf-component" style="position: absolute; top: 3.5px; left: 152px; z-index: 1000; transform: none; width: 20px; height: 20px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div id="lf-comp-1780549539644" class="lf-component" style="position: absolute; top: 3.5px; left: 75px; z-index: 1000; transform: none; width: 20px; height: 20px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div id="v4-pin-18" class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 81px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">남성 · 40대</span></p></div></div></div><div class="lf-component" style="position: absolute; top: 609px; left: 323px; z-index: 1000; transform: none; width: 160px; height: 150px;" id="v4-comp-ug-1780552182490-0">
             <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
             </div></div><div class="lf-component" style="position: absolute; top: 609px; left: 493px; z-index: 1000; transform: none; width: 160px; height: 150px;" id="v4-comp-ug-1780552184789-0">
@@ -260,19 +309,34 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
             </div></div><div id="v4-comp-1780552875556" class="lf-component" style="position: absolute; top: 780px; left: 326.5px; z-index: 1000; transform: none; width: 320px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(50, 50, 50); border: 1.6px solid transparent; border-radius: 30px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; color: rgb(255, 255, 255);"><span style="font-weight: normal;">더보기</span></div>
-            </div></div><div id="group-1780556062703" class="lf-component lf-group" style="position: absolute; left: 313.5px; top: 322px; width: 169.5px; height: 270.5px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div id="v4-comp-1780549816905" class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 160px; height: 180px;">
+            </div></div><div id="v4-comp-1780559282540" class="lf-component lf-group" style="position: absolute; top: 546.5px; left: 778.75px; z-index: 1000; transform: none; width: 340.5px; height: 210px;"><div class="lf-component lf-group" style="position: absolute; left: 113px; top: 0px; width: 114px; height: 210px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;" id="v4-comp-1781585371436-52"><div class="lf-component lf-group" style="position: absolute; left: 0px; top: 122.5px; width: 114px; height: 87px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;" id="v4-comp-1781585371436-53"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-19"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 21px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-20"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 60px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-21"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 100px; height: 120px;" id="v4-comp-1781585371436-57">
             <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div></div><div id="v4-pin-25" class="lf-component text-marker" style="position: absolute; top: 183.5px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div id="v4-pin-26" class="lf-component text-marker" style="position: absolute; top: 204.5px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div id="v4-pin-27" class="lf-component text-marker" style="position: absolute; top: 243.5px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div><div id="v4-comp-1780559282540" class="lf-component lf-group" style="position: absolute; top: 546.5px; left: 778.75px; z-index: 1000; transform: none; width: 340.5px; height: 210px;"><div class="lf-component lf-group" style="position: absolute; left: 113px; top: 0px; width: 114px; height: 210px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component lf-group" style="position: absolute; left: 0px; top: 122.5px; width: 114px; height: 87px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-37"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 21px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-38"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 60px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-39"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 100px; height: 120px;">
+            </div></div></div><div class="lf-component lf-group" style="position: absolute; left: 226.5px; top: 0px; width: 114px; height: 210px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;" id="v4-comp-1781585371436-58"><div class="lf-component lf-group" style="position: absolute; left: 0px; top: 122.5px; width: 114px; height: 87px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;" id="v4-comp-1781585371436-59"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-22"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 21px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-23"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 60px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-24"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 100px; height: 120px;" id="v4-comp-1781585371436-63">
             <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div></div></div><div class="lf-component lf-group" style="position: absolute; left: 226.5px; top: 0px; width: 114px; height: 210px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component lf-group" style="position: absolute; left: 0px; top: 122.5px; width: 114px; height: 87px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-40"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 21px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-41"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 60px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-42"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 100px; height: 120px;">
+            </div></div></div><div class="lf-component lf-group" style="position: absolute; left: 0px; top: 0px; width: 114px; height: 210px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;" id="v4-comp-1781585371436-64"><div class="lf-component lf-group" style="position: absolute; left: 0px; top: 122.5px; width: 114px; height: 87px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;" id="v4-comp-1781585371436-65"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-25"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 21px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-26"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 60px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-27"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 100px; height: 120px;" id="v4-comp-1781585371436-69">
             <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div></div></div><div class="lf-component lf-group" style="position: absolute; left: 0px; top: 0px; width: 114px; height: 210px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component lf-group" style="position: absolute; left: 0px; top: 122.5px; width: 114px; height: 87px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-43"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 21px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-44"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 60px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-45"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 100px; height: 120px;">
+            </div></div></div></div><div id="v4-comp-1780535113549" class="lf-component" style="position: absolute; top: 215px; left: 307px; z-index: 1000; transform: none; width: 360px; height: 50px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(200, 200, 200); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><br></div>
+            </div></div><div id="v4-pin-28" class="lf-component text-marker" style="position: absolute; top: 226.5px; left: 500.5px; z-index: 1000; transform: none; width: 80px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>가방/잡화</p></div></div><div id="v4-pin-29" class="lf-component text-marker" style="position: absolute; top: 226.5px; left: 579.5px; z-index: 1000; transform: none; width: 49px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>슈즈</p></div></div><div id="v4-pin-30" class="lf-component text-marker" style="position: absolute; top: 226.5px; left: 619px; z-index: 1000; transform: none; width: 48px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>골프</p></div></div><div id="v4-pin-31" class="lf-component text-marker" style="position: absolute; top: 226.5px; left: 432.5px; z-index: 1000; transform: none; width: 75px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>남성의류</p></div></div><div id="v4-pin-32" class="lf-component text-marker" style="position: absolute; top: 226.5px; left: 359.5px; z-index: 1000; transform: none; width: 75px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>여성의류</p></div></div><div id="v4-pin-33" class="lf-component text-marker" style="position: absolute; top: 226.5px; left: 315.5px; z-index: 1000; transform: none; width: 49px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>전체</strong></p></div></div><div id="v4-comp-1780555364558" class="lf-component" style="position: absolute; top: 260px; left: 325px; z-index: 1000; transform: none; width: 30px; height: 3px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(0, 0, 0); border: 1.6px solid rgb(0, 0, 0); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; color: rgb(255, 255, 255);"><br></div>
+            </div></div><div id="v4-comp-1780549816905" class="lf-component" style="position: absolute; top: 322px; left: 323px; z-index: 1000; transform: none; width: 160px; height: 180px;">
             <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div></div></div></div><script id="v4-inlined-script">
+            </div></div><div id="v4-pin-34" class="lf-component text-marker" style="position: absolute; top: 505.5px; left: 313.5px; z-index: 1000; transform: none; width: 106px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div id="v4-pin-35" class="lf-component text-marker" style="position: absolute; top: 526.5px; left: 313.5px; z-index: 1000; transform: none; width: 103px; height: 44px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div id="v4-pin-36" class="lf-component text-marker" style="position: absolute; top: 565.5px; left: 313.5px; z-index: 1000; transform: none; width: 114px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div><div id="v4-comp-1780559113415485" class="lf-component lf-group" style="position: absolute; left: 1006.75px; top: 321.5px; width: 114px; height: 210px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 100px; height: 120px;" id="v4-comp-ug-1780556009227-0">
+            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+            </div></div><div id="group-1780556032294" class="lf-component lf-group" style="position: absolute; left: 0px; top: 122.5px; width: 114px; height: 87px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-37"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 21px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-38"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 60px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-39"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div></div><div id="v4-comp-1780559103585765" class="lf-component lf-group" style="position: absolute; left: 892.25px; top: 322px; width: 114px; height: 210px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 100px; height: 120px;" id="v4-comp-1781585371471-dedup-493-78">
+            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+            </div></div><div id="v4-comp-1781585371471-dedup-804-79" class="lf-component lf-group" style="position: absolute; left: 0px; top: 122.5px; width: 114px; height: 87px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-40"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 21px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-41"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 60px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-42"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div></div><div id="group-1780559102777" class="lf-component lf-group" style="position: absolute; left: 777.75px; top: 322px; width: 114px; height: 210px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 100px; height: 120px;" id="v4-comp-1781585371471-dedup-820-84">
+            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+            </div></div><div id="v4-comp-1781585371471-dedup-737-85" class="lf-component lf-group" style="position: absolute; left: 0px; top: 122.5px; width: 114px; height: 87px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-43"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 21px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-44"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 60px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-45"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div></div><div id="v4-pin-46" class="lf-component text-marker" style="position: absolute; top: 479.017px; left: 322.95px; z-index: 1000; transform: none; width: fit-content; height: auto;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 24px;">1</span></p></div></div><script id="v4-inlined-script">
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -748,8 +812,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             host.appendChild(v);
             newSelectedIds.push(newId);
         });
-        if (typeof enforceDesignSystem === 'function') {
-            enforceDesignSystem();
+        if (typeof window.enforceDesignSystem === 'function') {
+            window.enforceDesignSystem();
         } else if (typeof initHandles === 'function') {
             initHandles();
         }
@@ -778,6 +842,70 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const isPin = c.classList.contains('text-marker') || c.classList.contains('pin-marker');
         const isDescriptionPin = c.classList.contains('pin-marker');
         
+        // Checkbox / Radio Atom Detection
+        const isCheckbox = !!c.querySelector('.v4-checkbox') || c.classList.contains('v4-checkbox') || !!c.querySelector('.v4-checkbox-container') || c.classList.contains('v4-checkbox-container');
+        const isRadio = !!c.querySelector('.v4-radio') || c.classList.contains('v4-radio') || !!c.querySelector('.v4-radio-container') || c.classList.contains('v4-radio-container');
+        const container = c.querySelector('.v4-checkbox-container, .v4-radio-container') || (c.classList.contains('v4-checkbox-container') || c.classList.contains('v4-radio-container') ? c : null);
+        const checked = container ? container.getAttribute('data-checked') !== 'false' : true;
+        const textEnabled = container ? container.getAttribute('data-text-enabled') !== 'false' : false;
+        
+        // Textbox / Textarea Atom Detection
+        const isTextbox = !!c.querySelector('.v4-textbox-container') || c.classList.contains('v4-textbox-container');
+        const isTextarea = !!c.querySelector('.v4-textarea-container') || c.classList.contains('v4-textarea-container');
+        const inputContainer = c.querySelector('.v4-textbox-container, .v4-textarea-container') || (isTextbox || isTextarea ? c : null);
+        const placeholderText = inputContainer ? (inputContainer.getAttribute('data-placeholder') || inputContainer.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder')?.textContent || "Placeholder") : "";
+        const maxLength = inputContainer ? (parseInt(inputContainer.getAttribute('data-maxlength')) || 100) : 100;
+        const showCounter = inputContainer ? (inputContainer.getAttribute('data-show-counter') !== 'false') : false;
+
+        // Stepper Atom Detection
+        const isStepper = !!c.querySelector('.v4-stepper-container') || c.classList.contains('v4-stepper-container');
+        const stepperContainer = c.querySelector('.v4-stepper-container') || (isStepper ? c : null);
+        const minVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-min')) || 1 : 1;
+        const maxVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-max')) || 99 : 99;
+        const stepperVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-val')) || minVal : minVal;
+        const stepperBtnEnabled = stepperContainer ? stepperContainer.getAttribute('data-btn-enabled') !== 'false' : true;
+        const stepperBtnText = stepperContainer ? stepperContainer.getAttribute('data-btn-text') || "적용" : "적용";
+        const stepperDisabled = stepperContainer ? stepperContainer.getAttribute('data-disabled') === 'true' : false;
+        
+        // Selectbox Atom Detection
+        const isSelectbox = !!c.querySelector('.v4-selectbox-container') || c.classList.contains('v4-selectbox-container');
+        const selectboxContainer = c.querySelector('.v4-selectbox-container') || (isSelectbox ? c : null);
+        const selectboxDefaultText = selectboxContainer ? (selectboxContainer.getAttribute('data-default-text') || "선택하세요") : "선택하세요";
+        const selectboxDropdownActive = selectboxContainer ? selectboxContainer.getAttribute('data-dropdown-active') === 'true' : false;
+        const selectboxOptionsRaw = selectboxContainer ? (selectboxContainer.getAttribute('data-options') || "Option 1,Option 2,Option 3") : "Option 1,Option 2,Option 3";
+        const selectboxOptions = selectboxOptionsRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+        // File Upload Atom Detection
+        const isFileUpload = !!c.querySelector('.v4-fileupload-container') || c.classList.contains('v4-fileupload-container');
+        const fileuploadContainer = c.querySelector('.v4-fileupload-container') || (isFileUpload ? c : null);
+        const fileSelected = fileuploadContainer ? fileuploadContainer.getAttribute('data-selected') === 'true' : false;
+        const fileName = fileuploadContainer ? (fileuploadContainer.getAttribute('data-file-name') || "") : "";
+        const fileButtonText = fileuploadContainer ? (fileuploadContainer.getAttribute('data-button-text') || "파일첨부") : "파일첨부";
+        const filePlaceholder = fileuploadContainer ? (fileuploadContainer.getAttribute('data-placeholder') || "선택된 파일 없음") : "선택된 파일 없음";
+
+        // Alert Atom Detection
+        const isAlert = !!c.querySelector('.v4-alert-container') || c.classList.contains('v4-alert-container');
+        const alertContainer = c.querySelector('.v4-alert-container') || (isAlert ? c : null);
+        const alertMessage = alertContainer ? (alertContainer.getAttribute('data-message') || "얼럿 메시지 입력 표시") : "얼럿 메시지 입력 표시";
+        const alertBtnCount = alertContainer ? parseInt(alertContainer.getAttribute('data-btn-count')) || 1 : 1;
+        const alertBtnText1 = alertContainer ? (alertContainer.getAttribute('data-btn-text-1') || "확인") : "확인";
+        const alertBtnText2 = alertContainer ? (alertContainer.getAttribute('data-btn-text-2') || "취소") : "취소";
+        const alertBtnText3 = alertContainer ? (alertContainer.getAttribute('data-btn-text-3') || "저장") : "저장";
+        const alertBtnStyle1 = alertContainer ? (alertContainer.getAttribute('data-btn-style-1') || "normal") : "normal";
+        const alertBtnStyle2 = alertContainer ? (alertContainer.getAttribute('data-btn-style-2') || "normal") : "normal";
+        const alertBtnStyle3 = alertContainer ? (alertContainer.getAttribute('data-btn-style-3') || "normal") : "normal";
+
+        // Button Atom Detection
+        const isButton = !!c.querySelector('.v4-btn-container') || c.classList.contains('v4-btn-container');
+        const btnContainer = c.querySelector('.v4-btn-container') || (isButton ? c : null);
+        const buttonText = btnContainer ? (btnContainer.getAttribute('data-text') || "버튼") : "버튼";
+        const buttonStyle = btnContainer ? (btnContainer.getAttribute('data-btn-style') || "normal") : "normal";
+        const buttonRadius = btnContainer ? (btnContainer.getAttribute('data-btn-radius') || "6") : "6";
+
+        // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
+        const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
+        const buttonEl = c.querySelector('.v4-custom-btn');
+        
         const getShapeColor = (prop) => {
             if (!shape) return "";
             if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle') || shape.classList.contains('v4-shape-wave')) {
@@ -786,11 +914,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
             return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
         };
-
+ 
         let detectedIconColor = "";
         if (icon) {
             const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
-            const dot = icon.querySelector('.v4-radio div');
+            const dot = icon.querySelector('.v4-radio div, .v4-radio-dot');
             if (poly) {
                 detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || "";
             } else if (dot) {
@@ -799,7 +927,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 detectedIconColor = icon.style.color || icon.getAttribute('stroke') || "";
             }
         }
-
+ 
         return {
             id: c.id,
             isTable: !!table,
@@ -807,29 +935,69 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             isIcon: !!icon,
             isPin: isPin,
             isDescriptionPin: isDescriptionPin,
+            isCheckbox: isCheckbox,
+            isRadio: isRadio,
+            checked: checked,
+            textEnabled: textEnabled,
+            isTextbox: isTextbox,
+            isTextarea: isTextarea,
+            placeholderText: placeholderText,
+            maxLength: maxLength,
+            showCounter: showCounter,
+            isStepper: isStepper,
+            minVal: minVal,
+            maxVal: maxVal,
+            val: stepperVal,
+            btnEnabled: stepperBtnEnabled,
+            btnText: stepperBtnText,
+            disabled: stepperDisabled,
+            isSelectbox: isSelectbox,
+            selectboxDefaultText: selectboxDefaultText,
+            selectboxDropdownActive: selectboxDropdownActive,
+            selectboxOptions: selectboxOptions,
+            isFileUpload: isFileUpload,
+            fileSelected: fileSelected,
+            fileName: fileName,
+            fileButtonText: fileButtonText,
+            filePlaceholder: filePlaceholder,
+            isAlert: isAlert,
+            alertMessage: alertMessage,
+            alertBtnCount: alertBtnCount,
+            alertBtnText1: alertBtnText1,
+            alertBtnText2: alertBtnText2,
+            alertBtnText3: alertBtnText3,
+            alertBtnStyle1: alertBtnStyle1,
+            alertBtnStyle2: alertBtnStyle2,
+            alertBtnStyle3: alertBtnStyle3,
+            isButton: isButton,
+            buttonText: buttonText,
+            buttonStyle: buttonStyle,
+            buttonRadius: buttonRadius,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
-            html: textCell ? textCell.innerHTML : (shape ? shape.innerHTML : (table ? table.innerHTML : "")),
+            html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : "")))),
-                text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
-                fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : (alertContainer ? _getVal(alertContainer, "backgroundColor") : "")))))))))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (buttonEl ? _getVal(buttonEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor") : (alertContainer ? _getVal(alertContainer, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))))))))),
+                text: _rgb2hex(textCell ? _getVal(textCell, "color") : (buttonEl ? _getVal(buttonEl, "color") : "")),
+                fontSize: parseInt(_getVal(textCell, "fontSize")) || (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 12 : 12),
+                fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
-                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : 0,
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""))),
+                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : (buttonEl ? (parseInt(_getVal(buttonEl, "borderRadius")) || 0) : 0)),
+                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : (alertContainer ? _getVal(alertContainer, "backgroundColor") : "")))))))))),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : ""));
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : "")))))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : ""));
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (buttonEl ? _getVal(buttonEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : "")))))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
-                })()
+                })(),
+                textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
             }
         };
     };
@@ -847,6 +1015,42 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             del.style.right = rightDist < 16 ? '4px' : '-12px'; 
         }
     }
+    
+    const resizeAtomToFitText = (s) => {
+        if (!s) return;
+        const container = s.querySelector('.v4-checkbox-container, .v4-radio-container');
+        if (!container) return;
+        
+        const boxEl = container.querySelector('.v4-checkbox, .v4-radio');
+        if (!boxEl) return;
+
+        const textEnabled = container.getAttribute('data-text-enabled') !== 'false';
+        if (textEnabled) {
+            const textEl = container.querySelector('.v4-checkbox-text, .v4-radio-text');
+            if (textEl) {
+                const boxW = parseFloat(boxEl.style.width) || 24;
+                const boxH = parseFloat(boxEl.style.height) || 24;
+                const textWidth = textEl.scrollWidth || 35;
+                const totalWidth = boxW + 8 + textWidth + 8; // 아이콘 크기 + 8px 간격 + 텍스트 너비 + 8px 패딩 버퍼
+                s.style.width = totalWidth + 'px';
+                s.style.height = Math.max(32, boxH + 8) + 'px';
+            }
+        } else {
+            if (s.getAttribute('data-resized') === 'true') {
+                const parentW = parseFloat(s.style.width) || s.offsetWidth;
+                const parentH = parseFloat(s.style.height) || s.offsetHeight;
+                boxEl.style.width = parentW + 'px';
+                boxEl.style.height = parentH + 'px';
+            } else {
+                const boxW = parseFloat(boxEl.style.width) || 24;
+                const boxH = parseFloat(boxEl.style.height) || 24;
+                s.style.width = boxW + 'px';
+                s.style.height = boxH + 'px';
+            }
+        }
+        updateHandles(s);
+    };
+
     document.addEventListener('mouseover', e => {
         const c = e.target.closest('.lf-component');
         if (c) updateHandles(c);
@@ -890,11 +1094,17 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
         if (c) {
             isMarquee = false;
-            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
-            c.classList.add('selected');
+            const isMulti = e.shiftKey || e.ctrlKey;
+            if (isMulti) {
+                c.classList.toggle('selected');
+            } else {
+                document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                c.classList.add('selected');
+            }
             updateHandles(c);
             notifyParent({ 
                 type: "LF_COMP_SELECTED", 
+                shiftKey: isMulti,
                 ..._getCompStyles(c)
             });
         } else {
@@ -1023,10 +1233,24 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 });
             }
         }
+        if (isResizing && activeEl) {
+            activeEl.setAttribute('data-resized', 'true');
+            if (typeof window.enforceDesignSystem === 'function') {
+                window.enforceDesignSystem();
+            }
+        }
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
         isDragging = false; isResizing = false; activeEl = null; 
     });
-    document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
+    document.addEventListener('input', e => { 
+        if (e.target.classList.contains('v4-editable-cell')) {
+            markDirty();
+            const comp = e.target.closest('.lf-component');
+            if (comp && (comp.querySelector('.v4-checkbox-container') || comp.querySelector('.v4-radio-container'))) {
+                resizeAtomToFitText(comp);
+            }
+        } 
+    });
     let isArrowMoving = false;
     document.addEventListener('keydown', e => {
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
@@ -1075,6 +1299,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     if (window.V4UndoManager && !isArrowMoving) {
                         window.V4UndoManager.saveState();
                         isArrowMoving = true;
+                        notifyParent({ type: 'LF_SNAP_START' });
                     }
                     const step = e.shiftKey ? 10 : 1;
                     let dx = 0, dy = 0;
@@ -1082,6 +1307,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     if (e.code === 'ArrowDown') dy = step;
                     if (e.code === 'ArrowLeft') dx = -step;
                     if (e.code === 'ArrowRight') dx = step;
+
+                    const activeEl = selected[0];
 
                     selected.forEach(c => {
                         const l = parseFloat(c.style.left) || 0;
@@ -1113,7 +1340,22 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         }
                     });
                     
-                    notifyParent({ type: 'LF_SNAP_END' });
+                    if (activeEl) {
+                        const activeRect = activeEl.getBoundingClientRect();
+                        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
+                        const parentRect = document.body.getBoundingClientRect();
+                        
+                        const relativeX = (activeRect.left - parentRect.left) / scale;
+                        const relativeY = (activeRect.top - parentRect.top) / scale;
+                        
+                        notifyParent({ 
+                            type: 'LF_SNAP_REQUEST', 
+                            x: relativeX, 
+                            y: relativeY, 
+                            w: activeEl.offsetWidth, 
+                            h: activeEl.offsetHeight 
+                        });
+                    }
                 }
             }
         } else if (e.code === 'Delete' || e.code === 'Backspace') {
@@ -1147,8 +1389,20 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             notifyParent({ type: 'LF_SPACE_UP' });
         } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
             isArrowMoving = false;
+            notifyParent({ type: 'LF_SNAP_END' });
         }
     });
+    document.addEventListener('wheel', e => {
+        if (e.ctrlKey) {
+            e.preventDefault();
+            notifyParent({
+                type: 'LF_IFRAME_WHEEL_ZOOM',
+                deltaY: e.deltaY,
+                clientX: e.clientX,
+                clientY: e.clientY
+            });
+        }
+    }, { passive: false });
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
         if (d.type === 'LF_SHORTCUT_KEY_PROXY') {
@@ -1456,7 +1710,372 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 }
             }
         }
+        else if (d.type === 'LF_UPDATE_SHAPE_TEXT') {
+            // Shape 내부 텍스트/HTML을 Quill 에디터 결과로 업데이트
+            const s = document.querySelector('.lf-component.selected'); 
+            if (!s) return;
+            const shape = s.querySelector('.v4-shape');
+            if (!shape) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            // SVG 기반 도형(diamond, triangle, wave)은 SVG를 보존하고 텍스트 레이어에만 삽입
+            const isSvgShape = shape.classList.contains('v4-shape-diamond') || 
+                               shape.classList.contains('v4-shape-triangle') || 
+                               shape.classList.contains('v4-shape-wave');
+
+            if (isSvgShape) {
+                // SVG 기반: 텍스트 오버레이 div를 찾거나 생성
+                let textOverlay = shape.querySelector('.v4-shape-text-overlay');
+                if (!textOverlay) {
+                    textOverlay = document.createElement('div');
+                    textOverlay.className = 'v4-shape-text-overlay';
+                    textOverlay.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;text-align:center;pointer-events:none;padding:4px;box-sizing:border-box;z-index:2;';
+                    shape.style.position = 'relative';
+                    shape.appendChild(textOverlay);
+                }
+                textOverlay.innerHTML = d.html;
+            } else {
+                // 일반 도형(rect, circle): shape 내부에 직접 HTML 주입
+                // 기존 SVG 요소는 보존하고, 텍스트 컨테이너만 업데이트
+                let textContainer = shape.querySelector('.v4-shape-text-content');
+                if (!textContainer) {
+                    // 최초 1회: 기존 innerHTML(순수 텍스트/HTML)을 컨테이너로 감싸기
+                    const existingContent = shape.innerHTML;
+                    textContainer = document.createElement('div');
+                    textContainer.className = 'v4-shape-text-content';
+                    textContainer.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;overflow:hidden;';
+                    shape.innerHTML = '';
+                    textContainer.innerHTML = existingContent;
+                    shape.appendChild(textContainer);
+                }
+                textContainer.innerHTML = d.html;
+            }
+            markDirty();
+        }
+        else if (d.type === 'LF_UPDATE_ATOM_STATE') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
+            if (container) {
+                container.setAttribute('data-checked', d.checked ? 'true' : 'false');
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_ATOM_TEXT_ENABLED') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
+            if (container) {
+                container.setAttribute('data-text-enabled', d.enabled ? 'true' : 'false');
+                s.removeAttribute('data-resized');
+                resizeAtomToFitText(s);
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_STEPPER_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-stepper-container') || (s.classList.contains('v4-stepper-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.minVal !== undefined) {
+                    container.setAttribute('data-min', d.minVal);
+                }
+                if (d.maxVal !== undefined) {
+                    container.setAttribute('data-max', d.maxVal);
+                }
+                if (d.disabled !== undefined) {
+                    container.setAttribute('data-disabled', d.disabled ? 'true' : 'false');
+                }
+                if (d.btnEnabled !== undefined) {
+                    container.setAttribute('data-btn-enabled', d.btnEnabled ? 'true' : 'false');
+                    const actBtn = container.querySelector('.v4-stepper-action');
+                    if (actBtn) {
+                        actBtn.style.display = d.btnEnabled ? 'inline-flex' : 'none';
+                    }
+                    if (d.btnEnabled) {
+                        s.style.width = '154px';
+                    } else {
+                        s.style.width = '100px';
+                    }
+                }
+                if (d.btnText !== undefined) {
+                    container.setAttribute('data-btn-text', d.btnText);
+                    const actBtn = container.querySelector('.v4-stepper-action');
+                    if (actBtn) {
+                        actBtn.innerText = d.btnText;
+                    }
+                }
+                
+                const min = parseInt(container.getAttribute('data-min')) || 1;
+                const max = parseInt(container.getAttribute('data-max')) || 99;
+                let curVal = parseInt(container.getAttribute('data-val')) || min;
+                
+                if (d.minVal !== undefined) {
+                    curVal = min;
+                }
+                
+                curVal = Math.max(min, Math.min(max, curVal));
+                container.setAttribute('data-val', curVal);
+                
+                const valEl = container.querySelector('.v4-stepper-value');
+                if (valEl) valEl.innerText = curVal;
+                
+                const decBtn = container.querySelector('.v4-stepper-dec');
+                const incBtn = container.querySelector('.v4-stepper-inc');
+                const isDisabled = container.getAttribute('data-disabled') === 'true';
+                
+                if (isDisabled) {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = '';
+                        decBtn.style.color = '';
+                        decBtn.style.cursor = 'not-allowed';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = '';
+                        incBtn.style.color = '';
+                        incBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = curVal === min ? '#f3f4f6' : '#ffffff';
+                        decBtn.style.color = curVal === min ? '#9ca3af' : '#374151';
+                        decBtn.style.cursor = curVal === min ? 'not-allowed' : 'pointer';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = curVal === max ? '#f3f4f6' : '#ffffff';
+                        incBtn.style.color = curVal === max ? '#9ca3af' : '#374151';
+                        incBtn.style.cursor = curVal === max ? 'not-allowed' : 'pointer';
+                    }
+                }
+                
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_SELECTBOX_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-selectbox-container') || (s.classList.contains('v4-selectbox-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.defaultText !== undefined) {
+                    container.setAttribute('data-default-text', d.defaultText);
+                    const selectedText = container.querySelector('.v4-selectbox-selected-text');
+                    if (selectedText) selectedText.innerText = d.defaultText;
+                }
+                
+                if (d.dropdownActive !== undefined) {
+                    container.setAttribute('data-dropdown-active', d.dropdownActive ? 'true' : 'false');
+                    const optionsList = container.querySelector('.v4-selectbox-options');
+                    if (optionsList) {
+                        optionsList.style.display = d.dropdownActive ? 'block' : 'none';
+                    }
+                }
+                
+                if (d.options !== undefined) {
+                    const optionsArr = Array.isArray(d.options) ? d.options : d.options.split(',');
+                    const cleanOptions = optionsArr.map(o => o.trim()).filter(Boolean);
+                    container.setAttribute('data-options', cleanOptions.join(','));
+                    
+                    const optionsList = container.querySelector('.v4-selectbox-options');
+                    if (optionsList) {
+                        optionsList.innerHTML = cleanOptions.map((opt, idx) => {
+                            const isLast = idx === cleanOptions.length - 1;
+                            const borderStyle = isLast ? '' : ' border-bottom: 1.6px solid #f3f4f6;';
+                            return '<div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151;' + borderStyle + ' box-sizing: border-box;">' + opt + '</div>';
+                        }).join('');
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_FILEUPLOAD_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-fileupload-container') || (s.classList.contains('v4-fileupload-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.fileSelected !== undefined) {
+                    container.setAttribute('data-selected', d.fileSelected ? 'true' : 'false');
+                }
+                if (d.fileName !== undefined) {
+                    container.setAttribute('data-file-name', d.fileName);
+                }
+                if (d.fileButtonText !== undefined) {
+                    container.setAttribute('data-button-text', d.fileButtonText);
+                    const btn = container.querySelector('.v4-fileupload-button');
+                    if (btn) btn.innerText = d.fileButtonText;
+                }
+                if (d.filePlaceholder !== undefined) {
+                    container.setAttribute('data-placeholder', d.filePlaceholder);
+                }
+                
+                // Update internal text display based on selection state
+                const isSel = container.getAttribute('data-selected') === 'true';
+                const fName = container.getAttribute('data-file-name') || '';
+                const placeholder = container.getAttribute('data-placeholder') || '선택된 파일 없음';
+                const txt = container.querySelector('.v4-fileupload-textbox');
+                if (txt) {
+                    if (isSel) {
+                        txt.innerText = fName;
+                        txt.style.color = '#374151';
+                    } else {
+                        txt.innerText = placeholder;
+                        txt.style.color = '#9ca3af';
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_ALERT_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-alert-container') || (s.classList.contains('v4-alert-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.messageText !== undefined) {
+                    container.setAttribute('data-message', d.messageText);
+                    const msgEl = container.querySelector('.v4-alert-message');
+                    if (msgEl) msgEl.innerHTML = d.messageText.replace(/\n/g, '<br>');
+                }
+                if (d.btnCount !== undefined) {
+                    container.setAttribute('data-btn-count', d.btnCount);
+                }
+                if (d.btnText1 !== undefined) {
+                    container.setAttribute('data-btn-text-1', d.btnText1);
+                    const btn = container.querySelector('.v4-alert-btn-1');
+                    if (btn) btn.innerText = d.btnText1;
+                }
+                if (d.btnText2 !== undefined) {
+                    container.setAttribute('data-btn-text-2', d.btnText2);
+                    const btn = container.querySelector('.v4-alert-btn-2');
+                    if (btn) btn.innerText = d.btnText2;
+                }
+                if (d.btnText3 !== undefined) {
+                    container.setAttribute('data-btn-text-3', d.btnText3);
+                    const btn = container.querySelector('.v4-alert-btn-3');
+                    if (btn) btn.innerText = d.btnText3;
+                }
+                if (d.btnStyle1 !== undefined) container.setAttribute('data-btn-style-1', d.btnStyle1);
+                if (d.btnStyle2 !== undefined) container.setAttribute('data-btn-style-2', d.btnStyle2);
+                if (d.btnStyle3 !== undefined) container.setAttribute('data-btn-style-3', d.btnStyle3);
+                
+                // Update button visibility and style classes
+                const count = parseInt(container.getAttribute('data-btn-count')) || 1;
+                const btn1 = container.querySelector('.v4-alert-btn-1');
+                const btn2 = container.querySelector('.v4-alert-btn-2');
+                const btn3 = container.querySelector('.v4-alert-btn-3');
+                if (btn1) {
+                    btn1.style.display = count >= 1 ? 'flex' : 'none';
+                    const style1 = container.getAttribute('data-btn-style-1') || 'normal';
+                    btn1.className = 'v4-alert-btn v4-alert-btn-1 style-' + style1;
+                }
+                if (btn2) {
+                    btn2.style.display = count >= 2 ? 'flex' : 'none';
+                    const style2 = container.getAttribute('data-btn-style-2') || 'normal';
+                    btn2.className = 'v4-alert-btn v4-alert-btn-2 style-' + style2;
+                }
+                if (btn3) {
+                    btn3.style.display = count >= 3 ? 'flex' : 'none';
+                    const style3 = container.getAttribute('data-btn-style-3') || 'normal';
+                    btn3.className = 'v4-alert-btn v4-alert-btn-3 style-' + style3;
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_BUTTON_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-btn-container') || (s.classList.contains('v4-btn-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.buttonText !== undefined) {
+                    container.setAttribute('data-text', d.buttonText);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) btn.innerText = d.buttonText;
+                }
+                if (d.buttonStyle !== undefined) {
+                    container.setAttribute('data-btn-style', d.buttonStyle);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) {
+                        const targetClass = 'v4-custom-btn style-' + d.buttonStyle;
+                        if (btn.className !== targetClass) btn.className = targetClass;
+                    }
+                }
+                if (d.buttonRadius !== undefined) {
+                    container.setAttribute('data-btn-radius', d.buttonRadius);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) {
+                        const targetRadius = d.buttonRadius + 'px';
+                        if (btn.style.borderRadius !== targetRadius) btn.style.borderRadius = targetRadius;
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_TEXTBOX_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-textbox-container, .v4-textarea-container') || (s.classList.contains('v4-textbox-container') || s.classList.contains('v4-textarea-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.placeholderText !== undefined) {
+                    const ph = container.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder');
+                    if (ph) ph.textContent = d.placeholderText;
+                    container.setAttribute('data-placeholder', d.placeholderText);
+                }
+                if (d.maxLength !== undefined) {
+                    container.setAttribute('data-maxlength', d.maxLength);
+                }
+                if (d.showCounter !== undefined) {
+                    container.setAttribute('data-show-counter', d.showCounter ? 'true' : 'false');
+                }
+                if (d.fontSize !== undefined) {
+                    const input = container.querySelector('.v4-textbox-input, .v4-textarea-input');
+                    const placeholder = container.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder');
+                    if (input) input.style.fontSize = d.fontSize + 'px';
+                    if (placeholder) placeholder.style.fontSize = d.fontSize + 'px';
+                    container.setAttribute('data-fontsize', d.fontSize);
+                }
+                if (d.fontFamily !== undefined) {
+                    const input = container.querySelector('.v4-textbox-input, .v4-textarea-input');
+                    const placeholder = container.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder');
+                    const counter = container.querySelector('.v4-textbox-counter, .v4-textarea-counter');
+                    if (input) input.style.fontFamily = d.fontFamily;
+                    if (placeholder) placeholder.style.fontFamily = d.fontFamily;
+                    if (counter) counter.style.fontFamily = d.fontFamily;
+                    container.setAttribute('data-fontfamily', d.fontFamily);
+                }
+                
+                // Trigger re-sync by resetting dataset flag
+                const input = container.querySelector('.v4-textbox-input, .v4-textarea-input');
+                if (input) {
+                    input.dataset.eventsBound = "false";
+                }
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
+                markDirty();
+            }
+        }
         else if (d.type === 'LF_UPDATE_STYLE') {
+
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             
@@ -1465,11 +2084,67 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (!t && s.classList.contains('text-marker')) {
                 t = s.querySelector('.v4-editable-cell') || s;
             }
+            // Checkbox / Radio box style redirection for BG & Border coloring
+            const boxEl = s.querySelector('.v4-checkbox, .v4-radio');
+            if (boxEl && !d.selector) {
+                t = boxEl;
+            }
+            
+            // Textbox / Textarea style redirection for BG & Border coloring
+            const inputContainer = s.querySelector('.v4-textbox-container, .v4-textarea-container');
+            if (inputContainer && !d.selector) {
+                t = inputContainer;
+            }
+            // Alert style redirection for BG & Border coloring
+            const alertContainer = s.querySelector('.v4-alert-container');
+            if (alertContainer && !d.selector) {
+                t = alertContainer;
+            }
+            // Button style redirection for BG & Border coloring
+            const buttonContainer = s.querySelector('.v4-btn-container');
+            const customBtn = s.querySelector('.v4-custom-btn');
+            if (buttonContainer && customBtn && !d.selector) {
+                t = customBtn;
+            }
             if (!t) return;
             
             if (d.style) {
+                if (d.style.width !== undefined || d.style.height !== undefined) {
+                    s.setAttribute('data-resized', 'true');
+                }
                 if (d.style.html !== undefined) t.innerHTML = d.style.html;
-                Object.assign(t.style, d.style);
+                
+                const isInnerBox = t.classList.contains('v4-checkbox') || t.classList.contains('v4-radio');
+                
+                // CRITICAL: Dimension style changes (width, height) must apply to the outermost .lf-component (s)
+                // unless it is an atomic inner box of Checkbox/Radio, in which case it targets the box itself.
+                if (d.style.width !== undefined) {
+                    if (isInnerBox) {
+                        t.style.width = d.style.width;
+                    } else {
+                        s.style.width = d.style.width;
+                        if (inputContainer) inputContainer.style.width = '100%';
+                        if (alertContainer) alertContainer.style.width = '100%';
+                        if (buttonContainer) buttonContainer.style.width = '100%';
+                    }
+                }
+                if (d.style.height !== undefined) {
+                    if (isInnerBox) {
+                        t.style.height = d.style.height;
+                    } else {
+                        s.style.height = d.style.height;
+                        if (inputContainer) inputContainer.style.height = '100%';
+                        if (alertContainer) alertContainer.style.height = '100%';
+                        if (buttonContainer) buttonContainer.style.height = '100%';
+                    }
+                }
+
+                const styleToAssign = { ...d.style };
+                if (!isInnerBox) {
+                    delete styleToAssign.width;
+                    delete styleToAssign.height;
+                }
+                Object.assign(t.style, styleToAssign);
                 
                 // SVG Sync: If the element contains an SVG, sync stroke/fill
                 const svgShape = t.querySelector('path, polygon, rect, circle');
@@ -1593,6 +2268,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (d.subSelector && d.subStyle) {
                 t.querySelectorAll(d.subSelector).forEach(sub => Object.assign(sub.style, d.subStyle));
             }
+            if (typeof updateHandles === 'function') {
+                updateHandles(s);
+            }
             markDirty();
         } else if (d.type === 'LF_DELETE_SELECTED') {
             const s = document.querySelector('.lf-component.selected'); 
@@ -1604,6 +2282,60 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         } else if (d.type === 'LF_DESELECT_ALL') {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+        } else if (d.type === 'LF_BRING_FRONT') {
+            const selected = document.querySelectorAll('.lf-component.selected');
+            const topLevelSelected = Array.from(selected).filter(el => {
+                let parent = el.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
+                        return false;
+                    }
+                    parent = parent.parentElement;
+                }
+                return true;
+            });
+            if (topLevelSelected.length > 0) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                const firstScript = document.body.querySelector('script');
+                topLevelSelected.forEach(el => {
+                    if (firstScript) {
+                        document.body.insertBefore(el, firstScript);
+                    } else {
+                        document.body.appendChild(el);
+                    }
+                });
+                markDirty();
+                if (typeof reorderAllPins === 'function') {
+                    reorderAllPins();
+                }
+            }
+        } else if (d.type === 'LF_SEND_BACK') {
+            const selected = document.querySelectorAll('.lf-component.selected');
+            const topLevelSelected = Array.from(selected).filter(el => {
+                let parent = el.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
+                        return false;
+                    }
+                    parent = parent.parentElement;
+                }
+                return true;
+            });
+            if (topLevelSelected.length > 0) {
+                const firstUnselected = Array.from(document.body.children).find(el => {
+                    return el.classList.contains('lf-component') && !el.classList.contains('selected');
+                });
+                if (firstUnselected) {
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    topLevelSelected.forEach(el => {
+                        document.body.insertBefore(el, firstUnselected);
+                    });
+                    markDirty();
+                    if (typeof reorderAllPins === 'function') {
+                        reorderAllPins();
+                    }
+                }
+            }
         } else if (d.type === 'LF_UPDATE_MARQUEE_SELECTION') {
             const ids = d.ids || [];
             document.querySelectorAll('.lf-component').forEach(x => {
@@ -1625,15 +2357,42 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const handleStates = Array.from(allHandles).map(h => h.style.display);
             allHandles.forEach(h => h.style.display = 'none');
 
-            ids.forEach(id => {
+            // 1. Filter out connector lines and sub-components of selected groups to prevent double offsets
+            const validIds = ids.filter(id => {
+                if (id.startsWith('conn_')) return false;
+                const el = doc.getElementById(id);
+                if (!el) return false;
+                
+                let parent = el.parentElement;
+                while (parent && parent !== doc.body) {
+                    if (parent.classList.contains('lf-group') && ids.includes(parent.id)) {
+                        return false; // Parent group is already selected, skip individual child
+                    }
+                    parent = parent.parentElement;
+                }
+                return true;
+            });
+
+            validIds.forEach(id => {
                 const isMarker = id.startsWith('v4-pin-');
                 const el = doc.getElementById(id);
                 if (el) {
-                    const l = parseFloat(el.style.left) || 0;
-                    const t = parseFloat(el.style.top) || 0;
+                    // Accumulate parent offsets to calculate absolute position in canvas coordinates
+                    let absL = parseFloat(el.style.left) || 0;
+                    let absT = parseFloat(el.style.top) || 0;
+                    
+                    let parent = el.parentElement;
+                    while (parent && parent !== doc.body) {
+                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                            absL += parseFloat(parent.style.left) || 0;
+                            absT += parseFloat(parent.style.top) || 0;
+                        }
+                        parent = parent.parentElement;
+                    }
+
                     const w = el.offsetWidth;
                     const h = el.offsetHeight;
-                    items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: l, y: t, w, h });
+                    items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: absL, y: absT, w, h });
                 }
             });
 
@@ -1659,12 +2418,27 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
                 if (dx === 0 && dy === 0) return;
 
-                item.el.style.left = (item.x + dx) + 'px';
-                item.el.style.top = (item.y + dy) + 'px';
+                const newAbsX = item.x + dx;
+                const newAbsY = item.y + dy;
+
+                // Restore back to parent relative coordinate space if inside a group
+                let parentL = 0;
+                let parentT = 0;
+                let parent = item.el.parentElement;
+                while (parent && parent !== doc.body) {
+                    if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                        parentL += parseFloat(parent.style.left) || 0;
+                        parentT += parseFloat(parent.style.top) || 0;
+                    }
+                    parent = parent.parentElement;
+                }
+
+                item.el.style.left = (newAbsX - parentL) + 'px';
+                item.el.style.top = (newAbsY - parentT) + 'px';
                 
                 if (item.type === 'marker') {
                     const idx = parseInt(item.id.replace('v4-pin-', ''));
-                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: item.x + dx, y: item.y + dy });
+                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: newAbsY });
                 }
             });
             markDirty();
@@ -1801,6 +2575,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             notifyParent({ type: 'LF_MOLECULE_EXTRACTED', moleculeData });
         } else if (d.type === 'LF_REQUEST_SNAP_TARGETS') {
             const targets = [];
+            const rects = [];
             document.querySelectorAll('.lf-component:not(.selected)').forEach(c => {
                 const l = parseFloat(c.style.left) || 0;
                 const t = parseFloat(c.style.top) || 0;
@@ -1813,6 +2588,17 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 targets.push({ y: t, label: name, part: 'Top', type: 'v' });
                 targets.push({ y: t + h / 2, label: name, part: 'Middle', type: 'v' });
                 targets.push({ y: t + h, label: name, part: 'Bottom', type: 'v' });
+                
+                rects.push({
+                    id: c.id,
+                    label: name,
+                    left: l,
+                    top: t,
+                    width: w,
+                    height: h,
+                    right: l + w,
+                    bottom: t + h
+                });
             });
 
             // Add Inner Screens as Snap Targets (Focus on actual UI area)
@@ -1830,16 +2616,33 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     const h = content.offsetHeight;
                     const sName = 'UI Area ' + (idx + 1);
                     const bezel = 8; // Inset shadow bezel width
-                    targets.push({ x: l + bezel, label: sName, part: 'Left', type: 'h' });
-                    targets.push({ x: l + w - bezel, label: sName, part: 'Right', type: 'h' });
-                    targets.push({ y: t + bezel, label: sName, part: 'Top', type: 'v' });
-                    targets.push({ y: t + h - bezel, label: sName, part: 'Bottom', type: 'v' });
+                    
+                    const leftVal = l + bezel;
+                    const rightVal = l + w - bezel;
+                    const topVal = t + bezel;
+                    const bottomVal = t + h - bezel;
+                    
+                    targets.push({ x: leftVal, label: sName, part: 'Left', type: 'h' });
+                    targets.push({ x: rightVal, label: sName, part: 'Right', type: 'h' });
+                    targets.push({ y: topVal, label: sName, part: 'Top', type: 'v' });
+                    targets.push({ y: bottomVal, label: sName, part: 'Bottom', type: 'v' });
                     targets.push({ x: l + w / 2, label: sName, part: 'Center', type: 'h' });
                     targets.push({ y: t + h / 2, label: sName, part: 'Middle', type: 'v' });
+
+                    rects.push({
+                        id: 'mobile-frame-' + idx,
+                        label: sName,
+                        left: leftVal,
+                        top: topVal,
+                        width: rightVal - leftVal,
+                        height: bottomVal - topVal,
+                        right: rightVal,
+                        bottom: bottomVal
+                    });
                 }
             });
 
-            notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets });
+            notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets, rects });
         } else if (d.type === 'LF_TABLE_ACTION') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -1926,9 +2729,433 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     };
     const initHandles = window.initHandles;
 
+    const bindStepperEvents = () => {
+        document.querySelectorAll('.v4-stepper-container').forEach(container => {
+            const min = parseInt(container.getAttribute('data-min')) || 1;
+            const max = parseInt(container.getAttribute('data-max')) || 99;
+            const cur = parseInt(container.getAttribute('data-val')) || min;
+
+            const decBtn = container.querySelector('.v4-stepper-dec');
+            const incBtn = container.querySelector('.v4-stepper-inc');
+            const valEl = container.querySelector('.v4-stepper-value');
+
+            if (container.dataset.eventsBound === "true") {
+                const isDisabled = container.getAttribute('data-disabled') === 'true';
+                if (isDisabled) {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = '';
+                        decBtn.style.color = '';
+                        decBtn.style.cursor = 'not-allowed';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = '';
+                        incBtn.style.color = '';
+                        incBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = cur === min ? '#f3f4f6' : '#ffffff';
+                        decBtn.style.color = cur === min ? '#9ca3af' : '#374151';
+                        decBtn.style.cursor = cur === min ? 'not-allowed' : 'pointer';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = cur === max ? '#f3f4f6' : '#ffffff';
+                        incBtn.style.color = cur === max ? '#9ca3af' : '#374151';
+                        incBtn.style.cursor = cur === max ? 'not-allowed' : 'pointer';
+                    }
+                }
+                return;
+            }
+            container.dataset.eventsBound = "true";
+            
+            const updateVal = (newVal) => {
+                const currentMin = parseInt(container.getAttribute('data-min')) || 1;
+                const currentMax = parseInt(container.getAttribute('data-max')) || 99;
+                let val = Math.max(currentMin, Math.min(currentMax, newVal));
+                container.setAttribute('data-val', val);
+                if (valEl) valEl.innerText = val;
+                
+                const isDisabled = container.getAttribute('data-disabled') === 'true';
+                if (isDisabled) {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = '';
+                        decBtn.style.color = '';
+                        decBtn.style.cursor = 'not-allowed';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = '';
+                        incBtn.style.color = '';
+                        incBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = val === currentMin ? '#f3f4f6' : '#ffffff';
+                        decBtn.style.color = val === currentMin ? '#9ca3af' : '#374151';
+                        decBtn.style.cursor = val === currentMin ? 'not-allowed' : 'pointer';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = val === currentMax ? '#f3f4f6' : '#ffffff';
+                        incBtn.style.color = val === currentMax ? '#9ca3af' : '#374151';
+                        incBtn.style.cursor = val === currentMax ? 'not-allowed' : 'pointer';
+                    }
+                }
+            };
+            
+            if (decBtn) {
+                decBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (container.getAttribute('data-disabled') === 'true') return;
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    const currentVal = parseInt(container.getAttribute('data-val')) || 1;
+                    updateVal(currentVal - 1);
+                    markDirty();
+                };
+            }
+            if (incBtn) {
+                incBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (container.getAttribute('data-disabled') === 'true') return;
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    const currentVal = parseInt(container.getAttribute('data-val')) || 1;
+                    updateVal(currentVal + 1);
+                    markDirty();
+                };
+            }
+            
+            updateVal(cur);
+        });
+    };
+    const bindFileuploadEvents = () => {
+        document.querySelectorAll('.v4-fileupload-container').forEach(container => {
+            const delBtn = container.querySelector('.v4-fileupload-delete');
+            const txt = container.querySelector('.v4-fileupload-textbox');
+            const isSel = container.getAttribute('data-selected') === 'true';
+            const fName = container.getAttribute('data-file-name') || '';
+            const placeholder = container.getAttribute('data-placeholder') || '선택된 파일 없음';
+            
+            // Sync current text display with comparison guards to prevent infinite MutationObserver loops
+            if (txt) {
+                const targetText = isSel ? fName : placeholder;
+                if (txt.innerText !== targetText) {
+                    txt.innerText = targetText;
+                }
+                const targetColor = isSel ? 'rgb(55, 65, 81)' : 'rgb(156, 163, 175)'; // browser returns rgb values for style.color
+                const hexColor = isSel ? '#374151' : '#9ca3af';
+                if (txt.style.color !== hexColor && txt.style.color !== targetColor) {
+                    txt.style.color = hexColor;
+                }
+            }
+
+            if (container.dataset.eventsBound === "true") return;
+            container.dataset.eventsBound = "true";
+            
+            if (delBtn) {
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    
+                    container.setAttribute('data-selected', 'false');
+                    if (txt) {
+                        txt.innerText = container.getAttribute('data-placeholder') || '선택된 파일 없음';
+                        txt.style.color = '#9ca3af';
+                    }
+                    
+                    markDirty();
+                    
+                    // Notify parent to re-sync inspector properties
+                    notifyParent({
+                        type: 'LF_COMP_SELECTED',
+                        ..._getCompStyles(container.closest('.lf-component'))
+                    });
+                };
+            }
+        });
+    };
+
     // High-Persistence Border Standardization & Coordinate Migration
     window.enforceDesignSystem = () => {
         initHandles();
+        bindStepperEvents();
+        bindFileuploadEvents();
+        
+        // --- Self-healing: Deduplicate IDs in DOM if duplicates exist ---
+        const seenIds = new Set();
+        document.querySelectorAll('.lf-component').forEach((c, idx) => {
+            if (!c.id) {
+                const isPin = c.classList.contains('pin-marker') || c.classList.contains('text-marker');
+                c.id = (isPin ? 'v4-pin-' : 'v4-comp-') + Date.now() + '-' + idx;
+            }
+            if (seenIds.has(c.id)) {
+                const isPin = c.classList.contains('pin-marker') || c.classList.contains('text-marker');
+                const oldId = c.id;
+                c.id = (isPin ? 'v4-pin-' : 'v4-comp-') + Date.now() + '-dedup-' + Math.floor(Math.random() * 1000) + '-' + idx;
+                console.log("[V4 Self-healing] Deduplicated ID from: " + oldId + " to: " + c.id);
+            }
+            seenIds.add(c.id);
+        });
+        
+        // --- Auto-resize Checkbox / Radio to fit text dynamically ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.querySelector('.v4-checkbox-container') || c.querySelector('.v4-radio-container')) {
+                if (typeof resizeAtomToFitText === 'function') {
+                    resizeAtomToFitText(c);
+                }
+            }
+        });
+
+        // --- Auto-resize Stepper to fit its internal container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const stepper = c.querySelector('.v4-stepper-container');
+            if (stepper) {
+                const btnEnabled = stepper.getAttribute('data-btn-enabled') !== 'false';
+                const targetW = btnEnabled ? '154px' : '100px';
+                const targetH = '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (stepper.style.width !== '100%') stepper.style.width = '100%';
+                if (stepper.style.height !== '100%') stepper.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize Selectbox to fit its state container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const selectbox = c.querySelector('.v4-selectbox-container');
+            if (selectbox) {
+                const dropdownActive = selectbox.getAttribute('data-dropdown-active') === 'true';
+                const optionsRaw = selectbox.getAttribute('data-options') || "";
+                const optionsArr = optionsRaw.split(',').map(s => s.trim()).filter(Boolean);
+                
+                const targetW = '150px';
+                const targetH = dropdownActive ? (30 + (optionsArr.length * 30)) + 'px' : '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (selectbox.style.width !== '100%') selectbox.style.width = '100%';
+                if (selectbox.style.height !== '100%') selectbox.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize File Upload to fit its state container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const fileupload = c.querySelector('.v4-fileupload-container');
+            if (fileupload) {
+                const targetW = '300px';
+                const targetH = '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (fileupload.style.width !== '100%') fileupload.style.width = '100%';
+                if (fileupload.style.height !== '100%') fileupload.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize Alert to fit content dynamically ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const alert = c.querySelector('.v4-alert-container');
+            if (alert) {
+                const btn1 = alert.querySelector('.v4-alert-btn-1');
+                const btn2 = alert.querySelector('.v4-alert-btn-2');
+                const btn3 = alert.querySelector('.v4-alert-btn-3');
+                if (btn1) {
+                    const style1 = alert.getAttribute('data-btn-style-1') || 'normal';
+                    const targetClass = 'v4-alert-btn v4-alert-btn-1 style-' + style1;
+                    if (btn1.className !== targetClass) btn1.className = targetClass;
+                }
+                if (btn2) {
+                    const style2 = alert.getAttribute('data-btn-style-2') || 'normal';
+                    const targetClass = 'v4-alert-btn v4-alert-btn-2 style-' + style2;
+                    if (btn2.className !== targetClass) btn2.className = targetClass;
+                }
+                if (btn3) {
+                    const style3 = alert.getAttribute('data-btn-style-3') || 'normal';
+                    const targetClass = 'v4-alert-btn v4-alert-btn-3 style-' + style3;
+                    if (btn3.className !== targetClass) btn3.className = targetClass;
+                }
+
+                if (c.getAttribute('data-resized') !== 'true') {
+                    const header = alert.querySelector('.v4-alert-header');
+                    const msgEl = alert.querySelector('.v4-alert-message');
+                    const buttonsEl = alert.querySelector('.v4-alert-buttons');
+                    
+                    const headerH = header ? header.offsetHeight : 32;
+                    const msgH = msgEl ? msgEl.scrollHeight : 21;
+                    const msgMargin = msgEl ? 14 : 0;
+                    const buttonsH = buttonsEl ? buttonsEl.offsetHeight : 28;
+                    const paddingH = 32; // 16px top + 16px bottom
+                    
+                    const targetH = headerH + paddingH + msgH + msgMargin + buttonsH + 2; // +2 for border
+                    const finalHeight = Math.max(120, targetH) + 'px';
+                    
+                    if (c.style.height !== finalHeight) c.style.height = finalHeight;
+                    if (alert.style.height !== '100%') alert.style.height = '100%';
+                    if (alert.style.width !== '100%') alert.style.width = '100%';
+                } else {
+                    if (alert.style.width !== '100%') alert.style.width = '100%';
+                    if (alert.style.height !== '100%') alert.style.height = '100%';
+                }
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize & sync Custom Button Atom ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const btnContainer = c.querySelector('.v4-btn-container');
+            if (btnContainer) {
+                const btn = btnContainer.querySelector('.v4-custom-btn');
+                if (btn) {
+                    const style = btnContainer.getAttribute('data-btn-style') || 'normal';
+                    const text = btnContainer.getAttribute('data-text') || '버튼';
+                    const radius = btnContainer.getAttribute('data-btn-radius') || '6';
+                    
+                    const targetClass = 'v4-custom-btn style-' + style;
+                    const targetRadius = radius + 'px';
+                    
+                    if (btn.className !== targetClass) btn.className = targetClass;
+                    if (btn.style.borderRadius !== targetRadius) btn.style.borderRadius = targetRadius;
+                    if (btn.innerText !== text) btn.innerText = text;
+
+                    if (style !== 'custom') {
+                        if (btn.style.backgroundColor !== '') btn.style.backgroundColor = '';
+                        if (btn.style.borderColor !== '') btn.style.borderColor = '';
+                        if (btn.style.color !== '') btn.style.color = '';
+                    }
+
+                    if (btn.style.borderWidth !== '1.6px') btn.style.setProperty('border-width', '1.6px', 'important');
+                    if (btn.style.borderStyle !== 'solid') btn.style.setProperty('border-style', 'solid', 'important');
+                }
+                
+                if (c.getAttribute('data-resized') !== 'true') {
+                    const targetW = '80px';
+                    const targetH = '40px';
+                    if (c.style.width !== targetW) c.style.width = targetW;
+                    if (c.style.height !== targetH) c.style.height = targetH;
+                }
+                
+                if (btnContainer.style.width !== '100%') btnContainer.style.width = '100%';
+                if (btnContainer.style.height !== '100%') btnContainer.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Setup Textbox / Textarea Interactive Events ---
+        document.querySelectorAll('.v4-textbox-container, .v4-textarea-container').forEach(container => {
+            const isTextarea = container.classList.contains('v4-textarea-container');
+            const input = container.querySelector(isTextarea ? '.v4-textarea-input' : '.v4-textbox-input');
+            const placeholder = container.querySelector(isTextarea ? '.v4-textarea-placeholder' : '.v4-textbox-placeholder');
+            const counter = container.querySelector(isTextarea ? '.v4-textarea-counter' : '.v4-textbox-counter');
+            
+            if (!input) return;
+
+            const restoreFonts = () => {
+                const fs = container.getAttribute('data-fontsize');
+                const ff = container.getAttribute('data-fontfamily');
+                if (fs) {
+                    const fsVal = fs + 'px';
+                    if (input.style.fontSize !== fsVal) input.style.fontSize = fsVal;
+                    if (placeholder && placeholder.style.fontSize !== fsVal) placeholder.style.fontSize = fsVal;
+                }
+                if (ff) {
+                    if (input.style.fontFamily !== ff) input.style.fontFamily = ff;
+                    if (placeholder && placeholder.style.fontFamily !== ff) placeholder.style.fontFamily = ff;
+                    if (counter && counter.style.fontFamily !== ff) counter.style.fontFamily = ff;
+                }
+            };
+
+            if (input.dataset.eventsBound === "true") {
+                // Keep values updated in case max-length/show-counter changed via inspector
+                // CRITICAL: Guard all DOM writes with value comparison to prevent MutationObserver infinite loop
+                const max = parseInt(container.getAttribute('data-maxlength')) || 100;
+                const showCounter = container.getAttribute('data-show-counter') !== 'false';
+                const text = input.innerText || "";
+                if (counter) {
+                    const currentLen = Math.min(text.length, max);
+                    const newText = currentLen + '/' + max;
+                    const newDisplay = showCounter ? 'block' : 'none';
+                    if (counter.textContent !== newText) counter.textContent = newText;
+                    if (counter.style.display !== newDisplay) counter.style.display = newDisplay;
+                }
+                restoreFonts();
+                return;
+            }
+            input.dataset.eventsBound = "true";
+            restoreFonts();
+            
+            // Get initial values from HTML state
+            const getMaxLength = () => parseInt(container.getAttribute('data-maxlength')) || 100;
+            const getShowCounter = () => container.getAttribute('data-show-counter') !== 'false';
+            
+            // Initial placeholder state
+            const updateUI = () => {
+                const text = input.innerText || "";
+                
+                // Show/hide placeholder (guarded to prevent MutationObserver loop)
+                if (placeholder) {
+                    const phDisplay = text.length === 0 ? 'block' : 'none';
+                    if (placeholder.style.display !== phDisplay) placeholder.style.display = phDisplay;
+                }
+                
+                // Character limit check
+                const max = getMaxLength();
+                if (text.length > max) {
+                    // Truncate to max length and restore cursor
+                    const selection = window.getSelection();
+                    const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+                    const offset = range ? range.startOffset : 0;
+                    
+                    input.innerText = text.substring(0, max);
+                    
+                    // Restore caret position
+                    if (range && input.firstChild) {
+                        try {
+                            const newRange = document.createRange();
+                            newRange.setStart(input.firstChild, Math.min(offset, max));
+                            newRange.collapse(true);
+                            selection.removeAllRanges();
+                            selection.addRange(newRange);
+                        } catch(e) {}
+                    }
+                }
+                
+                // Update counter text (guarded)
+                if (counter) {
+                    const currentLen = Math.min(input.innerText.length, max);
+                    const newCounterText = currentLen + '/' + max;
+                    const newCounterDisplay = getShowCounter() ? 'block' : 'none';
+                    if (counter.textContent !== newCounterText) counter.textContent = newCounterText;
+                    if (counter.style.display !== newCounterDisplay) counter.style.display = newCounterDisplay;
+                }
+                
+                // Input text color adjustment (guarded)
+                const newColor = text.length === 0 ? '#a3a3a3' : '#374151';
+                if (input.style.color !== newColor) input.style.color = newColor;
+            };
+            
+            // Bind input listener
+            input.addEventListener('input', () => {
+                updateUI();
+                markDirty();
+            });
+            input.addEventListener('focus', () => {
+                if (placeholder) placeholder.style.display = 'none';
+            });
+            input.addEventListener('blur', () => {
+                updateUI();
+            });
+            
+            // Run initially
+            updateUI();
+        });
         
         // --- Coordinate Migration: % to px ---
         document.querySelectorAll('.lf-component').forEach(c => {
@@ -2037,30 +3264,15 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
         });
     };
-    const enforceDesignSystem = window.enforceDesignSystem;
-
     // Run immediately and setup observer for dynamic changes
-    enforceDesignSystem();
-    const observer = new MutationObserver(enforceDesignSystem);
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
-    
-    // Safety fallback for slow loads
-    setTimeout(enforceDesignSystem, 500);
+    if (typeof window.enforceDesignSystem === 'function') {
+        window.enforceDesignSystem();
+        const observer = new MutationObserver(() => window.enforceDesignSystem());
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        
+        // Safety fallback for slow loads
+        setTimeout(() => window.enforceDesignSystem(), 500);
+    }
 })();
 
-</script><div id="group-1780559294653" class="lf-component lf-group" style="position: absolute; left: 777.75px; top: 321.5px; width: 343px; height: 210.5px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div id="v4-comp-1780559113415485" class="lf-component lf-group" style="position: absolute; left: 229px; top: 0px; width: 114px; height: 210px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 100px; height: 120px;" id="v4-comp-ug-1780556009227-0">
-            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div></div><div id="group-1780556032294" class="lf-component lf-group" style="position: absolute; left: 0px; top: 122.5px; width: 114px; height: 87px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-34"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 21px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-35"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 60px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-36"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div></div><div id="v4-comp-1780559103585765" class="lf-component lf-group" style="position: absolute; left: 114.5px; top: 0.5px; width: 114px; height: 210px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 100px; height: 120px;" id="v4-comp-ug-1780556009227-0">
-            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div></div><div id="group-1780556032294" class="lf-component lf-group" style="position: absolute; left: 0px; top: 122.5px; width: 114px; height: 87px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-31"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 21px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-32"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 60px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-33"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div></div><div id="group-1780559102777" class="lf-component lf-group" style="position: absolute; left: 0px; top: 0.5px; width: 114px; height: 210px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 100px; height: 120px;" id="v4-comp-ug-1780556009227-0">
-            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div></div><div id="group-1780556032294" class="lf-component lf-group" style="position: absolute; left: 0px; top: 122.5px; width: 114px; height: 87px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component text-marker" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 106px; height: 27px;" id="v4-pin-28"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>Brand Name</strong></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 21px; left: 0px; z-index: 1000; transform: none; width: 103px; height: 44px;" id="v4-pin-29"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div></div><div class="lf-component text-marker" style="position: absolute; top: 60px; left: 0px; z-index: 1000; transform: none; width: 114px; height: 27px;" id="v4-pin-30"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div></div></div></div></div><div id="v4-comp-1780535113549" class="lf-component" style="position: absolute; top: 215px; left: 307px; z-index: 1000; transform: none; width: 360px; height: 50px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(200, 200, 200); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><br></div>
-            </div></div><div id="v4-pin-14" class="lf-component text-marker" style="position: absolute; top: 226.5px; left: 500.5px; z-index: 1000; transform: none; width: 80px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>가방/잡화</p></div></div><div id="v4-pin-15" class="lf-component text-marker" style="position: absolute; top: 226.5px; left: 579.5px; z-index: 1000; transform: none; width: 49px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>슈즈</p></div></div><div id="v4-pin-16" class="lf-component text-marker" style="position: absolute; top: 226.5px; left: 619px; z-index: 1000; transform: none; width: 48px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>골프</p></div></div><div id="v4-pin-17" class="lf-component text-marker" style="position: absolute; top: 226.5px; left: 432.5px; z-index: 1000; transform: none; width: 75px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>남성의류</p></div></div><div id="v4-pin-18" class="lf-component text-marker" style="position: absolute; top: 226.5px; left: 359.5px; z-index: 1000; transform: none; width: 75px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p>여성의류</p></div></div><div id="v4-pin-19" class="lf-component text-marker" style="position: absolute; top: 226.5px; left: 315.5px; z-index: 1000; transform: none; width: 49px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong>전체</strong></p></div></div><div id="v4-comp-1780555364558" class="lf-component" style="position: absolute; top: 260px; left: 325px; z-index: 1000; transform: none; width: 30px; height: 3px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(0, 0, 0); border: 1.6px solid rgb(0, 0, 0); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; color: rgb(255, 255, 255);"><br></div>
-            </div></div></body></html>
+</script></body></html>
