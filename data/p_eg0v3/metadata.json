@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "랭킹카드 - 기본",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-16T07:37:42.621Z",
+      "updatedAt": "2026-06-16T07:40:09.661Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1187,5 +1187,5 @@
     "99_Blank_798.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-16 16:37:42"
+  "updated": "2026-06-16 16:40:09"
 }
