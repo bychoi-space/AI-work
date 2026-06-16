@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "랭킹카드 - 기본",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-16T07:24:39.639Z",
+      "updatedAt": "2026-06-16T07:25:26.345Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -363,8 +363,8 @@
         {
           "text": "1",
           "html": "<p><span style=\"font-size: 30px;\">1</span></p>",
-          "x": 322.95,
-          "y": 476.017,
+          "x": 313.5,
+          "y": 474.267,
           "type": "text",
           "standardized": true
         },
@@ -393,8 +393,8 @@
           "standardized": true
         },
         {
-          "x": 493,
-          "y": 478.516,
+          "x": 483.5,
+          "y": 474.267,
           "standardized": true,
           "type": "text",
           "text": "2",
@@ -1163,5 +1163,5 @@
     "99_Blank_798.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-16 16:24:39"
+  "updated": "2026-06-16 16:25:26"
 }
