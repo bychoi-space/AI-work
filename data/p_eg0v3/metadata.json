@@ -13,12 +13,12 @@
     "06_Mobile_Design_2_793.html": {
       "title": "랭킹카드 - 기본",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-16T07:33:20.920Z",
+      "updatedAt": "2026-06-16T07:33:32.490Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
-          "text": "2",
-          "html": "<p><strong style=\"font-size: 24px;\">2</strong></p>",
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
           "x": 52.823,
           "y": 11.6493,
           "type": "text",
@@ -1187,5 +1187,5 @@
     "99_Blank_798.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-16 16:33:20"
+  "updated": "2026-06-16 16:33:32"
 }
