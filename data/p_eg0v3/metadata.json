@@ -1136,7 +1136,7 @@
     "얼럿 정리.html": {
       "title": "얼럿 정리",
       "type": "blank",
-      "updatedAt": "2026-06-15T05:56:52.854Z",
+      "updatedAt": "2026-06-16T07:14:25.612Z",
       "template": "template_blank.html",
       "description": [],
       "connectors": []
@@ -1155,5 +1155,5 @@
     "99_Blank_798.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-16 14:49:02"
+  "updated": "2026-06-16 16:14:25"
 }
