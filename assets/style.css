@@ -935,6 +935,10 @@ body {
 }
 
 .placeholder-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: rgba(30, 30, 35, 0.7);
     border: 2px dashed var(--accent);
     border-radius: 32px;
@@ -952,6 +956,7 @@ body {
     justify-content: center;
     gap: 16px;
     z-index: 100;
+    pointer-events: none;
 }
 .placeholder-card:hover { 
     background: rgba(40, 40, 45, 0.85); 
