@@ -7,6 +7,12 @@
       "updatedAt": "2026-06-17T07:47:12.138Z",
       "template": "template_cover.html",
       "version": 0.1
+    },
+    "99_Blank_362.html": {
+      "title": "99_Blank_362",
+      "type": "blank",
+      "updatedAt": "2026-06-17T07:47:30.887Z",
+      "template": "template_blank.html"
     }
   },
   "assignee": "최범열",
