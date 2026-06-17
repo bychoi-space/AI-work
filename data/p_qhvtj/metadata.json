@@ -1,6 +1,14 @@
 {
   "title": "[원스피어] 대량데이터 개선",
-  "screens": {},
+  "screens": {
+    "00_Cover_686.html": {
+      "title": "00_Cover_686",
+      "type": "cover",
+      "updatedAt": "2026-06-17T07:47:12.138Z",
+      "template": "template_cover.html",
+      "version": 0.1
+    }
+  },
   "assignee": "최범열",
   "developer": "",
   "period": "2026.06.17(수) ~ 2026.07.10(금)",
