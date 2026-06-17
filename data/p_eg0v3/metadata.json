@@ -725,7 +725,7 @@
     "07_PC_Design_266.html": {
       "title": "랭킹카드 - PC",
       "type": "ui",
-      "updatedAt": "2026-06-15T05:17:44.917Z",
+      "updatedAt": "2026-06-17T05:42:42.638Z",
       "template": "template_pc_ui.html",
       "description": [
         {
@@ -870,7 +870,7 @@
           "standardized": true,
           "type": "text",
           "text": "가방/잡화",
-          "html": "<p>가방/잡화</p>"
+          "html": "<p style=\"text-align: center;\">가방/잡화</p>"
         },
         {
           "x": 344,
@@ -1155,5 +1155,5 @@
     "99_Blank_798.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-17 13:25:42"
+  "updated": "2026-06-17 14:42:42"
 }
