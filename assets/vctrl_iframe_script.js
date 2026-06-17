@@ -19,8 +19,8 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -16px; left: -16px; }
 .lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #6366f1; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10002; }
 .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
-.lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10002; font-size: 14px; font-weight: bold; }
-.lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
+.lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none !important; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10002; font-size: 14px; font-weight: bold; }
+.lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: none !important; }
 .v4-premium-table { table-layout: fixed; border-collapse: collapse; overflow: hidden; border-radius: 8px; border: 1.6px solid #475569 !important; font-family: 'Inter', sans-serif; }
 .v4-premium-table th { padding: 14px 16px; text-align: left; border-bottom: 1.6px solid #475569 !important; font-weight: 700; white-space: nowrap; }
 .v4-premium-table td { padding: 14px 16px; border-bottom: 1.6px solid #cbd5e1 !important; }
@@ -535,6 +535,8 @@ window.v4Script = `
         const alertBtnStyle1 = alertContainer ? (alertContainer.getAttribute('data-btn-style-1') || "normal") : "normal";
         const alertBtnStyle2 = alertContainer ? (alertContainer.getAttribute('data-btn-style-2') || "normal") : "normal";
         const alertBtnStyle3 = alertContainer ? (alertContainer.getAttribute('data-btn-style-3') || "normal") : "normal";
+        const alertShowDesc = alertContainer ? alertContainer.getAttribute('data-show-desc') === 'true' : false;
+        const alertDesc = alertContainer ? (alertContainer.getAttribute('data-desc') || "어떤어떤 경우에 얼럿이 표시됨") : "어떤어떤 경우에 얼럿이 표시됨";
 
         // Button Atom Detection
         const isButton = !!c.querySelector('.v4-btn-container') || c.classList.contains('v4-btn-container');
@@ -569,6 +571,41 @@ window.v4Script = `
             }
         }
  
+        const getCompBg = () => {
+            if (shape) return getShapeColor("backgroundColor");
+            if (table) return _getVal(table, "backgroundColor");
+            if (isPin) return _getVal(c, "backgroundColor");
+            if (boxEl) return _getVal(boxEl, "backgroundColor");
+            if (buttonEl) return _getVal(buttonEl, "backgroundColor");
+            if (inputContainer) return _getVal(inputContainer, "backgroundColor");
+            if (stepperContainer) return _getVal(stepperContainer, "backgroundColor");
+            if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor");
+            if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor");
+            if (alertContainer) {
+                const dialog = alertContainer.querySelector('.v4-alert-dialog');
+                return dialog ? _getVal(dialog, "backgroundColor") : _getVal(alertContainer, "backgroundColor");
+            }
+            return "";
+        };
+
+        const getCompBorder = () => {
+            if (shape) return getShapeColor("borderColor");
+            if (table) return _getVal(table, "borderColor");
+            if (isPin) return _getVal(c, "borderColor");
+            if (boxEl) return _getVal(boxEl, "borderColor");
+            if (buttonEl) return _getVal(buttonEl, "borderColor");
+            if (inputContainer) return _getVal(inputContainer, "borderColor");
+            if (stepperContainer) return _getVal(stepperContainer, "borderColor");
+            if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor");
+            if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor");
+            if (alertContainer) {
+                const dialog = alertContainer.querySelector('.v4-alert-dialog');
+                return dialog ? _getVal(dialog, "borderColor") : _getVal(alertContainer, "borderColor");
+            }
+            if (icon) return _getVal(icon.parentElement, "borderColor");
+            return "";
+        };
+
         return {
             id: c.id,
             isTable: !!table,
@@ -610,6 +647,8 @@ window.v4Script = `
             alertBtnStyle1: alertBtnStyle1,
             alertBtnStyle2: alertBtnStyle2,
             alertBtnStyle3: alertBtnStyle3,
+            alertShowDesc: alertShowDesc,
+            alertDesc: alertDesc,
             isButton: isButton,
             buttonText: buttonText,
             buttonStyle: buttonStyle,
@@ -620,8 +659,8 @@ window.v4Script = `
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : (alertContainer ? _getVal(alertContainer, "backgroundColor") : "")))))))))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (buttonEl ? _getVal(buttonEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor") : (alertContainer ? _getVal(alertContainer, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))))))))),
+                bg: _rgb2hex(getCompBg()),
+                border: _rgb2hex(getCompBorder()),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : (buttonEl ? _getVal(buttonEl, "color") : "")),
                 fontSize: parseInt(_getVal(textCell, "fontSize")) || (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 12 : 12),
                 fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
@@ -629,13 +668,13 @@ window.v4Script = `
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
                 borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : (buttonEl ? (parseInt(_getVal(buttonEl, "borderRadius")) || 0) : 0)),
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : (alertContainer ? _getVal(alertContainer, "backgroundColor") : "")))))))))),
+                bgOpacity: _getAlphaPercent(getCompBg()),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : "")))))));
+                    const colorVal = getCompBg();
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (buttonEl ? _getVal(buttonEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : "")))))));
+                    const colorVal = getCompBorder();
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
@@ -1589,6 +1628,18 @@ window.v4Script = `
                     const msgEl = container.querySelector('.v4-alert-message');
                     if (msgEl) msgEl.innerHTML = d.messageText.replace(/\\n/g, '<br>');
                 }
+                if (d.showDesc !== undefined) {
+                    container.setAttribute('data-show-desc', d.showDesc ? 'true' : 'false');
+                    const descWrapper = container.querySelector('.v4-alert-desc-wrapper');
+                    if (descWrapper) {
+                        descWrapper.style.display = d.showDesc ? 'flex' : 'none';
+                    }
+                }
+                if (d.descText !== undefined) {
+                    container.setAttribute('data-desc', d.descText);
+                    const descBadge = container.querySelector('.v4-alert-desc-badge');
+                    if (descBadge) descBadge.innerText = d.descText;
+                }
                 if (d.btnCount !== undefined) {
                     container.setAttribute('data-btn-count', d.btnCount);
                 }
@@ -1738,7 +1789,10 @@ window.v4Script = `
             }
             // Alert style redirection for BG & Border coloring
             const alertContainer = s.querySelector('.v4-alert-container');
-            if (alertContainer && !d.selector) {
+            const alertDialog = alertContainer ? alertContainer.querySelector('.v4-alert-dialog') : null;
+            if (alertDialog && !d.selector) {
+                t = alertDialog;
+            } else if (alertContainer && !d.selector) {
                 t = alertContainer;
             }
             // Button style redirection for BG & Border coloring
@@ -2628,13 +2682,26 @@ window.v4Script = `
                     const msgEl = alert.querySelector('.v4-alert-message');
                     const buttonsEl = alert.querySelector('.v4-alert-buttons');
                     
+                    const showDesc = alert.getAttribute('data-show-desc') === 'true';
+                    const descWrapper = alert.querySelector('.v4-alert-desc-wrapper');
+                    let descH = 0;
+                    if (descWrapper) {
+                        if (showDesc) {
+                            descWrapper.style.display = 'flex';
+                            descH = descWrapper.offsetHeight || 27;
+                            descH += 8; // Gap
+                        } else {
+                            descWrapper.style.display = 'none';
+                        }
+                    }
+                    
                     const headerH = header ? header.offsetHeight : 32;
                     const msgH = msgEl ? msgEl.scrollHeight : 21;
                     const msgMargin = msgEl ? 14 : 0;
                     const buttonsH = buttonsEl ? buttonsEl.offsetHeight : 28;
                     const paddingH = 32; // 16px top + 16px bottom
                     
-                    const targetH = headerH + paddingH + msgH + msgMargin + buttonsH + 2; // +2 for border
+                    const targetH = headerH + paddingH + msgH + msgMargin + buttonsH + 2 + descH; // +2 for border
                     const finalHeight = Math.max(120, targetH) + 'px';
                     
                     if (c.style.height !== finalHeight) c.style.height = finalHeight;

@@ -555,6 +555,24 @@
 
                 // Sync Alert BG & Border colors and Properties
                 if (data.isAlert) {
+                    const activeDescY = document.getElementById('btn-alert-desc-y');
+                    const activeDescN = document.getElementById('btn-alert-desc-n');
+                    const descInput = document.getElementById('prop-alert-desc');
+                    const highlightActive = (btn, isActive) => {
+                        if (!btn) return;
+                        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+                        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+                        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+                        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+                    };
+                    if (activeDescY && activeDescN && data.alertShowDesc !== undefined) {
+                        highlightActive(activeDescY, data.alertShowDesc === true);
+                        highlightActive(activeDescN, data.alertShowDesc === false);
+                    }
+                    if (descInput && data.alertDesc !== undefined) {
+                        descInput.value = data.alertDesc;
+                    }
+
                     const msgInput = document.getElementById('prop-alert-message');
                     if (msgInput && data.alertMessage !== undefined) {
                         msgInput.value = data.alertMessage;
@@ -1138,21 +1156,52 @@
     };
     initFileuploadEvents();
 
-    // Alert Inspector Events
-    const initAlertEvents = () => {
-        const notifyIframe = (data) => {
-            const iframe = document.getElementById('main-iframe');
-            if (iframe && iframe.contentWindow && window.MessageHub) {
-                MessageHub.send(iframe.contentWindow, data.type, data);
-            }
-        };
-
-        const msgInput = document.getElementById('prop-alert-message');
-        if (msgInput) {
-            msgInput.oninput = () => {
-                notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', messageText: msgInput.value });
+        // Alert Inspector Events
+        const initAlertEvents = () => {
+            const notifyIframe = (data) => {
+                const iframe = document.getElementById('main-iframe');
+                if (iframe && iframe.contentWindow && window.MessageHub) {
+                    MessageHub.send(iframe.contentWindow, data.type, data);
+                }
             };
-        }
+
+            const highlightActive = (btn, isActive) => {
+                if (!btn) return;
+                btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+                btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+                btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+                btn.style.fontWeight = isActive ? 'bold' : 'normal';
+            };
+
+            const descY = document.getElementById('btn-alert-desc-y');
+            const descN = document.getElementById('btn-alert-desc-n');
+            if (descY) {
+                descY.onclick = () => {
+                    highlightActive(descY, true);
+                    highlightActive(descN, false);
+                    notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', showDesc: true });
+                };
+            }
+            if (descN) {
+                descN.onclick = () => {
+                    highlightActive(descN, true);
+                    highlightActive(descY, false);
+                    notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', showDesc: false });
+                };
+            }
+            const descInput = document.getElementById('prop-alert-desc');
+            if (descInput) {
+                descInput.oninput = () => {
+                    notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', descText: descInput.value });
+                };
+            }
+
+            const msgInput = document.getElementById('prop-alert-message');
+            if (msgInput) {
+                msgInput.oninput = () => {
+                    notifyIframe({ type: 'LF_UPDATE_ALERT_PROPERTIES', messageText: msgInput.value });
+                };
+            }
 
         const countBtns = [1, 2, 3];
         countBtns.forEach(c => {
