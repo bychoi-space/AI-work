@@ -13,7 +13,7 @@
     "99_Blank_362.html": {
       "title": "99_Blank_362",
       "type": "blank",
-      "updatedAt": "2026-06-18T04:43:12.643Z",
+      "updatedAt": "2026-06-18T05:35:14.820Z",
       "template": "template_blank.html",
       "description": [
         {
@@ -31,6 +31,14 @@
           "y": 99,
           "type": "text",
           "standardized": true
+        },
+        {
+          "x": 240,
+          "y": 359,
+          "standardized": true,
+          "type": "text",
+          "text": "조회결과",
+          "html": "<p><strong style=\"font-size: 14px;\">조회결과</strong></p>"
         }
       ],
       "connectors": []
@@ -41,5 +49,5 @@
   "period": "2026.06.17(수) ~ 2026.07.10(금)",
   "jira": "LFML-144387",
   "themeIndex": 7,
-  "updated": "2026-06-18 13:43:12"
+  "updated": "2026-06-18 14:35:14"
 }
