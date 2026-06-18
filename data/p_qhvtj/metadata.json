@@ -13,7 +13,7 @@
     "99_Blank_362.html": {
       "title": "99_Blank_362",
       "type": "blank",
-      "updatedAt": "2026-06-18T04:18:07.124Z",
+      "updatedAt": "2026-06-18T04:25:19.379Z",
       "template": "template_blank.html",
       "description": [
         {
@@ -41,5 +41,5 @@
   "period": "2026.06.17(수) ~ 2026.07.10(금)",
   "jira": "LFML-144387",
   "themeIndex": 7,
-  "updated": "2026-06-18 13:18:07"
+  "updated": "2026-06-18 13:25:19"
 }
