@@ -384,6 +384,18 @@ window.v4DesignSystemScript = `
                 if (presetsDiv.style.display !== targetDisplay) presetsDiv.style.display = targetDisplay;
             }
 
+            const showEndDate = dp.getAttribute('data-show-end-date') !== 'false';
+            const sep = dp.querySelector('.v4-dp-separator');
+            const groups = dp.querySelectorAll('.v4-dp-input-group');
+            if (sep) {
+                const targetDisplay = showEndDate ? 'inline-flex' : 'none';
+                if (sep.style.display !== targetDisplay) sep.style.display = targetDisplay;
+            }
+            if (groups && groups.length > 1) {
+                const targetDisplay = showEndDate ? 'inline-flex' : 'none';
+                if (groups[1].style.display !== targetDisplay) groups[1].style.display = targetDisplay;
+            }
+
             const startEl = dp.querySelector('.v4-dp-start');
             const endEl = dp.querySelector('.v4-dp-end');
             const storedStart = dp.getAttribute('data-start-date') || '';
@@ -423,6 +435,26 @@ window.v4DesignSystemScript = `
 
             if (dp.style.width !== '100%') dp.style.width = '100%';
             if (dp.style.height !== '100%') dp.style.height = '100%';
+            if (c.style.height !== '30px') c.style.height = '30px';
+
+            // Dynamically adjust component wrapper width to match the inner content size
+            const fieldsEl = dp.querySelector('.v4-dp-fields');
+            const presetsEl = dp.querySelector('.v4-dp-presets');
+            let contentW = 0;
+            if (fieldsEl) {
+                contentW += fieldsEl.offsetWidth || (showEndDate ? 266 : 126);
+            }
+            if (showPresets && presetsEl) {
+                contentW += 8; // gap
+                contentW += presetsEl.offsetWidth || 204;
+            }
+            if (contentW > 0) {
+                const targetW = (contentW + 4) + 'px'; // add minor border/rounding padding
+                if (c.style.width !== targetW) {
+                    c.style.width = targetW;
+                }
+            }
+
             if (typeof window.updateHandles === 'function') window.updateHandles(c);
         });
 

@@ -59,7 +59,7 @@
                 style.height = '40px';
             } else if (item.id === 'v4-atom-datepicker') {
                 style.width = '500px';
-                style.height = '36px';
+                style.height = '30px';
             } else {
                 style.width = isIcon ? '40px' : '120px';
                 style.height = '40px';
@@ -1388,6 +1388,24 @@
                 highlightActive(presetsN, true);
                 highlightActive(presetsY, false);
                 notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', showPresets: false });
+            };
+        }
+
+        // Show End Date Toggle
+        const showEndY = document.getElementById('btn-dp-show-end-y');
+        const showEndN = document.getElementById('btn-dp-show-end-n');
+        if (showEndY) {
+            showEndY.onclick = () => {
+                highlightActive(showEndY, true);
+                highlightActive(showEndN, false);
+                notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', showEndDate: true });
+            };
+        }
+        if (showEndN) {
+            showEndN.onclick = () => {
+                highlightActive(showEndN, true);
+                highlightActive(showEndY, false);
+                notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', showEndDate: false });
             };
         }
 

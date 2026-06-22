@@ -303,6 +303,7 @@ window.v4Script = `
         const isDatePicker = !!c.querySelector('.v4-datepicker-container') || c.classList.contains('v4-datepicker-container');
         const dpContainer = c.querySelector('.v4-datepicker-container') || (isDatePicker ? c : null);
         const dpShowPresets = dpContainer ? dpContainer.getAttribute('data-show-presets') !== 'false' : true;
+        const dpShowEndDate = dpContainer ? dpContainer.getAttribute('data-show-end-date') !== 'false' : true;
         const dpDefaultPreset = dpContainer ? (dpContainer.getAttribute('data-default-preset') || 'none') : 'none';
         const dpStartDate = dpContainer ? (dpContainer.getAttribute('data-start-date') || '') : '';
         const dpEndDate = dpContainer ? (dpContainer.getAttribute('data-end-date') || '') : '';
@@ -416,6 +417,7 @@ window.v4Script = `
             buttonRadius: buttonRadius,
             isDatePicker: isDatePicker,
             dpShowPresets: dpShowPresets,
+            dpShowEndDate: dpShowEndDate,
             dpDefaultPreset: dpDefaultPreset,
             dpStartDate: dpStartDate,
             dpEndDate: dpEndDate,
@@ -1226,6 +1228,16 @@ window.v4Script = `
                     if (presetsDiv) presetsDiv.style.display = d.showPresets ? 'inline-flex' : 'none';
                 }
 
+                if (d.showEndDate !== undefined) {
+                    container.setAttribute('data-show-end-date', d.showEndDate ? 'true' : 'false');
+                    const sep = container.querySelector('.v4-dp-separator');
+                    const groups = container.querySelectorAll('.v4-dp-input-group');
+                    if (sep) sep.style.display = d.showEndDate ? 'inline-flex' : 'none';
+                    if (groups && groups.length > 1) {
+                        groups[1].style.display = d.showEndDate ? 'inline-flex' : 'none';
+                    }
+                }
+
                 if (d.defaultPreset !== undefined) {
                     container.setAttribute('data-default-preset', d.defaultPreset);
                     container.querySelectorAll('.v4-dp-preset-btn').forEach(btn => {
@@ -1260,6 +1272,13 @@ window.v4Script = `
                 }
 
                 markDirty();
+
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_TEXTBOX_PROPERTIES') {

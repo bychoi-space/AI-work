@@ -221,7 +221,6 @@ window.updateProperties = function(compStyles) {
         else if (compStyles.isTable) type = 'table';
         else if (compStyles.isShape) type = 'shape';
         else if (compStyles.isConnector) type = 'line';
-        else if (compStyles.isIcon) type = 'icon';
         else if (compStyles.isTextbox) type = 'textbox';
         else if (compStyles.isTextarea) type = 'textarea';
         else if (compStyles.isStepper) type = 'stepper';
@@ -230,6 +229,7 @@ window.updateProperties = function(compStyles) {
         else if (compStyles.isAlert) type = 'alert';
         else if (compStyles.isButton) type = 'button';
         else if (compStyles.isDatePicker) type = 'datepicker';
+        else if (compStyles.isIcon) type = 'icon';
         state.editingType = type;
 
         // Hide all sections first
@@ -661,6 +661,13 @@ function _syncDatePickerProps(comp) {
     const showPresets = comp.dpShowPresets !== false;
     highlightActive(presetsY, showPresets);
     highlightActive(presetsN, !showPresets);
+
+    // Sync show end date toggle
+    const showEndY = document.getElementById('btn-dp-show-end-y');
+    const showEndN = document.getElementById('btn-dp-show-end-n');
+    const showEndDate = comp.dpShowEndDate !== false;
+    highlightActive(showEndY, showEndDate);
+    highlightActive(showEndN, !showEndDate);
 
     // Sync default preset buttons
     const presetKeys = ['none', '1D', '1W', '1M', '6M', 'all'];
