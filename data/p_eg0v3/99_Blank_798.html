@@ -346,11 +346,11 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
                 </div>
                 <button class="v4-stepper-action" style="height: 30px; padding: 0px 12px; border: 1.6px solid rgb(204, 204, 204); border-radius: 8px; background-color: rgb(255, 255, 255); font-size: 12px; font-weight: 600; color: rgb(55, 65, 81); cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: none; align-items: center; justify-content: center; transition: 0.2s; box-shadow: rgba(0, 0, 0, 0.05) 0px 2px 4px; font-family: inherit;">적용</button>
             </div></div><div id="v4-comp-1781138009449" class="lf-component" style="position: absolute; top: 492.75px; left: 1065.5px; z-index: 1000; transform: none; width: 154px; height: 30px;">
-            <div class="v4-stepper-container" data-min="1" data-max="99" data-val="1" data-btn-enabled="true" data-btn-text="적용" data-disabled="false" style="position: relative; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; pointer-events: auto; user-select: none; width: 100%; height: 100%;" data-events-bound="true">
+            <div class="v4-stepper-container" data-min="1" data-max="10" data-val="1" data-btn-enabled="true" data-btn-text="적용" data-disabled="false" style="position: relative; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; pointer-events: auto; user-select: none; width: 100%; height: 100%;" data-events-bound="true">
                 <div class="v4-stepper-control" style="display: inline-flex; align-items: center; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; overflow: hidden; height: 30px; box-sizing: border-box;">
                     <button class="v4-stepper-dec" style="width: 30px; height: 100%; border: none; background: #f3f4f6; color: #9ca3af; font-size: 14px; font-weight: bold; cursor: not-allowed; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">—</button>
                     <div class="v4-stepper-value" style="width: 40px; text-align: center; font-size: 14px; font-weight: 600; color: #111827; user-select: none; font-family: inherit;">1</div>
-                    <button class="v4-stepper-inc" style="width: 30px; height: 100%; border: none; background: #ffffff; border-left: 1.6px solid #e5e7eb; color: #374151; font-size: 14px; font-weight: bold; cursor: pointer; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">+</button>
+                    <button class="v4-stepper-inc" style="width: 30px; height: 100%; border-width: medium medium medium 1.6px; border-style: none none none solid; border-color: currentcolor currentcolor currentcolor rgb(229, 231, 235); border-image: initial; background: rgb(255, 255, 255); color: rgb(55, 65, 81); font-size: 14px; font-weight: bold; cursor: pointer; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">+</button>
                 </div>
                 <button class="v4-stepper-action" style="height: 30px; padding: 0 12px; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; font-size: 12px; font-weight: 600; color: #374151; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">적용</button>
             </div></div><div id="v4-comp-1781139638911" class="lf-component" style="position: absolute; top: 690px; left: 174px; z-index: 1000; transform: none; width: 150px; height: 30px;">
@@ -946,14 +946,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const buttonStyle = btnContainer ? (btnContainer.getAttribute('data-btn-style') || "normal") : "normal";
         const buttonRadius = btnContainer ? (btnContainer.getAttribute('data-btn-radius') || "6") : "6";
 
-        // Date Picker Atom Detection
-        const isDatePicker = !!c.querySelector('.v4-datepicker-container') || c.classList.contains('v4-datepicker-container');
-        const dpContainer = c.querySelector('.v4-datepicker-container') || (isDatePicker ? c : null);
-        const dpShowPresets = dpContainer ? dpContainer.getAttribute('data-show-presets') !== 'false' : true;
-        const dpDefaultPreset = dpContainer ? (dpContainer.getAttribute('data-default-preset') || 'none') : 'none';
-        const dpStartDate = dpContainer ? (dpContainer.getAttribute('data-start-date') || '') : '';
-        const dpEndDate = dpContainer ? (dpContainer.getAttribute('data-end-date') || '') : '';
-
         // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
         const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
         const buttonEl = c.querySelector('.v4-custom-btn');
@@ -1062,11 +1054,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             buttonText: buttonText,
             buttonStyle: buttonStyle,
             buttonRadius: buttonRadius,
-            isDatePicker: isDatePicker,
-            dpShowPresets: dpShowPresets,
-            dpDefaultPreset: dpDefaultPreset,
-            dpStartDate: dpStartDate,
-            dpEndDate: dpEndDate,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
@@ -1263,15 +1250,14 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (isDragging && activeEl) { 
                 const dx = e.clientX - startX;
                 const dy = e.clientY - startY;
+                const requestX = startRect.left + dx;
+                const requestY = startRect.top + dy;
+                
+                // Track delta for multi-move
+                const deltaX = dx; 
+                const deltaY = dy;
 
-                // [Bug Fix 2] Use logical (unscaled) coords instead of physical screen coords.
-                // startLeft/startTop are already in logical px (from style.left/top).
-                // Dividing mouse delta by scale converts screen pixels to logical pixels.
-                const scale = (window.parent?.state?.transform?.scale) || 1;
-                const logicalX = startLeft + dx / scale;
-                const logicalY = startTop + dy / scale;
-
-                notifyParent({ type: 'LF_SNAP_REQUEST', x: logicalX, y: logicalY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
+                notifyParent({ type: 'LF_SNAP_REQUEST', x: requestX, y: requestY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
                 markDirty(); 
             }
             else if (isResizing && activeEl) { 
@@ -1394,11 +1380,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     if (window.V4UndoManager && !isArrowMoving) {
                         window.V4UndoManager.saveState();
                         isArrowMoving = true;
+                        notifyParent({ type: 'LF_SNAP_START' });
                     }
-                    // [Bug Fix Arrow-1] Fire LF_SNAP_START on every arrow key press, not just the first.
-                    // Previously guarded by !isArrowMoving, so targets only refreshed once per key-hold.
-                    // Decoupled from the Undo guard so snap targets stay fresh on rapid repeated presses.
-                    notifyParent({ type: 'LF_SNAP_START' });
                     const step = e.shiftKey ? 10 : 1;
                     let dx = 0, dy = 0;
                     if (e.code === 'ArrowUp') dy = -step;
@@ -1430,7 +1413,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                                 const idx = parseInt(child.id.replace('v4-pin-', ''));
                                 const childRect = child.getBoundingClientRect();
                                 const hostRect = document.body.getBoundingClientRect();
-                                const scale = (window.parent?.state?.transform?.scale) || 1; // [Bug Fix Arrow-2] window.state is undefined in iframe; use window.parent.state
+                                const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
                                 const absX = (childRect.left - hostRect.left) / scale;
                                 const absY = (childRect.top - hostRect.top) / scale;
                                 notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: absX, y: absY });
@@ -1439,17 +1422,17 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     });
                     
                     if (activeEl) {
-                        // [Bug Fix Arrow-3] Use style.left/top directly (logical px coords).
-                        // Previously used getBoundingClientRect() with window.state (undefined in iframe
-                        // → scale always 1). Now consistent with the drag coordinate fix.
-                        // After style.left/top is updated above, reading it back gives exact logical coords.
-                        const logicalX = parseFloat(activeEl.style.left) || 0;
-                        const logicalY = parseFloat(activeEl.style.top) || 0;
+                        const activeRect = activeEl.getBoundingClientRect();
+                        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
+                        const parentRect = document.body.getBoundingClientRect();
+                        
+                        const relativeX = (activeRect.left - parentRect.left) / scale;
+                        const relativeY = (activeRect.top - parentRect.top) / scale;
                         
                         notifyParent({ 
                             type: 'LF_SNAP_REQUEST', 
-                            x: logicalX, 
-                            y: logicalY, 
+                            x: relativeX, 
+                            y: relativeY, 
                             w: activeEl.offsetWidth, 
                             h: activeEl.offsetHeight 
                         });
@@ -1504,13 +1487,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
         if (d.type === 'LF_SHORTCUT_KEY_PROXY') {
-            // [Bug Fix Arrow-KEY-UP] Determine event type from isKeyUp flag (for Arrow keys)
-            // or from code (Space was always keyup). This lets the parent proxy both
-            // keydown AND keyup for arrow keys so isArrowMoving resets properly.
-            let eventType = 'keydown';
-            if (d.code === 'Space') eventType = 'keyup';
-            else if (d.isKeyUp) eventType = 'keyup';
-
+            const eventType = d.code === 'Space' ? 'keyup' : 'keydown';
             const event = new KeyboardEvent(eventType, {
                 code: d.code,
                 key: d.key,
@@ -1534,13 +1511,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             return;
         }
         if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
-            // [Bug Fix 2] d.x/d.y are logical coords; compare with style.left/top (also logical).
-            // Previously used getBoundingClientRect() which returns physical screen coords,
-            // causing wrong delta when zoom != 1.
-            const curLeft = parseInt(activeEl.style.left) || 0;
-            const curTop = parseInt(activeEl.style.top) || 0;
-            const snapDx = d.x - curLeft;
-            const snapDy = d.y - curTop;
+            const currentRect = activeEl.getBoundingClientRect();
+            const snapDx = d.x - currentRect.left;
+            const snapDy = d.y - currentRect.top;
             if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
                 const comps = document.querySelectorAll('.lf-component.selected');
                 comps.forEach(c => {
@@ -2148,85 +2121,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 if (typeof window.enforceDesignSystem === 'function') {
                     window.enforceDesignSystem();
                 }
-                markDirty();
-            }
-        }
-        else if (d.type === 'LF_UPDATE_DATEPICKER') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
-            const container = s.querySelector('.v4-datepicker-container') || (s.classList.contains('v4-datepicker-container') ? s : null);
-            if (container) {
-                if (window.V4UndoManager) window.V4UndoManager.saveState();
-
-                // Helper: format date as YYYY/MM/DD
-                const _fmt = (dt) => {
-                    const y = dt.getFullYear();
-                    const m = String(dt.getMonth() + 1).padStart(2, '0');
-                    const dd = String(dt.getDate()).padStart(2, '0');
-                    return y + '/' + m + '/' + dd;
-                };
-
-                // Compute dates from preset
-                const _applyPreset = (preset) => {
-                    const today = new Date();
-                    let startDt = null;
-                    let endDt = today;
-                    if (preset === '1D') {
-                        startDt = new Date(today); startDt.setDate(today.getDate() - 1);
-                    } else if (preset === '1W') {
-                        startDt = new Date(today); startDt.setDate(today.getDate() - 7);
-                    } else if (preset === '1M') {
-                        startDt = new Date(today); startDt.setMonth(today.getMonth() - 1);
-                    } else if (preset === '6M') {
-                        startDt = new Date(today); startDt.setMonth(today.getMonth() - 6);
-                    } else if (preset === 'all') {
-                        startDt = null; endDt = null;
-                    }
-                    return { start: startDt ? _fmt(startDt) : '', end: endDt ? _fmt(endDt) : '' };
-                };
-
-                // Show/hide presets panel
-                if (d.showPresets !== undefined) {
-                    container.setAttribute('data-show-presets', d.showPresets ? 'true' : 'false');
-                    const presetsDiv = container.querySelector('.v4-dp-presets');
-                    if (presetsDiv) presetsDiv.style.display = d.showPresets ? 'inline-flex' : 'none';
-                }
-
-                // Apply default preset: update data attrs and DOM date fields
-                if (d.defaultPreset !== undefined) {
-                    container.setAttribute('data-default-preset', d.defaultPreset);
-                    // Update active state of preset buttons
-                    container.querySelectorAll('.v4-dp-preset-btn').forEach(btn => {
-                        const isActive = btn.getAttribute('data-preset') === d.defaultPreset;
-                        btn.style.background = isActive ? '#1d4ed8' : '#ffffff';
-                        btn.style.borderColor = isActive ? '#1d4ed8' : '#cccccc';
-                        btn.style.color = isActive ? '#ffffff' : '#374151';
-                        btn.style.fontWeight = isActive ? '700' : '600';
-                        if (isActive) btn.classList.add('v4-dp-preset-active');
-                        else btn.classList.remove('v4-dp-preset-active');
-                    });
-                    if (d.defaultPreset !== 'none') {
-                        const computed = _applyPreset(d.defaultPreset);
-                        container.setAttribute('data-start-date', computed.start);
-                        container.setAttribute('data-end-date', computed.end);
-                        const startEl = container.querySelector('.v4-dp-start');
-                        const endEl = container.querySelector('.v4-dp-end');
-                        if (startEl && startEl.innerText !== computed.start) startEl.innerText = computed.start;
-                        if (endEl && endEl.innerText !== computed.end) endEl.innerText = computed.end;
-                    }
-                }
-
-                // Direct date override
-                if (d.startDate !== undefined) {
-                    container.setAttribute('data-start-date', d.startDate);
-                    const startEl = container.querySelector('.v4-dp-start');
-                    if (startEl && startEl.innerText !== d.startDate) startEl.innerText = d.startDate;
-                }
-                if (d.endDate !== undefined) {
-                    container.setAttribute('data-end-date', d.endDate);
-                    const endEl = container.querySelector('.v4-dp-end');
-                    if (endEl && endEl.innerText !== d.endDate) endEl.innerText = d.endDate;
-                }
-
                 markDirty();
             }
         }
@@ -3261,73 +3155,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 updateHandles(c);
             }
-        });
-
-        // --- Date Picker: Initialize dates from defaultPreset on load ---
-        document.querySelectorAll('.lf-component').forEach(c => {
-            const dp = c.querySelector('.v4-datepicker-container');
-            if (!dp) return;
-
-            // Helper: format date as YYYY/MM/DD
-            const _fmtDate = (dt) => {
-                const y = dt.getFullYear();
-                const m = String(dt.getMonth() + 1).padStart(2, '0');
-                const d2 = String(dt.getDate()).padStart(2, '0');
-                return y + '/' + m + '/' + d2;
-            };
-
-            // Show/hide presets panel
-            const showPresets = dp.getAttribute('data-show-presets') !== 'false';
-            const presetsDiv = dp.querySelector('.v4-dp-presets');
-            if (presetsDiv) {
-                const targetDisplay = showPresets ? 'inline-flex' : 'none';
-                if (presetsDiv.style.display !== targetDisplay) presetsDiv.style.display = targetDisplay;
-            }
-
-            // Apply default preset to date fields if they are empty
-            const startEl = dp.querySelector('.v4-dp-start');
-            const endEl = dp.querySelector('.v4-dp-end');
-            const storedStart = dp.getAttribute('data-start-date') || '';
-            const storedEnd = dp.getAttribute('data-end-date') || '';
-            const defaultPreset = dp.getAttribute('data-default-preset') || 'none';
-
-            if (startEl && storedStart && startEl.innerText !== storedStart) startEl.innerText = storedStart;
-            if (endEl && storedEnd && endEl.innerText !== storedEnd) endEl.innerText = storedEnd;
-
-            // If fields are still empty and there's a preset, compute dates
-            if (startEl && !startEl.innerText && defaultPreset && defaultPreset !== 'none') {
-                const today = new Date();
-                let startDt = null;
-                let endDt = today;
-                if (defaultPreset === '1D') { startDt = new Date(today); startDt.setDate(today.getDate() - 1); }
-                else if (defaultPreset === '1W') { startDt = new Date(today); startDt.setDate(today.getDate() - 7); }
-                else if (defaultPreset === '1M') { startDt = new Date(today); startDt.setMonth(today.getMonth() - 1); }
-                else if (defaultPreset === '6M') { startDt = new Date(today); startDt.setMonth(today.getMonth() - 6); }
-                if (startDt) {
-                    const s = _fmtDate(startDt);
-                    const e = endDt ? _fmtDate(endDt) : '';
-                    if (startEl.innerText !== s) startEl.innerText = s;
-                    if (endEl && endEl.innerText !== e) endEl.innerText = e;
-                }
-            }
-
-            // Sync active preset button styles
-            dp.querySelectorAll('.v4-dp-preset-btn').forEach(btn => {
-                const isActive = btn.getAttribute('data-preset') === defaultPreset;
-                const targetBg = isActive ? '#1d4ed8' : '#ffffff';
-                const targetBc = isActive ? '#1d4ed8' : '#cccccc';
-                const targetColor = isActive ? '#ffffff' : '#374151';
-                const targetFw = isActive ? '700' : '600';
-                if (btn.style.background !== targetBg) btn.style.background = targetBg;
-                if (btn.style.borderColor !== targetBc) btn.style.borderColor = targetBc;
-                if (btn.style.color !== targetColor) btn.style.color = targetColor;
-                if (btn.style.fontWeight !== targetFw) btn.style.fontWeight = targetFw;
-            });
-
-            // Ensure container fills wrapper
-            if (dp.style.width !== '100%') dp.style.width = '100%';
-            if (dp.style.height !== '100%') dp.style.height = '100%';
-            updateHandles(c);
         });
 
         // --- Setup Textbox / Textarea Interactive Events ---
