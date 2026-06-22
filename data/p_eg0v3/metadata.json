@@ -1143,9 +1143,13 @@
     },
     "카드 설정2.html": {
       "title": "카드 설정2",
-      "type": "blank",
-      "updatedAt": "2026-06-22T01:14:32.840Z",
-      "template": "template_blank.html"
+      "type": "admin-nbos",
+      "updatedAt": "2026-06-22T01:17:29.514Z",
+      "template": "template_blank.html",
+      "description": [],
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": ""
     }
   },
   "assignee": "최범열",
