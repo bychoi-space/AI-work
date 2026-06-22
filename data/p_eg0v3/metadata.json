@@ -1144,7 +1144,7 @@
     "카드 설정2.html": {
       "title": "카드 설정2",
       "type": "admin-nbos",
-      "updatedAt": "2026-06-22T02:19:19.958Z",
+      "updatedAt": "2026-06-22T02:22:09.368Z",
       "template": "template_blank.html",
       "description": [],
       "connectors": [],
@@ -1166,5 +1166,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-22 11:19:19"
+  "updated": "2026-06-22 11:22:09"
 }
