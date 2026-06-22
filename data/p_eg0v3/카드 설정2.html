@@ -234,14 +234,7 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
     
 
 <div class="lf-component" style="position: absolute; top: 19.25px; left: 20px; z-index: 1000; transform: none; width: 200px; height: 40px;" id="v4-comp-1782092159599-7">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(50, 50, 50); border: 1.6px solid rgb(71, 85, 105); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 14px; color: rgb(255, 255, 255);">상품 조건 Case</span></p></div></div></div><div class="lf-component" style="position: absolute; top: 117.5px; left: 747px; z-index: 1000; transform: none; width: 150px; height: 150px;" id="v4-comp-1782091072602-4">
-            <div class="v4-selectbox-container" data-default-text="선택하세요" data-dropdown-active="true" data-options="[A] 전체 상품 대상,[L] 전관 행사 대상,[B] 뱃지 대상 상품,[?] 브랜드 설정" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
-                <div class="v4-selectbox-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; height: 30px; padding: 0 12px; box-sizing: border-box; font-size: 12px; color: #374151; cursor: pointer;">
-                    <span class="v4-selectbox-selected-text">선택하세요</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px; transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </div>
-                <div class="v4-selectbox-options" style="display: block; position: absolute; top: 28px; left: 0px; width: 100%; background-color: rgb(255, 255, 255); border-width: medium 1.6px 1.6px; border-style: none solid solid; border-color: currentcolor rgb(204, 204, 204) rgb(204, 204, 204); border-image: initial; border-radius: 0px 0px 8px 8px; box-sizing: border-box; z-index: 1000; overflow: hidden; box-shadow: rgba(0, 0, 0, 0.05) 0px 4px 6px;"><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">[A] 전체 상품 대상</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">[L] 전관 행사 대상</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">[B] 뱃지 대상 상품</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; box-sizing: border-box;">[?] 브랜드 설정</div></div>
-            </div></div><script id="v4-inlined-script">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(50, 50, 50); border: 1.6px solid rgb(71, 85, 105); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 14px; color: rgb(255, 255, 255);">상품 조건 Case</span></p></div></div></div><script id="v4-inlined-script">
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -670,7 +663,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     const copySelectedObjects = () => {
         const selected = document.querySelectorAll('.lf-component.selected');
         if (selected.length === 0) return;
-        v4Clipboard = [];
         const topLevelSelected = Array.from(selected).filter(el => {
             let parent = el.parentElement;
             while (parent && parent !== document.body) {
@@ -681,10 +673,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
             return true;
         });
+        const clipboardData = [];
         topLevelSelected.forEach(el => {
-            v4Clipboard.push({
+            clipboardData.push({
                 html: el.innerHTML,
-                className: el.className.replace(/\bselected\b/g, '').replace(/\bdragging-now\b/g, '').trim(),
+                className: el.className.replace(/selected/g, '').replace(/dragging-now/g, '').trim(),
                 styleCssText: el.style.cssText,
                 left: parseFloat(el.style.left) || 0,
                 top: parseFloat(el.style.top) || 0,
@@ -693,17 +686,43 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 isTextMarker: el.classList.contains('text-marker')
             });
         });
-        console.log("[V4 Iframe] Copied " + v4Clipboard.length + " object(s).");
+        v4Clipboard = clipboardData;
+        try {
+            if (window.top) {
+                window.top.__lf_global_clipboard__ = clipboardData;
+            }
+        } catch (err) {
+            console.error("[V4 Iframe] Failed to save clipboard to window.top:", err);
+        }
+        console.log("[V4 Iframe] Copied " + clipboardData.length + " object(s) to window.top global clipboard.");
     };
 
     const pasteCopiedObjects = () => {
-        if (!v4Clipboard || v4Clipboard.length === 0) return;
+        let clipboardData = v4Clipboard;
+        try {
+            if (window.top && window.top.__lf_global_clipboard__) {
+                clipboardData = window.top.__lf_global_clipboard__;
+            }
+        } catch (err) {
+            console.warn("[V4 Iframe] Failed to load clipboard from window.top:", err);
+        }
+        
+        if (!clipboardData || clipboardData.length === 0) {
+            console.log("[V4 Iframe] Clipboard is empty.");
+            return;
+        }
+        pasteCopiedObjectsWithData(clipboardData);
+    };
+
+    // Main paste implementation that will be triggered upon receiving the data
+    const pasteCopiedObjectsWithData = (clipboardData) => {
+        if (!clipboardData || clipboardData.length === 0) return;
         if (window.V4UndoManager) window.V4UndoManager.saveState();
         document.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
         const host = document.body;
         const newSelectedIds = [];
         const offset = 15;
-        v4Clipboard.forEach(item => {
+        clipboardData.forEach(item => {
             const v = document.createElement('div');
             const newId = item.isPinMarker ? ('v4-pin-' + Date.now() + Math.floor(Math.random() * 1000)) : ('v4-comp-' + Date.now() + Math.floor(Math.random() * 1000));
             v.id = newId;
@@ -722,7 +741,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         } else if (typeof initHandles === 'function') {
             initHandles();
         }
-        const hasPin = v4Clipboard.some(item => item.isPinMarker || item.isTextMarker);
+        const hasPin = clipboardData.some(item => item.isPinMarker || item.isTextMarker);
         if (hasPin) {
             reorderAllPins();
         }
@@ -736,7 +755,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         }
         markDirty();
-        console.log("[V4 Iframe] Pasted " + v4Clipboard.length + " object(s).");
+        console.log("[V4 Iframe] Pasted " + clipboardData.length + " object(s) from clipboard.");
     };
 
     const _getCompStyles = (c) => {
@@ -808,6 +827,14 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const buttonText = btnContainer ? (btnContainer.getAttribute('data-text') || "버튼") : "버튼";
         const buttonStyle = btnContainer ? (btnContainer.getAttribute('data-btn-style') || "normal") : "normal";
         const buttonRadius = btnContainer ? (btnContainer.getAttribute('data-btn-radius') || "6") : "6";
+
+        // Date Picker Atom Detection
+        const isDatePicker = !!c.querySelector('.v4-datepicker-container') || c.classList.contains('v4-datepicker-container');
+        const dpContainer = c.querySelector('.v4-datepicker-container') || (isDatePicker ? c : null);
+        const dpShowPresets = dpContainer ? dpContainer.getAttribute('data-show-presets') !== 'false' : true;
+        const dpDefaultPreset = dpContainer ? (dpContainer.getAttribute('data-default-preset') || 'none') : 'none';
+        const dpStartDate = dpContainer ? (dpContainer.getAttribute('data-start-date') || '') : '';
+        const dpEndDate = dpContainer ? (dpContainer.getAttribute('data-end-date') || '') : '';
 
         // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
         const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
@@ -917,6 +944,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             buttonText: buttonText,
             buttonStyle: buttonStyle,
             buttonRadius: buttonRadius,
+            isDatePicker: isDatePicker,
+            dpShowPresets: dpShowPresets,
+            dpDefaultPreset: dpDefaultPreset,
+            dpStartDate: dpStartDate,
+            dpEndDate: dpEndDate,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
@@ -1113,14 +1145,15 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (isDragging && activeEl) { 
                 const dx = e.clientX - startX;
                 const dy = e.clientY - startY;
-                const requestX = startRect.left + dx;
-                const requestY = startRect.top + dy;
-                
-                // Track delta for multi-move
-                const deltaX = dx; 
-                const deltaY = dy;
 
-                notifyParent({ type: 'LF_SNAP_REQUEST', x: requestX, y: requestY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
+                // [Bug Fix 2] Use logical (unscaled) coords instead of physical screen coords.
+                // startLeft/startTop are already in logical px (from style.left/top).
+                // Dividing mouse delta by scale converts screen pixels to logical pixels.
+                const scale = (window.parent?.state?.transform?.scale) || 1;
+                const logicalX = startLeft + dx / scale;
+                const logicalY = startTop + dy / scale;
+
+                notifyParent({ type: 'LF_SNAP_REQUEST', x: logicalX, y: logicalY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
                 markDirty(); 
             }
             else if (isResizing && activeEl) { 
@@ -1197,12 +1230,17 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     });
     let isArrowMoving = false;
     document.addEventListener('keydown', e => {
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        const isS = e.key.toLowerCase() === 's' || e.code === 'KeyS';
+        const isC = e.key.toLowerCase() === 'c' || e.code === 'KeyC';
+        const isV = e.key.toLowerCase() === 'v' || e.code === 'KeyV';
+        const isG = e.key.toLowerCase() === 'g' || e.code === 'KeyG';
+
+        if ((e.ctrlKey || e.metaKey) && isS) {
             e.preventDefault();
             notifyParent({ type: 'LF_TRIGGER_SAVE' });
             return;
         }
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
+        if ((e.ctrlKey || e.metaKey) && isC) {
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
             if (!isInput) {
                 e.preventDefault();
@@ -1210,7 +1248,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 return;
             }
         }
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
+        if ((e.ctrlKey || e.metaKey) && isV) {
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
             if (!isInput) {
                 e.preventDefault();
@@ -1218,7 +1256,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 return;
             }
         }
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'g') {
+        if ((e.ctrlKey || e.metaKey) && isG) {
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
             if (!isInput) {
                 e.preventDefault();
@@ -1243,6 +1281,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     if (window.V4UndoManager && !isArrowMoving) {
                         window.V4UndoManager.saveState();
                         isArrowMoving = true;
+                        // LF_SNAP_START: only on first keydown to refresh targets once per movement session.
+                        // Sending on every keydown causes race conditions where targets are cleared
+                        // before LF_SNAP_REQUEST is processed, leading to missed guides.
                         notifyParent({ type: 'LF_SNAP_START' });
                     }
                     const step = e.shiftKey ? 10 : 1;
@@ -1276,7 +1317,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                                 const idx = parseInt(child.id.replace('v4-pin-', ''));
                                 const childRect = child.getBoundingClientRect();
                                 const hostRect = document.body.getBoundingClientRect();
-                                const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
+                                const scale = (window.parent?.state?.transform?.scale) || 1; // [Bug Fix Arrow-2] window.state is undefined in iframe; use window.parent.state
                                 const absX = (childRect.left - hostRect.left) / scale;
                                 const absY = (childRect.top - hostRect.top) / scale;
                                 notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: absX, y: absY });
@@ -1285,19 +1326,21 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     });
                     
                     if (activeEl) {
-                        const activeRect = activeEl.getBoundingClientRect();
-                        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
-                        const parentRect = document.body.getBoundingClientRect();
+                        // [Bug Fix Arrow-3] Use style.left/top directly (logical px coords).
+                        // After style.left/top is updated above, reading it back gives exact logical coords.
+                        const logicalX = parseFloat(activeEl.style.left) || 0;
+                        const logicalY = parseFloat(activeEl.style.top) || 0;
                         
-                        const relativeX = (activeRect.left - parentRect.left) / scale;
-                        const relativeY = (activeRect.top - parentRect.top) / scale;
-                        
+                        // isArrowKey:true → parent uses Infinity threshold & skips canvas boxes
+                        // so the guide always shows the nearest real component in each direction.
                         notifyParent({ 
                             type: 'LF_SNAP_REQUEST', 
-                            x: relativeX, 
-                            y: relativeY, 
+                            x: logicalX, 
+                            y: logicalY, 
                             w: activeEl.offsetWidth, 
-                            h: activeEl.offsetHeight 
+                            h: activeEl.offsetHeight,
+                            isArrowKey: true,
+                            activeId: activeEl.id
                         });
                     }
                 }
@@ -1350,7 +1393,30 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
         if (d.type === 'LF_SHORTCUT_KEY_PROXY') {
-            const eventType = d.code === 'Space' ? 'keyup' : 'keydown';
+            // [Bug Fix Ctrl-C/V Proxy] Synthesized keyboard events do not automatically
+            // trigger clipboard action methods due to target focus. Intercept and call them directly.
+            const isCtrl = !!d.ctrlKey || !!d.metaKey;
+            const keyChar = (d.key || "").toLowerCase();
+            const isC = keyChar === 'c' || d.code === 'KeyC';
+            const isV = keyChar === 'v' || d.code === 'KeyV';
+            if (isCtrl && !d.isKeyUp) {
+                if (isC) {
+                    copySelectedObjects();
+                    return;
+                }
+                if (isV) {
+                    pasteCopiedObjects();
+                    return;
+                }
+            }
+
+            // [Bug Fix Arrow-KEY-UP] Determine event type from isKeyUp flag (for Arrow keys)
+            // or from code (Space was always keyup). This lets the parent proxy both
+            // keydown AND keyup for arrow keys so isArrowMoving resets properly.
+            let eventType = 'keydown';
+            if (d.code === 'Space') eventType = 'keyup';
+            else if (d.isKeyUp) eventType = 'keyup';
+
             const event = new KeyboardEvent(eventType, {
                 code: d.code,
                 key: d.key,
@@ -1373,10 +1439,19 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             });
             return;
         }
+        if (d.type === 'LF_CLIPBOARD_RESPONSE') {
+            v4Clipboard = d.clipboard || [];
+            pasteCopiedObjectsWithData(d.clipboard);
+            return;
+        }
         if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
-            const currentRect = activeEl.getBoundingClientRect();
-            const snapDx = d.x - currentRect.left;
-            const snapDy = d.y - currentRect.top;
+            // [Bug Fix 2] d.x/d.y are logical coords; compare with style.left/top (also logical).
+            // Previously used getBoundingClientRect() which returns physical screen coords,
+            // causing wrong delta when zoom != 1.
+            const curLeft = parseInt(activeEl.style.left) || 0;
+            const curTop = parseInt(activeEl.style.top) || 0;
+            const snapDx = d.x - curLeft;
+            const snapDy = d.y - curTop;
             if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
                 const comps = document.querySelectorAll('.lf-component.selected');
                 comps.forEach(c => {
@@ -1984,6 +2059,85 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 if (typeof window.enforceDesignSystem === 'function') {
                     window.enforceDesignSystem();
                 }
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_DATEPICKER') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-datepicker-container') || (s.classList.contains('v4-datepicker-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+                // Helper: format date as YYYY/MM/DD
+                const _fmt = (dt) => {
+                    const y = dt.getFullYear();
+                    const m = String(dt.getMonth() + 1).padStart(2, '0');
+                    const dd = String(dt.getDate()).padStart(2, '0');
+                    return y + '/' + m + '/' + dd;
+                };
+
+                // Compute dates from preset
+                const _applyPreset = (preset) => {
+                    const today = new Date();
+                    let startDt = null;
+                    let endDt = today;
+                    if (preset === '1D') {
+                        startDt = new Date(today); startDt.setDate(today.getDate() - 1);
+                    } else if (preset === '1W') {
+                        startDt = new Date(today); startDt.setDate(today.getDate() - 7);
+                    } else if (preset === '1M') {
+                        startDt = new Date(today); startDt.setMonth(today.getMonth() - 1);
+                    } else if (preset === '6M') {
+                        startDt = new Date(today); startDt.setMonth(today.getMonth() - 6);
+                    } else if (preset === 'all') {
+                        startDt = null; endDt = null;
+                    }
+                    return { start: startDt ? _fmt(startDt) : '', end: endDt ? _fmt(endDt) : '' };
+                };
+
+                // Show/hide presets panel
+                if (d.showPresets !== undefined) {
+                    container.setAttribute('data-show-presets', d.showPresets ? 'true' : 'false');
+                    const presetsDiv = container.querySelector('.v4-dp-presets');
+                    if (presetsDiv) presetsDiv.style.display = d.showPresets ? 'inline-flex' : 'none';
+                }
+
+                // Apply default preset: update data attrs and DOM date fields
+                if (d.defaultPreset !== undefined) {
+                    container.setAttribute('data-default-preset', d.defaultPreset);
+                    // Update active state of preset buttons
+                    container.querySelectorAll('.v4-dp-preset-btn').forEach(btn => {
+                        const isActive = btn.getAttribute('data-preset') === d.defaultPreset;
+                        btn.style.background = isActive ? '#1d4ed8' : '#ffffff';
+                        btn.style.borderColor = isActive ? '#1d4ed8' : '#cccccc';
+                        btn.style.color = isActive ? '#ffffff' : '#374151';
+                        btn.style.fontWeight = isActive ? '700' : '600';
+                        if (isActive) btn.classList.add('v4-dp-preset-active');
+                        else btn.classList.remove('v4-dp-preset-active');
+                    });
+                    if (d.defaultPreset !== 'none') {
+                        const computed = _applyPreset(d.defaultPreset);
+                        container.setAttribute('data-start-date', computed.start);
+                        container.setAttribute('data-end-date', computed.end);
+                        const startEl = container.querySelector('.v4-dp-start');
+                        const endEl = container.querySelector('.v4-dp-end');
+                        if (startEl && startEl.innerText !== computed.start) startEl.innerText = computed.start;
+                        if (endEl && endEl.innerText !== computed.end) endEl.innerText = computed.end;
+                    }
+                }
+
+                // Direct date override
+                if (d.startDate !== undefined) {
+                    container.setAttribute('data-start-date', d.startDate);
+                    const startEl = container.querySelector('.v4-dp-start');
+                    if (startEl && startEl.innerText !== d.startDate) startEl.innerText = d.startDate;
+                }
+                if (d.endDate !== undefined) {
+                    container.setAttribute('data-end-date', d.endDate);
+                    const endEl = container.querySelector('.v4-dp-end');
+                    if (endEl && endEl.innerText !== d.endDate) endEl.innerText = d.endDate;
+                }
+
                 markDirty();
             }
         }
@@ -3020,6 +3174,73 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         });
 
+        // --- Date Picker: Initialize dates from defaultPreset on load ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const dp = c.querySelector('.v4-datepicker-container');
+            if (!dp) return;
+
+            // Helper: format date as YYYY/MM/DD
+            const _fmtDate = (dt) => {
+                const y = dt.getFullYear();
+                const m = String(dt.getMonth() + 1).padStart(2, '0');
+                const d2 = String(dt.getDate()).padStart(2, '0');
+                return y + '/' + m + '/' + d2;
+            };
+
+            // Show/hide presets panel
+            const showPresets = dp.getAttribute('data-show-presets') !== 'false';
+            const presetsDiv = dp.querySelector('.v4-dp-presets');
+            if (presetsDiv) {
+                const targetDisplay = showPresets ? 'inline-flex' : 'none';
+                if (presetsDiv.style.display !== targetDisplay) presetsDiv.style.display = targetDisplay;
+            }
+
+            // Apply default preset to date fields if they are empty
+            const startEl = dp.querySelector('.v4-dp-start');
+            const endEl = dp.querySelector('.v4-dp-end');
+            const storedStart = dp.getAttribute('data-start-date') || '';
+            const storedEnd = dp.getAttribute('data-end-date') || '';
+            const defaultPreset = dp.getAttribute('data-default-preset') || 'none';
+
+            if (startEl && storedStart && startEl.innerText !== storedStart) startEl.innerText = storedStart;
+            if (endEl && storedEnd && endEl.innerText !== storedEnd) endEl.innerText = storedEnd;
+
+            // If fields are still empty and there's a preset, compute dates
+            if (startEl && !startEl.innerText && defaultPreset && defaultPreset !== 'none') {
+                const today = new Date();
+                let startDt = null;
+                let endDt = today;
+                if (defaultPreset === '1D') { startDt = new Date(today); startDt.setDate(today.getDate() - 1); }
+                else if (defaultPreset === '1W') { startDt = new Date(today); startDt.setDate(today.getDate() - 7); }
+                else if (defaultPreset === '1M') { startDt = new Date(today); startDt.setMonth(today.getMonth() - 1); }
+                else if (defaultPreset === '6M') { startDt = new Date(today); startDt.setMonth(today.getMonth() - 6); }
+                if (startDt) {
+                    const s = _fmtDate(startDt);
+                    const e = endDt ? _fmtDate(endDt) : '';
+                    if (startEl.innerText !== s) startEl.innerText = s;
+                    if (endEl && endEl.innerText !== e) endEl.innerText = e;
+                }
+            }
+
+            // Sync active preset button styles
+            dp.querySelectorAll('.v4-dp-preset-btn').forEach(btn => {
+                const isActive = btn.getAttribute('data-preset') === defaultPreset;
+                const targetBg = isActive ? '#1d4ed8' : '#ffffff';
+                const targetBc = isActive ? '#1d4ed8' : '#cccccc';
+                const targetColor = isActive ? '#ffffff' : '#374151';
+                const targetFw = isActive ? '700' : '600';
+                if (btn.style.background !== targetBg) btn.style.background = targetBg;
+                if (btn.style.borderColor !== targetBc) btn.style.borderColor = targetBc;
+                if (btn.style.color !== targetColor) btn.style.color = targetColor;
+                if (btn.style.fontWeight !== targetFw) btn.style.fontWeight = targetFw;
+            });
+
+            // Ensure container fills wrapper
+            if (dp.style.width !== '100%') dp.style.width = '100%';
+            if (dp.style.height !== '100%') dp.style.height = '100%';
+            updateHandles(c);
+        });
+
         // --- Setup Textbox / Textarea Interactive Events ---
         document.querySelectorAll('.v4-textbox-container, .v4-textarea-container').forEach(container => {
             const isTextarea = container.classList.contains('v4-textarea-container');
@@ -3247,16 +3468,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     }
 })();
 
-</script><div class="lf-component" style="position: absolute; top: 135.5px; left: 20px; z-index: 1000; transform: none; width: 150px; height: 40px;" id="v4-comp-1782092702875-dedup-44-7">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 12px;">상품 조건</span></p></div></div></div><div class="lf-component" style="position: absolute; top: 135.75px; left: 169px; z-index: 1000; transform: none; width: 181px; height: 40px;" id="v4-comp-1782092702875-dedup-830-8" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div class="lf-component" style="position: absolute; top: 140.75px; left: 174px; z-index: 1000; transform: none; width: 150px; height: 30px;" id="v4-comp-1782092702875-dedup-122-9" data-resized="true">
-            <div class="v4-selectbox-container" data-default-text="[B] 뱃지 대상 상품" data-dropdown-active="false" data-options="Option 1,Option 2,Option 3,Option 4" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
-                <div class="v4-selectbox-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; height: 30px; padding: 0 12px; box-sizing: border-box; font-size: 12px; color: #374151; cursor: pointer;">
-                    <span class="v4-selectbox-selected-text">[B] 뱃지 대상 상품</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px; transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </div>
-                <div class="v4-selectbox-options" style="display: none; position: absolute; top: 28px; left: 0px; width: 100%; background-color: rgb(255, 255, 255); border-width: medium 1.6px 1.6px; border-style: none solid solid; border-color: currentcolor rgb(204, 204, 204) rgb(204, 204, 204); border-image: initial; border-radius: 0px 0px 8px 8px; box-sizing: border-box; z-index: 1000; overflow: hidden; box-shadow: rgba(0, 0, 0, 0.05) 0px 4px 6px;"><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 1</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 2</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 3</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; box-sizing: border-box;">Option 4</div></div>
-            </div></div><div class="lf-component" style="position: absolute; top: 97px; left: 20px; z-index: 1000; transform: none; width: 150px; height: 40px;" id="v4-comp-1782091072602-1">
+</script><div class="lf-component" style="position: absolute; top: 97px; left: 20px; z-index: 1000; transform: none; width: 150px; height: 40px;" id="v4-comp-1782091072602-1">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 12px;">상품 조건</span></p></div></div></div><div class="lf-component" style="position: absolute; top: 97.25px; left: 169px; z-index: 1000; transform: none; width: 181px; height: 40px;" id="v4-comp-1782091072602-2" data-resized="true">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div class="lf-component" style="position: absolute; top: 102.25px; left: 174px; z-index: 1000; transform: none; width: 150px; height: 30px;" id="v4-comp-1782091072602-3" data-resized="true">
             <div class="v4-selectbox-container" data-default-text="[L] 전관 행사 대상" data-dropdown-active="false" data-options="Option 1,Option 2,Option 3,Option 4" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
@@ -3272,11 +3484,36 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: rgb(163, 163, 163); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;">Placeholder</div>
                 <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;" data-events-bound="true"></div>
                 <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: rgb(163, 163, 163); user-select: none; display: block; font-family: inherit;">0/100</div>
-            </div></div><div id="v4-comp-1782093517297278" class="lf-component" style="position: absolute; top: 140.75px; left: 460px; z-index: 1000; transform: none; width: 150px; height: 30px;">
+            </div></div><div id="group-1782094697743" class="lf-component lf-group" style="position: absolute; left: 20px; top: 135.5px; width: 150px; height: 30px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div id="v4-comp-1782093517297278" class="lf-component" style="position: absolute; top: 5.25px; left: 440px; z-index: 1000; transform: none; width: 150px; height: 30px;">
             <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: #fafaf2; border: 1.6px solid #cccccc; border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;">
                 <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: rgb(163, 163, 163); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;">Placeholder</div>
                 <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;" data-events-bound="true"></div>
                 <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: rgb(163, 163, 163); user-select: none; display: block; font-family: inherit;">0/100</div>
-            </div></div><div id="v4-comp-1782093517296846" class="lf-component" style="position: absolute; top: 135.75px; left: 449px; z-index: 1000; transform: none; width: 170px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div id="v4-comp-1782093517296821" class="lf-component" style="position: absolute; top: 135.5px; left: 350px; z-index: 1000; transform: none; width: 100px; height: 40px;">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 12px;">이벤트 번호 </span><span style="font-size: 12px; color: rgb(230, 0, 0);">*</span></p></div></div></div></body></html>
+            </div></div><div id="v4-comp-1782093517296846" class="lf-component" style="position: absolute; top: 0.25px; left: 429px; z-index: 1000; transform: none; width: 170px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div id="v4-comp-1782093517296821" class="lf-component" style="position: absolute; top: 0px; left: 330px; z-index: 1000; transform: none; width: 100px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 12px;">이벤트 번호 </span><span style="font-size: 12px; color: rgb(230, 0, 0);">*</span></p></div></div></div><div class="lf-component" style="position: absolute; top: 0.25px; left: 149px; z-index: 1000; transform: none; width: 181px; height: 40px;" id="v4-comp-1782092702875-dedup-830-8" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div class="lf-component" style="position: absolute; top: 5.25px; left: 154px; z-index: 1000; transform: none; width: 150px; height: 30px;" id="v4-comp-1782092702875-dedup-122-9" data-resized="true">
+            <div class="v4-selectbox-container" data-default-text="[B] 뱃지 대상 상품" data-dropdown-active="false" data-options="Option 1,Option 2,Option 3,Option 4" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
+                <div class="v4-selectbox-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; height: 30px; padding: 0 12px; box-sizing: border-box; font-size: 12px; color: #374151; cursor: pointer;">
+                    <span class="v4-selectbox-selected-text">[B] 뱃지 대상 상품</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px; transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+                <div class="v4-selectbox-options" style="display: none; position: absolute; top: 28px; left: 0px; width: 100%; background-color: rgb(255, 255, 255); border-width: medium 1.6px 1.6px; border-style: none solid solid; border-color: currentcolor rgb(204, 204, 204) rgb(204, 204, 204); border-image: initial; border-radius: 0px 0px 8px 8px; box-sizing: border-box; z-index: 1000; overflow: hidden; box-shadow: rgba(0, 0, 0, 0.05) 0px 4px 6px;"><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 1</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 2</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 3</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; box-sizing: border-box;">Option 4</div></div>
+            </div></div><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 150px; height: 40px;" id="v4-comp-1782092702875-dedup-44-7">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 12px;">상품 조건</span></p></div></div></div></div><div id="v4-comp-1782094699415-dedup-701-16" class="lf-component" style="position: absolute; top: 179.75px; left: 460px; z-index: 1000; transform: none; width: 150px; height: 30px;">
+            <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: #fafaf2; border: 1.6px solid #cccccc; border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;">
+                <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: rgb(163, 163, 163); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;">Placeholder</div>
+                <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;" data-events-bound="true"></div>
+                <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: rgb(163, 163, 163); user-select: none; display: block; font-family: inherit;">0/100</div>
+            </div></div><div id="v4-comp-1782094699416-dedup-947-17" class="lf-component" style="position: absolute; top: 174.75px; left: 449px; z-index: 1000; transform: none; width: 170px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div id="v4-comp-1782094699416-dedup-180-18" class="lf-component" style="position: absolute; top: 174.5px; left: 350px; z-index: 1000; transform: none; width: 100px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 12px;">브랜드 선택 </span><span style="font-size: 12px; color: rgb(230, 0, 0);">*</span></p></div></div></div><div class="lf-component" style="position: absolute; top: 174.75px; left: 169px; z-index: 1000; transform: none; width: 181px; height: 40px;" id="v4-comp-1782094699416-dedup-936-19" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><br></p></div></div></div><div class="lf-component" style="position: absolute; top: 179.75px; left: 174px; z-index: 1000; transform: none; width: 150px; height: 30px;" id="v4-comp-1782094699416-dedup-708-20" data-resized="true">
+            <div class="v4-selectbox-container" data-default-text="[?] 브랜드 설정" data-dropdown-active="false" data-options="Option 1,Option 2,Option 3,Option 4" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
+                <div class="v4-selectbox-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.6px solid #cccccc; border-radius: 8px; background-color: #ffffff; height: 30px; padding: 0 12px; box-sizing: border-box; font-size: 12px; color: #374151; cursor: pointer;">
+                    <span class="v4-selectbox-selected-text">[?] 브랜드 설정</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px; transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+                <div class="v4-selectbox-options" style="display: none; position: absolute; top: 28px; left: 0px; width: 100%; background-color: rgb(255, 255, 255); border-width: medium 1.6px 1.6px; border-style: none solid solid; border-color: currentcolor rgb(204, 204, 204) rgb(204, 204, 204); border-image: initial; border-radius: 0px 0px 8px 8px; box-sizing: border-box; z-index: 1000; overflow: hidden; box-shadow: rgba(0, 0, 0, 0.05) 0px 4px 6px;"><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 1</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 2</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">Option 3</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; box-sizing: border-box;">Option 4</div></div>
+            </div></div><div class="lf-component" style="position: absolute; top: 174.5px; left: 20px; z-index: 1000; transform: none; width: 150px; height: 40px;" id="v4-comp-1782094699416-dedup-557-21">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(200, 200, 200); border: 1.6px solid rgb(150, 150, 150); border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 8px; box-sizing: border-box; overflow: hidden;"><p style="margin-top: 0pt; margin-bottom: 0pt; margin-left: 0in; direction: ltr; unicode-bidi: embed;"><span style="font-size: 12px;">상품 조건</span></p></div></div></div></body></html>
