@@ -1140,6 +1140,12 @@
       "template": "template_blank.html",
       "description": [],
       "connectors": []
+    },
+    "카드 설정2.html": {
+      "title": "카드 설정2",
+      "type": "blank",
+      "updatedAt": "2026-06-22T01:14:32.840Z",
+      "template": "template_blank.html"
     }
   },
   "assignee": "최범열",
@@ -1153,7 +1159,8 @@
     "06_Mobile_Design_2_901.html",
     "07_PC_Design_266.html",
     "99_Blank_798.html",
-    "얼럿 정리.html"
+    "얼럿 정리.html",
+    "카드 설정2.html"
   ],
   "updated": "2026-06-22 10:13:34"
 }
