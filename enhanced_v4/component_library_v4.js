@@ -142,6 +142,33 @@ window.V4_COMPONENT_LIBRARY = {
             <div class="v4-btn-container" data-text="버튼" data-btn-style="normal" data-btn-radius="6" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
                 <button class="v4-custom-btn style-normal" style="width: 100%; height: 100%; border: 1.6px solid #cccccc !important; border-radius: 6px; background: #ffffff; color: #374151; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); box-sizing: border-box; transition: all 0.2s; font-family: inherit;">버튼</button>
             </div>`
+        },
+        {
+            id: 'v4-atom-datepicker',
+            name: 'Date Picker',
+            category: 'Atoms',
+            previewHtml: `<div style="display:flex; align-items:center; background:#ffffff; border:1.6px solid #cccccc; border-radius:4px; height:20px; padding:0 5px; font-size:7px; color:#374151; box-sizing:border-box; gap:3px; white-space:nowrap;"><span>26/05/18</span><span style="color:#9ca3af;">&#9553;</span><span>-</span><span style="color:#9ca3af;">&#9553;</span><span>26/06/18</span></div>`,
+            html: `
+            <div class="v4-datepicker-container" data-show-presets="true" data-default-preset="1M" data-start-date="" data-end-date="" style="position: relative; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; flex-wrap: nowrap; width: 100%; height: 100%;">
+                <div class="v4-dp-fields" style="display: inline-flex; align-items: center; gap: 0; border: 1.6px solid #cccccc; border-radius: 8px; background: #ffffff; height: 100%; min-height: 36px; overflow: hidden; box-sizing: border-box; flex-shrink: 0;">
+                    <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; gap: 6px; height: 100%;">
+                        <div class="v4-dp-date-field v4-dp-start v4-editable-cell" contenteditable="true" style="font-size: 13px; color: #374151; outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;"></div>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    </div>
+                    <div class="v4-dp-separator" style="color: #9ca3af; font-size: 13px; padding: 0 2px; flex-shrink: 0; font-family: inherit;">-</div>
+                    <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; gap: 6px; height: 100%;">
+                        <div class="v4-dp-date-field v4-dp-end v4-editable-cell" contenteditable="true" style="font-size: 13px; color: #374151; outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;"></div>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    </div>
+                </div>
+                <div class="v4-dp-presets" style="display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0;">
+                    <button class="v4-dp-preset-btn" data-preset="1D" style="height: 36px; min-width: 36px; padding: 0 10px; border: 1.6px solid #cccccc; border-radius: 8px; background: #ffffff; color: #374151; font-size: 12px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1D</button>
+                    <button class="v4-dp-preset-btn" data-preset="1W" style="height: 36px; min-width: 36px; padding: 0 10px; border: 1.6px solid #cccccc; border-radius: 8px; background: #ffffff; color: #374151; font-size: 12px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1W</button>
+                    <button class="v4-dp-preset-btn v4-dp-preset-active" data-preset="1M" style="height: 36px; min-width: 36px; padding: 0 10px; border: 1.6px solid #1d4ed8; border-radius: 8px; background: #1d4ed8; color: #ffffff; font-size: 12px; font-weight: 700; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1M</button>
+                    <button class="v4-dp-preset-btn" data-preset="6M" style="height: 36px; min-width: 36px; padding: 0 10px; border: 1.6px solid #cccccc; border-radius: 8px; background: #ffffff; color: #374151; font-size: 12px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">6M</button>
+                    <button class="v4-dp-preset-btn" data-preset="all" style="height: 36px; min-width: 36px; padding: 0 12px; border: 1.6px solid #cccccc; border-radius: 8px; background: #ffffff; color: #374151; font-size: 12px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">&#51204;&#52404;</button>
+                </div>
+            </div>`
         }
     ],
     molecules: [

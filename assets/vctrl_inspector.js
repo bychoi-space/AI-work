@@ -80,6 +80,7 @@ window.DOM = {
     fileuploadPropSection: get('fileupload-inspector-section'),
     alertPropSection: get('alert-inspector-section'),
     buttonPropSection: get('button-inspector-section'),
+    datePickerPropSection: get('datepicker-inspector-section'),
     textColorPicker: get('text-color-picker'),
     colorPresets: document.querySelectorAll('.color-preset'),
 
@@ -228,6 +229,7 @@ window.updateProperties = function(compStyles) {
         else if (compStyles.isFileUpload) type = 'fileupload';
         else if (compStyles.isAlert) type = 'alert';
         else if (compStyles.isButton) type = 'button';
+        else if (compStyles.isDatePicker) type = 'datepicker';
         state.editingType = type;
 
         // Hide all sections first
@@ -243,6 +245,7 @@ window.updateProperties = function(compStyles) {
         if (DOM.fileuploadPropSection) DOM.fileuploadPropSection.style.display = 'none';
         if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'none';
         if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'none';
+        if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'none';
 
         // Show relevant section
         if (state.editingType === 'pin') {
@@ -281,6 +284,9 @@ window.updateProperties = function(compStyles) {
         } else if (state.editingType === 'button') {
             if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'block';
             _syncButtonProps(compStyles);
+        } else if (state.editingType === 'datepicker') {
+            if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'block';
+            _syncDatePickerProps(compStyles);
         }
 
         // CONTENT EDITOR 헤더 레이블 동적 변경
@@ -336,6 +342,7 @@ window.updateProperties = function(compStyles) {
         if (DOM.fileuploadPropSection) DOM.fileuploadPropSection.style.display = 'none';
         if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'none';
         if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'none';
+        if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'none';
     }
 };
 
@@ -637,6 +644,37 @@ function _syncCheckboxRadioProps(comp) {
     };
     syncColor('atom-bg-color', 'atom-bg-wrapper', s.bg, s.isBgTransparent);
     syncColor('atom-border-color', 'atom-border-wrapper', s.border, s.isBorderTransparent);
+}
+
+function _syncDatePickerProps(comp) {
+    const highlightActive = (btn, isActive) => {
+        if (!btn) return;
+        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+    };
+
+    // Sync presets show/hide toggle
+    const presetsY = document.getElementById('btn-dp-presets-y');
+    const presetsN = document.getElementById('btn-dp-presets-n');
+    const showPresets = comp.dpShowPresets !== false;
+    highlightActive(presetsY, showPresets);
+    highlightActive(presetsN, !showPresets);
+
+    // Sync default preset buttons
+    const presetKeys = ['none', '1D', '1W', '1M', '6M', 'all'];
+    const currentPreset = comp.dpDefaultPreset || 'none';
+    presetKeys.forEach(key => {
+        const btn = document.getElementById('btn-dp-default-' + key);
+        highlightActive(btn, key === currentPreset);
+    });
+
+    // Sync date inputs
+    const startInput = document.getElementById('prop-dp-start-date');
+    const endInput = document.getElementById('prop-dp-end-date');
+    if (startInput && comp.dpStartDate !== undefined) startInput.value = comp.dpStartDate;
+    if (endInput && comp.dpEndDate !== undefined) endInput.value = comp.dpEndDate;
 }
 
 window.renderScreenList = function(screens, activeName) {

@@ -1,18 +1,17 @@
 /**
- * vctrl_undo.js - Undo/Redo Manager for LF Editor Studio
- * Responsibility: Canvas snapshot management and Ctrl+Z restoration.
+ * assets/vctrl_undo.js
+ * Undo & Redo management module for LF Editor Studio (Iframe Side).
  */
 
+window.v4UndoScript = `
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
     let undoStack = [];
     let currentConnectors = []; // Locally synced connectors for secure undo
-
-    // Notify parent that content is dirty
+    
     function notifyParent(data) { if (window.parent) window.parent.postMessage(data, '*'); }
     function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
-
-    // Clean up HTML before saving (remove UI handles)
+    
     function getCleanHTML() {
         const host = document.body;
         const clone = host.cloneNode(true);
@@ -34,7 +33,6 @@ window.V4UndoManager = (function() {
                 console.log("[V4 Undo] State Saved (HTML + " + connectors.length + " Connectors)");
             } catch (e) { console.warn("[V4 Undo] Save failed:", e); }
         },
-
         undo: function() {
             try {
                 if (undoStack.length === 0) return;
@@ -113,7 +111,6 @@ window.V4UndoManager = (function() {
                 console.log("[V4 Undo] Undo Performed");
             } catch (e) { console.warn("[V4 Undo] Undo failed:", e); }
         },
-
         init: function() {
             document.addEventListener('keydown', (e) => {
                 if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
@@ -135,8 +132,5 @@ window.V4UndoManager = (function() {
         }
     };
 })();
-
-// Auto-initialize when loaded inside iframe
-if (window.V4UndoManager) {
-    window.V4UndoManager.init();
-}
+if (window.V4UndoManager) window.V4UndoManager.init();
+`;

@@ -57,6 +57,9 @@
             } else if (item.id === 'v4-atom-button') {
                 style.width = '80px';
                 style.height = '40px';
+            } else if (item.id === 'v4-atom-datepicker') {
+                style.width = '500px';
+                style.height = '36px';
             } else {
                 style.width = isIcon ? '40px' : '120px';
                 style.height = '40px';
@@ -1352,5 +1355,71 @@
         if (buttonSect) buttonSect.style.display = 'none';
         notifyIframe({ type: 'LF_DESELECT_ALL' });
     };
+
+    // Date Picker Inspector Events
+    const initDatePickerEvents = () => {
+        const notifyIframeDp = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                MessageHub.send(iframe.contentWindow, data.type, data);
+            }
+        };
+
+        const highlightActive = (btn, isActive) => {
+            if (!btn) return;
+            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+            btn.style.fontWeight = isActive ? 'bold' : 'normal';
+        };
+
+        // Show Presets Toggle
+        const presetsY = document.getElementById('btn-dp-presets-y');
+        const presetsN = document.getElementById('btn-dp-presets-n');
+        if (presetsY) {
+            presetsY.onclick = () => {
+                highlightActive(presetsY, true);
+                highlightActive(presetsN, false);
+                notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', showPresets: true });
+            };
+        }
+        if (presetsN) {
+            presetsN.onclick = () => {
+                highlightActive(presetsN, true);
+                highlightActive(presetsY, false);
+                notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', showPresets: false });
+            };
+        }
+
+        // Default Preset Buttons
+        const presetKeys = ['none', '1D', '1W', '1M', '6M', 'all'];
+        presetKeys.forEach(key => {
+            const btn = document.getElementById('btn-dp-default-' + key);
+            if (btn) {
+                btn.onclick = () => {
+                    presetKeys.forEach(k => {
+                        const b = document.getElementById('btn-dp-default-' + k);
+                        highlightActive(b, k === key);
+                    });
+                    notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', defaultPreset: key });
+                };
+            }
+        });
+
+        // Start/End Date Direct Input
+        const startInput = document.getElementById('prop-dp-start-date');
+        if (startInput) {
+            startInput.addEventListener('change', function() {
+                notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', startDate: this.value });
+            });
+        }
+        const endInput = document.getElementById('prop-dp-end-date');
+        if (endInput) {
+            endInput.addEventListener('change', function() {
+                notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', endDate: this.value });
+            });
+        }
+    };
+    initDatePickerEvents();
 
 })();

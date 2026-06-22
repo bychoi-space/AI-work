@@ -114,7 +114,12 @@ window.loadScreen = async function(fileName) {
     }
 
     // Inject/Update Script
-    const scriptBlock = '<script id="v4-inlined-script">\n' + window.v4UndoScript + '\n' + (window.v4TableScript || '') + '\n' + window.v4Script + '\n</script>';
+    const scriptBlock = '<script id="v4-inlined-script">\n' + 
+        window.v4UndoScript + '\n' + 
+        (window.v4TableScript || '') + '\n' + 
+        (window.v4DesignSystemScript || '') + '\n' + 
+        (window.v4ShortcutsScript || '') + '\n' + 
+        window.v4Script + '\n</script>';
     if (finalContent.includes('id="v4-inlined-script"')) {
         finalContent = finalContent.replace(/<script id="v4-inlined-script">[\s\S]*?<\/script>/i, scriptBlock);
     } else {
@@ -151,6 +156,16 @@ window.loadScreen = async function(fileName) {
         if (typeof window.renderDescriptionList === 'function') {
             setTimeout(window.renderDescriptionList, 100); 
         }
+
+        // [Bug Fix 1] Pre-warm SmartGuide snap targets after iframe DOM is fully rendered.
+        // Without this, the first drag has no iframe targets because the async request
+        // fired on LF_SNAP_START hasn't received a response yet.
+        setTimeout(() => {
+            if (window.SmartGuide) {
+                window.SmartGuide.findSnapTargets();
+                console.log('[SmartGuide] Targets pre-warmed after screen load.');
+            }
+        }, 300);
     };
 
     let scMeta = (state.projectMetadata.screens || {})[fileName] || {};
@@ -673,7 +688,7 @@ window.MessageHub = {
             } else if (data.type === 'LF_SNAP_REQUEST') {
                 const DOM = window.DOM;
                 if (window.SmartGuide && DOM && DOM.iframe && DOM.iframe.contentWindow) {
-                    const snap = window.SmartGuide.calculateSnap(data.x, data.y, data.w, data.h);
+                    const snap = window.SmartGuide.calculateSnap(data.x, data.y, data.w, data.h, !!data.isArrowKey, data.activeId);
                     window.SmartGuide.drawGuides(snap);
                     MessageHub.send(DOM.iframe.contentWindow, 'LF_SNAP_RESPONSE', snap);
                 }
@@ -1029,7 +1044,8 @@ window.init = async function() {
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
             if (isInput) return;
 
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { 
+            const isS = e.key.toLowerCase() === 's' || e.code === 'KeyS';
+            if ((e.ctrlKey || e.metaKey) && isS) { 
                 e.preventDefault(); 
                 handleGlobalSave(); 
                 return;
@@ -1048,7 +1064,11 @@ window.init = async function() {
 
             // Proxy canvas shortcuts if we have active selections or targets
             const proxiedCodes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Delete', 'Backspace', 'Space'];
-            const isCtrlShortcut = (e.ctrlKey || e.metaKey) && ['g', 'c', 'v'].includes(e.key.toLowerCase());
+            
+            const isC = e.key.toLowerCase() === 'c' || e.code === 'KeyC';
+            const isV = e.key.toLowerCase() === 'v' || e.code === 'KeyV';
+            const isG = e.key.toLowerCase() === 'g' || e.code === 'KeyG';
+            const isCtrlShortcut = (e.ctrlKey || e.metaKey) && (isC || isV || isG);
             
             if (proxiedCodes.includes(e.code) || isCtrlShortcut) {
                 if (DOM.iframe && DOM.iframe.contentWindow) {
@@ -1082,6 +1102,24 @@ window.init = async function() {
                         shiftKey: e.shiftKey,
                         ctrlKey: e.ctrlKey,
                         metaKey: e.metaKey
+                    }, '*');
+                }
+            }
+
+            // [Bug Fix Arrow-KEY-UP] Proxy Arrow key releases to iframe.
+            // Previously, only Space keyup was proxied. Arrow keyup was never sent,
+            // so the iframe's isArrowMoving flag never reset and LF_SNAP_END never fired.
+            // This caused smart guide state to get permanently stuck after first key press.
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+                if (DOM.iframe && DOM.iframe.contentWindow) {
+                    DOM.iframe.contentWindow.postMessage({
+                        type: 'LF_SHORTCUT_KEY_PROXY',
+                        code: e.code,
+                        key: e.key,
+                        shiftKey: e.shiftKey,
+                        ctrlKey: e.ctrlKey,
+                        metaKey: e.metaKey,
+                        isKeyUp: true
                     }, '*');
                 }
             }

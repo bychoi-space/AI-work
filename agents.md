@@ -3,14 +3,18 @@
 ## 🛠️ 기술 스택 및 아키텍처 (엄격한 규칙)
 - **Vanilla JS 전용**: 프레임워크(React, Vue 등)를 절대 사용하지 마세요. 코드는 가볍고 직관적으로 유지해야 합니다.
 - **단일 진실 공급원 (SSOT)**: 모든 프로젝트 상태(화면 목록, 순서, 설명 등)는 각 프로젝트 폴더의 `metadata.json`에서만 배타적으로 관리되어야 합니다.
-- **3계층 모듈러 아키텍처 (Modular Architecture)**: 엔진 안정성과 확장성을 위해 역할을 엄격히 분리합니다.
+- **모듈러 아키텍처 (Modular Architecture)**: 엔진 안정성과 확장성을 위해 역할을 엄격히 분리합니다.
   - **`vctrl_core.js` (Core Orchestrator - Parent Side)**:
     - **역할**: 시스템의 '심장'. 전역 상태(`state`) 관리, GitHub API 연동(저장/로드), `MessageHub`를 통한 모듈 간 조율, 스크린 로딩 및 내비게이션 보호 로직 담당.
-    - **참고**: 데이터 흐름의 시작점이나 새로운 API 통신 프로토콜을 추가할 때 이 파일을 수정합니다.
-  - **`vctrl_iframe_script.js` (Rendering Engine - Iframe Side)**:
-    - **역할**: 시스템의 '근육'. iframe 내부의 DOM 직접 조작, 이벤트 리스너 바인딩, Undo/Redo 로컬 상태 관리, 오브젝트 삽입 및 렌더링 전담.
-    - **참고**: iframe 내부의 인터랙션(드래그, 리사이즈, 삭제)이나 렌더링 방식(Connectors 등)을 수정할 때 이 파일을 수정합니다.
-    - **주의**: 인라인 문자열(v4Script)로 관리되던 로직이 파일로 분리되었으므로, 수정 후에는 `viewer.html`에서 버전 쿼리 파라미터를 업데이트하여 캐시를 갱신해야 합니다.
+    - **참고**: 스크린 로드 시점에 분리된 iframe 하위 스크립트 모듈들(`vctrl_undo.js`, `vctrl_design_system.js`, `vctrl_shortcuts.js`, `vctrl_iframe_script.js`)을 동적으로 병합하여 iframe `srcdoc`에 주입합니다.
+  - **`vctrl_iframe_script.js` (Rendering Engine Shell - Iframe Side)**:
+    - **역할**: 시스템의 '근육'. iframe 내부의 DOM 직접 조작, 이벤트 리스너 바인딩, 드래그/리사이즈 마우스 인터랙션을 전담합니다.
+  - **`vctrl_undo.js` (Undo Layer - Iframe Side)**:
+    - **역할**: iframe 내부의 V4UndoManager 및 Undo/Redo 로컬 상태 관리를 전담합니다.
+  - **`vctrl_design_system.js` (Design Observer - Iframe Side)**:
+    - **역할**: 1.6px 보더 두께 유지, % 좌표의 px 자동 마이그레이션, img-to-div 전환 및 아톰 크기 자동 보정(Design System)을 전담합니다.
+  - **`vctrl_shortcuts.js` (Interaction Layer - Iframe Side)**:
+    - **역할**: 키보드 핫키 단축키 바인딩 및 크로스 스크린 복사/붙여넣기 연동을 전담합니다.
   - **`vctrl_grouping.js` (Interaction Layer)**:
     - **역할**: 다중 요소 관리자. 드래그 범위 선택(Marquee), 다중 선택 상태(`selectedIds`), 그룹 이동/삭제/그룹화 연산 로직 전담.
   - **`vctrl_inspector.js` (UI Controller)**:
@@ -46,7 +50,7 @@
   - 2. **키보드 이동 보장**: 화살표 키(`ArrowUp` 등)를 통해 픽셀 단위로 상하좌우 이동이 가능해야 합니다.
   - 3. **Delete 삭제 보장**: 사이드바 버튼 외에도 `Delete` 또는 `Backspace` 키보드 입력만으로 즉시 삭제되어야 합니다.
   - 4. **Ctrl+Z (Undo) 보장**: 모든 객체의 이동, 생성, 삭제, 그룹화 동작은 `V4UndoManager.saveState()`를 거쳐 실행 취소가 가능해야 합니다.
-  - 5. **Ctrl+C / Ctrl+V 복사 및 붙여넣기 보장**: 선택된 최상위 객체들을 겹침 방지 오프셋(+15px)으로 복제 생성하고, 새로 생성된 객체들만 자동으로 선택(`.selected`) 상태로 전환하여 즉시 이동 가능하게 초점을 맞춰야 합니다. 핀마커가 복사될 경우 전체 순번을 정렬하고 부모 메타데이터와 연동해야 하며, 글 편집 중에는 텍스트 복사가 우선 동작해야 합니다.
+  - 5. **Ctrl+C / Ctrl+V 복사 및 붙여넣기 보장 (크로스 스크린 지원)**: 서로 다른 스크린 iframe 간 복사/붙여넣기를 지원하기 위해 `window.top.__lf_global_clipboard__`를 전역 클립보드 SSOT로 사용합니다. 복사 시 선택된 최상위 객체들을 JSON으로 직렬화하여 저장하고, 붙여넣기 시 겹침 방지 오프셋(+15px)을 적용해 복제 생성한 뒤 새로 생성된 객체들만 자동으로 선택(`.selected`) 상태로 전환해야 합니다. 핀마커 복사 시 순번 재정렬 및 부모 연동, 글 편집 시 텍스트 복사 우선권 보장 규칙을 준수합니다.
   - 6. **Ctrl+S 전체저장 보장**: 포커스 위치에 관계없이 캔버스 내부 단축키 입력 시 즉시 툴바의 전체저장(`handleGlobalSave`)이 실행되도록 부모 창으로 이벤트를 프록시 토스해야 합니다.
 - **통합 좌표 및 단위 표준 (Unified Coordinate Standards)**:
   - **No-Measure 전략**: 브라우저의 `getBoundingClientRect()` 대신 객체의 **`style.left/top` 데이터**를 Single Source of Truth(SSOT)로 사용합니다.
@@ -88,6 +92,7 @@
 - **회귀 방지 (Regression Guard)**: 엔진 수정 후에는 '스크린 추가', '전체 저장', '삭제' 등 핵심 UI 로직이 여전히 정상 동작하는지 코드 무결성을 철저히 검토하세요.
 - **인코딩 깨짐 주의**: 대량의 텍스트 교체 시 한글 문자열이 깨지지 않도록 도구 사용에 주의하고, 수정 후에는 `Select-String` 등을 통해 의도치 않은 깨짐 문자가 없는지 확인하세요.
 - **브래킷(괄호) 매칭 무결성 상시 검사**: 엔진 및 에디터 코드에 중첩 조건문, 삼항 연산식, 중괄호 블록 등을 대량 수정한 후에는 반드시 `check_syntax.ps1` 스크립트를 구동하여 브래킷 불일치로 인한 `SyntaxError`가 존재하지 않는지 엄격히 검증하여 배포해야 합니다.
+- **중첩 삼항 연산자(Nested Ternaries) 지양 및 분기문 최적화**: 가독성을 해치고 브래킷 매칭 오류(SyntaxError)를 유발하기 쉬운 다중 중첩 삼항 연산자 대신 명확한 `if - else if` 분기 또는 매핑 객체(Dictionary)를 사용하세요. 특정 모듈(예: `vctrl_inspector.js`)의 SyntaxError로 인해 객체(예: `DOM`)가 생성되지 못하면, 이를 의존하는 다른 모듈들까지 `ReferenceError`로 작동을 멈추는 연쇄 장애가 발생하므로 구문 오류 예방에 최우선적으로 집중해야 합니다.
 
 ## 🚀 작업 프로세스 및 안정성 대원칙 (CRITICAL)
 1. **고민 (Pondering)** -> 2. **분석 (Analysis)** -> 3. **설계 (Design)** -> 4. **실행 (Execution)** -> 5. **확인 (Verification)** 단계를 엄격히 준수합니다.

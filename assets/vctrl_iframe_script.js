@@ -99,7 +99,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 .text-marker { 
     position: absolute; padding: 2px 6px; border-radius: 4px; 
     border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
-    white-space: normal; cursor: grab; pointer-events: auto; z-index: 1000; 
+    white-space: normal; cursor: grab; pointer-events: auto; z-index: 100; 
     transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, outline 0.2s;
     min-width: unset; min-height: unset; background: transparent; 
     box-shadow: none; box-sizing: border-box;
@@ -194,138 +194,6 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
 .v4-custom-btn.style-negative { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #475569 !important; }
 `;
 
-window.v4UndoScript = `
-window.V4UndoManager = (function() {
-    const MAX_HISTORY = 10;
-    let undoStack = [];
-    let currentConnectors = []; // Locally synced connectors for secure undo
-    
-    function notifyParent(data) { if (window.parent) window.parent.postMessage(data, '*'); }
-    function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
-    
-    function getCleanHTML() {
-        const host = document.body;
-        const clone = host.cloneNode(true);
-        clone.querySelectorAll('script').forEach(el => el.remove());
-        clone.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
-        clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
-        return clone.innerHTML;
-    }
-
-    return {
-        saveState: function() {
-            try {
-                const html = getCleanHTML();
-                const connectors = JSON.parse(JSON.stringify(currentConnectors));
-                const currentState = JSON.stringify({ html, connectors });
-                if (undoStack.length > 0 && undoStack[undoStack.length - 1] === currentState) return;
-                undoStack.push(currentState);
-                if (undoStack.length > MAX_HISTORY) undoStack.shift();
-                console.log("[V4 Undo] State Saved (HTML + " + connectors.length + " Connectors)");
-            } catch (e) { console.warn("[V4 Undo] Save failed:", e); }
-        },
-        undo: function() {
-            try {
-                if (undoStack.length === 0) return;
-                const prevState = JSON.parse(undoStack.pop());
-                
-                // Keep scripts from current body intact to prevent losing closures/context
-                const currentScripts = Array.from(document.body.querySelectorAll('script'));
-                
-                // Create temporary container to parse restored body innerHTML
-                const temp = document.createElement('div');
-                temp.innerHTML = prevState.html;
-                temp.querySelectorAll('script').forEach(el => el.remove());
-                
-                // Clear body
-                document.body.innerHTML = '';
-                
-                // Restore new layout elements
-                while (temp.firstChild) {
-                    document.body.appendChild(temp.firstChild);
-                }
-                
-                // Restore original script elements safely
-                currentScripts.forEach(script => {
-                    document.body.appendChild(script);
-                });
-
-                if (prevState.connectors) {
-                    currentConnectors = prevState.connectors;
-                    notifyParent({ type: 'LF_RESTORE_CONNECTORS', connectors: prevState.connectors });
-                }
-                
-                if (window.parent && window.parent.state && window.parent.state.activeFile) {
-                    const descList = window.parent.state.activeFile.meta.description || [];
-                    const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
-                    
-                    if (descList.length > remainingPins.length) {
-                        descList.splice(remainingPins.length);
-                    }
-                    
-                    remainingPins.forEach((pin, idx) => {
-                        pin.id = 'v4-pin-' + idx;
-                        const isPinType = pin.classList.contains('pin-marker');
-                        
-                        if (!descList[idx]) {
-                            descList[idx] = {};
-                        }
-                        
-                        if (isPinType) {
-                            // Circular Pin: Only sync coordinates, preserve type and text from parent state
-                            descList[idx].x = parseFloat(pin.style.left) || 0;
-                            descList[idx].y = parseFloat(pin.style.top) || 0;
-                            descList[idx].type = 'pin';
-                            descList[idx].standardized = true;
-                        } else {
-                            // Inline Text Component: Sync full content and style
-                            const editable = pin.querySelector('.v4-editable-cell');
-                            const textContent = editable ? editable.innerText.trim() : "Edit Text";
-                            const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
-                            
-                            descList[idx].text = textContent;
-                            descList[idx].html = htmlContent;
-                            descList[idx].x = parseFloat(pin.style.left) || 0;
-                            descList[idx].y = parseFloat(pin.style.top) || 0;
-                            descList[idx].type = 'text';
-                            descList[idx].standardized = true;
-                        }
-                    });
-                    
-                    if (typeof window.parent.renderDescriptionList === 'function') {
-                        window.parent.renderDescriptionList();
-                    }
-                }
-
-                if (typeof window.initHandles === 'function') window.initHandles();
-                markDirty();
-                console.log("[V4 Undo] Undo Performed");
-            } catch (e) { console.warn("[V4 Undo] Undo failed:", e); }
-        },
-        init: function() {
-            document.addEventListener('keydown', (e) => {
-                if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
-                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
-                    e.preventDefault();
-                    window.V4UndoManager.undo();
-                }
-            });
-            // Handle cross-origin safe sync
-            window.addEventListener('message', (e) => {
-                if (e.data && e.data.type === 'LF_SYNC_CONNECTORS') {
-                    currentConnectors = e.data.connectors || [];
-                } else if (e.data && e.data.type === 'LF_SAVE_UNDO') {
-                    window.V4UndoManager.saveState();
-                } else if (e.data && e.data.type === 'LF_TRIGGER_UNDO') {
-                    window.V4UndoManager.undo();
-                }
-            });
-        }
-    };
-})();
-if (window.V4UndoManager) window.V4UndoManager.init();
-`;
-
 window.v4Script = `
 (function() {
     console.log("[V4 Iframe] Script initialized (V144_SHORTCUT_SAVE_FIX)");
@@ -361,121 +229,7 @@ window.v4Script = `
         return 100;
     };
 
-    let v4Clipboard = [];
-
-    const reorderAllPins = () => {
-        const pins = document.querySelectorAll('.text-marker, .pin-marker');
-        pins.forEach((pin, idx) => {
-            pin.id = 'v4-pin-' + idx;
-            const badge = pin.querySelector('.pin-number-badge');
-            if (badge) {
-                badge.innerText = idx + 1;
-            }
-        });
-        if (window.parent && window.parent.state && window.parent.state.activeFile) {
-            const descList = window.parent.state.activeFile.meta.description || [];
-            const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
-            if (descList.length > remainingPins.length) {
-                descList.splice(remainingPins.length);
-            }
-            remainingPins.forEach((pin, idx) => {
-                const isPinType = pin.classList.contains('pin-marker');
-                if (!descList[idx]) {
-                    descList[idx] = {};
-                }
-                descList[idx].x = parseFloat(pin.style.left) || 0;
-                descList[idx].y = parseFloat(pin.style.top) || 0;
-                descList[idx].standardized = true;
-                if (isPinType) {
-                    descList[idx].type = 'pin';
-                } else {
-                    const editable = pin.querySelector('.v4-editable-cell');
-                    const textContent = editable ? editable.innerText.trim() : "Edit Text";
-                    const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
-                    descList[idx].type = 'text';
-                    descList[idx].text = textContent;
-                    descList[idx].html = htmlContent;
-                }
-            });
-            if (typeof window.parent.renderDescriptionList === 'function') {
-                window.parent.renderDescriptionList();
-            }
-        }
-    };
-
-    const copySelectedObjects = () => {
-        const selected = document.querySelectorAll('.lf-component.selected');
-        if (selected.length === 0) return;
-        v4Clipboard = [];
-        const topLevelSelected = Array.from(selected).filter(el => {
-            let parent = el.parentElement;
-            while (parent && parent !== document.body) {
-                if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
-                    return false;
-                }
-                parent = parent.parentElement;
-            }
-            return true;
-        });
-        topLevelSelected.forEach(el => {
-            v4Clipboard.push({
-                html: el.innerHTML,
-                className: el.className.replace(/\\bselected\\b/g, '').replace(/\\bdragging-now\\b/g, '').trim(),
-                styleCssText: el.style.cssText,
-                left: parseFloat(el.style.left) || 0,
-                top: parseFloat(el.style.top) || 0,
-                isGroup: el.classList.contains('lf-group'),
-                isPinMarker: el.classList.contains('pin-marker'),
-                isTextMarker: el.classList.contains('text-marker')
-            });
-        });
-        console.log("[V4 Iframe] Copied " + v4Clipboard.length + " object(s).");
-    };
-
-    const pasteCopiedObjects = () => {
-        if (!v4Clipboard || v4Clipboard.length === 0) return;
-        if (window.V4UndoManager) window.V4UndoManager.saveState();
-        document.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
-        const host = document.body;
-        const newSelectedIds = [];
-        const offset = 15;
-        v4Clipboard.forEach(item => {
-            const v = document.createElement('div');
-            const newId = item.isPinMarker ? ('v4-pin-' + Date.now() + Math.floor(Math.random() * 1000)) : ('v4-comp-' + Date.now() + Math.floor(Math.random() * 1000));
-            v.id = newId;
-            v.className = item.className + ' selected';
-            v.style.cssText = item.styleCssText;
-            v.style.left = (item.left + offset) + 'px';
-            v.style.top = (item.top + offset) + 'px';
-            v.innerHTML = item.html;
-            v.querySelectorAll('.lf-component').forEach(child => child.classList.remove('selected'));
-            v.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
-            host.appendChild(v);
-            newSelectedIds.push(newId);
-        });
-        if (typeof window.enforceDesignSystem === 'function') {
-            window.enforceDesignSystem();
-        } else if (typeof initHandles === 'function') {
-            initHandles();
-        }
-        const hasPin = v4Clipboard.some(item => item.isPinMarker || item.isTextMarker);
-        if (hasPin) {
-            reorderAllPins();
-        }
-        if (newSelectedIds.length > 0) {
-            const firstNewEl = document.getElementById(newSelectedIds[0]);
-            if (firstNewEl) {
-                notifyParent({
-                    type: "LF_COMP_SELECTED",
-                    ..._getCompStyles(firstNewEl)
-                });
-            }
-        }
-        markDirty();
-        console.log("[V4 Iframe] Pasted " + v4Clipboard.length + " object(s).");
-    };
-
-    const _getCompStyles = (c) => {
+    window._getCompStyles = (c) => {
         const shape = c.querySelector('.v4-shape');
         const table = c.querySelector('table');
         const icon = c.querySelector('.lf-icon') || c.querySelector('img');
@@ -545,7 +299,14 @@ window.v4Script = `
         const buttonStyle = btnContainer ? (btnContainer.getAttribute('data-btn-style') || "normal") : "normal";
         const buttonRadius = btnContainer ? (btnContainer.getAttribute('data-btn-radius') || "6") : "6";
 
-        // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
+        // Date Picker Atom Detection
+        const isDatePicker = !!c.querySelector('.v4-datepicker-container') || c.classList.contains('v4-datepicker-container');
+        const dpContainer = c.querySelector('.v4-datepicker-container') || (isDatePicker ? c : null);
+        const dpShowPresets = dpContainer ? dpContainer.getAttribute('data-show-presets') !== 'false' : true;
+        const dpDefaultPreset = dpContainer ? (dpContainer.getAttribute('data-default-preset') || 'none') : 'none';
+        const dpStartDate = dpContainer ? (dpContainer.getAttribute('data-start-date') || '') : '';
+        const dpEndDate = dpContainer ? (dpContainer.getAttribute('data-end-date') || '') : '';
+
         const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
         const buttonEl = c.querySelector('.v4-custom-btn');
         
@@ -653,6 +414,11 @@ window.v4Script = `
             buttonText: buttonText,
             buttonStyle: buttonStyle,
             buttonRadius: buttonRadius,
+            isDatePicker: isDatePicker,
+            dpShowPresets: dpShowPresets,
+            dpDefaultPreset: dpDefaultPreset,
+            dpStartDate: dpStartDate,
+            dpEndDate: dpEndDate,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
@@ -682,7 +448,7 @@ window.v4Script = `
         };
     };
 
-    function updateHandles(c) {
+    window.updateHandles = (c) => {
         if (!c) return;
         const t = parseInt(c.style.top) || 0;
         const l = parseInt(c.style.left) || 0;
@@ -694,55 +460,19 @@ window.v4Script = `
             const rightDist = window.innerWidth - (l + c.offsetWidth);
             del.style.right = rightDist < 16 ? '4px' : '-12px'; 
         }
-    }
-    
-    const resizeAtomToFitText = (s) => {
-        if (!s) return;
-        const container = s.querySelector('.v4-checkbox-container, .v4-radio-container');
-        if (!container) return;
-        
-        const boxEl = container.querySelector('.v4-checkbox, .v4-radio');
-        if (!boxEl) return;
-
-        const textEnabled = container.getAttribute('data-text-enabled') !== 'false';
-        if (textEnabled) {
-            const textEl = container.querySelector('.v4-checkbox-text, .v4-radio-text');
-            if (textEl) {
-                const boxW = parseFloat(boxEl.style.width) || 24;
-                const boxH = parseFloat(boxEl.style.height) || 24;
-                const textWidth = textEl.scrollWidth || 35;
-                const totalWidth = boxW + 8 + textWidth + 8; // 아이콘 크기 + 8px 간격 + 텍스트 너비 + 8px 패딩 버퍼
-                s.style.width = totalWidth + 'px';
-                s.style.height = Math.max(32, boxH + 8) + 'px';
-            }
-        } else {
-            if (s.getAttribute('data-resized') === 'true') {
-                const parentW = parseFloat(s.style.width) || s.offsetWidth;
-                const parentH = parseFloat(s.style.height) || s.offsetHeight;
-                boxEl.style.width = parentW + 'px';
-                boxEl.style.height = parentH + 'px';
-            } else {
-                const boxW = parseFloat(boxEl.style.width) || 24;
-                const boxH = parseFloat(boxEl.style.height) || 24;
-                s.style.width = boxW + 'px';
-                s.style.height = boxH + 'px';
-            }
-        }
-        updateHandles(s);
     };
 
     document.addEventListener('mouseover', e => {
         const c = e.target.closest('.lf-component');
-        if (c) updateHandles(c);
+        if (c) window.updateHandles(c);
     });
+
     let isMarquee = false;
     document.addEventListener('mousedown', e => {
-        // Rule: Ignore clicks on sidebars, modals, or top panels to prevent unintended deselection/marquee
         if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.header-metadata')) return;
 
         let h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
         
-        // If clicking inside a component, find the top-most component (for grouping)
         if (c && !h && !r && !d) {
             let parent = c.parentElement.closest('.lf-component');
             while (parent) {
@@ -754,12 +484,10 @@ window.v4Script = `
         if (d && c) { 
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
-            // Sync deletion for connectors
             if (c.classList.contains('connector-line')) {
                 notifyParent({ type: 'LF_DELETE_CONNECTOR', id: c.id });
                 c.remove();
             }
-            // Sync deletion for pins
             else if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
                 const idx = parseInt(c.id.replace('v4-pin-', ''));
                 notifyParent({ type: 'LF_DELETE_PIN', index: idx });
@@ -781,11 +509,11 @@ window.v4Script = `
                 document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
                 c.classList.add('selected');
             }
-            updateHandles(c);
+            window.updateHandles(c);
             notifyParent({ 
                 type: "LF_COMP_SELECTED", 
                 shiftKey: isMulti,
-                ..._getCompStyles(c)
+                ...window._getCompStyles(c)
             });
         } else {
             isMarquee = true;
@@ -827,13 +555,13 @@ window.v4Script = `
             startRect = activeEl.getBoundingClientRect();
             notifyParent({ type: 'LF_SNAP_START' });
             if (h) e.preventDefault(); 
-            // Apply dragging class to all selected for smoothness
             document.querySelectorAll('.lf-component.selected').forEach(s => s.classList.add('dragging-now'));
         } else if (e.target.closest('.v4-editable-cell')) {
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             e.target.closest('.v4-editable-cell').focus();
         }
     });
+
     let rafId = null;
     document.addEventListener('mousemove', e => {
         if (isMarquee) {
@@ -849,14 +577,11 @@ window.v4Script = `
             if (isDragging && activeEl) { 
                 const dx = e.clientX - startX;
                 const dy = e.clientY - startY;
-                const requestX = startRect.left + dx;
-                const requestY = startRect.top + dy;
-                
-                // Track delta for multi-move
-                const deltaX = dx; 
-                const deltaY = dy;
+                const scale = (window.parent?.state?.transform?.scale) || 1;
+                const logicalX = startLeft + dx / scale;
+                const logicalY = startTop + dy / scale;
 
-                notifyParent({ type: 'LF_SNAP_REQUEST', x: requestX, y: requestY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
+                notifyParent({ type: 'LF_SNAP_REQUEST', x: logicalX, y: logicalY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
                 markDirty(); 
             }
             else if (isResizing && activeEl) { 
@@ -864,12 +589,13 @@ window.v4Script = `
                 const nh = Math.max(10, startH + e.clientY - startY);
                 activeEl.style.width = nw + 'px'; 
                 activeEl.style.height = nh + 'px'; 
-                updateHandles(activeEl);
+                window.updateHandles(activeEl);
                 markDirty(); 
                 notifyParent({ type: 'LF_COMP_RESIZED', w: nw, h: nh });
             }
         });
     });
+
     document.addEventListener('mouseup', () => { 
         if (isConnectorDragging) {
             isConnectorDragging = false;
@@ -882,7 +608,6 @@ window.v4Script = `
         if (isDragging && activeEl) {
             notifyParent({ type: 'LF_SNAP_END' });
             
-            // Sync position for pins (text markers) - now using px directly
             if (activeEl.classList.contains('text-marker') || activeEl.classList.contains('pin-marker')) {
                 const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
                 notifyParent({
@@ -922,156 +647,21 @@ window.v4Script = `
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
         isDragging = false; isResizing = false; activeEl = null; 
     });
+
     document.addEventListener('input', e => { 
         if (e.target.classList.contains('v4-editable-cell')) {
             markDirty();
             const comp = e.target.closest('.lf-component');
             if (comp && (comp.querySelector('.v4-checkbox-container') || comp.querySelector('.v4-radio-container'))) {
-                resizeAtomToFitText(comp);
+                if (typeof window.resizeAtomToFitText === 'function') {
+                    window.resizeAtomToFitText(comp);
+                } else if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
             }
         } 
     });
-    let isArrowMoving = false;
-    document.addEventListener('keydown', e => {
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
-            e.preventDefault();
-            notifyParent({ type: 'LF_TRIGGER_SAVE' });
-            return;
-        }
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                e.preventDefault();
-                copySelectedObjects();
-                return;
-            }
-        }
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                e.preventDefault();
-                pasteCopiedObjects();
-                return;
-            }
-        }
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'g') {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                e.preventDefault();
-                notifyParent({
-                    type: 'LF_SHORTCUT_TRIGGERED',
-                    shortcut: e.shiftKey ? 'ungroup' : 'group'
-                });
-            }
-        }
-        else if (e.code === 'Space') {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                e.preventDefault();
-                notifyParent({ type: 'LF_SPACE_DOWN' });
-            }
-        } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                const selected = document.querySelectorAll('.lf-component.selected');
-                if (selected.length > 0) {
-                    e.preventDefault();
-                    if (window.V4UndoManager && !isArrowMoving) {
-                        window.V4UndoManager.saveState();
-                        isArrowMoving = true;
-                        notifyParent({ type: 'LF_SNAP_START' });
-                    }
-                    const step = e.shiftKey ? 10 : 1;
-                    let dx = 0, dy = 0;
-                    if (e.code === 'ArrowUp') dy = -step;
-                    if (e.code === 'ArrowDown') dy = step;
-                    if (e.code === 'ArrowLeft') dx = -step;
-                    if (e.code === 'ArrowRight') dx = step;
 
-                    const activeEl = selected[0];
-
-                    selected.forEach(c => {
-                        const l = parseFloat(c.style.left) || 0;
-                        const t = parseFloat(c.style.top) || 0;
-                        c.style.left = (l + dx) + 'px';
-                        c.style.top = (t + dy) + 'px';
-                        updateHandles(c);
-                        
-                        if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
-                            const idx = parseInt(c.id.replace('v4-pin-', ''));
-                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: l + dx, y: t + dy });
-                        }
-                        
-                        if (c.classList.contains('connector-line')) {
-                            notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: c.id, dx: dx, dy: dy });
-                        }
-                        
-                        // Sync children if it's a group
-                        if (c.classList.contains('lf-group')) {
-                            c.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
-                                const idx = parseInt(child.id.replace('v4-pin-', ''));
-                                const childRect = child.getBoundingClientRect();
-                                const hostRect = document.body.getBoundingClientRect();
-                                const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
-                                const absX = (childRect.left - hostRect.left) / scale;
-                                const absY = (childRect.top - hostRect.top) / scale;
-                                notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: absX, y: absY });
-                            });
-                        }
-                    });
-                    
-                    if (activeEl) {
-                        const activeRect = activeEl.getBoundingClientRect();
-                        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
-                        const parentRect = document.body.getBoundingClientRect();
-                        
-                        const relativeX = (activeRect.left - parentRect.left) / scale;
-                        const relativeY = (activeRect.top - parentRect.top) / scale;
-                        
-                        notifyParent({ 
-                            type: 'LF_SNAP_REQUEST', 
-                            x: relativeX, 
-                            y: relativeY, 
-                            w: activeEl.offsetWidth, 
-                            h: activeEl.offsetHeight 
-                        });
-                    }
-                }
-            }
-        } else if (e.code === 'Delete' || e.code === 'Backspace') {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                const selected = document.querySelectorAll('.lf-component.selected');
-                if (selected.length > 0) {
-                    e.preventDefault();
-                    if (window.V4UndoManager) window.V4UndoManager.saveState();
-                    
-                    selected.forEach(c => {
-                        if (c.classList.contains('connector-line')) {
-                            notifyParent({ type: 'LF_DELETE_CONNECTOR', id: c.id });
-                        } else if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
-                            const idx = parseInt(c.id.replace('v4-pin-', ''));
-                            notifyParent({ type: 'LF_DELETE_PIN', index: idx });
-                            c.remove();
-                        } else {
-                            c.remove();
-                        }
-                    });
-                    
-                    notifyParent({ type: 'LF_DESELECT' });
-                    markDirty();
-                }
-            }
-        }
-    });
-    document.addEventListener('keyup', e => {
-        if (e.code === 'Space') {
-            notifyParent({ type: 'LF_SPACE_UP' });
-        } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
-            isArrowMoving = false;
-            notifyParent({ type: 'LF_SNAP_END' });
-        }
-    });
     document.addEventListener('wheel', e => {
         if (e.ctrlKey) {
             e.preventDefault();
@@ -1083,42 +673,21 @@ window.v4Script = `
             });
         }
     }, { passive: false });
+
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
-        if (d.type === 'LF_SHORTCUT_KEY_PROXY') {
-            const eventType = d.code === 'Space' ? 'keyup' : 'keydown';
-            const event = new KeyboardEvent(eventType, {
-                code: d.code,
-                key: d.key,
-                shiftKey: !!d.shiftKey,
-                ctrlKey: !!d.ctrlKey,
-                metaKey: !!d.metaKey,
-                bubbles: true
-            });
-            document.dispatchEvent(event);
-            return;
-        }
-        if (d.type === 'LF_REORDER_PINS') {
-            const pins = document.querySelectorAll('.text-marker, .pin-marker');
-            pins.forEach((pin, idx) => {
-                pin.id = 'v4-pin-' + idx;
-                const badge = pin.querySelector('.pin-number-badge');
-                if (badge) {
-                    badge.innerText = idx + 1;
-                }
-            });
-            return;
-        }
+
         if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
-            const currentRect = activeEl.getBoundingClientRect();
-            const snapDx = d.x - currentRect.left;
-            const snapDy = d.y - currentRect.top;
+            const curLeft = parseInt(activeEl.style.left) || 0;
+            const curTop = parseInt(activeEl.style.top) || 0;
+            const snapDx = d.x - curLeft;
+            const snapDy = d.y - curTop;
             if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
                 const comps = document.querySelectorAll('.lf-component.selected');
                 comps.forEach(c => {
                     c.style.left = (parseInt(c.style.left || 0) + snapDx) + 'px';
                     c.style.top = (parseInt(c.style.top || 0) + snapDy) + 'px';
-                    updateHandles(c);
+                    window.updateHandles(c);
                 });
             }
         }
@@ -1126,11 +695,7 @@ window.v4Script = `
             const host = document.body;
             d.pins.forEach((pin, idx) => {
                 let div = document.getElementById('v4-pin-' + idx);
-                if (div) {
-                    // 이미 존재하는 핀마커는 기존 HTML 구조(상대 좌표 및 그룹화 구조)를 
-                    // 온전히 신뢰하므로 좌표 덮어쓰기를 방지하고 스킵합니다.
-                    return;
-                }
+                if (div) return;
                 
                 div = document.createElement('div');
                 div.id = 'v4-pin-' + idx;
@@ -1157,17 +722,15 @@ window.v4Script = `
                 let xVal = parseFloat(pin.x) || 0;
                 let yVal = parseFloat(pin.y) || 0;
                 
-                // Convert legacy percentage coordinates to absolute pixels based on 1440x900 canvas
                 if (!pin.standardized && xVal <= 100 && yVal <= 100) {
                     xVal = xVal * 14.4;
                     yVal = yVal * 9.0;
                 }
 
-                // Global absolute position relative to body
                 div.style.left = xVal + 'px';
                 div.style.top = yVal + 'px';
                 
-                updateHandles(div);
+                window.updateHandles(div);
             });
         }
         else if (d.type === 'LF_RENDER_CONNECTORS') {
@@ -1277,7 +840,6 @@ window.v4Script = `
             const sY = window.scrollY;
             const sX = window.scrollX;
             
-            // pin-marker 타입인 경우 규격(28px * 28px)을 강제 지정
             const isPinMarker = d.className && d.className.includes('pin-marker');
             const compW = isPinMarker ? 28 : ((d.style && d.style.width) ? parseInt(d.style.width) || 200 : 200);
             const compH = isPinMarker ? 28 : ((d.style && d.style.height) ? parseInt(d.style.height) || 100 : 100);
@@ -1303,18 +865,16 @@ window.v4Script = `
                               '<div class="lf-delete-trigger" style="right:-10px; top:-10px;">&times;</div>';
             } else {
                 v.className = 'lf-component' + (d.isGroup ? ' lf-group' : '') + (d.className ? ' ' + d.className : ''); 
-                v.style.transform = 'none'; // Prevent drift during grouping
+                v.style.transform = 'none';
                 if (d.style) Object.assign(v.style, d.style);
                 v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + d.html + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
             }
             
-            // Smart Scaling based on Parent Viewport
             if (window.parent.state && window.parent.state.transform) {
                 const s = window.parent.state.transform.scale || 1;
                 if (s < 1) {
                     const bw = parseInt(v.style.width) || 200;
                     const bh = parseInt(v.style.height) || 100;
-                    // Auto-boost size if zoomed out to keep visually consistent, but NOT for groups which have absolute positioned children
                     if (s < 0.8 && !d.isGroup) {
                         v.style.width = Math.round(bw / s) + 'px';
                         v.style.height = Math.round(bh / s) + 'px';
@@ -1322,7 +882,6 @@ window.v4Script = `
                 }
             }
             
-            // Legacy Compatibility: Detect old-style molecule with absolute coordinates
             const children = Array.from(v.children).filter(c => c.classList.contains('lf-component') || c.classList.contains('lf-group'));
             if (children.length === 1) {
                 const inner = children[0];
@@ -1339,7 +898,7 @@ window.v4Script = `
             host.appendChild(v);
             document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             v.classList.add('selected');
-            const styles = _getCompStyles(v);
+            const styles = window._getCompStyles(v);
             notifyParent({ 
                 type: 'LF_COMP_SELECTED', 
                 ...styles
@@ -1362,13 +921,13 @@ window.v4Script = `
                 v.style.width = c.width || '200px';
                 v.style.height = c.height || '100px';
                 v.style.zIndex = '1000';
-                v.style.transform = 'none !important'; // Critical fix for atoms
+                v.style.transform = 'none !important';
 
                 if (c.style) Object.assign(v.style, c.style);
 
                 v.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' + (c.html || '') + '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
                 host.appendChild(v);
-                updateHandles(v);
+                window.updateHandles(v);
             });
             markDirty();
         } else if (d.type === 'LF_SELECT_ID') {
@@ -1376,7 +935,7 @@ window.v4Script = `
             if (el) {
                 document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
                 el.classList.add('selected');
-                updateHandles(el);
+                window.updateHandles(el);
             }
         }
         else if (d.type === 'LF_UPDATE_PIN_CONTENT') {
@@ -1391,20 +950,17 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_SHAPE_TEXT') {
-            // Shape 내부 텍스트/HTML을 Quill 에디터 결과로 업데이트
             const s = document.querySelector('.lf-component.selected'); 
             if (!s) return;
             const shape = s.querySelector('.v4-shape');
             if (!shape) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
-            // SVG 기반 도형(diamond, triangle, wave)은 SVG를 보존하고 텍스트 레이어에만 삽입
             const isSvgShape = shape.classList.contains('v4-shape-diamond') || 
                                shape.classList.contains('v4-shape-triangle') || 
                                shape.classList.contains('v4-shape-wave');
 
             if (isSvgShape) {
-                // SVG 기반: 텍스트 오버레이 div를 찾거나 생성
                 let textOverlay = shape.querySelector('.v4-shape-text-overlay');
                 if (!textOverlay) {
                     textOverlay = document.createElement('div');
@@ -1415,11 +971,8 @@ window.v4Script = `
                 }
                 textOverlay.innerHTML = d.html;
             } else {
-                // 일반 도형(rect, circle): shape 내부에 직접 HTML 주입
-                // 기존 SVG 요소는 보존하고, 텍스트 컨테이너만 업데이트
                 let textContainer = shape.querySelector('.v4-shape-text-content');
                 if (!textContainer) {
-                    // 최초 1회: 기존 innerHTML(순수 텍스트/HTML)을 컨테이너로 감싸기
                     const existingContent = shape.innerHTML;
                     textContainer = document.createElement('div');
                     textContainer.className = 'v4-shape-text-content';
@@ -1448,7 +1001,7 @@ window.v4Script = `
             if (container) {
                 container.setAttribute('data-text-enabled', d.enabled ? 'true' : 'false');
                 s.removeAttribute('data-resized');
-                resizeAtomToFitText(s);
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
             }
         }
@@ -1458,77 +1011,34 @@ window.v4Script = `
             if (container) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
                 
-                if (d.minVal !== undefined) {
-                    container.setAttribute('data-min', d.minVal);
-                }
-                if (d.maxVal !== undefined) {
-                    container.setAttribute('data-max', d.maxVal);
-                }
-                if (d.disabled !== undefined) {
-                    container.setAttribute('data-disabled', d.disabled ? 'true' : 'false');
-                }
+                if (d.minVal !== undefined) container.setAttribute('data-min', d.minVal);
+                if (d.maxVal !== undefined) container.setAttribute('data-max', d.maxVal);
+                if (d.disabled !== undefined) container.setAttribute('data-disabled', d.disabled ? 'true' : 'false');
+                
                 if (d.btnEnabled !== undefined) {
                     container.setAttribute('data-btn-enabled', d.btnEnabled ? 'true' : 'false');
                     const actBtn = container.querySelector('.v4-stepper-action');
-                    if (actBtn) {
-                        actBtn.style.display = d.btnEnabled ? 'inline-flex' : 'none';
-                    }
-                    if (d.btnEnabled) {
-                        s.style.width = '154px';
-                    } else {
-                        s.style.width = '100px';
-                    }
+                    if (actBtn) actBtn.style.display = d.btnEnabled ? 'inline-flex' : 'none';
+                    s.style.width = d.btnEnabled ? '154px' : '100px';
                 }
                 if (d.btnText !== undefined) {
                     container.setAttribute('data-btn-text', d.btnText);
                     const actBtn = container.querySelector('.v4-stepper-action');
-                    if (actBtn) {
-                        actBtn.innerText = d.btnText;
-                    }
+                    if (actBtn) actBtn.innerText = d.btnText;
                 }
                 
                 const min = parseInt(container.getAttribute('data-min')) || 1;
                 const max = parseInt(container.getAttribute('data-max')) || 99;
                 let curVal = parseInt(container.getAttribute('data-val')) || min;
                 
-                if (d.minVal !== undefined) {
-                    curVal = min;
-                }
-                
+                if (d.minVal !== undefined) curVal = min;
                 curVal = Math.max(min, Math.min(max, curVal));
                 container.setAttribute('data-val', curVal);
                 
                 const valEl = container.querySelector('.v4-stepper-value');
                 if (valEl) valEl.innerText = curVal;
                 
-                const decBtn = container.querySelector('.v4-stepper-dec');
-                const incBtn = container.querySelector('.v4-stepper-inc');
-                const isDisabled = container.getAttribute('data-disabled') === 'true';
-                
-                if (isDisabled) {
-                    if (decBtn) {
-                        decBtn.style.backgroundColor = '';
-                        decBtn.style.color = '';
-                        decBtn.style.cursor = 'not-allowed';
-                    }
-                    if (incBtn) {
-                        incBtn.style.backgroundColor = '';
-                        incBtn.style.color = '';
-                        incBtn.style.cursor = 'not-allowed';
-                    }
-                } else {
-                    if (decBtn) {
-                        decBtn.style.backgroundColor = curVal === min ? '#f3f4f6' : '#ffffff';
-                        decBtn.style.color = curVal === min ? '#9ca3af' : '#374151';
-                        decBtn.style.cursor = curVal === min ? 'not-allowed' : 'pointer';
-                    }
-                    if (incBtn) {
-                        incBtn.style.backgroundColor = curVal === max ? '#f3f4f6' : '#ffffff';
-                        incBtn.style.color = curVal === max ? '#9ca3af' : '#374151';
-                        incBtn.style.cursor = curVal === max ? 'not-allowed' : 'pointer';
-                    }
-                }
-                
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
             }
         }
@@ -1547,9 +1057,7 @@ window.v4Script = `
                 if (d.dropdownActive !== undefined) {
                     container.setAttribute('data-dropdown-active', d.dropdownActive ? 'true' : 'false');
                     const optionsList = container.querySelector('.v4-selectbox-options');
-                    if (optionsList) {
-                        optionsList.style.display = d.dropdownActive ? 'block' : 'none';
-                    }
+                    if (optionsList) optionsList.style.display = d.dropdownActive ? 'block' : 'none';
                 }
                 
                 if (d.options !== undefined) {
@@ -1567,10 +1075,7 @@ window.v4Script = `
                     }
                 }
                 
-                if (typeof window.enforceDesignSystem === 'function') {
-                    window.enforceDesignSystem();
-                }
-                
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
             }
         }
@@ -1580,40 +1085,25 @@ window.v4Script = `
             if (container) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
                 
-                if (d.fileSelected !== undefined) {
-                    container.setAttribute('data-selected', d.fileSelected ? 'true' : 'false');
-                }
-                if (d.fileName !== undefined) {
-                    container.setAttribute('data-file-name', d.fileName);
-                }
+                if (d.fileSelected !== undefined) container.setAttribute('data-selected', d.fileSelected ? 'true' : 'false');
+                if (d.fileName !== undefined) container.setAttribute('data-file-name', d.fileName);
                 if (d.fileButtonText !== undefined) {
                     container.setAttribute('data-button-text', d.fileButtonText);
                     const btn = container.querySelector('.v4-fileupload-button');
                     if (btn) btn.innerText = d.fileButtonText;
                 }
-                if (d.filePlaceholder !== undefined) {
-                    container.setAttribute('data-placeholder', d.filePlaceholder);
-                }
+                if (d.filePlaceholder !== undefined) container.setAttribute('data-placeholder', d.filePlaceholder);
                 
-                // Update internal text display based on selection state
                 const isSel = container.getAttribute('data-selected') === 'true';
                 const fName = container.getAttribute('data-file-name') || '';
                 const placeholder = container.getAttribute('data-placeholder') || '선택된 파일 없음';
                 const txt = container.querySelector('.v4-fileupload-textbox');
                 if (txt) {
-                    if (isSel) {
-                        txt.innerText = fName;
-                        txt.style.color = '#374151';
-                    } else {
-                        txt.innerText = placeholder;
-                        txt.style.color = '#9ca3af';
-                    }
+                    txt.innerText = isSel ? fName : placeholder;
+                    txt.style.color = isSel ? '#374151' : '#9ca3af';
                 }
                 
-                if (typeof window.enforceDesignSystem === 'function') {
-                    window.enforceDesignSystem();
-                }
-                
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
             }
         }
@@ -1631,18 +1121,14 @@ window.v4Script = `
                 if (d.showDesc !== undefined) {
                     container.setAttribute('data-show-desc', d.showDesc ? 'true' : 'false');
                     const descWrapper = container.querySelector('.v4-alert-desc-wrapper');
-                    if (descWrapper) {
-                        descWrapper.style.display = d.showDesc ? 'flex' : 'none';
-                    }
+                    if (descWrapper) descWrapper.style.display = d.showDesc ? 'flex' : 'none';
                 }
                 if (d.descText !== undefined) {
                     container.setAttribute('data-desc', d.descText);
                     const descBadge = container.querySelector('.v4-alert-desc-badge');
                     if (descBadge) descBadge.innerText = d.descText;
                 }
-                if (d.btnCount !== undefined) {
-                    container.setAttribute('data-btn-count', d.btnCount);
-                }
+                if (d.btnCount !== undefined) container.setAttribute('data-btn-count', d.btnCount);
                 if (d.btnText1 !== undefined) {
                     container.setAttribute('data-btn-text-1', d.btnText1);
                     const btn = container.querySelector('.v4-alert-btn-1');
@@ -1662,30 +1148,24 @@ window.v4Script = `
                 if (d.btnStyle2 !== undefined) container.setAttribute('data-btn-style-2', d.btnStyle2);
                 if (d.btnStyle3 !== undefined) container.setAttribute('data-btn-style-3', d.btnStyle3);
                 
-                // Update button visibility and style classes
                 const count = parseInt(container.getAttribute('data-btn-count')) || 1;
                 const btn1 = container.querySelector('.v4-alert-btn-1');
                 const btn2 = container.querySelector('.v4-alert-btn-2');
                 const btn3 = container.querySelector('.v4-alert-btn-3');
                 if (btn1) {
                     btn1.style.display = count >= 1 ? 'flex' : 'none';
-                    const style1 = container.getAttribute('data-btn-style-1') || 'normal';
-                    btn1.className = 'v4-alert-btn v4-alert-btn-1 style-' + style1;
+                    btn1.className = 'v4-alert-btn v4-alert-btn-1 style-' + (container.getAttribute('data-btn-style-1') || 'normal');
                 }
                 if (btn2) {
                     btn2.style.display = count >= 2 ? 'flex' : 'none';
-                    const style2 = container.getAttribute('data-btn-style-2') || 'normal';
-                    btn2.className = 'v4-alert-btn v4-alert-btn-2 style-' + style2;
+                    btn2.className = 'v4-alert-btn v4-alert-btn-2 style-' + (container.getAttribute('data-btn-style-2') || 'normal');
                 }
                 if (btn3) {
                     btn3.style.display = count >= 3 ? 'flex' : 'none';
-                    const style3 = container.getAttribute('data-btn-style-3') || 'normal';
-                    btn3.className = 'v4-alert-btn v4-alert-btn-3 style-' + style3;
+                    btn3.className = 'v4-alert-btn v4-alert-btn-3 style-' + (container.getAttribute('data-btn-style-3') || 'normal');
                 }
                 
-                if (typeof window.enforceDesignSystem === 'function') {
-                    window.enforceDesignSystem();
-                }
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
             }
         }
@@ -1703,23 +1183,82 @@ window.v4Script = `
                 if (d.buttonStyle !== undefined) {
                     container.setAttribute('data-btn-style', d.buttonStyle);
                     const btn = container.querySelector('.v4-custom-btn');
-                    if (btn) {
-                        const targetClass = 'v4-custom-btn style-' + d.buttonStyle;
-                        if (btn.className !== targetClass) btn.className = targetClass;
-                    }
+                    if (btn) btn.className = 'v4-custom-btn style-' + d.buttonStyle;
                 }
                 if (d.buttonRadius !== undefined) {
                     container.setAttribute('data-btn-radius', d.buttonRadius);
                     const btn = container.querySelector('.v4-custom-btn');
-                    if (btn) {
-                        const targetRadius = d.buttonRadius + 'px';
-                        if (btn.style.borderRadius !== targetRadius) btn.style.borderRadius = targetRadius;
-                    }
+                    if (btn) btn.style.borderRadius = d.buttonRadius + 'px';
                 }
                 
-                if (typeof window.enforceDesignSystem === 'function') {
-                    window.enforceDesignSystem();
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_DATEPICKER') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-datepicker-container') || (s.classList.contains('v4-datepicker-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+                const _fmt = (dt) => {
+                    const y = dt.getFullYear();
+                    const m = String(dt.getMonth() + 1).padStart(2, '0');
+                    const dd = String(dt.getDate()).padStart(2, '0');
+                    return y + '/' + m + '/' + dd;
+                };
+
+                const _applyPreset = (preset) => {
+                    const today = new Date();
+                    let startDt = null;
+                    let endDt = today;
+                    if (preset === '1D') { startDt = new Date(today); startDt.setDate(today.getDate() - 1); }
+                    else if (preset === '1W') { startDt = new Date(today); startDt.setDate(today.getDate() - 7); }
+                    else if (preset === '1M') { startDt = new Date(today); startDt.setMonth(today.getMonth() - 1); }
+                    else if (preset === '6M') { startDt = new Date(today); startDt.setMonth(today.getMonth() - 6); }
+                    else if (preset === 'all') { startDt = null; endDt = null; }
+                    return { start: startDt ? _fmt(startDt) : '', end: endDt ? _fmt(endDt) : '' };
+                };
+
+                if (d.showPresets !== undefined) {
+                    container.setAttribute('data-show-presets', d.showPresets ? 'true' : 'false');
+                    const presetsDiv = container.querySelector('.v4-dp-presets');
+                    if (presetsDiv) presetsDiv.style.display = d.showPresets ? 'inline-flex' : 'none';
                 }
+
+                if (d.defaultPreset !== undefined) {
+                    container.setAttribute('data-default-preset', d.defaultPreset);
+                    container.querySelectorAll('.v4-dp-preset-btn').forEach(btn => {
+                        const isActive = btn.getAttribute('data-preset') === d.defaultPreset;
+                        btn.style.background = isActive ? '#1d4ed8' : '#ffffff';
+                        btn.style.borderColor = isActive ? '#1d4ed8' : '#cccccc';
+                        btn.style.color = isActive ? '#ffffff' : '#374151';
+                        btn.style.fontWeight = isActive ? '700' : '600';
+                        if (isActive) btn.classList.add('v4-dp-preset-active');
+                        else btn.classList.remove('v4-dp-preset-active');
+                    });
+                    if (d.defaultPreset !== 'none') {
+                        const computed = _applyPreset(d.defaultPreset);
+                        container.setAttribute('data-start-date', computed.start);
+                        container.setAttribute('data-end-date', computed.end);
+                        const startEl = container.querySelector('.v4-dp-start');
+                        const endEl = container.querySelector('.v4-dp-end');
+                        if (startEl && startEl.innerText !== computed.start) startEl.innerText = computed.start;
+                        if (endEl && endEl.innerText !== computed.end) endEl.innerText = computed.end;
+                    }
+                }
+
+                if (d.startDate !== undefined) {
+                    container.setAttribute('data-start-date', d.startDate);
+                    const startEl = container.querySelector('.v4-dp-start');
+                    if (startEl && startEl.innerText !== d.startDate) startEl.innerText = d.startDate;
+                }
+                if (d.endDate !== undefined) {
+                    container.setAttribute('data-end-date', d.endDate);
+                    const endEl = container.querySelector('.v4-dp-end');
+                    if (endEl && endEl.innerText !== d.endDate) endEl.innerText = d.endDate;
+                }
+
                 markDirty();
             }
         }
@@ -1734,12 +1273,8 @@ window.v4Script = `
                     if (ph) ph.textContent = d.placeholderText;
                     container.setAttribute('data-placeholder', d.placeholderText);
                 }
-                if (d.maxLength !== undefined) {
-                    container.setAttribute('data-maxlength', d.maxLength);
-                }
-                if (d.showCounter !== undefined) {
-                    container.setAttribute('data-show-counter', d.showCounter ? 'true' : 'false');
-                }
+                if (d.maxLength !== undefined) container.setAttribute('data-maxlength', d.maxLength);
+                if (d.showCounter !== undefined) container.setAttribute('data-show-counter', d.showCounter ? 'true' : 'false');
                 if (d.fontSize !== undefined) {
                     const input = container.querySelector('.v4-textbox-input, .v4-textarea-input');
                     const placeholder = container.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder');
@@ -1757,50 +1292,35 @@ window.v4Script = `
                     container.setAttribute('data-fontfamily', d.fontFamily);
                 }
                 
-                // Trigger re-sync by resetting dataset flag
                 const input = container.querySelector('.v4-textbox-input, .v4-textarea-input');
-                if (input) {
-                    input.dataset.eventsBound = "false";
-                }
+                if (input) input.dataset.eventsBound = "false";
+                
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
             }
         }
         else if (d.type === 'LF_UPDATE_STYLE') {
-
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             
-            // If it's a text marker, target the editable cell for content/style updates if needed
             let t = d.selector ? s.querySelector(d.selector) : s;
             if (!t && s.classList.contains('text-marker')) {
                 t = s.querySelector('.v4-editable-cell') || s;
             }
-            // Checkbox / Radio box style redirection for BG & Border coloring
             const boxEl = s.querySelector('.v4-checkbox, .v4-radio');
-            if (boxEl && !d.selector) {
-                t = boxEl;
-            }
+            if (boxEl && !d.selector) t = boxEl;
             
-            // Textbox / Textarea style redirection for BG & Border coloring
             const inputContainer = s.querySelector('.v4-textbox-container, .v4-textarea-container');
-            if (inputContainer && !d.selector) {
-                t = inputContainer;
-            }
-            // Alert style redirection for BG & Border coloring
+            if (inputContainer && !d.selector) t = inputContainer;
+            
             const alertContainer = s.querySelector('.v4-alert-container');
             const alertDialog = alertContainer ? alertContainer.querySelector('.v4-alert-dialog') : null;
-            if (alertDialog && !d.selector) {
-                t = alertDialog;
-            } else if (alertContainer && !d.selector) {
-                t = alertContainer;
-            }
-            // Button style redirection for BG & Border coloring
+            if (alertDialog && !d.selector) t = alertDialog;
+            else if (alertContainer && !d.selector) t = alertContainer;
+            
             const buttonContainer = s.querySelector('.v4-btn-container');
             const customBtn = s.querySelector('.v4-custom-btn');
-            if (buttonContainer && customBtn && !d.selector) {
-                t = customBtn;
-            }
+            if (buttonContainer && customBtn && !d.selector) t = customBtn;
             if (!t) return;
             
             if (d.style) {
@@ -1811,8 +1331,6 @@ window.v4Script = `
                 
                 const isInnerBox = t.classList.contains('v4-checkbox') || t.classList.contains('v4-radio');
                 
-                // CRITICAL: Dimension style changes (width, height) must apply to the outermost .lf-component (s)
-                // unless it is an atomic inner box of Checkbox/Radio, in which case it targets the box itself.
                 if (d.style.width !== undefined) {
                     if (isInnerBox) {
                         t.style.width = d.style.width;
@@ -1841,12 +1359,10 @@ window.v4Script = `
                 }
                 Object.assign(t.style, styleToAssign);
                 
-                // SVG Sync: If the element contains an SVG, sync stroke/fill
                 const svgShape = t.querySelector('path, polygon, rect, circle');
                 if (svgShape) {
                     if (d.style.backgroundColor || d.style.background) {
                         svgShape.style.fill = d.style.backgroundColor || d.style.background;
-                        // For non-rectangular shapes, container must stay transparent to avoid square fill leakage
                         if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave')) {
                             t.style.backgroundColor = 'transparent';
                         }
@@ -1857,17 +1373,12 @@ window.v4Script = `
                     }
                 }
 
-                // --- ICON COLOR SPECIAL INTEGRATION ---
                 const isIconComp = s.querySelector('.lf-icon') || s.querySelector('img');
                 if (isIconComp && d.style.color) {
                     const iconColor = d.style.color;
-                    
-                    // 1. SVG coloring (Arrows, Close, Checkbox SVG)
                     const innerSvg = t.querySelector('svg') || (t.tagName.toLowerCase() === 'svg' ? t : null);
                     if (innerSvg) {
                         innerSvg.style.color = iconColor;
-                        
-                        // Also apply stroke and fill overrides to the SVG root if it has stroke/fill attributes
                         if (innerSvg.getAttribute('stroke') && innerSvg.getAttribute('stroke') !== 'none') {
                             innerSvg.style.stroke = iconColor;
                         }
@@ -1875,30 +1386,23 @@ window.v4Script = `
                             innerSvg.style.fill = iconColor;
                         }
                         
-                        // Checkbox custom handling: only color the stroke of checkmark
                         if (t.classList.contains('v4-checkbox')) {
                             const checkmark = innerSvg.querySelector('polyline, path');
                             if (checkmark) checkmark.style.stroke = iconColor;
                         } else {
                             const paths = innerSvg.querySelectorAll('path, line, polyline, polygon, rect, circle');
                             paths.forEach(p => {
-                                if (p.getAttribute('stroke') && p.getAttribute('stroke') !== 'none') {
-                                    p.style.stroke = iconColor;
-                                }
-                                if (p.getAttribute('fill') && p.getAttribute('fill') !== 'none') {
-                                    p.style.fill = iconColor;
-                                }
+                                if (p.getAttribute('stroke') && p.getAttribute('stroke') !== 'none') p.style.stroke = iconColor;
+                                if (p.getAttribute('fill') && p.getAttribute('fill') !== 'none') p.style.fill = iconColor;
                             });
                         }
                     }
                     
-                    // 2. Radio Button dot coloring
                     const innerDot = t.querySelector('.v4-radio div') || (t.classList.contains('v4-radio') ? t.querySelector('div') : null);
                     if (innerDot) {
                         innerDot.style.backgroundColor = iconColor;
                     }
                     
-                    // 3. Sprite / Image mask-based coloring for non-SVG icons
                     if (!innerSvg && !innerDot) {
                         t.style.filter = 'none';
                         if (t.tagName.toLowerCase() === 'img') {
@@ -1963,9 +1467,7 @@ window.v4Script = `
             if (d.subSelector && d.subStyle) {
                 t.querySelectorAll(d.subSelector).forEach(sub => Object.assign(sub.style, d.subStyle));
             }
-            if (typeof updateHandles === 'function') {
-                updateHandles(s);
-            }
+            window.updateHandles(s);
             markDirty();
         } else if (d.type === 'LF_DELETE_SELECTED') {
             const s = document.querySelector('.lf-component.selected'); 
@@ -1982,9 +1484,7 @@ window.v4Script = `
             const topLevelSelected = Array.from(selected).filter(el => {
                 let parent = el.parentElement;
                 while (parent && parent !== document.body) {
-                    if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
-                        return false;
-                    }
+                    if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) return false;
                     parent = parent.parentElement;
                 }
                 return true;
@@ -2000,18 +1500,14 @@ window.v4Script = `
                     }
                 });
                 markDirty();
-                if (typeof reorderAllPins === 'function') {
-                    reorderAllPins();
-                }
+                if (typeof window.reorderAllPins === 'function') window.reorderAllPins();
             }
         } else if (d.type === 'LF_SEND_BACK') {
             const selected = document.querySelectorAll('.lf-component.selected');
             const topLevelSelected = Array.from(selected).filter(el => {
                 let parent = el.parentElement;
                 while (parent && parent !== document.body) {
-                    if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
-                        return false;
-                    }
+                    if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) return false;
                     parent = parent.parentElement;
                 }
                 return true;
@@ -2026,19 +1522,13 @@ window.v4Script = `
                         document.body.insertBefore(el, firstUnselected);
                     });
                     markDirty();
-                    if (typeof reorderAllPins === 'function') {
-                        reorderAllPins();
-                    }
+                    if (typeof window.reorderAllPins === 'function') window.reorderAllPins();
                 }
             }
         } else if (d.type === 'LF_UPDATE_MARQUEE_SELECTION') {
             const ids = d.ids || [];
             document.querySelectorAll('.lf-component').forEach(x => {
-                if (ids.includes(x.id)) {
-                    x.classList.add('selected');
-                } else {
-                    x.classList.remove('selected');
-                }
+                x.classList.toggle('selected', ids.includes(x.id));
             });
         } else if (d.type === 'LF_ALIGN_SELECTED') {
             const ids = d.ids || [];
@@ -2052,7 +1542,6 @@ window.v4Script = `
             const handleStates = Array.from(allHandles).map(h => h.style.display);
             allHandles.forEach(h => h.style.display = 'none');
 
-            // 1. Filter out connector lines and sub-components of selected groups to prevent double offsets
             const validIds = ids.filter(id => {
                 if (id.startsWith('conn_')) return false;
                 const el = doc.getElementById(id);
@@ -2060,9 +1549,7 @@ window.v4Script = `
                 
                 let parent = el.parentElement;
                 while (parent && parent !== doc.body) {
-                    if (parent.classList.contains('lf-group') && ids.includes(parent.id)) {
-                        return false; // Parent group is already selected, skip individual child
-                    }
+                    if (parent.classList.contains('lf-group') && ids.includes(parent.id)) return false;
                     parent = parent.parentElement;
                 }
                 return true;
@@ -2072,7 +1559,6 @@ window.v4Script = `
                 const isMarker = id.startsWith('v4-pin-');
                 const el = doc.getElementById(id);
                 if (el) {
-                    // Accumulate parent offsets to calculate absolute position in canvas coordinates
                     let absL = parseFloat(el.style.left) || 0;
                     let absT = parseFloat(el.style.top) || 0;
                     
@@ -2092,7 +1578,6 @@ window.v4Script = `
             });
 
             allHandles.forEach((h, i) => h.style.display = handleStates[i]);
-
             if (items.length < 2) return;
 
             let minX = Math.min(...items.map(i => i.x));
@@ -2116,7 +1601,6 @@ window.v4Script = `
                 const newAbsX = item.x + dx;
                 const newAbsY = item.y + dy;
 
-                // Restore back to parent relative coordinate space if inside a group
                 let parentL = 0;
                 let parentT = 0;
                 let parent = item.el.parentElement;
@@ -2215,9 +1699,7 @@ window.v4Script = `
             const newIds = [];
 
             children.forEach((c, idx) => {
-                if (!c.id) {
-                    c.id = 'v4-comp-ug-' + Date.now() + '-' + idx;
-                }
+                if (!c.id) c.id = 'v4-comp-ug-' + Date.now() + '-' + idx;
 
                 const relL = parseFloat(c.style.left) || 0;
                 const relT = parseFloat(c.style.top) || 0;
@@ -2243,8 +1725,6 @@ window.v4Script = `
             });
 
             group.remove();
-            
-            // To ensure parent updates selectedIds array, send them
             notifyParent({ type: 'LF_DESELECT' });
             markDirty();
         } else if (d.type === 'LF_EXTRACT_MOLECULE') {
@@ -2296,7 +1776,6 @@ window.v4Script = `
                 });
             });
 
-            // Add Inner Screens as Snap Targets (Focus on actual UI area)
             document.querySelectorAll('.mobile-frame').forEach((f, idx) => {
                 const content = f.querySelector('.mobile-content');
                 if (content) {
@@ -2310,7 +1789,7 @@ window.v4Script = `
                     const w = content.offsetWidth;
                     const h = content.offsetHeight;
                     const sName = 'UI Area ' + (idx + 1);
-                    const bezel = 8; // Inset shadow bezel width
+                    const bezel = 8;
                     
                     const leftVal = l + bezel;
                     const rightVal = l + w - bezel;
@@ -2422,564 +1901,6 @@ window.v4Script = `
             }
         });
     };
-    const initHandles = window.initHandles;
-
-    const bindStepperEvents = () => {
-        document.querySelectorAll('.v4-stepper-container').forEach(container => {
-            const min = parseInt(container.getAttribute('data-min')) || 1;
-            const max = parseInt(container.getAttribute('data-max')) || 99;
-            const cur = parseInt(container.getAttribute('data-val')) || min;
-
-            const decBtn = container.querySelector('.v4-stepper-dec');
-            const incBtn = container.querySelector('.v4-stepper-inc');
-            const valEl = container.querySelector('.v4-stepper-value');
-
-            if (container.dataset.eventsBound === "true") {
-                const isDisabled = container.getAttribute('data-disabled') === 'true';
-                if (isDisabled) {
-                    if (decBtn) {
-                        decBtn.style.backgroundColor = '';
-                        decBtn.style.color = '';
-                        decBtn.style.cursor = 'not-allowed';
-                    }
-                    if (incBtn) {
-                        incBtn.style.backgroundColor = '';
-                        incBtn.style.color = '';
-                        incBtn.style.cursor = 'not-allowed';
-                    }
-                } else {
-                    if (decBtn) {
-                        decBtn.style.backgroundColor = cur === min ? '#f3f4f6' : '#ffffff';
-                        decBtn.style.color = cur === min ? '#9ca3af' : '#374151';
-                        decBtn.style.cursor = cur === min ? 'not-allowed' : 'pointer';
-                    }
-                    if (incBtn) {
-                        incBtn.style.backgroundColor = cur === max ? '#f3f4f6' : '#ffffff';
-                        incBtn.style.color = cur === max ? '#9ca3af' : '#374151';
-                        incBtn.style.cursor = cur === max ? 'not-allowed' : 'pointer';
-                    }
-                }
-                return;
-            }
-            container.dataset.eventsBound = "true";
-            
-            const updateVal = (newVal) => {
-                const currentMin = parseInt(container.getAttribute('data-min')) || 1;
-                const currentMax = parseInt(container.getAttribute('data-max')) || 99;
-                let val = Math.max(currentMin, Math.min(currentMax, newVal));
-                container.setAttribute('data-val', val);
-                if (valEl) valEl.innerText = val;
-                
-                const isDisabled = container.getAttribute('data-disabled') === 'true';
-                if (isDisabled) {
-                    if (decBtn) {
-                        decBtn.style.backgroundColor = '';
-                        decBtn.style.color = '';
-                        decBtn.style.cursor = 'not-allowed';
-                    }
-                    if (incBtn) {
-                        incBtn.style.backgroundColor = '';
-                        incBtn.style.color = '';
-                        incBtn.style.cursor = 'not-allowed';
-                    }
-                } else {
-                    if (decBtn) {
-                        decBtn.style.backgroundColor = val === currentMin ? '#f3f4f6' : '#ffffff';
-                        decBtn.style.color = val === currentMin ? '#9ca3af' : '#374151';
-                        decBtn.style.cursor = val === currentMin ? 'not-allowed' : 'pointer';
-                    }
-                    if (incBtn) {
-                        incBtn.style.backgroundColor = val === currentMax ? '#f3f4f6' : '#ffffff';
-                        incBtn.style.color = val === currentMax ? '#9ca3af' : '#374151';
-                        incBtn.style.cursor = val === currentMax ? 'not-allowed' : 'pointer';
-                    }
-                }
-            };
-            
-            if (decBtn) {
-                decBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    if (container.getAttribute('data-disabled') === 'true') return;
-                    if (window.V4UndoManager) window.V4UndoManager.saveState();
-                    const currentVal = parseInt(container.getAttribute('data-val')) || 1;
-                    updateVal(currentVal - 1);
-                    markDirty();
-                };
-            }
-            if (incBtn) {
-                incBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    if (container.getAttribute('data-disabled') === 'true') return;
-                    if (window.V4UndoManager) window.V4UndoManager.saveState();
-                    const currentVal = parseInt(container.getAttribute('data-val')) || 1;
-                    updateVal(currentVal + 1);
-                    markDirty();
-                };
-            }
-            
-            updateVal(cur);
-        });
-    };
-    const bindFileuploadEvents = () => {
-        document.querySelectorAll('.v4-fileupload-container').forEach(container => {
-            const delBtn = container.querySelector('.v4-fileupload-delete');
-            const txt = container.querySelector('.v4-fileupload-textbox');
-            const isSel = container.getAttribute('data-selected') === 'true';
-            const fName = container.getAttribute('data-file-name') || '';
-            const placeholder = container.getAttribute('data-placeholder') || '선택된 파일 없음';
-            
-            // Sync current text display with comparison guards to prevent infinite MutationObserver loops
-            if (txt) {
-                const targetText = isSel ? fName : placeholder;
-                if (txt.innerText !== targetText) {
-                    txt.innerText = targetText;
-                }
-                const targetColor = isSel ? 'rgb(55, 65, 81)' : 'rgb(156, 163, 175)'; // browser returns rgb values for style.color
-                const hexColor = isSel ? '#374151' : '#9ca3af';
-                if (txt.style.color !== hexColor && txt.style.color !== targetColor) {
-                    txt.style.color = hexColor;
-                }
-            }
-
-            if (container.dataset.eventsBound === "true") return;
-            container.dataset.eventsBound = "true";
-            
-            if (delBtn) {
-                delBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    if (window.V4UndoManager) window.V4UndoManager.saveState();
-                    
-                    container.setAttribute('data-selected', 'false');
-                    if (txt) {
-                        txt.innerText = container.getAttribute('data-placeholder') || '선택된 파일 없음';
-                        txt.style.color = '#9ca3af';
-                    }
-                    
-                    markDirty();
-                    
-                    // Notify parent to re-sync inspector properties
-                    notifyParent({
-                        type: 'LF_COMP_SELECTED',
-                        ..._getCompStyles(container.closest('.lf-component'))
-                    });
-                };
-            }
-        });
-    };
-
-    // High-Persistence Border Standardization & Coordinate Migration
-    window.enforceDesignSystem = () => {
-        initHandles();
-        bindStepperEvents();
-        bindFileuploadEvents();
-        
-        // --- Self-healing: Deduplicate IDs in DOM if duplicates exist ---
-        const seenIds = new Set();
-        document.querySelectorAll('.lf-component').forEach((c, idx) => {
-            if (!c.id) {
-                const isPin = c.classList.contains('pin-marker') || c.classList.contains('text-marker');
-                c.id = (isPin ? 'v4-pin-' : 'v4-comp-') + Date.now() + '-' + idx;
-            }
-            if (seenIds.has(c.id)) {
-                const isPin = c.classList.contains('pin-marker') || c.classList.contains('text-marker');
-                const oldId = c.id;
-                c.id = (isPin ? 'v4-pin-' : 'v4-comp-') + Date.now() + '-dedup-' + Math.floor(Math.random() * 1000) + '-' + idx;
-                console.log("[V4 Self-healing] Deduplicated ID from: " + oldId + " to: " + c.id);
-            }
-            seenIds.add(c.id);
-        });
-        
-        // --- Auto-resize Checkbox / Radio to fit text dynamically ---
-        document.querySelectorAll('.lf-component').forEach(c => {
-            if (c.querySelector('.v4-checkbox-container') || c.querySelector('.v4-radio-container')) {
-                if (typeof resizeAtomToFitText === 'function') {
-                    resizeAtomToFitText(c);
-                }
-            }
-        });
-
-        // --- Auto-resize Stepper to fit its internal container ---
-        document.querySelectorAll('.lf-component').forEach(c => {
-            const stepper = c.querySelector('.v4-stepper-container');
-            if (stepper) {
-                const btnEnabled = stepper.getAttribute('data-btn-enabled') !== 'false';
-                const targetW = btnEnabled ? '154px' : '100px';
-                const targetH = '30px';
-                
-                if (c.style.width !== targetW) c.style.width = targetW;
-                if (c.style.height !== targetH) c.style.height = targetH;
-                
-                if (stepper.style.width !== '100%') stepper.style.width = '100%';
-                if (stepper.style.height !== '100%') stepper.style.height = '100%';
-                
-                updateHandles(c);
-            }
-        });
-
-        // --- Auto-resize Selectbox to fit its state container ---
-        document.querySelectorAll('.lf-component').forEach(c => {
-            const selectbox = c.querySelector('.v4-selectbox-container');
-            if (selectbox) {
-                const dropdownActive = selectbox.getAttribute('data-dropdown-active') === 'true';
-                const optionsRaw = selectbox.getAttribute('data-options') || "";
-                const optionsArr = optionsRaw.split(',').map(s => s.trim()).filter(Boolean);
-                
-                const targetW = '150px';
-                const targetH = dropdownActive ? (30 + (optionsArr.length * 30)) + 'px' : '30px';
-                
-                if (c.style.width !== targetW) c.style.width = targetW;
-                if (c.style.height !== targetH) c.style.height = targetH;
-                
-                if (selectbox.style.width !== '100%') selectbox.style.width = '100%';
-                if (selectbox.style.height !== '100%') selectbox.style.height = '100%';
-                
-                updateHandles(c);
-            }
-        });
-
-        // --- Auto-resize File Upload to fit its state container ---
-        document.querySelectorAll('.lf-component').forEach(c => {
-            const fileupload = c.querySelector('.v4-fileupload-container');
-            if (fileupload) {
-                const targetW = '300px';
-                const targetH = '30px';
-                
-                if (c.style.width !== targetW) c.style.width = targetW;
-                if (c.style.height !== targetH) c.style.height = targetH;
-                
-                if (fileupload.style.width !== '100%') fileupload.style.width = '100%';
-                if (fileupload.style.height !== '100%') fileupload.style.height = '100%';
-                
-                updateHandles(c);
-            }
-        });
-
-        // --- Auto-resize Alert to fit content dynamically ---
-        document.querySelectorAll('.lf-component').forEach(c => {
-            const alert = c.querySelector('.v4-alert-container');
-            if (alert) {
-                const btn1 = alert.querySelector('.v4-alert-btn-1');
-                const btn2 = alert.querySelector('.v4-alert-btn-2');
-                const btn3 = alert.querySelector('.v4-alert-btn-3');
-                if (btn1) {
-                    const style1 = alert.getAttribute('data-btn-style-1') || 'normal';
-                    const targetClass = 'v4-alert-btn v4-alert-btn-1 style-' + style1;
-                    if (btn1.className !== targetClass) btn1.className = targetClass;
-                }
-                if (btn2) {
-                    const style2 = alert.getAttribute('data-btn-style-2') || 'normal';
-                    const targetClass = 'v4-alert-btn v4-alert-btn-2 style-' + style2;
-                    if (btn2.className !== targetClass) btn2.className = targetClass;
-                }
-                if (btn3) {
-                    const style3 = alert.getAttribute('data-btn-style-3') || 'normal';
-                    const targetClass = 'v4-alert-btn v4-alert-btn-3 style-' + style3;
-                    if (btn3.className !== targetClass) btn3.className = targetClass;
-                }
-
-                if (c.getAttribute('data-resized') !== 'true') {
-                    const header = alert.querySelector('.v4-alert-header');
-                    const msgEl = alert.querySelector('.v4-alert-message');
-                    const buttonsEl = alert.querySelector('.v4-alert-buttons');
-                    
-                    const showDesc = alert.getAttribute('data-show-desc') === 'true';
-                    const descWrapper = alert.querySelector('.v4-alert-desc-wrapper');
-                    let descH = 0;
-                    if (descWrapper) {
-                        if (showDesc) {
-                            descWrapper.style.display = 'flex';
-                            descH = descWrapper.offsetHeight || 27;
-                            descH += 8; // Gap
-                        } else {
-                            descWrapper.style.display = 'none';
-                        }
-                    }
-                    
-                    const headerH = header ? header.offsetHeight : 32;
-                    const msgH = msgEl ? msgEl.scrollHeight : 21;
-                    const msgMargin = msgEl ? 14 : 0;
-                    const buttonsH = buttonsEl ? buttonsEl.offsetHeight : 28;
-                    const paddingH = 32; // 16px top + 16px bottom
-                    
-                    const targetH = headerH + paddingH + msgH + msgMargin + buttonsH + 2 + descH; // +2 for border
-                    const finalHeight = Math.max(120, targetH) + 'px';
-                    
-                    if (c.style.height !== finalHeight) c.style.height = finalHeight;
-                    if (alert.style.height !== '100%') alert.style.height = '100%';
-                    if (alert.style.width !== '100%') alert.style.width = '100%';
-                } else {
-                    if (alert.style.width !== '100%') alert.style.width = '100%';
-                    if (alert.style.height !== '100%') alert.style.height = '100%';
-                }
-                updateHandles(c);
-            }
-        });
-
-        // --- Auto-resize & sync Custom Button Atom ---
-        document.querySelectorAll('.lf-component').forEach(c => {
-            const btnContainer = c.querySelector('.v4-btn-container');
-            if (btnContainer) {
-                const btn = btnContainer.querySelector('.v4-custom-btn');
-                if (btn) {
-                    const style = btnContainer.getAttribute('data-btn-style') || 'normal';
-                    const text = btnContainer.getAttribute('data-text') || '버튼';
-                    const radius = btnContainer.getAttribute('data-btn-radius') || '6';
-                    
-                    const targetClass = 'v4-custom-btn style-' + style;
-                    const targetRadius = radius + 'px';
-                    
-                    if (btn.className !== targetClass) btn.className = targetClass;
-                    if (btn.style.borderRadius !== targetRadius) btn.style.borderRadius = targetRadius;
-                    if (btn.innerText !== text) btn.innerText = text;
-
-                    if (style !== 'custom') {
-                        if (btn.style.backgroundColor !== '') btn.style.backgroundColor = '';
-                        if (btn.style.borderColor !== '') btn.style.borderColor = '';
-                        if (btn.style.color !== '') btn.style.color = '';
-                    }
-
-                    if (btn.style.borderWidth !== '1.6px') btn.style.setProperty('border-width', '1.6px', 'important');
-                    if (btn.style.borderStyle !== 'solid') btn.style.setProperty('border-style', 'solid', 'important');
-                }
-                
-                if (c.getAttribute('data-resized') !== 'true') {
-                    const targetW = '80px';
-                    const targetH = '40px';
-                    if (c.style.width !== targetW) c.style.width = targetW;
-                    if (c.style.height !== targetH) c.style.height = targetH;
-                }
-                
-                if (btnContainer.style.width !== '100%') btnContainer.style.width = '100%';
-                if (btnContainer.style.height !== '100%') btnContainer.style.height = '100%';
-                
-                updateHandles(c);
-            }
-        });
-
-        // --- Setup Textbox / Textarea Interactive Events ---
-        document.querySelectorAll('.v4-textbox-container, .v4-textarea-container').forEach(container => {
-            const isTextarea = container.classList.contains('v4-textarea-container');
-            const input = container.querySelector(isTextarea ? '.v4-textarea-input' : '.v4-textbox-input');
-            const placeholder = container.querySelector(isTextarea ? '.v4-textarea-placeholder' : '.v4-textbox-placeholder');
-            const counter = container.querySelector(isTextarea ? '.v4-textarea-counter' : '.v4-textbox-counter');
-            
-            if (!input) return;
-
-            const restoreFonts = () => {
-                const fs = container.getAttribute('data-fontsize');
-                const ff = container.getAttribute('data-fontfamily');
-                if (fs) {
-                    const fsVal = fs + 'px';
-                    if (input.style.fontSize !== fsVal) input.style.fontSize = fsVal;
-                    if (placeholder && placeholder.style.fontSize !== fsVal) placeholder.style.fontSize = fsVal;
-                }
-                if (ff) {
-                    if (input.style.fontFamily !== ff) input.style.fontFamily = ff;
-                    if (placeholder && placeholder.style.fontFamily !== ff) placeholder.style.fontFamily = ff;
-                    if (counter && counter.style.fontFamily !== ff) counter.style.fontFamily = ff;
-                }
-            };
-
-            if (input.dataset.eventsBound === "true") {
-                // Keep values updated in case max-length/show-counter changed via inspector
-                // CRITICAL: Guard all DOM writes with value comparison to prevent MutationObserver infinite loop
-                const max = parseInt(container.getAttribute('data-maxlength')) || 100;
-                const showCounter = container.getAttribute('data-show-counter') !== 'false';
-                const text = input.innerText || "";
-                if (counter) {
-                    const currentLen = Math.min(text.length, max);
-                    const newText = currentLen + '/' + max;
-                    const newDisplay = showCounter ? 'block' : 'none';
-                    if (counter.textContent !== newText) counter.textContent = newText;
-                    if (counter.style.display !== newDisplay) counter.style.display = newDisplay;
-                }
-                restoreFonts();
-                return;
-            }
-            input.dataset.eventsBound = "true";
-            restoreFonts();
-            
-            // Get initial values from HTML state
-            const getMaxLength = () => parseInt(container.getAttribute('data-maxlength')) || 100;
-            const getShowCounter = () => container.getAttribute('data-show-counter') !== 'false';
-            
-            // Initial placeholder state
-            const updateUI = () => {
-                const text = input.innerText || "";
-                
-                // Show/hide placeholder (guarded to prevent MutationObserver loop)
-                if (placeholder) {
-                    const phDisplay = text.length === 0 ? 'block' : 'none';
-                    if (placeholder.style.display !== phDisplay) placeholder.style.display = phDisplay;
-                }
-                
-                // Character limit check
-                const max = getMaxLength();
-                if (text.length > max) {
-                    // Truncate to max length and restore cursor
-                    const selection = window.getSelection();
-                    const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-                    const offset = range ? range.startOffset : 0;
-                    
-                    input.innerText = text.substring(0, max);
-                    
-                    // Restore caret position
-                    if (range && input.firstChild) {
-                        try {
-                            const newRange = document.createRange();
-                            newRange.setStart(input.firstChild, Math.min(offset, max));
-                            newRange.collapse(true);
-                            selection.removeAllRanges();
-                            selection.addRange(newRange);
-                        } catch(e) {}
-                    }
-                }
-                
-                // Update counter text (guarded)
-                if (counter) {
-                    const currentLen = Math.min(input.innerText.length, max);
-                    const newCounterText = currentLen + '/' + max;
-                    const newCounterDisplay = getShowCounter() ? 'block' : 'none';
-                    if (counter.textContent !== newCounterText) counter.textContent = newCounterText;
-                    if (counter.style.display !== newCounterDisplay) counter.style.display = newCounterDisplay;
-                }
-                
-                // Input text color adjustment (guarded)
-                const newColor = text.length === 0 ? '#a3a3a3' : '#374151';
-                if (input.style.color !== newColor) input.style.color = newColor;
-            };
-            
-            // Bind input listener
-            input.addEventListener('input', () => {
-                updateUI();
-                markDirty();
-            });
-            input.addEventListener('focus', () => {
-                if (placeholder) placeholder.style.display = 'none';
-            });
-            input.addEventListener('blur', () => {
-                updateUI();
-            });
-            
-            // Run initially
-            updateUI();
-        });
-        
-        // --- Coordinate Migration: % to px ---
-        document.querySelectorAll('.lf-component').forEach(c => {
-            // Only migrate if not in a group (groups already handle their children)
-            if (c.parentElement !== document.body) return;
-            
-            const lStr = c.style.left || "";
-            const tStr = c.style.top || "";
-            
-            if (lStr.includes('%')) {
-                const val = parseFloat(lStr);
-                const px = (val / 100) * 1440;
-                c.style.left = px + 'px';
-                console.log("[V4 Migration] Migrated " + c.id + " left: " + lStr + " -> " + c.style.left);
-            }
-            if (tStr.includes('%')) {
-                const val = parseFloat(tStr);
-                const px = (val / 100) * 900;
-                c.style.top = px + 'px';
-                console.log("[V4 Migration] Migrated " + c.id + " top: " + tStr + " -> " + c.style.top);
-            }
-        });
-
-        // --- Image-to-Div Icon Migration for robust CSS Masking ---
-        document.querySelectorAll('.lf-component img').forEach(img => {
-            const parent = img.parentElement;
-            if (!parent) return;
-            
-            const isLogo = img.classList.contains('v4-logo-img');
-            const isShare = img.src && img.src.includes('iconShare');
-            const isIcon = img.classList.contains('lf-icon');
-            
-            if (isLogo || isShare || isIcon) {
-                const div = document.createElement('div');
-                div.className = img.className;
-                if (!div.classList.contains('lf-icon')) {
-                    div.classList.add('lf-icon');
-                }
-                
-                const origSrc = img.getAttribute('data-original-src') || img.src;
-                div.setAttribute('data-original-src', origSrc);
-                
-                const origBg = img.getAttribute('data-original-bg');
-                if (origBg) div.setAttribute('data-original-bg', origBg);
-                
-                div.style.cssText = img.style.cssText;
-                div.style.width = '100%';
-                div.style.height = '100%';
-                div.style.pointerEvents = 'none';
-                
-                if (!isLogo) {
-                    div.style.setProperty('padding', '8px', 'important');
-                    div.style.setProperty('box-sizing', 'border-box', 'important');
-                    div.style.setProperty('background-origin', 'content-box', 'important');
-                    div.style.setProperty('background-clip', 'content-box', 'important');
-                    div.style.setProperty('mask-origin', 'content-box', 'important');
-                    div.style.setProperty('webkit-mask-origin', 'content-box', 'important');
-                    div.style.setProperty('mask-clip', 'content-box', 'important');
-                    div.style.setProperty('webkit-mask-clip', 'content-box', 'important');
-                }
-                
-                const isColored = img.style.backgroundColor || img.getAttribute('data-original-bg');
-                if (isColored) {
-                    const color = img.style.backgroundColor || '';
-                    div.style.setProperty('background-color', color, 'important');
-                    div.style.setProperty('background-image', 'none', 'important');
-                    
-                    const bgUrl = 'url("' + origSrc + '")';
-                    div.setAttribute('data-original-bg', bgUrl);
-                    div.style.setProperty('webkit-mask-image', bgUrl, 'important');
-                    div.style.setProperty('webkit-mask-position', 'center', 'important');
-                    div.style.setProperty('webkit-mask-size', 'contain', 'important');
-                    div.style.setProperty('webkit-mask-repeat', 'no-repeat', 'important');
-                    
-                    div.style.setProperty('mask-image', bgUrl, 'important');
-                    div.style.setProperty('mask-position', 'center', 'important');
-                    div.style.setProperty('mask-size', 'contain', 'important');
-                    div.style.setProperty('mask-repeat', 'no-repeat', 'important');
-                } else {
-                    div.style.setProperty('background-image', 'url("' + origSrc + '")', 'important');
-                    div.style.setProperty('background-size', 'contain', 'important');
-                    div.style.setProperty('background-position', 'center', 'important');
-                    div.style.setProperty('background-repeat', 'no-repeat', 'important');
-                }
-                
-                parent.replaceChild(div, img);
-                console.log("[V4 Migration] Migrated image icon/logo to div element:", origSrc);
-            }
-        });
-
-        document.querySelectorAll('.v4-shape').forEach(s => {
-            if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle')) {
-                s.style.setProperty('border-width', '0px', 'important');
-                return;
-            }
-            if (s.style.borderWidth !== '1.6px') s.style.setProperty('border-width', '1.6px', 'important');
-        });
-        document.querySelectorAll('table.v4-premium-table').forEach(t => {
-            if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
-            if (window.TableSelection) window.TableSelection.bindEvents(t);
-        });
-        document.querySelectorAll('polygon, path, rect, circle').forEach(svg => {
-            if (svg.closest('.connector-line')) return;
-            if (svg.getAttribute('stroke-width') !== '1.6') svg.setAttribute('stroke-width', '1.6');
-            if (svg.style.strokeWidth !== '1.6') svg.style.strokeWidth = '1.6';
-            if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
-        });
-    };
-    // Run immediately and setup observer for dynamic changes
-    if (typeof window.enforceDesignSystem === 'function') {
-        window.enforceDesignSystem();
-        const observer = new MutationObserver(() => window.enforceDesignSystem());
-        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
-        
-        // Safety fallback for slow loads
-        setTimeout(() => window.enforceDesignSystem(), 500);
-    }
+    window.initHandles();
 })();
 `;

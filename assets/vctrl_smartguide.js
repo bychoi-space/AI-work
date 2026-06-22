@@ -120,8 +120,10 @@
         /**
          * Spacing calculation logic (Within 50px threshold to closest targets)
          */
-        calculateSpacing(x, y, w, h) {
-            const thresh = this.spacingThreshold;
+        calculateSpacing(x, y, w, h, thresh, activeId = null) {
+            // isArrowKey mode: thresh passed as Infinity to show nearest regardless of distance
+            // Default mode: use spacingThreshold (50px)
+            if (thresh === undefined) thresh = this.spacingThreshold;
             const active = {
                 left: x,
                 top: y,
@@ -139,9 +141,20 @@
             let bottomMatch = null;
 
             this.spacingTargets.forEach(t => {
+                // Skip the active moving element itself to prevent zero-distance errors
+                if (activeId && t.id === activeId) return;
+
+                // In arrow key mode, skip virtual canvas boxes – only show real component distances
+                if (thresh === Infinity && t.source === 'canvas') return;
+
+                // [Bug Fix 3] Add 20px buffer to overlap checks.
+                // Previously, objects had to strictly share Y/X range to trigger spacing guides.
+                // With a buffer, objects nearby but slightly offset in size also show guides (Figma-style).
+                const overlapBuffer = 20;
+
                 // Left Spacing (Target on the left of active)
                 if (t.right <= active.left) {
-                    const overlapY = !(t.bottom < active.top || t.top > active.bottom);
+                    const overlapY = !(t.bottom < active.top - overlapBuffer || t.top > active.bottom + overlapBuffer);
                     if (overlapY) {
                         const dist = Math.round(active.left - t.right);
                         if (dist >= 0 && dist <= thresh) {
@@ -153,7 +166,7 @@
                 }
                 // Right Spacing (Target on the right of active)
                 if (t.left >= active.right) {
-                    const overlapY = !(t.bottom < active.top || t.top > active.bottom);
+                    const overlapY = !(t.bottom < active.top - overlapBuffer || t.top > active.bottom + overlapBuffer);
                     if (overlapY) {
                         const dist = Math.round(t.left - active.right);
                         if (dist >= 0 && dist <= thresh) {
@@ -165,7 +178,7 @@
                 }
                 // Top Spacing (Target above active)
                 if (t.bottom <= active.top) {
-                    const overlapX = !(t.right < active.left || t.left > active.right);
+                    const overlapX = !(t.right < active.left - overlapBuffer || t.left > active.right + overlapBuffer);
                     if (overlapX) {
                         const dist = Math.round(active.top - t.bottom);
                         if (dist >= 0 && dist <= thresh) {
@@ -177,7 +190,7 @@
                 }
                 // Bottom Spacing (Target below active)
                 if (t.top >= active.bottom) {
-                    const overlapX = !(t.right < active.left || t.left > active.right);
+                    const overlapX = !(t.right < active.left - overlapBuffer || t.left > active.right + overlapBuffer);
                     if (overlapX) {
                         const dist = Math.round(t.top - active.bottom);
                         if (dist >= 0 && dist <= thresh) {
@@ -194,52 +207,65 @@
 
         /**
          * Core snapping calculation logic.
+         * @param {boolean} isArrowKey - Arrow-key mode: show nearest component distance without threshold
+         * @param {string|null} activeId - The ID of the currently moving active element
          */
-        calculateSnap(x, y, w = 0, h = 0) {
+        calculateSnap(x, y, w = 0, h = 0, isArrowKey = false, activeId = null) {
             let snappedX = x, snappedY = y;
             let snapXData = null, snapYData = null;
             const thresh = this.threshold;
 
-            // X-axis Points to check (Left, Center, Right)
-            const pointsX = [
-                { val: x, part: 'Left' },
-                { val: x + w / 2, part: 'Center' },
-                { val: x + w, part: 'Right' }
-            ];
+            // Arrow key mode: skip alignment snapping (distracting for 1px moves)
+            if (!isArrowKey) {
+                // X-axis Points to check (Left, Center, Right)
+                const pointsX = [
+                    { val: x, part: 'Left' },
+                    { val: x + w / 2, part: 'Center' },
+                    { val: x + w, part: 'Right' }
+                ];
 
-            for (const t of this.targets) {
-                if (t.x === undefined) continue;
-                for (const p of pointsX) {
-                    if (Math.abs(p.val - t.x) < thresh) {
-                        snappedX = x + (t.x - p.val);
-                        snapXData = { line: t.x, label: t.label, part: t.part, selfPart: p.part };
-                        break;
+                for (const t of this.targets) {
+                    // Skip targets belonging to the active moving element itself
+                    if (activeId && t.id === activeId) continue;
+                    
+                    if (t.x === undefined) continue;
+                    for (const p of pointsX) {
+                        if (Math.abs(p.val - t.x) < thresh) {
+                            snappedX = x + (t.x - p.val);
+                            snapXData = { line: t.x, label: t.label, part: t.part, selfPart: p.part };
+                            break;
+                        }
                     }
+                    if (snapXData) break;
                 }
-                if (snapXData) break;
+
+                // Y-axis Points to check (Top, Middle, Bottom)
+                const pointsY = [
+                    { val: y, part: 'Top' },
+                    { val: y + h / 2, part: 'Middle' },
+                    { val: y + h, part: 'Bottom' }
+                ];
+
+                for (const t of this.targets) {
+                    // Skip targets belonging to the active moving element itself
+                    if (activeId && t.id === activeId) continue;
+
+                    if (t.y === undefined) continue;
+                    for (const p of pointsY) {
+                        if (Math.abs(p.val - t.y) < thresh) {
+                            snappedY = y + (t.y - p.val);
+                            snapYData = { line: t.y, label: t.label, part: t.part, selfPart: p.part };
+                            break;
+                        }
+                    }
+                    if (snapYData) break;
+                }
             }
 
-            // Y-axis Points to check (Top, Middle, Bottom)
-            const pointsY = [
-                { val: y, part: 'Top' },
-                { val: y + h / 2, part: 'Middle' },
-                { val: y + h, part: 'Bottom' }
-            ];
-
-            for (const t of this.targets) {
-                if (t.y === undefined) continue;
-                for (const p of pointsY) {
-                    if (Math.abs(p.val - t.y) < thresh) {
-                        snappedY = y + (t.y - p.val);
-                        snapYData = { line: t.y, label: t.label, part: t.part, selfPart: p.part };
-                        break;
-                    }
-                }
-                if (snapYData) break;
-            }
-
-            // 스냅된 위치를 기준으로 스마트 거리(스페이싱)도 동시 계산
-            const spacing = this.calculateSpacing(snappedX, snappedY, w, h);
+            // Arrow key mode: unlimited spacing threshold, real components only (no canvas virtual boxes)
+            // Normal mode: 50px threshold
+            const spacingThresh = isArrowKey ? Infinity : undefined;
+            const spacing = this.calculateSpacing(snappedX, snappedY, w, h, spacingThresh, activeId);
 
             return { x: snappedX, y: snappedY, snapXData, snapYData, spacing };
         },
