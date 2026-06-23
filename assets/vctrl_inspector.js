@@ -1144,6 +1144,21 @@ if (DOM.btnCancelEdit) {
     };
 }
 
+// Floating Inspector Card Minimize/Maximize Toggle
+const btnFloatingMinimize = document.getElementById('btn-floating-minimize');
+const floatingInspectorCard = document.getElementById('floating-inspector-card');
+if (btnFloatingMinimize && floatingInspectorCard) {
+    btnFloatingMinimize.onclick = (e) => {
+        e.stopPropagation();
+        const isMin = floatingInspectorCard.classList.toggle('minimized');
+        const icon = btnFloatingMinimize.querySelector('.material-icons-outlined');
+        if (icon) {
+            icon.innerText = isMin ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
+        }
+        btnFloatingMinimize.title = isMin ? '펼치기' : '최소화';
+    };
+}
+
 // Revision History Rendering & Event Binding
 window.renderHistoryPopup = function(history) {
     const listContainer = document.getElementById('history-popup-list');
