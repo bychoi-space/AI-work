@@ -276,6 +276,89 @@
         #sidebar-search-clear:hover {
             color: #fff !important;
         }
+
+        /* Floating Inspector Card Style (Glassmorphism & Draggable) */
+        .floating-inspector-card {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            width: 320px;
+            max-height: calc(100% - 120px);
+            background: rgba(30, 41, 59, 0.7) !important;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1.6px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .floating-inspector-card.minimized {
+            max-height: 44px !important;
+        }
+
+        .floating-inspector-header {
+            height: 44px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1.6px solid rgba(255, 255, 255, 0.08);
+            cursor: grab;
+            user-select: none;
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .floating-inspector-header:active {
+            cursor: grabbing;
+        }
+
+        .floating-inspector-minimize-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .floating-inspector-minimize-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .floating-inspector-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .floating-inspector-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        .floating-inspector-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .floating-inspector-body::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        .floating-inspector-body::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
     </style>
     <script>
         window.onerror = function(msg, url, line, col, error) {
@@ -399,6 +482,22 @@
                     <i class="material-icons-outlined" style="font-size: 64px; color: var(--accent); margin-bottom: 12px;">add_to_photos</i>
                     <h2 id="placeholder-txt" style="font-weight: 700; color: #fff; margin: 0;">프로젝트 스크린을 추가해주세요.</h2>
                     <p style="color: rgba(255,255,255,0.4); font-size: 13px; margin: 8px 0 0 0;">왼쪽 프로젝트 스크린 패널에서 '+' 버튼을 눌러 시작하세요.</p>
+                </div>
+
+                <!-- Floating Inspector Card (Option B) -->
+                <div id="floating-inspector-card" class="floating-inspector-card" style="display: none;">
+                    <div class="floating-inspector-header">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="material-icons-outlined" style="font-size: 16px; color: var(--accent);">tune</span>
+                            <span style="font-weight: 700; font-size: 12px; letter-spacing: 0.5px; color: #fff;">OBJECT PROPERTIES</span>
+                        </div>
+                        <button id="btn-floating-minimize" title="최소화" class="floating-inspector-minimize-btn">
+                            <span class="material-icons-outlined" style="font-size: 16px;">keyboard_arrow_down</span>
+                        </button>
+                    </div>
+                    <div class="floating-inspector-body" id="floating-inspector-body">
+                        <!-- Inspector sections will be appended here dynamically -->
+                    </div>
                 </div>
             </main>
         </div>

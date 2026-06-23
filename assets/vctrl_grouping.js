@@ -11,6 +11,7 @@ window.GroupingManager = (function() {
     let marqueeBox = null;
     let selectedIds = [];
     let currentTargets = [];
+    let selectedIdsIsGroupMap = {};
 
     const init = () => {
         // Listen for marquee messages from Core (Iframe)
@@ -32,173 +33,166 @@ window.GroupingManager = (function() {
             MessageHub.subscribe('LF_MARQUEE_END', () => {
                 endMarquee();
             });
-            MessageHub.subscribe('LF_COMP_SELECTED', (data) => {
-                // Single/Multi selection from core
-                if (data.shiftKey) {
-                    if (selectedIds.includes(data.id)) {
-                        selectedIds = selectedIds.filter(id => id !== data.id);
-                    } else {
-                        selectedIds.push(data.id);
-                    }
-                } else {
-                    selectedIds = [data.id];
-                }
-                updateSelectionUI();
-            });
-            MessageHub.subscribe('LF_DESELECT', () => {
-                selectedIds = [];
-                updateSelectionUI();
-                if (typeof window.updateProperties === 'function') {
-                    window.updateProperties();
-                }
-            });
-            MessageHub.subscribe('LF_MOLECULE_EXTRACTED', async (data) => {
-                const mol = data.moleculeData;
-                if (!window.state.globalComponents) window.state.globalComponents = [];
-                window.state.globalComponents.unshift(mol);
-
-                if (window.renderAtomicLibrary) window.renderAtomicLibrary();
-
-                const saveFn = window.saveGlobalComponents || (typeof saveGlobalComponents === 'function' ? saveGlobalComponents : null);
-                if (saveFn) {
-                    const success = await saveFn(window.state.globalComponents);
-                    if (success && window.Notification && typeof window.Notification.alert === 'function') {
-                        window.Notification.alert(`'${mol.name}'이(가) 글로벌 라이브러리에 추가되었습니다.`, "저장 완료");
-                    }
-                }
-            });
-        }
-
-        // Bind UI Buttons
-        if (window.DOM) {
-            if (DOM.btnGroup) DOM.btnGroup.onclick = groupSelected;
-            if (DOM.btnUngroup) DOM.btnUngroup.onclick = ungroupSelected;
-            if (DOM.btnAddToMolecules) DOM.btnAddToMolecules.onclick = addToMolecules;
-
-            // Alignment Listeners (RESTORED)
-            if (DOM.btnAlignLeft) DOM.btnAlignLeft.onclick = () => alignSelected('left');
-            if (DOM.btnAlignCenter) DOM.btnAlignCenter.onclick = () => alignSelected('center');
-            if (DOM.btnAlignRight) DOM.btnAlignRight.onclick = () => alignSelected('right');
-            if (DOM.btnAlignTop) DOM.btnAlignTop.onclick = () => alignSelected('top');
-            if (DOM.btnAlignMiddle) DOM.btnAlignMiddle.onclick = () => alignSelected('middle');
-            if (DOM.btnAlignBottom) DOM.btnAlignBottom.onclick = () => alignSelected('bottom');
-        }
-
-        // Keyboard Shortcuts
-        window.addEventListener('keydown', (e) => {
-            if (window.state && window.state.isReadOnly) return;
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'g') {
-                e.preventDefault();
-                if (e.shiftKey) ungroupSelected();
-                else groupSelected();
-            }
-        });
-    };
-
-    const startMarquee = (data) => {
-        const overlay = document.getElementById('pins-layer');
-        if (!overlay) return;
-
-        isSelecting = true;
-        startX = data.x;
-        startY = data.y;
-        currentTargets = data.targets || [];
-
-        if (!data.shiftKey) {
-            clearSelection();
-        }
-
-        marqueeBox = document.createElement('div');
-        marqueeBox.className = 'v4-marquee-box';
-        marqueeBox.style.position = 'absolute';
-        marqueeBox.style.border = '1.6px solid #6366f1';
-        marqueeBox.style.background = 'rgba(99, 102, 241, 0.15)';
-        marqueeBox.style.zIndex = '99999';
-        marqueeBox.style.pointerEvents = 'none';
-        marqueeBox.style.left = startX + 'px';
-        marqueeBox.style.top = startY + 'px';
-        overlay.appendChild(marqueeBox);
-    };
-
-    const updateMarquee = (data) => {
-        if (!isSelecting || !marqueeBox) return;
-
-        const x = Math.min(startX, data.x);
-        const y = Math.min(startY, data.y);
-        const w = Math.abs(startX - data.x);
-        const h = Math.abs(startY - data.y);
-
-        marqueeBox.style.left = x + 'px';
-        marqueeBox.style.top = y + 'px';
-        marqueeBox.style.width = w + 'px';
-        marqueeBox.style.height = h + 'px';
-
-        checkIntersections({ x, y, w, h });
-    };
-
-    const checkIntersections = (box) => {
-        currentTargets.forEach(comp => {
-            if (isIntersecting(box, comp)) {
-                if (!selectedIds.includes(comp.id)) selectedIds.push(comp.id);
-            } else {
-                selectedIds = selectedIds.filter(id => id !== comp.id);
-            }
-        });
-
-        // --- Connector Selection Integration ---
-        if (window.state.connectors && window.ConnectorEngine) {
-            const scale = window.state.transform.scale || 1;
-            const svgLayer = document.getElementById('connector-layer');
-            const svgRect = svgLayer ? svgLayer.getBoundingClientRect() : { left: 0, top: 0 };
-            const connectorIdsToSelect = [];
-
-            window.state.connectors.forEach(conn => {
-                const p1 = { x: (conn.start.x * scale) + svgRect.left, y: (conn.start.y * scale) + svgRect.top };
-                const p2 = { x: (conn.end.x * scale) + svgRect.left, y: (conn.end.y * scale) + svgRect.top };
-                const isIn = (pt) => pt.x >= box.x && pt.x <= box.x + box.w && pt.y >= box.y && pt.y <= box.y + box.h;
-
-                if (isIn(p1) || isIn(p2)) {
-                    connectorIdsToSelect.push(conn.id);
-                    if (!selectedIds.includes(conn.id)) selectedIds.push(conn.id);
-                } else {
-                    selectedIds = selectedIds.filter(id => id !== conn.id);
-                }
-            });
-            window.ConnectorEngine.setSelectedIds(connectorIdsToSelect);
-        }
-
-        // Sync visual selection inside iframe via MessageHub
-        const iframe = document.getElementById('main-iframe');
-        if (iframe && iframe.contentWindow && window.MessageHub) {
-            window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_MARQUEE_SELECTION', { ids: selectedIds });
-        }
-
-        syncWithCore();
-    };
-
-    const isIntersecting = (r1, r2) => {
-        return !(r2.x > r1.x + r1.w || 
-                 r2.x + r2.w < r1.x || 
-                 r2.y > r1.y + r1.h ||
-                 r2.y + r2.h < r1.y);
-    };
-    const endMarquee = () => {
-        isSelecting = false;
-        if (marqueeBox) {
-            marqueeBox.remove();
-            marqueeBox = null;
-        }
-
-        if (selectedIds.length > 0) {
-            const iframe = document.getElementById('main-iframe');
-            if (selectedIds.length === 1 && iframe && iframe.contentWindow) {
-                window.MessageHub.send(iframe.contentWindow, 'LF_SELECT_ID', { id: selectedIds[0] });
-            }
-        }
-    };
+             MessageHub.subscribe('LF_DESELECT', () => {
+                 selectedIds = [];
+                 selectedIdsIsGroupMap = {};
+                 updateSelectionUI();
+                 if (typeof window.updateProperties === 'function') {
+                     window.updateProperties();
+                 }
+             });
+             MessageHub.subscribe('LF_MOLECULE_EXTRACTED', async (data) => {
+                 const mol = data.moleculeData;
+                 if (!window.state.globalComponents) window.state.globalComponents = [];
+                 window.state.globalComponents.unshift(mol);
+ 
+                 if (window.renderAtomicLibrary) window.renderAtomicLibrary();
+ 
+                 const saveFn = window.saveGlobalComponents || (typeof saveGlobalComponents === 'function' ? saveGlobalComponents : null);
+                 if (saveFn) {
+                     const success = await saveFn(window.state.globalComponents);
+                     if (success && window.Notification && typeof window.Notification.alert === 'function') {
+                         window.Notification.alert(`'${mol.name}'이(가) 글로벌 라이브러리에 추가되었습니다.`, "저장 완료");
+                     }
+                 }
+             });
+         }
+ 
+         // Bind UI Buttons
+         if (window.DOM) {
+             if (DOM.btnGroup) DOM.btnGroup.onclick = groupSelected;
+             if (DOM.btnUngroup) DOM.btnUngroup.onclick = ungroupSelected;
+             if (DOM.btnAddToMolecules) DOM.btnAddToMolecules.onclick = addToMolecules;
+ 
+             // Alignment Listeners (RESTORED)
+             if (DOM.btnAlignLeft) DOM.btnAlignLeft.onclick = () => alignSelected('left');
+             if (DOM.btnAlignCenter) DOM.btnAlignCenter.onclick = () => alignSelected('center');
+             if (DOM.btnAlignRight) DOM.btnAlignRight.onclick = () => alignSelected('right');
+             if (DOM.btnAlignTop) DOM.btnAlignTop.onclick = () => alignSelected('top');
+             if (DOM.btnAlignMiddle) DOM.btnAlignMiddle.onclick = () => alignSelected('middle');
+             if (DOM.btnAlignBottom) DOM.btnAlignBottom.onclick = () => alignSelected('bottom');
+         }
+ 
+         // Keyboard Shortcuts
+         window.addEventListener('keydown', (e) => {
+             if (window.state && window.state.isReadOnly) return;
+             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'g') {
+                 e.preventDefault();
+                 if (e.shiftKey) ungroupSelected();
+                 else groupSelected();
+             }
+         });
+     };
+ 
+     const startMarquee = (data) => {
+         const overlay = document.getElementById('pins-layer');
+         if (!overlay) return;
+ 
+         isSelecting = true;
+         startX = data.x;
+         startY = data.y;
+         currentTargets = data.targets || [];
+ 
+         if (!data.shiftKey) {
+             clearSelection();
+         }
+ 
+         marqueeBox = document.createElement('div');
+         marqueeBox.className = 'v4-marquee-box';
+         marqueeBox.style.position = 'absolute';
+         marqueeBox.style.border = '1.6px solid #6366f1';
+         marqueeBox.style.background = 'rgba(99, 102, 241, 0.15)';
+         marqueeBox.style.zIndex = '99999';
+         marqueeBox.style.pointerEvents = 'none';
+         marqueeBox.style.left = startX + 'px';
+         marqueeBox.style.top = startY + 'px';
+         overlay.appendChild(marqueeBox);
+     };
+ 
+     const updateMarquee = (data) => {
+         if (!isSelecting || !marqueeBox) return;
+ 
+         const x = Math.min(startX, data.x);
+         const y = Math.min(startY, data.y);
+         const w = Math.abs(startX - data.x);
+         const h = Math.abs(startY - data.y);
+ 
+         marqueeBox.style.left = x + 'px';
+         marqueeBox.style.top = y + 'px';
+         marqueeBox.style.width = w + 'px';
+         marqueeBox.style.height = h + 'px';
+ 
+         checkIntersections({ x, y, w, h });
+     };
+ 
+     const checkIntersections = (box) => {
+         currentTargets.forEach(comp => {
+             if (isIntersecting(box, comp)) {
+                 if (!selectedIds.includes(comp.id)) selectedIds.push(comp.id);
+             } else {
+                 selectedIds = selectedIds.filter(id => id !== comp.id);
+             }
+         });
+ 
+         // --- Connector Selection Integration ---
+         if (window.state.connectors && window.ConnectorEngine) {
+             const scale = window.state.transform.scale || 1;
+             const svgLayer = document.getElementById('connector-layer');
+             const svgRect = svgLayer ? svgLayer.getBoundingClientRect() : { left: 0, top: 0 };
+             const connectorIdsToSelect = [];
+ 
+             window.state.connectors.forEach(conn => {
+                 const p1 = { x: (conn.start.x * scale) + svgRect.left, y: (conn.start.y * scale) + svgRect.top };
+                 const p2 = { x: (conn.end.x * scale) + svgRect.left, y: (conn.end.y * scale) + svgRect.top };
+                 const isIn = (pt) => pt.x >= box.x && pt.x <= box.x + box.w && pt.y >= box.y && pt.y <= box.y + box.h;
+ 
+                 if (isIn(p1) || isIn(p2)) {
+                     connectorIdsToSelect.push(conn.id);
+                     if (!selectedIds.includes(conn.id)) selectedIds.push(conn.id);
+                 } else {
+                     selectedIds = selectedIds.filter(id => id !== conn.id);
+                 }
+             });
+             window.ConnectorEngine.setSelectedIds(connectorIdsToSelect);
+         }
+ 
+         // Sync visual selection inside iframe via MessageHub
+         const iframe = document.getElementById('main-iframe');
+         if (iframe && iframe.contentWindow && window.MessageHub) {
+             window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_MARQUEE_SELECTION', { ids: selectedIds });
+         }
+ 
+         syncWithCore();
+     };
+ 
+     const isIntersecting = (r1, r2) => {
+         return !(r2.x > r1.x + r1.w || 
+                  r2.x + r2.w < r1.x || 
+                  r2.y > r1.y + r1.h ||
+                  r2.y + r2.h < r1.y);
+     };
+ 
+     const endMarquee = () => {
+         isSelecting = false;
+         if (marqueeBox) {
+             marqueeBox.remove();
+             marqueeBox = null;
+         }
+ 
+         if (selectedIds.length > 0) {
+             const iframe = document.getElementById('main-iframe');
+             if (selectedIds.length === 1 && iframe && iframe.contentWindow) {
+                 window.MessageHub.send(iframe.contentWindow, 'LF_SELECT_ID', { id: selectedIds[0] });
+             } else if (selectedIds.length > 1) {
+                 if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab('editor');
+                 if (typeof window.updateProperties === 'function') window.updateProperties();
+             }
+         }
+     };
 
     const clearSelection = () => {
         selectedIds = [];
+        selectedIdsIsGroupMap = {};
         const iframe = document.getElementById('main-iframe');
         if (iframe && iframe.contentWindow && window.MessageHub) {
             window.MessageHub.send(iframe.contentWindow, 'LF_DESELECT_ALL');
@@ -214,47 +208,72 @@ window.GroupingManager = (function() {
     };
 
     const updateSelectionUI = () => {
-        const DOM = window.DOM;
-        if (!DOM || !DOM.selectionBar) return;
+        const selectionBar = document.getElementById('selection-actions-bar');
+        if (!selectionBar) return;
+
+        const btnGroup = document.getElementById('btn-group-action');
+        const btnUngroup = document.getElementById('btn-ungroup-action');
+        const btnAddToMolecules = document.getElementById('btn-add-molecules-action');
+        const selectionNumber = document.getElementById('selection-number');
+        const selectionLabel = document.getElementById('selection-label');
+        const alignBar = document.getElementById('selection-align-bar');
 
         if (selectedIds.length > 0) {
             // Show Group button if 2+ selected
-            DOM.btnGroup.style.display = selectedIds.length > 1 ? 'flex' : 'none';
+            if (btnGroup) {
+                if (selectedIds.length > 1) {
+                    btnGroup.style.setProperty('display', 'flex', 'important');
+                } else {
+                    btnGroup.style.setProperty('display', 'none', 'important');
+                }
+            }
             
             // Show Ungroup button if 1 group is selected
             let showUngroup = false;
             if (selectedIds.length === 1) {
-                const iframe = document.getElementById('main-iframe');
-                const comp = iframe?.contentDocument?.getElementById(selectedIds[0]);
-                if (comp && comp.classList.contains('lf-group')) {
+                if (selectedIdsIsGroupMap[selectedIds[0]]) {
                     showUngroup = true;
                 }
             }
-            DOM.btnUngroup.style.display = showUngroup ? 'flex' : 'none';
-            if (DOM.btnAddToMolecules) DOM.btnAddToMolecules.style.display = showUngroup ? 'flex' : 'none';
+            if (btnUngroup) {
+                if (showUngroup) {
+                    btnUngroup.style.setProperty('display', 'flex', 'important');
+                } else {
+                    btnUngroup.style.setProperty('display', 'none', 'important');
+                }
+            }
+            if (btnAddToMolecules) {
+                if (showUngroup) {
+                    btnAddToMolecules.style.setProperty('display', 'flex', 'important');
+                } else {
+                    btnAddToMolecules.style.setProperty('display', 'none', 'important');
+                }
+            }
 
             // Show Selection Bar if any object is selected
-            const shouldShowSelectionBar = selectedIds.length > 0;
-            DOM.selectionBar.style.display = shouldShowSelectionBar ? 'flex' : 'none';
+            selectionBar.style.setProperty('display', 'flex', 'important');
 
-            if (DOM.selectionNumber) DOM.selectionNumber.innerText = selectedIds.length;
-            if (DOM.selectionLabel) DOM.selectionLabel.innerText = selectedIds.length > 1 ? 'OBJECTS' : 'OBJECT';
+            if (selectionNumber) selectionNumber.innerText = selectedIds.length;
+            if (selectionLabel) selectionLabel.innerText = selectedIds.length > 1 ? 'OBJECTS' : 'OBJECT';
 
             // Show Align Bar if 2+ selected (RESTORED)
-            if (DOM.alignBar) {
-                DOM.alignBar.style.display = selectedIds.length > 1 ? 'block' : 'none';
+            if (alignBar) {
+                alignBar.style.display = selectedIds.length > 1 ? 'block' : 'none';
             }
 
             // Line Editor Trigger
             if (selectedIds.length === 1 && selectedIds[0].startsWith('conn_')) {
                 if (window.switchSidebarTab) window.switchSidebarTab('editor');
-                if (DOM.linePropSection) DOM.linePropSection.style.display = 'block';
-                if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'none';
-                if (DOM.textPropSection) DOM.textPropSection.style.display = 'none';
+                const linePropSection = document.getElementById('line-editor-section');
+                const shapePropSection = document.getElementById('shape-inspector-section');
+                const textPropSection = document.getElementById('text-editor-section');
+                if (linePropSection) linePropSection.style.display = 'block';
+                if (shapePropSection) shapePropSection.style.display = 'none';
+                if (textPropSection) textPropSection.style.display = 'none';
             }
         } else {
-            DOM.selectionBar.style.display = 'none';
-            if (DOM.alignBar) DOM.alignBar.style.display = 'none';
+            selectionBar.style.display = 'none';
+            if (alignBar) alignBar.style.display = 'none';
         }
     };
 
@@ -339,13 +358,17 @@ window.GroupingManager = (function() {
     return {
         init,
         getSelectedIds: () => selectedIds,
+        getSelectedIdsIsGroupMap: () => selectedIdsIsGroupMap,
         clearSelection,
         groupSelected,
         ungroupSelected,
         alignSelected,
         addToMolecules,
         deleteMolecule,
-        renameMolecule
+        renameMolecule,
+        setSelectedIdsIsGroupMap: (map) => { selectedIdsIsGroupMap = map; },
+        setSelectedIds: (ids) => { selectedIds = ids; },
+        updateSelectionUI
     };
 })();
 
@@ -353,7 +376,10 @@ window.deleteMolecule = (id, e) => window.GroupingManager.deleteMolecule(id, e);
 window.renameComponent = (id, e) => window.GroupingManager.renameMolecule(id, e);
 
 // Auto-init when ready
-document.addEventListener('DOMContentLoaded', () => {
-    // Small delay to ensure core is ready
-    setTimeout(() => window.GroupingManager.init(), 500);
-});
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => window.GroupingManager.init(), 100);
+    });
+} else {
+    setTimeout(() => window.GroupingManager.init(), 100);
+}

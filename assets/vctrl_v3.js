@@ -284,6 +284,7 @@ function initV3Listeners() {
         DOM.canvas.addEventListener('mousedown', function(e) {
             var state = window.state, DOM = window.DOM;
             if (!state) return;
+            if (e.target.closest('#floating-inspector-card')) return;
             if (state.tool === 'hand' || e.button === 1 || state.isHandMode) {
                 state.isDragging = true;
                 state.startX = e.clientX - state.transform.x;

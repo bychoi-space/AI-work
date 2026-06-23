@@ -151,8 +151,42 @@ window.switchSidebarTab = function(tabName) {
     console.log(`[Inspector] switchSidebarTab END: ${tabName}`);
 };
 
+// Helper to restore properties sections to their default DOM containers
+function restorePropertiesSections() {
+    const selectionBar = document.getElementById('selection-actions-bar');
+    const tabEditor = document.getElementById('tab-editor');
+    if (selectionBar && tabEditor && selectionBar.parentElement !== tabEditor) {
+        tabEditor.insertBefore(selectionBar, tabEditor.firstChild);
+    }
+    
+    const shapesBody = document.getElementById('v4-shapes-body');
+    if (shapesBody) {
+        const sections = [
+            document.getElementById('text-editor-section'),
+            document.getElementById('table-inspector-section'),
+            document.getElementById('shape-inspector-section'),
+            document.getElementById('line-editor-section'),
+            document.getElementById('icon-inspector-section'),
+            document.getElementById('checkbox-radio-inspector-section'),
+            document.getElementById('textbox-textarea-inspector-section'),
+            document.getElementById('stepper-inspector-section'),
+            document.getElementById('selectbox-inspector-section'),
+            document.getElementById('fileupload-inspector-section'),
+            document.getElementById('alert-inspector-section'),
+            document.getElementById('button-inspector-section'),
+            document.getElementById('datepicker-inspector-section')
+        ];
+        sections.forEach(sec => {
+            if (sec && sec.parentElement !== shapesBody) {
+                shapesBody.appendChild(sec);
+            }
+        });
+    }
+}
+
 // --- 3. UI Rendering Functions ---
 window.updateProperties = function(compStyles) {
+    restorePropertiesSections();
     const pm = state.projectMetadata || {};
     if (!DOM.metadataPanel) return;
 
@@ -208,29 +242,16 @@ window.updateProperties = function(compStyles) {
     }
 
     // 2. Update Sidebar Panels based on selected component
-    if (compStyles) {
-        console.log("[Inspector] Received styles:", compStyles);
+    const hasSelection = (window.state && window.state.selectedIds && window.state.selectedIds.length > 0);
+    if (compStyles || hasSelection) {
+        if (compStyles) {
+            console.log("[Inspector] Received styles:", compStyles);
+        }
         
-        // Force Tab Switch
-        window.switchSidebarTab('editor');
-
-        state.isEditing = true;
-        state.editingIndex = (compStyles.pinIndex !== undefined && compStyles.pinIndex !== -1) ? compStyles.pinIndex : compStyles.id;
-        let type = 'comp';
-        if (compStyles.isPin) type = 'pin';
-        else if (compStyles.isTable) type = 'table';
-        else if (compStyles.isShape) type = 'shape';
-        else if (compStyles.isConnector) type = 'line';
-        else if (compStyles.isTextbox) type = 'textbox';
-        else if (compStyles.isTextarea) type = 'textarea';
-        else if (compStyles.isStepper) type = 'stepper';
-        else if (compStyles.isSelectbox) type = 'selectbox';
-        else if (compStyles.isFileUpload) type = 'fileupload';
-        else if (compStyles.isAlert) type = 'alert';
-        else if (compStyles.isButton) type = 'button';
-        else if (compStyles.isDatePicker) type = 'datepicker';
-        else if (compStyles.isIcon) type = 'icon';
-        state.editingType = type;
+        const floatingInspector = document.getElementById('floating-inspector-card');
+        if (floatingInspector) {
+            floatingInspector.style.setProperty('display', 'flex', 'important');
+        }
 
         // Hide all sections first
         if (DOM.textPropSection) DOM.textPropSection.style.display = 'none';
@@ -247,85 +268,133 @@ window.updateProperties = function(compStyles) {
         if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'none';
         if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'none';
 
-        // Show relevant section
-        if (state.editingType === 'pin') {
-            if (DOM.textPropSection) DOM.textPropSection.style.display = 'block';
-        }
+        if (compStyles) {
+            state.isEditing = true;
+            state.editingIndex = (compStyles.pinIndex !== undefined && compStyles.pinIndex !== -1) ? compStyles.pinIndex : compStyles.id;
+            let type = 'comp';
+            if (compStyles.isPin) type = 'pin';
+            else if (compStyles.isTable) type = 'table';
+            else if (compStyles.isShape) type = 'shape';
+            else if (compStyles.isConnector) type = 'line';
+            else if (compStyles.isTextbox) type = 'textbox';
+            else if (compStyles.isTextarea) type = 'textarea';
+            else if (compStyles.isStepper) type = 'stepper';
+            else if (compStyles.isSelectbox) type = 'selectbox';
+            else if (compStyles.isFileUpload) type = 'fileupload';
+            else if (compStyles.isAlert) type = 'alert';
+            else if (compStyles.isButton) type = 'button';
+            else if (compStyles.isDatePicker) type = 'datepicker';
+            else if (compStyles.isIcon) type = 'icon';
+            state.editingType = type;
 
-        if (state.editingType === 'shape') {
-            if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'block';
-            // Shape도 CONTENT EDITOR 공유 사용
-            if (DOM.textPropSection) DOM.textPropSection.style.display = 'block';
-        } else if (state.editingType === 'table') {
-            if (DOM.tablePropSection) DOM.tablePropSection.style.display = 'block';
-        } else if (state.editingType === 'line') {
-            if (DOM.linePropSection) DOM.linePropSection.style.display = 'block';
-        } else if (state.editingType === 'icon') {
-            if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'block';
-            if (compStyles.isCheckbox || compStyles.isRadio) {
-                if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'block';
-                _syncCheckboxRadioProps(compStyles);
+            // Show relevant section
+            if (state.editingType === 'pin') {
+                if (DOM.textPropSection) DOM.textPropSection.style.display = 'block';
             }
-        } else if (state.editingType === 'textbox' || state.editingType === 'textarea') {
-            if (DOM.textboxTextareaPropSection) DOM.textboxTextareaPropSection.style.display = 'block';
-            _syncTextboxTextareaProps(compStyles);
-        } else if (state.editingType === 'stepper') {
-            if (DOM.stepperPropSection) DOM.stepperPropSection.style.display = 'block';
-            _syncStepperProps(compStyles);
-        } else if (state.editingType === 'selectbox') {
-            if (DOM.selectboxPropSection) DOM.selectboxPropSection.style.display = 'block';
-            _syncSelectboxProps(compStyles);
-        } else if (state.editingType === 'fileupload') {
-            if (DOM.fileuploadPropSection) DOM.fileuploadPropSection.style.display = 'block';
-            _syncFileuploadProps(compStyles);
-        } else if (state.editingType === 'alert') {
-            if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'block';
-            _syncAlertProps(compStyles);
-        } else if (state.editingType === 'button') {
-            if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'block';
-            _syncButtonProps(compStyles);
-        } else if (state.editingType === 'datepicker') {
-            if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'block';
-            _syncDatePickerProps(compStyles);
+
+            if (state.editingType === 'shape') {
+                if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'block';
+                // Shape도 CONTENT EDITOR 공유 사용
+                if (DOM.textPropSection) DOM.textPropSection.style.display = 'block';
+            } else if (state.editingType === 'table') {
+                if (DOM.tablePropSection) DOM.tablePropSection.style.display = 'block';
+            } else if (state.editingType === 'line') {
+                if (DOM.linePropSection) DOM.linePropSection.style.display = 'block';
+            } else if (state.editingType === 'icon') {
+                if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'block';
+                if (compStyles.isCheckbox || compStyles.isRadio) {
+                    if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'block';
+                    _syncCheckboxRadioProps(compStyles);
+                }
+            } else if (state.editingType === 'textbox' || state.editingType === 'textarea') {
+                if (DOM.textboxTextareaPropSection) DOM.textboxTextareaPropSection.style.display = 'block';
+                _syncTextboxTextareaProps(compStyles);
+            } else if (state.editingType === 'stepper') {
+                if (DOM.stepperPropSection) DOM.stepperPropSection.style.display = 'block';
+                _syncStepperProps(compStyles);
+            } else if (state.editingType === 'selectbox') {
+                if (DOM.selectboxPropSection) DOM.selectboxPropSection.style.display = 'block';
+                _syncSelectboxProps(compStyles);
+            } else if (state.editingType === 'fileupload') {
+                if (DOM.fileuploadPropSection) DOM.fileuploadPropSection.style.display = 'block';
+                _syncFileuploadProps(compStyles);
+            } else if (state.editingType === 'alert') {
+                if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'block';
+                _syncAlertProps(compStyles);
+            } else if (state.editingType === 'button') {
+                if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'block';
+                _syncButtonProps(compStyles);
+            } else if (state.editingType === 'datepicker') {
+                if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'block';
+                _syncDatePickerProps(compStyles);
+            }
+
+            // CONTENT EDITOR 헤더 레이블 동적 변경
+            const editorLabel = document.getElementById('content-editor-label');
+            if (editorLabel) {
+                editorLabel.innerText = state.editingType === 'shape' ? 'SHAPE TEXT' : 'CONTENT EDITOR';
+            }
+
+            // Load content to Quill
+            if (state.editingType === 'pin' && compStyles.html !== undefined && window.quillEditor) {
+                setTimeout(() => {
+                    window.quillEditor.root.innerHTML = compStyles.html;
+                    console.log("[Inspector] Loaded HTML to Quill:", compStyles.html);
+                }, 50);
+            } else if (state.editingType === 'shape' && window.quillEditor) {
+                // shape 내부 텍스트를 Quill에 로드 (wrapper div 벗겨내기)
+                const rawHtml = compStyles.html || '';
+                const parser = new DOMParser();
+                const parsed = parser.parseFromString(rawHtml, 'text/html');
+                const textContent = parsed.querySelector('.v4-shape-text-content') || parsed.querySelector('.v4-shape-text-overlay');
+                const cleanHtml = textContent ? textContent.innerHTML : rawHtml;
+
+                // 초기 로드 중에는 text-change → LF_UPDATE_SHAPE_TEXT 루프를 방지
+                state._isLoadingShapeContent = true;
+                setTimeout(() => {
+                    window.quillEditor.root.innerHTML = cleanHtml;
+                    console.log("[Inspector] Loaded Shape HTML to Quill:", cleanHtml);
+                    // 다음 틱에 가드 해제 (text-change가 먼저 발사된 후 해제)
+                    requestAnimationFrame(() => {
+                        state._isLoadingShapeContent = false;
+                    });
+                }, 50);
+            }
+
+            // Sync Property Controls
+            const s = compStyles.currentStyles || {};
+            if (DOM.textColorPicker) DOM.textColorPicker.value = s.text || "#000000";
         }
 
-        // CONTENT EDITOR 헤더 레이블 동적 변경
-        const editorLabel = document.getElementById('content-editor-label');
-        if (editorLabel) {
-            editorLabel.innerText = state.editingType === 'shape' ? 'SHAPE TEXT' : 'CONTENT EDITOR';
+        // Dynamically move active panels into floating inspector card body
+        const floatingBody = document.getElementById('floating-inspector-body');
+        if (floatingBody) {
+            floatingBody.innerHTML = '';
+            const selectionBar = document.getElementById('selection-actions-bar');
+            if (selectionBar && selectionBar.style.display !== 'none') {
+                floatingBody.appendChild(selectionBar);
+            }
+            const sections = [
+                DOM.textPropSection, DOM.tablePropSection, DOM.shapePropSection,
+                DOM.linePropSection, DOM.iconPropSection, DOM.checkboxRadioPropSection,
+                DOM.textboxTextareaPropSection, DOM.stepperPropSection, DOM.selectboxPropSection,
+                DOM.fileuploadPropSection, DOM.alertPropSection, DOM.buttonPropSection,
+                DOM.datePickerPropSection
+            ];
+            sections.forEach(sec => {
+                if (sec && sec.style.display === 'block') {
+                    floatingBody.appendChild(sec);
+                }
+            });
         }
-
-        // Load content to Quill
-        if (state.editingType === 'pin' && compStyles.html !== undefined && window.quillEditor) {
-            setTimeout(() => {
-                window.quillEditor.root.innerHTML = compStyles.html;
-                console.log("[Inspector] Loaded HTML to Quill:", compStyles.html);
-            }, 50);
-        } else if (state.editingType === 'shape' && window.quillEditor) {
-            // shape 내부 텍스트를 Quill에 로드 (wrapper div 벗겨내기)
-            const rawHtml = compStyles.html || '';
-            const parser = new DOMParser();
-            const parsed = parser.parseFromString(rawHtml, 'text/html');
-            const textContent = parsed.querySelector('.v4-shape-text-content') || parsed.querySelector('.v4-shape-text-overlay');
-            const cleanHtml = textContent ? textContent.innerHTML : rawHtml;
-
-            // 초기 로드 중에는 text-change → LF_UPDATE_SHAPE_TEXT 루프를 방지
-            state._isLoadingShapeContent = true;
-            setTimeout(() => {
-                window.quillEditor.root.innerHTML = cleanHtml;
-                console.log("[Inspector] Loaded Shape HTML to Quill:", cleanHtml);
-                // 다음 틱에 가드 해제 (text-change가 먼저 발사된 후 해제)
-                requestAnimationFrame(() => {
-                    state._isLoadingShapeContent = false;
-                });
-            }, 50);
-        }
-
-        // Sync Property Controls
-        const s = compStyles.currentStyles || {};
-        if (DOM.textColorPicker) DOM.textColorPicker.value = s.text || "#000000";
 
     } else {
+        const floatingInspector = document.getElementById('floating-inspector-card');
+        if (floatingInspector) {
+            floatingInspector.style.setProperty('display', 'none', 'important');
+            const floatingBody = document.getElementById('floating-inspector-body');
+            if (floatingBody) floatingBody.innerHTML = '';
+        }
         state.isEditing = false;
         state.editingIndex = -1;
         if (DOM.selectionBar) DOM.selectionBar.style.display = 'none';
@@ -1196,5 +1265,4 @@ if (searchClear) {
         }
     };
 }
-
 console.log("[VCTRL INSPECTOR] UI Controller fully loaded and cleaned.");

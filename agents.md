@@ -52,6 +52,14 @@
   - 4. **Ctrl+Z (Undo) 보장**: 모든 객체의 이동, 생성, 삭제, 그룹화 동작은 `V4UndoManager.saveState()`를 거쳐 실행 취소가 가능해야 합니다.
   - 5. **Ctrl+C / Ctrl+V 복사 및 붙여넣기 보장 (크로스 스크린 지원)**: 서로 다른 스크린 iframe 간 복사/붙여넣기를 지원하기 위해 `window.top.__lf_global_clipboard__`를 전역 클립보드 SSOT로 사용합니다. 복사 시 선택된 최상위 객체들을 JSON으로 직렬화하여 저장하고, 붙여넣기 시 겹침 방지 오프셋(+15px)을 적용해 복제 생성한 뒤 새로 생성된 객체들만 자동으로 선택(`.selected`) 상태로 전환해야 합니다. 핀마커 복사 시 순번 재정렬 및 부모 연동, 글 편집 시 텍스트 복사 우선권 보장 규칙을 준수합니다.
   - 6. **Ctrl+S 전체저장 보장**: 포커스 위치에 관계없이 캔버스 내부 단축키 입력 시 즉시 툴바의 전체저장(`handleGlobalSave`)이 실행되도록 부모 창으로 이벤트를 프록시 토스해야 합니다.
+  - 7. **오브젝트 프로퍼티 플로팅 카드 (Object Properties Floating Card) 및 다중 선택**:
+    - **플로팅 연동**: 선택 활성화 시 `#floating-inspector-card`가 노출되며, 현재 활성화된 속성 편집 섹션(예: `text-editor-section`) 및 툴바(`#selection-actions-bar`)가 `#floating-inspector-body` 내부로 동적으로 이동(`appendChild`)되어야 합니다.
+    - **DOM 복원 SSOT**: 선택 해제나 상태 변경 시, 동적 이동된 요소들의 상태 유실 및 파괴를 방지하기 위해 반드시 원래의 부모 컨테이너(`#tab-editor` 및 `#v4-shapes-body`)로 환원(`restorePropertiesSections()`)한 뒤 갱신해야 합니다.
+    - **오작동 방지**: 캔버스 드래그 및 줌 마우스 이벤트 등에서 플로팅 카드 내 클릭을 예외 처리(`e.target.closest('#floating-inspector-card')`)하여 편집 제어 도중 영역이 접히는 오작동을 차단합니다.
+    - **선택별 버튼 분기 제어**:
+      - **단일 컴포넌트(비그룹)**: `GROUP`, `UNGROUP`, `ADD TO MOLECULES` 3종 버튼 모두 미노출 (`display: none !important`).
+      - **단일 그룹**: `UNGROUP`, `ADD TO MOLECULES` 노출, `GROUP` 미노출.
+      - **다중 선택(2개 이상)**: `GROUP` 및 정렬 도구 노출, `UNGROUP`, `ADD TO MOLECULES` 미노출.
 - **통합 좌표 및 단위 표준 (Unified Coordinate Standards)**:
   - **No-Measure 전략**: 브라우저의 `getBoundingClientRect()` 대신 객체의 **`style.left/top` 데이터**를 Single Source of Truth(SSOT)로 사용합니다.
   - **Pure Data 연산**: 모든 이동/정렬 연산은 순수 픽셀(`px`) 산술로 수행하여 줌이나 레이아웃 방식에 영향을 받지 않는 절대적인 정확도를 보장합니다.

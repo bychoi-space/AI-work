@@ -272,7 +272,8 @@ window.injectIframeInteractions = function(doc) {
                 isShape: !!activeEl.querySelector('.v4-shape'), 
                 isIcon: !!activeEl.querySelector('.lf-icon'),
                 isPin: isPin,
-                pinIndex: isPin ? parseInt(activeEl.id.replace('v4-pin-', '')) : -1
+                pinIndex: isPin ? parseInt(activeEl.id.replace('v4-pin-', '')) : -1,
+                isGroup: activeEl.classList.contains('lf-group')
             }, '*');
             e.preventDefault(); e.stopPropagation();
         } else if (comp) {
@@ -286,7 +287,8 @@ window.injectIframeInteractions = function(doc) {
                 isShape: !!comp.querySelector('.v4-shape'), 
                 isIcon: !!comp.querySelector('.lf-icon') || !!comp.querySelector('svg'),
                 isPin: isPin,
-                pinIndex: isPin ? parseInt(comp.id.replace('v4-pin-', '')) : -1
+                pinIndex: isPin ? parseInt(comp.id.replace('v4-pin-', '')) : -1,
+                isGroup: comp.classList.contains('lf-group')
             }, '*');
         } else {
             doc.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
@@ -739,7 +741,46 @@ window.MessageHub = {
                     state.isEditing = true;
                     state.editingIndex = data.id;
                     if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab('editor');
-                    if (typeof window.updateProperties === 'function') window.updateProperties(data);
+                    
+                    if (window.GroupingManager) {
+                        let selectedIds = (typeof window.GroupingManager.getSelectedIds === 'function') ? [...window.GroupingManager.getSelectedIds()] : [];
+                        let selectedIdsIsGroupMap = (typeof window.GroupingManager.getSelectedIdsIsGroupMap === 'function') ? { ...window.GroupingManager.getSelectedIdsIsGroupMap() } : {};
+                        
+                        if (data.shiftKey) {
+                            if (selectedIds.includes(data.id)) {
+                                selectedIds = selectedIds.filter(id => id !== data.id);
+                                delete selectedIdsIsGroupMap[data.id];
+                            } else {
+                                selectedIds.push(data.id);
+                                selectedIdsIsGroupMap[data.id] = !!data.isGroup;
+                            }
+                        } else {
+                            selectedIds = [data.id];
+                            selectedIdsIsGroupMap = { [data.id]: !!data.isGroup };
+                        }
+                        
+                        if (typeof window.GroupingManager.setSelectedIds === 'function') {
+                            window.GroupingManager.setSelectedIds(selectedIds);
+                        }
+                        if (typeof window.GroupingManager.setSelectedIdsIsGroupMap === 'function') {
+                            window.GroupingManager.setSelectedIdsIsGroupMap(selectedIdsIsGroupMap);
+                        }
+                        if (typeof window.GroupingManager.updateSelectionUI === 'function') {
+                            window.GroupingManager.updateSelectionUI();
+                        }
+                        
+                        if (window.state) {
+                            window.state.selectedIds = [...selectedIds];
+                        }
+                        
+                        if (selectedIds.length === 1) {
+                            if (typeof window.updateProperties === 'function') window.updateProperties(data);
+                        } else {
+                            if (typeof window.updateProperties === 'function') window.updateProperties();
+                        }
+                    } else {
+                        if (typeof window.updateProperties === 'function') window.updateProperties(data);
+                    }
                 }
             } else if (data.type === 'LF_SPACE_DOWN') {
                 const DOM = window.DOM;
