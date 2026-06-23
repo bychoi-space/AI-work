@@ -485,8 +485,8 @@ if (window.V4UndoManager) {
             host.appendChild(v);
             newSelectedIds.push(newId);
         });
-        if (typeof enforceDesignSystem === 'function') {
-            enforceDesignSystem();
+        if (typeof window.enforceDesignSystem === 'function') {
+            window.enforceDesignSystem();
         } else if (typeof initHandles === 'function') {
             initHandles();
         }
@@ -522,8 +522,62 @@ if (window.V4UndoManager) {
         const checked = container ? container.getAttribute('data-checked') !== 'false' : true;
         const textEnabled = container ? container.getAttribute('data-text-enabled') !== 'false' : false;
         
+        // Textbox / Textarea Atom Detection
+        const isTextbox = !!c.querySelector('.v4-textbox-container') || c.classList.contains('v4-textbox-container');
+        const isTextarea = !!c.querySelector('.v4-textarea-container') || c.classList.contains('v4-textarea-container');
+        const inputContainer = c.querySelector('.v4-textbox-container, .v4-textarea-container') || (isTextbox || isTextarea ? c : null);
+        const placeholderText = inputContainer ? (inputContainer.getAttribute('data-placeholder') || inputContainer.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder')?.textContent || "Placeholder") : "";
+        const maxLength = inputContainer ? (parseInt(inputContainer.getAttribute('data-maxlength')) || 100) : 100;
+        const showCounter = inputContainer ? (inputContainer.getAttribute('data-show-counter') !== 'false') : false;
+
+        // Stepper Atom Detection
+        const isStepper = !!c.querySelector('.v4-stepper-container') || c.classList.contains('v4-stepper-container');
+        const stepperContainer = c.querySelector('.v4-stepper-container') || (isStepper ? c : null);
+        const minVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-min')) || 1 : 1;
+        const maxVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-max')) || 99 : 99;
+        const stepperVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-val')) || minVal : minVal;
+        const stepperBtnEnabled = stepperContainer ? stepperContainer.getAttribute('data-btn-enabled') !== 'false' : true;
+        const stepperBtnText = stepperContainer ? stepperContainer.getAttribute('data-btn-text') || "적용" : "적용";
+        const stepperDisabled = stepperContainer ? stepperContainer.getAttribute('data-disabled') === 'true' : false;
+        
+        // Selectbox Atom Detection
+        const isSelectbox = !!c.querySelector('.v4-selectbox-container') || c.classList.contains('v4-selectbox-container');
+        const selectboxContainer = c.querySelector('.v4-selectbox-container') || (isSelectbox ? c : null);
+        const selectboxDefaultText = selectboxContainer ? (selectboxContainer.getAttribute('data-default-text') || "선택하세요") : "선택하세요";
+        const selectboxDropdownActive = selectboxContainer ? selectboxContainer.getAttribute('data-dropdown-active') === 'true' : false;
+        const selectboxOptionsRaw = selectboxContainer ? (selectboxContainer.getAttribute('data-options') || "Option 1,Option 2,Option 3") : "Option 1,Option 2,Option 3";
+        const selectboxOptions = selectboxOptionsRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+        // File Upload Atom Detection
+        const isFileUpload = !!c.querySelector('.v4-fileupload-container') || c.classList.contains('v4-fileupload-container');
+        const fileuploadContainer = c.querySelector('.v4-fileupload-container') || (isFileUpload ? c : null);
+        const fileSelected = fileuploadContainer ? fileuploadContainer.getAttribute('data-selected') === 'true' : false;
+        const fileName = fileuploadContainer ? (fileuploadContainer.getAttribute('data-file-name') || "") : "";
+        const fileButtonText = fileuploadContainer ? (fileuploadContainer.getAttribute('data-button-text') || "파일첨부") : "파일첨부";
+        const filePlaceholder = fileuploadContainer ? (fileuploadContainer.getAttribute('data-placeholder') || "선택된 파일 없음") : "선택된 파일 없음";
+
+        // Alert Atom Detection
+        const isAlert = !!c.querySelector('.v4-alert-container') || c.classList.contains('v4-alert-container');
+        const alertContainer = c.querySelector('.v4-alert-container') || (isAlert ? c : null);
+        const alertMessage = alertContainer ? (alertContainer.getAttribute('data-message') || "얼럿 메시지 입력 표시") : "얼럿 메시지 입력 표시";
+        const alertBtnCount = alertContainer ? parseInt(alertContainer.getAttribute('data-btn-count')) || 1 : 1;
+        const alertBtnText1 = alertContainer ? (alertContainer.getAttribute('data-btn-text-1') || "확인") : "확인";
+        const alertBtnText2 = alertContainer ? (alertContainer.getAttribute('data-btn-text-2') || "취소") : "취소";
+        const alertBtnText3 = alertContainer ? (alertContainer.getAttribute('data-btn-text-3') || "저장") : "저장";
+        const alertBtnStyle1 = alertContainer ? (alertContainer.getAttribute('data-btn-style-1') || "normal") : "normal";
+        const alertBtnStyle2 = alertContainer ? (alertContainer.getAttribute('data-btn-style-2') || "normal") : "normal";
+        const alertBtnStyle3 = alertContainer ? (alertContainer.getAttribute('data-btn-style-3') || "normal") : "normal";
+
+        // Button Atom Detection
+        const isButton = !!c.querySelector('.v4-btn-container') || c.classList.contains('v4-btn-container');
+        const btnContainer = c.querySelector('.v4-btn-container') || (isButton ? c : null);
+        const buttonText = btnContainer ? (btnContainer.getAttribute('data-text') || "버튼") : "버튼";
+        const buttonStyle = btnContainer ? (btnContainer.getAttribute('data-btn-style') || "normal") : "normal";
+        const buttonRadius = btnContainer ? (btnContainer.getAttribute('data-btn-radius') || "6") : "6";
+
         // If it is a checkbox/radio atom, background & border source should target the inner box (.v4-checkbox or .v4-radio)
         const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
+        const buttonEl = c.querySelector('.v4-custom-btn');
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
@@ -533,7 +587,7 @@ if (window.V4UndoManager) {
             }
             return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
         };
-
+ 
         let detectedIconColor = "";
         if (icon) {
             const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
@@ -546,7 +600,7 @@ if (window.V4UndoManager) {
                 detectedIconColor = icon.style.color || icon.getAttribute('stroke') || "";
             }
         }
-
+ 
         return {
             id: c.id,
             isTable: !!table,
@@ -558,27 +612,62 @@ if (window.V4UndoManager) {
             isRadio: isRadio,
             checked: checked,
             textEnabled: textEnabled,
+            isTextbox: isTextbox,
+            isTextarea: isTextarea,
+            placeholderText: placeholderText,
+            maxLength: maxLength,
+            showCounter: showCounter,
+            isStepper: isStepper,
+            minVal: minVal,
+            maxVal: maxVal,
+            val: stepperVal,
+            btnEnabled: stepperBtnEnabled,
+            btnText: stepperBtnText,
+            disabled: stepperDisabled,
+            isSelectbox: isSelectbox,
+            selectboxDefaultText: selectboxDefaultText,
+            selectboxDropdownActive: selectboxDropdownActive,
+            selectboxOptions: selectboxOptions,
+            isFileUpload: isFileUpload,
+            fileSelected: fileSelected,
+            fileName: fileName,
+            fileButtonText: fileButtonText,
+            filePlaceholder: filePlaceholder,
+            isAlert: isAlert,
+            alertMessage: alertMessage,
+            alertBtnCount: alertBtnCount,
+            alertBtnText1: alertBtnText1,
+            alertBtnText2: alertBtnText2,
+            alertBtnText3: alertBtnText3,
+            alertBtnStyle1: alertBtnStyle1,
+            alertBtnStyle2: alertBtnStyle2,
+            alertBtnStyle3: alertBtnStyle3,
+            isButton: isButton,
+            buttonText: buttonText,
+            buttonStyle: buttonStyle,
+            buttonRadius: buttonRadius,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
             w: c.offsetWidth,
             h: c.offsetHeight,
             currentStyles: {
-                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")))),
-                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))),
-                text: _rgb2hex(textCell ? _getVal(textCell, "color") : ""),
-                fontSize: parseInt(_getVal(textCell, "fontSize")) || 14,
+                bg: _rgb2hex(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : (alertContainer ? _getVal(alertContainer, "backgroundColor") : "")))))))))),
+                border: _rgb2hex(shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (buttonEl ? _getVal(buttonEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor") : (alertContainer ? _getVal(alertContainer, "borderColor") : (icon ? _getVal(icon.parentElement, "borderColor") : ""))))))))))),
+                text: _rgb2hex(textCell ? _getVal(textCell, "color") : (buttonEl ? _getVal(buttonEl, "color") : "")),
+                fontSize: parseInt(_getVal(textCell, "fontSize")) || (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 12 : 12),
+                fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
                 iconColor: _rgb2hex(detectedIconColor || "#000000"),
-                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : 0),
-                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")))),
+                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : (buttonEl ? (parseInt(_getVal(buttonEl, "borderRadius")) || 0) : 0)),
+                bgOpacity: _getAlphaPercent(shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : (fileuploadContainer ? _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor") : (alertContainer ? _getVal(alertContainer, "backgroundColor") : "")))))))))),
                 isBgTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : "")));
+                    const colorVal = shape ? getShapeColor("backgroundColor") : (table ? _getVal(table, "backgroundColor") : (isPin ? _getVal(c, "backgroundColor") : (boxEl ? _getVal(boxEl, "backgroundColor") : (buttonEl ? _getVal(buttonEl, "backgroundColor") : (inputContainer ? _getVal(inputContainer, "backgroundColor") : (stepperContainer ? _getVal(stepperContainer, "backgroundColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor") : "")))))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 isBorderTransparent: (() => {
-                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : "")));
+                    const colorVal = shape ? getShapeColor("borderColor") : (table ? _getVal(table, "borderColor") : (isPin ? _getVal(c, "borderColor") : (boxEl ? _getVal(boxEl, "borderColor") : (buttonEl ? _getVal(buttonEl, "borderColor") : (inputContainer ? _getVal(inputContainer, "borderColor") : (stepperContainer ? _getVal(stepperContainer, "borderColor") : (selectboxContainer ? _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor") : "")))))));
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
                 textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
@@ -605,18 +694,32 @@ if (window.V4UndoManager) {
         const container = s.querySelector('.v4-checkbox-container, .v4-radio-container');
         if (!container) return;
         
+        const boxEl = container.querySelector('.v4-checkbox, .v4-radio');
+        if (!boxEl) return;
+
         const textEnabled = container.getAttribute('data-text-enabled') !== 'false';
         if (textEnabled) {
             const textEl = container.querySelector('.v4-checkbox-text, .v4-radio-text');
             if (textEl) {
+                const boxW = parseFloat(boxEl.style.width) || 24;
+                const boxH = parseFloat(boxEl.style.height) || 24;
                 const textWidth = textEl.scrollWidth || 35;
-                const totalWidth = 24 + 8 + textWidth + 8; // 24px icon + 8px gap + text + 8px padding/border buffer
+                const totalWidth = boxW + 8 + textWidth + 8; // 아이콘 크기 + 8px 간격 + 텍스트 너비 + 8px 패딩 버퍼
                 s.style.width = totalWidth + 'px';
-                s.style.height = '32px';
+                s.style.height = Math.max(32, boxH + 8) + 'px';
             }
         } else {
-            s.style.width = '24px';
-            s.style.height = '24px';
+            if (s.getAttribute('data-resized') === 'true') {
+                const parentW = parseFloat(s.style.width) || s.offsetWidth;
+                const parentH = parseFloat(s.style.height) || s.offsetHeight;
+                boxEl.style.width = parentW + 'px';
+                boxEl.style.height = parentH + 'px';
+            } else {
+                const boxW = parseFloat(boxEl.style.width) || 24;
+                const boxH = parseFloat(boxEl.style.height) || 24;
+                s.style.width = boxW + 'px';
+                s.style.height = boxH + 'px';
+            }
         }
         updateHandles(s);
     };
@@ -801,6 +904,12 @@ if (window.V4UndoManager) {
                         });
                     }
                 });
+            }
+        }
+        if (isResizing && activeEl) {
+            activeEl.setAttribute('data-resized', 'true');
+            if (typeof window.enforceDesignSystem === 'function') {
+                window.enforceDesignSystem();
             }
         }
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
@@ -1331,7 +1440,310 @@ if (window.V4UndoManager) {
             const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
             if (container) {
                 container.setAttribute('data-text-enabled', d.enabled ? 'true' : 'false');
+                s.removeAttribute('data-resized');
                 resizeAtomToFitText(s);
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_STEPPER_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-stepper-container') || (s.classList.contains('v4-stepper-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.minVal !== undefined) {
+                    container.setAttribute('data-min', d.minVal);
+                }
+                if (d.maxVal !== undefined) {
+                    container.setAttribute('data-max', d.maxVal);
+                }
+                if (d.disabled !== undefined) {
+                    container.setAttribute('data-disabled', d.disabled ? 'true' : 'false');
+                }
+                if (d.btnEnabled !== undefined) {
+                    container.setAttribute('data-btn-enabled', d.btnEnabled ? 'true' : 'false');
+                    const actBtn = container.querySelector('.v4-stepper-action');
+                    if (actBtn) {
+                        actBtn.style.display = d.btnEnabled ? 'inline-flex' : 'none';
+                    }
+                    if (d.btnEnabled) {
+                        s.style.width = '154px';
+                    } else {
+                        s.style.width = '100px';
+                    }
+                }
+                if (d.btnText !== undefined) {
+                    container.setAttribute('data-btn-text', d.btnText);
+                    const actBtn = container.querySelector('.v4-stepper-action');
+                    if (actBtn) {
+                        actBtn.innerText = d.btnText;
+                    }
+                }
+                
+                const min = parseInt(container.getAttribute('data-min')) || 1;
+                const max = parseInt(container.getAttribute('data-max')) || 99;
+                let curVal = parseInt(container.getAttribute('data-val')) || min;
+                
+                if (d.minVal !== undefined) {
+                    curVal = min;
+                }
+                
+                curVal = Math.max(min, Math.min(max, curVal));
+                container.setAttribute('data-val', curVal);
+                
+                const valEl = container.querySelector('.v4-stepper-value');
+                if (valEl) valEl.innerText = curVal;
+                
+                const decBtn = container.querySelector('.v4-stepper-dec');
+                const incBtn = container.querySelector('.v4-stepper-inc');
+                const isDisabled = container.getAttribute('data-disabled') === 'true';
+                
+                if (isDisabled) {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = '';
+                        decBtn.style.color = '';
+                        decBtn.style.cursor = 'not-allowed';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = '';
+                        incBtn.style.color = '';
+                        incBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = curVal === min ? '#f3f4f6' : '#ffffff';
+                        decBtn.style.color = curVal === min ? '#9ca3af' : '#374151';
+                        decBtn.style.cursor = curVal === min ? 'not-allowed' : 'pointer';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = curVal === max ? '#f3f4f6' : '#ffffff';
+                        incBtn.style.color = curVal === max ? '#9ca3af' : '#374151';
+                        incBtn.style.cursor = curVal === max ? 'not-allowed' : 'pointer';
+                    }
+                }
+                
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_SELECTBOX_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-selectbox-container') || (s.classList.contains('v4-selectbox-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.defaultText !== undefined) {
+                    container.setAttribute('data-default-text', d.defaultText);
+                    const selectedText = container.querySelector('.v4-selectbox-selected-text');
+                    if (selectedText) selectedText.innerText = d.defaultText;
+                }
+                
+                if (d.dropdownActive !== undefined) {
+                    container.setAttribute('data-dropdown-active', d.dropdownActive ? 'true' : 'false');
+                    const optionsList = container.querySelector('.v4-selectbox-options');
+                    if (optionsList) {
+                        optionsList.style.display = d.dropdownActive ? 'block' : 'none';
+                    }
+                }
+                
+                if (d.options !== undefined) {
+                    const optionsArr = Array.isArray(d.options) ? d.options : d.options.split(',');
+                    const cleanOptions = optionsArr.map(o => o.trim()).filter(Boolean);
+                    container.setAttribute('data-options', cleanOptions.join(','));
+                    
+                    const optionsList = container.querySelector('.v4-selectbox-options');
+                    if (optionsList) {
+                        optionsList.innerHTML = cleanOptions.map((opt, idx) => {
+                            const isLast = idx === cleanOptions.length - 1;
+                            const borderStyle = isLast ? '' : ' border-bottom: 1.6px solid #f3f4f6;';
+                            return '<div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151;' + borderStyle + ' box-sizing: border-box;">' + opt + '</div>';
+                        }).join('');
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_FILEUPLOAD_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-fileupload-container') || (s.classList.contains('v4-fileupload-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.fileSelected !== undefined) {
+                    container.setAttribute('data-selected', d.fileSelected ? 'true' : 'false');
+                }
+                if (d.fileName !== undefined) {
+                    container.setAttribute('data-file-name', d.fileName);
+                }
+                if (d.fileButtonText !== undefined) {
+                    container.setAttribute('data-button-text', d.fileButtonText);
+                    const btn = container.querySelector('.v4-fileupload-button');
+                    if (btn) btn.innerText = d.fileButtonText;
+                }
+                if (d.filePlaceholder !== undefined) {
+                    container.setAttribute('data-placeholder', d.filePlaceholder);
+                }
+                
+                // Update internal text display based on selection state
+                const isSel = container.getAttribute('data-selected') === 'true';
+                const fName = container.getAttribute('data-file-name') || '';
+                const placeholder = container.getAttribute('data-placeholder') || '선택된 파일 없음';
+                const txt = container.querySelector('.v4-fileupload-textbox');
+                if (txt) {
+                    if (isSel) {
+                        txt.innerText = fName;
+                        txt.style.color = '#374151';
+                    } else {
+                        txt.innerText = placeholder;
+                        txt.style.color = '#9ca3af';
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_ALERT_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-alert-container') || (s.classList.contains('v4-alert-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.messageText !== undefined) {
+                    container.setAttribute('data-message', d.messageText);
+                    const msgEl = container.querySelector('.v4-alert-message');
+                    if (msgEl) msgEl.innerHTML = d.messageText.replace(/\\n/g, '<br>');
+                }
+                if (d.btnCount !== undefined) {
+                    container.setAttribute('data-btn-count', d.btnCount);
+                }
+                if (d.btnText1 !== undefined) {
+                    container.setAttribute('data-btn-text-1', d.btnText1);
+                    const btn = container.querySelector('.v4-alert-btn-1');
+                    if (btn) btn.innerText = d.btnText1;
+                }
+                if (d.btnText2 !== undefined) {
+                    container.setAttribute('data-btn-text-2', d.btnText2);
+                    const btn = container.querySelector('.v4-alert-btn-2');
+                    if (btn) btn.innerText = d.btnText2;
+                }
+                if (d.btnText3 !== undefined) {
+                    container.setAttribute('data-btn-text-3', d.btnText3);
+                    const btn = container.querySelector('.v4-alert-btn-3');
+                    if (btn) btn.innerText = d.btnText3;
+                }
+                if (d.btnStyle1 !== undefined) container.setAttribute('data-btn-style-1', d.btnStyle1);
+                if (d.btnStyle2 !== undefined) container.setAttribute('data-btn-style-2', d.btnStyle2);
+                if (d.btnStyle3 !== undefined) container.setAttribute('data-btn-style-3', d.btnStyle3);
+                
+                // Update button visibility and style classes
+                const count = parseInt(container.getAttribute('data-btn-count')) || 1;
+                const btn1 = container.querySelector('.v4-alert-btn-1');
+                const btn2 = container.querySelector('.v4-alert-btn-2');
+                const btn3 = container.querySelector('.v4-alert-btn-3');
+                if (btn1) {
+                    btn1.style.display = count >= 1 ? 'flex' : 'none';
+                    const style1 = container.getAttribute('data-btn-style-1') || 'normal';
+                    btn1.className = 'v4-alert-btn v4-alert-btn-1 style-' + style1;
+                }
+                if (btn2) {
+                    btn2.style.display = count >= 2 ? 'flex' : 'none';
+                    const style2 = container.getAttribute('data-btn-style-2') || 'normal';
+                    btn2.className = 'v4-alert-btn v4-alert-btn-2 style-' + style2;
+                }
+                if (btn3) {
+                    btn3.style.display = count >= 3 ? 'flex' : 'none';
+                    const style3 = container.getAttribute('data-btn-style-3') || 'normal';
+                    btn3.className = 'v4-alert-btn v4-alert-btn-3 style-' + style3;
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_BUTTON_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-btn-container') || (s.classList.contains('v4-btn-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.buttonText !== undefined) {
+                    container.setAttribute('data-text', d.buttonText);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) btn.innerText = d.buttonText;
+                }
+                if (d.buttonStyle !== undefined) {
+                    container.setAttribute('data-btn-style', d.buttonStyle);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) {
+                        const targetClass = 'v4-custom-btn style-' + d.buttonStyle;
+                        if (btn.className !== targetClass) btn.className = targetClass;
+                    }
+                }
+                if (d.buttonRadius !== undefined) {
+                    container.setAttribute('data-btn-radius', d.buttonRadius);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) {
+                        const targetRadius = d.buttonRadius + 'px';
+                        if (btn.style.borderRadius !== targetRadius) btn.style.borderRadius = targetRadius;
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_TEXTBOX_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-textbox-container, .v4-textarea-container') || (s.classList.contains('v4-textbox-container') || s.classList.contains('v4-textarea-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.placeholderText !== undefined) {
+                    const ph = container.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder');
+                    if (ph) ph.textContent = d.placeholderText;
+                    container.setAttribute('data-placeholder', d.placeholderText);
+                }
+                if (d.maxLength !== undefined) {
+                    container.setAttribute('data-maxlength', d.maxLength);
+                }
+                if (d.showCounter !== undefined) {
+                    container.setAttribute('data-show-counter', d.showCounter ? 'true' : 'false');
+                }
+                if (d.fontSize !== undefined) {
+                    const input = container.querySelector('.v4-textbox-input, .v4-textarea-input');
+                    const placeholder = container.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder');
+                    if (input) input.style.fontSize = d.fontSize + 'px';
+                    if (placeholder) placeholder.style.fontSize = d.fontSize + 'px';
+                    container.setAttribute('data-fontsize', d.fontSize);
+                }
+                if (d.fontFamily !== undefined) {
+                    const input = container.querySelector('.v4-textbox-input, .v4-textarea-input');
+                    const placeholder = container.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder');
+                    const counter = container.querySelector('.v4-textbox-counter, .v4-textarea-counter');
+                    if (input) input.style.fontFamily = d.fontFamily;
+                    if (placeholder) placeholder.style.fontFamily = d.fontFamily;
+                    if (counter) counter.style.fontFamily = d.fontFamily;
+                    container.setAttribute('data-fontfamily', d.fontFamily);
+                }
+                
+                // Trigger re-sync by resetting dataset flag
+                const input = container.querySelector('.v4-textbox-input, .v4-textarea-input');
+                if (input) {
+                    input.dataset.eventsBound = "false";
+                }
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
             }
         }
@@ -1350,11 +1762,62 @@ if (window.V4UndoManager) {
             if (boxEl && !d.selector) {
                 t = boxEl;
             }
+            
+            // Textbox / Textarea style redirection for BG & Border coloring
+            const inputContainer = s.querySelector('.v4-textbox-container, .v4-textarea-container');
+            if (inputContainer && !d.selector) {
+                t = inputContainer;
+            }
+            // Alert style redirection for BG & Border coloring
+            const alertContainer = s.querySelector('.v4-alert-container');
+            if (alertContainer && !d.selector) {
+                t = alertContainer;
+            }
+            // Button style redirection for BG & Border coloring
+            const buttonContainer = s.querySelector('.v4-btn-container');
+            const customBtn = s.querySelector('.v4-custom-btn');
+            if (buttonContainer && customBtn && !d.selector) {
+                t = customBtn;
+            }
             if (!t) return;
             
             if (d.style) {
+                if (d.style.width !== undefined || d.style.height !== undefined) {
+                    s.setAttribute('data-resized', 'true');
+                }
                 if (d.style.html !== undefined) t.innerHTML = d.style.html;
-                Object.assign(t.style, d.style);
+                
+                const isInnerBox = t.classList.contains('v4-checkbox') || t.classList.contains('v4-radio');
+                
+                // CRITICAL: Dimension style changes (width, height) must apply to the outermost .lf-component (s)
+                // unless it is an atomic inner box of Checkbox/Radio, in which case it targets the box itself.
+                if (d.style.width !== undefined) {
+                    if (isInnerBox) {
+                        t.style.width = d.style.width;
+                    } else {
+                        s.style.width = d.style.width;
+                        if (inputContainer) inputContainer.style.width = '100%';
+                        if (alertContainer) alertContainer.style.width = '100%';
+                        if (buttonContainer) buttonContainer.style.width = '100%';
+                    }
+                }
+                if (d.style.height !== undefined) {
+                    if (isInnerBox) {
+                        t.style.height = d.style.height;
+                    } else {
+                        s.style.height = d.style.height;
+                        if (inputContainer) inputContainer.style.height = '100%';
+                        if (alertContainer) alertContainer.style.height = '100%';
+                        if (buttonContainer) buttonContainer.style.height = '100%';
+                    }
+                }
+
+                const styleToAssign = { ...d.style };
+                if (!isInnerBox) {
+                    delete styleToAssign.width;
+                    delete styleToAssign.height;
+                }
+                Object.assign(t.style, styleToAssign);
                 
                 // SVG Sync: If the element contains an SVG, sync stroke/fill
                 const svgShape = t.querySelector('path, polygon, rect, circle');
@@ -1478,6 +1941,9 @@ if (window.V4UndoManager) {
             if (d.subSelector && d.subStyle) {
                 t.querySelectorAll(d.subSelector).forEach(sub => Object.assign(sub.style, d.subStyle));
             }
+            if (typeof updateHandles === 'function') {
+                updateHandles(s);
+            }
             markDirty();
         } else if (d.type === 'LF_DELETE_SELECTED') {
             const s = document.querySelector('.lf-component.selected'); 
@@ -1489,6 +1955,60 @@ if (window.V4UndoManager) {
             }
         } else if (d.type === 'LF_DESELECT_ALL') {
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+        } else if (d.type === 'LF_BRING_FRONT') {
+            const selected = document.querySelectorAll('.lf-component.selected');
+            const topLevelSelected = Array.from(selected).filter(el => {
+                let parent = el.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
+                        return false;
+                    }
+                    parent = parent.parentElement;
+                }
+                return true;
+            });
+            if (topLevelSelected.length > 0) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                const firstScript = document.body.querySelector('script');
+                topLevelSelected.forEach(el => {
+                    if (firstScript) {
+                        document.body.insertBefore(el, firstScript);
+                    } else {
+                        document.body.appendChild(el);
+                    }
+                });
+                markDirty();
+                if (typeof reorderAllPins === 'function') {
+                    reorderAllPins();
+                }
+            }
+        } else if (d.type === 'LF_SEND_BACK') {
+            const selected = document.querySelectorAll('.lf-component.selected');
+            const topLevelSelected = Array.from(selected).filter(el => {
+                let parent = el.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.classList.contains('lf-component') && parent.classList.contains('selected')) {
+                        return false;
+                    }
+                    parent = parent.parentElement;
+                }
+                return true;
+            });
+            if (topLevelSelected.length > 0) {
+                const firstUnselected = Array.from(document.body.children).find(el => {
+                    return el.classList.contains('lf-component') && !el.classList.contains('selected');
+                });
+                if (firstUnselected) {
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    topLevelSelected.forEach(el => {
+                        document.body.insertBefore(el, firstUnselected);
+                    });
+                    markDirty();
+                    if (typeof reorderAllPins === 'function') {
+                        reorderAllPins();
+                    }
+                }
+            }
         } else if (d.type === 'LF_UPDATE_MARQUEE_SELECTION') {
             const ids = d.ids || [];
             document.querySelectorAll('.lf-component').forEach(x => {
@@ -1882,9 +2402,154 @@ if (window.V4UndoManager) {
     };
     const initHandles = window.initHandles;
 
+    const bindStepperEvents = () => {
+        document.querySelectorAll('.v4-stepper-container').forEach(container => {
+            const min = parseInt(container.getAttribute('data-min')) || 1;
+            const max = parseInt(container.getAttribute('data-max')) || 99;
+            const cur = parseInt(container.getAttribute('data-val')) || min;
+
+            const decBtn = container.querySelector('.v4-stepper-dec');
+            const incBtn = container.querySelector('.v4-stepper-inc');
+            const valEl = container.querySelector('.v4-stepper-value');
+
+            if (container.dataset.eventsBound === "true") {
+                const isDisabled = container.getAttribute('data-disabled') === 'true';
+                if (isDisabled) {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = '';
+                        decBtn.style.color = '';
+                        decBtn.style.cursor = 'not-allowed';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = '';
+                        incBtn.style.color = '';
+                        incBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = cur === min ? '#f3f4f6' : '#ffffff';
+                        decBtn.style.color = cur === min ? '#9ca3af' : '#374151';
+                        decBtn.style.cursor = cur === min ? 'not-allowed' : 'pointer';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = cur === max ? '#f3f4f6' : '#ffffff';
+                        incBtn.style.color = cur === max ? '#9ca3af' : '#374151';
+                        incBtn.style.cursor = cur === max ? 'not-allowed' : 'pointer';
+                    }
+                }
+                return;
+            }
+            container.dataset.eventsBound = "true";
+            
+            const updateVal = (newVal) => {
+                const currentMin = parseInt(container.getAttribute('data-min')) || 1;
+                const currentMax = parseInt(container.getAttribute('data-max')) || 99;
+                let val = Math.max(currentMin, Math.min(currentMax, newVal));
+                container.setAttribute('data-val', val);
+                if (valEl) valEl.innerText = val;
+                
+                const isDisabled = container.getAttribute('data-disabled') === 'true';
+                if (isDisabled) {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = '';
+                        decBtn.style.color = '';
+                        decBtn.style.cursor = 'not-allowed';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = '';
+                        incBtn.style.color = '';
+                        incBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (decBtn) {
+                        decBtn.style.backgroundColor = val === currentMin ? '#f3f4f6' : '#ffffff';
+                        decBtn.style.color = val === currentMin ? '#9ca3af' : '#374151';
+                        decBtn.style.cursor = val === currentMin ? 'not-allowed' : 'pointer';
+                    }
+                    if (incBtn) {
+                        incBtn.style.backgroundColor = val === currentMax ? '#f3f4f6' : '#ffffff';
+                        incBtn.style.color = val === currentMax ? '#9ca3af' : '#374151';
+                        incBtn.style.cursor = val === currentMax ? 'not-allowed' : 'pointer';
+                    }
+                }
+            };
+            
+            if (decBtn) {
+                decBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (container.getAttribute('data-disabled') === 'true') return;
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    const currentVal = parseInt(container.getAttribute('data-val')) || 1;
+                    updateVal(currentVal - 1);
+                    markDirty();
+                };
+            }
+            if (incBtn) {
+                incBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (container.getAttribute('data-disabled') === 'true') return;
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    const currentVal = parseInt(container.getAttribute('data-val')) || 1;
+                    updateVal(currentVal + 1);
+                    markDirty();
+                };
+            }
+            
+            updateVal(cur);
+        });
+    };
+    const bindFileuploadEvents = () => {
+        document.querySelectorAll('.v4-fileupload-container').forEach(container => {
+            const delBtn = container.querySelector('.v4-fileupload-delete');
+            const txt = container.querySelector('.v4-fileupload-textbox');
+            const isSel = container.getAttribute('data-selected') === 'true';
+            const fName = container.getAttribute('data-file-name') || '';
+            const placeholder = container.getAttribute('data-placeholder') || '선택된 파일 없음';
+            
+            // Sync current text display with comparison guards to prevent infinite MutationObserver loops
+            if (txt) {
+                const targetText = isSel ? fName : placeholder;
+                if (txt.innerText !== targetText) {
+                    txt.innerText = targetText;
+                }
+                const targetColor = isSel ? 'rgb(55, 65, 81)' : 'rgb(156, 163, 175)'; // browser returns rgb values for style.color
+                const hexColor = isSel ? '#374151' : '#9ca3af';
+                if (txt.style.color !== hexColor && txt.style.color !== targetColor) {
+                    txt.style.color = hexColor;
+                }
+            }
+
+            if (container.dataset.eventsBound === "true") return;
+            container.dataset.eventsBound = "true";
+            
+            if (delBtn) {
+                delBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    
+                    container.setAttribute('data-selected', 'false');
+                    if (txt) {
+                        txt.innerText = container.getAttribute('data-placeholder') || '선택된 파일 없음';
+                        txt.style.color = '#9ca3af';
+                    }
+                    
+                    markDirty();
+                    
+                    // Notify parent to re-sync inspector properties
+                    notifyParent({
+                        type: 'LF_COMP_SELECTED',
+                        ..._getCompStyles(container.closest('.lf-component'))
+                    });
+                };
+            }
+        });
+    };
+
     // High-Persistence Border Standardization & Coordinate Migration
     window.enforceDesignSystem = () => {
         initHandles();
+        bindStepperEvents();
+        bindFileuploadEvents();
         
         // --- Self-healing: Deduplicate IDs in DOM if duplicates exist ---
         const seenIds = new Set();
@@ -1909,6 +2574,260 @@ if (window.V4UndoManager) {
                     resizeAtomToFitText(c);
                 }
             }
+        });
+
+        // --- Auto-resize Stepper to fit its internal container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const stepper = c.querySelector('.v4-stepper-container');
+            if (stepper) {
+                const btnEnabled = stepper.getAttribute('data-btn-enabled') !== 'false';
+                const targetW = btnEnabled ? '154px' : '100px';
+                const targetH = '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (stepper.style.width !== '100%') stepper.style.width = '100%';
+                if (stepper.style.height !== '100%') stepper.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize Selectbox to fit its state container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const selectbox = c.querySelector('.v4-selectbox-container');
+            if (selectbox) {
+                const dropdownActive = selectbox.getAttribute('data-dropdown-active') === 'true';
+                const optionsRaw = selectbox.getAttribute('data-options') || "";
+                const optionsArr = optionsRaw.split(',').map(s => s.trim()).filter(Boolean);
+                
+                const targetW = '150px';
+                const targetH = dropdownActive ? (30 + (optionsArr.length * 30)) + 'px' : '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (selectbox.style.width !== '100%') selectbox.style.width = '100%';
+                if (selectbox.style.height !== '100%') selectbox.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize File Upload to fit its state container ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const fileupload = c.querySelector('.v4-fileupload-container');
+            if (fileupload) {
+                const targetW = '300px';
+                const targetH = '30px';
+                
+                if (c.style.width !== targetW) c.style.width = targetW;
+                if (c.style.height !== targetH) c.style.height = targetH;
+                
+                if (fileupload.style.width !== '100%') fileupload.style.width = '100%';
+                if (fileupload.style.height !== '100%') fileupload.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize Alert to fit content dynamically ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const alert = c.querySelector('.v4-alert-container');
+            if (alert) {
+                const btn1 = alert.querySelector('.v4-alert-btn-1');
+                const btn2 = alert.querySelector('.v4-alert-btn-2');
+                const btn3 = alert.querySelector('.v4-alert-btn-3');
+                if (btn1) {
+                    const style1 = alert.getAttribute('data-btn-style-1') || 'normal';
+                    const targetClass = 'v4-alert-btn v4-alert-btn-1 style-' + style1;
+                    if (btn1.className !== targetClass) btn1.className = targetClass;
+                }
+                if (btn2) {
+                    const style2 = alert.getAttribute('data-btn-style-2') || 'normal';
+                    const targetClass = 'v4-alert-btn v4-alert-btn-2 style-' + style2;
+                    if (btn2.className !== targetClass) btn2.className = targetClass;
+                }
+                if (btn3) {
+                    const style3 = alert.getAttribute('data-btn-style-3') || 'normal';
+                    const targetClass = 'v4-alert-btn v4-alert-btn-3 style-' + style3;
+                    if (btn3.className !== targetClass) btn3.className = targetClass;
+                }
+
+                if (c.getAttribute('data-resized') !== 'true') {
+                    const header = alert.querySelector('.v4-alert-header');
+                    const msgEl = alert.querySelector('.v4-alert-message');
+                    const buttonsEl = alert.querySelector('.v4-alert-buttons');
+                    
+                    const headerH = header ? header.offsetHeight : 32;
+                    const msgH = msgEl ? msgEl.scrollHeight : 21;
+                    const msgMargin = msgEl ? 14 : 0;
+                    const buttonsH = buttonsEl ? buttonsEl.offsetHeight : 28;
+                    const paddingH = 32; // 16px top + 16px bottom
+                    
+                    const targetH = headerH + paddingH + msgH + msgMargin + buttonsH + 2; // +2 for border
+                    const finalHeight = Math.max(120, targetH) + 'px';
+                    
+                    if (c.style.height !== finalHeight) c.style.height = finalHeight;
+                    if (alert.style.height !== '100%') alert.style.height = '100%';
+                    if (alert.style.width !== '100%') alert.style.width = '100%';
+                } else {
+                    if (alert.style.width !== '100%') alert.style.width = '100%';
+                    if (alert.style.height !== '100%') alert.style.height = '100%';
+                }
+                updateHandles(c);
+            }
+        });
+
+        // --- Auto-resize & sync Custom Button Atom ---
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const btnContainer = c.querySelector('.v4-btn-container');
+            if (btnContainer) {
+                const btn = btnContainer.querySelector('.v4-custom-btn');
+                if (btn) {
+                    const style = btnContainer.getAttribute('data-btn-style') || 'normal';
+                    const text = btnContainer.getAttribute('data-text') || '버튼';
+                    const radius = btnContainer.getAttribute('data-btn-radius') || '6';
+                    
+                    const targetClass = 'v4-custom-btn style-' + style;
+                    const targetRadius = radius + 'px';
+                    
+                    if (btn.className !== targetClass) btn.className = targetClass;
+                    if (btn.style.borderRadius !== targetRadius) btn.style.borderRadius = targetRadius;
+                    if (btn.innerText !== text) btn.innerText = text;
+
+                    if (style !== 'custom') {
+                        if (btn.style.backgroundColor !== '') btn.style.backgroundColor = '';
+                        if (btn.style.borderColor !== '') btn.style.borderColor = '';
+                        if (btn.style.color !== '') btn.style.color = '';
+                    }
+
+                    if (btn.style.borderWidth !== '1.6px') btn.style.setProperty('border-width', '1.6px', 'important');
+                    if (btn.style.borderStyle !== 'solid') btn.style.setProperty('border-style', 'solid', 'important');
+                }
+                
+                if (c.getAttribute('data-resized') !== 'true') {
+                    const targetW = '80px';
+                    const targetH = '40px';
+                    if (c.style.width !== targetW) c.style.width = targetW;
+                    if (c.style.height !== targetH) c.style.height = targetH;
+                }
+                
+                if (btnContainer.style.width !== '100%') btnContainer.style.width = '100%';
+                if (btnContainer.style.height !== '100%') btnContainer.style.height = '100%';
+                
+                updateHandles(c);
+            }
+        });
+
+        // --- Setup Textbox / Textarea Interactive Events ---
+        document.querySelectorAll('.v4-textbox-container, .v4-textarea-container').forEach(container => {
+            const isTextarea = container.classList.contains('v4-textarea-container');
+            const input = container.querySelector(isTextarea ? '.v4-textarea-input' : '.v4-textbox-input');
+            const placeholder = container.querySelector(isTextarea ? '.v4-textarea-placeholder' : '.v4-textbox-placeholder');
+            const counter = container.querySelector(isTextarea ? '.v4-textarea-counter' : '.v4-textbox-counter');
+            
+            if (!input) return;
+
+            const restoreFonts = () => {
+                const fs = container.getAttribute('data-fontsize');
+                const ff = container.getAttribute('data-fontfamily');
+                if (fs) {
+                    const fsVal = fs + 'px';
+                    if (input.style.fontSize !== fsVal) input.style.fontSize = fsVal;
+                    if (placeholder && placeholder.style.fontSize !== fsVal) placeholder.style.fontSize = fsVal;
+                }
+                if (ff) {
+                    if (input.style.fontFamily !== ff) input.style.fontFamily = ff;
+                    if (placeholder && placeholder.style.fontFamily !== ff) placeholder.style.fontFamily = ff;
+                    if (counter && counter.style.fontFamily !== ff) counter.style.fontFamily = ff;
+                }
+            };
+
+            if (input.dataset.eventsBound === "true") {
+                // Keep values updated in case max-length/show-counter changed via inspector
+                // CRITICAL: Guard all DOM writes with value comparison to prevent MutationObserver infinite loop
+                const max = parseInt(container.getAttribute('data-maxlength')) || 100;
+                const showCounter = container.getAttribute('data-show-counter') !== 'false';
+                const text = input.innerText || "";
+                if (counter) {
+                    const currentLen = Math.min(text.length, max);
+                    const newText = currentLen + '/' + max;
+                    const newDisplay = showCounter ? 'block' : 'none';
+                    if (counter.textContent !== newText) counter.textContent = newText;
+                    if (counter.style.display !== newDisplay) counter.style.display = newDisplay;
+                }
+                restoreFonts();
+                return;
+            }
+            input.dataset.eventsBound = "true";
+            restoreFonts();
+            
+            // Get initial values from HTML state
+            const getMaxLength = () => parseInt(container.getAttribute('data-maxlength')) || 100;
+            const getShowCounter = () => container.getAttribute('data-show-counter') !== 'false';
+            
+            // Initial placeholder state
+            const updateUI = () => {
+                const text = input.innerText || "";
+                
+                // Show/hide placeholder (guarded to prevent MutationObserver loop)
+                if (placeholder) {
+                    const phDisplay = text.length === 0 ? 'block' : 'none';
+                    if (placeholder.style.display !== phDisplay) placeholder.style.display = phDisplay;
+                }
+                
+                // Character limit check
+                const max = getMaxLength();
+                if (text.length > max) {
+                    // Truncate to max length and restore cursor
+                    const selection = window.getSelection();
+                    const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+                    const offset = range ? range.startOffset : 0;
+                    
+                    input.innerText = text.substring(0, max);
+                    
+                    // Restore caret position
+                    if (range && input.firstChild) {
+                        try {
+                            const newRange = document.createRange();
+                            newRange.setStart(input.firstChild, Math.min(offset, max));
+                            newRange.collapse(true);
+                            selection.removeAllRanges();
+                            selection.addRange(newRange);
+                        } catch(e) {}
+                    }
+                }
+                
+                // Update counter text (guarded)
+                if (counter) {
+                    const currentLen = Math.min(input.innerText.length, max);
+                    const newCounterText = currentLen + '/' + max;
+                    const newCounterDisplay = getShowCounter() ? 'block' : 'none';
+                    if (counter.textContent !== newCounterText) counter.textContent = newCounterText;
+                    if (counter.style.display !== newCounterDisplay) counter.style.display = newCounterDisplay;
+                }
+                
+                // Input text color adjustment (guarded)
+                const newColor = text.length === 0 ? '#a3a3a3' : '#374151';
+                if (input.style.color !== newColor) input.style.color = newColor;
+            };
+            
+            // Bind input listener
+            input.addEventListener('input', () => {
+                updateUI();
+                markDirty();
+            });
+            input.addEventListener('focus', () => {
+                if (placeholder) placeholder.style.display = 'none';
+            });
+            input.addEventListener('blur', () => {
+                updateUI();
+            });
+            
+            // Run initially
+            updateUI();
         });
         
         // --- Coordinate Migration: % to px ---
@@ -2018,13 +2937,13 @@ if (window.V4UndoManager) {
             if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
         });
     };
-    const enforceDesignSystem = window.enforceDesignSystem;
-
     // Run immediately and setup observer for dynamic changes
-    enforceDesignSystem();
-    const observer = new MutationObserver(enforceDesignSystem);
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
-    
-    // Safety fallback for slow loads
-    setTimeout(enforceDesignSystem, 500);
+    if (typeof window.enforceDesignSystem === 'function') {
+        window.enforceDesignSystem();
+        const observer = new MutationObserver(() => window.enforceDesignSystem());
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        
+        // Safety fallback for slow loads
+        setTimeout(() => window.enforceDesignSystem(), 500);
+    }
 })();
