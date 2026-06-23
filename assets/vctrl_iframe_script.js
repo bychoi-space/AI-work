@@ -8,7 +8,10 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
     box-sizing: border-box; z-index: 100;
     transform: none !important; /* Kill legacy centering drift */
 }
-.lf-component.selected { outline: 2px solid #6366f1; z-index: 10001 !important; }
+.lf-component.selected { outline: 2px solid #6366f1; }
+.lf-component.lf-group.selected { outline: 2px solid #10b981 !important; }
+.lf-component.lf-group.selected > .lf-drag-handle { background: #10b981 !important; }
+.lf-component.lf-group.selected > .lf-resizer { background: #10b981 !important; }
 .lf-component .lf-component .lf-drag-handle, 
 .lf-component .lf-component .lf-resizer, 
 .lf-component .lf-component .lf-delete-trigger,
@@ -25,7 +28,7 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .v4-premium-table th { padding: 14px 16px; text-align: left; border-bottom: 1.6px solid #475569 !important; font-weight: 700; white-space: nowrap; }
 .v4-premium-table td { padding: 14px 16px; border-bottom: 1.6px solid #cbd5e1 !important; }
 .v4-premium-table tr:last-child td { border-bottom: none !important; }
-.v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: #475569; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #e2e8f0; color: #0f172a; }
+.v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
 .selected-cell {
     outline: 1.6px dashed #6366f1 !important;
@@ -370,6 +373,8 @@ window.v4Script = `
 
         return {
             id: c.id,
+            x: parseFloat(c.style.left) || 0,
+            y: parseFloat(c.style.top) || 0,
             isTable: !!table,
             isShape: !!shape,
             isIcon: !!icon,
@@ -1603,6 +1608,76 @@ window.v4Script = `
             let minY = Math.min(...items.map(i => i.y));
             let maxX = Math.max(...items.map(i => i.x + i.w));
             let maxY = Math.max(...items.map(i => i.y + i.h));
+
+            if (alignType === 'distribute_h') {
+                if (items.length < 3) {
+                    allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+                    return;
+                }
+                items.sort((a, b) => a.x - b.x);
+                const sumW = items.reduce((sum, item) => sum + item.w, 0);
+                const spanX = maxX - minX;
+                const gapSize = (spanX - sumW) / (items.length - 1);
+                let currentX = minX;
+                items.forEach(item => {
+                    const dx = currentX - item.x;
+                    currentX += item.w + gapSize;
+                    
+                    if (dx === 0) return;
+                    const newAbsX = item.x + dx;
+                    let parentL = 0;
+                    let parent = item.el.parentElement;
+                    while (parent && parent !== doc.body) {
+                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                            parentL += parseFloat(parent.style.left) || 0;
+                        }
+                        parent = parent.parentElement;
+                    }
+                    item.el.style.left = (newAbsX - parentL) + 'px';
+                    if (item.type === 'marker') {
+                        const idx = parseInt(item.id.replace('v4-pin-', ''));
+                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: item.y });
+                    }
+                });
+                allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+                markDirty();
+                return;
+            }
+
+            if (alignType === 'distribute_v') {
+                if (items.length < 3) {
+                    allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+                    return;
+                }
+                items.sort((a, b) => a.y - b.y);
+                const sumH = items.reduce((sum, item) => sum + item.h, 0);
+                const spanY = maxY - minY;
+                const gapSize = (spanY - sumH) / (items.length - 1);
+                let currentY = minY;
+                items.forEach(item => {
+                    const dy = currentY - item.y;
+                    currentY += item.h + gapSize;
+                    
+                    if (dy === 0) return;
+                    const newAbsY = item.y + dy;
+                    let parentT = 0;
+                    let parent = item.el.parentElement;
+                    while (parent && parent !== doc.body) {
+                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                            parentT += parseFloat(parent.style.top) || 0;
+                        }
+                        parent = parent.parentElement;
+                    }
+                    item.el.style.top = (newAbsY - parentT) + 'px';
+                    if (item.type === 'marker') {
+                        const idx = parseInt(item.id.replace('v4-pin-', ''));
+                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: item.x, y: newAbsY });
+                    }
+                });
+                allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+                markDirty();
+                return;
+            }
 
             items.forEach(item => {
                 let dx = 0, dy = 0;

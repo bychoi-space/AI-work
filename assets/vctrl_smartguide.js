@@ -10,7 +10,7 @@
     window.SmartGuide = {
         targets: [],
         spacingTargets: [], // Spacing용 컴포넌트 전체 Bounding Box
-        threshold: 10,
+        threshold: 5,
         spacingThreshold: 50, // 50px 간격 임계값
         activeLines: { x: null, y: null },
         clearTimer: null,
@@ -229,6 +229,11 @@
                     if (activeId && t.id === activeId) continue;
                     
                     if (t.x === undefined) continue;
+                    // Apply distance-based filtering (300px radius) for non-Canvas targets
+                    if (t.label !== 'Canvas') {
+                        const activeCenterX = x + w / 2;
+                        if (Math.abs(t.x - activeCenterX) > 300) continue;
+                    }
                     for (const p of pointsX) {
                         if (Math.abs(p.val - t.x) < thresh) {
                             snappedX = x + (t.x - p.val);
@@ -251,6 +256,11 @@
                     if (activeId && t.id === activeId) continue;
 
                     if (t.y === undefined) continue;
+                    // Apply distance-based filtering (300px radius) for non-Canvas targets
+                    if (t.label !== 'Canvas') {
+                        const activeCenterY = y + h / 2;
+                        if (Math.abs(t.y - activeCenterY) > 300) continue;
+                    }
                     for (const p of pointsY) {
                         if (Math.abs(p.val - t.y) < thresh) {
                             snappedY = y + (t.y - p.val);

@@ -71,6 +71,8 @@ window.GroupingManager = (function() {
              if (DOM.btnAlignTop) DOM.btnAlignTop.onclick = () => alignSelected('top');
              if (DOM.btnAlignMiddle) DOM.btnAlignMiddle.onclick = () => alignSelected('middle');
              if (DOM.btnAlignBottom) DOM.btnAlignBottom.onclick = () => alignSelected('bottom');
+             if (DOM.btnAlignDistributeH) DOM.btnAlignDistributeH.onclick = () => alignSelected('distribute_h');
+             if (DOM.btnAlignDistributeV) DOM.btnAlignDistributeV.onclick = () => alignSelected('distribute_v');
          }
  
          // Keyboard Shortcuts
@@ -127,7 +129,7 @@ window.GroupingManager = (function() {
  
      const checkIntersections = (box) => {
          currentTargets.forEach(comp => {
-             if (isIntersecting(box, comp)) {
+             if (isFullyContained(box, comp)) {
                  if (!selectedIds.includes(comp.id)) selectedIds.push(comp.id);
              } else {
                  selectedIds = selectedIds.filter(id => id !== comp.id);
@@ -146,7 +148,7 @@ window.GroupingManager = (function() {
                  const p2 = { x: (conn.end.x * scale) + svgRect.left, y: (conn.end.y * scale) + svgRect.top };
                  const isIn = (pt) => pt.x >= box.x && pt.x <= box.x + box.w && pt.y >= box.y && pt.y <= box.y + box.h;
  
-                 if (isIn(p1) || isIn(p2)) {
+                 if (isIn(p1) && isIn(p2)) {
                      connectorIdsToSelect.push(conn.id);
                      if (!selectedIds.includes(conn.id)) selectedIds.push(conn.id);
                  } else {
@@ -165,12 +167,12 @@ window.GroupingManager = (function() {
          syncWithCore();
      };
  
-     const isIntersecting = (r1, r2) => {
-         return !(r2.x > r1.x + r1.w || 
-                  r2.x + r2.w < r1.x || 
-                  r2.y > r1.y + r1.h ||
-                  r2.y + r2.h < r1.y);
-     };
+     const isFullyContained = (r1, r2) => {
+        return (r2.x >= r1.x &&
+                r2.x + r2.w <= r1.x + r1.w &&
+                r2.y >= r1.y &&
+                r2.y + r2.h <= r1.y + r1.h);
+    };
  
      const endMarquee = () => {
          isSelecting = false;

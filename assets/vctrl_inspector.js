@@ -99,7 +99,9 @@ window.DOM = {
     btnAlignRight: get('btn-align-right'),
     btnAlignTop: get('btn-align-top'),
     btnAlignMiddle: get('btn-align-middle'),
-    btnAlignBottom: get('btn-align-bottom')
+    btnAlignBottom: get('btn-align-bottom'),
+    btnAlignDistributeH: get('btn-align-distribute-h'),
+    btnAlignDistributeV: get('btn-align-distribute-v')
 };
 
 // --- 2. Sidebar & Tab Management (Unified & Clean) ---
@@ -251,6 +253,19 @@ window.updateProperties = function(compStyles) {
         const floatingInspector = document.getElementById('floating-inspector-card');
         if (floatingInspector) {
             floatingInspector.style.setProperty('display', 'flex', 'important');
+            if (compStyles && typeof compStyles.x === 'number' && typeof compStyles.w === 'number') {
+                const compCenter = compStyles.x + (compStyles.w / 2);
+                if (compCenter >= 720) {
+                    floatingInspector.style.left = '24px';
+                    floatingInspector.style.right = 'auto';
+                } else {
+                    floatingInspector.style.right = '24px';
+                    floatingInspector.style.left = 'auto';
+                }
+            } else {
+                floatingInspector.style.right = '24px';
+                floatingInspector.style.left = 'auto';
+            }
         }
 
         // Hide all sections first
@@ -392,6 +407,8 @@ window.updateProperties = function(compStyles) {
         const floatingInspector = document.getElementById('floating-inspector-card');
         if (floatingInspector) {
             floatingInspector.style.setProperty('display', 'none', 'important');
+            floatingInspector.style.right = '24px';
+            floatingInspector.style.left = 'auto';
             const floatingBody = document.getElementById('floating-inspector-body');
             if (floatingBody) floatingBody.innerHTML = '';
         }

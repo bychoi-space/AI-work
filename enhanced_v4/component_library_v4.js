@@ -226,9 +226,9 @@ window.V4_COMPONENT_LIBRARY = {
             icon: 'crop_square',
             iconColor: '#00e5ff',
             cardStyle: 'background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important;',
-            previewHtml: `<div style="width: 40px; height: 30px; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 4px;"></div>`,
+            previewHtml: `<div style="width: 40px; height: 30px; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200); border-radius: 4px;"></div>`,
             html: `
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;">Edit Text</div>
             </div>`
         },
@@ -239,9 +239,9 @@ window.V4_COMPONENT_LIBRARY = {
             icon: 'panorama_fish_eye',
             iconColor: '#00e5ff',
             cardStyle: 'background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important;',
-            previewHtml: `<div style="width: 30px; height: 30px; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 50%;"></div>`,
+            previewHtml: `<div style="width: 30px; height: 30px; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200); border-radius: 50%;"></div>`,
             html: `
-            <div class="v4-shape v4-shape-circle" style="width: 100%; height: 100%; background: #e2e8f0; border: 1.6px solid #475569; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-shape v4-shape-circle" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 700; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;">Circle</div>
             </div>`
         },
@@ -252,11 +252,11 @@ window.V4_COMPONENT_LIBRARY = {
             icon: 'change_history',
             iconColor: '#00e5ff',
             cardStyle: 'background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important;',
-            previewHtml: `<div style="width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 30px solid #e2e8f0;"></div>`,
+            previewHtml: `<div style="width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 30px solid rgb(255, 255, 255);"></div>`,
             html: `
             <div class="v4-shape v4-shape-triangle" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: flex-end; justify-content: center; color: #0f172a; overflow: visible; box-sizing: border-box; position: relative;">
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible;">
-                    <polygon points="50,1 1,99 99,99" style="fill: #e2e8f0; stroke: #475569; stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
+                    <polygon points="50,1 1,99 99,99" style="fill: rgb(255, 255, 255); stroke: rgb(200, 200, 200); stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
                 </svg>
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 10px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; z-index: 2; position: relative;">Triangle</div>
             </div>`
@@ -269,11 +269,11 @@ window.V4_COMPONENT_LIBRARY = {
             iconColor: '#00e5ff',
             iconStyle: 'transform: rotate(45deg);',
             cardStyle: 'background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important;',
-            previewHtml: `<div style="width: 30px; height: 30px; background: #e2e8f0; border: 1.6px solid #475569; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);"></div>`,
+            previewHtml: `<div style="width: 30px; height: 30px; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);"></div>`,
             html: `
             <div class="v4-shape v4-shape-diamond" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: visible; box-sizing: border-box; position: relative;">
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible;">
-                    <polygon points="50,1 99,50 50,99 1,50" style="fill: #e2e8f0; stroke: #475569; stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
+                    <polygon points="50,1 99,50 50,99 1,50" style="fill: rgb(255, 255, 255); stroke: rgb(200, 200, 200); stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
                 </svg>
                 <div contenteditable="true" class="v4-editable-cell" style="width: 60%; height: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; outline: none; font-weight: 700; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; font-size: 14px; z-index: 2; position: relative;">Decision</div>
             </div>`
@@ -305,9 +305,9 @@ window.V4_COMPONENT_LIBRARY = {
             icon: 'grid_4x4',
             iconColor: '#fff',
             cardStyle: 'background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(255, 255, 255, 0.1) !important;',
-            previewHtml: `<div class="v4-shape-pattern-grid" style="width: 40px; height: 30px; border: 1.6px solid #475569;"></div>`,
+            previewHtml: `<div class="v4-shape-pattern-grid" style="width: 40px; height: 30px; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200);"></div>`,
             html: `
-            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
+            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200); display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
             </div>`
         },

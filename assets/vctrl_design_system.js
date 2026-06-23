@@ -655,6 +655,24 @@ window.v4DesignSystemScript = `
             if (svg.style.strokeWidth !== '1.6') svg.style.strokeWidth = '1.6';
             if (svg.style.vectorEffect !== 'non-scaling-stroke') svg.style.vectorEffect = 'non-scaling-stroke';
         });
+
+        // Clean z-index rules from .lf-component.selected stylesheets inside the iframe
+        for (let i = 0; i < document.styleSheets.length; i++) {
+            try {
+                const sheet = document.styleSheets[i];
+                const rules = sheet.cssRules || sheet.rules;
+                if (rules) {
+                    for (let j = rules.length - 1; j >= 0; j--) {
+                        const rule = rules[j];
+                        if (rule.selectorText && rule.selectorText.includes('.lf-component.selected')) {
+                            rule.style.removeProperty('z-index');
+                        }
+                    }
+                }
+            } catch (e) {
+                // Ignore security errors for external stylesheets
+            }
+        }
     };
 
     if (typeof window.enforceDesignSystem === 'function') {

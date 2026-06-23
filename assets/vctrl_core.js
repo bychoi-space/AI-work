@@ -232,7 +232,7 @@ window.injectIframeInteractions = function(doc) {
     style.textContent = `
         .lf-component { position: absolute !important; box-sizing: border-box !important; user-select: none; }
         .lf-component:hover { outline: 2px solid #00e5ff !important; cursor: pointer !important; }
-        .lf-component.selected { outline: 2px solid #00e5ff !important; z-index: 9999 !important; }
+        .lf-component.selected { outline: 2px solid #00e5ff !important; }
         .lf-resizer { width: 12px; height: 12px; background: #00e5ff; border: 2px solid #fff; position: absolute; right: -6px; bottom: -6px; cursor: nwse-resize !important; display: none; border-radius: 2px; z-index: 10000; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         .lf-delete-trigger { display: none; position: absolute; top: -10px; right: -10px; width: 22px; height: 22px; background: #ef4444; color: #fff; border-radius: 50%; cursor: pointer; align-items: center; justify-content: center; border: 2px solid #fff; z-index: 10001; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer, .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }

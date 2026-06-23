@@ -75,3 +75,20 @@ description: Use when editing V4 components, .lf-icon SVG atoms, premium buttons
 - **Global Host Restoration**: 컴포넌트 삽입 시 호스트는 항상 `document.body`가 되어야 하며, 줌 배율을 고려하여 삽입 위치를 보정해야 한다.
 - When loading Molecules, restore wrapper dimensions from metadata.
 - For legacy HTML with absolute coordinates inside inserted content, reset internal coordinates to `0, 0`.
+
+## Advanced Layout Controls & Snapping Optimization
+- **SmartGuide Snapping Sensitivity**:
+  - The default snapping magnetic threshold is set to **`5px`** to prevent excessive snapping stickiness and enable finer placement controls.
+  - Non-canvas snapping targets must only activate when they are within a **`300px`** radius of the moving component to reduce lag. Global canvas boundaries (0, center, max width/height) remain active regardless of distance.
+- **Enclosed Marquee Selection Criteria (PowerPoint Style)**:
+  - Drag-select marquee requires objects and connectors to be **completely enclosed** within the marquee boundary rectangle to be selected (no simple edge intersections allowed).
+  - For lines/connectors, both the start and end points must be inside the selection rectangle.
+- **Default Shape Background & Borders**:
+  - Default background color for `Rect`, `Circle`, `Triangle`, `Diamond`, and `Pattern` shape templates is **`rgb(255, 255, 255)`** (white).
+  - Default border color is **`rgb(200, 200, 200)`** (light gray).
+- **Distribute Alignments**:
+  - Horizontal (`distribute_h`) and Vertical (`distribute_v`) distribution alignments require at least **3 selected objects**.
+  - Distributes items evenly by computing identical distance gaps based on the outermost boundaries.
+- **Group Component Selection Outline**:
+  - Selected group components (`.lf-group`) display a **green outline (`#10b981`)** and green handles/resizers, differentiating them from the standard blue (`#6366f1`) single component selection border.
+
