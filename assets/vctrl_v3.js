@@ -137,7 +137,10 @@ window.spawnTextEditor = function(x, y, existingIndex) {
     }
 
     document.getElementById('btn-editor-apply').onclick = function() { closeActiveEditor(true); };
-    document.getElementById('btn-editor-delete').onclick = function() { deleteAnnotation(window.state.editingIndex); closeActiveEditor(false); };
+    const btnDel = document.getElementById('btn-editor-delete');
+    if (btnDel) {
+        btnDel.onclick = function() { deleteAnnotation(window.state.editingIndex); closeActiveEditor(false); };
+    }
 };
 
 window.closeActiveEditor = function(save) {
