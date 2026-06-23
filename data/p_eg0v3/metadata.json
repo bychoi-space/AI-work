@@ -410,7 +410,7 @@
     "06_Mobile_Design_2_901.html": {
       "title": "랭킹카드 - 옵션",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-11T07:26:21.885Z",
+      "updatedAt": "2026-06-23T08:28:22.070Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1166,5 +1166,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-23 09:59:04"
+  "updated": "2026-06-23 17:28:22"
 }
