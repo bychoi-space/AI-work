@@ -146,7 +146,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 .v4-fileupload-button:hover { background-color: #f9fafb !important; border-color: #babcbe !important; }
 
 /* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
-.text-marker { 
+.text-marker, .v4-text-box { 
     position: absolute; padding: 2px 6px; border-radius: 4px; 
     border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
     white-space: normal; cursor: grab; pointer-events: auto; z-index: 100; 
@@ -156,10 +156,10 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     color: #1e293b; text-align: left;
     width: fit-content !important;
 }
-.text-marker .v4-editable-cell { padding: 2px 4px; display: block; text-align: left; }
-.text-marker .v4-editable-cell p { margin: 0; padding: 0; }
-.text-marker:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
-.text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
+.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell { padding: 2px 4px; display: block; text-align: left; }
+.text-marker .v4-editable-cell p, .v4-text-box .v4-editable-cell p { margin: 0; padding: 0; }
+.text-marker:hover, .v4-text-box:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
+.text-marker.selected, .v4-text-box.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
 
 /* Premium Pin Marker Styling */
 .pin-marker {
@@ -1762,6 +1762,21 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 
 (function() {
+    // --- Console Log Auto-Clearing Guard inside iframe ---
+    (function() {
+        let logCount = 0;
+        const originalLog = console.log;
+        console.log = function(...args) {
+            logCount++;
+            if (logCount > 150) {
+                console.clear();
+                originalLog("[LF Editor Iframe] Auto-cleared console logs after reaching threshold.");
+                logCount = 0;
+            }
+            originalLog.apply(console, args);
+        };
+    })();
+
     console.log("[V4 Iframe] Script initialized (V144_SHORTCUT_SAVE_FIX)");
     let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
     let startX, startY, startW, startH, startTop, startLeft, startRect;
@@ -2073,10 +2088,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         let h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
         
         if (c && !h && !r && !d) {
-            let parent = c.parentElement.closest('.lf-component');
-            while (parent) {
-                c = parent;
-                parent = c.parentElement.closest('.lf-component');
+            if (!c.classList.contains('text-marker') && !c.classList.contains('pin-marker')) {
+                let parent = c.parentElement.closest('.lf-component');
+                while (parent) {
+                    if (parent.classList.contains('text-marker') || parent.classList.contains('pin-marker')) break;
+                    c = parent;
+                    parent = c.parentElement.closest('.lf-component');
+                }
             }
         }
 
@@ -2174,8 +2192,17 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 notifyParent({ type: 'LF_CONNECTOR_HANDLE_MOVE', clientX: e.clientX, clientY: e.clientY });
             }
             if (isDragging && activeEl) { 
-                const dx = e.clientX - startX;
-                const dy = e.clientY - startY;
+                let dx = e.clientX - startX;
+                let dy = e.clientY - startY;
+
+                if (e.shiftKey) {
+                    if (Math.abs(dx) >= Math.abs(dy)) {
+                        dy = 0;
+                    } else {
+                        dx = 0;
+                    }
+                }
+
                 const scale = (window.parent?.state?.transform?.scale) || 1;
                 const logicalX = startLeft + dx / scale;
                 const logicalY = startTop + dy / scale;
@@ -2332,10 +2359,55 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 window.updateHandles(div);
             });
         }
+        else if (d.type === 'LF_REORDER_PINS') {
+            document.querySelectorAll('.pin-marker, .text-marker').forEach(el => el.remove());
+            const host = document.body;
+            const pinsList = d.pins || [];
+            pinsList.forEach((pin, idx) => {
+                const div = document.createElement('div');
+                div.id = 'v4-pin-' + idx;
+                host.appendChild(div);
+                
+                const isPinType = (pin.type === 'pin' || pin.type === undefined);
+                div.className = 'lf-component ' + (isPinType ? 'pin-marker' : 'text-marker');
+                
+                if (isPinType) {
+                    div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                                    '<div class="pin-number-badge" style="pointer-events:none; font-weight:800; font-size:14px; color:#000;">' + (idx + 1) + '</div>' +
+                                    '<div class="lf-delete-trigger" style="right:-10px; top:-10px;">&times;</div>';
+                    div.style.width = '28px';
+                    div.style.height = '28px';
+                } else {
+                    div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                                    '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
+                                    '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+                    div.style.width = 'fit-content';
+                    div.style.height = 'auto';
+                }
+                div.style.zIndex = '1000';
+
+                let xVal = parseFloat(pin.x) || 0;
+                let yVal = parseFloat(pin.y) || 0;
+                
+                if (!pin.standardized && xVal <= 100 && yVal <= 100) {
+                    xVal = xVal * 14.4;
+                    yVal = yVal * 9.0;
+                }
+
+                div.style.left = xVal + 'px';
+                div.style.top = yVal + 'px';
+                
+                window.updateHandles(div);
+            });
+        }
         else if (d.type === 'LF_RENDER_CONNECTORS') {
-            console.log("[V4 Iframe] LF_RENDER_CONNECTORS received:", d);
+            if (window.parent && window.parent.DEBUG_MODE) {
+                console.log("[V4 Iframe] LF_RENDER_CONNECTORS received:", d);
+            }
             const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
-            console.log("[V4 Iframe] Host for connectors:", host);
+            if (window.parent && window.parent.DEBUG_MODE) {
+                console.log("[V4 Iframe] Host for connectors:", host);
+            }
             document.querySelectorAll('.connector-line').forEach(el => el.remove());
             const connectors = d.connectors || [];
             const selectedIds = d.selectedIds || [];
