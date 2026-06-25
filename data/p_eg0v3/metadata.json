@@ -348,7 +348,7 @@
     "07_PC_Design_266.html": {
       "title": "랭킹카드 - PC",
       "type": "ui",
-      "updatedAt": "2026-06-25T08:18:09.107Z",
+      "updatedAt": "2026-06-25T08:46:45.945Z",
       "template": "template_pc_ui.html",
       "description": [
         {
@@ -604,8 +604,8 @@
           "y": 669,
           "standardized": true,
           "type": "text",
-          "text": "1",
-          "html": "<p><strong style=\"font-size: 36px;\">1</strong></p>"
+          "text": "Brand Name",
+          "html": "<p><strong style=\"font-size: 16px;\">Brand Name</strong></p>"
         },
         {
           "x": 1130,
@@ -720,10 +720,10 @@
           "standardized": true
         },
         {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 16px;\">Product Name</span></p><p><span style=\"font-size: 16px;\">2줄까지 표현</span></p>",
-          "x": 80,
-          "y": 700,
+          "text": "1",
+          "html": "<p><strong style=\"font-size: 36px;\">1</strong></p>",
+          "x": 89.5,
+          "y": 625,
           "type": "text",
           "standardized": true
         },
@@ -736,18 +736,18 @@
           "standardized": true
         },
         {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 16px;\">20%</strong><strong style=\"font-size: 16px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿﻿﻿</span></strong></p>",
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 16px;\">Product Name</span></p><p><span style=\"font-size: 16px;\">2줄까지 표현</span></p>",
           "x": 80,
-          "y": 745,
+          "y": 700,
           "type": "text",
           "standardized": true
         },
         {
-          "text": "1",
-          "html": "<p><strong style=\"font-size: 36px;\">1</strong></p>",
-          "x": 89.5,
-          "y": 625,
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 16px;\">20%</strong><strong style=\"font-size: 16px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿﻿﻿</span></strong></p>",
+          "x": 80,
+          "y": 745,
           "type": "text",
           "standardized": true
         }
@@ -789,5 +789,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-25 17:18:09"
+  "updated": "2026-06-25 17:46:45"
 }
