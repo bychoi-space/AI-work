@@ -21,6 +21,21 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
     <link rel="stylesheet" href="assets/viewer.css">
     <script>
+        // --- Console Log Auto-Clearing Guard ---
+        (function() {
+            let logCount = 0;
+            const originalLog = console.log;
+            console.log = function(...args) {
+                logCount++;
+                if (logCount > 150) {
+                    console.clear();
+                    originalLog("[LF Editor] Auto-cleared console logs after reaching threshold.");
+                    logCount = 0;
+                }
+                originalLog.apply(console, args);
+            };
+        })();
+
         window.onerror = function(msg, url, line, col, error) {
             const dc = document.getElementById('debug-console');
             if (dc) { 
@@ -512,144 +527,162 @@
                 </div>
                 <div id="atomic-library-body" class="components-body" style="padding: 12px;">
                     <div id="atomic-library-container" class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-textbox')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-textbox')" data-ko="텍스트박스 텍스트 입력창" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">input</span>
                             <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Textbox</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-textarea')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-textarea')" data-ko="텍스트에어리어 입력상자 긴글" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">notes</span>
                             <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Textarea</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-stepper')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-stepper')" data-ko="수량선택기 수량 스텝퍼 증감" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">unfold_more</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">수량선택기</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Stepper</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-selectbox')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-selectbox')" data-ko="셀렉트박스 셀렉트 드롭다운 옵션" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">arrow_drop_down_circle</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">셀렉트박스</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Selectbox</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-fileupload')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-fileupload')" data-ko="파일업로드 파일 업로드 첨부파일" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">file_upload</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">파일업로드</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">File Upload</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-alert')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-alert')" data-ko="얼럿창 얼럿 경고 팝업 모달" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">report_problem</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">얼럿창</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Alert</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-button')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-button')" data-ko="버튼 클릭 실행" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">smart_button</span>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">&#48260;&#53948;</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Button</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-datepicker')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-datepicker')" data-ko="날짜선택 날짜 캘린더 달력 데이트피커" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">&#45216;&#51676; &#49440;&#53469;</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Date Picker</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('image', 'LF Logo')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div style="height: 18px; display: flex; align-items: center; justify-content: center;">
-                                <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width: 18px; filter: brightness(0) invert(1);" loading="lazy">
-                            </div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">LF Logo</span>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('atom', 'Accordion UI')" data-ko="아코디언 아코디언ui 드롭다운 리스트 계층" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">menu_open</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Accordion</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'search')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-icon-search" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Search</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'bell')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-icon-bell" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Notification</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'cart')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-icon-cart" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Cart</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'category')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-icon-category" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Category</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'brand')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-icon-brand" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Brand</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'home')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-icon-home" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Home</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'heart')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-icon-heart" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Wishlist</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'my')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-icon-my" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">My Page</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust Gift')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-cust-gift" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">선물/혜택</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust 1to1')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-cust-1to1" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">1:1 문의</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust Chatbot')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-cust-chatbot" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">챗봇 상담</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust FAQ')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-cust-faq" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">자주묻는질문</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust Truck')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-cust-truck" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">배송 조회</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Rv Write')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-rv-write" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">리뷰 쓰기</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Rv My')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <div class="lf-icon lf-rv-my" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">내 리뷰</span>
-                        </div>
-
-                        <!-- New UI Controls -->
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Arrow Left')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Arrow L</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Arrow Right')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Arrow R</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Arrow Up')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Arrow U</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Arrow Down')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Arrow D</span>
-                        </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Close X')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Close X</span>
-                        </div>
-
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Check Box')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('atom', 'Check Box')" data-ko="체크박스 체크 선택 체크형" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <div style="width:16px; height:16px; background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.3) !important; border-radius:3px; display:flex; align-items:center; justify-content:center; box-sizing: border-box;">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:10px; height:10px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
                             </div>
                             <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Check Box</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Radio Button')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('atom', 'Radio Button')" data-ko="라디오 라디오버튼 단일선택" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <div style="width:16px; height:16px; background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.3) !important; border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing: border-box;">
                                 <div style="width:6px; height:6px; background:#34d399; border-radius:50%;"></div>
                             </div>
                             <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Radio</span>
                         </div>
-                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Share Premium')" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('atom', 'Grid UI')" data-ko="그리드 grid 테이블 table 표 데이터 리스트 aggrid" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">grid_on</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Grid UI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part 3: ICON LIBRARY -->
+                <div id="icon-library-header" class="panel-header" style="border-top: 1px solid rgba(255, 255, 255, 0.08); background: rgba(56, 189, 248, 0.03); padding: 18px 20px;">
+                    <span style="font-size: 10px; font-weight: 800; color: #38bdf8; letter-spacing: 1.5px;">ICON LIBRARY</span>
+                </div>
+                <div id="icon-library-body" class="components-body" style="padding: 12px;">
+                    <div id="icon-library-container" class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('image', 'LF Logo')" data-ko="엘에프 로고 심볼" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div style="height: 18px; display: flex; align-items: center; justify-content: center;">
+                                <img src="https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png" style="width: 18px; filter: brightness(0) invert(1);" loading="lazy">
+                            </div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">LF Logo</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'search')" data-ko="검색 돋보기 찾기" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-icon-search" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Search</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'bell')" data-ko="알림 알람 알림창 종 벨" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-icon-bell" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Notification</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'cart')" data-ko="장바구니 카트 쇼핑백" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-icon-cart" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Cart</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'category')" data-ko="카테고리 메뉴 전체메뉴 분류 목록" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-icon-category" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Category</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'brand')" data-ko="브랜드 브랜드관 알파벳" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-icon-brand" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Brand</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'home')" data-ko="홈 메인화면 메인" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-icon-home" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Home</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'heart')" data-ko="위시리스트 찜 하트 좋아요" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-icon-heart" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Wishlist</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'my')" data-ko="마이페이지 마이 사람 프로필" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-icon-my" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">My Page</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust Gift')" data-ko="선물/혜택 선물 혜택 기프트 쿠폰" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-cust-gift" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Gift & Benefits</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust 1to1')" data-ko="1:1 문의 일대일 문의 상담 질문" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-cust-1to1" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">1:1 Inquiry</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust Chatbot')" data-ko="챗봇 상담 챗봇상담 로봇" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-cust-chatbot" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Chatbot</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust FAQ')" data-ko="자주묻는질문 자주 묻는 질문 도움말 에프에이큐" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-cust-faq" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">FAQ</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust Truck')" data-ko="배송 조회 배송조회 트럭 배송추적" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-cust-truck" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Delivery Tracking</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Rv Write')" data-ko="리뷰 쓰기 리뷰작성 상품평 후기" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-rv-write" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Write Review</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Rv My')" data-ko="내 리뷰 내리뷰 후기목록 내가쓴리뷰" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <div class="lf-icon lf-rv-my" style="transform: scale(0.6); margin: -8px 0; filter: brightness(0) invert(1) opacity(0.8);"></div>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">My Reviews</span>
+                        </div>
+
+                        <!-- New UI Controls -->
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Arrow Left')" data-ko="왼쪽 화살표 이전" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Arrow L</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Arrow Right')" data-ko="오른쪽 화살표 다음" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Arrow R</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Arrow Up')" data-ko="위쪽 화살표 탑 위로" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Arrow U</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Arrow Down')" data-ko="아래쪽 화살표 더보기 아래로" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Arrow D</span>
+                        </div>
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Close X')" data-ko="닫기 닫기버튼 엑스 삭제" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Close X</span>
+                        </div>
+
+                        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Share Premium')" data-ko="공유 공유하기" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
                             <img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1) opacity(0.8);">
                             <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Share</span>
                         </div>
                     </div>
+                </div>
                     
                     <!-- Icon Inspector (Relocated) -->
                     <div id="icon-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 14px; margin-top: 16px;">
@@ -720,6 +753,96 @@
                                     <button id="btn-atom-border-none" title="Transparent Border" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Accordion Inspector Section -->
+                    <div id="accordion-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 14px; margin-top: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">ACCORDION UI OPTION</span>
+                        </div>
+                        <div class="prop-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">HEADER TEXT (항목 명칭)</label>
+                            <input type="text" id="prop-accordion-header-text" class="v4-prop-input" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 11px;">
+                        </div>
+                        <div class="prop-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">EXPANDED (펼침 여부)</label>
+                            <div style="display: flex; gap: 4px;">
+                                <button id="btn-accordion-expand-y" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                                <button id="btn-accordion-expand-n" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">
+                            <!-- Background Color -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">BG COLOR</label>
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="accordion-bg-wrapper">
+                                        <input type="color" id="accordion-bg-color" value="#1e293b">
+                                    </div>
+                                    <button id="btn-accordion-bg-none" title="Transparent BG" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
+                            </div>
+                            <!-- Border Color -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">BORDER COLOR</label>
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="accordion-border-wrapper">
+                                        <input type="color" id="accordion-border-color" value="#ffffff">
+                                    </div>
+                                    <button id="btn-accordion-border-none" title="Transparent Border" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="prop-group" style="margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">SUB-ITEM COUNT (하위 항목 개수)</label>
+                            <input type="number" id="prop-accordion-sub-count" min="0" max="10" value="3" class="v4-prop-input" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 11px;">
+                        </div>
+                        <div id="accordion-sub-items-container" class="prop-group" style="display: flex; flex-direction: column; gap: 8px;">
+                            <!-- Dynamically generated inputs for sub-items will go here -->
+                        </div>
+                    </div>
+
+                    <!-- Grid UI Inspector Section -->
+                    <div id="grid-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 14px; margin-top: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">GRID UI OPTION</span>
+                        </div>
+                        <div class="prop-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">PAGINATION (페이지네이션)</label>
+                            <div style="display: flex; gap: 4px;">
+                                <button id="btn-grid-pagination-y" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                                <button id="btn-grid-pagination-n" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                            </div>
+                        </div>
+                        <div class="prop-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">ROW COUNT (출력 행 개수)</label>
+                            <input type="number" id="prop-grid-row-count" min="1" max="20" value="5" class="v4-prop-input" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 11px;">
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px;">
+                            <!-- Background Color -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">BG COLOR</label>
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="grid-bg-wrapper">
+                                        <input type="color" id="grid-bg-color" value="#ffffff">
+                                    </div>
+                                    <button id="btn-grid-bg-none" title="Transparent BG" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
+                            </div>
+                            <!-- Border Color -->
+                            <div class="prop-group">
+                                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">BORDER COLOR</label>
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <div class="v4-color-wrapper v4-checkerboard-bg" id="grid-border-wrapper">
+                                        <input type="color" id="grid-border-color" value="#e2e8f0">
+                                    </div>
+                                    <button id="btn-grid-border-none" title="Transparent Border" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="grid-columns-container" class="prop-group" style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <!-- Dynamically generated inputs for column header text will go here -->
                         </div>
                     </div>
 
@@ -1121,8 +1244,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
+                
                 <!-- Part 3: MOLECULES -->
                 <div id="molecules-header" class="panel-header" style="border-top: 1px solid rgba(255, 255, 255, 0.08); background: rgba(244, 63, 94, 0.03); padding: 18px 20px;">
                     <span id="molecules-header-text" style="font-size: 10px; font-weight: 800; color: #f43f5e; letter-spacing: 1.5px; text-transform: uppercase;">COMPONENTS</span>
@@ -1133,7 +1255,8 @@
                         <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LFmall MO Header (Detail)')" style="height: 40px; font-weight: 700; margin-top: 8px;">LFmall MO Header (Detail)</button>
                     </div>
                 </div>
-
+                </div> <!-- Close #tab-editor -->
+                
                 <!-- Part 4 removed -->
          </aside>
     </div>
@@ -1373,18 +1496,18 @@
     <script src="assets/vctrl_undo.js?v=V194_DATEPICKER"></script>
     <script src="assets/vctrl_design_system.js?v=V195_DATEPICKER_FIX"></script>
     <script src="assets/vctrl_shortcuts.js?v=V194_DATEPICKER"></script>
-    <script src="assets/vctrl_iframe_script.js?v=V194_DATEPICKER"></script>
-    <script src="assets/vctrl_core.js?v=V194_DATEPICKER"></script>
-    <script src="assets/vctrl_smartguide.js?v=V185_ARROWKEY_GUIDE_FIX"></script>
+    <script src="assets/vctrl_iframe_script.js?v=V199_TEXT_BOX_FIX"></script>
+    <script src="assets/vctrl_core.js?v=V196_DEBUG_TOGGLE"></script>
+    <script src="assets/vctrl_smartguide.js?v=V196_DEBUG_TOGGLE"></script>
     <script src="assets/vctrl_grouping.js?v=V181_PC_UI_TEMPLATE"></script>
     <script src="assets/vctrl_inspector.js?v=V195_DATEPICKER_FIX"></script>
-    <script src="assets/vctrl_v3.js?v=V156_MULTI_SELECT_REFINEMENT"></script>
+    <script src="assets/vctrl_v3.js?v=V157_PIN_SYNC"></script>
     <script src="assets/vctrl_properties.js?v=V106_V5"></script>
     <script src="assets/vctrl_connectors.js?v=V116_LINE_PERSIST_FIX"></script>
     
     <!-- V4 Premium Addons -->
     <script src="enhanced_v4/component_library_v4.js?v=V195_DATEPICKER_FIX"></script>
     <script src="assets/vctrl_table.js?v=V134_CELL_FIX"></script>
-    <script src="assets/vctrl_v4_addon.js?v=V195_DATEPICKER_FIX"></script>
+    <script src="assets/vctrl_v4_addon.js?v=V196_TEXT_BOX_FIX"></script>
 </body>
 </html>

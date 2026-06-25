@@ -99,7 +99,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 .v4-fileupload-button:hover { background-color: #f9fafb !important; border-color: #babcbe !important; }
 
 /* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
-.text-marker { 
+.text-marker, .v4-text-box { 
     position: absolute; padding: 2px 6px; border-radius: 4px; 
     border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
     white-space: normal; cursor: grab; pointer-events: auto; z-index: 100; 
@@ -109,10 +109,10 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     color: #1e293b; text-align: left;
     width: fit-content !important;
 }
-.text-marker .v4-editable-cell { padding: 2px 4px; display: block; text-align: left; }
-.text-marker .v4-editable-cell p { margin: 0; padding: 0; }
-.text-marker:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
-.text-marker.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
+.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell { padding: 2px 4px; display: block; text-align: left; }
+.text-marker .v4-editable-cell p, .v4-text-box .v4-editable-cell p { margin: 0; padding: 0; }
+.text-marker:hover, .v4-text-box:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
+.text-marker.selected, .v4-text-box.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
 
 /* Premium Pin Marker Styling */
 .pin-marker {
@@ -199,6 +199,21 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
 
 window.v4Script = `
 (function() {
+    // --- Console Log Auto-Clearing Guard inside iframe ---
+    (function() {
+        let logCount = 0;
+        const originalLog = console.log;
+        console.log = function(...args) {
+            logCount++;
+            if (logCount > 150) {
+                console.clear();
+                originalLog("[LF Editor Iframe] Auto-cleared console logs after reaching threshold.");
+                logCount = 0;
+            }
+            originalLog.apply(console, args);
+        };
+    })();
+
     console.log("[V4 Iframe] Script initialized (V144_SHORTCUT_SAVE_FIX)");
     let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
     let startX, startY, startW, startH, startTop, startLeft, startRect;
@@ -233,31 +248,32 @@ window.v4Script = `
     };
 
     window._getCompStyles = (c) => {
-        const shape = c.querySelector('.v4-shape');
-        const table = c.querySelector('table');
-        const icon = c.querySelector('.lf-icon') || c.querySelector('img');
-        const textCell = c.querySelector('.v4-editable-cell');
-        const isPin = c.classList.contains('text-marker') || c.classList.contains('pin-marker');
-        const isDescriptionPin = c.classList.contains('pin-marker');
+        const isGroup = c.classList.contains('lf-group');
+        const shape = isGroup ? null : c.querySelector('.v4-shape');
+        const table = isGroup ? null : c.querySelector('table');
+        const icon = isGroup ? null : (c.querySelector('.lf-icon') || c.querySelector('img'));
+        const textCell = isGroup ? null : c.querySelector('.v4-editable-cell');
+        const isPin = isGroup ? false : (c.classList.contains('text-marker') || c.classList.contains('pin-marker'));
+        const isDescriptionPin = isGroup ? false : c.classList.contains('pin-marker');
         
         // Checkbox / Radio Atom Detection
-        const isCheckbox = !!c.querySelector('.v4-checkbox') || c.classList.contains('v4-checkbox') || !!c.querySelector('.v4-checkbox-container') || c.classList.contains('v4-checkbox-container');
-        const isRadio = !!c.querySelector('.v4-radio') || c.classList.contains('v4-radio') || !!c.querySelector('.v4-radio-container') || c.classList.contains('v4-radio-container');
-        const container = c.querySelector('.v4-checkbox-container, .v4-radio-container') || (c.classList.contains('v4-checkbox-container') || c.classList.contains('v4-radio-container') ? c : null);
+        const isCheckbox = isGroup ? false : (!!c.querySelector('.v4-checkbox') || c.classList.contains('v4-checkbox') || !!c.querySelector('.v4-checkbox-container') || c.classList.contains('v4-checkbox-container'));
+        const isRadio = isGroup ? false : (!!c.querySelector('.v4-radio') || c.classList.contains('v4-radio') || !!c.querySelector('.v4-radio-container') || c.classList.contains('v4-radio-container'));
+        const container = isGroup ? null : (c.querySelector('.v4-checkbox-container, .v4-radio-container') || (c.classList.contains('v4-checkbox-container') || c.classList.contains('v4-radio-container') ? c : null));
         const checked = container ? container.getAttribute('data-checked') !== 'false' : true;
         const textEnabled = container ? container.getAttribute('data-text-enabled') !== 'false' : false;
         
         // Textbox / Textarea Atom Detection
-        const isTextbox = !!c.querySelector('.v4-textbox-container') || c.classList.contains('v4-textbox-container');
-        const isTextarea = !!c.querySelector('.v4-textarea-container') || c.classList.contains('v4-textarea-container');
-        const inputContainer = c.querySelector('.v4-textbox-container, .v4-textarea-container') || (isTextbox || isTextarea ? c : null);
+        const isTextbox = isGroup ? false : (!!c.querySelector('.v4-textbox-container') || c.classList.contains('v4-textbox-container'));
+        const isTextarea = isGroup ? false : (!!c.querySelector('.v4-textarea-container') || c.classList.contains('v4-textarea-container'));
+        const inputContainer = isGroup ? null : (c.querySelector('.v4-textbox-container, .v4-textarea-container') || (isTextbox || isTextarea ? c : null));
         const placeholderText = inputContainer ? (inputContainer.getAttribute('data-placeholder') || inputContainer.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder')?.textContent || "Placeholder") : "";
         const maxLength = inputContainer ? (parseInt(inputContainer.getAttribute('data-maxlength')) || 100) : 100;
         const showCounter = inputContainer ? (inputContainer.getAttribute('data-show-counter') !== 'false') : false;
 
         // Stepper Atom Detection
-        const isStepper = !!c.querySelector('.v4-stepper-container') || c.classList.contains('v4-stepper-container');
-        const stepperContainer = c.querySelector('.v4-stepper-container') || (isStepper ? c : null);
+        const isStepper = isGroup ? false : (!!c.querySelector('.v4-stepper-container') || c.classList.contains('v4-stepper-container'));
+        const stepperContainer = isGroup ? null : (c.querySelector('.v4-stepper-container') || (isStepper ? c : null));
         const minVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-min')) || 1 : 1;
         const maxVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-max')) || 99 : 99;
         const stepperVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-val')) || minVal : minVal;
@@ -266,24 +282,24 @@ window.v4Script = `
         const stepperDisabled = stepperContainer ? stepperContainer.getAttribute('data-disabled') === 'true' : false;
         
         // Selectbox Atom Detection
-        const isSelectbox = !!c.querySelector('.v4-selectbox-container') || c.classList.contains('v4-selectbox-container');
-        const selectboxContainer = c.querySelector('.v4-selectbox-container') || (isSelectbox ? c : null);
+        const isSelectbox = isGroup ? false : (!!c.querySelector('.v4-selectbox-container') || c.classList.contains('v4-selectbox-container'));
+        const selectboxContainer = isGroup ? null : (c.querySelector('.v4-selectbox-container') || (isSelectbox ? c : null));
         const selectboxDefaultText = selectboxContainer ? (selectboxContainer.getAttribute('data-default-text') || "선택하세요") : "선택하세요";
         const selectboxDropdownActive = selectboxContainer ? selectboxContainer.getAttribute('data-dropdown-active') === 'true' : false;
         const selectboxOptionsRaw = selectboxContainer ? (selectboxContainer.getAttribute('data-options') || "Option 1,Option 2,Option 3") : "Option 1,Option 2,Option 3";
         const selectboxOptions = selectboxOptionsRaw.split(',').map(s => s.trim()).filter(Boolean);
 
         // File Upload Atom Detection
-        const isFileUpload = !!c.querySelector('.v4-fileupload-container') || c.classList.contains('v4-fileupload-container');
-        const fileuploadContainer = c.querySelector('.v4-fileupload-container') || (isFileUpload ? c : null);
+        const isFileUpload = isGroup ? false : (!!c.querySelector('.v4-fileupload-container') || c.classList.contains('v4-fileupload-container'));
+        const fileuploadContainer = isGroup ? null : (c.querySelector('.v4-fileupload-container') || (isFileUpload ? c : null));
         const fileSelected = fileuploadContainer ? fileuploadContainer.getAttribute('data-selected') === 'true' : false;
         const fileName = fileuploadContainer ? (fileuploadContainer.getAttribute('data-file-name') || "") : "";
         const fileButtonText = fileuploadContainer ? (fileuploadContainer.getAttribute('data-button-text') || "파일첨부") : "파일첨부";
         const filePlaceholder = fileuploadContainer ? (fileuploadContainer.getAttribute('data-placeholder') || "선택된 파일 없음") : "선택된 파일 없음";
 
         // Alert Atom Detection
-        const isAlert = !!c.querySelector('.v4-alert-container') || c.classList.contains('v4-alert-container');
-        const alertContainer = c.querySelector('.v4-alert-container') || (isAlert ? c : null);
+        const isAlert = isGroup ? false : (!!c.querySelector('.v4-alert-container') || c.classList.contains('v4-alert-container'));
+        const alertContainer = isGroup ? null : (c.querySelector('.v4-alert-container') || (isAlert ? c : null));
         const alertMessage = alertContainer ? (alertContainer.getAttribute('data-message') || "얼럿 메시지 입력 표시") : "얼럿 메시지 입력 표시";
         const alertBtnCount = alertContainer ? parseInt(alertContainer.getAttribute('data-btn-count')) || 1 : 1;
         const alertBtnText1 = alertContainer ? (alertContainer.getAttribute('data-btn-text-1') || "확인") : "확인";
@@ -296,23 +312,38 @@ window.v4Script = `
         const alertDesc = alertContainer ? (alertContainer.getAttribute('data-desc') || "어떤어떤 경우에 얼럿이 표시됨") : "어떤어떤 경우에 얼럿이 표시됨";
 
         // Button Atom Detection
-        const isButton = !!c.querySelector('.v4-btn-container') || c.classList.contains('v4-btn-container');
-        const btnContainer = c.querySelector('.v4-btn-container') || (isButton ? c : null);
+        const isButton = isGroup ? false : (!!c.querySelector('.v4-btn-container') || c.classList.contains('v4-btn-container'));
+        const btnContainer = isGroup ? null : (c.querySelector('.v4-btn-container') || (isButton ? c : null));
         const buttonText = btnContainer ? (btnContainer.getAttribute('data-text') || "버튼") : "버튼";
         const buttonStyle = btnContainer ? (btnContainer.getAttribute('data-btn-style') || "normal") : "normal";
         const buttonRadius = btnContainer ? (btnContainer.getAttribute('data-btn-radius') || "6") : "6";
 
         // Date Picker Atom Detection
-        const isDatePicker = !!c.querySelector('.v4-datepicker-container') || c.classList.contains('v4-datepicker-container');
-        const dpContainer = c.querySelector('.v4-datepicker-container') || (isDatePicker ? c : null);
+        const isDatePicker = isGroup ? false : (!!c.querySelector('.v4-datepicker-container') || c.classList.contains('v4-datepicker-container'));
+        const dpContainer = isGroup ? null : (c.querySelector('.v4-datepicker-container') || (isDatePicker ? c : null));
         const dpShowPresets = dpContainer ? dpContainer.getAttribute('data-show-presets') !== 'false' : true;
         const dpShowEndDate = dpContainer ? dpContainer.getAttribute('data-show-end-date') !== 'false' : true;
         const dpDefaultPreset = dpContainer ? (dpContainer.getAttribute('data-default-preset') || 'none') : 'none';
         const dpStartDate = dpContainer ? (dpContainer.getAttribute('data-start-date') || '') : '';
         const dpEndDate = dpContainer ? (dpContainer.getAttribute('data-end-date') || '') : '';
 
-        const boxEl = c.querySelector('.v4-checkbox, .v4-radio');
-        const buttonEl = c.querySelector('.v4-custom-btn');
+        // Accordion Atom Detection
+        const isAccordion = isGroup ? false : (!!c.querySelector('.v4-accordion-container') || c.classList.contains('v4-accordion-container'));
+        const accordionContainer = isGroup ? null : (c.querySelector('.v4-accordion-container') || (isAccordion ? c : null));
+        const accordionHeaderText = accordionContainer ? (accordionContainer.querySelector('.v4-accordion-title-text')?.innerText || "Accordion Header") : "Accordion Header";
+        const accordionSubCount = accordionContainer ? (parseInt(accordionContainer.getAttribute('data-sub-count')) || 0) : 0;
+        const accordionSubTexts = accordionContainer ? Array.from(accordionContainer.querySelectorAll('.v4-accordion-item')).map(item => item.innerText) : [];
+        const accordionExpanded = accordionContainer ? accordionContainer.getAttribute('data-expanded') === 'true' : false;
+
+        // Grid UI Atom Detection
+        const isGrid = isGroup ? false : (!!c.querySelector('.v4-grid-container') || c.classList.contains('v4-grid-container'));
+        const gridContainer = isGroup ? null : (c.querySelector('.v4-grid-container') || (isGrid ? c : null));
+        const gridHeaders = gridContainer ? Array.from(gridContainer.querySelectorAll('.v4-grid-header-row .v4-grid-cell')).slice(1).map(cell => cell.innerText.replace(' ⇅', '')) : [];
+        const gridRowCount = gridContainer ? (parseInt(gridContainer.getAttribute('data-row-count')) || 0) : 0;
+        const gridShowPagination = gridContainer ? gridContainer.getAttribute('data-pagination') !== 'false' : true;
+
+        const boxEl = isGroup ? null : c.querySelector('.v4-checkbox, .v4-radio');
+        const buttonEl = isGroup ? null : c.querySelector('.v4-custom-btn');
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
@@ -346,6 +377,8 @@ window.v4Script = `
             if (stepperContainer) return _getVal(stepperContainer, "backgroundColor");
             if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor");
             if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor");
+            if (accordionContainer) return _getVal(accordionContainer, "backgroundColor");
+            if (gridContainer) return _getVal(gridContainer, "backgroundColor");
             if (alertContainer) {
                 const dialog = alertContainer.querySelector('.v4-alert-dialog');
                 return dialog ? _getVal(dialog, "backgroundColor") : _getVal(alertContainer, "backgroundColor");
@@ -363,6 +396,8 @@ window.v4Script = `
             if (stepperContainer) return _getVal(stepperContainer, "borderColor");
             if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor");
             if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor");
+            if (accordionContainer) return _getVal(accordionContainer, "borderColor");
+            if (gridContainer) return _getVal(gridContainer, "borderColor");
             if (alertContainer) {
                 const dialog = alertContainer.querySelector('.v4-alert-dialog');
                 return dialog ? _getVal(dialog, "borderColor") : _getVal(alertContainer, "borderColor");
@@ -426,6 +461,15 @@ window.v4Script = `
             dpDefaultPreset: dpDefaultPreset,
             dpStartDate: dpStartDate,
             dpEndDate: dpEndDate,
+            isAccordion: isAccordion,
+            accordionHeaderText: accordionHeaderText,
+            accordionSubCount: accordionSubCount,
+            accordionSubTexts: accordionSubTexts,
+            accordionExpanded: accordionExpanded,
+            isGrid: isGrid,
+            gridHeaders: gridHeaders,
+            gridRowCount: gridRowCount,
+            gridShowPagination: gridShowPagination,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
@@ -481,10 +525,13 @@ window.v4Script = `
         let h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
         
         if (c && !h && !r && !d) {
-            let parent = c.parentElement.closest('.lf-component');
-            while (parent) {
-                c = parent;
-                parent = c.parentElement.closest('.lf-component');
+            if (!c.classList.contains('text-marker') && !c.classList.contains('pin-marker')) {
+                let parent = c.parentElement.closest('.lf-component');
+                while (parent) {
+                    if (parent.classList.contains('text-marker') || parent.classList.contains('pin-marker')) break;
+                    c = parent;
+                    parent = c.parentElement.closest('.lf-component');
+                }
             }
         }
 
@@ -582,8 +629,17 @@ window.v4Script = `
                 notifyParent({ type: 'LF_CONNECTOR_HANDLE_MOVE', clientX: e.clientX, clientY: e.clientY });
             }
             if (isDragging && activeEl) { 
-                const dx = e.clientX - startX;
-                const dy = e.clientY - startY;
+                let dx = e.clientX - startX;
+                let dy = e.clientY - startY;
+
+                if (e.shiftKey) {
+                    if (Math.abs(dx) >= Math.abs(dy)) {
+                        dy = 0;
+                    } else {
+                        dx = 0;
+                    }
+                }
+
                 const scale = (window.parent?.state?.transform?.scale) || 1;
                 const logicalX = startLeft + dx / scale;
                 const logicalY = startTop + dy / scale;
@@ -740,10 +796,55 @@ window.v4Script = `
                 window.updateHandles(div);
             });
         }
+        else if (d.type === 'LF_REORDER_PINS') {
+            document.querySelectorAll('.pin-marker, .text-marker').forEach(el => el.remove());
+            const host = document.body;
+            const pinsList = d.pins || [];
+            pinsList.forEach((pin, idx) => {
+                const div = document.createElement('div');
+                div.id = 'v4-pin-' + idx;
+                host.appendChild(div);
+                
+                const isPinType = (pin.type === 'pin' || pin.type === undefined);
+                div.className = 'lf-component ' + (isPinType ? 'pin-marker' : 'text-marker');
+                
+                if (isPinType) {
+                    div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:12px; height:12px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                                    '<div class="pin-number-badge" style="pointer-events:none; font-weight:800; font-size:14px; color:#000;">' + (idx + 1) + '</div>' +
+                                    '<div class="lf-delete-trigger" style="right:-10px; top:-10px;">&times;</div>';
+                    div.style.width = '28px';
+                    div.style.height = '28px';
+                } else {
+                    div.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
+                                    '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:' + (pin.color || '#000') + '">' + (pin.html || pin.text || '') + '</div>' +
+                                    '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
+                    div.style.width = 'fit-content';
+                    div.style.height = 'auto';
+                }
+                div.style.zIndex = '1000';
+
+                let xVal = parseFloat(pin.x) || 0;
+                let yVal = parseFloat(pin.y) || 0;
+                
+                if (!pin.standardized && xVal <= 100 && yVal <= 100) {
+                    xVal = xVal * 14.4;
+                    yVal = yVal * 9.0;
+                }
+
+                div.style.left = xVal + 'px';
+                div.style.top = yVal + 'px';
+                
+                window.updateHandles(div);
+            });
+        }
         else if (d.type === 'LF_RENDER_CONNECTORS') {
-            console.log("[V4 Iframe] LF_RENDER_CONNECTORS received:", d);
+            if (window.parent && window.parent.DEBUG_MODE) {
+                console.log("[V4 Iframe] LF_RENDER_CONNECTORS received:", d);
+            }
             const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
-            console.log("[V4 Iframe] Host for connectors:", host);
+            if (window.parent && window.parent.DEBUG_MODE) {
+                console.log("[V4 Iframe] Host for connectors:", host);
+            }
             document.querySelectorAll('.connector-line').forEach(el => el.remove());
             const connectors = d.connectors || [];
             const selectedIds = d.selectedIds || [];
@@ -943,6 +1044,11 @@ window.v4Script = `
                 document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
                 el.classList.add('selected');
                 window.updateHandles(el);
+                notifyParent({
+                    type: 'LF_COMP_SELECTED',
+                    shiftKey: false,
+                    ...window._getCompStyles(el)
+                });
             }
         }
         else if (d.type === 'LF_UPDATE_PIN_CONTENT') {
@@ -998,6 +1104,136 @@ window.v4Script = `
             const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
             if (container) {
                 container.setAttribute('data-checked', d.checked ? 'true' : 'false');
+                const inner = container.querySelector('.v4-checkbox, .v4-radio');
+                if (inner) {
+                    if (d.checked) {
+                        inner.style.backgroundColor = 'rgb(50, 50, 50)';
+                        inner.style.borderColor = 'rgb(255, 255, 255)';
+                    } else {
+                        inner.style.backgroundColor = 'rgb(250, 250, 250)';
+                        inner.style.borderColor = 'rgb(150, 150, 150)';
+                    }
+                }
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_ACCORDION_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-accordion-container') || (s.classList.contains('v4-accordion-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.headerText !== undefined) {
+                    const titleText = container.querySelector('.v4-accordion-title-text');
+                    if (titleText && titleText.innerText !== d.headerText) {
+                        titleText.innerText = d.headerText;
+                    }
+                }
+                
+                if (d.expanded !== undefined) {
+                    container.setAttribute('data-expanded', d.expanded ? 'true' : 'false');
+                }
+                
+                if (d.subCount !== undefined || d.subTexts !== undefined) {
+                    const body = container.querySelector('.v4-accordion-body');
+                    if (body) {
+                        const targetCount = d.subCount !== undefined ? d.subCount : (parseInt(container.getAttribute('data-sub-count')) || 0);
+                        container.setAttribute('data-sub-count', targetCount);
+                        
+                        const existingItems = Array.from(body.querySelectorAll('.v4-accordion-item'));
+                        const currentTexts = d.subTexts || existingItems.map(item => item.innerText);
+                        
+                        body.innerHTML = '';
+                        for (let i = 0; i < targetCount; i++) {
+                            const itemText = currentTexts[i] !== undefined ? currentTexts[i] : "Sub Item " + (i + 1);
+                            const isLast = (i === targetCount - 1);
+                            
+                            const itemEl = document.createElement('div');
+                            itemEl.className = 'v4-accordion-item v4-editable-cell';
+                            itemEl.contentEditable = 'true';
+                            itemEl.style.cssText = "padding:8px 12px; font-size:12px; color:#cccccc; font-family:'Inter',sans-serif; outline:none; -webkit-user-select:text; user-select:text;";
+                            if (!isLast) {
+                                itemEl.style.borderBottom = '1.6px solid rgba(255,255,255,0.05)';
+                            }
+                            itemEl.innerText = itemText;
+                            body.appendChild(itemEl);
+                        }
+                    }
+                }
+                
+                if (d.bg !== undefined) {
+                    container.style.backgroundColor = d.bg;
+                }
+                if (d.border !== undefined) {
+                    container.style.borderColor = d.border;
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
+                markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_GRID_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-grid-container') || (s.classList.contains('v4-grid-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.headers !== undefined) {
+                    const headerCells = Array.from(container.querySelectorAll('.v4-grid-header-row .v4-grid-cell')).slice(1);
+                    d.headers.forEach((headerText, index) => {
+                        if (headerCells[index]) {
+                            headerCells[index].innerText = headerText + ' ⇅';
+                        }
+                    });
+                }
+                
+                if (d.pagination !== undefined) {
+                    container.setAttribute('data-pagination', d.pagination ? 'true' : 'false');
+                    const footer = container.querySelector('.v4-grid-footer');
+                    if (footer) footer.style.display = d.pagination ? 'flex' : 'none';
+                }
+                
+                if (d.rowCount !== undefined) {
+                    const count = Math.min(20, Math.max(1, parseInt(d.rowCount) || 5));
+                    container.setAttribute('data-row-count', count);
+                    const body = container.querySelector('.v4-grid-body');
+                    if (body) {
+                        body.innerHTML = '';
+                        const mockList = [
+                            { no: '1024', name: '[헤지스] 여름 맞이 린넨 셔츠 특가 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '김엘에프' },
+                            { no: '1023', name: '[닥스] 프리미엄 실크 타이 단독 런칭 쇼', status: '방송예정', statusColor: '#d97706', statusBg: 'rgba(251,191,36,0.15)', author: '이닥스' },
+                            { no: '1022', name: '[라푸마] 아웃도어 바람막이 클리어런스 세일', status: '방송종료', statusColor: '#ef4444', statusBg: 'rgba(239,68,68,0.1)', author: '박라푸마' },
+                            { no: '1021', name: '[질스튜어트] 봄 신상 스니커즈 한정 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '최질스' },
+                            { no: '1020', name: '[바네사브루노] 가을 컬렉션 룩북 공개 생방송', status: '방송예정', statusColor: '#d97706', statusBg: 'rgba(251,191,36,0.15)', author: '정바네' },
+                            { no: '1019', name: '[아떼] 비건 뷰티 립스틱 신제품 메이크업 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '송아떼' },
+                            { no: '1018', name: '[헤지스 골프] 기능성 필드웨어 특가전', status: '방송종료', statusColor: '#ef4444', statusBg: 'rgba(239,68,68,0.1)', author: '한골프' }
+                        ];
+                        for (let i = 0; i < count; i++) {
+                            const data = mockList[i % mockList.length];
+                            const isLast = (i === count - 1);
+                            const borderBottom = isLast ? 'none' : '1.6px solid rgb(226,232,240)';
+                            
+                            const rowEl = document.createElement('div');
+                            rowEl.className = 'v4-grid-row';
+                            rowEl.style.cssText = 'display:grid; grid-template-columns:50px 100px 1fr 120px 120px; height:36px; border-bottom:' + borderBottom + '; box-sizing:border-box; background:#ffffff;';
+                            rowEl.innerHTML = '<div class="v4-grid-cell" style="display:flex; align-items:center; justify-content:center; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box;"><input type="checkbox"></div>' +
+                                              '<div class="v4-grid-cell" style="display:flex; align-items:center; padding:0 8px; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box; font-size:12px; color:#334155;">' + data.no + '</div>' +
+                                              '<div class="v4-grid-cell" style="display:flex; align-items:center; padding:0 8px; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.name + '</div>' +
+                                              '<div class="v4-grid-cell" style="display:flex; align-items:center; padding:0 8px; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box;"><span style="background:' + data.statusBg + '; color:' + data.statusColor + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + data.status + '</span></div>' +
+                                              '<div class="v4-grid-cell" style="display:flex; align-items:center; padding:0 8px; font-size:12px; color:#64748b;">' + data.author + '</div>';
+                            body.appendChild(rowEl);
+                        }
+                    }
+                }
+                
+                if (d.bg !== undefined) {
+                    container.style.backgroundColor = d.bg;
+                }
+                if (d.border !== undefined) {
+                    container.style.borderColor = d.border;
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
             }
         }

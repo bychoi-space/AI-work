@@ -85,7 +85,9 @@
                 window.MessageHub.send(DOM.iframe.contentWindow, 'LF_REQUEST_SNAP_TARGETS');
             }
 
-            console.log(`[SmartGuide] Local targets collected: snap=${this.targets.length}, spacing=${this.spacingTargets.length}`);
+            if (window.DEBUG_MODE) {
+                console.log(`[SmartGuide] Local targets collected: snap=${this.targets.length}, spacing=${this.spacingTargets.length}`);
+            }
         },
 
         /**
@@ -114,7 +116,9 @@
                 this.spacingTargets = [...otherSpacing, ...iframeSpacing];
             }
             
-            console.log(`[SmartGuide] Total targets synchronized: snap=${this.targets.length}, spacing=${this.spacingTargets.length}`);
+            if (window.DEBUG_MODE) {
+                console.log(`[SmartGuide] Total targets synchronized: snap=${this.targets.length}, spacing=${this.spacingTargets.length}`);
+            }
         },
 
         /**

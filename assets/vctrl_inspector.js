@@ -81,6 +81,8 @@ window.DOM = {
     alertPropSection: get('alert-inspector-section'),
     buttonPropSection: get('button-inspector-section'),
     datePickerPropSection: get('datepicker-inspector-section'),
+    accordionPropSection: get('accordion-inspector-section'),
+    gridPropSection: get('grid-inspector-section'),
     textColorPicker: get('text-color-picker'),
     colorPresets: document.querySelectorAll('.color-preset'),
 
@@ -176,7 +178,9 @@ function restorePropertiesSections() {
             document.getElementById('fileupload-inspector-section'),
             document.getElementById('alert-inspector-section'),
             document.getElementById('button-inspector-section'),
-            document.getElementById('datepicker-inspector-section')
+            document.getElementById('datepicker-inspector-section'),
+            document.getElementById('accordion-inspector-section'),
+            document.getElementById('grid-inspector-section')
         ];
         sections.forEach(sec => {
             if (sec && sec.parentElement !== shapesBody) {
@@ -282,12 +286,15 @@ window.updateProperties = function(compStyles) {
         if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'none';
         if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'none';
         if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'none';
+        if (DOM.accordionPropSection) DOM.accordionPropSection.style.display = 'none';
+        if (DOM.gridPropSection) DOM.gridPropSection.style.display = 'none';
 
         if (compStyles) {
             state.isEditing = true;
             state.editingIndex = (compStyles.pinIndex !== undefined && compStyles.pinIndex !== -1) ? compStyles.pinIndex : compStyles.id;
             let type = 'comp';
-            if (compStyles.isPin) type = 'pin';
+            if (compStyles.isGroup) type = 'group';
+            else if (compStyles.isPin) type = 'pin';
             else if (compStyles.isTable) type = 'table';
             else if (compStyles.isShape) type = 'shape';
             else if (compStyles.isConnector) type = 'line';
@@ -299,6 +306,8 @@ window.updateProperties = function(compStyles) {
             else if (compStyles.isAlert) type = 'alert';
             else if (compStyles.isButton) type = 'button';
             else if (compStyles.isDatePicker) type = 'datepicker';
+            else if (compStyles.isAccordion) type = 'accordion';
+            else if (compStyles.isGrid) type = 'grid';
             else if (compStyles.isIcon) type = 'icon';
             state.editingType = type;
 
@@ -342,6 +351,12 @@ window.updateProperties = function(compStyles) {
             } else if (state.editingType === 'datepicker') {
                 if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'block';
                 _syncDatePickerProps(compStyles);
+            } else if (state.editingType === 'accordion') {
+                if (DOM.accordionPropSection) DOM.accordionPropSection.style.display = 'block';
+                _syncAccordionProps(compStyles);
+            } else if (state.editingType === 'grid') {
+                if (DOM.gridPropSection) DOM.gridPropSection.style.display = 'block';
+                _syncGridProps(compStyles);
             }
 
             // CONTENT EDITOR 헤더 레이블 동적 변경
@@ -394,7 +409,7 @@ window.updateProperties = function(compStyles) {
                 DOM.linePropSection, DOM.iconPropSection, DOM.checkboxRadioPropSection,
                 DOM.textboxTextareaPropSection, DOM.stepperPropSection, DOM.selectboxPropSection,
                 DOM.fileuploadPropSection, DOM.alertPropSection, DOM.buttonPropSection,
-                DOM.datePickerPropSection
+                DOM.datePickerPropSection, DOM.accordionPropSection, DOM.gridPropSection
             ];
             sections.forEach(sec => {
                 if (sec && sec.style.display === 'block') {
@@ -429,6 +444,8 @@ window.updateProperties = function(compStyles) {
         if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'none';
         if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'none';
         if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'none';
+        if (DOM.accordionPropSection) DOM.accordionPropSection.style.display = 'none';
+        if (DOM.gridPropSection) DOM.gridPropSection.style.display = 'none';
     }
 };
 
@@ -697,6 +714,84 @@ function _syncTextboxTextareaProps(comp) {
         }
     }
 }
+function _syncAccordionProps(comp) {
+    const headerTextInp = document.getElementById('prop-accordion-header-text');
+    const subCountInp = document.getElementById('prop-accordion-sub-count');
+    const expandY = document.getElementById('btn-accordion-expand-y');
+    const expandN = document.getElementById('btn-accordion-expand-n');
+    
+    if (headerTextInp && comp.accordionHeaderText !== undefined) {
+        headerTextInp.value = comp.accordionHeaderText;
+    }
+    
+    if (subCountInp && comp.accordionSubCount !== undefined) {
+        subCountInp.value = comp.accordionSubCount;
+    }
+    
+    const highlightActive = (btn, isActive) => {
+        if (!btn) return;
+        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+    };
+
+    if (expandY && expandN) {
+        highlightActive(expandY, comp.accordionExpanded === true);
+        highlightActive(expandN, comp.accordionExpanded === false);
+    }
+    
+    if (typeof window.syncAccordionSubItemInputs === 'function') {
+        window.syncAccordionSubItemInputs(comp.accordionSubTexts || []);
+    }
+    
+    const s = comp.currentStyles || {};
+    const syncColor = (id, wrapperId, color, isTransparent) => {
+        const picker = document.getElementById(id);
+        const wrapper = document.getElementById(wrapperId);
+        if (picker && color) picker.value = color;
+        if (wrapper) wrapper.classList.toggle('transparent-active', isTransparent);
+    };
+    syncColor('accordion-bg-color', 'accordion-bg-wrapper', s.bg, s.isBgTransparent);
+    syncColor('accordion-border-color', 'accordion-border-wrapper', s.border, s.isBorderTransparent);
+}
+
+function _syncGridProps(comp) {
+    const rowCountInp = document.getElementById('prop-grid-row-count');
+    const paginationY = document.getElementById('btn-grid-pagination-y');
+    const paginationN = document.getElementById('btn-grid-pagination-n');
+    
+    if (rowCountInp && comp.gridRowCount !== undefined) {
+        rowCountInp.value = comp.gridRowCount;
+    }
+    
+    const highlightActive = (btn, isActive) => {
+        if (!btn) return;
+        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+    };
+
+    if (paginationY && paginationN) {
+        highlightActive(paginationY, comp.gridShowPagination === true);
+        highlightActive(paginationN, comp.gridShowPagination === false);
+    }
+    
+    if (typeof window.syncGridHeaderInputs === 'function') {
+        window.syncGridHeaderInputs(comp.gridHeaders || []);
+    }
+    
+    const s = comp.currentStyles || {};
+    const syncColor = (id, wrapperId, color, isTransparent) => {
+        const picker = document.getElementById(id);
+        const wrapper = document.getElementById(wrapperId);
+        if (picker && color) picker.value = color;
+        if (wrapper) wrapper.classList.toggle('transparent-active', isTransparent);
+    };
+    syncColor('grid-bg-color', 'grid-bg-wrapper', s.bg, s.isBgTransparent);
+    syncColor('grid-border-color', 'grid-border-wrapper', s.border, s.isBorderTransparent);
+}
 
 function _syncCheckboxRadioProps(comp) {
     const activeY = document.getElementById('btn-atom-active-y');
@@ -877,7 +972,11 @@ window.renderV4Shapes = function() {
     const shapes = molecules.filter(item => item.category === 'Shapes');
 
     const query = (window.editorSearchQuery || '').toLowerCase().trim();
-    const filteredShapes = query ? shapes.filter(item => item.name.toLowerCase().includes(query)) : shapes;
+    const filteredShapes = query ? shapes.filter(item => {
+        const enMatch = item.name.toLowerCase().includes(query);
+        const koMatch = item.koName ? item.koName.toLowerCase().includes(query) : false;
+        return enMatch || koMatch;
+    }) : shapes;
 
     container.innerHTML = filteredShapes.map(item => {
         let onclickAttr = '';
@@ -961,7 +1060,7 @@ window.renderAtomicLibrary = function() {
         `).join('');
     }
 
-    // 3. Static Atomic Library 필터링
+    // 3. Static Atomic Library & Icon Library 필터링
     let atomicCount = 0;
     const atomicContainer = document.getElementById('atomic-library-container');
     if (atomicContainer) {
@@ -969,9 +1068,24 @@ window.renderAtomicLibrary = function() {
         cards.forEach(card => {
             const nameSpan = card.querySelector('span');
             const nameText = nameSpan ? nameSpan.innerText : '';
-            const isMatch = nameText.toLowerCase().includes(query);
+            const koText = card.getAttribute('data-ko') || '';
+            const isMatch = nameText.toLowerCase().includes(query) || koText.toLowerCase().includes(query);
             card.style.setProperty('display', isMatch ? 'flex' : 'none', 'important');
             if (isMatch) atomicCount++;
+        });
+    }
+
+    let iconCount = 0;
+    const iconContainer = document.getElementById('icon-library-container');
+    if (iconContainer) {
+        const cards = iconContainer.querySelectorAll('.component-item');
+        cards.forEach(card => {
+            const nameSpan = card.querySelector('span');
+            const nameText = nameSpan ? nameSpan.innerText : '';
+            const koText = card.getAttribute('data-ko') || '';
+            const isMatch = nameText.toLowerCase().includes(query) || koText.toLowerCase().includes(query);
+            card.style.setProperty('display', isMatch ? 'flex' : 'none', 'important');
+            if (isMatch) iconCount++;
         });
     }
 
@@ -992,6 +1106,14 @@ window.renderAtomicLibrary = function() {
         atomicBody.style.setProperty('display', hasAtomic ? 'block' : 'none', 'important');
     }
 
+    const iconHeader = document.getElementById('icon-library-header');
+    const iconBody = document.getElementById('icon-library-body');
+    if (iconHeader && iconBody) {
+        const hasIcon = iconCount > 0;
+        iconHeader.style.setProperty('display', hasIcon ? 'flex' : 'none', 'important');
+        iconBody.style.setProperty('display', hasIcon ? 'block' : 'none', 'important');
+    }
+
     const moleculesHeader = document.getElementById('molecules-header');
     const moleculesBody = document.getElementById('molecules-body');
     if (moleculesHeader && moleculesBody) {
@@ -1001,7 +1123,7 @@ window.renderAtomicLibrary = function() {
     }
 
     // 5. Empty State 처리
-    const totalMatch = shapesCount + atomicCount + filteredCustomComps.length;
+    const totalMatch = shapesCount + atomicCount + iconCount + filteredCustomComps.length;
     const emptyState = document.getElementById('sidebar-search-empty');
     if (emptyState) {
         emptyState.style.setProperty('display', totalMatch === 0 ? 'flex' : 'none', 'important');

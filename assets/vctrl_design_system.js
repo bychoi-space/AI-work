@@ -187,10 +187,33 @@ window.v4DesignSystemScript = `
         });
     };
 
+    const bindAccordionEvents = () => {
+        document.querySelectorAll('.v4-accordion-container').forEach(container => {
+            const header = container.querySelector('.v4-accordion-header');
+            if (!header) return;
+            if (container.dataset.eventsBound === "true") return;
+            container.dataset.eventsBound = "true";
+
+            header.onclick = (e) => {
+                e.stopPropagation();
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                const expanded = container.getAttribute('data-expanded') === 'true';
+                container.setAttribute('data-expanded', expanded ? 'false' : 'true');
+                
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                }
+                markDirty();
+            };
+        });
+    };
+
     window.enforceDesignSystem = () => {
         if (typeof window.initHandles === 'function') window.initHandles();
         bindStepperEvents();
         bindFileuploadEvents();
+        bindAccordionEvents();
         
         const seenIds = new Set();
         document.querySelectorAll('.lf-component').forEach((c, idx) => {
@@ -210,6 +233,36 @@ window.v4DesignSystemScript = `
         document.querySelectorAll('.lf-component').forEach(c => {
             if (c.querySelector('.v4-checkbox-container') || c.querySelector('.v4-radio-container')) {
                 resizeAtomToFitText(c);
+            }
+        });
+
+        document.querySelectorAll('.lf-component').forEach(c => {
+            const accordion = c.querySelector('.v4-accordion-container');
+            if (accordion) {
+                const expanded = accordion.getAttribute('data-expanded') === 'true';
+                const header = accordion.querySelector('.v4-accordion-header');
+                const body = accordion.querySelector('.v4-accordion-body');
+                const chevron = accordion.querySelector('.v4-accordion-chevron');
+                
+                if (body) {
+                    body.style.display = expanded ? 'flex' : 'none';
+                }
+                if (chevron) {
+                    chevron.style.transform = expanded ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
+                
+                if (c.getAttribute('data-resized') !== 'true') {
+                    const headerHeight = header ? header.offsetHeight || 36 : 36;
+                    let totalHeight = headerHeight;
+                    if (expanded && body) {
+                        const origDisplay = body.style.display;
+                        body.style.display = 'flex';
+                        totalHeight += body.offsetHeight || 0;
+                        body.style.display = origDisplay;
+                    }
+                    c.style.height = totalHeight + 'px';
+                }
+                if (typeof window.updateHandles === 'function') window.updateHandles(c);
             }
         });
 
@@ -648,6 +701,15 @@ window.v4DesignSystemScript = `
         document.querySelectorAll('table.v4-premium-table').forEach(t => {
             if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
             if (window.TableSelection) window.TableSelection.bindEvents(t);
+        });
+        document.querySelectorAll('.v4-grid-container').forEach(grid => {
+            const footer = grid.querySelector('.v4-grid-footer');
+            if (footer) {
+                const showPagination = grid.getAttribute('data-pagination') !== 'false';
+                const targetDisplay = showPagination ? 'flex' : 'none';
+                if (footer.style.display !== targetDisplay) footer.style.display = targetDisplay;
+            }
+            if (grid.style.borderWidth !== '1.6px') grid.style.setProperty('border-width', '1.6px', 'important');
         });
         document.querySelectorAll('polygon, path, rect, circle').forEach(svg => {
             if (svg.closest('.connector-line')) return;

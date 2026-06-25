@@ -88,7 +88,7 @@
             id: targetId,
             html: item.html,
             style: style,
-            className: isDescriptionPin ? 'pin-marker' : (isTextTool ? 'text-marker' : ''),
+            className: isDescriptionPin ? 'pin-marker' : (isTextTool ? 'v4-text-box' : ''),
             isGroup: !!item.isGroup
         });
     };
@@ -1439,5 +1439,240 @@
         }
     };
     initDatePickerEvents();
+
+    window.syncAccordionSubItemInputs = (texts) => {
+        const container = document.getElementById('accordion-sub-items-container');
+        if (!container) return;
+        container.innerHTML = '';
+        texts.forEach((text, index) => {
+            const div = document.createElement('div');
+            div.style.cssText = 'display:flex; flex-direction:column; gap:4px; margin-bottom: 8px;';
+            div.innerHTML = `
+                <label style="font-size: 9px; color: #94a3b8; display: block;">SUB ITEM ${index + 1} NAME</label>
+                <input type="text" class="v4-prop-input accordion-sub-input" data-index="${index}" value="${text || ''}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 11px;">
+            `;
+            container.appendChild(div);
+            
+            const input = div.querySelector('input');
+            input.oninput = () => {
+                const iframe = document.getElementById('main-iframe');
+                if (iframe && iframe.contentWindow && window.MessageHub) {
+                    const allInputs = Array.from(container.querySelectorAll('.accordion-sub-input'));
+                    const updatedSubTexts = allInputs.map(inp => inp.value);
+                    window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ACCORDION_PROPERTIES', {
+                        subTexts: updatedSubTexts
+                    });
+                }
+            };
+        });
+    };
+
+    const initAccordionEvents = () => {
+        const headerTextInp = document.getElementById('prop-accordion-header-text');
+        const subCountInp = document.getElementById('prop-accordion-sub-count');
+        const bgColorInp = document.getElementById('accordion-bg-color');
+        const bgNoneBtn = document.getElementById('btn-accordion-bg-none');
+        const borderColorInp = document.getElementById('accordion-border-color');
+        const borderNoneBtn = document.getElementById('btn-accordion-border-none');
+
+        const notifyAccordion = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ACCORDION_PROPERTIES', data);
+            }
+        };
+
+        const expandY = document.getElementById('btn-accordion-expand-y');
+        const expandN = document.getElementById('btn-accordion-expand-n');
+        
+        const highlightActive = (btn, isActive) => {
+            if (!btn) return;
+            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+            btn.style.fontWeight = isActive ? 'bold' : 'normal';
+        };
+
+        if (expandY) {
+            expandY.onclick = () => {
+                highlightActive(expandY, true);
+                highlightActive(expandN, false);
+                notifyAccordion({ expanded: true });
+            };
+        }
+        if (expandN) {
+            expandN.onclick = () => {
+                highlightActive(expandN, true);
+                highlightActive(expandY, false);
+                notifyAccordion({ expanded: false });
+            };
+        }
+
+        if (headerTextInp) {
+            headerTextInp.oninput = () => {
+                notifyAccordion({ headerText: headerTextInp.value });
+            };
+        }
+
+        if (subCountInp) {
+            subCountInp.oninput = () => {
+                const val = parseInt(subCountInp.value) || 0;
+                const container = document.getElementById('accordion-sub-items-container');
+                const allInputs = container ? Array.from(container.querySelectorAll('.accordion-sub-input')) : [];
+                let currentTexts = allInputs.map(inp => inp.value);
+                
+                while (currentTexts.length < val) {
+                    currentTexts.push(`Sub Item ${currentTexts.length + 1}`);
+                }
+                currentTexts = currentTexts.slice(0, val);
+                
+                if (typeof window.syncAccordionSubItemInputs === 'function') {
+                    window.syncAccordionSubItemInputs(currentTexts);
+                }
+                
+                notifyAccordion({ subCount: val, subTexts: currentTexts });
+            };
+        }
+
+        if (bgColorInp) {
+            bgColorInp.onchange = () => {
+                const wrapper = document.getElementById('accordion-bg-wrapper');
+                if (wrapper) wrapper.classList.remove('transparent-active');
+                notifyAccordion({ bg: bgColorInp.value });
+            };
+        }
+
+        if (bgNoneBtn) {
+            bgNoneBtn.onclick = () => {
+                const wrapper = document.getElementById('accordion-bg-wrapper');
+                if (wrapper) wrapper.classList.add('transparent-active');
+                notifyAccordion({ bg: 'transparent' });
+            };
+        }
+
+        if (borderColorInp) {
+            borderColorInp.onchange = () => {
+                const wrapper = document.getElementById('accordion-border-wrapper');
+                if (wrapper) wrapper.classList.remove('transparent-active');
+                notifyAccordion({ border: borderColorInp.value });
+            };
+        }
+
+        if (borderNoneBtn) {
+            borderNoneBtn.onclick = () => {
+                const wrapper = document.getElementById('accordion-border-wrapper');
+                if (wrapper) wrapper.classList.add('transparent-active');
+                notifyAccordion({ border: 'transparent' });
+            };
+        }
+    };
+    initAccordionEvents();
+
+    window.syncGridHeaderInputs = (headers) => {
+        const container = document.getElementById('grid-columns-container');
+        if (!container) return;
+        container.innerHTML = '';
+        headers.forEach((headerText, index) => {
+            const div = document.createElement('div');
+            div.style.cssText = 'display:flex; flex-direction:column; gap:4px; margin-bottom: 8px;';
+            div.innerHTML = `
+                <label style="font-size: 9px; color: #94a3b8; display: block;">COLUMN ${index + 1} TITLE</label>
+                <input type="text" class="v4-prop-input grid-header-input" data-index="${index}" value="${headerText || ''}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 11px;">
+            `;
+            container.appendChild(div);
+            
+            const input = div.querySelector('input');
+            input.oninput = () => {
+                const iframe = document.getElementById('main-iframe');
+                if (iframe && iframe.contentWindow && window.MessageHub) {
+                    const allInputs = Array.from(container.querySelectorAll('.grid-header-input'));
+                    const updatedHeaders = allInputs.map(inp => inp.value);
+                    window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_GRID_PROPERTIES', {
+                        headers: updatedHeaders
+                    });
+                }
+            };
+        });
+    };
+
+    const initGridEvents = () => {
+        const rowCountInp = document.getElementById('prop-grid-row-count');
+        const bgColorInp = document.getElementById('grid-bg-color');
+        const bgNoneBtn = document.getElementById('btn-grid-bg-none');
+        const borderColorInp = document.getElementById('grid-border-color');
+        const borderNoneBtn = document.getElementById('btn-grid-border-none');
+        const paginationY = document.getElementById('btn-grid-pagination-y');
+        const paginationN = document.getElementById('btn-grid-pagination-n');
+
+        const notifyGrid = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_GRID_PROPERTIES', data);
+            }
+        };
+
+        const highlightActive = (btn, isActive) => {
+            if (!btn) return;
+            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+            btn.style.fontWeight = isActive ? 'bold' : 'normal';
+        };
+
+        if (paginationY) {
+            paginationY.onclick = () => {
+                highlightActive(paginationY, true);
+                highlightActive(paginationN, false);
+                notifyGrid({ pagination: true });
+            };
+        }
+        if (paginationN) {
+            paginationN.onclick = () => {
+                highlightActive(paginationN, true);
+                highlightActive(paginationY, false);
+                notifyGrid({ pagination: false });
+            };
+        }
+
+        if (rowCountInp) {
+            rowCountInp.oninput = () => {
+                const val = parseInt(rowCountInp.value) || 5;
+                notifyGrid({ rowCount: val });
+            };
+        }
+
+        if (bgColorInp) {
+            bgColorInp.onchange = () => {
+                const wrapper = document.getElementById('grid-bg-wrapper');
+                if (wrapper) wrapper.classList.remove('transparent-active');
+                notifyGrid({ bg: bgColorInp.value });
+            };
+        }
+
+        if (bgNoneBtn) {
+            bgNoneBtn.onclick = () => {
+                const wrapper = document.getElementById('grid-bg-wrapper');
+                if (wrapper) wrapper.classList.add('transparent-active');
+                notifyGrid({ bg: 'transparent' });
+            };
+        }
+
+        if (borderColorInp) {
+            borderColorInp.onchange = () => {
+                const wrapper = document.getElementById('grid-border-wrapper');
+                if (wrapper) wrapper.classList.remove('transparent-active');
+                notifyGrid({ border: borderColorInp.value });
+            };
+        }
+
+        if (borderNoneBtn) {
+            borderNoneBtn.onclick = () => {
+                const wrapper = document.getElementById('grid-border-wrapper');
+                if (wrapper) wrapper.classList.add('transparent-active');
+                notifyGrid({ border: 'transparent' });
+            };
+        }
+    };
+    initGridEvents();
 
 })();

@@ -59,6 +59,11 @@ window.renderDescriptionList = function() {
                 list.splice(index, 1); 
                 markAsDirty(); 
                 renderDescriptionList();
+                
+                var DOM = window.DOM;
+                if (DOM && DOM.iframe && DOM.iframe.contentWindow && window.MessageHub) {
+                    window.MessageHub.send(DOM.iframe.contentWindow, 'LF_REORDER_PINS', { pins: list });
+                }
             }
         };
 
