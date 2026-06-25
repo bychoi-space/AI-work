@@ -472,7 +472,7 @@
     "99_Blank_798.html": {
       "title": "카드 설정",
       "type": "admin-nbos",
-      "updatedAt": "2026-06-25T01:49:03.681Z",
+      "updatedAt": "2026-06-25T01:49:51.948Z",
       "template": "template_blank.html",
       "description": [],
       "connectors": [],
@@ -1238,5 +1238,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-25 10:49:03"
+  "updated": "2026-06-25 10:49:51"
 }
