@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "랭킹카드 - 기본",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-25T01:30:20.991Z",
+      "updatedAt": "2026-06-25T01:37:24.562Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -37,54 +37,6 @@
           "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>",
           "x": 884,
           "y": 168,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "가방/잡화",
-          "html": "<p>가방/잡화</p>",
-          "x": 193.5,
-          "y": 11.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "슈즈",
-          "html": "<p>슈즈</p>",
-          "x": 272.5,
-          "y": 11.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "골프",
-          "html": "<p>골프</p>",
-          "x": 312,
-          "y": 11.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "남성의류",
-          "html": "<p>남성의류</p>",
-          "x": 125.5,
-          "y": 11.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "여성의류",
-          "html": "<p>여성의류</p>",
-          "x": 52.5,
-          "y": 11.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "전체",
-          "html": "<p><strong>전체</strong></p>",
-          "x": 8.5,
-          "y": 11.5,
           "type": "text",
           "standardized": true
         },
@@ -355,22 +307,6 @@
         {
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>",
-          "x": 778.75,
-          "y": 712,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 778.75,
-          "y": 733,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
           "x": 1005.25,
           "y": 712,
           "type": "text",
@@ -401,10 +337,130 @@
           "standardized": true
         },
         {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 778.75,
+          "y": 712,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 778.75,
+          "y": 733,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 1005.25,
+          "y": 712,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
           "x": 891.75,
-          "y": 772,
+          "y": 733,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "블라우스",
+          "html": "<p>블라우스</p>",
+          "x": 937.25,
+          "y": 275.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "니트/스웨터",
+          "html": "<p>니트/스웨터</p>",
+          "x": 1010.5,
+          "y": 275.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "팬츠",
+          "html": "<p>팬츠</p>",
+          "x": 1101,
+          "y": 275.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "셔츠",
+          "html": "<p>셔츠</p>",
+          "x": 888,
+          "y": 275.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "티셔츠",
+          "html": "<p>티셔츠</p>",
+          "x": 827.5,
+          "y": 275.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "전체",
+          "html": "<p><strong>전체</strong></p>",
+          "x": 779.5,
+          "y": 275.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "가방/잡화",
+          "html": "<p>가방/잡화</p>",
+          "x": 964.5,
+          "y": 226.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "슈즈",
+          "html": "<p>슈즈</p>",
+          "x": 1043.5,
+          "y": 226.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "골프",
+          "html": "<p>골프</p>",
+          "x": 1083,
+          "y": 226.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "남성의류",
+          "html": "<p>남성의류</p>",
+          "x": 896.5,
+          "y": 226.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "여성의류",
+          "html": "<p><b>여성의류</b></p>",
+          "x": 823.5,
+          "y": 226.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "전체",
+          "html": "<p><strong>전체</strong></p>",
+          "x": 779.5,
+          "y": 226.5,
           "type": "text",
           "standardized": true
         }
@@ -1182,5 +1238,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-25 10:30:20"
+  "updated": "2026-06-25 10:37:24"
 }
