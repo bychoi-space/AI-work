@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_793.html": {
       "title": "랭킹카드 - 기본",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-17T04:25:42.429Z",
+      "updatedAt": "2026-06-25T01:30:20.991Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -129,30 +129,6 @@
           "standardized": true
         },
         {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
-          "x": 0,
-          "y": 183.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 0,
-          "y": 204.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 0,
-          "y": 243.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
           "text": "실시간",
           "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>",
           "x": 102,
@@ -165,78 +141,6 @@
           "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>",
           "x": 0,
           "y": 0,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
-          "x": 0,
-          "y": 0,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 0,
-          "y": 21,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 0,
-          "y": 60,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
-          "x": 0,
-          "y": 0,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 0,
-          "y": 21,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 0,
-          "y": 60,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
-          "x": 0,
-          "y": 0,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 0,
-          "y": 21,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 0,
-          "y": 60,
           "type": "text",
           "standardized": true
         },
@@ -292,7 +196,7 @@
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>",
           "x": 313.5,
-          "y": 505.5,
+          "y": 510.5,
           "type": "text",
           "standardized": true
         },
@@ -300,7 +204,7 @@
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
           "x": 313.5,
-          "y": 526.5,
+          "y": 531.5,
           "type": "text",
           "standardized": true
         },
@@ -308,55 +212,47 @@
           "text": "20% 123,000",
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
           "x": 313.5,
-          "y": 565.5,
+          "y": 570.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "1",
+          "html": "<p><span style=\"font-size: 30px;\">1</span></p>",
+          "x": 313.5,
+          "y": 474.267,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>",
-          "x": 0,
-          "y": 0,
+          "x": 483.5,
+          "y": 510.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 0,
-          "y": 21,
+          "x": 483.5,
+          "y": 531.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 0,
-          "y": 60,
+          "x": 483.5,
+          "y": 570.5,
           "type": "text",
           "standardized": true
         },
         {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
-          "x": 0,
-          "y": 0,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 0,
-          "y": 21,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 0,
-          "y": 60,
+          "text": "2",
+          "html": "<p><span style=\"font-size: 30px;\">2</span></p>",
+          "x": 483.5,
+          "y": 474.267,
           "type": "text",
           "standardized": true
         },
@@ -386,9 +282,129 @@
         },
         {
           "text": "1",
-          "html": "<p><span style=\"font-size: 24px;\">1</span></p>",
-          "x": 322.95,
-          "y": 479.017,
+          "html": "<p><strong style=\"font-size: 24px;\">1</strong></p>",
+          "x": 777.75,
+          "y": 463.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 1006.75,
+          "y": 487,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 1006.75,
+          "y": 508,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 1006.75,
+          "y": 547,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "3",
+          "html": "<p><strong style=\"font-size: 24px;\">3</strong></p>",
+          "x": 1007.25,
+          "y": 463.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "2",
+          "html": "<p><strong style=\"font-size: 24px;\">2</strong></p>",
+          "x": 892.25,
+          "y": 463.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 892.25,
+          "y": 487.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 892.25,
+          "y": 508.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 892.25,
+          "y": 547.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 778.75,
+          "y": 712,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 778.75,
+          "y": 733,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 1005.25,
+          "y": 712,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 1005.25,
+          "y": 733,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Brand Name",
+          "html": "<p><strong>Brand Name</strong></p>",
+          "x": 891.75,
+          "y": 712,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "Product Name\n\n2줄까지 표현",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
+          "x": 891.75,
+          "y": 733,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
+          "x": 891.75,
+          "y": 772,
           "type": "text",
           "standardized": true
         }
@@ -1166,5 +1182,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-06-24 09:13:54"
+  "updated": "2026-06-25 10:30:20"
 }
