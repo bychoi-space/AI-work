@@ -7,6 +7,12 @@
       "updatedAt": "2026-06-26T06:11:01.834Z",
       "template": "template_cover.html",
       "version": 0.1
+    },
+    "06_Mobile_Design_2_148.html": {
+      "title": "06_Mobile_Design_2_148",
+      "type": "mobile-ui",
+      "updatedAt": "2026-06-26T06:12:11.562Z",
+      "template": "template_mobile_ui_2.html"
     }
   },
   "assignee": "최범열",
