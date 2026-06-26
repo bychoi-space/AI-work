@@ -6,18 +6,23 @@
       "type": "cover",
       "updatedAt": "2026-06-26T06:11:01.834Z",
       "template": "template_cover.html",
-      "version": 0.1
+      "version": 0.1,
+      "description": [],
+      "connectors": []
     },
     "06_Mobile_Design_2_148.html": {
       "title": "06_Mobile_Design_2_148",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-26T06:12:11.562Z",
-      "template": "template_mobile_ui_2.html"
+      "updatedAt": "2026-06-26T06:15:11.144Z",
+      "template": "template_mobile_ui_2.html",
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
   "developer": "",
   "period": "2026.06.29(월) ~ 2026.07.10(금)",
   "jira": "LFML-144209",
-  "themeIndex": 4
+  "themeIndex": 4,
+  "updated": "2026-06-26 15:15:11"
 }
