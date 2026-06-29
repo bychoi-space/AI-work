@@ -250,10 +250,13 @@ window.v4DesignSystemScript = `
                         header.style.height = itemHeight + 'px';
                     }
                     accordion.querySelectorAll('.v4-accordion-item').forEach(item => {
-                        item.style.height = itemHeight + 'px';
-                        item.style.lineHeight = itemHeight + 'px';
-                        item.style.display = 'flex';
-                        item.style.alignItems = 'center';
+                        item.style.setProperty('height', itemHeight + 'px', 'important');
+                        item.style.setProperty('line-height', itemHeight + 'px', 'important');
+                        item.style.setProperty('display', 'flex', 'important');
+                        item.style.setProperty('align-items', 'center', 'important');
+                        item.style.setProperty('box-sizing', 'border-box', 'important');
+                        item.style.setProperty('padding-top', '0', 'important');
+                        item.style.setProperty('padding-bottom', '0', 'important');
                     });
                 }
                 

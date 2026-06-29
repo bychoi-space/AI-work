@@ -1157,10 +1157,13 @@ window.v4Script = `
                         header.style.height = d.itemHeight + 'px';
                     }
                     container.querySelectorAll('.v4-accordion-item').forEach(item => {
-                        item.style.height = d.itemHeight + 'px';
-                        item.style.lineHeight = d.itemHeight + 'px';
-                        item.style.display = 'flex';
-                        item.style.alignItems = 'center';
+                        item.style.setProperty('height', d.itemHeight + 'px', 'important');
+                        item.style.setProperty('line-height', d.itemHeight + 'px', 'important');
+                        item.style.setProperty('display', 'flex', 'important');
+                        item.style.setProperty('align-items', 'center', 'important');
+                        item.style.setProperty('box-sizing', 'border-box', 'important');
+                        item.style.setProperty('padding-top', '0', 'important');
+                        item.style.setProperty('padding-bottom', '0', 'important');
                     });
                 }
                 
@@ -1195,10 +1198,13 @@ window.v4Script = `
                             itemEl.contentEditable = 'true';
                             itemEl.style.cssText = "padding:8px 12px; font-size:12px; color:#cccccc; font-family:'Inter',sans-serif; outline:none; -webkit-user-select:text; user-select:text;";
                             if (currentItemHeight) {
-                                itemEl.style.height = currentItemHeight + 'px';
-                                itemEl.style.lineHeight = currentItemHeight + 'px';
-                                itemEl.style.display = 'flex';
-                                itemEl.style.alignItems = 'center';
+                                itemEl.style.setProperty('height', currentItemHeight + 'px', 'important');
+                                itemEl.style.setProperty('line-height', currentItemHeight + 'px', 'important');
+                                itemEl.style.setProperty('display', 'flex', 'important');
+                                itemEl.style.setProperty('align-items', 'center', 'important');
+                                itemEl.style.setProperty('box-sizing', 'border-box', 'important');
+                                itemEl.style.setProperty('padding-top', '0', 'important');
+                                itemEl.style.setProperty('padding-bottom', '0', 'important');
                             }
                             if (!isLast) {
                                 itemEl.style.borderBottom = '1.6px solid rgba(255,255,255,0.05)';
