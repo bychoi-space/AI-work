@@ -115,20 +115,21 @@ window.loadScreen = async function(fileName) {
 
     // Inject/Update Script
     const scriptBlock = '<script id="v4-inlined-script">\n' + 
-        window.v4UndoScript + '\n' + 
+        (window.v4UndoScript || '') + '\n' + 
         (window.v4TableScript || '') + '\n' + 
         (window.v4DesignSystemScript || '') + '\n' + 
         (window.v4ShortcutsScript || '') + '\n' + 
-        window.v4Script + '\n</script>';
-    const hasInlinedScript = finalContent.includes('id="v4-inlined-script"');
-    const legacyScriptRegex = /<script(?![^>]*id="v4-inlined-script")>([\s\S]*?(?:V4UndoManager|reorderAllPins|v4Script)[\s\S]*?)<\/script>/i;
-    
-    if (hasInlinedScript) {
-        finalContent = finalContent.replace(/<script id="v4-inlined-script">[\s\S]*?<\/script>/i, scriptBlock);
-    } else if (legacyScriptRegex.test(finalContent)) {
-        finalContent = finalContent.replace(legacyScriptRegex, scriptBlock);
-    } else {
+        (window.v4Script || '') + '\n</script>';
+
+    // Forcefully strip out any existing inlined scripts of our engine to avoid duplicates or stale code
+    finalContent = finalContent.replace(/<script id="v4-inlined-script">[\s\S]*?<\/script>/gi, '');
+    finalContent = finalContent.replace(/<script[^>]*>([\s\S]*?(?:V4UndoManager|reorderAllPins|v4Script|v4ShortcutsScript)[\s\S]*?)<\/script>/gi, '');
+
+    // Inject the fresh script block right before </body>
+    if (finalContent.includes('</body>')) {
         finalContent = finalContent.replace('</body>', scriptBlock + '\n</body>');
+    } else {
+        finalContent += '\n' + scriptBlock;
     }
 
     // Auto-update Project Cover template metadata upon loading
