@@ -370,7 +370,7 @@ window.updateProperties = function(compStyles) {
             // Load content to Quill
             if (state.editingType === 'pin' && compStyles.html !== undefined && window.quillEditor) {
                 setTimeout(() => {
-                    window.quillEditor.root.innerHTML = compStyles.html;
+                    window.quillEditor.clipboard.dangerouslyPasteHTML(compStyles.html, 'silent');
                     console.log("[Inspector] Loaded HTML to Quill:", compStyles.html);
                 }, 50);
             } else if (state.editingType === 'shape' && window.quillEditor) {
@@ -387,7 +387,7 @@ window.updateProperties = function(compStyles) {
                     // Prevent Quill focus hijacking
                     const wasQuillFocused = document.activeElement === window.quillEditor.root;
                     
-                    window.quillEditor.root.innerHTML = cleanHtml;
+                    window.quillEditor.clipboard.dangerouslyPasteHTML(cleanHtml, 'silent');
                     
                     if (wasQuillFocused) {
                         window.quillEditor.setSelection(0, 0);
@@ -1250,7 +1250,7 @@ if (window.MessageHub) {
             
             const wasQuillFocused = document.activeElement === window.quillEditor.root;
             
-            window.quillEditor.root.innerHTML = cleanHtml;
+            window.quillEditor.clipboard.dangerouslyPasteHTML(cleanHtml, 'silent');
             
             if (wasQuillFocused) {
                 window.quillEditor.setSelection(0, 0);
