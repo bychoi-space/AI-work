@@ -181,6 +181,14 @@ window.v4ShortcutsScript = `
                 return;
             }
         }
+        if ((e.ctrlKey || e.metaKey) && isV) {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                e.preventDefault();
+                window.pasteCopiedObjects();
+                return;
+            }
+        }
 
         if ((e.ctrlKey || e.metaKey) && isG) {
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
