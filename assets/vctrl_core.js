@@ -120,8 +120,13 @@ window.loadScreen = async function(fileName) {
         (window.v4DesignSystemScript || '') + '\n' + 
         (window.v4ShortcutsScript || '') + '\n' + 
         window.v4Script + '\n</script>';
-    if (finalContent.includes('id="v4-inlined-script"')) {
+    const hasInlinedScript = finalContent.includes('id="v4-inlined-script"');
+    const legacyScriptRegex = /<script(?![^>]*id="v4-inlined-script")>([\s\S]*?(?:V4UndoManager|reorderAllPins|v4Script)[\s\S]*?)<\/script>/i;
+    
+    if (hasInlinedScript) {
         finalContent = finalContent.replace(/<script id="v4-inlined-script">[\s\S]*?<\/script>/i, scriptBlock);
+    } else if (legacyScriptRegex.test(finalContent)) {
+        finalContent = finalContent.replace(legacyScriptRegex, scriptBlock);
     } else {
         finalContent = finalContent.replace('</body>', scriptBlock + '\n</body>');
     }
@@ -366,6 +371,12 @@ window.insertAtomicComponent = function(type, name) {
             contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
         } else if (name === 'Share Premium') {
             contentHtml = `<div class="lf-icon" style="width:100%; height:100%; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 8px; box-sizing: border-box; background-origin: content-box; background-clip: content-box; pointer-events: none;"></div>`;
+        } else if (name === 'Logout') {
+            contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%; padding:8px; box-sizing:border-box;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>`;
+        } else if (name === 'Login') {
+            contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%; padding:8px; box-sizing:border-box;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="10 17 5 12 10 7"></polyline><line x1="21" y1="12" x2="5" y2="12"></line></svg>`;
+        } else if (name === 'Sign Up') {
+            contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%; padding:8px; box-sizing:border-box;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="17" y1="11" x2="23" y2="11"></line></svg>`;
         } else if (name.startsWith('Cust ')) {
             const iconClass = 'lf-' + name.toLowerCase().replace(' ', '-');
             contentHtml = `<div class="lf-icon ${iconClass}"></div>`;
@@ -376,7 +387,7 @@ window.insertAtomicComponent = function(type, name) {
             const iconClass = name.toLowerCase().split(' ')[0];
             contentHtml = `<div class="lf-icon lf-icon-${iconClass}" style="filter: brightness(0);"></div>`;
         }
-        defaultStyle = { width: '40px', height: '40px' };
+        defaultStyle = { width: '40px', height: '40px', color: '#000000' };
     }
 
     if (DOM.iframe && DOM.iframe.contentWindow && window.MessageHub) {
@@ -1088,8 +1099,24 @@ window.init = async function() {
 
         // Shortcuts & Key Event Proxying to Canvas Iframe
         window.addEventListener('keydown', (e) => {
+            const isF2 = e.key === 'F2' || e.code === 'F2';
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (isInput) return;
+            
+            if (isInput && !isF2) return;
+
+            if (isF2) {
+                e.preventDefault();
+                console.log("[VCTRL CORE] F2 key down detected in parent window. isInput:", isInput);
+                if (isInput) {
+                    // Blur the parent editor/input and focus the canvas iframe
+                    e.target.blur();
+                    const DOM = window.DOM || {};
+                    if (DOM.iframe && DOM.iframe.contentWindow) {
+                        DOM.iframe.contentWindow.focus();
+                    }
+                    return;
+                }
+            }
 
             const isS = e.key.toLowerCase() === 's' || e.code === 'KeyS';
             if ((e.ctrlKey || e.metaKey) && isS) { 
@@ -1110,26 +1137,29 @@ window.init = async function() {
             }
 
             // Proxy canvas shortcuts if we have active selections or targets
-            const proxiedCodes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Delete', 'Backspace', 'Space'];
+            const proxiedCodes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Delete', 'Backspace', 'Space', 'F2'];
             
             const isC = e.key.toLowerCase() === 'c' || e.code === 'KeyC';
             const isV = e.key.toLowerCase() === 'v' || e.code === 'KeyV';
             const isG = e.key.toLowerCase() === 'g' || e.code === 'KeyG';
             const isCtrlShortcut = (e.ctrlKey || e.metaKey) && (isC || isV || isG);
             
-            if (proxiedCodes.includes(e.code) || isCtrlShortcut) {
+            if (proxiedCodes.includes(e.code) || isF2 || isCtrlShortcut) {
+                if (isF2) {
+                    console.log("[VCTRL CORE] F2 key down detected in parent window, proxying to iframe...");
+                }
                 if (DOM.iframe && DOM.iframe.contentWindow) {
                     DOM.iframe.contentWindow.postMessage({
                         type: 'LF_SHORTCUT_KEY_PROXY',
-                        code: e.code,
-                        key: e.key,
+                        code: e.code || 'F2',
+                        key: e.key || 'F2',
                         shiftKey: e.shiftKey,
                         ctrlKey: e.ctrlKey,
                         metaKey: e.metaKey
                     }, '*');
                     
-                    // Prevent default browser behaviors for layout movement keys and ctrl shortcuts
-                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Backspace', 'Space'].includes(e.code) || isCtrlShortcut) {
+                    // Prevent default browser behaviors for layout movement keys, F2, and ctrl shortcuts
+                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Backspace', 'Space', 'F2'].includes(e.code) || isF2 || isCtrlShortcut) {
                         e.preventDefault();
                     }
                 }

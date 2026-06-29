@@ -73,6 +73,8 @@
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value]::before {
   content: attr(data-value) !important;
 }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="8px"]::before { content: '8'; }
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="10px"]::before { content: '10'; }
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before { content: '12'; }
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before { content: '14'; }
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before { content: '16'; }

@@ -318,8 +318,10 @@ window.updateProperties = function(compStyles) {
 
             if (state.editingType === 'shape') {
                 if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'block';
-                // Shape도 CONTENT EDITOR 공유 사용
-                if (DOM.textPropSection) DOM.textPropSection.style.display = 'block';
+                // Shape도 CONTENT EDITOR 공유 사용 (단, 이미지 도형인 경우 텍스트 편집기 표시 제외)
+                if (DOM.textPropSection && !compStyles.isImage) {
+                    DOM.textPropSection.style.display = 'block';
+                }
             } else if (state.editingType === 'table') {
                 if (DOM.tablePropSection) DOM.tablePropSection.style.display = 'block';
             } else if (state.editingType === 'line') {
@@ -382,7 +384,22 @@ window.updateProperties = function(compStyles) {
                 // 초기 로드 중에는 text-change → LF_UPDATE_SHAPE_TEXT 루프를 방지
                 state._isLoadingShapeContent = true;
                 setTimeout(() => {
+                    // Prevent Quill focus hijacking
+                    const wasQuillFocused = document.activeElement === window.quillEditor.root;
+                    
                     window.quillEditor.root.innerHTML = cleanHtml;
+                    
+                    if (wasQuillFocused) {
+                        window.quillEditor.setSelection(0, 0);
+                    } else {
+                        // Clear Quill selection/focus and restore focus back to the iframe
+                        window.quillEditor.setSelection(null);
+                        const iframe = document.getElementById('main-iframe');
+                        if (iframe && iframe.contentWindow) {
+                            iframe.contentWindow.focus();
+                        }
+                    }
+                    
                     console.log("[Inspector] Loaded Shape HTML to Quill:", cleanHtml);
                     // 다음 틱에 가드 해제 (text-change가 먼저 발사된 후 해제)
                     requestAnimationFrame(() => {
@@ -405,7 +422,7 @@ window.updateProperties = function(compStyles) {
                 floatingBody.appendChild(selectionBar);
             }
             const sections = [
-                DOM.textPropSection, DOM.tablePropSection, DOM.shapePropSection,
+                DOM.shapePropSection, DOM.textPropSection, DOM.tablePropSection,
                 DOM.linePropSection, DOM.iconPropSection, DOM.checkboxRadioPropSection,
                 DOM.textboxTextareaPropSection, DOM.stepperPropSection, DOM.selectboxPropSection,
                 DOM.fileuploadPropSection, DOM.alertPropSection, DOM.buttonPropSection,

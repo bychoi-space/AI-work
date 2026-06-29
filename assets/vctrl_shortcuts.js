@@ -53,6 +53,7 @@ window.v4ShortcutsScript = `
 
     window.copySelectedObjects = () => {
         const selected = document.querySelectorAll('.lf-component.selected');
+        console.log("[Clipboard Debug] copySelectedObjects running. Selected elements count:", selected.length);
         if (selected.length === 0) return;
         const topLevelSelected = Array.from(selected).filter(el => {
             let parent = el.parentElement;
@@ -66,9 +67,15 @@ window.v4ShortcutsScript = `
         });
         const clipboardData = [];
         topLevelSelected.forEach(el => {
+            // Clean up 'selected' and 'dragging-now' classes safely without regex escape issues
+            const cleanClasses = el.className.split(' ')
+                .map(c => c.trim())
+                .filter(c => c && c !== 'selected' && c !== 'dragging-now')
+                .join(' ');
+
             clipboardData.push({
                 html: el.innerHTML,
-                className: el.className.replace(/\\bselected\\b/g, '').replace(/\\bdragging-now\\b/g, '').trim(),
+                className: cleanClasses,
                 styleCssText: el.style.cssText,
                 left: parseFloat(el.style.left) || 0,
                 top: parseFloat(el.style.top) || 0,
@@ -78,28 +85,17 @@ window.v4ShortcutsScript = `
             });
         });
         v4Clipboard = clipboardData;
-        try {
-            if (window.top) {
-                window.top.__lf_global_clipboard__ = clipboardData;
-            }
-        } catch (err) {
-            console.error("[V4 Iframe] Failed to save clipboard to window.top:", err);
-        }
-        console.log("[V4 Iframe] Copied " + clipboardData.length + " object(s) to window.top global clipboard.");
+        notifyParent({
+            type: 'LF_SAVE_CLIPBOARD',
+            clipboard: clipboardData
+        });
+        console.log("[Clipboard Debug] Copied " + clipboardData.length + " object(s). Notifying parent with LF_SAVE_CLIPBOARD.");
     };
 
-    window.pasteCopiedObjects = () => {
-        let clipboardData = v4Clipboard;
-        try {
-            if (window.top && window.top.__lf_global_clipboard__) {
-                clipboardData = window.top.__lf_global_clipboard__;
-            }
-        } catch (err) {
-            console.warn("[V4 Iframe] Failed to load clipboard from window.top:", err);
-        }
-        
+    window.pasteCopiedObjectsFromData = (clipboardData) => {
+        console.log("[Clipboard Debug] pasteCopiedObjectsFromData running. Items to paste:", clipboardData ? clipboardData.length : 0);
         if (!clipboardData || clipboardData.length === 0) {
-            console.log("[V4 Iframe] Clipboard is empty.");
+            console.log("[Clipboard Debug] Clipboard is empty.");
             return;
         }
 
@@ -141,14 +137,56 @@ window.v4ShortcutsScript = `
             }
         }
         markDirty();
-        console.log("[V4 Iframe] Pasted " + clipboardData.length + " object(s) from clipboard.");
+        console.log("[Clipboard Debug] Pasted " + clipboardData.length + " object(s) successfully.");
+    };
+
+    window.pasteCopiedObjects = () => {
+        console.log("[Clipboard Debug] pasteCopiedObjects calling LF_REQUEST_CLIPBOARD to parent.");
+        notifyParent({ type: 'LF_REQUEST_CLIPBOARD' });
     };
 
     document.addEventListener('keydown', e => {
-        const isS = e.key.toLowerCase() === 's' || e.code === 'KeyS';
-        const isC = e.key.toLowerCase() === 'c' || e.code === 'KeyC';
-        const isV = e.key.toLowerCase() === 'v' || e.code === 'KeyV';
-        const isG = e.key.toLowerCase() === 'g' || e.code === 'KeyG';
+        if (e.key === 'F2' || e.code === 'F2') {
+            console.log("[VCTRL SHORTCUTS] keydown F2 detected! Selected elements count:", document.querySelectorAll('.lf-component.selected').length);
+            e.preventDefault();
+            const selected = document.querySelectorAll('.lf-component.selected');
+            const activeElement = document.activeElement;
+            const isEditing = activeElement && (activeElement.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName));
+            console.log("[VCTRL SHORTCUTS] isEditing:", isEditing, "activeElement:", activeElement);
+
+            if (isEditing) {
+                console.log("[VCTRL SHORTCUTS] Blur activeElement and focus body.");
+                activeElement.blur();
+                document.body.focus();
+            } else if (selected.length > 0) {
+                const targetComp = selected[0];
+                console.log("[VCTRL SHORTCUTS] Selected component ID:", targetComp.id);
+                const editable = (targetComp.isContentEditable || targetComp.classList.contains('v4-editable-cell'))
+                    ? targetComp
+                    : targetComp.querySelector('.v4-editable-cell, [contenteditable="true"], input, textarea');
+                console.log("[VCTRL SHORTCUTS] Found editable element:", editable);
+                if (editable) {
+                    window.focus(); // Force focus to iframe window
+                    editable.focus();
+                    if (editable.isContentEditable) {
+                        const range = document.createRange();
+                        const sel = window.getSelection();
+                        range.selectNodeContents(editable);
+                        range.collapse(false);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    } else if (typeof editable.select === 'function') {
+                        editable.select();
+                    }
+                }
+            }
+            return;
+        }
+
+        const isS = e.key === 's' || e.key === 'S' || e.code === 'KeyS';
+        const isC = e.key === 'c' || e.key === 'C' || e.code === 'KeyC';
+        const isV = e.key === 'v' || e.key === 'V' || e.code === 'KeyV';
+        const isG = e.key === 'g' || e.key === 'G' || e.code === 'KeyG';
 
         if ((e.ctrlKey || e.metaKey) && isS) {
             e.preventDefault();
@@ -163,14 +201,7 @@ window.v4ShortcutsScript = `
                 return;
             }
         }
-        if ((e.ctrlKey || e.metaKey) && isV) {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                e.preventDefault();
-                window.pasteCopiedObjects();
-                return;
-            }
-        }
+
         if ((e.ctrlKey || e.metaKey) && isG) {
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
             if (!isInput) {
@@ -278,7 +309,6 @@ window.v4ShortcutsScript = `
             }
         }
     });
-
     document.addEventListener('keyup', e => {
         if (e.code === 'Space') {
             notifyParent({ type: 'LF_SPACE_UP' });
@@ -288,8 +318,43 @@ window.v4ShortcutsScript = `
         }
     });
 
+    document.addEventListener('paste', e => {
+        const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+        if (isInput) return; // Allow default text paste in inputs
+
+        const items = (e.clipboardData || window.clipboardData).items;
+        let hasImage = false;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') !== -1) {
+                console.log("[Clipboard Debug] Image detected in paste event.");
+                hasImage = true;
+                const file = items[i].getAsFile();
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    notifyParent({
+                        type: 'LF_INSERT_IMAGE_COMP',
+                        base64: evt.target.result
+                    });
+                };
+                reader.readAsDataURL(file);
+                e.preventDefault();
+                break;
+            }
+        }
+        if (!hasImage) {
+            console.log("[Clipboard Debug] No image in paste event, requesting copied components from parent.");
+            e.preventDefault();
+            window.pasteCopiedObjects();
+        }
+    });
+
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
+        if (d.type === 'LF_RESPONSE_CLIPBOARD') {
+            console.log("[Clipboard Debug] Iframe received LF_RESPONSE_CLIPBOARD with items:", d.clipboard);
+            window.pasteCopiedObjectsFromData(d.clipboard);
+            return;
+        }
         if (d.type === 'LF_SHORTCUT_KEY_PROXY') {
             const isCtrl = !!d.ctrlKey || !!d.metaKey;
             const keyChar = (d.key || "").toLowerCase();

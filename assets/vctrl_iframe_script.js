@@ -601,18 +601,24 @@ window.v4Script = `
             startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; 
             e.preventDefault(); 
         }
-        else if (h || (c && !e.target.closest('.v4-editable-cell'))) { 
+        else if (h || c) { 
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             isDragging = true; activeEl = c; 
             startX = e.clientX; startY = e.clientY; 
             startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
             startRect = activeEl.getBoundingClientRect();
             notifyParent({ type: 'LF_SNAP_START' });
-            if (h) e.preventDefault(); 
+            if (h || e.target.closest('.v4-editable-cell')) e.preventDefault(); 
             document.querySelectorAll('.lf-component.selected').forEach(s => s.classList.add('dragging-now'));
-        } else if (e.target.closest('.v4-editable-cell')) {
+        }
+    });
+
+    // Double click to enter text editing mode (PPT-style)
+    document.addEventListener('dblclick', e => {
+        const editable = e.target.closest('.v4-editable-cell');
+        if (editable) {
             if (window.V4UndoManager) window.V4UndoManager.saveState();
-            e.target.closest('.v4-editable-cell').focus();
+            editable.focus();
         }
     });
 
@@ -1966,6 +1972,14 @@ window.v4Script = `
             const comps = ids.map(id => doc.getElementById(id)).filter(el => el && !el.classList.contains('connector-line'));
             if (comps.length < 2) return;
 
+            // Sort comps based on their current DOM order to preserve relative layering inside the group
+            comps.sort((a, b) => {
+                const position = a.compareDocumentPosition(b);
+                if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+                if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+                return 0;
+            });
+
             let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
             const items = comps.map(c => {
                 const l = parseFloat(c.style.left) || 0;
@@ -1999,7 +2013,10 @@ window.v4Script = `
             group.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
                               '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
 
-            host.appendChild(group);
+            // Insert the group exactly before the first selected component in the DOM
+            // to preserve the overall layering position of the grouped items relative to other page elements.
+            const firstComp = comps[0];
+            firstComp.parentNode.insertBefore(group, firstComp);
 
             items.forEach(item => {
                 item.el.style.left = (item.l - minX) + 'px';
@@ -2051,7 +2068,8 @@ window.v4Script = `
                 }
                 c.classList.add('selected');
                 newIds.push(c.id);
-                host.appendChild(c);
+                // Insert child back into the DOM exactly where the group container was
+                group.parentNode.insertBefore(c, group);
             });
 
             group.remove();

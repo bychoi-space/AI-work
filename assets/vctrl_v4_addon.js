@@ -7,16 +7,21 @@
 (function() {
     console.log("%c [V4 ADDON LOADED] ", "background: #6366f1; color: #fff; font-weight: bold; padding: 4px; border-radius: 4px;");
 
-    const iframe = document.getElementById('main-iframe');
-    
     function notifyIframe(data) {
-        if (iframe && iframe.contentWindow) {
-            iframe.contentWindow.postMessage(data, '*');
+        const activeIframe = document.getElementById('main-iframe');
+        if (activeIframe && activeIframe.contentWindow) {
+            activeIframe.contentWindow.postMessage(data, '*');
+        } else {
+            console.warn("[V4 Addon] notifyIframe failed: activeIframe or contentWindow not found.");
         }
     }
 
     // 1. Component Insertion
     window.insertV4ComponentById = function(id, customIdx) {
+        if (id === 'v4-atom-image') {
+            triggerImageFileUpload();
+            return;
+        }
         const lib = window.V4_COMPONENT_LIBRARY;
         if (!lib) return console.error("[V4] Component Library not found.");
 
@@ -90,6 +95,60 @@
             style: style,
             className: isDescriptionPin ? 'pin-marker' : (isTextTool ? 'v4-text-box' : ''),
             isGroup: !!item.isGroup
+        });
+    };
+
+    function triggerImageFileUpload() {
+        let input = document.getElementById('v4-image-file-input');
+        if (!input) {
+            input = document.createElement('input');
+            input.id = 'v4-image-file-input';
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.style.display = 'none';
+            document.body.appendChild(input);
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const base64 = evt.target.result;
+                    const img = new Image();
+                    img.onload = function() {
+                        let w = img.naturalWidth || 200;
+                        let h = img.naturalHeight || 200;
+                        const maxBound = 300;
+                        if (w > maxBound || h > maxBound) {
+                            const ratio = Math.min(maxBound / w, maxBound / h);
+                            w = Math.round(w * ratio);
+                            h = Math.round(h * ratio);
+                        }
+                        window.insertImageComponent(base64, w + 'px', h + 'px');
+                    };
+                    img.src = base64;
+                };
+                reader.readAsDataURL(file);
+                input.value = '';
+            });
+        }
+        input.click();
+    }
+
+    window.insertImageComponent = function(base64, width, height) {
+        const targetId = 'v4-img-' + Date.now();
+        const html = '<div class="v4-shape v4-shape-image" style="width: 100%; height: 100%; background-image: url(\'' + base64 + '\'); background-size: contain; background-position: center; background-repeat: no-repeat; box-sizing: border-box; border: 1.6px solid transparent; background-color: transparent !important;"></div>';
+        const finalW = width || '200px';
+        const finalH = height || '200px';
+        const style = {
+            width: finalW,
+            height: finalH
+        };
+        notifyIframe({
+            type: 'LF_INSERT_COMPONENT',
+            id: targetId,
+            html: html,
+            style: style,
+            className: ''
         });
     };
 
@@ -694,6 +753,35 @@
             if (typeof window.handleGlobalSave === 'function') {
                 window.handleGlobalSave();
             }
+        }
+        else if (data.type === 'LF_INSERT_IMAGE_COMP') {
+            const base64 = data.base64;
+            const img = new Image();
+            img.onload = function() {
+                let w = img.naturalWidth || 200;
+                let h = img.naturalHeight || 200;
+                const maxBound = 300;
+                if (w > maxBound || h > maxBound) {
+                    const ratio = Math.min(maxBound / w, maxBound / h);
+                    w = Math.round(w * ratio);
+                    h = Math.round(h * ratio);
+                }
+                if (typeof window.insertImageComponent === 'function') {
+                    window.insertImageComponent(base64, w + 'px', h + 'px');
+                }
+            };
+            img.src = base64;
+        }
+        else if (data.type === 'LF_SAVE_CLIPBOARD') {
+            console.log("[Clipboard Debug] Parent saved clipboard data from iframe:", data.clipboard);
+            window.__lf_global_clipboard__ = data.clipboard;
+        }
+        else if (data.type === 'LF_REQUEST_CLIPBOARD') {
+            console.log("[Clipboard Debug] Parent received request for clipboard. Stored data:", window.__lf_global_clipboard__);
+            notifyIframe({
+                type: 'LF_RESPONSE_CLIPBOARD',
+                clipboard: window.__lf_global_clipboard__ || []
+            });
         }
     });
 
@@ -1674,5 +1762,39 @@
         }
     };
     initGridEvents();
+
+    // Parent-side paste event listener for handling pasted image files when parent has focus
+    window.addEventListener('paste', function(e) {
+        const activeEl = document.activeElement;
+        const isInput = activeEl && (activeEl.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeEl.tagName) || activeEl.closest('.ql-editor'));
+        if (isInput) return; // Allow normal input paste
+
+        const items = (e.clipboardData || window.clipboardData).items;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') !== -1) {
+                const file = items[i].getAsFile();
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const base64 = evt.target.result;
+                    const img = new Image();
+                    img.onload = function() {
+                        let w = img.naturalWidth || 200;
+                        let h = img.naturalHeight || 200;
+                        const maxBound = 300;
+                        if (w > maxBound || h > maxBound) {
+                            const ratio = Math.min(maxBound / w, maxBound / h);
+                            w = Math.round(w * ratio);
+                            h = Math.round(h * ratio);
+                        }
+                        window.insertImageComponent(base64, w + 'px', h + 'px');
+                    };
+                    img.src = base64;
+                };
+                reader.readAsDataURL(file);
+                e.preventDefault();
+                break;
+            }
+        }
+    });
 
 })();

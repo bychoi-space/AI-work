@@ -169,6 +169,14 @@ window.V4_COMPONENT_LIBRARY = {
                     <button class="v4-dp-preset-btn" data-preset="all" style="height: 30px; min-width: 36px; padding: 0 12px; border: 1.6px solid #cccccc; border-radius: 8px; background: #ffffff; color: #374151; font-size: 12px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">&#51204;&#52404;</button>
                 </div>
             </div>`
+        },
+        {
+            id: 'v4-atom-image',
+            name: 'Image',
+            koName: '이미지 업로드 첨부',
+            category: 'Atoms',
+            previewHtml: `<span class="material-icons-outlined" style="font-size: 20px; color: #a3a3a3;">image</span>`,
+            html: `<div class="v4-shape v4-shape-image" style="width: 100%; height: 100%; background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23cbd5e1%22 stroke-width=%221.6%22><rect width=%2220%22 height=%2220%22 x=%222%22 y=%222%22 rx=%222%22 ry=%222%22/><circle cx=%228.5%22 cy=%228.5%22 r=%221.5%22/><path d=%22M21 15l-5-5L5 21%22/></svg>'); background-size: contain; background-position: center; background-repeat: no-repeat; box-sizing: border-box; border: 1.6px solid transparent;"></div>`
         }
     ],
     molecules: [
@@ -187,6 +195,7 @@ window.V4_COMPONENT_LIBRARY = {
         {
             id: 'v4-tool-text',
             name: 'Text',
+            koName: '텍스트 글상자',
             category: 'Shapes',
             isTool: true,
             toolName: 'text',
@@ -198,6 +207,7 @@ window.V4_COMPONENT_LIBRARY = {
         {
             id: 'v4-data-table',
             name: 'Table',
+            koName: '표 테이블',
             category: 'Shapes',
             icon: 'table_chart',
             iconColor: '#818cf8',
@@ -222,6 +232,7 @@ window.V4_COMPONENT_LIBRARY = {
         {
             id: 'v4-shape-rect',
             name: 'Rect',
+            koName: '사각형 사각도형',
             category: 'Shapes',
             icon: 'crop_square',
             iconColor: '#00e5ff',
@@ -235,6 +246,7 @@ window.V4_COMPONENT_LIBRARY = {
         {
             id: 'v4-shape-circle',
             name: 'Circle',
+            koName: '원 원형 동그라미',
             category: 'Shapes',
             icon: 'panorama_fish_eye',
             iconColor: '#00e5ff',
@@ -248,6 +260,7 @@ window.V4_COMPONENT_LIBRARY = {
         {
             id: 'v4-shape-triangle',
             name: 'Triangle',
+            koName: '삼각형 삼각 세모',
             category: 'Shapes',
             icon: 'change_history',
             iconColor: '#00e5ff',
@@ -264,6 +277,7 @@ window.V4_COMPONENT_LIBRARY = {
         {
             id: 'v4-shape-diamond',
             name: 'Diamond',
+            koName: '다이아몬드 마름모 조건 의사결정',
             category: 'Shapes',
             icon: 'crop_square',
             iconColor: '#00e5ff',
@@ -281,6 +295,7 @@ window.V4_COMPONENT_LIBRARY = {
         {
             id: 'v4-connector-straight',
             name: 'Line (Straight)',
+            koName: '직선 화살표 선 커넥터',
             category: 'Shapes',
             iconType: 'svg',
             iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>',
@@ -291,6 +306,7 @@ window.V4_COMPONENT_LIBRARY = {
         {
             id: 'v4-connector-elbow',
             name: 'Line (Elbow)',
+            koName: '꺾인선 화살표 선 커넥터',
             category: 'Shapes',
             iconType: 'svg',
             iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="9 10 9 19 18 19"></polyline><polyline points="14 14 19 19 14 24"></polyline></svg>',
@@ -301,6 +317,7 @@ window.V4_COMPONENT_LIBRARY = {
         {
             id: 'v4-shape-pattern-grid',
             name: 'Pattern',
+            koName: '패턴 격자 그리드 모눈종이',
             category: 'Shapes',
             icon: 'grid_4x4',
             iconColor: '#fff',
@@ -314,6 +331,7 @@ window.V4_COMPONENT_LIBRARY = {
         {
             id: 'v4-shape-wave',
             name: 'Wave',
+            koName: '물결 웨이브 파도 구분선',
             category: 'Shapes',
             icon: 'waves',
             iconColor: '#fb923c',
