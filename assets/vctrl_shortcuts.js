@@ -155,9 +155,9 @@ window.v4ShortcutsScript = `
             console.log("[VCTRL SHORTCUTS] isEditing:", isEditing, "activeElement:", activeElement);
 
             if (isEditing) {
-                console.log("[VCTRL SHORTCUTS] Blur activeElement and focus body.");
+                console.log("[VCTRL SHORTCUTS] Blurring iframe text editing and focusing parent Quill editor.");
                 activeElement.blur();
-                document.body.focus();
+                notifyParent({ type: 'LF_FOCUS_PARENT_QUILL' });
             } else if (selected.length > 0) {
                 const targetComp = selected[0];
                 console.log("[VCTRL SHORTCUTS] Selected component ID:", targetComp.id);

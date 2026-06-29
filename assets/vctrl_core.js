@@ -608,7 +608,14 @@ window.MessageHub = {
             }
 
             // Internal engine hooks
-            if (data.type === 'LF_SNAP_START') {
+            if (data.type === 'LF_FOCUS_PARENT_QUILL') {
+                if (window.quillEditor) {
+                    window.quillEditor.focus();
+                    // Put cursor at the end of the text
+                    const length = window.quillEditor.getLength();
+                    window.quillEditor.setSelection(length, 0);
+                }
+            } else if (data.type === 'LF_SNAP_START') {
                 if (window.SmartGuide) window.SmartGuide.findSnapTargets();
             } else if (data.type === 'LF_SNAP_REQUEST') {
                 const DOM = window.DOM;
