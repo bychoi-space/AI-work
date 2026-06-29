@@ -1223,7 +1223,10 @@ window.initQuillEditor = function() {
         } else {
             const iframe = document.getElementById('main-iframe');
             if (iframe && iframe.contentWindow) {
-                MessageHub.send(iframe.contentWindow, 'LF_UPDATE_STYLE', { selector: '.v4-editable-cell', style: { html: html } });
+                MessageHub.send(iframe.contentWindow, 'LF_UPDATE_PIN_CONTENT', { 
+                    id: state.editingIndex,
+                    html: html
+                });
                 markAsDirty();
             }
         }

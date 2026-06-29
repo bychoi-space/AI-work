@@ -1072,9 +1072,9 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_PIN_CONTENT') {
-            const selected = document.querySelector('.lf-component.text-marker.selected');
-            if (selected) {
-                const cell = selected.querySelector('.v4-editable-cell');
+            const comp = (d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected');
+            if (comp) {
+                const cell = comp.querySelector('.v4-editable-cell') || (comp.classList.contains('v4-editable-cell') ? comp : null);
                 if (cell) {
                     if (window.V4UndoManager) window.V4UndoManager.saveState();
                     cell.innerHTML = d.html;
