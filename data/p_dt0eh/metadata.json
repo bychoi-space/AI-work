@@ -38,8 +38,10 @@
     "99_Blank_914.html": {
       "title": "99_Blank_914",
       "type": "blank",
-      "updatedAt": "2026-06-29T07:46:30.347Z",
-      "template": "template_blank.html"
+      "updatedAt": "2026-06-29T07:46:54.119Z",
+      "template": "template_blank.html",
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
@@ -47,5 +49,5 @@
   "period": "2026.06.29(월) ~ 2026.07.10(금)",
   "jira": "LFML-144209",
   "themeIndex": 4,
-  "updated": "2026-06-29 13:46:19"
+  "updated": "2026-06-29 16:46:54"
 }
