@@ -147,38 +147,18 @@ window.v4ShortcutsScript = `
 
     document.addEventListener('keydown', e => {
         if (e.key === 'F2' || e.code === 'F2') {
-            console.log("[VCTRL SHORTCUTS] keydown F2 detected! Selected elements count:", document.querySelectorAll('.lf-component.selected').length);
             e.preventDefault();
             const selected = document.querySelectorAll('.lf-component.selected');
             const activeElement = document.activeElement;
             const isEditing = activeElement && (activeElement.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName));
-            console.log("[VCTRL SHORTCUTS] isEditing:", isEditing, "activeElement:", activeElement);
 
-            if (isEditing) {
-                console.log("[VCTRL SHORTCUTS] Blurring iframe text editing and focusing parent Quill editor.");
-                activeElement.blur();
-                notifyParent({ type: 'LF_FOCUS_PARENT_QUILL' });
-            } else if (selected.length > 0) {
-                const targetComp = selected[0];
-                console.log("[VCTRL SHORTCUTS] Selected component ID:", targetComp.id);
-                const editable = (targetComp.isContentEditable || targetComp.classList.contains('v4-editable-cell'))
-                    ? targetComp
-                    : targetComp.querySelector('.v4-editable-cell, [contenteditable="true"], input, textarea');
-                console.log("[VCTRL SHORTCUTS] Found editable element:", editable);
-                if (editable) {
-                    window.focus(); // Force focus to iframe window
-                    editable.focus();
-                    if (editable.isContentEditable) {
-                        const range = document.createRange();
-                        const sel = window.getSelection();
-                        range.selectNodeContents(editable);
-                        range.collapse(false);
-                        sel.removeAllRanges();
-                        sel.addRange(range);
-                    } else if (typeof editable.select === 'function') {
-                        editable.select();
-                    }
+            if (selected.length > 0) {
+                if (isEditing) {
+                    console.log("[VCTRL SHORTCUTS] Blurring iframe text editing.");
+                    activeElement.blur();
                 }
+                console.log("[VCTRL SHORTCUTS] Focusing parent Quill editor.");
+                notifyParent({ type: 'LF_FOCUS_PARENT_QUILL' });
             }
             return;
         }
