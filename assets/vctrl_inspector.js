@@ -1230,6 +1230,42 @@ window.initQuillEditor = function() {
     });
 };
 
+// Subscribe to direct iframe text changes to sync Quill editor in real-time
+if (window.MessageHub) {
+    MessageHub.subscribe('LF_PIN_TEXT_CHANGED', (data) => {
+        if (!state.isEditing || state.editingIndex === -1 || !window.quillEditor) return;
+        // Verify this update is for the currently active editing component
+        if (state.editingIndex === data.id) {
+            // Prevent feedback loop: tell the Quill change listener that we are programmatically updating the text
+            state._isLoadingShapeContent = true;
+            
+            const rawHtml = data.html || '';
+            let cleanHtml = rawHtml;
+            if (data.isShape) {
+                const parser = new DOMParser();
+                const parsed = parser.parseFromString(rawHtml, 'text/html');
+                const textContent = parsed.querySelector('.v4-shape-text-content') || parsed.querySelector('.v4-shape-text-overlay');
+                cleanHtml = textContent ? textContent.innerHTML : rawHtml;
+            }
+            
+            const wasQuillFocused = document.activeElement === window.quillEditor.root;
+            
+            window.quillEditor.root.innerHTML = cleanHtml;
+            
+            if (wasQuillFocused) {
+                window.quillEditor.setSelection(0, 0);
+            } else {
+                window.quillEditor.setSelection(null);
+            }
+            
+            // Release the lock on the next animation frame
+            requestAnimationFrame(() => {
+                state._isLoadingShapeContent = false;
+            });
+        }
+    });
+}
+
 window.handleEditScreen = async function(fileName) {
     const state = window.state || {};
     const DOM = window.DOM || {};
