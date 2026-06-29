@@ -157,20 +157,6 @@ window.V4_COMPONENT_LIBRARY = {
                     </div>
                     <div class="v4-dp-separator" style="color: var(--v4-placeholder-color, #9ca3af); font-size: 13px; padding: 0 2px; flex-shrink: 0; font-family: inherit;">-</div>
                     <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; gap: 6px; height: 100%;">
-        {
-            id: 'v4-atom-datepicker',
-            name: 'Date Picker',
-            category: 'Atoms',
-            previewHtml: `<div style="display:flex; align-items:center; background:var(--v4-component-bg, #ffffff); border:1.6px solid var(--v4-border-color, #cccccc); border-radius:4px; height:20px; padding:0 5px; font-size:7px; color:var(--v4-text-color, #374151); box-sizing:border-box; gap:3px; white-space:nowrap;"><span>26/05/18</span><span style="color:var(--v4-placeholder-color, #9ca3af);">&#9553;</span><span>-</span><span style="color:var(--v4-placeholder-color, #9ca3af);">&#9553;</span><span>26/06/18</span></div>`,
-            html: `
-            <div class="v4-datepicker-container" data-show-presets="true" data-show-end-date="true" data-default-preset="1M" data-start-date="" data-end-date="" style="position: relative; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; flex-wrap: nowrap; width: 100%; height: 100%;">
-                <div class="v4-dp-fields" style="display: inline-flex; align-items: center; gap: 0; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; overflow: hidden; box-sizing: border-box; flex-shrink: 0;">
-                    <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; gap: 6px; height: 100%;">
-                        <div class="v4-dp-date-field v4-dp-start v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;"></div>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    </div>
-                    <div class="v4-dp-separator" style="color: var(--v4-placeholder-color, #9ca3af); font-size: 13px; padding: 0 2px; flex-shrink: 0; font-family: inherit;">-</div>
-                    <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; gap: 6px; height: 100%;">
                         <div class="v4-dp-date-field v4-dp-end v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;"></div>
                         <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                     </div>
