@@ -723,12 +723,24 @@ window.v4Script = `
         if (e.target.classList.contains('v4-editable-cell')) {
             markDirty();
             const comp = e.target.closest('.lf-component');
-            if (comp && (comp.querySelector('.v4-checkbox-container') || comp.querySelector('.v4-radio-container'))) {
-                if (typeof window.resizeAtomToFitText === 'function') {
-                    window.resizeAtomToFitText(comp);
-                } else if (typeof window.enforceDesignSystem === 'function') {
-                    window.enforceDesignSystem();
+            if (comp) {
+                if (comp.querySelector('.v4-checkbox-container') || comp.querySelector('.v4-radio-container')) {
+                    if (typeof window.resizeAtomToFitText === 'function') {
+                        window.resizeAtomToFitText(comp);
+                    } else if (typeof window.enforceDesignSystem === 'function') {
+                        window.enforceDesignSystem();
+                    }
                 }
+                // Notify parent of text changes to sync the Quill editor in real-time
+                const isPin = comp.classList.contains('text-marker') || comp.classList.contains('pin-marker') || comp.classList.contains('v4-text-box');
+                const isShape = !!comp.querySelector('.v4-shape');
+                notifyParent({
+                    type: 'LF_PIN_TEXT_CHANGED',
+                    id: comp.id,
+                    html: e.target.innerHTML,
+                    isPin: isPin,
+                    isShape: isShape
+                });
             }
         } 
     });
