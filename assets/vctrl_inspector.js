@@ -1178,7 +1178,7 @@ window.initQuillEditor = function() {
     if (!container) return;
 
     const Size = Quill.import('attributors/style/size');
-    Size.whitelist = ['12px', '14px', '16px', '18px', '20px', '24px', '30px', '36px', '48px', '64px'];
+    Size.whitelist = ['8px', '10px', '12px', '14px', '16px', '18px', '20px', '24px', '30px', '36px', '48px', '64px'];
     Quill.register(Size, true);
     const Align = Quill.import('attributors/style/align');
     Quill.register(Align, true);
