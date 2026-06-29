@@ -67,7 +67,7 @@
 /* Quill Size Picker Numeric Labels */
 .ql-snow .ql-picker.ql-size .ql-picker-label::before,
 .ql-snow .ql-picker.ql-size .ql-picker-item::before {
-  content: '16px'; /* Default label */
+  content: '14px'; /* Default label */
 }
 .ql-snow .ql-picker.ql-size .ql-picker-label[data-value]::before,
 .ql-snow .ql-picker.ql-size .ql-picker-item[data-value]::before {
@@ -90,7 +90,7 @@
   content: attr(data-value) !important;
 }
 .ql-snow .ql-picker.ql-size .ql-picker-label:not([data-value])::before {
-  content: '16'; /* Default showing '16' when no size is explicitly set */
+  content: '14'; /* Default showing '14' when no size is explicitly set */
 }
 
 
