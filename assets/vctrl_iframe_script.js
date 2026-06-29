@@ -335,6 +335,7 @@ window.v4Script = `
         const accordionSubCount = accordionContainer ? (parseInt(accordionContainer.getAttribute('data-sub-count')) || 0) : 0;
         const accordionSubTexts = accordionContainer ? Array.from(accordionContainer.querySelectorAll('.v4-accordion-item')).map(item => item.innerText) : [];
         const accordionExpanded = accordionContainer ? accordionContainer.getAttribute('data-expanded') === 'true' : false;
+        const accordionItemHeight = accordionContainer ? parseInt(accordionContainer.getAttribute('data-item-height')) || (accordionContainer.querySelector('.v4-accordion-header') ? parseInt(accordionContainer.querySelector('.v4-accordion-header').style.height) || 36 : 36) : 36;
 
         // Grid UI Atom Detection
         const isGrid = isGroup ? false : (!!c.querySelector('.v4-grid-container') || c.classList.contains('v4-grid-container'));
@@ -468,6 +469,7 @@ window.v4Script = `
             accordionSubCount: accordionSubCount,
             accordionSubTexts: accordionSubTexts,
             accordionExpanded: accordionExpanded,
+            accordionItemHeight: accordionItemHeight,
             isGrid: isGrid,
             gridHeaders: gridHeaders,
             gridRowCount: gridRowCount,
@@ -1143,6 +1145,25 @@ window.v4Script = `
             if (container) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
                 
+                if (d.width !== undefined) {
+                    s.style.width = d.width + 'px';
+                    if (typeof window.updateHandles === 'function') window.updateHandles(s);
+                }
+                
+                if (d.itemHeight !== undefined) {
+                    container.setAttribute('data-item-height', d.itemHeight);
+                    const header = container.querySelector('.v4-accordion-header');
+                    if (header) {
+                        header.style.height = d.itemHeight + 'px';
+                    }
+                    container.querySelectorAll('.v4-accordion-item').forEach(item => {
+                        item.style.height = d.itemHeight + 'px';
+                        item.style.lineHeight = d.itemHeight + 'px';
+                        item.style.display = 'flex';
+                        item.style.alignItems = 'center';
+                    });
+                }
+                
                 if (d.headerText !== undefined) {
                     const titleText = container.querySelector('.v4-accordion-title-text');
                     if (titleText && titleText.innerText !== d.headerText) {
@@ -1164,6 +1185,7 @@ window.v4Script = `
                         const currentTexts = d.subTexts || existingItems.map(item => item.innerText);
                         
                         body.innerHTML = '';
+                        const currentItemHeight = parseInt(container.getAttribute('data-item-height')) || 36;
                         for (let i = 0; i < targetCount; i++) {
                             const itemText = currentTexts[i] !== undefined ? currentTexts[i] : "Sub Item " + (i + 1);
                             const isLast = (i === targetCount - 1);
@@ -1172,6 +1194,12 @@ window.v4Script = `
                             itemEl.className = 'v4-accordion-item v4-editable-cell';
                             itemEl.contentEditable = 'true';
                             itemEl.style.cssText = "padding:8px 12px; font-size:12px; color:#cccccc; font-family:'Inter',sans-serif; outline:none; -webkit-user-select:text; user-select:text;";
+                            if (currentItemHeight) {
+                                itemEl.style.height = currentItemHeight + 'px';
+                                itemEl.style.lineHeight = currentItemHeight + 'px';
+                                itemEl.style.display = 'flex';
+                                itemEl.style.alignItems = 'center';
+                            }
                             if (!isLast) {
                                 itemEl.style.borderBottom = '1.6px solid rgba(255,255,255,0.05)';
                             }

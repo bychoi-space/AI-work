@@ -744,6 +744,16 @@ function _syncAccordionProps(comp) {
     if (subCountInp && comp.accordionSubCount !== undefined) {
         subCountInp.value = comp.accordionSubCount;
     }
+
+    const widthInp = document.getElementById('prop-accordion-width');
+    if (widthInp && comp.w !== undefined) {
+        widthInp.value = comp.w;
+    }
+
+    const heightInp = document.getElementById('prop-accordion-height');
+    if (heightInp && comp.accordionItemHeight !== undefined) {
+        heightInp.value = comp.accordionItemHeight;
+    }
     
     const highlightActive = (btn, isActive) => {
         if (!btn) return;

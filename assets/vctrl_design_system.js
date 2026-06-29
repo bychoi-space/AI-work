@@ -244,6 +244,19 @@ window.v4DesignSystemScript = `
                 const body = accordion.querySelector('.v4-accordion-body');
                 const chevron = accordion.querySelector('.v4-accordion-chevron');
                 
+                const itemHeight = parseInt(accordion.getAttribute('data-item-height'));
+                if (itemHeight) {
+                    if (header) {
+                        header.style.height = itemHeight + 'px';
+                    }
+                    accordion.querySelectorAll('.v4-accordion-item').forEach(item => {
+                        item.style.height = itemHeight + 'px';
+                        item.style.lineHeight = itemHeight + 'px';
+                        item.style.display = 'flex';
+                        item.style.alignItems = 'center';
+                    });
+                }
+                
                 if (body) {
                     body.style.display = expanded ? 'flex' : 'none';
                 }

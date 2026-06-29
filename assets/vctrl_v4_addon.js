@@ -1596,6 +1596,26 @@
             };
         }
 
+        const widthInp = document.getElementById('prop-accordion-width');
+        if (widthInp) {
+            widthInp.oninput = () => {
+                const val = parseInt(widthInp.value);
+                if (!isNaN(val)) {
+                    notifyAccordion({ width: val });
+                }
+            };
+        }
+
+        const heightInp = document.getElementById('prop-accordion-height');
+        if (heightInp) {
+            heightInp.oninput = () => {
+                const val = parseInt(heightInp.value);
+                if (!isNaN(val)) {
+                    notifyAccordion({ itemHeight: val });
+                }
+            };
+        }
+
         if (headerTextInp) {
             headerTextInp.oninput = () => {
                 notifyAccordion({ headerText: headerTextInp.value });
