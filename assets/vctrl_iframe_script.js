@@ -253,7 +253,7 @@ window.v4Script = `
         const table = isGroup ? null : c.querySelector('table');
         const icon = isGroup ? null : (c.querySelector('.lf-icon') || c.querySelector('img'));
         const textCell = isGroup ? null : c.querySelector('.v4-editable-cell');
-        const isPin = isGroup ? false : (c.classList.contains('text-marker') || c.classList.contains('pin-marker'));
+        const isPin = isGroup ? false : (c.classList.contains('text-marker') || c.classList.contains('pin-marker') || c.classList.contains('v4-text-box'));
         const isImage = isGroup ? false : (shape ? shape.classList.contains('v4-shape-image') : (c.id === 'v4-atom-image' || c.classList.contains('v4-shape-image')));
         const isDescriptionPin = isGroup ? false : c.classList.contains('pin-marker');
         
