@@ -361,10 +361,10 @@ window.updateProperties = function(compStyles) {
                 _syncGridProps(compStyles);
             }
 
-            // CONTENT EDITOR 헤더 레이블 동적 변경
+            // CONTENT EDITOR 헤더 레이블 동적 변경 (통합 레이블 제공)
             const editorLabel = document.getElementById('content-editor-label');
             if (editorLabel) {
-                editorLabel.innerText = state.editingType === 'shape' ? 'SHAPE TEXT' : 'CONTENT EDITOR';
+                editorLabel.innerText = 'CONTENT EDITOR';
             }
 
             // Load content to Quill
