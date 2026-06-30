@@ -2,13 +2,15 @@
   "title": "결제혜택 - 관리기능 추가",
   "screens": {
     "00_Cover_753.html": {
-      "title": "00_Cover_753",
+      "title": "과제 커버",
       "type": "cover",
-      "updatedAt": "2026-06-26T06:11:01.834Z",
+      "updatedAt": "2026-06-30T00:30:42.265Z",
       "template": "template_cover.html",
       "version": 0.1,
       "description": [],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": ""
     },
     "06_Mobile_Design_2_148.html": {
       "title": "06_Mobile_Design_2_148",
