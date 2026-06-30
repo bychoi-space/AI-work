@@ -116,6 +116,12 @@ img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; o
 }
 /* Reset background for new SVG/Custom atoms to prevent sprite leakage */
 svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
+.v4-searchbar-text:empty::before {
+    content: attr(data-placeholder);
+    color: #94a3b8 !important;
+    pointer-events: none;
+    display: block;
+}
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
 .v4-stepper-container[data-disabled="true"] { pointer-events: none !important; }
 .v4-stepper-container[data-disabled="true"] .v4-stepper-control { background-color: #e5e7eb !important; border-color: #9ca3af !important; }
@@ -1531,6 +1537,14 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 return;
             }
         }
+        if ((e.ctrlKey || e.metaKey) && isV) {
+            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
+            if (!isInput) {
+                e.preventDefault();
+                window.pasteCopiedObjects();
+                return;
+            }
+        }
 
         if ((e.ctrlKey || e.metaKey) && isG) {
             const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
@@ -1793,6 +1807,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const maxLength = inputContainer ? (parseInt(inputContainer.getAttribute('data-maxlength')) || 100) : 100;
         const showCounter = inputContainer ? (inputContainer.getAttribute('data-show-counter') !== 'false') : false;
 
+        // Search Bar Atom Detection
+        const isSearchBar = isGroup ? false : (!!c.querySelector('.v4-searchbar-container') || c.classList.contains('v4-searchbar-container'));
+        const searchbarContainer = isGroup ? null : (c.querySelector('.v4-searchbar-container') || (isSearchBar ? c : null));
+        const searchbarPlaceholder = searchbarContainer ? (searchbarContainer.querySelector('.v4-searchbar-text')?.getAttribute('data-placeholder') || "원스피어 통합검색") : "원스피어 통합검색";
+
         // Stepper Atom Detection
         const isStepper = isGroup ? false : (!!c.querySelector('.v4-stepper-container') || c.classList.contains('v4-stepper-container'));
         const stepperContainer = isGroup ? null : (c.querySelector('.v4-stepper-container') || (isStepper ? c : null));
@@ -1897,6 +1916,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (boxEl) return _getVal(boxEl, "backgroundColor");
             if (buttonEl) return _getVal(buttonEl, "backgroundColor");
             if (inputContainer) return _getVal(inputContainer, "backgroundColor");
+            if (searchbarContainer) return _getVal(searchbarContainer, "backgroundColor");
             if (stepperContainer) return _getVal(stepperContainer, "backgroundColor");
             if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor");
             if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor");
@@ -1916,6 +1936,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (boxEl) return _getVal(boxEl, "borderColor");
             if (buttonEl) return _getVal(buttonEl, "borderColor");
             if (inputContainer) return _getVal(inputContainer, "borderColor");
+            if (searchbarContainer) return _getVal(searchbarContainer, "borderColor");
             if (stepperContainer) return _getVal(stepperContainer, "borderColor");
             if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor");
             if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor");
@@ -1948,6 +1969,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             placeholderText: placeholderText,
             maxLength: maxLength,
             showCounter: showCounter,
+            isSearchBar: isSearchBar,
+            searchbarPlaceholder: searchbarPlaceholder,
             isStepper: isStepper,
             minVal: minVal,
             maxVal: maxVal,
@@ -3134,6 +3157,27 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 markDirty();
             }
         }
+        else if (d.type === 'LF_UPDATE_SEARCHBAR_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-searchbar-container');
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                if (d.placeholderText !== undefined) {
+                    const textEl = container.querySelector('.v4-searchbar-text');
+                    if (textEl) {
+                        textEl.setAttribute('data-placeholder', d.placeholderText);
+                    }
+                }
+                markDirty();
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
+            }
+        }
         else if (d.type === 'LF_UPDATE_STYLE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -3147,6 +3191,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             
             const inputContainer = s.querySelector('.v4-textbox-container, .v4-textarea-container');
             if (inputContainer && !d.selector) t = inputContainer;
+            
+            const searchbarContainer = s.querySelector('.v4-searchbar-container');
+            if (searchbarContainer && !d.selector) t = searchbarContainer;
             
             const alertContainer = s.querySelector('.v4-alert-container');
             const alertDialog = alertContainer ? alertContainer.querySelector('.v4-alert-dialog') : null;
@@ -3821,4 +3868,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     window.initHandles();
 })();
 
-</script></body></html>
+</script>
+<div id="lf-comp-1782784813945" class="lf-component" style="position: absolute; top: 435px; left: 620px; z-index: 1000; transform: none; width: 200px; height: 30px;"><div class="v4-searchbar-container" data-placeholder="원스피어 통합검색" style="display:flex; align-items:center; justify-content:space-between; width:100%; height:100%; background:rgb(255, 255, 255); border:1.6px solid rgb(200, 200, 200); border-radius:9999px; padding:0 12px 0 16px; box-sizing:border-box; overflow:hidden; pointer-events:auto;"><div class="v4-searchbar-text v4-editable-cell" contenteditable="true" style="flex:1; border:none; outline:none; background:transparent; font-size:13px; color:#000000; font-family:'Inter',sans-serif; min-width:0; padding:0; line-height:1.2; -webkit-user-select:text; user-select:text; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;" data-placeholder="원스피어 통합검색23"></div><div class="v4-searchbar-icon-wrap" style="display:flex; align-items:center; justify-content:center; width:20px; height:20px; flex-shrink:0; margin-left:8px; pointer-events:none;"><svg viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%; background-image:none !important;"><circle cx="11" cy="11" r="8" stroke-width="1.6" style="stroke-width: 1.6; vector-effect: non-scaling-stroke;"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div></div></div><div id="v4-comp-1782784967444" class="lf-component" style="position: absolute; top: 0px; left: 200px; z-index: 1000; transform: none; width: 1240px; height: 50px;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: var(--v4-component-bg, rgb(255, 255, 255)); border-top-color: ; border-top-style: ; border-width: 1.6px !important; border-right-color: ; border-right-style: ; border-bottom-color: ; border-bottom-style: ; border-left-color: ; border-left-style: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 0px; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><div id="lf-comp-1782785013020" class="lf-component" style="position: absolute; top: 10px; left: 218px; z-index: 1000; transform: none; width: 30px; height: 30px; color: rgb(0, 0, 0);" data-resized="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 100%; height: 100%; padding: 8px; box-sizing: border-box; background-image: none !important; color: rgb(50, 50, 50); stroke: rgb(50, 50, 50);"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke-width="1.6" style="stroke-width: 1.6; vector-effect: non-scaling-stroke;"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></div><div id="v4-text-1782785054824" class="lf-component v4-text-box" style="position: absolute; top: 11px; left: 259px; z-index: 1000; transform: none; width: fit-content; height: auto;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:var(--v4-text-color, #000000); padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 10px;">LFmall</span></p></div></div></body></html>
