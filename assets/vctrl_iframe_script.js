@@ -84,6 +84,12 @@ img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; o
 }
 /* Reset background for new SVG/Custom atoms to prevent sprite leakage */
 svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: none !important; }
+.v4-searchbar-text:empty::before {
+    content: attr(data-placeholder);
+    color: #94a3b8 !important;
+    pointer-events: none;
+    display: block;
+}
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
 .v4-stepper-container[data-disabled="true"] { pointer-events: none !important; }
 .v4-stepper-container[data-disabled="true"] .v4-stepper-control { background-color: #e5e7eb !important; border-color: #9ca3af !important; }
@@ -272,6 +278,11 @@ window.v4Script = `
         const maxLength = inputContainer ? (parseInt(inputContainer.getAttribute('data-maxlength')) || 100) : 100;
         const showCounter = inputContainer ? (inputContainer.getAttribute('data-show-counter') !== 'false') : false;
 
+        // Search Bar Atom Detection
+        const isSearchBar = isGroup ? false : (!!c.querySelector('.v4-searchbar-container') || c.classList.contains('v4-searchbar-container'));
+        const searchbarContainer = isGroup ? null : (c.querySelector('.v4-searchbar-container') || (isSearchBar ? c : null));
+        const searchbarPlaceholder = searchbarContainer ? (searchbarContainer.querySelector('.v4-searchbar-text')?.getAttribute('data-placeholder') || "원스피어 통합검색") : "원스피어 통합검색";
+
         // Stepper Atom Detection
         const isStepper = isGroup ? false : (!!c.querySelector('.v4-stepper-container') || c.classList.contains('v4-stepper-container'));
         const stepperContainer = isGroup ? null : (c.querySelector('.v4-stepper-container') || (isStepper ? c : null));
@@ -336,6 +347,8 @@ window.v4Script = `
         const accordionSubTexts = accordionContainer ? Array.from(accordionContainer.querySelectorAll('.v4-accordion-item')).map(item => item.innerText) : [];
         const accordionExpanded = accordionContainer ? accordionContainer.getAttribute('data-expanded') === 'true' : false;
         const accordionItemHeight = accordionContainer ? parseInt(accordionContainer.getAttribute('data-item-height')) || (accordionContainer.querySelector('.v4-accordion-header') ? parseInt(accordionContainer.querySelector('.v4-accordion-header').style.height) || 36 : 36) : 36;
+        const accordionDepthType = accordionContainer ? (accordionContainer.getAttribute('data-depth-type') || '1depth') : '1depth';
+        const accordionHierarchy = accordionContainer ? (accordionContainer.getAttribute('data-hierarchy') || '') : '';
 
         // Grid UI Atom Detection
         const isGrid = isGroup ? false : (!!c.querySelector('.v4-grid-container') || c.classList.contains('v4-grid-container'));
@@ -376,6 +389,7 @@ window.v4Script = `
             if (boxEl) return _getVal(boxEl, "backgroundColor");
             if (buttonEl) return _getVal(buttonEl, "backgroundColor");
             if (inputContainer) return _getVal(inputContainer, "backgroundColor");
+            if (searchbarContainer) return _getVal(searchbarContainer, "backgroundColor");
             if (stepperContainer) return _getVal(stepperContainer, "backgroundColor");
             if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor");
             if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor");
@@ -395,6 +409,7 @@ window.v4Script = `
             if (boxEl) return _getVal(boxEl, "borderColor");
             if (buttonEl) return _getVal(buttonEl, "borderColor");
             if (inputContainer) return _getVal(inputContainer, "borderColor");
+            if (searchbarContainer) return _getVal(searchbarContainer, "borderColor");
             if (stepperContainer) return _getVal(stepperContainer, "borderColor");
             if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor");
             if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor");
@@ -427,6 +442,8 @@ window.v4Script = `
             placeholderText: placeholderText,
             maxLength: maxLength,
             showCounter: showCounter,
+            isSearchBar: isSearchBar,
+            searchbarPlaceholder: searchbarPlaceholder,
             isStepper: isStepper,
             minVal: minVal,
             maxVal: maxVal,
@@ -470,6 +487,8 @@ window.v4Script = `
             accordionSubTexts: accordionSubTexts,
             accordionExpanded: accordionExpanded,
             accordionItemHeight: accordionItemHeight,
+            accordionDepthType: accordionDepthType,
+            accordionHierarchy: accordionHierarchy,
             isGrid: isGrid,
             gridHeaders: gridHeaders,
             gridRowCount: gridRowCount,
@@ -758,6 +777,260 @@ window.v4Script = `
             });
         }
     }, { passive: false });
+
+    window.renderAccordionBody = function(container) {
+        const body = container.querySelector('.v4-accordion-body');
+        if (!body) return;
+        
+        const depthType = container.getAttribute('data-depth-type') || '1depth';
+        const currentItemHeight = parseInt(container.getAttribute('data-item-height')) || 36;
+        const compId = container.closest('.lf-component')?.id || 'accordion';
+        
+        if (depthType === '1depth') {
+            // Render 1-depth (flat list with radio buttons)
+            const targetCount = parseInt(container.getAttribute('data-sub-count')) || 0;
+            let subTexts = [];
+            let activeIndex = -1;
+            try {
+                const hierarchyStr = container.getAttribute('data-hierarchy');
+                if (hierarchyStr) {
+                    const parsed = JSON.parse(hierarchyStr);
+                    if (Array.isArray(parsed)) {
+                        subTexts = parsed.map((item, idx) => {
+                            const t = typeof item === 'string' ? item : item.text;
+                            if (typeof item === 'object' && item.active) {
+                                activeIndex = idx;
+                            }
+                            return t;
+                        });
+                    }
+                }
+            } catch (e) {}
+            
+            if (subTexts.length === 0) {
+                subTexts = Array.from(body.querySelectorAll('.v4-accordion-item')).map((el, idx) => {
+                    const radio = el.querySelector('.v4-accordion-radio');
+                    if (radio && (radio.checked || radio.hasAttribute('checked'))) {
+                        activeIndex = idx;
+                    }
+                    const textSpan = el.querySelector('.v4-editable-cell') || el;
+                    return textSpan.innerText;
+                });
+            }
+            while (subTexts.length < targetCount) {
+                subTexts.push("Sub Item " + (subTexts.length + 1));
+            }
+            subTexts = subTexts.slice(0, targetCount);
+            
+            body.innerHTML = '';
+            subTexts.forEach((text, i) => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'v4-accordion-item';
+                itemEl.style.cssText = "padding:8px 12px; font-size:12px; color:#cccccc; font-family:'Inter',sans-serif; outline:none; display:flex; align-items:center; box-sizing:border-box; padding-top:0; padding-bottom:0;";
+                itemEl.style.setProperty('height', currentItemHeight + 'px', 'important');
+                itemEl.style.setProperty('line-height', currentItemHeight + 'px', 'important');
+                if (i < targetCount - 1) {
+                    itemEl.style.borderBottom = '1.6px solid rgba(255,255,255,0.05)';
+                }
+                
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'accordion-select-' + compId;
+                radio.className = 'v4-accordion-radio';
+                radio.style.cssText = 'margin-right: 8px; accent-color: #00e5ff; cursor: pointer;';
+                if (i === activeIndex) {
+                    radio.setAttribute('checked', 'true');
+                    radio.checked = true;
+                }
+                
+                const span = document.createElement('span');
+                span.className = 'v4-editable-cell';
+                span.contentEditable = 'true';
+                span.style.cssText = 'outline: none; flex: 1;';
+                span.innerText = text;
+                if (i === activeIndex) {
+                    span.style.textDecoration = 'underline';
+                }
+                
+                const updateState = () => {
+                    const items = [];
+                    body.querySelectorAll('.v4-accordion-item').forEach((itemNode, idx) => {
+                        const r = itemNode.querySelector('.v4-accordion-radio');
+                        const s = itemNode.querySelector('.v4-editable-cell');
+                        items.push({
+                            text: s.innerText,
+                            active: r.checked
+                        });
+                    });
+                    container.setAttribute('data-hierarchy', JSON.stringify(items));
+                    markDirty();
+                };
+
+                radio.addEventListener('change', () => {
+                    body.querySelectorAll('.v4-accordion-radio').forEach(r => {
+                        if (r !== radio) {
+                            r.removeAttribute('checked');
+                            r.checked = false;
+                            const tSpan = r.nextElementSibling;
+                            if (tSpan) tSpan.style.textDecoration = 'none';
+                        }
+                    });
+                    radio.setAttribute('checked', 'true');
+                    radio.checked = true;
+                    span.style.textDecoration = 'underline';
+                    updateState();
+                });
+
+                span.addEventListener('input', () => {
+                    updateState();
+                });
+                
+                itemEl.appendChild(radio);
+                itemEl.appendChild(span);
+                body.appendChild(itemEl);
+            });
+        } else {
+            // Render 2-depth (hierarchical tree with 2nd tier radio buttons)
+            let hierarchy = [];
+            try {
+                const hierarchyStr = container.getAttribute('data-hierarchy');
+                if (hierarchyStr) {
+                    hierarchy = JSON.parse(hierarchyStr);
+                }
+            } catch (e) {}
+            
+            if (!Array.isArray(hierarchy) || hierarchy.length === 0) {
+                hierarchy = [
+                    {
+                        text: "1Tier Category 1",
+                        children: [
+                            { text: "2Tier Subcategory 1.1", active: true },
+                            { text: "2Tier Subcategory 1.2", active: false }
+                        ]
+                    }
+                ];
+                container.setAttribute('data-hierarchy', JSON.stringify(hierarchy));
+            }
+            
+            body.innerHTML = '';
+            
+            hierarchy.forEach((t1, t1Idx) => {
+                const t1Group = document.createElement('div');
+                t1Group.className = 'v4-accordion-tier1-group';
+                t1Group.style.cssText = 'border-bottom: 1.6px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;';
+                
+                // 1st Tier Header
+                const t1Header = document.createElement('div');
+                t1Header.className = 'v4-accordion-tier1-header';
+                t1Header.style.cssText = 'padding: 8px 12px; font-size: 12px; font-weight: bold; color: #ffffff; display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255,255,255,0.02); height: ' + currentItemHeight + 'px; box-sizing: border-box;';
+                
+                const t1Span = document.createElement('span');
+                t1Span.className = 'v4-editable-cell';
+                t1Span.contentEditable = 'true';
+                t1Span.style.cssText = 'outline: none; flex: 1;';
+                t1Span.innerText = t1.text;
+                t1Span.addEventListener('click', (e) => e.stopPropagation());
+                t1Span.addEventListener('input', () => {
+                    t1.text = t1Span.innerText;
+                    container.setAttribute('data-hierarchy', JSON.stringify(hierarchy));
+                    markDirty();
+                });
+                
+                const t1Arrow = document.createElement('span');
+                t1Arrow.className = 'tier-arrow';
+                t1Arrow.style.cssText = 'width: 6px; height: 6px; border-right: 1.6px solid #94a3b8; border-bottom: 1.6px solid #94a3b8; transform: rotate(45deg); transition: transform 0.2s; margin-right: 8px; display: inline-block; flex-shrink: 0;';
+                
+                t1Header.appendChild(t1Span);
+                if (t1.children && t1.children.length > 0) {
+                    t1Header.appendChild(t1Arrow);
+                }
+                t1Group.appendChild(t1Header);
+                
+                // 1st Tier Body (contains 2nd Tier items)
+                const t1Body = document.createElement('div');
+                t1Body.className = 'v4-accordion-tier1-body';
+                t1Body.style.cssText = 'display: flex; flex-direction: column; transition: all 0.2s ease; overflow: hidden;';
+                
+                let t1Expanded = true;
+                t1Header.addEventListener('click', () => {
+                    t1Expanded = !t1Expanded;
+                    t1Body.style.display = t1Expanded ? 'flex' : 'none';
+                    t1Arrow.style.transform = t1Expanded ? 'rotate(45deg)' : 'rotate(-45deg)';
+                });
+                
+                if (t1.children && t1.children.length > 0) {
+                    t1.children.forEach((t2, t2Idx) => {
+                        const t2Wrapper = document.createElement('div');
+                        t2Wrapper.className = 'v4-accordion-tier2-wrapper';
+                        t2Wrapper.style.cssText = 'display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255,255,255,0.02);';
+                        
+                        // 2nd Tier Header (Acts as lowest tier item, has radio button)
+                        const t2Header = document.createElement('div');
+                        t2Header.className = 'v4-accordion-tier2-header';
+                        t2Header.style.cssText = 'padding: 8px 12px 8px 24px; font-size: 11px; color: #e2e8f0; display: flex; align-items: center; cursor: pointer; height: ' + currentItemHeight + 'px; box-sizing: border-box;';
+                        
+                        const t2Radio = document.createElement('input');
+                        t2Radio.type = 'radio';
+                        t2Radio.name = 'accordion-select-' + compId;
+                        t2Radio.className = 'v4-accordion-radio';
+                        t2Radio.style.cssText = 'margin-right: 8px; accent-color: #00e5ff; cursor: pointer;';
+                        if (t2.active) {
+                            t2Radio.setAttribute('checked', 'true');
+                            t2Radio.checked = true;
+                        }
+                        
+                        const t2Span = document.createElement('span');
+                        t2Span.className = 'v4-editable-cell';
+                        t2Span.contentEditable = 'true';
+                        t2Span.style.cssText = 'outline: none; flex: 1;';
+                        t2Span.innerText = t2.text;
+                        if (t2.active) {
+                            t2Span.style.textDecoration = 'underline';
+                        }
+                        t2Span.addEventListener('click', (e) => e.stopPropagation());
+                        t2Span.addEventListener('input', () => {
+                            t2.text = t2Span.innerText;
+                            container.setAttribute('data-hierarchy', JSON.stringify(hierarchy));
+                            markDirty();
+                        });
+                        
+                        t2Radio.addEventListener('change', () => {
+                            // Uncheck all other radios in the entire accordion
+                            container.querySelectorAll('.v4-accordion-radio').forEach(r => {
+                                if (r !== t2Radio) {
+                                    r.removeAttribute('checked');
+                                    r.checked = false;
+                                    const tSpan = r.nextElementSibling;
+                                    if (tSpan) tSpan.style.textDecoration = 'none';
+                                }
+                            });
+                            t2Radio.setAttribute('checked', 'true');
+                            t2Radio.checked = true;
+                            t2Span.style.textDecoration = 'underline';
+                            
+                            // Update active status in hierarchy JSON
+                            hierarchy.forEach(category => {
+                                if (category.children) {
+                                    category.children.forEach(item => {
+                                        item.active = (item === t2);
+                                    });
+                                }
+                            });
+                            container.setAttribute('data-hierarchy', JSON.stringify(hierarchy));
+                            markDirty();
+                        });
+                        
+                        t2Header.appendChild(t2Radio);
+                        t2Header.appendChild(t2Span);
+                        t2Wrapper.appendChild(t2Header);
+                        t1Body.appendChild(t2Wrapper);
+                    });
+                }
+                t1Group.appendChild(t1Body);
+                body.appendChild(t1Group);
+            });
+        }
+    };
 
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
@@ -1178,42 +1451,18 @@ window.v4Script = `
                     container.setAttribute('data-expanded', d.expanded ? 'true' : 'false');
                 }
                 
-                if (d.subCount !== undefined || d.subTexts !== undefined) {
-                    const body = container.querySelector('.v4-accordion-body');
-                    if (body) {
-                        const targetCount = d.subCount !== undefined ? d.subCount : (parseInt(container.getAttribute('data-sub-count')) || 0);
-                        container.setAttribute('data-sub-count', targetCount);
-                        
-                        const existingItems = Array.from(body.querySelectorAll('.v4-accordion-item'));
-                        const currentTexts = d.subTexts || existingItems.map(item => item.innerText);
-                        
-                        body.innerHTML = '';
-                        const currentItemHeight = parseInt(container.getAttribute('data-item-height')) || 36;
-                        for (let i = 0; i < targetCount; i++) {
-                            const itemText = currentTexts[i] !== undefined ? currentTexts[i] : "Sub Item " + (i + 1);
-                            const isLast = (i === targetCount - 1);
-                            
-                            const itemEl = document.createElement('div');
-                            itemEl.className = 'v4-accordion-item v4-editable-cell';
-                            itemEl.contentEditable = 'true';
-                            itemEl.style.cssText = "padding:8px 12px; font-size:12px; color:#cccccc; font-family:'Inter',sans-serif; outline:none; -webkit-user-select:text; user-select:text;";
-                            if (currentItemHeight) {
-                                itemEl.style.setProperty('height', currentItemHeight + 'px', 'important');
-                                itemEl.style.setProperty('line-height', currentItemHeight + 'px', 'important');
-                                itemEl.style.setProperty('display', 'flex', 'important');
-                                itemEl.style.setProperty('align-items', 'center', 'important');
-                                itemEl.style.setProperty('box-sizing', 'border-box', 'important');
-                                itemEl.style.setProperty('padding-top', '0', 'important');
-                                itemEl.style.setProperty('padding-bottom', '0', 'important');
-                            }
-                            if (!isLast) {
-                                itemEl.style.borderBottom = '1.6px solid rgba(255,255,255,0.05)';
-                            }
-                            itemEl.innerText = itemText;
-                            body.appendChild(itemEl);
-                        }
-                    }
+                if (d.depthType !== undefined) {
+                    container.setAttribute('data-depth-type', d.depthType);
                 }
+                if (d.hierarchy !== undefined) {
+                    container.setAttribute('data-hierarchy', typeof d.hierarchy === 'string' ? d.hierarchy : JSON.stringify(d.hierarchy));
+                }
+                if (d.subCount !== undefined) {
+                    container.setAttribute('data-sub-count', d.subCount);
+                }
+                
+                // Call unified hierarchical renderer
+                window.renderAccordionBody(container);
                 
                 if (d.bg !== undefined) {
                     container.style.backgroundColor = d.bg;
@@ -1613,6 +1862,33 @@ window.v4Script = `
                 markDirty();
             }
         }
+        else if (d.type === 'LF_UPDATE_SEARCHBAR_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-searchbar-container');
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                if (d.placeholderText !== undefined) {
+                    const textEl = container.querySelector('.v4-searchbar-text');
+                    if (textEl) {
+                        textEl.setAttribute('data-placeholder', d.placeholderText);
+                    }
+                }
+                if (d.fontSize !== undefined) {
+                    const textEl = container.querySelector('.v4-searchbar-text');
+                    if (textEl) {
+                        textEl.style.fontSize = d.fontSize + 'px';
+                    }
+                    container.setAttribute('data-fontsize', d.fontSize);
+                }
+                markDirty();
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
+            }
+        }
         else if (d.type === 'LF_UPDATE_STYLE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -1626,6 +1902,9 @@ window.v4Script = `
             
             const inputContainer = s.querySelector('.v4-textbox-container, .v4-textarea-container');
             if (inputContainer && !d.selector) t = inputContainer;
+            
+            const searchbarContainer = s.querySelector('.v4-searchbar-container');
+            if (searchbarContainer && !d.selector) t = searchbarContainer;
             
             const alertContainer = s.querySelector('.v4-alert-container');
             const alertDialog = alertContainer ? alertContainer.querySelector('.v4-alert-dialog') : null;
@@ -1673,7 +1952,7 @@ window.v4Script = `
                 }
                 Object.assign(t.style, styleToAssign);
                 
-                const svgShape = t.querySelector('path, polygon, rect, circle');
+                const svgShape = t.classList.contains('v4-shape') ? t.querySelector('path, polygon, rect, circle') : t.querySelector('.v4-shape path, .v4-shape polygon, .v4-shape rect, .v4-shape circle');
                 if (svgShape) {
                     if (d.style.backgroundColor || d.style.background) {
                         svgShape.style.fill = d.style.backgroundColor || d.style.background;

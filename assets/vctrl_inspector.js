@@ -75,6 +75,7 @@ window.DOM = {
     iconPropSection: get('icon-inspector-section'),
     checkboxRadioPropSection: get('checkbox-radio-inspector-section'),
     textboxTextareaPropSection: get('textbox-textarea-inspector-section'),
+    searchbarPropSection: get('searchbar-inspector-section'),
     stepperPropSection: get('stepper-inspector-section'),
     selectboxPropSection: get('selectbox-inspector-section'),
     fileuploadPropSection: get('fileupload-inspector-section'),
@@ -179,6 +180,7 @@ function restorePropertiesSections() {
             document.getElementById('alert-inspector-section'),
             document.getElementById('button-inspector-section'),
             document.getElementById('datepicker-inspector-section'),
+            document.getElementById('searchbar-inspector-section'),
             document.getElementById('accordion-inspector-section'),
             document.getElementById('grid-inspector-section')
         ];
@@ -280,6 +282,7 @@ window.updateProperties = function(compStyles) {
         if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'none';
         if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'none';
         if (DOM.textboxTextareaPropSection) DOM.textboxTextareaPropSection.style.display = 'none';
+        if (DOM.searchbarPropSection) DOM.searchbarPropSection.style.display = 'none';
         if (DOM.stepperPropSection) DOM.stepperPropSection.style.display = 'none';
         if (DOM.selectboxPropSection) DOM.selectboxPropSection.style.display = 'none';
         if (DOM.fileuploadPropSection) DOM.fileuploadPropSection.style.display = 'none';
@@ -300,6 +303,7 @@ window.updateProperties = function(compStyles) {
             else if (compStyles.isConnector) type = 'line';
             else if (compStyles.isTextbox) type = 'textbox';
             else if (compStyles.isTextarea) type = 'textarea';
+            else if (compStyles.isSearchBar) type = 'searchbar';
             else if (compStyles.isStepper) type = 'stepper';
             else if (compStyles.isSelectbox) type = 'selectbox';
             else if (compStyles.isFileUpload) type = 'fileupload';
@@ -335,6 +339,9 @@ window.updateProperties = function(compStyles) {
             } else if (state.editingType === 'textbox' || state.editingType === 'textarea') {
                 if (DOM.textboxTextareaPropSection) DOM.textboxTextareaPropSection.style.display = 'block';
                 _syncTextboxTextareaProps(compStyles);
+            } else if (state.editingType === 'searchbar') {
+                if (DOM.searchbarPropSection) DOM.searchbarPropSection.style.display = 'block';
+                _syncSearchBarProps(compStyles);
             } else if (state.editingType === 'stepper') {
                 if (DOM.stepperPropSection) DOM.stepperPropSection.style.display = 'block';
                 _syncStepperProps(compStyles);
@@ -369,17 +376,32 @@ window.updateProperties = function(compStyles) {
 
             // Load content to Quill
             if (state.editingType === 'pin' && compStyles.html !== undefined && window.quillEditor) {
+                let cleanHtml = compStyles.html || '';
+                const hasExplicitFontSize = cleanHtml.includes('font-size') || cleanHtml.includes('fontSize');
+                if (!hasExplicitFontSize && compStyles.currentStyles && compStyles.currentStyles.fontSize) {
+                    const fs = compStyles.currentStyles.fontSize;
+                    const fsPx = typeof fs === 'number' ? fs + 'px' : (fs.endsWith('px') ? fs : fs + 'px');
+                    cleanHtml = `<span style="font-size: ${fsPx};">${cleanHtml}</span>`;
+                }
                 setTimeout(() => {
-                    window.quillEditor.clipboard.dangerouslyPasteHTML(compStyles.html, 'silent');
-                    console.log("[Inspector] Loaded HTML to Quill:", compStyles.html);
+                    window.quillEditor.clipboard.dangerouslyPasteHTML(cleanHtml, 'silent');
+                    console.log("[Inspector] Loaded HTML to Quill:", cleanHtml);
                 }, 50);
             } else if (state.editingType === 'shape' && window.quillEditor) {
                 // shape 내부 텍스트를 Quill에 로드 (wrapper div 벗겨내기)
                 const rawHtml = compStyles.html || '';
                 const parser = new DOMParser();
                 const parsed = parser.parseFromString(rawHtml, 'text/html');
-                const textContent = parsed.querySelector('.v4-shape-text-content') || parsed.querySelector('.v4-shape-text-overlay');
-                const cleanHtml = textContent ? textContent.innerHTML : rawHtml;
+                const textContent = parsed.querySelector('.v4-shape-text-content') || parsed.querySelector('.v4-shape-text-overlay') || parsed.querySelector('.v4-editable-cell');
+                let cleanHtml = textContent ? textContent.innerHTML : rawHtml;
+
+                // 만약 텍스트에 명시적인 font-size 스타일이 없다면, 컴포넌트의 기본 폰트 크기를 적용하여 Quill에 전달
+                const hasExplicitFontSize = cleanHtml.includes('font-size') || cleanHtml.includes('fontSize');
+                if (!hasExplicitFontSize && compStyles.currentStyles && compStyles.currentStyles.fontSize) {
+                    const fs = compStyles.currentStyles.fontSize;
+                    const fsPx = typeof fs === 'number' ? fs + 'px' : (fs.endsWith('px') ? fs : fs + 'px');
+                    cleanHtml = `<span style="font-size: ${fsPx};">${cleanHtml}</span>`;
+                }
 
                 // 초기 로드 중에는 text-change → LF_UPDATE_SHAPE_TEXT 루프를 방지
                 state._isLoadingShapeContent = true;
@@ -424,7 +446,7 @@ window.updateProperties = function(compStyles) {
             const sections = [
                 DOM.shapePropSection, DOM.textPropSection, DOM.tablePropSection,
                 DOM.linePropSection, DOM.iconPropSection, DOM.checkboxRadioPropSection,
-                DOM.textboxTextareaPropSection, DOM.stepperPropSection, DOM.selectboxPropSection,
+                DOM.textboxTextareaPropSection, DOM.searchbarPropSection, DOM.stepperPropSection, DOM.selectboxPropSection,
                 DOM.fileuploadPropSection, DOM.alertPropSection, DOM.buttonPropSection,
                 DOM.datePickerPropSection, DOM.accordionPropSection, DOM.gridPropSection
             ];
@@ -463,6 +485,7 @@ window.updateProperties = function(compStyles) {
         if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'none';
         if (DOM.accordionPropSection) DOM.accordionPropSection.style.display = 'none';
         if (DOM.gridPropSection) DOM.gridPropSection.style.display = 'none';
+        if (DOM.searchbarPropSection) DOM.searchbarPropSection.style.display = 'none';
     }
 };
 
@@ -731,6 +754,20 @@ function _syncTextboxTextareaProps(comp) {
         }
     }
 }
+
+function _syncSearchBarProps(comp) {
+    const phInput = document.getElementById('prop-searchbar-placeholder');
+    if (phInput && comp.searchbarPlaceholder !== undefined) {
+        phInput.value = comp.searchbarPlaceholder;
+    }
+    
+    const s = comp.currentStyles || {};
+    const fsInput = document.getElementById('prop-searchbar-fontsize');
+    if (fsInput && s.fontSize !== undefined) {
+        fsInput.value = s.fontSize;
+    }
+}
+
 function _syncAccordionProps(comp) {
     const headerTextInp = document.getElementById('prop-accordion-header-text');
     const subCountInp = document.getElementById('prop-accordion-sub-count');
@@ -767,9 +804,37 @@ function _syncAccordionProps(comp) {
         highlightActive(expandY, comp.accordionExpanded === true);
         highlightActive(expandN, comp.accordionExpanded === false);
     }
+
+    // Sync Depth Type Buttons & Section Visibility
+    const depthType = comp.accordionDepthType || '1depth';
+    const depth1Btn = document.getElementById('btn-accordion-depth-1');
+    const depth2Btn = document.getElementById('btn-accordion-depth-2');
+    const settings1D = document.getElementById('accordion-1depth-settings');
+    const settings2D = document.getElementById('accordion-2depth-settings');
+
+    if (depth1Btn && depth2Btn) {
+        highlightActive(depth1Btn, depthType === '1depth');
+        highlightActive(depth2Btn, depthType === '2depth');
+    }
+    if (settings1D) settings1D.style.display = depthType === '1depth' ? 'block' : 'none';
+    if (settings2D) settings2D.style.display = depthType === '2depth' ? 'block' : 'none';
     
-    if (typeof window.syncAccordionSubItemInputs === 'function') {
-        window.syncAccordionSubItemInputs(comp.accordionSubTexts || []);
+    if (depthType === '1depth') {
+        if (typeof window.syncAccordionSubItemInputs === 'function') {
+            window.syncAccordionSubItemInputs(comp.accordionSubTexts || []);
+        }
+    } else {
+        if (typeof window.syncAccordionHierarchyInputs === 'function') {
+            let hierarchy = [];
+            try {
+                if (comp.accordionHierarchy) {
+                    hierarchy = typeof comp.accordionHierarchy === 'string' ? JSON.parse(comp.accordionHierarchy) : comp.accordionHierarchy;
+                }
+            } catch (e) {
+                console.error("[Inspector] Failed to parse accordionHierarchy:", e);
+            }
+            window.syncAccordionHierarchyInputs(hierarchy);
+        }
     }
     
     const s = comp.currentStyles || {};
@@ -1172,10 +1237,10 @@ window.renderAtomicLibrary = function() {
 
     const iconsPane = document.getElementById('pane-icons');
     if (iconsPane) {
-        const icons = ['Home', 'Category', 'My', 'Heart', 'Search', 'Cart', 'Brand', 'Back', 'Bell', 'Share', 'Party'];
+        const icons = ['Home', 'Category', 'My', 'Heart', 'Search', 'Cart', 'Brand', 'Back', 'Bell', 'Share', 'Party', 'New Window'];
         iconsPane.innerHTML = icons.map(i => `
             <div class="library-item" onclick="insertAtomicComponent('icon', '${i}')" style="flex: 0 0 calc(25% - 8px); height:60px;">
-                <div class="item-preview"><div class="lf-icon lf-icon-${i.toLowerCase()}" style="background-image:none !important; transform: scale(0.6);"></div></div>
+                <div class="item-preview"><div class="lf-icon lf-icon-${i.toLowerCase().replace(' ', '-')}" style="background-image:none !important; transform: scale(0.6);"></div></div>
                 <div class="item-name" style="font-size:9px;">${i}</div>
             </div>
         `).join('');
@@ -1257,7 +1322,7 @@ if (window.MessageHub) {
             if (data.isShape) {
                 const parser = new DOMParser();
                 const parsed = parser.parseFromString(rawHtml, 'text/html');
-                const textContent = parsed.querySelector('.v4-shape-text-content') || parsed.querySelector('.v4-shape-text-overlay');
+                const textContent = parsed.querySelector('.v4-shape-text-content') || parsed.querySelector('.v4-shape-text-overlay') || parsed.querySelector('.v4-editable-cell');
                 cleanHtml = textContent ? textContent.innerHTML : rawHtml;
             }
             
@@ -1484,5 +1549,13 @@ if (searchClear) {
             window.renderAtomicLibrary();
         }
     };
+}
+if (window.MessageHub) {
+    MessageHub.subscribe('LF_DESELECT', () => {
+        if (window.state) {
+            window.state.selectedIds = [];
+        }
+        window.updateProperties(null);
+    });
 }
 console.log("[VCTRL INSPECTOR] UI Controller fully loaded and cleaned.");

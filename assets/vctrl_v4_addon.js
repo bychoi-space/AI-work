@@ -526,33 +526,12 @@
             if (data.currentStyles) {
                 const s = data.currentStyles;
                 
-                // Sync Color Pickers
-                const syncColor = (id, wrapperId, color, isTransparent) => {
-                    const picker = document.getElementById(id);
-                    const wrapper = document.getElementById(wrapperId);
-                    if (picker && color) picker.value = color;
-                    if (wrapper) wrapper.classList.toggle('transparent-active', isTransparent);
-                };
-
-                syncColor('shape-bg-color', 'shape-bg-wrapper', s.bg, s.isBgTransparent);
-                syncColor('shape-border-color', 'shape-border-wrapper', s.border, s.isBorderTransparent);
-                syncColor('shape-text-color', '', s.text, false);
-                
                 // Sync Shape Opacity
                 if (data.isShape && s.bgOpacity !== undefined) {
                     const slider = document.getElementById('shape-bg-opacity');
                     const txt = document.getElementById('txt-shape-bg-opacity');
                     if (slider) slider.value = s.bgOpacity;
                     if (txt) txt.innerText = s.bgOpacity;
-                }
-                
-                syncColor('table-border-color', 'table-border-wrapper', s.border, s.isBorderTransparent);
-
-                syncColor('icon-color', 'icon-color-wrapper', s.iconColor, false);
-                
-                // Sync Text Marker Color Picker
-                if (data.isPin) {
-                    syncColor('text-color-picker', '', s.text, false);
                 }
 
                 // Sync Other Inputs
@@ -580,18 +559,21 @@
 
                 // Sync Checkbox / Radio BG & Border colors
                 if (data.isCheckbox || data.isRadio) {
-                    syncColor('atom-bg-color', 'atom-bg-wrapper', s.bg, s.isBgTransparent);
-                    syncColor('atom-border-color', 'atom-border-wrapper', s.border, s.isBorderTransparent);
                 }
 
                 // Sync Textbox / Textarea BG & Border colors and Properties
                 if (data.isTextbox || data.isTextarea) {
-                    syncColor('input-bg-color', 'input-bg-wrapper', s.bg, s.isBgTransparent);
-                    syncColor('input-border-color', 'input-border-wrapper', s.border, s.isBorderTransparent);
-                    
                     const phInput = document.getElementById('prop-input-placeholder');
                     if (phInput && data.placeholderText !== undefined) {
                         phInput.value = data.placeholderText;
+                    }
+                }
+
+                // Sync Search Bar BG & Border colors and Properties
+                if (data.isSearchBar) {
+                    const phInput = document.getElementById('prop-searchbar-placeholder');
+                    if (phInput && data.searchbarPlaceholder !== undefined) {
+                        phInput.value = data.searchbarPlaceholder;
                     }
                     const mlInput = document.getElementById('prop-input-maxlength');
                     const mlTxt = document.getElementById('txt-input-maxlength');
@@ -691,11 +673,6 @@
                     if (radiusSlider && data.buttonRadius !== undefined) {
                         radiusSlider.value = data.buttonRadius;
                         if (radiusTxt) radiusTxt.innerText = data.buttonRadius;
-                    }
-                    if (data.buttonStyle === 'custom') {
-                        syncColor('prop-button-bg-color', 'button-bg-wrapper', s.bg, s.isBgTransparent);
-                        syncColor('prop-button-border-color', 'button-border-wrapper', s.border, s.isBorderTransparent);
-                        syncColor('prop-button-text-color', 'button-text-wrapper', s.text, false);
                     }
                 }
 
@@ -836,50 +813,6 @@
                 notifyIframe({ type: 'LF_UPDATE_ATOM_TEXT_ENABLED', enabled: false });
             };
         }
-        
-        // Color Pickers
-        const bgColor = document.getElementById('atom-bg-color');
-        const borderCol = document.getElementById('atom-border-color');
-        
-        if (bgColor) {
-            bgColor.oninput = () => {
-                notifyIframe({
-                    type: 'LF_UPDATE_STYLE',
-                    style: { backgroundColor: bgColor.value, background: bgColor.value }
-                });
-            };
-        }
-        const btnBgNone = document.getElementById('btn-atom-bg-none');
-        if (btnBgNone) {
-            btnBgNone.onclick = () => {
-                const wrapper = document.getElementById('atom-bg-wrapper');
-                if (wrapper) wrapper.classList.add('transparent-active');
-                notifyIframe({
-                    type: 'LF_UPDATE_STYLE',
-                    style: { backgroundColor: 'transparent', background: 'transparent' }
-                });
-            };
-        }
-        
-        if (borderCol) {
-            borderCol.oninput = () => {
-                notifyIframe({
-                    type: 'LF_UPDATE_STYLE',
-                    style: { borderColor: borderCol.value }
-                });
-            };
-        }
-        const btnBorderNone = document.getElementById('btn-atom-border-none');
-        if (btnBorderNone) {
-            btnBorderNone.onclick = () => {
-                const wrapper = document.getElementById('atom-border-wrapper');
-                if (wrapper) wrapper.classList.add('transparent-active');
-                notifyIframe({
-                    type: 'LF_UPDATE_STYLE',
-                    style: { borderColor: 'transparent' }
-                });
-            };
-        }
     };
     initCheckboxRadioEvents();
 
@@ -951,52 +884,33 @@
                 notifyIframe({ type: 'LF_UPDATE_TEXTBOX_PROPERTIES', fontFamily: ffInput.value });
             };
         }
+    };
+    initTextboxTextareaEvents();
 
-        // Color Pickers
-        const bgColor = document.getElementById('input-bg-color');
-        const borderCol = document.getElementById('input-border-color');
+    // Search Bar Inspector Events
+    const initSearchBarEvents = () => {
+        const notifyIframe = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                MessageHub.send(iframe.contentWindow, data.type, data);
+            }
+        };
 
-        if (bgColor) {
-            bgColor.oninput = () => {
-                notifyIframe({
-                    type: 'LF_UPDATE_STYLE',
-                    style: { backgroundColor: bgColor.value, background: bgColor.value }
-                });
-            };
-        }
-        const btnBgNone = document.getElementById('btn-input-bg-none');
-        if (btnBgNone) {
-            btnBgNone.onclick = () => {
-                const wrapper = document.getElementById('input-bg-wrapper');
-                if (wrapper) wrapper.classList.add('transparent-active');
-                notifyIframe({
-                    type: 'LF_UPDATE_STYLE',
-                    style: { backgroundColor: 'transparent', background: 'transparent' }
-                });
+        const phInput = document.getElementById('prop-searchbar-placeholder');
+        if (phInput) {
+            phInput.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_SEARCHBAR_PROPERTIES', placeholderText: phInput.value });
             };
         }
 
-        if (borderCol) {
-            borderCol.oninput = () => {
-                notifyIframe({
-                    type: 'LF_UPDATE_STYLE',
-                    style: { borderColor: borderCol.value }
-                });
-            };
-        }
-        const btnBorderNone = document.getElementById('btn-input-border-none');
-        if (btnBorderNone) {
-            btnBorderNone.onclick = () => {
-                const wrapper = document.getElementById('input-border-wrapper');
-                if (wrapper) wrapper.classList.add('transparent-active');
-                notifyIframe({
-                    type: 'LF_UPDATE_STYLE',
-                    style: { borderColor: 'transparent' }
-                });
+        const fsInput = document.getElementById('prop-searchbar-fontsize');
+        if (fsInput) {
+            fsInput.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_SEARCHBAR_PROPERTIES', fontSize: parseInt(fsInput.value) });
             };
         }
     };
-    initTextboxTextareaEvents();
+    initSearchBarEvents();
 
     // Stepper Inspector Events
     const initStepperEvents = () => {
@@ -1389,19 +1303,6 @@
             };
         }
 
-        bindStyleUpdate('prop-button-bg-color', (val) => ({
-            type: 'LF_UPDATE_STYLE',
-            style: { background: val, backgroundColor: val }
-        }));
-        bindStyleUpdate('prop-button-border-color', (val) => ({
-            type: 'LF_UPDATE_STYLE',
-            style: { borderColor: val }
-        }));
-        bindStyleUpdate('prop-button-text-color', (val) => ({
-            type: 'LF_UPDATE_STYLE',
-            style: { color: val }
-        }));
-
         const radiusSlider = document.getElementById('prop-button-border-radius');
         if (radiusSlider) {
             radiusSlider.oninput = () => {
@@ -1532,26 +1433,176 @@
         const container = document.getElementById('accordion-sub-items-container');
         if (!container) return;
         container.innerHTML = '';
+        
+        // Find which one is active in the iframe
+        let activeIndex = -1;
+        const iframe = document.getElementById('main-iframe');
+        const activeId = window.state?.editingIndex;
+        if (iframe && iframe.contentWindow && activeId) {
+            const activeEl = iframe.contentWindow.document.getElementById(activeId);
+            if (activeEl) {
+                const accordionContainer = activeEl.querySelector('.v4-accordion-container') || activeEl;
+                try {
+                    const hStr = accordionContainer.getAttribute('data-hierarchy');
+                    if (hStr) {
+                        const parsed = JSON.parse(hStr);
+                        if (Array.isArray(parsed)) {
+                            activeIndex = parsed.findIndex(item => item.active);
+                        }
+                    }
+                } catch (e) {}
+            }
+        }
+        
         texts.forEach((text, index) => {
             const div = document.createElement('div');
-            div.style.cssText = 'display:flex; flex-direction:column; gap:4px; margin-bottom: 8px;';
+            div.style.cssText = 'display:flex; align-items:center; gap:4px; margin-bottom: 8px; width: 100%; box-sizing: border-box;';
             div.innerHTML = `
-                <label style="font-size: 9px; color: #94a3b8; display: block;">SUB ITEM ${index + 1} NAME</label>
-                <input type="text" class="v4-prop-input accordion-sub-input" data-index="${index}" value="${text || ''}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 11px;">
+                <input type="radio" name="sidebar-accordion-active" class="sidebar-accordion-radio" ${index === activeIndex ? 'checked' : ''} style="accent-color: #00e5ff; cursor: pointer; flex-shrink: 0;">
+                <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:2px;">
+                    <label style="font-size: 9px; color: #94a3b8; display: block;">SUB ITEM ${index + 1} NAME</label>
+                    <input type="text" class="v4-prop-input accordion-sub-input" data-index="${index}" value="${text || ''}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 6px; border-radius: 4px; font-size: 11px; outline: none; box-sizing: border-box;">
+                </div>
             `;
             container.appendChild(div);
             
-            const input = div.querySelector('input');
-            input.oninput = () => {
+            const radio = div.querySelector('.sidebar-accordion-radio');
+            const input = div.querySelector('.accordion-sub-input');
+            
+            const updateAll = () => {
                 const iframe = document.getElementById('main-iframe');
                 if (iframe && iframe.contentWindow && window.MessageHub) {
-                    const allInputs = Array.from(container.querySelectorAll('.accordion-sub-input'));
-                    const updatedSubTexts = allInputs.map(inp => inp.value);
+                    const allDivs = Array.from(container.querySelectorAll('.accordion-sub-input'));
+                    const allRadios = Array.from(container.querySelectorAll('.sidebar-accordion-radio'));
+                    const updatedHierarchy = allDivs.map((inp, idx) => ({
+                        text: inp.value,
+                        active: allRadios[idx].checked
+                    }));
                     window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ACCORDION_PROPERTIES', {
-                        subTexts: updatedSubTexts
+                        subTexts: updatedHierarchy.map(h => h.text),
+                        hierarchy: updatedHierarchy
                     });
                 }
             };
+
+            radio.onchange = () => {
+                container.querySelectorAll('.sidebar-accordion-radio').forEach(r => {
+                    if (r !== radio) r.checked = false;
+                });
+                updateAll();
+            };
+            input.oninput = () => {
+                updateAll();
+            };
+        });
+    };
+
+    window.syncAccordionHierarchyInputs = (hierarchy) => {
+        const container = document.getElementById('accordion-hierarchy-container');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        const notifyAccordion = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ACCORDION_PROPERTIES', data);
+            }
+        };
+
+        const updateHierarchy = () => {
+            notifyAccordion({ hierarchy: hierarchy });
+        };
+
+        if (!Array.isArray(hierarchy) || hierarchy.length === 0) {
+            container.innerHTML = '<p style="font-size: 10px; color: #64748b; text-align: center; margin: 20px 0;">1티어 항목을 추가해주세요.</p>';
+            return;
+        }
+
+        hierarchy.forEach((t1, t1Idx) => {
+            // 1Tier Wrapper
+            const t1Div = document.createElement('div');
+            t1Div.style.cssText = 'background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px;';
+            
+            // 1Tier Header Row
+            const t1Header = document.createElement('div');
+            t1Header.style.cssText = 'display: flex; align-items: center; gap: 4px; width: 100%; box-sizing: border-box;';
+            t1Header.innerHTML = `
+                <span style="font-size: 10px; font-weight: bold; color: #00e5ff; flex-shrink: 0; min-width: 32px;">1티어</span>
+                <input type="text" class="tier1-input" value="${t1.text || ''}" style="flex: 1; min-width: 0; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 6px; border-radius: 4px; font-size: 11px; outline: none;">
+                <div style="display: flex; gap: 2px; flex-shrink: 0;">
+                    <button class="v4-inspector-btn primary btn-add-t2" style="height: 20px; width: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; border-radius: 4px; padding: 0;" title="2티어 추가">+</button>
+                    <button class="v4-inspector-btn danger btn-del-t1" style="height: 20px; width: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; border-radius: 4px; padding: 0;" title="삭제">&times;</button>
+                </div>
+            `;
+            t1Div.appendChild(t1Header);
+
+            const t1Input = t1Header.querySelector('.tier1-input');
+            t1Input.oninput = () => { t1.text = t1Input.value; updateHierarchy(); };
+
+            t1Header.querySelector('.btn-add-t2').onclick = () => {
+                if (!t1.children) t1.children = [];
+                t1.children.push({ text: `2Tier Subcategory ${t1Idx + 1}.${t1.children.length + 1}`, active: false });
+                window.syncAccordionHierarchyInputs(hierarchy);
+                updateHierarchy();
+            };
+
+            t1Header.querySelector('.btn-del-t1').onclick = () => {
+                hierarchy.splice(t1Idx, 1);
+                window.syncAccordionHierarchyInputs(hierarchy);
+                updateHierarchy();
+            };
+
+            // 2Tier List Container
+            if (t1.children && t1.children.length > 0) {
+                const t2List = document.createElement('div');
+                t2List.style.cssText = 'display: flex; flex-direction: column; gap: 8px; padding-left: 10px; border-left: 1px dashed rgba(255,255,255,0.1);';
+                
+                t1.children.forEach((t2, t2Idx) => {
+                    const t2Div = document.createElement('div');
+                    t2Div.style.cssText = 'display: flex; align-items: center; gap: 4px; width: 100%; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.02); border-radius: 6px; padding: 6px; box-sizing: border-box;';
+                    t2Div.innerHTML = `
+                        <input type="radio" name="sidebar-accordion-active" class="sidebar-accordion-radio" ${t2.active ? 'checked' : ''} style="accent-color: #00e5ff; cursor: pointer; flex-shrink: 0;">
+                        <span style="font-size: 10px; color: #818cf8; flex-shrink: 0; min-width: 32px;">2티어</span>
+                        <input type="text" class="tier2-input" value="${t2.text || ''}" style="flex: 1; min-width: 0; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 6px; border-radius: 4px; font-size: 11px; outline: none;">
+                        <button class="v4-inspector-btn danger btn-del-t2" style="height: 20px; width: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; border-radius: 4px; padding: 0;" title="삭제">&times;</button>
+                    `;
+                    t2List.appendChild(t2Div);
+
+                    const t2Radio = t2Div.querySelector('.sidebar-accordion-radio');
+                    const t2Input = t2Div.querySelector('.tier2-input');
+                    
+                    t2Radio.onchange = () => {
+                        // Uncheck all other radios in the sidebar
+                        const allRadios = document.querySelectorAll('.sidebar-accordion-radio');
+                        allRadios.forEach(r => {
+                            if (r !== t2Radio) r.checked = false;
+                        });
+                        
+                        // Set active status in hierarchy array
+                        hierarchy.forEach(cat => {
+                            if (cat.children) {
+                                cat.children.forEach(item => {
+                                    item.active = (item === t2);
+                                });
+                            }
+                        });
+                        updateHierarchy();
+                    };
+
+                    t2Input.oninput = () => {
+                        t2.text = t2Input.value;
+                        updateHierarchy();
+                    };
+
+                    t2Div.querySelector('.btn-del-t2').onclick = () => {
+                        t1.children.splice(t2Idx, 1);
+                        window.syncAccordionHierarchyInputs(hierarchy);
+                        updateHierarchy();
+                    };
+                });
+                t1Div.appendChild(t2List);
+            }
+            container.appendChild(t1Div);
         });
     };
 
@@ -1638,7 +1689,85 @@
                     window.syncAccordionSubItemInputs(currentTexts);
                 }
                 
-                notifyAccordion({ subCount: val, subTexts: currentTexts });
+                notifyAccordion({ subCount: val, subTexts: currentTexts, hierarchy: currentTexts.map(t => ({ text: t })) });
+            };
+        }
+
+        // Depth Type Toggle Buttons
+        const depth1Btn = document.getElementById('btn-accordion-depth-1');
+        const depth2Btn = document.getElementById('btn-accordion-depth-2');
+        const settings1D = document.getElementById('accordion-1depth-settings');
+        const settings2D = document.getElementById('accordion-2depth-settings');
+        const addTier1Btn = document.getElementById('btn-accordion-add-tier1');
+
+        const switchDepthMode = (depth) => {
+            highlightActive(depth1Btn, depth === '1depth');
+            highlightActive(depth2Btn, depth === '2depth');
+            if (settings1D) settings1D.style.display = depth === '1depth' ? 'block' : 'none';
+            if (settings2D) settings2D.style.display = depth === '2depth' ? 'block' : 'none';
+            
+            // Get current hierarchy to sync
+            let currentHierarchy = [];
+            const container = document.getElementById('accordion-hierarchy-container');
+            // Try to retrieve existing from active file or iframe
+            const curState = window.state || {};
+            const activeId = curState.editingIndex;
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && activeId) {
+                const activeEl = iframe.contentWindow.document.getElementById(activeId);
+                if (activeEl) {
+                    const accordionContainer = activeEl.querySelector('.v4-accordion-container') || activeEl;
+                    try {
+                        const hStr = accordionContainer.getAttribute('data-hierarchy');
+                        if (hStr) currentHierarchy = JSON.parse(hStr);
+                    } catch (e) {}
+                }
+            }
+
+            if (currentHierarchy.length === 0) {
+                // Fallback to 1-depth sub-texts
+                const subInputs = Array.from(document.querySelectorAll('.accordion-sub-input'));
+                if (subInputs.length > 0) {
+                    currentHierarchy = subInputs.map(inp => ({ text: inp.value }));
+                } else {
+                    currentHierarchy = [{ text: "1Tier Category 1", children: [] }];
+                }
+            }
+
+            if (depth === '2depth') {
+                window.syncAccordionHierarchyInputs(currentHierarchy);
+            }
+            notifyAccordion({ depthType: depth, hierarchy: currentHierarchy });
+        };
+
+        if (depth1Btn) {
+            depth1Btn.onclick = () => switchDepthMode('1depth');
+        }
+        if (depth2Btn) {
+            depth2Btn.onclick = () => switchDepthMode('2depth');
+        }
+        if (addTier1Btn) {
+            addTier1Btn.onclick = () => {
+                let currentHierarchy = [];
+                const container = document.getElementById('accordion-hierarchy-container');
+                // Read current input values
+                const tier1Groups = container.querySelectorAll('.v4-accordion-tier1-group');
+                // Instead of scraping, we can maintain it via state or re-read from iframe
+                const iframe = document.getElementById('main-iframe');
+                const activeId = window.state?.editingIndex;
+                if (iframe && iframe.contentWindow && activeId) {
+                    const activeEl = iframe.contentWindow.document.getElementById(activeId);
+                    if (activeEl) {
+                        const accordionContainer = activeEl.querySelector('.v4-accordion-container') || activeEl;
+                        try {
+                            const hStr = accordionContainer.getAttribute('data-hierarchy');
+                            if (hStr) currentHierarchy = JSON.parse(hStr);
+                        } catch (e) {}
+                    }
+                }
+                currentHierarchy.push({ text: `1Tier Category ${currentHierarchy.length + 1}`, children: [] });
+                window.syncAccordionHierarchyInputs(currentHierarchy);
+                notifyAccordion({ hierarchy: currentHierarchy });
             };
         }
 
