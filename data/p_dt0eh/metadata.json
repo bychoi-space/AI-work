@@ -13,9 +13,9 @@
       "screenDesc": ""
     },
     "06_Mobile_Design_2_148.html": {
-      "title": "06_Mobile_Design_2_148",
+      "title": "Front 화면 변경",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-29T04:46:19.481Z",
+      "updatedAt": "2026-06-30T00:31:09.585Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -35,7 +35,9 @@
           "standardized": true
         }
       ],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": ""
     },
     "99_Blank_914.html": {
       "title": "99_Blank_914",
