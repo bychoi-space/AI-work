@@ -91,4 +91,15 @@ description: Use when editing V4 components, .lf-icon SVG atoms, premium buttons
   - Distributes items evenly by computing identical distance gaps based on the outermost boundaries.
 - **Group Component Selection Outline**:
   - Selected group components (`.lf-group`) display a **green outline (`#10b981`)** and green handles/resizers, differentiating them from the standard blue (`#6366f1`) single component selection border.
+- **Group Component Property Hiding**:
+  - For single selection of a grouped component (`.lf-group`), the OBJECT PROPERTIES floating card must hide all property editors and only show the group actions toolbar (`selection-actions-bar`) containing `[UNGROUP]`, `[ADD TO MOLECULES]`, `[BRING FRONT]`, and `[SEND BACK]`.
+  - Recursive search queries inside groups during style retrieval must be bypassed to avoid false-positive sub-editor display.
+- **Library English Name Unification & Dual-Language Search**:
+  - All Atom, Icon, and Shape library cards displayed in the right sidebar must use English names.
+  - To support Korean queries, each card must include a `data-ko` attribute containing Korean synonyms, and dynamic shape definitions must include a `koName` property. The search filtering logic must query both English titles and Korean metadata.
+- **템플릿 리터럴 내 문자열 이스케이프 및 결합 표준 (Template Literal Collision Prevention)**:
+  - `vctrl_iframe_script.js`와 같이 파일 전체가 큰 백틱(`` ` ``) 템플릿 문자열로 감싸진 채 부모 측 브라우저에서 동적으로 평가(eval)되는 파일의 경우, 내부 코드에서 또다시 백틱(`` ` ``)이나 변수 보간(`${}`) 구문을 사용하면 문법 충돌(SyntaxError)이 일어나 작동이 중단됩니다. 이를 방지하기 위해 내부 문자열 표현은 반드시 표준적인 따옴표(싱글/더블)와 덧셈 연산자(`"Sub Item " + (i + 1)`)를 활용해 문자열을 결합해야 합니다.
+- **신규 아톰 추가 시 옵션 프로퍼티 플로팅 카드 통합 규칙 (Floating Card Registry Unification)**:
+  - 신규 아톰의 설정 패널을 디자인할 때는 우측 사이드바가 아닌 옵션 프로퍼티 플로팅 카드(`Object Properties Floating Card`)에 노출되도록 `vctrl_inspector.js` 내의 `DOM` 매핑 등록, `restorePropertiesSections` 복원 대상 등록, `updateProperties`의 보이기/숨기기 처리 및 선택 해제(Deselect) 시 숨김 처리를 빠짐없이 세트로 적용하여 사이드바에 옵션 패널이 잔존하는 버그를 원천 차단해야 합니다.
+
 

@@ -84,6 +84,7 @@ window.DOM = {
     datePickerPropSection: get('datepicker-inspector-section'),
     accordionPropSection: get('accordion-inspector-section'),
     gridPropSection: get('grid-inspector-section'),
+    adminSettingsPropSection: get('admin-settings-inspector-section'),
     textColorPicker: get('text-color-picker'),
     colorPresets: document.querySelectorAll('.color-preset'),
 
@@ -182,7 +183,8 @@ function restorePropertiesSections() {
             document.getElementById('datepicker-inspector-section'),
             document.getElementById('searchbar-inspector-section'),
             document.getElementById('accordion-inspector-section'),
-            document.getElementById('grid-inspector-section')
+            document.getElementById('grid-inspector-section'),
+            document.getElementById('admin-settings-inspector-section')
         ];
         sections.forEach(sec => {
             if (sec && sec.parentElement !== shapesBody) {
@@ -194,7 +196,12 @@ function restorePropertiesSections() {
 
 // --- 3. UI Rendering Functions ---
 window.updateProperties = function(compStyles) {
-    restorePropertiesSections();
+    const activeEl = document.activeElement;
+    const isTypingInAdminProps = activeEl && activeEl.classList.contains('admin-col-label-input');
+    
+    if (!isTypingInAdminProps) {
+        restorePropertiesSections();
+    }
     const pm = state.projectMetadata || {};
     if (!DOM.metadataPanel) return;
 
@@ -291,6 +298,7 @@ window.updateProperties = function(compStyles) {
         if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'none';
         if (DOM.accordionPropSection) DOM.accordionPropSection.style.display = 'none';
         if (DOM.gridPropSection) DOM.gridPropSection.style.display = 'none';
+        if (DOM.adminSettingsPropSection) DOM.adminSettingsPropSection.style.display = 'none';
 
         if (compStyles) {
             state.isEditing = true;
@@ -312,6 +320,7 @@ window.updateProperties = function(compStyles) {
             else if (compStyles.isDatePicker) type = 'datepicker';
             else if (compStyles.isAccordion) type = 'accordion';
             else if (compStyles.isGrid) type = 'grid';
+            else if (compStyles.isAdminSettings) type = 'admin-settings';
             else if (compStyles.isIcon) type = 'icon';
             state.editingType = type;
 
@@ -366,6 +375,14 @@ window.updateProperties = function(compStyles) {
             } else if (state.editingType === 'grid') {
                 if (DOM.gridPropSection) DOM.gridPropSection.style.display = 'block';
                 _syncGridProps(compStyles);
+            } else if (state.editingType === 'admin-settings') {
+                if (DOM.adminSettingsPropSection) DOM.adminSettingsPropSection.style.display = 'block';
+                // Focus guard: Do not rebuild the inputs if the user is actively typing in one of them
+                const activeEl = document.activeElement;
+                const isTypingInAdminProps = activeEl && activeEl.classList.contains('admin-col-label-input');
+                if (!isTypingInAdminProps) {
+                    _syncAdminSettingsProps(compStyles);
+                }
             }
 
             // CONTENT EDITOR 헤더 레이블 동적 변경 (통합 레이블 제공)
@@ -438,23 +455,29 @@ window.updateProperties = function(compStyles) {
         // Dynamically move active panels into floating inspector card body
         const floatingBody = document.getElementById('floating-inspector-body');
         if (floatingBody) {
-            floatingBody.innerHTML = '';
-            const selectionBar = document.getElementById('selection-actions-bar');
-            if (selectionBar && selectionBar.style.display !== 'none') {
-                floatingBody.appendChild(selectionBar);
-            }
-            const sections = [
-                DOM.shapePropSection, DOM.textPropSection, DOM.tablePropSection,
-                DOM.linePropSection, DOM.iconPropSection, DOM.checkboxRadioPropSection,
-                DOM.textboxTextareaPropSection, DOM.searchbarPropSection, DOM.stepperPropSection, DOM.selectboxPropSection,
-                DOM.fileuploadPropSection, DOM.alertPropSection, DOM.buttonPropSection,
-                DOM.datePickerPropSection, DOM.accordionPropSection, DOM.gridPropSection
-            ];
-            sections.forEach(sec => {
-                if (sec && sec.style.display === 'block') {
-                    floatingBody.appendChild(sec);
+            const activeEl = document.activeElement;
+            const isTypingInAdminProps = activeEl && activeEl.classList.contains('admin-col-label-input');
+            
+            if (!isTypingInAdminProps) {
+                floatingBody.innerHTML = '';
+                const selectionBar = document.getElementById('selection-actions-bar');
+                if (selectionBar && selectionBar.style.display !== 'none') {
+                    floatingBody.appendChild(selectionBar);
                 }
-            });
+                const sections = [
+                    DOM.shapePropSection, DOM.textPropSection, DOM.tablePropSection,
+                    DOM.linePropSection, DOM.iconPropSection, DOM.checkboxRadioPropSection,
+                    DOM.textboxTextareaPropSection, DOM.searchbarPropSection, DOM.stepperPropSection, DOM.selectboxPropSection,
+                    DOM.fileuploadPropSection, DOM.alertPropSection, DOM.buttonPropSection,
+                    DOM.datePickerPropSection, DOM.accordionPropSection, DOM.gridPropSection,
+                    DOM.adminSettingsPropSection
+                ];
+                sections.forEach(sec => {
+                    if (sec && sec.style.display === 'block') {
+                        floatingBody.appendChild(sec);
+                    }
+                });
+            }
         }
 
     } else {
@@ -486,6 +509,7 @@ window.updateProperties = function(compStyles) {
         if (DOM.accordionPropSection) DOM.accordionPropSection.style.display = 'none';
         if (DOM.gridPropSection) DOM.gridPropSection.style.display = 'none';
         if (DOM.searchbarPropSection) DOM.searchbarPropSection.style.display = 'none';
+        if (DOM.adminSettingsPropSection) DOM.adminSettingsPropSection.style.display = 'none';
     }
 };
 
@@ -1558,4 +1582,186 @@ if (window.MessageHub) {
         window.updateProperties(null);
     });
 }
+
+function _syncAdminSettingsProps(comp) {
+    const rowCountText = document.getElementById('txt-admin-row-count');
+    if (rowCountText && comp.adminRowCount !== undefined) {
+        rowCountText.innerText = comp.adminRowCount;
+    }
+
+    const container = document.getElementById('admin-rows-configuration-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const rowCount = comp.adminRowCount || 1;
+    for (let i = 1; i <= rowCount; i++) {
+        const labelsVal = comp[`adminRow${i}Label`] || '';
+        const colsVal = comp[`adminRow${i}Cols`] || 1;
+
+        // Split current labels
+        const labelsArr = labelsVal.split(',').map(l => l.trim());
+
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'admin-row-config-block';
+        rowDiv.style.cssText = 'border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 8px;';
+        
+        // Start building HTML
+        let htmlContent = `
+            <div style="font-size: 10px; font-weight: bold; color: #00e5ff;">ROW ${i} CONFIG</div>
+            <div class="prop-group">
+                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">조회 컬럼 개수</label>
+                <select class="v4-prop-input admin-row-cols" data-row="${i}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px; border-radius: 4px; font-size: 11px; height: 23px;">
+                    <option value="1" ${colsVal === 1 ? 'selected' : ''}>1개 컬럼</option>
+                    <option value="2" ${colsVal === 2 ? 'selected' : ''}>2개 컬럼</option>
+                    <option value="3" ${colsVal === 3 ? 'selected' : ''}>3개 컬럼</option>
+                </select>
+            </div>
+            <div class="admin-row-labels-container" style="display: flex; flex-direction: column; gap: 8px;">
+        `;
+
+        // Render input field for each column
+        for (let c = 0; c < colsVal; c++) {
+            const currentLabel = labelsArr[c] || `조회 항목 ${i}${c > 0 ? ' ' + (c + 1) : ''}`;
+            htmlContent += `
+                <div class="prop-group">
+                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">컬럼 ${c + 1} 항목명</label>
+                    <input type="text" class="v4-prop-input admin-col-label-input" data-col-idx="${c}" value="${currentLabel}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                </div>
+            `;
+        }
+
+        htmlContent += `</div>`;
+        rowDiv.innerHTML = htmlContent;
+        container.appendChild(rowDiv);
+
+        const colSelect = rowDiv.querySelector('.admin-row-cols');
+        const labelsContainer = rowDiv.querySelector('.admin-row-labels-container');
+
+        const getMergedLabels = () => {
+            const inputs = labelsContainer.querySelectorAll('.admin-col-label-input');
+            const vals = Array.from(inputs).map(inp => inp.value.trim());
+            return vals.join(', ');
+        };
+
+        const updateConfig = () => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ADMIN_SETTINGS_PROPERTIES', {
+                    rowNum: i,
+                    label: getMergedLabels(),
+                    cols: parseInt(colSelect.value) || 1,
+                    rowType: 'textbox'
+                });
+            }
+        };
+
+        // If Column Count changes, re-render the label inputs for this row
+        colSelect.onchange = () => {
+            const newColsVal = parseInt(colSelect.value) || 1;
+            labelsContainer.innerHTML = '';
+            let newHtml = '';
+            for (let c = 0; c < newColsVal; c++) {
+                const currentLabel = labelsArr[c] || `조회 항목 ${i}${c > 0 ? ' ' + (c + 1) : ''}`;
+                newHtml += `
+                    <div class="prop-group">
+                        <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">컬럼 ${c + 1} 항목명</label>
+                        <input type="text" class="v4-prop-input admin-col-label-input" data-col-idx="${c}" value="${currentLabel}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                    </div>
+                `;
+            }
+            labelsContainer.innerHTML = newHtml;
+
+            // Bind input events to new inputs
+            labelsContainer.querySelectorAll('.admin-col-label-input').forEach(inp => {
+                inp.oninput = updateConfig;
+            });
+
+            updateConfig();
+        };
+
+        // Bind input events to initial inputs
+        labelsContainer.querySelectorAll('.admin-col-label-input').forEach(inp => {
+            inp.oninput = updateConfig;
+        });
+    }
+
+    // Initialize row count +/- button click event listeners
+    const btnInc = document.getElementById('btn-admin-row-inc');
+    const btnDec = document.getElementById('btn-admin-row-dec');
+
+    if (btnInc) {
+        btnInc.onclick = () => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                const currentCount = parseInt(rowCountText.innerText) || 1;
+                if (currentCount < 4) {
+                    const newCount = currentCount + 1;
+                    window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ADMIN_SETTINGS_PROPERTIES', {
+                        rowCount: newCount
+                    });
+
+                    // Trigger parent side metadata and ui sync
+                    const activeId = window.state?.editingIndex;
+                    if (activeId) {
+                        const activeEl = iframe.contentWindow.document.getElementById(activeId);
+                        if (activeEl) {
+                            const containerEl = activeEl.querySelector('.v4-admin-settings-container') || activeEl;
+                            if (!containerEl.getAttribute(`data-row${newCount}-label`)) {
+                                containerEl.setAttribute(`data-row${newCount}-label`, `조회 항목 ${newCount}`);
+                                containerEl.setAttribute(`data-row${newCount}-cols`, '1');
+                                containerEl.setAttribute(`data-row${newCount}-type`, 'textbox');
+                            }
+                            const syncData = {
+                                id: activeId,
+                                editingType: 'admin-settings',
+                                adminRowCount: newCount
+                            };
+                            for (let r = 1; r <= 4; r++) {
+                                syncData[`adminRow${r}Label`] = containerEl.getAttribute(`data-row${r}-label`) || '';
+                                syncData[`adminRow${r}Cols`] = parseInt(containerEl.getAttribute(`data-row${r}-cols`)) || 1;
+                                syncData[`adminRow${r}Type`] = containerEl.getAttribute(`data-row${r}-type`) || 'textbox';
+                            }
+                            _syncAdminSettingsProps(syncData);
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    if (btnDec) {
+        btnDec.onclick = () => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                const currentCount = parseInt(rowCountText.innerText) || 1;
+                if (currentCount > 1) {
+                    const newCount = currentCount - 1;
+                    window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ADMIN_SETTINGS_PROPERTIES', {
+                        rowCount: newCount
+                    });
+
+                    const activeId = window.state?.editingIndex;
+                    if (activeId) {
+                        const activeEl = iframe.contentWindow.document.getElementById(activeId);
+                        if (activeEl) {
+                            const containerEl = activeEl.querySelector('.v4-admin-settings-container') || activeEl;
+                            const syncData = {
+                                id: activeId,
+                                editingType: 'admin-settings',
+                                adminRowCount: newCount
+                            };
+                            for (let r = 1; r <= 4; r++) {
+                                syncData[`adminRow${r}Label`] = containerEl.getAttribute(`data-row${r}-label`) || '';
+                                syncData[`adminRow${r}Cols`] = parseInt(containerEl.getAttribute(`data-row${r}-cols`)) || 1;
+                                syncData[`adminRow${r}Type`] = containerEl.getAttribute(`data-row${r}-type`) || 'textbox';
+                            }
+                            _syncAdminSettingsProps(syncData);
+                        }
+                    }
+                }
+            }
+        };
+    }
+}
+
 console.log("[VCTRL INSPECTOR] UI Controller fully loaded and cleaned.");

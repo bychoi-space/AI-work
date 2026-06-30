@@ -177,6 +177,33 @@ window.V4_COMPONENT_LIBRARY = {
             category: 'Atoms',
             previewHtml: `<span class="material-icons-outlined" style="font-size: 20px; color: var(--v4-placeholder-color, #a3a3a3);">image</span>`,
             html: `<div class="v4-shape v4-shape-image" style="width: 100%; height: 100%; background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23cbd5e1%22 stroke-width=%221.6%22><rect width=%2220%22 height=%2220%22 x=%222%22 y=%222%22 rx=%222%22 ry=%222%22/><circle cx=%228.5%22 cy=%228.5%22 r=%221.5%22/><path d=%22M21 15l-5-5L5 21%22/></svg>'); background-size: contain; background-position: center; background-repeat: no-repeat; box-sizing: border-box; border: 1.6px solid transparent;"></div>`
+        },
+        {
+            id: 'v4-atom-admin-settings',
+            name: 'Query Item',
+            koName: '조회 항목',
+            category: 'Atoms',
+            previewHtml: `<div style="display:flex; align-items:center; border:1px solid #ccc; background:#f8fafc; padding:4px; width:80px; height:40px; box-sizing:border-box;"><div style="width:25px; height:100%; background:#e2e8f0; border-right:1px solid #ccc;"></div><div style="flex:1; height:100%; background:#fff;"></div></div>`,
+            html: `
+            <div class="v4-admin-settings-container" data-row-count="1" data-row-height="50"
+                 data-row1-label="조회 항목" data-row1-cols="1" data-row1-type="textbox"
+                 style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background: #ffffff; border: 1.6px solid rgb(226, 232, 240); border-radius: 8px; font-family: inherit; display: flex; flex-direction: column; overflow: hidden; pointer-events: auto;">
+                <div class="v4-admin-settings-table" style="display: flex; flex-direction: column; width: 100%; height: 100%;">
+                    <!-- Row 1 -->
+                    <div class="v4-admin-row" style="display: flex; width: 100%; box-sizing: border-box; height: 50px;">
+                        <div class="v4-admin-label-cell" style="width: 140px; background: #f1f5f9; display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 600; color: #334155; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">조회 항목</div>
+                        <div class="v4-admin-content-cell" style="flex: 1; display: flex; align-items: center; padding: 0 16px; box-sizing: border-box;"></div>
+                    </div>
+                </div>
+            </div>`
+        },
+        {
+            id: 'v4-atom-image',
+            name: 'Image',
+            koName: '이미지 업로드 첨부',
+            category: 'Atoms',
+            previewHtml: `<span class="material-icons-outlined" style="font-size: 20px; color: var(--v4-placeholder-color, #a3a3a3);">image</span>`,
+            html: `<div class="v4-shape v4-shape-image" style="width: 100%; height: 100%; background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23cbd5e1%22 stroke-width=%221.6%22><rect width=%2220%22 height=%2220%22 x=%222%22 y=%222%22 rx=%222%22 ry=%222%22/><circle cx=%228.5%22 cy=%228.5%22 r=%221.5%22/><path d=%22M21 15l-5-5L5 21%22/></svg>'); background-size: contain; background-position: center; background-repeat: no-repeat; box-sizing: border-box; border: 1.6px solid transparent;"></div>`
         }
     ],
     molecules: [

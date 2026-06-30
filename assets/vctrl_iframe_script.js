@@ -357,6 +357,27 @@ window.v4Script = `
         const gridRowCount = gridContainer ? (parseInt(gridContainer.getAttribute('data-row-count')) || 0) : 0;
         const gridShowPagination = gridContainer ? gridContainer.getAttribute('data-pagination') !== 'false' : true;
 
+        // Admin Settings Atom Detection
+        const isAdminSettings = isGroup ? false : (!!c.querySelector('.v4-admin-settings-container') || c.classList.contains('v4-admin-settings-container'));
+        const adminSettingsContainer = isGroup ? null : (c.querySelector('.v4-admin-settings-container') || (isAdminSettings ? c : null));
+        const adminRowCount = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-count')) || 3 : 3;
+        
+        const adminRow1Label = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row1-label') || '') : '';
+        const adminRow1Cols = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row1-cols')) || 1 : 1;
+        const adminRow1Type = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row1-type') || 'textbox') : 'textbox';
+
+        const adminRow2Label = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row2-label') || '') : '';
+        const adminRow2Cols = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row2-cols')) || 1 : 1;
+        const adminRow2Type = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row2-type') || 'textbox') : 'textbox';
+
+        const adminRow3Label = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row3-label') || '') : '';
+        const adminRow3Cols = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row3-cols')) || 1 : 1;
+        const adminRow3Type = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row3-type') || 'textbox') : 'textbox';
+
+        const adminRow4Label = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row4-label') || '') : '';
+        const adminRow4Cols = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row4-cols')) || 1 : 1;
+        const adminRow4Type = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row4-type') || 'textbox') : 'textbox';
+
         const boxEl = isGroup ? null : c.querySelector('.v4-checkbox, .v4-radio');
         const buttonEl = isGroup ? null : c.querySelector('.v4-custom-btn');
         
@@ -493,6 +514,21 @@ window.v4Script = `
             gridHeaders: gridHeaders,
             gridRowCount: gridRowCount,
             gridShowPagination: gridShowPagination,
+            isAdminSettings: isAdminSettings,
+            adminRowCount: adminRowCount,
+            adminRow1Label: adminRow1Label,
+            adminRow1Cols: adminRow1Cols,
+            adminRow1Type: adminRow1Type,
+            adminRow2Label: adminRow2Label,
+            adminRow2Cols: adminRow2Cols,
+            adminRow2Type: adminRow2Type,
+            adminRow3Label: adminRow3Label,
+            adminRow3Cols: adminRow3Cols,
+            adminRow3Type: adminRow3Type,
+            adminRow4Label: adminRow4Label,
+            adminRow4Cols: adminRow4Cols,
+            adminRow4Type: adminRow4Type,
+            adminRowHeight: adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-height')) || 50 : 50,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
@@ -1825,6 +1861,103 @@ window.v4Script = `
                 }
             }
         }
+        else if (d.type === 'LF_UPDATE_ADMIN_SETTINGS_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-admin-settings-container') || (s.classList.contains('v4-admin-settings-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+                // Update Row Count
+                if (d.rowCount !== undefined) {
+                    container.setAttribute('data-row-count', d.rowCount);
+                }
+
+                // Update Row Height
+                if (d.rowHeight !== undefined) {
+                    container.setAttribute('data-row-height', d.rowHeight);
+                }
+
+                // Update Specific Row Configuration
+                if (d.rowNum !== undefined) {
+                    const rNum = d.rowNum;
+                    if (d.label !== undefined) container.setAttribute('data-row' + rNum + '-label', d.label);
+                    if (d.cols !== undefined) container.setAttribute('data-row' + rNum + '-cols', d.cols);
+                    if (d.rowType !== undefined) container.setAttribute('data-row' + rNum + '-type', d.rowType);
+                }
+
+                const totalRows = parseInt(container.getAttribute('data-row-count')) || 1;
+                const rowHeight = parseInt(container.getAttribute('data-row-height')) || 50;
+                
+                // Automatically resize component height: (rowHeight * totalRows)
+                const newHeight = totalRows * rowHeight;
+                s.style.height = newHeight + 'px';
+                if (typeof window.updateHandles === 'function') window.updateHandles(s);
+
+                // Re-render HTML representation of the rows
+                const tableDiv = container.querySelector('.v4-admin-settings-table');
+                if (tableDiv) {
+                    tableDiv.innerHTML = '';
+                    const totalRows = parseInt(container.getAttribute('data-row-count')) || 3;
+                    
+                    for (let i = 1; i <= totalRows; i++) {
+                        const labelAttr = container.getAttribute('data-row' + i + '-label') || ('항목 ' + i);
+                        const colsAttr = parseInt(container.getAttribute('data-row' + i + '-cols')) || 1;
+                        const typeAttr = container.getAttribute('data-row' + i + '-type') || 'textbox';
+                        
+                        const isLastRow = (i === totalRows);
+                        const rowBorder = isLastRow ? 'none' : '1.6px solid rgb(226, 232, 240)';
+                        
+                        const rowEl = document.createElement('div');
+                        rowEl.className = 'v4-admin-row';
+                        rowEl.style.cssText = 'display: flex; width: 100%; border-bottom: ' + rowBorder + '; box-sizing: border-box; height: ' + rowHeight + 'px;';
+                        
+                        // Split labels by comma
+                        const labels = labelAttr.split(',').map(l => l.trim());
+                        
+                        for (let c = 0; c < colsAttr; c++) {
+                            const colLabel = labels[c] || (labels[0] + (c > 0 ? ' ' + (c + 1) : ''));
+                            
+                            // Label cell
+                            const labelCell = document.createElement('div');
+                            labelCell.className = 'v4-admin-label-cell';
+                            labelCell.style.cssText = 'width: 140px; background: #f1f5f9; display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 600; color: #334155; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;';
+                            labelCell.innerText = colLabel;
+                            rowEl.appendChild(labelCell);
+                            
+                            // Content cell
+                            const contentCell = document.createElement('div');
+                            contentCell.className = 'v4-admin-content-cell';
+                            
+                            // Determine style and width of content cell based on columns
+                            let cellStyle = 'flex: 1; display: flex; align-items: center; padding: 0 16px; box-sizing: border-box;';
+                            if (c < colsAttr - 1) {
+                                cellStyle += ' border-right: 1.6px solid rgb(226, 232, 240); flex-shrink: 0;';
+                                if (colsAttr === 2) cellStyle += ' width: 30%;';
+                                else if (colsAttr === 3) cellStyle += ' width: 25%;';
+                                else cellStyle += ' width: 20%;';
+                            }
+                            contentCell.style.cssText = cellStyle;
+                            
+                            // Render content based on type (leaving it empty so user can place components)
+                            contentCell.innerHTML = '';
+                            rowEl.appendChild(contentCell);
+                        }
+                        tableDiv.appendChild(rowEl);
+                    }
+                }
+                
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
+                markDirty();
+
+                // Notify parent about the updated selection properties
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
+            }
+        }
         else if (d.type === 'LF_UPDATE_TEXTBOX_PROPERTIES') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-textbox-container, .v4-textarea-container') || (s.classList.contains('v4-textbox-container') || s.classList.contains('v4-textarea-container') ? s : null);
@@ -2489,6 +2622,40 @@ window.v4Script = `
                         bottom: bottomVal
                     });
                 }
+            });
+
+            // Add snapping targets for Query Item (Admin Settings) rows & inner cells
+            document.querySelectorAll('.v4-admin-settings-container').forEach(container => {
+                const comp = container.closest('.lf-component');
+                if (!comp || comp.classList.contains('selected')) return;
+
+                // Get absolute bounding rect of the component relative to the document
+                const compRect = comp.getBoundingClientRect();
+                const scrollX = window.scrollX || 0;
+                const scrollY = window.scrollY || 0;
+                const compLeft = compRect.left + scrollX;
+                const compTop = compRect.top + scrollY;
+
+                container.querySelectorAll('.v4-admin-row').forEach((row, rIdx) => {
+                    const rowRect = row.getBoundingClientRect();
+                    const rowTop = rowRect.top + scrollY;
+                    const rowHeight = rowRect.height;
+                    const rowYCenter = rowTop + rowHeight / 2;
+
+                    // Snap to the vertical center of the row
+                    targets.push({ id: comp.id, y: rowYCenter, label: 'Row ' + (rIdx + 1), part: 'Middle', type: 'v' });
+
+                    // Find content cells and calculate offset + 10px snap points
+                    const contentCells = row.querySelectorAll('.v4-admin-content-cell');
+
+                    contentCells.forEach((cell, cIdx) => {
+                        const cellRect = cell.getBoundingClientRect();
+                        const cellLeft = cellRect.left + scrollX;
+                        const snapX = cellLeft + 10; // 10px padding from the label border
+
+                        targets.push({ id: comp.id, x: snapX, label: 'Row ' + (rIdx + 1) + ' Col ' + (cIdx + 1) + ' Start', part: 'Left', type: 'h' });
+                    });
+                });
             });
 
             notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets, rects });

@@ -65,6 +65,9 @@
             } else if (item.id === 'v4-atom-datepicker') {
                 style.width = '500px';
                 style.height = '30px';
+            } else if (item.id === 'v4-atom-admin-settings') {
+                style.width = '1180px';
+                style.height = '50px';
             } else {
                 style.width = isIcon ? '40px' : '120px';
                 style.height = '40px';
@@ -1911,6 +1914,53 @@
         }
     };
     initGridEvents();
+
+    const initAdminSettingsEvents = () => {
+        const rowCountSelect = document.getElementById('prop-admin-row-count');
+        if (rowCountSelect) {
+            rowCountSelect.onchange = () => {
+                const iframe = document.getElementById('main-iframe');
+                if (iframe && iframe.contentWindow && window.MessageHub) {
+                    const val = parseInt(rowCountSelect.value) || 3;
+                    window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ADMIN_SETTINGS_PROPERTIES', {
+                        rowCount: val
+                    });
+                    
+                    // Re-sync inspector UI to match the new row count
+                    const activeId = window.state?.editingIndex;
+                    if (activeId) {
+                        const activeEl = iframe.contentWindow.document.getElementById(activeId);
+                        if (activeEl) {
+                            const container = activeEl.querySelector('.v4-admin-settings-container') || activeEl;
+                            // Pre-fill labels/cols/type for newly visible rows if empty
+                            for (let i = 1; i <= val; i++) {
+                                if (!container.getAttribute(`data-row${i}-label`)) {
+                                    container.setAttribute(`data-row${i}-label`, `항목 ${i}`);
+                                    container.setAttribute(`data-row${i}-cols`, '1');
+                                    container.setAttribute(`data-row${i}-type`, 'textbox');
+                                }
+                            }
+                            // Trigger sync again
+                            const compStyles = window.state.activeFile.components?.find(c => c.id === activeId) || {};
+                            // Gather attributes to sync
+                            const syncData = {
+                                id: activeId,
+                                editingType: 'admin-settings',
+                                adminRowCount: val
+                            };
+                            for (let i = 1; i <= 4; i++) {
+                                syncData[`adminRow${i}Label`] = container.getAttribute(`data-row${i}-label`) || '';
+                                syncData[`adminRow${i}Cols`] = parseInt(container.getAttribute(`data-row${i}-cols`)) || 1;
+                                syncData[`adminRow${i}Type`] = container.getAttribute(`data-row${i}-type`) || 'textbox';
+                            }
+                            window._syncAdminSettingsProps(syncData);
+                        }
+                    }
+                }
+            };
+        }
+    };
+    initAdminSettingsEvents();
 
     // Parent-side paste event listener for handling pasted image files when parent has focus
     window.addEventListener('paste', function(e) {

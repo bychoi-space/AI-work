@@ -221,6 +221,15 @@
 
             // Arrow key mode: skip alignment snapping (distracting for 1px moves)
             if (!isArrowKey) {
+                // Prioritize targets: Put Row and Col targets first so they snap first
+                const sortedTargets = [...this.targets].sort((a, b) => {
+                    const aIsRowCol = a.label && (a.label.includes('Row ') || a.label.includes('Col '));
+                    const bIsRowCol = b.label && (b.label.includes('Row ') || b.label.includes('Col '));
+                    if (aIsRowCol && !bIsRowCol) return -1;
+                    if (!aIsRowCol && bIsRowCol) return 1;
+                    return 0;
+                });
+
                 // X-axis Points to check (Left, Center, Right)
                 const pointsX = [
                     { val: x, part: 'Left' },
@@ -228,15 +237,17 @@
                     { val: x + w, part: 'Right' }
                 ];
 
-                for (const t of this.targets) {
+                for (const t of sortedTargets) {
                     // Skip targets belonging to the active moving element itself
                     if (activeId && t.id === activeId) continue;
                     
                     if (t.x === undefined) continue;
-                    // Apply distance-based filtering (300px radius) for non-Canvas targets
+                    // Apply distance-based filtering (reduced to 150px radius for cleaner dragging, except Canvas)
                     if (t.label !== 'Canvas') {
                         const activeCenterX = x + w / 2;
-                        if (Math.abs(t.x - activeCenterX) > 300) continue;
+                        const isRowCol = t.label && (t.label.includes('Row ') || t.label.includes('Col '));
+                        const maxRadius = isRowCol ? 250 : 150; // Allow slightly wider radius for query items
+                        if (Math.abs(t.x - activeCenterX) > maxRadius) continue;
                     }
                     for (const p of pointsX) {
                         if (Math.abs(p.val - t.x) < thresh) {
@@ -255,15 +266,17 @@
                     { val: y + h, part: 'Bottom' }
                 ];
 
-                for (const t of this.targets) {
+                for (const t of sortedTargets) {
                     // Skip targets belonging to the active moving element itself
                     if (activeId && t.id === activeId) continue;
 
                     if (t.y === undefined) continue;
-                    // Apply distance-based filtering (300px radius) for non-Canvas targets
+                    // Apply distance-based filtering
                     if (t.label !== 'Canvas') {
                         const activeCenterY = y + h / 2;
-                        if (Math.abs(t.y - activeCenterY) > 300) continue;
+                        const isRowCol = t.label && (t.label.includes('Row ') || t.label.includes('Col '));
+                        const maxRadius = isRowCol ? 250 : 150;
+                        if (Math.abs(t.y - activeCenterY) > maxRadius) continue;
                     }
                     for (const p of pointsY) {
                         if (Math.abs(p.val - t.y) < thresh) {

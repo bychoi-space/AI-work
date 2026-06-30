@@ -595,6 +595,10 @@
                             <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">image</span>
                             <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Image</span>
                         </div>
+                        <div class="component-item v4-card" onclick="insertV4ComponentById('v4-atom-admin-settings')" data-ko="조회항목 어드민 검색 조건 설정 항목 admin조회" style="background: rgba(52, 211, 153, 0.05); border: 1.6px solid rgba(52, 211, 153, 0.1) !important; border-radius: 8px; padding: 8px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 18px; color: #34d399;">tune</span>
+                            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary);">Query Item</span>
+                        </div>
                     </div>
                 </div>
 
@@ -1498,6 +1502,39 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Admin Settings Inspector Section -->
+                    <div id="admin-settings-inspector-section" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 12px; padding: 14px; margin-top: 12px;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                            <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">QUERY ITEM PROPERTIES</span>
+                        </div>
+                        
+                        <!-- Row Count -->
+                        <div class="prop-group" style="margin-bottom: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">행 개수 설정 (Row Count)</label>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <button id="btn-admin-row-dec" class="v4-inspector-btn danger" style="flex: 1; height: 28px; font-weight: bold; border-radius: 6px;">- 행 삭제</button>
+                                <span id="txt-admin-row-count" style="font-size: 13px; font-weight: bold; color: #fff; width: 30px; text-align: center;">1</span>
+                                <button id="btn-admin-row-inc" class="v4-inspector-btn primary" style="flex: 1; height: 28px; font-weight: bold; border-radius: 6px;">+ 행 추가</button>
+                            </div>
+                        </div>
+
+                        <!-- Row Configurations -->
+                        <div id="admin-rows-configuration-container" style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <!-- Dynamic Row Configs will be loaded here -->
+                        </div>
+
+                        <!-- Dimensions -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 12px;">
+                            <div class="prop-group">
+                                <label class="v4-unified-label" data-prop="width" style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">가로 크기</label>
+                                <input type="number" class="v4-prop-input" data-prop="width" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                            </div>
+                            <div class="prop-group">
+                                <label class="v4-unified-label" data-prop="height" style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">세로 크기</label>
+                                <input type="number" class="v4-prop-input" data-prop="height" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                            </div>
+                        </div>
+                    </div>
                 
                 <!-- Part 3: MOLECULES -->
                 <div id="molecules-header" class="panel-header" style="border-top: 1px solid rgba(255, 255, 255, 0.08); background: rgba(244, 63, 94, 0.03); padding: 18px 20px;">
@@ -1750,18 +1787,18 @@
     <script src="assets/vctrl_undo.js?v=V194_DATEPICKER"></script>
     <script src="assets/vctrl_design_system.js?v=V217_ACCORDION_HEIGHT_FIX"></script>
     <script src="assets/vctrl_shortcuts.js?v=V219_PASTE_FALLBACK"></script>
-    <script src="assets/vctrl_iframe_script.js?v=V229_ACCORDION_RADIO_SELECTION"></script>
+    <script src="assets/vctrl_iframe_script.js?v=V230_ADMIN_SETTINGS"></script>
     <script src="assets/vctrl_core.js?v=V213_SEARCHBAR_PLACEHOLDER_FIX"></script>
     <script src="assets/vctrl_smartguide.js?v=V196_DEBUG_TOGGLE"></script>
     <script src="assets/vctrl_grouping.js?v=V181_PC_UI_TEMPLATE"></script>
-    <script src="assets/vctrl_inspector.js?v=V227_DESELECT_CLEANUP"></script>
+    <script src="assets/vctrl_inspector.js?v=V230_ADMIN_SETTINGS"></script>
     <script src="assets/vctrl_v3.js?v=V157_PIN_SYNC"></script>
     <script src="assets/vctrl_properties.js?v=V207_ALL_DIMENSIONS"></script>
     <script src="assets/vctrl_connectors.js?v=V116_LINE_PERSIST_FIX"></script>
     
     <!-- V4 Premium Addons -->
-    <script src="enhanced_v4/component_library_v4.js?v=V195_DATEPICKER_FIX"></script>
+    <script src="enhanced_v4/component_library_v4.js?v=V230_ADMIN_SETTINGS"></script>
     <script src="assets/vctrl_table.js?v=V134_CELL_FIX"></script>
-    <script src="assets/vctrl_v4_addon.js?v=V229_ACCORDION_RADIO_SELECTION"></script>
+    <script src="assets/vctrl_v4_addon.js?v=V230_ADMIN_SETTINGS"></script>
 </body>
 </html>
