@@ -40,9 +40,9 @@
       "screenDesc": ""
     },
     "99_Blank_914.html": {
-      "title": "99_Blank_914",
-      "type": "blank",
-      "updatedAt": "2026-06-29T09:17:40.934Z",
+      "title": "어드민 기능",
+      "type": "admin-onesphere",
+      "updatedAt": "2026-06-30T00:31:30.617Z",
       "template": "template_blank.html",
       "description": [
         {
@@ -54,7 +54,9 @@
           "standardized": true
         }
       ],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": "[object Object]"
     }
   },
   "assignee": "최범열",
