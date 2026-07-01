@@ -304,7 +304,8 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
 <div id="v4-comp-1782884643393-dedup-650-27" class="lf-component" style="position: absolute; top: 423px; left: 791px; z-index: 1000; transform: none; width: 320px; height: 40px;" data-resized="true">
             <div class="v4-btn-container" data-text="버튼" data-btn-style="normal" data-btn-radius="6" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
                 <button class="v4-custom-btn style-normal" style="width: 100%; height: 100%; border-radius: 6px; background: var(--v4-component-bg, #ffffff); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px; box-sizing: border-box; transition: 0.2s; font-family: inherit; border-top-color:  !important; border-style: solid !important; border-width: 1.6px !important; border-right-color:  !important; border-bottom-color:  !important; border-left-color:  !important; border-image-source:  !important; border-image-slice:  !important; border-image-width:  !important; border-image-outset:  !important; border-image-repeat:  !important;">버튼</button>
-            </div></div><script id="v4-inlined-script">
+            </div></div>
+<script id="v4-inlined-script">
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -4110,6 +4111,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (!t && s.classList.contains('text-marker')) {
                 t = s.querySelector('.v4-editable-cell') || s;
             }
+            const shape = s.querySelector('.v4-shape');
+            if (shape && !d.selector) t = shape;
             const boxEl = s.querySelector('.v4-checkbox, .v4-radio');
             if (boxEl && !d.selector) t = boxEl;
             
@@ -4551,6 +4554,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const group = doc.createElement('div');
             group.id = groupId;
             group.className = 'lf-component lf-group selected';
+            
+            // Insert the group exactly before the topmost selected component in the DOM to preserve layer depth
+            const topmostComp = comps[comps.length - 1];
+            topmostComp.parentNode.insertBefore(group, topmostComp);
+
             Object.assign(group.style, {
                 position: 'absolute', left: groupBaseL + 'px', top: groupBaseT + 'px',
                 width: groupBaseW + 'px', height: groupBaseH + 'px',
@@ -4560,9 +4568,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             group.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
                               '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
 
-            // Insert the group exactly before the first selected component in the DOM
-            const firstComp = comps[0];
-            firstComp.parentNode.insertBefore(group, firstComp);
 
             items.forEach(item => {
                 item.el.style.left = (item.l - minX) + 'px';
@@ -4895,4 +4900,5 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 })();
 
 </script>
-</body></html>
+<div id="v4-comp-1782892802884" class="lf-component" style="position: absolute; top: 494px; left: 390px; z-index: 1000; transform: none; width: 6px; height: 6px;" data-resized="true">
+            <div class="v4-shape v4-shape-circle" style="width: 100%; height: 100%; background: rgb(255, 0, 0); border-color: transparent; border-top-style: ; border-width: 1.6px !important; border-right-style: ; border-bottom-style: ; border-left-style: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div></body></html>
