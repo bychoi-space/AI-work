@@ -1,6 +1,14 @@
 {
   "title": "[기획전] 네비게이션 카드 개선",
-  "screens": {},
+  "screens": {
+    "00_Cover_552.html": {
+      "title": "00_Cover_552",
+      "type": "cover",
+      "updatedAt": "2026-07-01T05:03:17.082Z",
+      "template": "template_cover.html",
+      "version": 0.1
+    }
+  },
   "assignee": "최범열",
   "developer": "",
   "period": "2026.07.01(수) ~ 2026.07.16(목)",
