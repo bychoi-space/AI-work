@@ -1,15 +1,5 @@
 [
   {
-    "id": "mol-1782895234413",
-    "name": "임시",
-    "category": "Custom",
-    "width": "1270px",
-    "height": "40px",
-    "isGroup": true,
-    "previewHtml": "<div style=\"font-size: 10px; font-weight: 700; color: #6366f1;\">임시</div>",
-    "html": "<div class=\"lf-component\" style=\"position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 200px; height: 40px;\" data-resized=\"true\">\n            <div class=\"v4-shape v4-shape-rect\" style=\"width: 100%; height: 100%; background: rgb(150, 50, 50); border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;\"><div class=\"v4-shape-text-content\" style=\"width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;\"><p><span style=\"font-size: 14px; color: rgb(255, 255, 255);\">As-Is 결제혜택 형태</span></p></div></div><div class=\"lf-connector-port port-top\" data-side=\"top\"></div><div class=\"lf-connector-port port-bottom\" data-side=\"bottom\"></div><div class=\"lf-connector-port port-left\" data-side=\"left\"></div><div class=\"lf-connector-port port-right\" data-side=\"right\"></div></div><div class=\"lf-component\" style=\"position: absolute; top: 0px; left: 1070px; z-index: 1000; transform: none; width: 200px; height: 40px;\">\n            <div class=\"v4-shape v4-shape-rect\" style=\"width: 100%; height: 100%; background: rgb(50, 50, 150); border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;\"><div class=\"v4-shape-text-content\" style=\"width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;\"><p><span style=\"font-size: 14px; color: rgb(255, 255, 255);\">To-Be 결제혜택 형태</span></p></div></div><div class=\"lf-connector-port port-top\" data-side=\"top\"></div><div class=\"lf-connector-port port-bottom\" data-side=\"bottom\"></div><div class=\"lf-connector-port port-left\" data-side=\"left\"></div><div class=\"lf-connector-port port-right\" data-side=\"right\"></div></div>"
-  },
-  {
     "id": "mol-1782894553547",
     "name": "기획전 MO - NEW템플릿 (네비게이션)",
     "category": "Custom",
