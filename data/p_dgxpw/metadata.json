@@ -115,21 +115,14 @@
         }
       ]
     },
-    "00_Cover_565.html": {
-      "title": "00_Cover_565",
-      "type": "cover",
-      "updatedAt": "2026-07-02T08:18:38.635Z",
-      "template": "template_cover.html",
-      "version": 0.1,
-      "description": [],
-      "connectors": []
-    },
     "00_Cover_724.html": {
       "title": "00_Cover_724",
       "type": "cover",
       "updatedAt": "2026-07-02T08:23:46.883Z",
       "template": "template_cover.html",
-      "version": 0.1
+      "version": 0.1,
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
