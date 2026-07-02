@@ -4,7 +4,7 @@
     "06_Mobile_Design_2_785.html": {
       "title": "06_Mobile_Design_2_785",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-02T05:55:47.872Z",
+      "updatedAt": "2026-07-02T08:37:31.950Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -26,48 +26,48 @@
         {
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>",
-          "x": 482.5,
-          "y": 459.5,
+          "x": 0,
+          "y": 183.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 482.5,
-          "y": 480.5,
+          "x": 0,
+          "y": 204.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 482.5,
-          "y": 519.5,
+          "x": 0,
+          "y": 243.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>",
-          "x": 312.5,
-          "y": 459.5,
+          "x": 0,
+          "y": 183.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 312.5,
-          "y": 480.5,
+          "x": 0,
+          "y": 204.5,
           "type": "text",
           "standardized": true
         },
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 312.5,
-          "y": 519.5,
+          "x": 0,
+          "y": 243.5,
           "type": "text",
           "standardized": true
         }
@@ -130,5 +130,5 @@
   "period": "2026.06.29(월) ~ 2026.08.28(금)",
   "jira": "LFML-144682",
   "themeIndex": 2,
-  "updated": "2026-07-02 14:55:47"
+  "updated": "2026-07-02 17:37:31"
 }
