@@ -1,6 +1,14 @@
 {
   "title": "[배송] 매장상품배송 서비스 - 상품목록 추가 작업",
-  "screens": {},
+  "screens": {
+    "00_Cover_221.html": {
+      "title": "00_Cover_221",
+      "type": "cover",
+      "updatedAt": "2026-07-02T04:24:16.685Z",
+      "template": "template_cover.html",
+      "version": 0.1
+    }
+  },
   "assignee": "최범열",
   "developer": "",
   "period": "2026.06.29(월) ~ 2026.08.28(금)",
