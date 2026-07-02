@@ -25,6 +25,10 @@ window.ConnectorEngine = (function() {
             });
             redrawAll();
             if (window.markAsDirty) window.markAsDirty();
+            const iframe = window.DOM?.iframe;
+            if (window.MessageHub && iframe?.contentWindow && window.state?.connectors) {
+                MessageHub.send(iframe.contentWindow, 'LF_SYNC_CONNECTORS', { connectors: window.state.connectors });
+            }
         };
 
         // High-Persistence Window Handlers (Zero-Lag)
@@ -36,7 +40,7 @@ window.ConnectorEngine = (function() {
         const workspace = document.getElementById('workspace-view');
         if (workspace) {
             workspace.addEventListener('mousedown', (e) => {
-                if (e.target.closest('.sidebar')) return;
+                if (e.target.closest('.sidebar') || e.target.closest('#floating-inspector-card')) return;
                 clearSelection();
             });
         }
@@ -76,6 +80,12 @@ window.ConnectorEngine = (function() {
                     conn.start.y += data.dy;
                     conn.end.x += data.dx;
                     conn.end.y += data.dy;
+                    redrawAll();
+                    if (window.markAsDirty) window.markAsDirty();
+                    const iframe = window.DOM?.iframe;
+                    if (window.MessageHub && iframe?.contentWindow && window.state?.connectors) {
+                        MessageHub.send(iframe.contentWindow, 'LF_SYNC_CONNECTORS', { connectors: window.state.connectors });
+                    }
                 }
             });
             window.MessageHub.subscribe('LF_CONNECTOR_HANDLE_MOVE', (data) => {
@@ -93,6 +103,30 @@ window.ConnectorEngine = (function() {
                     if (window.markAsDirty) window.markAsDirty();
                 }
             });
+            window.MessageHub.subscribe('LF_CREATE_CONNECTOR', (data) => {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                const id = 'conn_' + Date.now();
+                const newConnector = {
+                    id,
+                    type: 'elbow',
+                    start: { targetId: data.startId, side: data.startSide, x: 0, y: 0 },
+                    end: { targetId: data.endId, side: data.endSide, x: 0, y: 0 },
+                    style: { stroke: '#475569', strokeWidth: 1.6 }
+                };
+                if (!window.state.connectors) window.state.connectors = [];
+                window.state.connectors.push(newConnector);
+                
+                syncAnchoredPositions();
+                selectConnector(id);
+                if (window.markAsDirty) window.markAsDirty();
+            });
+            window.MessageHub.subscribe('LF_SYNC_CONNECTORS', (data) => {
+                window.state.connectors = data.connectors || [];
+                if (window.state.activeFile && window.state.activeFile.meta) {
+                    window.state.activeFile.meta.connectors = window.state.connectors;
+                }
+                if (window.markAsDirty) window.markAsDirty();
+            });
         }
 
         // Line Editor Event Listeners
@@ -106,6 +140,42 @@ window.ConnectorEngine = (function() {
         document.getElementById('line-marker-start')?.addEventListener('change', (e) => window.updateSelectedStyle({ markerStart: e.target.value }));
         document.getElementById('line-marker-end')?.addEventListener('change', (e) => window.updateSelectedStyle({ markerEnd: e.target.value }));
         document.getElementById('line-dash-array')?.addEventListener('change', (e) => window.updateSelectedStyle({ dashArray: e.target.value }));
+        document.getElementById('prop-line-width')?.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value) || 0;
+            if (selectedConnectorIds.length > 0) {
+                const conn = window.state.connectors.find(c => c.id === selectedConnectorIds[0]);
+                if (conn) {
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    const sign = conn.end.x >= conn.start.x ? 1 : -1;
+                    conn.end.x = conn.start.x + sign * val;
+                    conn.end.targetId = null; conn.end.side = null;
+                    redrawAll();
+                    if (window.markAsDirty) window.markAsDirty();
+                    const iframe = window.DOM?.iframe;
+                    if (window.MessageHub && iframe?.contentWindow && window.state?.connectors) {
+                        MessageHub.send(iframe.contentWindow, 'LF_SYNC_CONNECTORS', { connectors: window.state.connectors });
+                    }
+                }
+            }
+        });
+        document.getElementById('prop-line-height')?.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value) || 0;
+            if (selectedConnectorIds.length > 0) {
+                const conn = window.state.connectors.find(c => c.id === selectedConnectorIds[0]);
+                if (conn) {
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    const sign = conn.end.y >= conn.start.y ? 1 : -1;
+                    conn.end.y = conn.start.y + sign * val;
+                    conn.end.targetId = null; conn.end.side = null;
+                    redrawAll();
+                    if (window.markAsDirty) window.markAsDirty();
+                    const iframe = window.DOM?.iframe;
+                    if (window.MessageHub && iframe?.contentWindow && window.state?.connectors) {
+                        MessageHub.send(iframe.contentWindow, 'LF_SYNC_CONNECTORS', { connectors: window.state.connectors });
+                    }
+                }
+            }
+        });
     }
 
     function redrawAll() {
@@ -144,15 +214,44 @@ window.ConnectorEngine = (function() {
             const x = (e.clientX - rect.left) / scale;
             const y = (e.clientY - rect.top) / scale;
 
+            // Dynamically calculate proximity to elements to toggle .near-connector inside iframe
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            const iframeRect = iframe.getBoundingClientRect();
+            iframeDoc.querySelectorAll('.lf-component').forEach(comp => {
+                if (comp.id === dragPoint.connId) return;
+                const r = comp.getBoundingClientRect();
+                const left = r.left + iframeRect.left;
+                const right = r.right + iframeRect.left;
+                const top = r.top + iframeRect.top;
+                const bottom = r.bottom + iframeRect.top;
+                
+                const dx = Math.max(left - e.clientX, 0, e.clientX - right);
+                const dy = Math.max(top - e.clientY, 0, e.clientY - bottom);
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 100) {
+                    comp.classList.add('near-connector');
+                } else {
+                    comp.classList.remove('near-connector');
+                }
+            });
+
             const conn = window.state.connectors.find(c => c.id === dragPoint.connId);
             if (conn) {
                 const pt = conn[dragPoint.pointType];
                 pt.x = x; pt.y = y;
                 pt.targetId = null; pt.side = null;
                 
+                // Reset previously highlighted port
+                if (window.lastHighlightedPort) {
+                    window.lastHighlightedPort.style.transform = '';
+                    window.lastHighlightedPort.style.background = '#00e5ff';
+                    window.lastHighlightedPort = null;
+                }
+
                 // Optimized Fast Snap
                 let bestSnap = null;
-                let minDist = 20; 
+                let minDist = 30; // Snap threshold (30px)
 
                 snapTargets.forEach(target => {
                     const dist = Math.sqrt(Math.pow(e.clientX - target.cX, 2) + Math.pow(e.clientY - target.cY, 2));
@@ -167,14 +266,45 @@ window.ConnectorEngine = (function() {
                     pt.side = bestSnap.side;
                     pt.x = bestSnap.sX;
                     pt.y = bestSnap.sY;
+
+                    // Dynamically highlight snapped port inside iframe
+                    const targetEl = iframeDoc.getElementById(bestSnap.id);
+                    if (targetEl) {
+                        const portEl = targetEl.querySelector(`.lf-connector-port.port-${bestSnap.side}`);
+                        if (portEl) {
+                            portEl.style.transform = 'scale(1.8)';
+                            portEl.style.background = '#fb7185';
+                            window.lastHighlightedPort = portEl;
+                        }
+                    }
                 }
 
                 redrawAll();
+
+                // Real-time properties sync
+                const propLineWidth = document.getElementById('prop-line-width');
+                const propLineHeight = document.getElementById('prop-line-height');
+                if (propLineWidth) propLineWidth.value = Math.round(Math.abs(conn.end.x - conn.start.x));
+                if (propLineHeight) propLineHeight.value = Math.round(Math.abs(conn.end.y - conn.start.y));
             }
         });
     }
 
     function onGlobalMouseUp() {
+        if (window.lastHighlightedPort) {
+            window.lastHighlightedPort.style.transform = '';
+            window.lastHighlightedPort.style.background = '#00e5ff';
+            window.lastHighlightedPort = null;
+        }
+
+        const iframe = window.DOM?.iframe;
+        if (iframe) {
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.querySelectorAll('.lf-component').forEach(comp => {
+                comp.classList.remove('near-connector');
+            });
+        }
+
         if (isDragging) {
             isDragging = false;
             dragPoint = null;
@@ -182,6 +312,9 @@ window.ConnectorEngine = (function() {
             document.body.style.cursor = '';
             if (window.markAsDirty) window.markAsDirty();
             redrawAll();
+            if (window.MessageHub && iframe?.contentWindow && window.state?.connectors) {
+                MessageHub.send(iframe.contentWindow, 'LF_SYNC_CONNECTORS', { connectors: window.state.connectors });
+            }
         }
     }
 
@@ -189,20 +322,26 @@ window.ConnectorEngine = (function() {
         const iframe = window.DOM.iframe;
         if (!iframe) return;
         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        const host = iframeDoc.querySelector('.mobile-content') || iframeDoc.querySelector('.page') || iframeDoc.body;
-        const hostRect = host.getBoundingClientRect();
-        const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
+        const iframeRect = iframe.getBoundingClientRect();
         
         snapTargets = [];
         iframeDoc.querySelectorAll('.lf-component').forEach(comp => {
             if (dragPoint && comp.id === dragPoint.connId) return;
             
+            // Physical bounding rect for client mouse comparison
             const r = comp.getBoundingClientRect();
+
+            // Unscaled logical coordinates from inline style rules
+            const left = parseFloat(comp.style.left) || 0;
+            const top = parseFloat(comp.style.top) || 0;
+            const width = comp.offsetWidth;
+            const height = comp.offsetHeight;
+
             const sides = [
-                { side: 'left',   cX: r.left,           cY: r.top + r.height/2, sX: (r.left - hostRect.left)/scale, sY: (r.top + r.height/2 - hostRect.top)/scale },
-                { side: 'right',  cX: r.right,          cY: r.top + r.height/2, sX: (r.right - hostRect.left)/scale, sY: (r.top + r.height/2 - hostRect.top)/scale },
-                { side: 'top',    cX: r.left + r.width/2, cY: r.top,           sX: (r.left + r.width/2 - hostRect.left)/scale, sY: (r.top - hostRect.top)/scale },
-                { side: 'bottom', cX: r.left + r.width/2, cY: r.bottom,        sX: (r.left + r.width/2 - hostRect.left)/scale, sY: (r.bottom - hostRect.top)/scale }
+                { side: 'left',   cX: r.left + iframeRect.left,             cY: r.top + r.height/2 + iframeRect.top, sX: left,             sY: top + height/2 },
+                { side: 'right',  cX: r.right + iframeRect.left,            cY: r.top + r.height/2 + iframeRect.top, sX: left + width,     sY: top + height/2 },
+                { side: 'top',    cX: r.left + r.width/2 + iframeRect.left,   cY: r.top + iframeRect.top,             sX: left + width/2,     sY: top },
+                { side: 'bottom', cX: r.left + r.width/2 + iframeRect.left,   cY: r.bottom + iframeRect.top,          sX: left + width/2,     sY: top + height }
             ];
             sides.forEach(s => snapTargets.push({ id: comp.id, ...s }));
         });
@@ -274,12 +413,19 @@ window.ConnectorEngine = (function() {
                 if (startMarker) startMarker.value = conn.style.markerStart || '';
                 if (endMarker) endMarker.value = conn.style.markerEnd || '';
                 if (dashArray) dashArray.value = conn.style.dashArray || '';
+                const propLineWidth = document.getElementById('prop-line-width');
+                const propLineHeight = document.getElementById('prop-line-height');
+                if (propLineWidth) propLineWidth.value = Math.round(Math.abs(conn.end.x - conn.start.x));
+                if (propLineHeight) propLineHeight.value = Math.round(Math.abs(conn.end.y - conn.start.y));
             }
         }
         if (shapeEditor) shapeEditor.style.display = 'none';
 
         if (window.MessageHub) {
-            window.MessageHub.send(window, 'LF_COMP_SELECTED', { id: lastId, isConnector: true });
+            const conn = window.state.connectors.find(c => c.id === lastId);
+            const x = conn ? Math.min(conn.start.x, conn.end.x) : 0;
+            const w = conn ? Math.abs(conn.end.x - conn.start.x) : 0;
+            window.MessageHub.send(window, 'LF_COMP_SELECTED', { id: lastId, isConnector: true, x: x, w: w });
         }
         redrawAll();
     }
@@ -296,9 +442,6 @@ window.ConnectorEngine = (function() {
         const iframe = window.DOM.iframe;
         if (!iframe) return;
         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        const host = iframeDoc.querySelector('.mobile-content') || iframeDoc.querySelector('.page') || iframeDoc.body;
-        const hostRect = host.getBoundingClientRect();
-        const scale = window.state.transform.scale || 1;
 
         window.state.connectors.forEach(conn => {
             ['start', 'end'].forEach(type => {
@@ -306,11 +449,15 @@ window.ConnectorEngine = (function() {
                 if (pt.targetId) {
                     const targetEl = iframeDoc.getElementById(pt.targetId);
                     if (targetEl) {
-                        const r = targetEl.getBoundingClientRect();
-                        if (pt.side === 'left') { pt.x = (r.left - hostRect.left) / scale; pt.y = (r.top + r.height/2 - hostRect.top) / scale; }
-                        else if (pt.side === 'right') { pt.x = (r.right - hostRect.left) / scale; pt.y = (r.top + r.height/2 - hostRect.top) / scale; }
-                        else if (pt.side === 'top') { pt.x = (r.left + r.width/2 - hostRect.left) / scale; pt.y = (r.top - hostRect.top) / scale; }
-                        else if (pt.side === 'bottom') { pt.x = (r.left + r.width/2 - hostRect.left) / scale; pt.y = (r.bottom - hostRect.top) / scale; }
+                        const left = parseFloat(targetEl.style.left) || 0;
+                        const top = parseFloat(targetEl.style.top) || 0;
+                        const width = targetEl.offsetWidth;
+                        const height = targetEl.offsetHeight;
+
+                        if (pt.side === 'left') { pt.x = left; pt.y = top + height/2; }
+                        else if (pt.side === 'right') { pt.x = left + width; pt.y = top + height/2; }
+                        else if (pt.side === 'top') { pt.x = left + width/2; pt.y = top; }
+                        else if (pt.side === 'bottom') { pt.x = left + width/2; pt.y = top + height; }
                     }
                 }
             });
@@ -332,6 +479,15 @@ window.ConnectorEngine = (function() {
     }
 
     function handleKeyDown(e) {
+        const activeEl = document.activeElement;
+        const isInput = activeEl && (
+            activeEl.tagName === 'INPUT' || 
+            activeEl.tagName === 'SELECT' || 
+            activeEl.tagName === 'TEXTAREA' || 
+            activeEl.isContentEditable
+        );
+        if (isInput) return;
+
         if (e.key === 'Delete' || e.key === 'Backspace') {
             if (selectedConnectorIds.length > 0) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();

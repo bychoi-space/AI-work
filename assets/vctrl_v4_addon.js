@@ -816,6 +816,16 @@
                 notifyIframe({ type: 'LF_UPDATE_ATOM_TEXT_ENABLED', enabled: false });
             };
         }
+
+        const labelTextInp = document.getElementById('prop-atom-text-content');
+        if (labelTextInp) {
+            labelTextInp.oninput = function() {
+                notifyIframe({
+                    type: 'LF_UPDATE_ATOM_LABEL_TEXT',
+                    text: this.value
+                });
+            };
+        }
     };
     initCheckboxRadioEvents();
 
@@ -1808,29 +1818,128 @@
     };
     initAccordionEvents();
 
-    window.syncGridHeaderInputs = (headers) => {
+    window.syncGridHeaderInputs = (columns, headers) => {
         const container = document.getElementById('grid-columns-container');
         if (!container) return;
         container.innerHTML = '';
-        headers.forEach((headerText, index) => {
+        
+        let colsList = [];
+        if (Array.isArray(columns) && columns.length > 0) {
+            colsList = columns;
+        } else if (Array.isArray(headers) && headers.length > 0) {
+            colsList = headers.map((h, i) => {
+                let type = 'text';
+                const lower = (h || '').toLowerCase();
+                if (i === 0 && (h === '' || lower.includes('check') || h.includes('선택'))) type = 'checkbox';
+                else if (h === '번호') type = 'number';
+                else if (h === '방송상태' || h === '상태') type = 'status';
+                else if (h === '등록/수정자' || h === '등록자' || h === '수정자') type = 'author';
+                else if (h.includes('일시') || h.includes('일자')) type = 'datetime';
+                return {
+                    name: h,
+                    type: type,
+                    width: type === 'checkbox' ? '50px' : (type === 'number' ? '100px' : (type === 'text' ? '200px' : (type === 'status' ? '120px' : (type === 'author' ? '120px' : '150px'))))
+                };
+            });
+        } else {
+            colsList = [
+                { name: "", type: "checkbox", width: "50px" },
+                { name: "번호", type: "number", width: "100px" },
+                { name: "라이브 방송명", type: "text", width: "200px" },
+                { name: "방송상태", type: "status", width: "120px" },
+                { name: "등록/수정자", type: "author", width: "120px" }
+            ];
+        }
+
+        const colCountInp = document.getElementById('prop-grid-col-count');
+        if (colCountInp) {
+            colCountInp.value = colsList.length;
+        }
+
+        colsList.forEach((col, index) => {
+            const isCheckbox = (col.type === 'checkbox');
+            const parsedW = parseInt(col.width);
+            const numericWidth = isNaN(parsedW) ? (isCheckbox ? 50 : (col.type === 'text' ? 200 : 100)) : parsedW;
+            
             const div = document.createElement('div');
-            div.style.cssText = 'display:flex; flex-direction:column; gap:4px; margin-bottom: 8px;';
+            div.style.cssText = 'display:flex; flex-direction:column; gap:6px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;';
             div.innerHTML = `
-                <label style="font-size: 9px; color: #94a3b8; display: block;">COLUMN ${index + 1} TITLE</label>
-                <input type="text" class="v4-prop-input grid-header-input" data-index="${index}" value="${headerText || ''}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 11px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <label style="font-size: 10px; color: #00e5ff; font-weight: bold;">COLUMN ${index + 1}</label>
+                </div>
+                <div style="display:grid; grid-template-columns: 1.2fr 1fr 0.8fr; gap:6px;">
+                    <div style="display:flex; flex-direction:column; gap:2px;">
+                        <label style="font-size: 8px; color: #94a3b8;">항목타입</label>
+                        <select class="v4-prop-input grid-col-type-select" data-index="${index}" style="width:100%; background: rgba(15,23,42,0.8); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 4px; border-radius: 4px; font-size: 10px; outline:none; height:24px;">
+                            <option value="checkbox" ${col.type === 'checkbox' ? 'selected' : ''}>체크박스 항목</option>
+                            <option value="number" ${col.type === 'number' ? 'selected' : ''}>번호 항목</option>
+                            <option value="text" ${col.type === 'text' ? 'selected' : ''}>텍스트 항목</option>
+                            <option value="status" ${col.type === 'status' ? 'selected' : ''}>상태 항목</option>
+                            <option value="author" ${col.type === 'author' ? 'selected' : ''}>등록/수정자 항목</option>
+                            <option value="datetime" ${col.type === 'datetime' ? 'selected' : ''}>등록/수정일시 항목</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:2px;">
+                        <label style="font-size: 8px; color: #94a3b8;">항목명</label>
+                        <input type="text" class="v4-prop-input grid-col-name-input" data-index="${index}" value="${isCheckbox ? '' : (col.name || '')}" ${isCheckbox ? 'disabled' : ''} style="width:100%; background: ${isCheckbox ? 'rgba(0,0,0,0.15)' : 'rgba(0,0,0,0.3)'}; border: 1px solid ${isCheckbox ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.1)'}; color: ${isCheckbox ? '#64748b' : '#fff'}; padding: 4px 6px; border-radius: 4px; font-size: 11px;">
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:2px;">
+                        <label style="font-size: 8px; color: #94a3b8;">가로크기(px)</label>
+                        <input type="number" min="10" max="1000" class="v4-prop-input grid-col-width-input" data-index="${index}" value="${numericWidth}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 6px; border-radius: 4px; font-size: 11px;">
+                    </div>
+                </div>
             `;
             container.appendChild(div);
-            
-            const input = div.querySelector('input');
-            input.oninput = () => {
+
+            const nameInp = div.querySelector('.grid-col-name-input');
+            const typeSel = div.querySelector('.grid-col-type-select');
+            const widthInp = div.querySelector('.grid-col-width-input');
+
+            const triggerColUpdate = () => {
+                const nameInputs = Array.from(container.querySelectorAll('.grid-col-name-input'));
+                const updatedCols = nameInputs.map((inp) => {
+                    const idx = inp.getAttribute('data-index');
+                    const typeSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
+                    const widthInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
+                    const t = typeSel ? typeSel.value : 'text';
+                    const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
+                    return {
+                        name: t === 'checkbox' ? '' : inp.value,
+                        type: t,
+                        width: wVal + 'px'
+                    };
+                });
+                console.log("[DEBUG Grid] triggerColUpdate sent columns:", JSON.stringify(updatedCols));
+
                 const iframe = document.getElementById('main-iframe');
                 if (iframe && iframe.contentWindow && window.MessageHub) {
-                    const allInputs = Array.from(container.querySelectorAll('.grid-header-input'));
-                    const updatedHeaders = allInputs.map(inp => inp.value);
                     window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_GRID_PROPERTIES', {
-                        headers: updatedHeaders
+                        columns: updatedCols
                     });
                 }
+            };
+
+            nameInp.oninput = triggerColUpdate;
+            widthInp.oninput = triggerColUpdate;
+            
+            typeSel.onchange = () => {
+                const t = typeSel.value;
+                const defaultW = t === 'checkbox' ? 50 : (t === 'number' ? 100 : (t === 'text' ? 200 : (t === 'status' ? 120 : (t === 'author' ? 120 : 150))));
+                widthInp.value = defaultW;
+                
+                if (t === 'checkbox') {
+                    nameInp.value = '';
+                    nameInp.disabled = true;
+                    nameInp.style.background = 'rgba(0,0,0,0.15)';
+                    nameInp.style.borderColor = 'rgba(255,255,255,0.05)';
+                    nameInp.style.color = '#64748b';
+                } else {
+                    nameInp.disabled = false;
+                    nameInp.style.background = 'rgba(0,0,0,0.3)';
+                    nameInp.style.borderColor = 'rgba(255,255,255,0.1)';
+                    nameInp.style.color = '#fff';
+                }
+                triggerColUpdate();
             };
         });
     };
@@ -1843,6 +1952,9 @@
         const borderNoneBtn = document.getElementById('btn-grid-border-none');
         const paginationY = document.getElementById('btn-grid-pagination-y');
         const paginationN = document.getElementById('btn-grid-pagination-n');
+
+        const colMinusBtn = document.getElementById('btn-grid-col-minus');
+        const colPlusBtn = document.getElementById('btn-grid-col-plus');
 
         const notifyGrid = (data) => {
             const iframe = document.getElementById('main-iframe');
@@ -1858,6 +1970,49 @@
             btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
             btn.style.fontWeight = isActive ? 'bold' : 'normal';
         };
+
+        if (colMinusBtn) {
+            colMinusBtn.onclick = () => {
+                const container = document.getElementById('grid-columns-container');
+                if (!container) return;
+                const nameInputs = Array.from(container.querySelectorAll('.grid-col-name-input'));
+                if (nameInputs.length <= 1) return;
+                
+                const updatedCols = nameInputs.slice(0, -1).map((inp) => {
+                    const idx = inp.getAttribute('data-index');
+                    const typeSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
+                    const widthInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
+                    const t = typeSel ? typeSel.value : 'text';
+                    const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
+                    return { name: inp.value, type: t, width: wVal + 'px' };
+                });
+                notifyGrid({ columns: updatedCols });
+            };
+        }
+
+        if (colPlusBtn) {
+            colPlusBtn.onclick = () => {
+                const container = document.getElementById('grid-columns-container');
+                if (!container) return;
+                const nameInputs = Array.from(container.querySelectorAll('.grid-col-name-input'));
+                if (nameInputs.length >= 10) return;
+                
+                const updatedCols = nameInputs.map((inp) => {
+                    const idx = inp.getAttribute('data-index');
+                    const typeSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
+                    const widthInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
+                    const t = typeSel ? typeSel.value : 'text';
+                    const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
+                    return { name: inp.value, type: t, width: wVal + 'px' };
+                });
+                updatedCols.push({
+                    name: '새 항목',
+                    type: 'text',
+                    width: '200px'
+                });
+                notifyGrid({ columns: updatedCols });
+            };
+        }
 
         if (paginationY) {
             paginationY.onclick = () => {

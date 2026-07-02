@@ -23,6 +23,9 @@ window.GroupingManager = (function() {
                     ungroupSelected();
                 }
             });
+            MessageHub.subscribe('LF_SHORTCUT_ALIGN', (data) => {
+                alignSelected(data.alignType);
+            });
             MessageHub.subscribe('LF_MARQUEE_START', (data) => {
                 if (window.state.isReadOnly || window.state.tool !== 'select') return;
                 startMarquee(data);
@@ -32,6 +35,11 @@ window.GroupingManager = (function() {
             });
             MessageHub.subscribe('LF_MARQUEE_END', () => {
                 endMarquee();
+            });
+            MessageHub.subscribe('LF_UNGROUPED_SYNC_SELECTION', (data) => {
+                selectedIds = data.ids || [];
+                selectedIdsIsGroupMap = {};
+                syncWithCore();
             });
              MessageHub.subscribe('LF_DESELECT', () => {
                  selectedIds = [];
@@ -82,6 +90,18 @@ window.GroupingManager = (function() {
                  e.preventDefault();
                  if (e.shiftKey) ungroupSelected();
                  else groupSelected();
+             }
+             if (e.altKey && ['1','2','3','4','5','6'].includes(e.key)) {
+                 e.preventDefault();
+                 const typeMap = {
+                     '1': 'left',
+                     '2': 'center',
+                     '3': 'right',
+                     '4': 'top',
+                     '5': 'middle',
+                     '6': 'bottom'
+                 };
+                 alignSelected(typeMap[e.key]);
              }
          });
      };
@@ -138,14 +158,45 @@ window.GroupingManager = (function() {
  
          // --- Connector Selection Integration ---
          if (window.state.connectors && window.ConnectorEngine) {
-             const scale = window.state.transform.scale || 1;
-             const svgLayer = document.getElementById('connector-layer');
-             const svgRect = svgLayer ? svgLayer.getBoundingClientRect() : { left: 0, top: 0 };
              const connectorIdsToSelect = [];
+             const iframe = document.getElementById('main-iframe');
+             const iframeDoc = iframe ? (iframe.contentDocument || iframe.contentWindow.document) : null;
+             const host = iframeDoc ? (iframeDoc.querySelector('.mobile-content') || iframeDoc.querySelector('.page') || iframeDoc.body) : null;
+             const hostRect = host ? host.getBoundingClientRect() : { left: 0, top: 0 };
+             const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
  
              window.state.connectors.forEach(conn => {
-                 const p1 = { x: (conn.start.x * scale) + svgRect.left, y: (conn.start.y * scale) + svgRect.top };
-                 const p2 = { x: (conn.end.x * scale) + svgRect.left, y: (conn.end.y * scale) + svgRect.top };
+                 if (!conn || !conn.start || !conn.end) return;
+ 
+                 let x1 = conn.start.x || 0;
+                 let y1 = conn.start.y || 0;
+                 let x2 = conn.end.x || 0;
+                 let y2 = conn.end.y || 0;
+ 
+                 if (conn.start.targetId && iframeDoc) {
+                     const targetEl = iframeDoc.getElementById(conn.start.targetId);
+                     if (targetEl) {
+                         const r = targetEl.getBoundingClientRect();
+                         if (conn.start.side === 'left') { x1 = (r.left - hostRect.left) / scale; y1 = (r.top + r.height/2 - hostRect.top) / scale; }
+                         else if (conn.start.side === 'right') { x1 = (r.right - hostRect.left) / scale; y1 = (r.top + r.height/2 - hostRect.top) / scale; }
+                         else if (conn.start.side === 'top') { x1 = (r.left + r.width/2 - hostRect.left) / scale; y1 = (r.top - hostRect.top) / scale; }
+                         else if (conn.start.side === 'bottom') { x1 = (r.left + r.width/2 - hostRect.left) / scale; y1 = (r.bottom - hostRect.top) / scale; }
+                     }
+                 }
+ 
+                 if (conn.end.targetId && iframeDoc) {
+                     const targetEl = iframeDoc.getElementById(conn.end.targetId);
+                     if (targetEl) {
+                         const r = targetEl.getBoundingClientRect();
+                         if (conn.end.side === 'left') { x2 = (r.left - hostRect.left) / scale; y2 = (r.top + r.height/2 - hostRect.top) / scale; }
+                         else if (conn.end.side === 'right') { x2 = (r.right - hostRect.left) / scale; y2 = (r.top + r.height/2 - hostRect.top) / scale; }
+                         else if (conn.end.side === 'top') { x2 = (r.left + r.width/2 - hostRect.left) / scale; y2 = (r.top - hostRect.top) / scale; }
+                         else if (conn.end.side === 'bottom') { x2 = (r.left + r.width/2 - hostRect.left) / scale; y2 = (r.bottom - hostRect.top) / scale; }
+                     }
+                 }
+ 
+                 const p1 = { x: x1, y: y1 };
+                 const p2 = { x: x2, y: y2 };
                  const isIn = (pt) => pt.x >= box.x && pt.x <= box.x + box.w && pt.y >= box.y && pt.y <= box.y + box.h;
  
                  if (isIn(p1) && isIn(p2)) {
@@ -192,8 +243,16 @@ window.GroupingManager = (function() {
          }
      };
 
+    const getEffectiveSelectedIds = () => {
+        if (window.state && window.state.selectedIds) {
+            return window.state.selectedIds;
+        }
+        return selectedIds;
+    };
+
     const clearSelection = () => {
         selectedIds = [];
+        if (window.state) window.state.selectedIds = [];
         selectedIdsIsGroupMap = {};
         const iframe = document.getElementById('main-iframe');
         if (iframe && iframe.contentWindow && window.MessageHub) {
@@ -220,10 +279,12 @@ window.GroupingManager = (function() {
         const selectionLabel = document.getElementById('selection-label');
         const alignBar = document.getElementById('selection-align-bar');
 
-        if (selectedIds.length > 0) {
+        const activeIds = getEffectiveSelectedIds();
+
+        if (activeIds.length > 0) {
             // Show Group button if 2+ selected
             if (btnGroup) {
-                if (selectedIds.length > 1) {
+                if (activeIds.length > 1) {
                     btnGroup.style.setProperty('display', 'flex', 'important');
                 } else {
                     btnGroup.style.setProperty('display', 'none', 'important');
@@ -232,8 +293,8 @@ window.GroupingManager = (function() {
             
             // Show Ungroup button if 1 group is selected
             let showUngroup = false;
-            if (selectedIds.length === 1) {
-                if (selectedIdsIsGroupMap[selectedIds[0]]) {
+            if (activeIds.length === 1) {
+                if (selectedIdsIsGroupMap[activeIds[0]]) {
                     showUngroup = true;
                 }
             }
@@ -252,19 +313,23 @@ window.GroupingManager = (function() {
                 }
             }
 
-            // Show Selection Bar if any object is selected
-            selectionBar.style.setProperty('display', 'flex', 'important');
+            // Show Selection Bar only if it is moved inside the floating inspector card
+            if (selectionBar.parentElement && selectionBar.parentElement.id === 'tab-editor') {
+                selectionBar.style.setProperty('display', 'none', 'important');
+            } else {
+                selectionBar.style.setProperty('display', 'flex', 'important');
+            }
 
-            if (selectionNumber) selectionNumber.innerText = selectedIds.length;
-            if (selectionLabel) selectionLabel.innerText = selectedIds.length > 1 ? 'OBJECTS' : 'OBJECT';
+            if (selectionNumber) selectionNumber.innerText = activeIds.length;
+            if (selectionLabel) selectionLabel.innerText = activeIds.length > 1 ? 'OBJECTS' : 'OBJECT';
 
             // Show Align Bar if 2+ selected (RESTORED)
             if (alignBar) {
-                alignBar.style.display = selectedIds.length > 1 ? 'block' : 'none';
+                alignBar.style.display = activeIds.length > 1 ? 'block' : 'none';
             }
 
             // Line Editor Trigger
-            if (selectedIds.length === 1 && selectedIds[0].startsWith('conn_')) {
+            if (activeIds.length === 1 && activeIds[0].startsWith('conn_')) {
                 if (window.switchSidebarTab) window.switchSidebarTab('editor');
                 const linePropSection = document.getElementById('line-editor-section');
                 const shapePropSection = document.getElementById('shape-inspector-section');
@@ -280,40 +345,44 @@ window.GroupingManager = (function() {
     };
 
     const alignSelected = (type) => {
-        if (selectedIds.length < 2) return;
+        const activeIds = getEffectiveSelectedIds();
+        if (activeIds.length < 2) return;
         if (window.V4UndoManager) window.V4UndoManager.saveState();
         const iframe = document.getElementById('main-iframe');
         if (iframe && iframe.contentWindow && window.MessageHub) {
-            window.MessageHub.send(iframe.contentWindow, 'LF_ALIGN_SELECTED', { ids: selectedIds, alignType: type });
+            window.MessageHub.send(iframe.contentWindow, 'LF_ALIGN_SELECTED', { ids: activeIds, alignType: type });
         }
     };
 
     const groupSelected = () => {
-        if (selectedIds.length < 2) return;
+        const activeIds = getEffectiveSelectedIds();
+        if (activeIds.length < 2) return;
         if (window.V4UndoManager) window.V4UndoManager.saveState();
         const iframe = document.getElementById('main-iframe');
         if (iframe && iframe.contentWindow && window.MessageHub) {
-            window.MessageHub.send(iframe.contentWindow, 'LF_GROUP_SELECTED', { ids: selectedIds });
+            window.MessageHub.send(iframe.contentWindow, 'LF_GROUP_SELECTED', { ids: activeIds });
         }
     };
 
     const ungroupSelected = () => {
-        if (selectedIds.length < 1) return;
+        const activeIds = getEffectiveSelectedIds();
+        if (activeIds.length < 1) return;
         if (window.V4UndoManager) window.V4UndoManager.saveState();
         const iframe = document.getElementById('main-iframe');
         if (iframe && iframe.contentWindow && window.MessageHub) {
-            window.MessageHub.send(iframe.contentWindow, 'LF_UNGROUP_SELECTED', { ids: selectedIds });
+            window.MessageHub.send(iframe.contentWindow, 'LF_UNGROUP_SELECTED', { ids: activeIds });
         }
     };
 
     const addToMolecules = async () => {
-        if (selectedIds.length !== 1) return;
+        const activeIds = getEffectiveSelectedIds();
+        if (activeIds.length !== 1) return;
         const name = prompt("새로운 Molecule 명칭을 입력하세요:", "Custom Molecule");
         if (!name) return;
         
         const iframe = document.getElementById('main-iframe');
         if (iframe && iframe.contentWindow && window.MessageHub) {
-            window.MessageHub.send(iframe.contentWindow, 'LF_EXTRACT_MOLECULE', { id: selectedIds[0], name: name });
+            window.MessageHub.send(iframe.contentWindow, 'LF_EXTRACT_MOLECULE', { id: activeIds[0], name: name });
         }
     };
 

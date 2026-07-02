@@ -199,8 +199,41 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
 }
 .v4-custom-btn.style-primary { background: #4f46e5 !important; border-color: #4f46e5 !important; color: #ffffff !important; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35) !important; }
 .v4-custom-btn.style-primary:hover { box-shadow: 0 6px 18px rgba(79, 70, 229, 0.5) !important; }
-.v4-custom-btn.style-normal { background: #ffffff !important; border-color: #cbd5e1 !important; color: #1f2937 !important; }
 .v4-custom-btn.style-negative { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #475569 !important; }
+.lf-connector-port {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #00e5ff;
+    border: 1.5px solid #ffffff;
+    border-radius: 50%;
+    z-index: 10003;
+    display: none;
+    cursor: crosshair;
+    box-shadow: 0 0 4px rgba(0,229,255,0.6);
+}
+body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
+    display: block;
+}
+.lf-component.lf-group > .lf-connector-port,
+.lf-component.connector-line > .lf-connector-port {
+    display: none !important;
+}
+.lf-connector-port.port-top { top: -4px; left: 50%; transform: translateX(-50%); }
+.lf-connector-port.port-bottom { bottom: -4px; left: 50%; transform: translateX(-50%); }
+.lf-connector-port.port-left { left: -4px; top: 50%; transform: translateY(-50%); }
+.lf-connector-port.port-right { right: -4px; top: 50%; transform: translateY(-50%); }
+.lf-component.connector-line.selected {
+    outline: none !important;
+}
+.lf-component.connector-line.selected path:nth-of-type(2) {
+    stroke: #3b82f6 !important;
+    filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.8));
+}
+.v4-shape-text-content p, .v4-shape-text-overlay p {
+    margin: 0 !important;
+    padding: 0 !important;
+}
 `;
 
 window.v4Script = `
@@ -222,6 +255,89 @@ window.v4Script = `
 
     console.log("[V4 Iframe] Script initialized (V144_SHORTCUT_SAVE_FIX)");
     let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
+    let isDrawingConnector = false, startComponentId = null, startPortSide = null;
+    let connDragStartX = 0, connDragStartY = 0, hoveredPort = null;
+    let tempSvg = null;
+    let isDraggingLine = false, activeLineId = null, startLineCoords = null;
+
+    function drawTempLine(x1, y1, x2, y2) {
+        if (!tempSvg) {
+            tempSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            tempSvg.style.cssText = 'position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:10005; overflow:visible;';
+            tempSvg.innerHTML = '<path stroke="#00e5ff" stroke-width="2" stroke-dasharray="4,4" fill="none" />';
+            document.body.appendChild(tempSvg);
+        }
+        const path = tempSvg.querySelector('path');
+        const midX = (x1 + x2) / 2;
+        const pathData = 'M ' + x1 + ' ' + y1 + ' H ' + midX + ' V ' + y2 + ' H ' + x2;
+        path.setAttribute('d', pathData);
+    }
+
+    function removeTempLine() {
+        if (tempSvg) {
+            tempSvg.remove();
+            tempSvg = null;
+        }
+    }
+
+    window.calculatePathData = (c, s, e) => {
+        if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
+        
+        const sSide = c.start.side || 'right';
+        const eSide = c.end.side || 'left';
+        
+        const getDirOffset = (side, amount) => {
+            if (side === 'left') return { dx: -amount, dy: 0 };
+            if (side === 'right') return { dx: amount, dy: 0 };
+            if (side === 'top') return { dx: 0, dy: -amount };
+            if (side === 'bottom') return { dx: 0, dy: amount };
+            return { dx: 0, dy: 0 };
+        };
+        
+        const offset = 20;
+        const oStart = getDirOffset(sSide, offset);
+        const oEnd = getDirOffset(eSide, offset);
+        
+        const ptStart = { x: s.x + oStart.dx, y: s.y + oStart.dy };
+        const ptEnd = { x: e.x + oEnd.dx, y: e.y + oEnd.dy };
+        
+        let path = 'M ' + s.x + ' ' + s.y + ' L ' + ptStart.x + ' ' + ptStart.y;
+        
+        if (sSide === 'left' || sSide === 'right') {
+            if (eSide === 'left' || eSide === 'right') {
+                const midX = (ptStart.x + ptEnd.x) / 2;
+                path += ' H ' + midX + ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
+            } else {
+                path += ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
+            }
+        } else {
+            if (eSide === 'top' || eSide === 'bottom') {
+                const midY = (ptStart.y + ptEnd.y) / 2;
+                path += ' V ' + midY + ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
+            } else {
+                path += ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
+            }
+        }
+        return path;
+    };
+
+    function startConnectorDragFromPort(comp, side, e) {
+        isDrawingConnector = true;
+        document.body.classList.add('drawing-line-active');
+        startComponentId = comp.id;
+        startPortSide = side;
+        
+        const compLeft = parseFloat(comp.style.left) || 0;
+        const compTop = parseFloat(comp.style.top) || 0;
+        const compWidth = comp.offsetWidth;
+        const compHeight = comp.offsetHeight;
+        
+        if (side === 'top') { connDragStartX = compLeft + compWidth / 2; connDragStartY = compTop; }
+        else if (side === 'bottom') { connDragStartX = compLeft + compWidth / 2; connDragStartY = compTop + compHeight; }
+        else if (side === 'left') { connDragStartX = compLeft; connDragStartY = compTop + compHeight / 2; }
+        else if (side === 'right') { connDragStartX = compLeft + compWidth; connDragStartY = compTop + compHeight / 2; }
+    }
+
     let startX, startY, startW, startH, startTop, startLeft, startRect;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
     function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
@@ -356,6 +472,62 @@ window.v4Script = `
         const gridHeaders = gridContainer ? Array.from(gridContainer.querySelectorAll('.v4-grid-header-row .v4-grid-cell')).slice(1).map(cell => cell.innerText.replace(' ⇅', '')) : [];
         const gridRowCount = gridContainer ? (parseInt(gridContainer.getAttribute('data-row-count')) || 0) : 0;
         const gridShowPagination = gridContainer ? gridContainer.getAttribute('data-pagination') !== 'false' : true;
+        
+        let gridColumns = [];
+        if (gridContainer) {
+            const rawCols = gridContainer.getAttribute('data-columns');
+            if (rawCols) {
+                try {
+                    gridColumns = JSON.parse(rawCols);
+                } catch(e) {
+                    console.error("Error parsing data-columns", e);
+                }
+            }
+            if (!gridColumns || gridColumns.length === 0) {
+                var tableCols = Array.from(gridContainer.querySelectorAll('colgroup col'));
+                var tableHeaders = Array.from(gridContainer.querySelectorAll('thead th'));
+                if (tableHeaders.length > 0) {
+                    gridColumns = tableHeaders.map(function(cell, index) {
+                        var name = cell.innerText.replace(' ⇅', '').trim();
+                        var colEl = tableCols[index];
+                        var width = colEl ? (colEl.style.width || colEl.getAttribute('width') || '120px') : '120px';
+                        var type = 'text';
+                        if (cell.classList.contains('v4-grid-check-col') || cell.querySelector('input[type="checkbox"]')) {
+                            type = 'checkbox';
+                        } else if (name === '번호') {
+                            type = 'number';
+                        } else if (name === '방송상태') {
+                            type = 'status';
+                        } else if (name === '등록/수정자' || name === '등록자' || name === '수정자') {
+                            type = 'author';
+                        } else if (name.indexOf('일시') >= 0 || name.indexOf('일자') >= 0) {
+                            type = 'datetime';
+                        }
+                        return { name: name, type: type, width: width };
+                    });
+                } else {
+                    const headerCells = Array.from(gridContainer.querySelectorAll('.v4-grid-header-row .v4-grid-cell'));
+                    const gridTemplateCols = (gridContainer.querySelector('.v4-grid-header-row') && gridContainer.querySelector('.v4-grid-header-row').style.gridTemplateColumns || '').split(/\s+/).filter(Boolean);
+                    gridColumns = headerCells.map((cell, index) => {
+                        const name = cell.innerText.replace(' ⇅', '').trim();
+                        const width = gridTemplateCols[index] || '120px';
+                        let type = 'text';
+                        if (cell.classList.contains('v4-grid-check-col') || cell.querySelector('input[type="checkbox"]')) {
+                            type = 'checkbox';
+                        } else if (name === '번호') {
+                            type = 'number';
+                        } else if (name === '방송상태') {
+                            type = 'status';
+                        } else if (name === '등록/수정자' || name === '등록자' || name === '수정자') {
+                            type = 'author';
+                        } else if (name.indexOf('일시') >= 0 || name.indexOf('일자') >= 0) {
+                            type = 'datetime';
+                        }
+                        return { name: name, type: type, width: width };
+                    });
+                }
+            }
+        }
 
         // Admin Settings Atom Detection
         const isAdminSettings = isGroup ? false : (!!c.querySelector('.v4-admin-settings-container') || c.classList.contains('v4-admin-settings-container'));
@@ -448,7 +620,7 @@ window.v4Script = `
             id: c.id,
             x: parseFloat(c.style.left) || 0,
             y: parseFloat(c.style.top) || 0,
-            isTable: !!table,
+            isTable: !!table && !isGrid,
             isShape: !!shape,
             isIcon: !!icon,
             isImage: isImage,
@@ -458,6 +630,7 @@ window.v4Script = `
             isRadio: isRadio,
             checked: checked,
             textEnabled: textEnabled,
+            checkboxText: container ? (container.querySelector('.v4-checkbox-text, .v4-radio-text')?.innerText || "TEXT") : "TEXT",
             isTextbox: isTextbox,
             isTextarea: isTextarea,
             placeholderText: placeholderText,
@@ -512,6 +685,7 @@ window.v4Script = `
             accordionHierarchy: accordionHierarchy,
             isGrid: isGrid,
             gridHeaders: gridHeaders,
+            gridColumns: gridColumns,
             gridRowCount: gridRowCount,
             gridShowPagination: gridShowPagination,
             isAdminSettings: isAdminSettings,
@@ -562,8 +736,8 @@ window.v4Script = `
         if (!c) return;
         const t = parseInt(c.style.top) || 0;
         const l = parseInt(c.style.left) || 0;
-        const drag = c.querySelector('.lf-drag-handle');
-        const del = c.querySelector('.lf-delete-trigger');
+        const drag = c.querySelector(':scope > .lf-drag-handle');
+        const del = c.querySelector(':scope > .lf-delete-trigger');
         if (drag) { drag.style.top = t < 16 ? '4px' : '-16px'; drag.style.left = l < 16 ? '4px' : '-16px'; }
         if (del) { 
             del.style.top = t < 16 ? '4px' : '-12px'; 
@@ -578,6 +752,7 @@ window.v4Script = `
     });
 
     let isMarquee = false;
+    let groupChildrenStart = null;
     document.addEventListener('mousedown', e => {
         if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.header-metadata')) return;
 
@@ -589,6 +764,8 @@ window.v4Script = `
                 while (parent) {
                     if (parent.classList.contains('text-marker') || parent.classList.contains('pin-marker')) break;
                     c = parent;
+                    // If we've reached a group, stop here — do not bubble past the group
+                    if (c.classList.contains('lf-group')) break;
                     parent = c.parentElement.closest('.lf-component');
                 }
             }
@@ -658,6 +835,21 @@ window.v4Script = `
             activeEl = r.parentElement; 
             startX = e.clientX; startY = e.clientY; 
             startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; 
+            
+            if (activeEl.classList.contains('lf-group')) {
+                groupChildrenStart = Array.from(activeEl.children)
+                    .filter(child => child.classList.contains('lf-component'))
+                    .map(child => ({
+                        el: child,
+                        left: parseFloat(child.style.left) || 0,
+                        top: parseFloat(child.style.top) || 0,
+                        width: parseFloat(child.style.width) || child.offsetWidth || 0,
+                        height: parseFloat(child.style.height) || child.offsetHeight || 0
+                    }));
+            } else {
+                groupChildrenStart = null;
+            }
+            
             e.preventDefault(); 
         }
         else if (h || c) { 
@@ -683,6 +875,65 @@ window.v4Script = `
 
     let rafId = null;
     document.addEventListener('mousemove', e => {
+        if (isDraggingLine && activeLineId) {
+            const scale = (window.parent?.state?.transform?.scale) || 1;
+            const dx = (e.clientX - startX) / scale;
+            const dy = (e.clientY - startY) / scale;
+            const conn = window.parent?.state?.connectors?.find(c => c.id === activeLineId);
+            if (conn && startLineCoords) {
+                conn.start.x = startLineCoords.start.x + dx;
+                conn.start.y = startLineCoords.start.y + dy;
+                conn.end.x = startLineCoords.end.x + dx;
+                conn.end.y = startLineCoords.end.y + dy;
+                conn.start.targetId = null; conn.start.side = null;
+                conn.end.targetId = null; conn.end.side = null;
+                window.updateConnectorPathLocal(activeLineId);
+            }
+            return;
+        }
+
+        if (isDrawingConnector) {
+            const rect = document.body.getBoundingClientRect();
+            const scale = (window.parent?.state?.transform?.scale) || 1;
+            const logicalX = (e.clientX - rect.left) / scale;
+            const logicalY = (e.clientY - rect.top) / scale;
+            
+            drawTempLine(connDragStartX, connDragStartY, logicalX, logicalY);
+            
+            // Toggle near-connector class based on distance inside iframe
+            document.querySelectorAll('.lf-component').forEach(comp => {
+                if (comp.id === startComponentId) return;
+                const r = comp.getBoundingClientRect();
+                const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
+                const dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 100) {
+                    comp.classList.add('near-connector');
+                } else {
+                    comp.classList.remove('near-connector');
+                }
+            });
+
+            const targetPort = e.target.closest('.lf-connector-port');
+            if (targetPort && targetPort.parentElement.id !== startComponentId) {
+                if (hoveredPort && hoveredPort !== targetPort) {
+                    hoveredPort.style.transform = '';
+                    hoveredPort.style.background = '#00e5ff';
+                }
+                hoveredPort = targetPort;
+                hoveredPort.style.transform = 'scale(1.8)';
+                hoveredPort.style.background = '#fb7185';
+            } else {
+                if (hoveredPort) {
+                    hoveredPort.style.transform = '';
+                    hoveredPort.style.background = '#00e5ff';
+                    hoveredPort = null;
+                }
+            }
+            return;
+        }
+
         if (isMarquee) {
             notifyParent({ type: 'LF_MARQUEE_MOVE', x: e.clientX, y: e.clientY });
             window.getSelection()?.removeAllRanges();
@@ -713,10 +964,59 @@ window.v4Script = `
                 markDirty(); 
             }
             else if (isResizing && activeEl) { 
-                const nw = Math.max(10, startW + e.clientX - startX);
-                const nh = Math.max(10, startH + e.clientY - startY);
+                const scale = (window.parent?.state?.transform?.scale) || 1;
+                const nw = Math.max(10, startW + (e.clientX - startX) / scale);
+                const nh = Math.max(10, startH + (e.clientY - startY) / scale);
+                
+                const scaleX = nw / startW;
+                const scaleY = nh / startH;
+                
                 activeEl.style.width = nw + 'px'; 
                 activeEl.style.height = nh + 'px'; 
+                
+                if (groupChildrenStart) {
+                    groupChildrenStart.forEach(child => {
+                        const newL = child.left * scaleX;
+                        const newT = child.top * scaleY;
+                        const newW = child.width * scaleX;
+                        const newH = child.height * scaleY;
+                        
+                        child.el.style.left = newL + 'px';
+                        child.el.style.top = newT + 'px';
+                        child.el.style.width = newW + 'px';
+                        child.el.style.height = newH + 'px';
+                        child.el.setAttribute('data-resized', 'true');
+                        
+                        // Rescale inner elements for checkboxes / radios / other atoms
+                        const innerBox = child.el.querySelector('.v4-checkbox, .v4-radio');
+                        if (innerBox) {
+                            const isTextEnabled = child.el.querySelector('.v4-checkbox-container, .v4-radio-container')?.getAttribute('data-text-enabled') !== 'false';
+                            if (!isTextEnabled) {
+                                innerBox.style.width = newW + 'px';
+                                innerBox.style.height = newH + 'px';
+                            }
+                        }
+                        
+                        // Scale selectboxes, inputs, buttons inside grouped atoms
+                        const selectbox = child.el.querySelector('.v4-selectbox-header');
+                        if (selectbox) {
+                            selectbox.style.width = '100%';
+                        }
+                        const inputWrap = child.el.querySelector('.v4-textbox-container, .v4-textarea-container');
+                        if (inputWrap) {
+                            inputWrap.style.width = '100%';
+                            inputWrap.style.height = '100%';
+                        }
+                        const btn = child.el.querySelector('.v4-custom-btn, .v4-btn-container');
+                        if (btn) {
+                            btn.style.width = '100%';
+                            btn.style.height = '100%';
+                        }
+                        
+                        window.updateHandles(child.el);
+                    });
+                }
+                
                 window.updateHandles(activeEl);
                 markDirty(); 
                 notifyParent({ type: 'LF_COMP_RESIZED', w: nw, h: nh });
@@ -725,8 +1025,42 @@ window.v4Script = `
     });
 
     document.addEventListener('mouseup', () => { 
+        document.querySelectorAll('.lf-component').forEach(comp => comp.classList.remove('near-connector'));
+        if (isDraggingLine) {
+            isDraggingLine = false;
+            startLineCoords = null;
+            activeLineId = null;
+            notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+            markDirty();
+            return;
+        }
+
+        if (isDrawingConnector) {
+            isDrawingConnector = false;
+            document.body.classList.remove('drawing-line-active');
+            document.querySelectorAll('.lf-component').forEach(comp => comp.classList.remove('near-connector'));
+            removeTempLine();
+            if (hoveredPort) {
+                const targetComponentId = hoveredPort.parentElement.id;
+                const targetPortSide = hoveredPort.getAttribute('data-side');
+                hoveredPort.style.transform = '';
+                hoveredPort.style.background = '#00e5ff';
+                hoveredPort = null;
+                
+                notifyParent({
+                    type: 'LF_CREATE_CONNECTOR',
+                    startId: startComponentId,
+                    startSide: startPortSide,
+                    endId: targetComponentId,
+                    endSide: targetPortSide
+                });
+            }
+            return;
+        }
+
         if (isConnectorDragging) {
             isConnectorDragging = false;
+            document.body.classList.remove('drawing-line-active');
             notifyParent({ type: 'LF_CONNECTOR_HANDLE_UP' });
         }
         if (isMarquee) {
@@ -813,6 +1147,307 @@ window.v4Script = `
             });
         }
     }, { passive: false });
+
+    window.renderGrid = function(container, columns, rowCount, showPagination) {
+        if (!container) return;
+        
+        container.setAttribute('data-columns', JSON.stringify(columns));
+        container.setAttribute('data-row-count', rowCount);
+        container.setAttribute('data-pagination', showPagination ? 'true' : 'false');
+        
+        var mockList = [
+            { no: '1024', name: '[헤지스] 여름 맞이 린넨 셔츠 특가 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '김엘에프', date: '2026-07-01 11:00:00' },
+            { no: '1023', name: '[닥스] 프리미엄 실크 타이 단독 런칭 쇼', status: '방송예정', statusColor: '#d97706', statusBg: 'rgba(251,191,36,0.15)', author: '이닥스', date: '2026-06-30 18:30:20' },
+            { no: '1022', name: '[라푸마] 아웃도어 바람막이 클리어런스 세일', status: '방송종료', statusColor: '#ef4444', statusBg: 'rgba(239,68,68,0.1)', author: '박라푸마', date: '2026-06-29 14:15:10' },
+            { no: '1021', name: '[질스튜어트] 봄 신상 스니커즈 한정 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '최질스', date: '2026-06-28 10:00:00' },
+            { no: '1020', name: '[바네사브루노] 가을 컬렉션 룩북 공개 생방송', status: '방송예정', statusColor: '#d97706', statusBg: 'rgba(251,191,36,0.15)', author: '정바네', date: '2026-06-27 16:45:00' }
+        ];
+
+        var isMockValue = function(text, type) {
+            if (!text) return true;
+            var t = text.trim();
+            if (type === 'number') {
+                return /^\d+$/.test(t);
+            }
+            if (type === 'status') {
+                return t.indexOf('방송중') >= 0 || t.indexOf('방송예정') >= 0 || t.indexOf('방송종료') >= 0;
+            }
+            if (type === 'author') {
+                return ['김엘에프', '이닥스', '박라푸마', '최질스', '정바네'].indexOf(t) >= 0;
+            }
+            if (type === 'datetime') {
+                return t.indexOf('2026-') === 0;
+            }
+            if (type === 'text') {
+                var mocks = [
+                    '[헤지스] 여름 맞이 린넨 셔츠 특가 라이브',
+                    '[닥스] 프리미엄 실크 타이 단독 런칭 쇼',
+                    '[라푸마] 아웃도어 바람막이 클리어런스 세일',
+                    '[질스튜어트] 봄 신상 스니커즈 한정 라이브',
+                    '[바네사브루노] 가을 컬렉션 룩북 공개 생방송',
+                    'New', '새 항목', 'Header', 'Data'
+                ];
+                return mocks.indexOf(t) >= 0 || t === '';
+            }
+            return true;
+        };
+
+        var table = container.querySelector('table');
+        if (table) {
+            // In-place mutative update to preserve inline styling, text edits, background, borders etc!
+            var colgroup = table.querySelector('colgroup');
+            if (colgroup) {
+                colgroup.innerHTML = '';
+                columns.forEach(function(col) {
+                    var w = col.width || '100px';
+                    if (/^\d+$/.test(w.trim()) || /^\d*\.\d+$/.test(w.trim())) {
+                        w = w.trim() + 'px';
+                    }
+                    var colEl = document.createElement('col');
+                    colEl.style.width = w;
+                    colgroup.appendChild(colEl);
+                });
+            }
+            
+            var thead = table.querySelector('thead');
+            if (thead) {
+                var headerRow = thead.querySelector('tr');
+                if (headerRow) {
+                    headerRow.style.background = '#ffffff';
+                    var ths = Array.from(headerRow.querySelectorAll('th'));
+                    while (ths.length < columns.length) {
+                        var newTh = document.createElement('th');
+                        newTh.className = 'v4-grid-cell v4-editable-cell';
+                        newTh.contentEditable = 'true';
+                        newTh.style.display = 'table-cell';
+                        newTh.style.verticalAlign = 'middle';
+                        newTh.style.boxSizing = 'border-box';
+                        newTh.style.fontSize = '12px';
+                        newTh.style.fontWeight = '500';
+                        newTh.style.color = '#334155';
+                        headerRow.appendChild(newTh);
+                        ths.push(newTh);
+                    }
+                    while (ths.length > columns.length) {
+                        headerRow.removeChild(ths.pop());
+                    }
+                    
+                    columns.forEach(function(col, idx) {
+                        var th = ths[idx];
+                        var isLast = (idx === columns.length - 1);
+                        // Save existing styles
+                        var bg = th.style.background || th.style.backgroundColor;
+                        var color = th.style.color;
+                        var fontSize = th.style.fontSize;
+                        var fontFamily = th.style.fontFamily;
+
+                        th.style.borderRight = isLast ? 'none' : '1.6px solid rgb(226,232,240)';
+                        th.style.textAlign = col.type === 'checkbox' ? 'center' : 'left';
+                        th.style.padding = col.type === 'checkbox' ? '0' : '0 8px';
+                        th.style.fontWeight = '500';
+                        th.style.color = '#334155';
+                        
+                        if (col.type === 'checkbox') {
+                            th.className = 'v4-grid-cell v4-grid-check-col';
+                            th.contentEditable = 'false';
+                            th.setAttribute('data-type', 'checkbox');
+                            th.innerHTML = '<input type="checkbox">';
+                        } else {
+                            th.className = 'v4-grid-cell v4-editable-cell';
+                            th.contentEditable = 'true';
+                            th.setAttribute('data-type', col.type);
+                            var desiredText = (col.name || '') + ' ⇅';
+                            if (th.innerText !== desiredText && th.innerText !== col.name) {
+                                th.innerText = desiredText;
+                            }
+                        }
+
+                        // Restore styles
+                        if (bg) th.style.setProperty('background', bg, 'important');
+                        if (color) th.style.setProperty('color', color, 'important');
+                        if (fontSize) th.style.setProperty('font-size', fontSize, 'important');
+                        if (fontFamily) th.style.setProperty('font-family', fontFamily, 'important');
+                    });
+                }
+            }
+            
+            var tbody = table.querySelector('tbody');
+            if (tbody) {
+                var rows = Array.from(tbody.querySelectorAll('tr'));
+                while (rows.length < rowCount) {
+                    var newRow = document.createElement('tr');
+                    newRow.style.height = '36px';
+                    newRow.style.background = '#ffffff';
+                    newRow.style.boxSizing = 'border-box';
+                    tbody.appendChild(newRow);
+                    rows.push(newRow);
+                }
+                while (rows.length > rowCount) {
+                    tbody.removeChild(rows.pop());
+                }
+                
+                rows.forEach(function(row, rIdx) {
+                    var isLastRow = (rIdx === rowCount - 1);
+                    row.style.borderBottom = isLastRow ? 'none' : '1.6px solid rgb(226,232,240)';
+                    
+                    var tds = Array.from(row.querySelectorAll('td'));
+                    while (tds.length < columns.length) {
+                        var newTd = document.createElement('td');
+                        newTd.className = 'v4-grid-cell v4-editable-cell';
+                        newTd.contentEditable = 'true';
+                        newTd.style.display = 'table-cell';
+                        newTd.style.verticalAlign = 'middle';
+                        newTd.style.boxSizing = 'border-box';
+                        newTd.style.fontSize = '12px';
+                        row.appendChild(newTd);
+                        tds.push(newTd);
+                    }
+                    while (tds.length > columns.length) {
+                        row.removeChild(tds.pop());
+                    }
+                    
+                    columns.forEach(function(col, cIdx) {
+                        var td = tds[cIdx];
+                        var isLastCol = (cIdx === columns.length - 1);
+                        td.style.borderRight = isLastCol ? 'none' : '1.6px solid rgb(226,232,240)';
+                        
+                        var prevType = td.getAttribute('data-type');
+                        // Legacy support: if checkbox td doesn't have data-type, resolve it
+                        if (!prevType && (td.classList.contains('v4-grid-check-col') || td.querySelector('input[type="checkbox"]'))) {
+                            prevType = 'checkbox';
+                            td.setAttribute('data-type', 'checkbox');
+                        }
+
+                        var currentText = td.innerText || '';
+                        var shouldOverwrite = (prevType !== col.type) || td.innerHTML === '' || isMockValue(currentText, prevType);
+
+                        if (shouldOverwrite) {
+                            // Save existing styles
+                            var bg = td.style.background || td.style.backgroundColor;
+                            var color = td.style.color;
+                            var fontSize = td.style.fontSize;
+                            var fontFamily = td.style.fontFamily;
+
+                            td.setAttribute('data-type', col.type);
+                            if (col.type === 'checkbox') {
+                                td.className = 'v4-grid-cell';
+                                td.contentEditable = 'false';
+                                td.style.textAlign = 'center';
+                                td.style.padding = '0';
+                                td.innerHTML = '<input type="checkbox">';
+                            } else {
+                                td.className = 'v4-grid-cell v4-editable-cell';
+                                td.contentEditable = 'true';
+                                td.style.textAlign = 'left';
+                                td.style.padding = '0 8px';
+                                
+                                var data = mockList[rIdx % mockList.length];
+                                if (col.type === 'number') {
+                                    td.innerText = (1024 - rIdx);
+                                } else if (col.type === 'status') {
+                                    td.innerHTML = '<span style="background:' + data.statusBg + '; color:' + data.statusColor + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + data.status + '</span>';
+                                } else if (col.type === 'author') {
+                                    td.innerText = data.author;
+                                } else if (col.type === 'datetime') {
+                                    td.innerText = data.date;
+                                } else {
+                                    td.innerText = data.name;
+                                }
+                            }
+
+                            // Restore styles
+                            if (bg) td.style.setProperty('background', bg, 'important');
+                            if (color) td.style.setProperty('color', color, 'important');
+                            if (fontSize) td.style.setProperty('font-size', fontSize, 'important');
+                            if (fontFamily) td.style.setProperty('font-family', fontFamily, 'important');
+                        }
+                    });
+                });
+            }
+            
+            var footer = container.querySelector('.v4-grid-footer');
+            if (footer) {
+                footer.style.display = showPagination ? 'flex' : 'none';
+            }
+            var wrapper = container.querySelector('.v4-grid-table-wrapper');
+            if (wrapper) {
+                wrapper.style.height = showPagination ? 'calc(100% - 72px)' : 'calc(100% - 36px)';
+            }
+            return;
+        }
+
+        // Full rebuild if table is completely missing
+        var colgroupHtml = '<colgroup>';
+        columns.forEach(function(col) {
+            var w = col.width;
+            if (!w) {
+                w = '100px';
+            } else {
+                w = w.trim();
+                if (/^\d+$/.test(w) || /^\d*\.\d+$/.test(w)) {
+                    w = w + 'px';
+                }
+            }
+            colgroupHtml += '<col style="width:' + w + ';">';
+        });
+        colgroupHtml += '</colgroup>';
+        
+        var headerHtml = '<tr style="height:36px; background:#ffffff; border-bottom:1.6px solid rgb(226,232,240); box-sizing:border-box;">';
+        columns.forEach(function(col, index) {
+            var isLast = (index === columns.length - 1);
+            var borderRight = isLast ? '' : ' border-right:1.6px solid rgb(226,232,240);';
+            if (col.type === 'checkbox') {
+                headerHtml += '<th class="v4-grid-cell v4-grid-check-col" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0; font-weight:normal;"><input type="checkbox"></th>';
+            } else {
+                headerHtml += '<th class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="' + col.type + '" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; font-weight:500; color:#334155; user-select:none;">' + (col.name || '') + ' ⇅</th>';
+            }
+        });
+        headerHtml += '</tr>';
+        
+        var bodyHtml = '';
+        for (var i = 0; i < rowCount; i++) {
+            var data = mockList[i % mockList.length];
+            var isLastRow = (i === rowCount - 1);
+            var borderBottom = isLastRow ? 'none' : '1.6px solid rgb(226,232,240)';
+            
+            bodyHtml += '<tr style="height:36px; border-bottom:' + borderBottom + '; box-sizing:border-box; background:#ffffff;">';
+            
+            columns.forEach(function(col, colIndex) {
+                var isLastCol = (colIndex === columns.length - 1);
+                var borderRight = isLastCol ? '' : ' border-right:1.6px solid rgb(226,232,240);';
+                
+                if (col.type === 'checkbox') {
+                    bodyHtml += '<td class="v4-grid-cell" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0;"><input type="checkbox"></td>';
+                } else if (col.type === 'number') {
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="number" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#334155;">' + (1024 - i) + '</td>';
+                } else if (col.type === 'status') {
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="status" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box;"><span style="background:' + data.statusBg + '; color:' + data.statusColor + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + data.status + '</span></td>';
+                } else if (col.type === 'author') {
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="author" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#64748b;">' + data.author + '</td>';
+                } else if (col.type === 'datetime') {
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="datetime" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#64748b;">' + data.date + '</td>';
+                } else {
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="text" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.name + '</td>';
+                }
+            });
+            bodyHtml += '</tr>';
+        }
+        
+        var displayFooter = showPagination ? 'flex' : 'none';
+        var tableHeight = showPagination ? 'calc(100% - 72px)' : 'calc(100% - 36px)';
+        
+        var tableContainerHtml = '<div class="v4-grid-table-wrapper" style="width:100%; height:' + tableHeight + '; overflow:auto; box-sizing:border-box;">' +
+                                 '<table style="width:100%; table-layout:fixed; border-collapse:collapse; background:#ffffff; box-sizing:border-box;">' +
+                                 colgroupHtml +
+                                 '<thead>' + headerHtml + '</thead>' +
+                                 '<tbody style="box-sizing:border-box;">' + bodyHtml + '</tbody>' +
+                                 '</table>' +
+                                 '</div>';
+                                 
+        var footerHtml = '<div class="v4-grid-footer" style="height:36px; padding:0 12px; display:' + displayFooter + '; align-items:center; justify-content:space-between; background:#f8fafc; border-top:1.6px solid rgb(226,232,240); box-sizing:border-box; width:100%; flex-shrink:0;"><span style="font-size:11px; color:#64748b; font-family:Inter,sans-serif;">1/27</span><div class="v4-grid-pages" style="font-size:11px; color:#64748b; cursor:pointer; font-family:Inter,sans-serif;">◀ 1 2 3 4 5 ▶</div><span style="font-size:11px; color:#64748b; font-family:Inter,sans-serif;">Page Size 100</span></div>';
+        
+        container.innerHTML = tableContainerHtml + footerHtml;
+    };
 
     window.renderAccordionBody = function(container) {
         const body = container.querySelector('.v4-accordion-body');
@@ -1078,11 +1713,56 @@ window.v4Script = `
             const snapDy = d.y - curTop;
             if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
                 const comps = document.querySelectorAll('.lf-component.selected');
+                let hasConnectorChanges = false;
                 comps.forEach(c => {
-                    c.style.left = (parseInt(c.style.left || 0) + snapDx) + 'px';
-                    c.style.top = (parseInt(c.style.top || 0) + snapDy) + 'px';
-                    window.updateHandles(c);
+                    const isConnector = c.classList.contains('connector-line');
+                    const isGroup = c.classList.contains('lf-group');
+                    if (isConnector) {
+                        const conn = (window.parent && window.parent.state && window.parent.state.connectors)
+                            ? window.parent.state.connectors.find(x => x.id === c.id)
+                            : null;
+                        if (conn) {
+                            conn.start.x += snapDx;
+                            conn.start.y += snapDy;
+                            conn.end.x += snapDx;
+                            conn.end.y += snapDy;
+                            conn.start.targetId = null; conn.start.side = null;
+                            conn.end.targetId = null; conn.end.side = null;
+                            hasConnectorChanges = true;
+                        }
+                    } else {
+                        c.style.left = (parseInt(c.style.left || 0) + snapDx) + 'px';
+                        c.style.top = (parseInt(c.style.top || 0) + snapDy) + 'px';
+                        window.updateHandles(c);
+                        if (isGroup) {
+                            const connIdsStr = c.getAttribute('data-connectors');
+                            const connIds = connIdsStr ? JSON.parse(connIdsStr) : [];
+                            connIds.forEach(connId => {
+                                const conn = (window.parent && window.parent.state && window.parent.state.connectors)
+                                    ? window.parent.state.connectors.find(x => x.id === connId)
+                                    : null;
+                                if (conn) {
+                                    conn.start.x += snapDx;
+                                    conn.start.y += snapDy;
+                                    conn.end.x += snapDx;
+                                    conn.end.y += snapDy;
+                                    conn.start.targetId = null; conn.start.side = null;
+                                    conn.end.targetId = null; conn.end.side = null;
+                                    hasConnectorChanges = true;
+                                }
+                            });
+                        }
+                        if (typeof window.updateAnchoredConnectorsLocal === 'function') {
+                            window.updateAnchoredConnectorsLocal(c.id);
+                        }
+                    }
                 });
+                if (hasConnectorChanges) {
+                    if (window.parent && window.parent.ConnectorEngine) {
+                        window.parent.ConnectorEngine.redrawAll();
+                    }
+                    notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+                }
             }
         }
         else if (d.type === 'LF_IMPORT_PINS') {
@@ -1215,12 +1895,7 @@ window.v4Script = `
                 const rStart = rel(conn.start);
                 const rEnd = rel(conn.end);
 
-                const calculatePathData = (c, s, e) => {
-                    if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
-                    const midX = (s.x + e.x) / 2;
-                    return 'M ' + s.x + ' ' + s.y + ' H ' + midX + ' V ' + e.y + ' H ' + e.x;
-                };
-                const pathData = calculatePathData(conn, rStart, rEnd);
+                const pathData = window.calculatePathData(conn, rStart, rEnd);
 
                 const startMId = 'm-start-' + conn.id;
                 const endMId = 'm-end-' + conn.id;
@@ -1245,6 +1920,15 @@ window.v4Script = `
                     hitArea.onmousedown = (e) => {
                         e.stopPropagation();
                         notifyParent({ type: 'LF_CONNECTOR_CLICKED', id: conn.id, shiftKey: e.shiftKey });
+                        if (window.V4UndoManager) window.V4UndoManager.saveState();
+                        isDraggingLine = true;
+                        activeLineId = conn.id;
+                        startX = e.clientX;
+                        startY = e.clientY;
+                        startLineCoords = {
+                            start: { x: conn.start.x, y: conn.start.y },
+                            end: { x: conn.end.x, y: conn.end.y }
+                        };
                     };
                 }
 
@@ -1259,6 +1943,7 @@ window.v4Script = `
                         handle.onmousedown = (e) => {
                             e.stopPropagation();
                             isConnectorDragging = true;
+                            document.body.classList.add('drawing-line-active');
                             notifyParent({ type: 'LF_CONNECTOR_HANDLE_DOWN', id: conn.id, pointType: type });
                         };
                         svg.appendChild(handle);
@@ -1420,7 +2105,7 @@ window.v4Script = `
                     const existingContent = shape.innerHTML;
                     textContainer = document.createElement('div');
                     textContainer.className = 'v4-shape-text-content';
-                    textContainer.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;overflow:hidden;';
+                    textContainer.style.cssText = 'width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;overflow:hidden;';
                     shape.innerHTML = '';
                     textContainer.innerHTML = existingContent;
                     shape.appendChild(textContainer);
@@ -1512,64 +2197,57 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_GRID_PROPERTIES') {
+            console.log("[DEBUG Grid] LF_UPDATE_GRID_PROPERTIES received:", JSON.stringify(d));
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-grid-container') || (s.classList.contains('v4-grid-container') ? s : null);
             if (container) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
                 
+                var currentCols = [];
+                var rawCols = container.getAttribute('data-columns');
+                if (rawCols) {
+                    try {
+                        currentCols = JSON.parse(rawCols);
+                    } catch(e) {}
+                }
+                if (!currentCols || currentCols.length === 0) {
+                    currentCols = [
+                        { name: '', type: 'checkbox', width: '50px' },
+                        { name: '번호', type: 'number', width: '100px' },
+                        { name: '라이브 방송명', type: 'text', width: '1fr' },
+                        { name: '방송상태', type: 'status', width: '120px' },
+                        { name: '등록/수정자', type: 'author', width: '120px' }
+                    ];
+                }
+                
+                var rowCount = parseInt(container.getAttribute('data-row-count')) || 5;
+                var showPagination = container.getAttribute('data-pagination') !== 'false';
+                
+                if (d.columns !== undefined) {
+                    currentCols = d.columns;
+                }
                 if (d.headers !== undefined) {
-                    const headerCells = Array.from(container.querySelectorAll('.v4-grid-header-row .v4-grid-cell')).slice(1);
-                    d.headers.forEach((headerText, index) => {
-                        if (headerCells[index]) {
-                            headerCells[index].innerText = headerText + ' ⇅';
+                    d.headers.forEach(function(headerText, index) {
+                        if (currentCols[index]) {
+                            currentCols[index].name = headerText;
                         }
                     });
                 }
-                
-                if (d.pagination !== undefined) {
-                    container.setAttribute('data-pagination', d.pagination ? 'true' : 'false');
-                    const footer = container.querySelector('.v4-grid-footer');
-                    if (footer) footer.style.display = d.pagination ? 'flex' : 'none';
-                }
-                
                 if (d.rowCount !== undefined) {
-                    const count = Math.min(20, Math.max(1, parseInt(d.rowCount) || 5));
-                    container.setAttribute('data-row-count', count);
-                    const body = container.querySelector('.v4-grid-body');
-                    if (body) {
-                        body.innerHTML = '';
-                        const mockList = [
-                            { no: '1024', name: '[헤지스] 여름 맞이 린넨 셔츠 특가 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '김엘에프' },
-                            { no: '1023', name: '[닥스] 프리미엄 실크 타이 단독 런칭 쇼', status: '방송예정', statusColor: '#d97706', statusBg: 'rgba(251,191,36,0.15)', author: '이닥스' },
-                            { no: '1022', name: '[라푸마] 아웃도어 바람막이 클리어런스 세일', status: '방송종료', statusColor: '#ef4444', statusBg: 'rgba(239,68,68,0.1)', author: '박라푸마' },
-                            { no: '1021', name: '[질스튜어트] 봄 신상 스니커즈 한정 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '최질스' },
-                            { no: '1020', name: '[바네사브루노] 가을 컬렉션 룩북 공개 생방송', status: '방송예정', statusColor: '#d97706', statusBg: 'rgba(251,191,36,0.15)', author: '정바네' },
-                            { no: '1019', name: '[아떼] 비건 뷰티 립스틱 신제품 메이크업 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '송아떼' },
-                            { no: '1018', name: '[헤지스 골프] 기능성 필드웨어 특가전', status: '방송종료', statusColor: '#ef4444', statusBg: 'rgba(239,68,68,0.1)', author: '한골프' }
-                        ];
-                        for (let i = 0; i < count; i++) {
-                            const data = mockList[i % mockList.length];
-                            const isLast = (i === count - 1);
-                            const borderBottom = isLast ? 'none' : '1.6px solid rgb(226,232,240)';
-                            
-                            const rowEl = document.createElement('div');
-                            rowEl.className = 'v4-grid-row';
-                            rowEl.style.cssText = 'display:grid; grid-template-columns:50px 100px 1fr 120px 120px; height:36px; border-bottom:' + borderBottom + '; box-sizing:border-box; background:#ffffff;';
-                            rowEl.innerHTML = '<div class="v4-grid-cell" style="display:flex; align-items:center; justify-content:center; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box;"><input type="checkbox"></div>' +
-                                              '<div class="v4-grid-cell" style="display:flex; align-items:center; padding:0 8px; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box; font-size:12px; color:#334155;">' + data.no + '</div>' +
-                                              '<div class="v4-grid-cell" style="display:flex; align-items:center; padding:0 8px; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.name + '</div>' +
-                                              '<div class="v4-grid-cell" style="display:flex; align-items:center; padding:0 8px; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box;"><span style="background:' + data.statusBg + '; color:' + data.statusColor + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + data.status + '</span></div>' +
-                                              '<div class="v4-grid-cell" style="display:flex; align-items:center; padding:0 8px; font-size:12px; color:#64748b;">' + data.author + '</div>';
-                            body.appendChild(rowEl);
-                        }
-                    }
+                    rowCount = Math.min(20, Math.max(1, parseInt(d.rowCount) || 5));
                 }
-                
+                if (d.pagination !== undefined) {
+                    showPagination = !!d.pagination;
+                }
                 if (d.bg !== undefined) {
                     container.style.backgroundColor = d.bg;
                 }
                 if (d.border !== undefined) {
                     container.style.borderColor = d.border;
+                }
+                
+                if (window.renderGrid) {
+                    window.renderGrid(container, currentCols, rowCount, showPagination);
                 }
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
@@ -1584,7 +2262,21 @@ window.v4Script = `
                 container.setAttribute('data-text-enabled', d.enabled ? 'true' : 'false');
                 s.removeAttribute('data-resized');
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
+                if (typeof resizeAtomToFitText === 'function') resizeAtomToFitText(s);
                 markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_ATOM_LABEL_TEXT') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
+            if (container) {
+                const textEl = container.querySelector('.v4-checkbox-text, .v4-radio-text');
+                if (textEl) {
+                    textEl.innerText = d.text;
+                    if (typeof resizeAtomToFitText === 'function') resizeAtomToFitText(s);
+                    markDirty();
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_STEPPER_PROPERTIES') {
@@ -2030,6 +2722,8 @@ window.v4Script = `
             if (!t && s.classList.contains('text-marker')) {
                 t = s.querySelector('.v4-editable-cell') || s;
             }
+            const shape = s.querySelector('.v4-shape');
+            if (shape && !d.selector) t = shape;
             const boxEl = s.querySelector('.v4-checkbox, .v4-radio');
             if (boxEl && !d.selector) t = boxEl;
             
@@ -2269,7 +2963,6 @@ window.v4Script = `
             allHandles.forEach(h => h.style.display = 'none');
 
             const validIds = ids.filter(id => {
-                if (id.startsWith('conn_')) return false;
                 const el = doc.getElementById(id);
                 if (!el) return false;
                 
@@ -2283,23 +2976,37 @@ window.v4Script = `
 
             validIds.forEach(id => {
                 const isMarker = id.startsWith('v4-pin-');
+                const isConnector = id.startsWith('conn_');
                 const el = doc.getElementById(id);
                 if (el) {
-                    let absL = parseFloat(el.style.left) || 0;
-                    let absT = parseFloat(el.style.top) || 0;
-                    
-                    let parent = el.parentElement;
-                    while (parent && parent !== doc.body) {
-                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
-                            absL += parseFloat(parent.style.left) || 0;
-                            absT += parseFloat(parent.style.top) || 0;
+                    if (isConnector) {
+                        const conn = (window.parent && window.parent.state && window.parent.state.connectors) 
+                            ? window.parent.state.connectors.find(c => c.id === id) 
+                            : null;
+                        if (conn) {
+                            const absL = Math.min(conn.start.x, conn.end.x);
+                            const absT = Math.min(conn.start.y, conn.end.y);
+                            const w = Math.abs(conn.end.x - conn.start.x);
+                            const h = Math.abs(conn.end.y - conn.start.y);
+                            items.push({ id, type: 'connector', el, x: absL, y: absT, w, h, conn });
                         }
-                        parent = parent.parentElement;
-                    }
+                    } else {
+                        let absL = parseFloat(el.style.left) || 0;
+                        let absT = parseFloat(el.style.top) || 0;
+                        
+                        let parent = el.parentElement;
+                        while (parent && parent !== doc.body) {
+                            if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                                absL += parseFloat(parent.style.left) || 0;
+                                absT += parseFloat(parent.style.top) || 0;
+                            }
+                            parent = parent.parentElement;
+                        }
 
-                    const w = el.offsetWidth;
-                    const h = el.offsetHeight;
-                    items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: absL, y: absT, w, h });
+                        const w = el.offsetWidth;
+                        const h = el.offsetHeight;
+                        items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: absL, y: absT, w, h });
+                    }
                 }
             });
 
@@ -2310,6 +3017,8 @@ window.v4Script = `
             let minY = Math.min(...items.map(i => i.y));
             let maxX = Math.max(...items.map(i => i.x + i.w));
             let maxY = Math.max(...items.map(i => i.y + i.h));
+
+            let hasConnectorChanges = false;
 
             if (alignType === 'distribute_h') {
                 if (items.length < 3) {
@@ -2327,21 +3036,38 @@ window.v4Script = `
                     
                     if (dx === 0) return;
                     const newAbsX = item.x + dx;
-                    let parentL = 0;
-                    let parent = item.el.parentElement;
-                    while (parent && parent !== doc.body) {
-                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
-                            parentL += parseFloat(parent.style.left) || 0;
+
+                    if (item.type === 'connector') {
+                        if (item.conn) {
+                            item.conn.start.x += dx;
+                            item.conn.end.x += dx;
+                            item.conn.start.targetId = null; item.conn.start.side = null;
+                            item.conn.end.targetId = null; item.conn.end.side = null;
+                            hasConnectorChanges = true;
                         }
-                        parent = parent.parentElement;
-                    }
-                    item.el.style.left = (newAbsX - parentL) + 'px';
-                    if (item.type === 'marker') {
-                        const idx = parseInt(item.id.replace('v4-pin-', ''));
-                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: item.y });
+                    } else {
+                        let parentL = 0;
+                        let parent = item.el.parentElement;
+                        while (parent && parent !== doc.body) {
+                            if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                                parentL += parseFloat(parent.style.left) || 0;
+                            }
+                            parent = parent.parentElement;
+                        }
+                        item.el.style.left = (newAbsX - parentL) + 'px';
+                        if (item.type === 'marker') {
+                            const idx = parseInt(item.id.replace('v4-pin-', ''));
+                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: item.y });
+                        }
                     }
                 });
                 allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+                if (hasConnectorChanges) {
+                    if (window.parent && window.parent.ConnectorEngine) {
+                        window.parent.ConnectorEngine.redrawAll();
+                    }
+                    notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+                }
                 markDirty();
                 return;
             }
@@ -2362,21 +3088,38 @@ window.v4Script = `
                     
                     if (dy === 0) return;
                     const newAbsY = item.y + dy;
-                    let parentT = 0;
-                    let parent = item.el.parentElement;
-                    while (parent && parent !== doc.body) {
-                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
-                            parentT += parseFloat(parent.style.top) || 0;
+
+                    if (item.type === 'connector') {
+                        if (item.conn) {
+                            item.conn.start.y += dy;
+                            item.conn.end.y += dy;
+                            item.conn.start.targetId = null; item.conn.start.side = null;
+                            item.conn.end.targetId = null; item.conn.end.side = null;
+                            hasConnectorChanges = true;
                         }
-                        parent = parent.parentElement;
-                    }
-                    item.el.style.top = (newAbsY - parentT) + 'px';
-                    if (item.type === 'marker') {
-                        const idx = parseInt(item.id.replace('v4-pin-', ''));
-                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: item.x, y: newAbsY });
+                    } else {
+                        let parentT = 0;
+                        let parent = item.el.parentElement;
+                        while (parent && parent !== doc.body) {
+                            if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                                parentT += parseFloat(parent.style.top) || 0;
+                            }
+                            parent = parent.parentElement;
+                        }
+                        item.el.style.top = (newAbsY - parentT) + 'px';
+                        if (item.type === 'marker') {
+                            const idx = parseInt(item.id.replace('v4-pin-', ''));
+                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: item.x, y: newAbsY });
+                        }
                     }
                 });
                 allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+                if (hasConnectorChanges) {
+                    if (window.parent && window.parent.ConnectorEngine) {
+                        window.parent.ConnectorEngine.redrawAll();
+                    }
+                    notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+                }
                 markDirty();
                 return;
             }
@@ -2394,28 +3137,46 @@ window.v4Script = `
 
                 if (dx === 0 && dy === 0) return;
 
-                const newAbsX = item.x + dx;
-                const newAbsY = item.y + dy;
-
-                let parentL = 0;
-                let parentT = 0;
-                let parent = item.el.parentElement;
-                while (parent && parent !== doc.body) {
-                    if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
-                        parentL += parseFloat(parent.style.left) || 0;
-                        parentT += parseFloat(parent.style.top) || 0;
+                if (item.type === 'connector') {
+                    if (item.conn) {
+                        item.conn.start.x += dx;
+                        item.conn.start.y += dy;
+                        item.conn.end.x += dx;
+                        item.conn.end.y += dy;
+                        item.conn.start.targetId = null; item.conn.start.side = null;
+                        item.conn.end.targetId = null; item.conn.end.side = null;
+                        hasConnectorChanges = true;
                     }
-                    parent = parent.parentElement;
-                }
+                } else {
+                    const newAbsX = item.x + dx;
+                    const newAbsY = item.y + dy;
 
-                item.el.style.left = (newAbsX - parentL) + 'px';
-                item.el.style.top = (newAbsY - parentT) + 'px';
-                
-                if (item.type === 'marker') {
-                    const idx = parseInt(item.id.replace('v4-pin-', ''));
-                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: newAbsY });
+                    let parentL = 0;
+                    let parentT = 0;
+                    let parent = item.el.parentElement;
+                    while (parent && parent !== doc.body) {
+                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                            parentL += parseFloat(parent.style.left) || 0;
+                            parentT += parseFloat(parent.style.top) || 0;
+                        }
+                        parent = parent.parentElement;
+                    }
+
+                    item.el.style.left = (newAbsX - parentL) + 'px';
+                    item.el.style.top = (newAbsY - parentT) + 'px';
+                    
+                    if (item.type === 'marker') {
+                        const idx = parseInt(item.id.replace('v4-pin-', ''));
+                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: newAbsY });
+                    }
                 }
             });
+            if (hasConnectorChanges) {
+                if (window.parent && window.parent.ConnectorEngine) {
+                    window.parent.ConnectorEngine.redrawAll();
+                }
+                notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+            }
             markDirty();
         } else if (d.type === 'LF_GROUP_SELECTED') {
             const ids = d.ids || [];
@@ -2424,13 +3185,10 @@ window.v4Script = `
             
             const doc = document;
             const host = doc.body;
-            
-            const allHandles = doc.querySelectorAll('.lf-drag-handle, .lf-resizer, .lf-delete-trigger');
-            const handleStates = Array.from(allHandles).map(h => h.style.display);
-            allHandles.forEach(h => h.style.display = 'none');
 
             const comps = ids.map(id => doc.getElementById(id)).filter(el => el && !el.classList.contains('connector-line'));
-            if (comps.length < 2) return;
+            const groupedConnectorIds = ids.filter(id => id.startsWith('conn_'));
+            if (comps.length < 2 && (comps.length + groupedConnectorIds.length) < 2) return;
 
             // Sort comps based on their current DOM order to preserve relative layering inside the group
             comps.sort((a, b) => {
@@ -2440,20 +3198,51 @@ window.v4Script = `
                 return 0;
             });
 
+            // Suspend observer updates to prevent batch movements from triggers
+            if (typeof window.suspendDesignSystem === 'function') {
+                window.suspendDesignSystem();
+            }
+
             let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-            const items = comps.map(c => {
+            const items = [];
+
+            comps.forEach(c => {
                 const l = parseFloat(c.style.left) || 0;
                 const t = parseFloat(c.style.top) || 0;
-                const w = c.offsetWidth;
-                const h = c.offsetHeight;
+                const w = parseFloat(c.style.width) || c.offsetWidth || 0;
+                const h = parseFloat(c.style.height) || c.offsetHeight || 0;
+
                 minX = Math.min(minX, l);
                 minY = Math.min(minY, t);
                 maxX = Math.max(maxX, l + w);
                 maxY = Math.max(maxY, t + h);
-                return { el: c, l, t, w, h };
+                items.push({ el: c, l, t, w, h, type: 'comp' });
             });
 
-            allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+            groupedConnectorIds.forEach(id => {
+                const conn = (window.parent && window.parent.state && window.parent.state.connectors) 
+                    ? window.parent.state.connectors.find(c => c.id === id) 
+                    : null;
+                if (conn) {
+                    const l = Math.min(conn.start.x, conn.end.x);
+                    const t = Math.min(conn.start.y, conn.end.y);
+                    const w = Math.abs(conn.end.x - conn.start.x);
+                    const h = Math.abs(conn.end.y - conn.start.y);
+
+                    minX = Math.min(minX, l);
+                    minY = Math.min(minY, t);
+                    maxX = Math.max(maxX, l + w);
+                    maxY = Math.max(maxY, t + h);
+                    
+                    const el = doc.getElementById(id);
+                    items.push({ el, l, t, w, h, type: 'connector', conn });
+                }
+            });
+
+            // 2. Hide handles for clean state AFTER gathering coordinates
+            const allHandles = doc.querySelectorAll('.lf-drag-handle, .lf-resizer, .lf-delete-trigger');
+            const handleStates = Array.from(allHandles).map(h => h.style.display);
+            allHandles.forEach(h => h.style.display = 'none');
 
             const groupBaseL = minX;
             const groupBaseT = minY;
@@ -2464,6 +3253,18 @@ window.v4Script = `
             const group = doc.createElement('div');
             group.id = groupId;
             group.className = 'lf-component lf-group selected';
+            if (groupedConnectorIds.length > 0) {
+                group.setAttribute('data-connectors', JSON.stringify(groupedConnectorIds));
+            }
+            
+            // Insert the group exactly before the topmost selected component in the DOM to preserve layer depth
+            const topmostComp = comps[comps.length - 1] || (items.length > 0 ? items[items.length - 1].el : null);
+            if (topmostComp) {
+                topmostComp.parentNode.insertBefore(group, topmostComp);
+            } else {
+                host.appendChild(group);
+            }
+
             Object.assign(group.style, {
                 position: 'absolute', left: groupBaseL + 'px', top: groupBaseT + 'px',
                 width: groupBaseW + 'px', height: groupBaseH + 'px',
@@ -2473,12 +3274,9 @@ window.v4Script = `
             group.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
                               '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
 
-            // Insert the group exactly before the first selected component in the DOM
-            // to preserve the overall layering position of the grouped items relative to other page elements.
-            const firstComp = comps[0];
-            firstComp.parentNode.insertBefore(group, firstComp);
 
             items.forEach(item => {
+                if (item.type === 'connector') return; // virtual, don't move into DOM
                 item.el.style.left = (item.l - minX) + 'px';
                 item.el.style.top = (item.t - minY) + 'px';
                 item.el.style.width = item.w + 'px';
@@ -2487,7 +3285,20 @@ window.v4Script = `
                 group.appendChild(item.el);
             });
 
-            notifyParent({ type: 'LF_SELECT_ID', id: groupId });
+            // 3. Restore handle states AFTER all children are successfully moved
+            allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+
+            // Resume observer updates
+            if (typeof window.resumeDesignSystem === 'function') {
+                window.resumeDesignSystem();
+            }
+
+            // Notify parent with full group styles so Object Properties panel recognizes it as a group immediately
+            notifyParent({
+                type: 'LF_COMP_SELECTED',
+                shiftKey: false,
+                ...window._getCompStyles(group)
+            });
             markDirty();
         } else if (d.type === 'LF_UNGROUP_SELECTED') {
             const ids = d.ids || [];
@@ -2501,6 +3312,9 @@ window.v4Script = `
 
             const groupL = parseFloat(group.style.left) || 0;
             const groupT = parseFloat(group.style.top) || 0;
+
+            const groupedConnectorIdsStr = group.getAttribute('data-connectors');
+            const groupedConnectorIds = groupedConnectorIdsStr ? JSON.parse(groupedConnectorIdsStr) : [];
 
             const children = Array.from(group.children).filter(c => c.classList.contains('lf-component'));
             const newIds = [];
@@ -2532,8 +3346,12 @@ window.v4Script = `
                 group.parentNode.insertBefore(c, group);
             });
 
+            groupedConnectorIds.forEach(connId => {
+                newIds.push(connId);
+            });
+
             group.remove();
-            notifyParent({ type: 'LF_DESELECT' });
+            notifyParent({ type: 'LF_UNGROUPED_SYNC_SELECTION', ids: newIds });
             markDirty();
         } else if (d.type === 'LF_EXTRACT_MOLECULE') {
             const group = document.getElementById(d.id);
@@ -2662,6 +3480,55 @@ window.v4Script = `
         } else if (d.type === 'LF_TABLE_ACTION') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
+            
+            const isGrid = s.classList.contains('v4-grid-container') || s.querySelector('.v4-grid-container');
+            if (isGrid) {
+                const gridContainer = s.classList.contains('v4-grid-container') ? s : s.querySelector('.v4-grid-container');
+                const rowCount = parseInt(gridContainer.getAttribute('data-row-count')) || 5;
+                const pagination = gridContainer.getAttribute('data-pagination') !== 'false';
+                
+                var currentCols = [];
+                var rawCols = gridContainer.getAttribute('data-columns');
+                if (rawCols) {
+                    try { currentCols = JSON.parse(rawCols); } catch(e) {}
+                }
+                if (!currentCols || currentCols.length === 0) {
+                    currentCols = [
+                        { name: '', type: 'checkbox', width: '50px' },
+                        { name: '번호', type: 'number', width: '100px' },
+                        { name: '라이브 방송명', type: 'text', width: '200px' },
+                        { name: '방송상태', type: 'status', width: '120px' },
+                        { name: '등록/수정자', type: 'author', width: '120px' }
+                    ];
+                }
+                
+                const act = (d.action || "").toLowerCase();
+                if (act === 'add-row' || act === 'add_row') {
+                    window.renderGrid(gridContainer, currentCols, rowCount + 1, pagination);
+                } else if (act === 'del-row' || act === 'del_row') {
+                    if (rowCount > 1) {
+                        window.renderGrid(gridContainer, currentCols, rowCount - 1, pagination);
+                    }
+                } else if (act === 'add-col' || act === 'add_col') {
+                    if (currentCols.length < 10) {
+                        currentCols.push({ name: '새 항목', type: 'text', width: '150px' });
+                        window.renderGrid(gridContainer, currentCols, rowCount, pagination);
+                    }
+                } else if (act === 'del-col' || act === 'del_col') {
+                    if (currentCols.length > 1) {
+                        currentCols.pop();
+                        window.renderGrid(gridContainer, currentCols, rowCount, pagination);
+                    }
+                }
+                
+                notifyParent(Object.assign({
+                    type: "LF_COMP_SELECTED"
+                }, window._getCompStyles(s)));
+                
+                markDirty();
+                return;
+            }
+            
             const table = s.querySelector('table'); if (!table) return;
             const focused = table.querySelector('.v4-editable-cell:focus') || table.querySelector('td, th');
             const row = focused ? focused.closest('tr') : null;
@@ -2722,24 +3589,150 @@ window.v4Script = `
         }
     });
 
+    window.updateConnectorPathLocal = (connId) => {
+        const conn = window.parent?.state?.connectors?.find(c => c.id === connId);
+        if (!conn) return;
+        const svg = document.getElementById(conn.id);
+        if (!svg) return;
+        
+        const headLength = Math.max(12, parseFloat(conn.style.strokeWidth || 1.6) * 4.5);
+        const padding = headLength + 10;
+        const minX = Math.min(conn.start.x, conn.end.x) - padding;
+        const minY = Math.min(conn.start.y, conn.end.y) - padding;
+        const w = Math.max(conn.start.x, conn.end.x) + padding - minX;
+        const h = Math.max(conn.start.y, conn.end.y) + padding - minY;
+        
+        svg.style.left = minX + 'px';
+        svg.style.top = minY + 'px';
+        svg.style.width = w + 'px';
+        svg.style.height = h + 'px';
+        
+        const rel = (pt) => ({ x: pt.x - minX, y: pt.y - minY });
+        const rStart = rel(conn.start);
+        const rEnd = rel(conn.end);
+        
+        const paths = svg.querySelectorAll('path');
+        if (paths.length >= 2) {
+            const pathData = window.calculatePathData(conn, rStart, rEnd);
+            paths[0].setAttribute('d', pathData);
+            paths[1].setAttribute('d', pathData);
+        }
+        
+        const circles = svg.querySelectorAll('circle');
+        if (circles.length === 2) {
+            circles[0].setAttribute('cx', rStart.x);
+            circles[0].setAttribute('cy', rStart.y);
+            circles[1].setAttribute('cx', rEnd.x);
+            circles[1].setAttribute('cy', rEnd.y);
+        }
+    };
+
+    window.updateAnchoredConnectorsLocal = (movedId) => {
+        const scale = (window.parent?.state?.transform?.scale) || 1;
+        const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+        const hostRect = host.getBoundingClientRect();
+        
+        const connectors = window.parent?.state?.connectors || [];
+        connectors.forEach(conn => {
+            if (conn.start.targetId === movedId || conn.end.targetId === movedId) {
+                const svg = document.getElementById(conn.id);
+                if (svg) {
+                    let sX = conn.start.x, sY = conn.start.y;
+                    let eX = conn.end.x, eY = conn.end.y;
+                    
+                    if (conn.start.targetId) {
+                        const tEl = document.getElementById(conn.start.targetId);
+                        if (tEl) {
+                            const r = tEl.getBoundingClientRect();
+                            if (conn.start.side === 'left') { sX = (r.left - hostRect.left) / scale; sY = (r.top + r.height/2 - hostRect.top) / scale; }
+                            else if (conn.start.side === 'right') { sX = (r.right - hostRect.left) / scale; sY = (r.top + r.height/2 - hostRect.top) / scale; }
+                            else if (conn.start.side === 'top') { sX = (r.left + r.width/2 - hostRect.left) / scale; sY = (r.top - hostRect.top) / scale; }
+                            else if (conn.start.side === 'bottom') { sX = (r.left + r.width/2 - hostRect.left) / scale; sY = (r.bottom - hostRect.top) / scale; }
+                        }
+                    }
+                    
+                    if (conn.end.targetId) {
+                        const tEl = document.getElementById(conn.end.targetId);
+                        if (tEl) {
+                            const r = tEl.getBoundingClientRect();
+                            if (conn.end.side === 'left') { eX = (r.left - hostRect.left) / scale; eY = (r.top + r.height/2 - hostRect.top) / scale; }
+                            else if (conn.end.side === 'right') { eX = (r.right - hostRect.left) / scale; eY = (r.top + r.height/2 - hostRect.top) / scale; }
+                            else if (conn.end.side === 'top') { eX = (r.left + r.width/2 - hostRect.left) / scale; eY = (r.top - hostRect.top) / scale; }
+                            else if (conn.end.side === 'bottom') { eX = (r.left + r.width/2 - hostRect.left) / scale; eY = (r.bottom - hostRect.top) / scale; }
+                        }
+                    }
+                    
+                    conn.start.x = sX; conn.start.y = sY;
+                    conn.end.x = eX; conn.end.y = eY;
+                    
+                    const headLength = Math.max(12, parseFloat(conn.style.strokeWidth || 1.6) * 4.5);
+                    const padding = headLength + 10;
+                    const minX = Math.min(sX, eX) - padding;
+                    const minY = Math.min(sY, eY) - padding;
+                    const w = Math.max(conn.start.x, conn.end.x) + padding - minX;
+                    const h = Math.max(conn.start.y, conn.end.y) + padding - minY;
+                    
+                    svg.style.left = minX + 'px';
+                    svg.style.top = minY + 'px';
+                    svg.style.width = w + 'px';
+                    svg.style.height = h + 'px';
+                    
+                    const rel = (pt) => ({ x: pt.x - minX, y: pt.y - minY });
+                    const rStart = rel(conn.start);
+                    const rEnd = rel(conn.end);
+                    
+                    const paths = svg.querySelectorAll('path');
+                    if (paths.length >= 2) {
+                        const pathData = window.calculatePathData(conn, rStart, rEnd);
+                        paths[0].setAttribute('d', pathData);
+                        paths[1].setAttribute('d', pathData);
+                    }
+                    
+                    const circles = svg.querySelectorAll('circle');
+                    if (circles.length === 2) {
+                        circles[0].setAttribute('cx', rStart.x);
+                        circles[0].setAttribute('cy', rStart.y);
+                        circles[1].setAttribute('cx', rEnd.x);
+                        circles[1].setAttribute('cy', rEnd.y);
+                    }
+                }
+            }
+        });
+    };
+
     window.initHandles = () => {
         document.querySelectorAll('.lf-component').forEach(c => {
-            if (!c.querySelector('.lf-drag-handle')) {
+            if (!c.querySelector(':scope > .lf-drag-handle')) {
                 const h = document.createElement('div');
                 h.className = 'lf-drag-handle';
                 h.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg>';
                 c.appendChild(h);
             }
-            if (!c.querySelector('.lf-resizer')) {
+            if (!c.querySelector(':scope > .lf-resizer')) {
                 const r = document.createElement('div');
                 r.className = 'lf-resizer';
                 c.appendChild(r);
             }
-            if (!c.querySelector('.lf-delete-trigger')) {
+            if (!c.querySelector(':scope > .lf-delete-trigger')) {
                 const d = document.createElement('div');
                 d.className = 'lf-delete-trigger';
                 d.innerHTML = '&times;';
                 c.appendChild(d);
+            }
+            if (!c.classList.contains('lf-group') && !c.classList.contains('connector-line')) {
+                ['top', 'bottom', 'left', 'right'].forEach(side => {
+                    if (!c.querySelector(':scope > .lf-connector-port.port-' + side)) {
+                        const port = document.createElement('div');
+                        port.className = 'lf-connector-port port-' + side;
+                        port.setAttribute('data-side', side);
+                        port.addEventListener('mousedown', (e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            startConnectorDragFromPort(c, side, e);
+                        });
+                        c.appendChild(port);
+                    }
+                });
             }
         });
     };

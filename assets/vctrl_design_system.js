@@ -10,6 +10,10 @@ window.v4DesignSystemScript = `
 
     const resizeAtomToFitText = (s) => {
         if (!s) return;
+        // Skip resizing if the atom component is already grouped inside an 'lf-group' to prevent layout breakages.
+        if (s.closest && s.closest('.lf-group')) {
+            return;
+        }
         const container = s.querySelector('.v4-checkbox-container, .v4-radio-container');
         if (!container) return;
         
@@ -236,7 +240,41 @@ window.v4DesignSystemScript = `
             }
         });
 
+        // === Atom Dimension Normalization ===
+        // Atom components let internal CSS (flexbox, content) determine their size,
+        // so the outer .lf-component wrapper may have no explicit style.width/height.
+        // Grouping and other coordinate operations use style values as SSOT,
+        // so we write offsetWidth/offsetHeight into the wrapper once at load time.
+        const ATOM_SELECTORS = [
+            '.v4-checkbox-container', '.v4-radio-container',
+            '.v4-textbox-container', '.v4-textarea-container',
+            '.v4-searchbar-container', '.v4-stepper-container',
+            '.v4-selectbox-container', '.v4-fileupload-container',
+            '.v4-alert-container', '.v4-btn-container',
+            '.v4-datepicker-container', '.v4-accordion-container',
+            '.v4-grid-container', '.v4-admin-settings-container'
+        ].join(', ');
+
         document.querySelectorAll('.lf-component').forEach(c => {
+            // Skip group wrappers (their size is calculated separately)
+            if (c.classList.contains('lf-group')) return;
+            // Skip if the component is inside a group
+            if (c.closest && c.closest('.lf-group')) return;
+            // Skip if the outer wrapper already has explicit dimensions (preserve SSOT)
+            if (c.style.width && c.style.height) return;
+            // Only normalize atom components
+            if (!c.querySelector(ATOM_SELECTORS)) return;
+
+            const w = c.offsetWidth;
+            const h = c.offsetHeight;
+            if (w > 0 && !c.style.width) c.style.width = w + 'px';
+            if (h > 0 && !c.style.height) c.style.height = h + 'px';
+        });
+        // ====================================
+
+
+        document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const accordion = c.querySelector('.v4-accordion-container');
             if (accordion) {
                 const expanded = accordion.getAttribute('data-expanded') === 'true';
@@ -283,6 +321,7 @@ window.v4DesignSystemScript = `
         });
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const stepper = c.querySelector('.v4-stepper-container');
             if (stepper) {
                 const btnEnabled = stepper.getAttribute('data-btn-enabled') !== 'false';
@@ -300,6 +339,7 @@ window.v4DesignSystemScript = `
         });
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const selectbox = c.querySelector('.v4-selectbox-container');
             if (selectbox) {
                 const dropdownActive = selectbox.getAttribute('data-dropdown-active') === 'true';
@@ -320,6 +360,7 @@ window.v4DesignSystemScript = `
         });
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const fileupload = c.querySelector('.v4-fileupload-container');
             if (fileupload) {
                 const targetW = '300px';
@@ -336,6 +377,7 @@ window.v4DesignSystemScript = `
         });
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const alert = c.querySelector('.v4-alert-container');
             if (alert) {
                 const btn1 = alert.querySelector('.v4-alert-btn-1');
@@ -396,6 +438,7 @@ window.v4DesignSystemScript = `
         });
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const btnContainer = c.querySelector('.v4-btn-container');
             if (btnContainer) {
                 const btn = btnContainer.querySelector('.v4-custom-btn');
@@ -436,6 +479,7 @@ window.v4DesignSystemScript = `
         });
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const dp = c.querySelector('.v4-datepicker-container');
             if (!dp) return;
 
@@ -714,7 +758,7 @@ window.v4DesignSystemScript = `
             }
             if (s.style.borderWidth !== '1.6px') s.style.setProperty('border-width', '1.6px', 'important');
         });
-        document.querySelectorAll('table.v4-premium-table').forEach(t => {
+        document.querySelectorAll('table.v4-premium-table, .v4-grid-container table').forEach(t => {
             if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
             if (window.TableSelection) window.TableSelection.bindEvents(t);
         });
@@ -753,11 +797,33 @@ window.v4DesignSystemScript = `
         }
     };
 
-    if (typeof window.enforceDesignSystem === 'function') {
+    let dsObserver = null;
+    const runEnforceSafe = () => {
+        if (dsObserver) dsObserver.disconnect();
         window.enforceDesignSystem();
-        const observer = new MutationObserver(() => window.enforceDesignSystem());
-        observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
-        setTimeout(() => window.enforceDesignSystem(), 500);
+        if (dsObserver) {
+            dsObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        }
+    };
+
+    window.suspendDesignSystem = () => {
+        if (dsObserver) {
+            dsObserver.disconnect();
+            console.log("[DesignSystem] Suspended MutationObserver during batch DOM transformations.");
+        }
+    };
+
+    window.resumeDesignSystem = () => {
+        if (dsObserver) {
+            runEnforceSafe();
+            console.log("[DesignSystem] Resumed MutationObserver.");
+        }
+    };
+
+    if (typeof window.enforceDesignSystem === 'function') {
+        dsObserver = new MutationObserver(runEnforceSafe);
+        runEnforceSafe();
+        setTimeout(runEnforceSafe, 500);
     }
 })();
 `;

@@ -146,6 +146,23 @@ window.v4ShortcutsScript = `
     };
 
     document.addEventListener('keydown', e => {
+        if (e.altKey && ['1','2','3','4','5','6'].includes(e.key)) {
+            e.preventDefault();
+            const typeMap = {
+                '1': 'left',
+                '2': 'center',
+                '3': 'right',
+                '4': 'top',
+                '5': 'middle',
+                '6': 'bottom'
+            };
+            notifyParent({
+                type: 'LF_SHORTCUT_ALIGN',
+                alignType: typeMap[e.key]
+            });
+            return;
+        }
+
         if (e.key === 'F2' || e.code === 'F2') {
             e.preventDefault();
             const selected = document.querySelectorAll('.lf-component.selected');
@@ -243,6 +260,11 @@ window.v4ShortcutsScript = `
                         }
                         
                         if (c.classList.contains('lf-group')) {
+                            const connIdsStr = c.getAttribute('data-connectors');
+                            const connIds = connIdsStr ? JSON.parse(connIdsStr) : [];
+                            connIds.forEach(connId => {
+                                notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: connId, dx: dx, dy: dy });
+                            });
                             c.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
                                 const idx = parseInt(child.id.replace('v4-pin-', ''));
                                 const childRect = child.getBoundingClientRect();

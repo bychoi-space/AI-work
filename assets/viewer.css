@@ -337,3 +337,9 @@ body.fullscreen-mode #btn-fullscreen-exit {
 .floating-inspector-body::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.2);
 }
+
+/* Hide selection actions bar when it is in the right sidebar (tab-editor) */
+#tab-editor > #selection-actions-bar {
+    display: none !important;
+}
+

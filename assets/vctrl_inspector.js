@@ -198,15 +198,18 @@ function restorePropertiesSections() {
 window.updateProperties = function(compStyles) {
     const activeEl = document.activeElement;
     const isTypingInAdminProps = activeEl && activeEl.classList.contains('admin-col-label-input');
+    const isTypingCheckboxLabel = activeEl && activeEl.id === 'prop-atom-text-content';
+    const isTypingInGridProps = activeEl && (activeEl.closest('#grid-inspector-section') || activeEl.classList.contains('grid-col-width-input') || activeEl.classList.contains('grid-col-name-input') || activeEl.classList.contains('grid-col-type-select'));
     
-    if (!isTypingInAdminProps) {
+    if (!isTypingInAdminProps && !isTypingCheckboxLabel && !isTypingInGridProps) {
         restorePropertiesSections();
     }
     const pm = state.projectMetadata || {};
     if (!DOM.metadataPanel) return;
 
-    // 1. Update Top Metadata Bar
-    if (!DOM.metadataPanel.innerHTML.includes('v4-meta-horizontal')) {
+// Project Metadata UI Manager Namespace
+const ProjectMetadataManager = {
+    renderBar(pm) {
         DOM.metadataPanel.innerHTML = `
             <div class="v4-meta-horizontal">
                 <div class="v4-meta-item" style="flex: 0 0 180px;">
@@ -234,7 +237,9 @@ window.updateProperties = function(compStyles) {
                 </div>
             </div>
         `;
-        const btnSave = document.getElementById('btn-global-save');
+        this.bindEvents();
+    },
+    bindEvents() {
         const jiraInput = document.getElementById('viewer-meta-jira');
         const jiraBtn = document.getElementById('btn-jira-link');
         if (jiraInput && jiraBtn) {
@@ -245,9 +250,18 @@ window.updateProperties = function(compStyles) {
                 markAsDirty();
             };
         }
-    } else {
+    },
+    updateFields(pm) {
         const titleIn = document.getElementById('viewer-meta-title'); if (titleIn) titleIn.value = pm.title || '';
         const jiraIn = document.getElementById('viewer-meta-jira'); if (jiraIn) jiraIn.value = pm.jira || '';
+    }
+};
+
+    // 1. Update Top Metadata Bar
+    if (!DOM.metadataPanel.innerHTML.includes('v4-meta-horizontal')) {
+        ProjectMetadataManager.renderBar(pm);
+    } else {
+        ProjectMetadataManager.updateFields(pm);
     }
 
     // 1-1. Update Sidebar Footer (Last Updated)
@@ -259,10 +273,7 @@ window.updateProperties = function(compStyles) {
     // 2. Update Sidebar Panels based on selected component
     const hasSelection = (window.state && window.state.selectedIds && window.state.selectedIds.length > 0);
     if (compStyles || hasSelection) {
-        if (compStyles) {
-            console.log("[Inspector] Received styles:", compStyles);
-        }
-        
+
         const floatingInspector = document.getElementById('floating-inspector-card');
         if (floatingInspector) {
             floatingInspector.style.setProperty('display', 'flex', 'important');
@@ -296,8 +307,6 @@ window.updateProperties = function(compStyles) {
         if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'none';
         if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'none';
         if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'none';
-        if (DOM.accordionPropSection) DOM.accordionPropSection.style.display = 'none';
-        if (DOM.gridPropSection) DOM.gridPropSection.style.display = 'none';
         if (DOM.adminSettingsPropSection) DOM.adminSettingsPropSection.style.display = 'none';
 
         if (compStyles) {
@@ -306,6 +315,7 @@ window.updateProperties = function(compStyles) {
             let type = 'comp';
             if (compStyles.isGroup) type = 'group';
             else if (compStyles.isPin) type = 'pin';
+            else if (compStyles.isGrid) type = 'grid';
             else if (compStyles.isTable) type = 'table';
             else if (compStyles.isShape) type = 'shape';
             else if (compStyles.isConnector) type = 'line';
@@ -319,7 +329,6 @@ window.updateProperties = function(compStyles) {
             else if (compStyles.isButton) type = 'button';
             else if (compStyles.isDatePicker) type = 'datepicker';
             else if (compStyles.isAccordion) type = 'accordion';
-            else if (compStyles.isGrid) type = 'grid';
             else if (compStyles.isAdminSettings) type = 'admin-settings';
             else if (compStyles.isIcon) type = 'icon';
             state.editingType = type;
@@ -374,7 +383,11 @@ window.updateProperties = function(compStyles) {
                 _syncAccordionProps(compStyles);
             } else if (state.editingType === 'grid') {
                 if (DOM.gridPropSection) DOM.gridPropSection.style.display = 'block';
-                _syncGridProps(compStyles);
+                const activeEl = document.activeElement;
+                const isTypingInGrid = activeEl && (activeEl.closest('#grid-inspector-section') || activeEl.classList.contains('grid-col-width-input') || activeEl.classList.contains('grid-col-name-input') || activeEl.classList.contains('grid-col-type-select'));
+                if (!isTypingInGrid) {
+                    _syncGridProps(compStyles);
+                }
             } else if (state.editingType === 'admin-settings') {
                 if (DOM.adminSettingsPropSection) DOM.adminSettingsPropSection.style.display = 'block';
                 // Focus guard: Do not rebuild the inputs if the user is actively typing in one of them
@@ -383,28 +396,70 @@ window.updateProperties = function(compStyles) {
                 if (!isTypingInAdminProps) {
                     _syncAdminSettingsProps(compStyles);
                 }
-            }
-
-            // CONTENT EDITOR 헤더 레이블 동적 변경 (통합 레이블 제공)
-            const editorLabel = document.getElementById('content-editor-label');
-            if (editorLabel) {
-                editorLabel.innerText = 'CONTENT EDITOR';
-            }
-
-            // Load content to Quill
-            if (state.editingType === 'pin' && compStyles.html !== undefined && window.quillEditor) {
-                let cleanHtml = compStyles.html || '';
-                const hasExplicitFontSize = cleanHtml.includes('font-size') || cleanHtml.includes('fontSize');
-                if (!hasExplicitFontSize && compStyles.currentStyles && compStyles.currentStyles.fontSize) {
-                    const fs = compStyles.currentStyles.fontSize;
-                    const fsPx = typeof fs === 'number' ? fs + 'px' : (fs.endsWith('px') ? fs : fs + 'px');
-                    cleanHtml = `<span style="font-size: ${fsPx};">${cleanHtml}</span>`;
+            } else if (compStyles && (compStyles.isCheckbox || compStyles.isRadio)) {
+                // Focus guard: Do not rebuild checkbox/radio properties if typing in label text input
+                const activeEl = document.activeElement;
+                const isTypingCheckboxLabel = activeEl && activeEl.id === 'prop-atom-text-content';
+                if (!isTypingCheckboxLabel) {
+                    if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'block';
+                    _syncCheckboxRadioProps(compStyles);
                 }
-                setTimeout(() => {
-                    window.quillEditor.clipboard.dangerouslyPasteHTML(cleanHtml, 'silent');
-                    console.log("[Inspector] Loaded HTML to Quill:", cleanHtml);
-                }, 50);
-            } else if (state.editingType === 'shape' && window.quillEditor) {
+            }
+
+            // Sync Property Controls
+            const s = (compStyles && compStyles.currentStyles) || {};
+            if (DOM.textColorPicker) DOM.textColorPicker.value = s.text || "#000000";
+        } else {
+            // Case: Multi-selection without compStyles
+            state.isEditing = true;
+            state.editingType = 'multi';
+        }
+
+        // Show/Hide buttons inside selection-actions-bar based on selection count and type
+        const btnGroup = document.getElementById('btn-group-action');
+        const btnUngroup = document.getElementById('btn-ungroup-action');
+        const btnAddToMolecules = document.getElementById('btn-add-molecules-action');
+        const alignBar = document.getElementById('selection-align-bar');
+        
+        const selIds = (window.state && window.state.selectedIds) ? window.state.selectedIds : [];
+        const isSingleGroup = selIds.length === 1 && compStyles && compStyles.isGroup;
+
+        if (btnGroup) btnGroup.style.setProperty('display', (selIds.length > 1) ? 'flex' : 'none', 'important');
+        if (btnUngroup) btnUngroup.style.setProperty('display', isSingleGroup ? 'flex' : 'none', 'important');
+        if (btnAddToMolecules) btnAddToMolecules.style.setProperty('display', isSingleGroup ? 'flex' : 'none', 'important');
+        if (alignBar) alignBar.style.setProperty('display', (selIds.length > 1) ? 'block' : 'none', 'important');
+
+
+        // CONTENT EDITOR 헤더 레이블 동적 변경 (통합 레이블 제공)
+        const editorLabel = document.getElementById('content-editor-label');
+        if (editorLabel) {
+            editorLabel.innerText = 'CONTENT EDITOR';
+        }
+
+        // Load content to Quill
+        if (compStyles && state.editingType === 'pin' && compStyles.html !== undefined && window.quillEditor) {
+            let cleanHtml = compStyles.html || '';
+            const hasExplicitFontSize = cleanHtml.includes('font-size') || cleanHtml.includes('fontSize');
+            if (!hasExplicitFontSize && compStyles.currentStyles && compStyles.currentStyles.fontSize) {
+                const fs = compStyles.currentStyles.fontSize;
+                const fsPx = typeof fs === 'number' ? fs + 'px' : (fs.endsWith('px') ? fs : fs + 'px');
+                cleanHtml = `<span style="font-size: ${fsPx};">${cleanHtml}</span>`;
+            }
+            const wasQuillFocused = document.activeElement === window.quillEditor.root;
+            setTimeout(() => {
+                window.quillEditor.clipboard.dangerouslyPasteHTML(cleanHtml, 'silent');
+                if (wasQuillFocused) {
+                    window.quillEditor.setSelection(0, 0);
+                } else {
+                    window.quillEditor.blur();
+                    window.quillEditor.setSelection(null);
+                    const iframe = document.getElementById('main-iframe');
+                    if (iframe && iframe.contentWindow) {
+                        iframe.contentWindow.focus();
+                    }
+                }
+            }, 50);
+        } else if (state.editingType === 'shape' && window.quillEditor) {
                 // shape 내부 텍스트를 Quill에 로드 (wrapper div 벗겨내기)
                 const rawHtml = compStyles.html || '';
                 const parser = new DOMParser();
@@ -432,6 +487,7 @@ window.updateProperties = function(compStyles) {
                         window.quillEditor.setSelection(0, 0);
                     } else {
                         // Clear Quill selection/focus and restore focus back to the iframe
+                        window.quillEditor.blur();
                         window.quillEditor.setSelection(null);
                         const iframe = document.getElementById('main-iframe');
                         if (iframe && iframe.contentWindow) {
@@ -439,7 +495,6 @@ window.updateProperties = function(compStyles) {
                         }
                     }
                     
-                    console.log("[Inspector] Loaded Shape HTML to Quill:", cleanHtml);
                     // 다음 틱에 가드 해제 (text-change가 먼저 발사된 후 해제)
                     requestAnimationFrame(() => {
                         state._isLoadingShapeContent = false;
@@ -447,22 +502,19 @@ window.updateProperties = function(compStyles) {
                 }, 50);
             }
 
-            // Sync Property Controls
-            const s = compStyles.currentStyles || {};
-            if (DOM.textColorPicker) DOM.textColorPicker.value = s.text || "#000000";
-        }
-
         // Dynamically move active panels into floating inspector card body
         const floatingBody = document.getElementById('floating-inspector-body');
         if (floatingBody) {
             const activeEl = document.activeElement;
             const isTypingInAdminProps = activeEl && activeEl.classList.contains('admin-col-label-input');
+            const isTypingCheckboxLabel = activeEl && activeEl.id === 'prop-atom-text-content';
             
-            if (!isTypingInAdminProps) {
+            if (!isTypingInAdminProps && !isTypingCheckboxLabel) {
                 floatingBody.innerHTML = '';
                 const selectionBar = document.getElementById('selection-actions-bar');
-                if (selectionBar && selectionBar.style.display !== 'none') {
+                if (selectionBar) {
                     floatingBody.appendChild(selectionBar);
+                    selectionBar.style.setProperty('display', 'flex', 'important');
                 }
                 const sections = [
                     DOM.shapePropSection, DOM.textPropSection, DOM.tablePropSection,
@@ -479,7 +531,6 @@ window.updateProperties = function(compStyles) {
                 });
             }
         }
-
     } else {
         const floatingInspector = document.getElementById('floating-inspector-card');
         if (floatingInspector) {
@@ -895,7 +946,7 @@ function _syncGridProps(comp) {
     }
     
     if (typeof window.syncGridHeaderInputs === 'function') {
-        window.syncGridHeaderInputs(comp.gridHeaders || []);
+        window.syncGridHeaderInputs(comp.gridColumns || [], comp.gridHeaders || []);
     }
     
     const s = comp.currentStyles || {};
@@ -941,6 +992,13 @@ function _syncCheckboxRadioProps(comp) {
     };
     syncColor('atom-bg-color', 'atom-bg-wrapper', s.bg, s.isBgTransparent);
     syncColor('atom-border-color', 'atom-border-wrapper', s.border, s.isBorderTransparent);
+
+    const textInp = document.getElementById('prop-atom-text-content');
+    if (textInp && comp.checkboxText !== undefined) {
+        if (document.activeElement !== textInp) {
+            textInp.value = comp.checkboxText;
+        }
+    }
 }
 
 function _syncDatePickerProps(comp) {
@@ -1509,11 +1567,44 @@ window.closeHistoryPopup = function() {
     }
 };
 
+async function ensureHistoryModal() {
+    if (document.getElementById('history-modal')) return true;
+    try {
+        const response = await fetch('assets/templates/history_modal.html');
+        if (!response.ok) throw new Error("Template load failed");
+        const html = await response.text();
+        document.body.insertAdjacentHTML('beforeend', html);
+
+        const btnCloseHistory = document.getElementById('btn-close-history');
+        if (btnCloseHistory) {
+            btnCloseHistory.onclick = () => {
+                window.closeHistoryPopup();
+            };
+        }
+
+        const historyModal = document.getElementById('history-modal');
+        if (historyModal) {
+            historyModal.onclick = (e) => {
+                if (e.target === historyModal) {
+                    window.closeHistoryPopup();
+                }
+            };
+        }
+        return true;
+    } catch (e) {
+        console.error("Failed to load history modal dynamically:", e);
+        return false;
+    }
+}
+
 const btnShowHistory = document.getElementById('btn-show-history');
 if (btnShowHistory) {
     btnShowHistory.onclick = async () => {
         if (typeof window.showLoading === 'function') window.showLoading("Loading history...");
         try {
+            const loaded = await ensureHistoryModal();
+            if (!loaded) throw new Error("Failed to initialize history modal");
+
             const historyList = (typeof window.fetchProjectHistory === 'function')
                 ? await window.fetchProjectHistory(state.currentProject)
                 : [];
@@ -1523,22 +1614,6 @@ if (btnShowHistory) {
             if (typeof window.hideLoading === 'function') window.hideLoading();
             console.error("Failed to load history:", e);
             if (window.Notification) window.Notification.alert("이력을 불러오는 중 오류가 발생했습니다.", "오류", "error");
-        }
-    };
-}
-
-const btnCloseHistory = document.getElementById('btn-close-history');
-if (btnCloseHistory) {
-    btnCloseHistory.onclick = () => {
-        window.closeHistoryPopup();
-    };
-}
-
-const historyModal = document.getElementById('history-modal');
-if (historyModal) {
-    historyModal.onclick = (e) => {
-        if (e.target === historyModal) {
-            window.closeHistoryPopup();
         }
     };
 }
