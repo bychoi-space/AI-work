@@ -13,19 +13,19 @@
     "06_Mobile_Design_2_785.html": {
       "title": "06_Mobile_Design_2_785",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-02T05:19:09.564Z",
+      "updatedAt": "2026-07-02T05:20:12.407Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
           "text": "여성의류",
           "html": "<p><span style=\"font-size: 14px; color: rgb(136, 136, 136);\">여성의류</span></p>",
-          "x": 359.323,
+          "x": 349.323,
           "y": 84.9814,
           "type": "text",
           "standardized": true
         },
         {
-          "x": 444,
+          "x": 434,
           "y": 84.3321,
           "standardized": true,
           "type": "text",
@@ -41,5 +41,5 @@
   "period": "2026.06.29(월) ~ 2026.08.28(금)",
   "jira": "LFML-144682",
   "themeIndex": 2,
-  "updated": "2026-07-02 14:19:09"
+  "updated": "2026-07-02 14:20:12"
 }
