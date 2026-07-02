@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_785.html": {
       "title": "06_Mobile_Design_2_785",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-02T05:24:53.872Z",
+      "updatedAt": "2026-07-02T05:29:17.924Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -37,9 +37,9 @@
     }
   },
   "assignee": "최범열",
-  "developer": "",
+  "developer": "이민우",
   "period": "2026.06.29(월) ~ 2026.08.28(금)",
   "jira": "LFML-144682",
   "themeIndex": 2,
-  "updated": "2026-07-02 14:24:53"
+  "updated": "2026-07-02 14:29:17"
 }
