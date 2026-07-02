@@ -15,7 +15,7 @@
     "06_Mobile_Design_2_148.html": {
       "title": "Front 화면 변경",
       "type": "mobile-ui",
-      "updatedAt": "2026-06-30T00:31:09.585Z",
+      "updatedAt": "2026-07-02T02:42:42.910Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -64,5 +64,5 @@
   "period": "2026.06.29(월) ~ 2026.07.10(금)",
   "jira": "LFML-144209",
   "themeIndex": 4,
-  "updated": "2026-07-01 13:21:40"
+  "updated": "2026-07-02 11:42:42"
 }
