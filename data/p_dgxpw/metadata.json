@@ -1,15 +1,6 @@
 {
   "title": "[배송] 매장상품배송 서비스 - 상품목록 추가 작업",
   "screens": {
-    "00_Cover_221.html": {
-      "title": "00_Cover_221",
-      "type": "cover",
-      "updatedAt": "2026-07-02T04:24:16.685Z",
-      "template": "template_cover.html",
-      "version": 0.1,
-      "description": [],
-      "connectors": []
-    },
     "06_Mobile_Design_2_785.html": {
       "title": "06_Mobile_Design_2_785",
       "type": "mobile-ui",
@@ -129,7 +120,9 @@
       "type": "cover",
       "updatedAt": "2026-07-02T08:18:38.635Z",
       "template": "template_cover.html",
-      "version": 0.1
+      "version": 0.1,
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
