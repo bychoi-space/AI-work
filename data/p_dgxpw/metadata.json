@@ -4,7 +4,7 @@
     "06_Mobile_Design_2_785.html": {
       "title": "06_Mobile_Design_2_785",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-02T08:37:31.950Z",
+      "updatedAt": "2026-07-02T08:38:27.948Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -130,5 +130,5 @@
   "period": "2026.06.29(월) ~ 2026.08.28(금)",
   "jira": "LFML-144682",
   "themeIndex": 2,
-  "updated": "2026-07-02 17:37:31"
+  "updated": "2026-07-02 17:38:27"
 }
