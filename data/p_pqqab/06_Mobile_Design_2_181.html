@@ -259,7 +259,7 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
     cursor: crosshair;
     box-shadow: 0 0 4px rgba(0,229,255,0.6);
 }
-.lf-component:hover > .lf-connector-port, .lf-component.selected > .lf-connector-port {
+body.drawing-line-active .lf-component:hover > .lf-connector-port, body.drawing-line-active .lf-component.selected > .lf-connector-port {
     display: block;
 }
 .lf-component.lf-group > .lf-connector-port,
@@ -1779,6 +1779,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         }
                         
                         if (c.classList.contains('lf-group')) {
+                            const connIdsStr = c.getAttribute('data-connectors');
+                            const connIds = connIdsStr ? JSON.parse(connIdsStr) : [];
+                            connIds.forEach(connId => {
+                                notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: connId, dx: dx, dy: dy });
+                            });
                             c.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
                                 const idx = parseInt(child.id.replace('v4-pin-', ''));
                                 const childRect = child.getBoundingClientRect();
@@ -1999,6 +2004,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
     function startConnectorDragFromPort(comp, side, e) {
         isDrawingConnector = true;
+        document.body.classList.add('drawing-line-active');
         startComponentId = comp.id;
         startPortSide = side;
         
@@ -2696,6 +2702,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
         if (isDrawingConnector) {
             isDrawingConnector = false;
+            document.body.classList.remove('drawing-line-active');
             removeTempLine();
             if (hoveredPort) {
                 const targetComponentId = hoveredPort.parentElement.id;
@@ -2717,6 +2724,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
         if (isConnectorDragging) {
             isConnectorDragging = false;
+            document.body.classList.remove('drawing-line-active');
             notifyParent({ type: 'LF_CONNECTOR_HANDLE_UP' });
         }
         if (isMarquee) {
@@ -3369,14 +3377,56 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const snapDy = d.y - curTop;
             if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
                 const comps = document.querySelectorAll('.lf-component.selected');
+                let hasConnectorChanges = false;
                 comps.forEach(c => {
-                    c.style.left = (parseInt(c.style.left || 0) + snapDx) + 'px';
-                    c.style.top = (parseInt(c.style.top || 0) + snapDy) + 'px';
-                    window.updateHandles(c);
-                    if (typeof window.updateAnchoredConnectorsLocal === 'function') {
-                        window.updateAnchoredConnectorsLocal(c.id);
+                    const isConnector = c.classList.contains('connector-line');
+                    const isGroup = c.classList.contains('lf-group');
+                    if (isConnector) {
+                        const conn = (window.parent && window.parent.state && window.parent.state.connectors)
+                            ? window.parent.state.connectors.find(x => x.id === c.id)
+                            : null;
+                        if (conn) {
+                            conn.start.x += snapDx;
+                            conn.start.y += snapDy;
+                            conn.end.x += snapDx;
+                            conn.end.y += snapDy;
+                            conn.start.targetId = null; conn.start.side = null;
+                            conn.end.targetId = null; conn.end.side = null;
+                            hasConnectorChanges = true;
+                        }
+                    } else {
+                        c.style.left = (parseInt(c.style.left || 0) + snapDx) + 'px';
+                        c.style.top = (parseInt(c.style.top || 0) + snapDy) + 'px';
+                        window.updateHandles(c);
+                        if (isGroup) {
+                            const connIdsStr = c.getAttribute('data-connectors');
+                            const connIds = connIdsStr ? JSON.parse(connIdsStr) : [];
+                            connIds.forEach(connId => {
+                                const conn = (window.parent && window.parent.state && window.parent.state.connectors)
+                                    ? window.parent.state.connectors.find(x => x.id === connId)
+                                    : null;
+                                if (conn) {
+                                    conn.start.x += snapDx;
+                                    conn.start.y += snapDy;
+                                    conn.end.x += snapDx;
+                                    conn.end.y += snapDy;
+                                    conn.start.targetId = null; conn.start.side = null;
+                                    conn.end.targetId = null; conn.end.side = null;
+                                    hasConnectorChanges = true;
+                                }
+                            });
+                        }
+                        if (typeof window.updateAnchoredConnectorsLocal === 'function') {
+                            window.updateAnchoredConnectorsLocal(c.id);
+                        }
                     }
                 });
+                if (hasConnectorChanges) {
+                    if (window.parent && window.parent.ConnectorEngine) {
+                        window.parent.ConnectorEngine.redrawAll();
+                    }
+                    notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+                }
             }
         }
         else if (d.type === 'LF_IMPORT_PINS') {
@@ -3557,6 +3607,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         handle.onmousedown = (e) => {
                             e.stopPropagation();
                             isConnectorDragging = true;
+                            document.body.classList.add('drawing-line-active');
                             notifyParent({ type: 'LF_CONNECTOR_HANDLE_DOWN', id: conn.id, pointType: type });
                         };
                         svg.appendChild(handle);
@@ -4576,7 +4627,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             allHandles.forEach(h => h.style.display = 'none');
 
             const validIds = ids.filter(id => {
-                if (id.startsWith('conn_')) return false;
                 const el = doc.getElementById(id);
                 if (!el) return false;
                 
@@ -4590,23 +4640,37 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
             validIds.forEach(id => {
                 const isMarker = id.startsWith('v4-pin-');
+                const isConnector = id.startsWith('conn_');
                 const el = doc.getElementById(id);
                 if (el) {
-                    let absL = parseFloat(el.style.left) || 0;
-                    let absT = parseFloat(el.style.top) || 0;
-                    
-                    let parent = el.parentElement;
-                    while (parent && parent !== doc.body) {
-                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
-                            absL += parseFloat(parent.style.left) || 0;
-                            absT += parseFloat(parent.style.top) || 0;
+                    if (isConnector) {
+                        const conn = (window.parent && window.parent.state && window.parent.state.connectors) 
+                            ? window.parent.state.connectors.find(c => c.id === id) 
+                            : null;
+                        if (conn) {
+                            const absL = Math.min(conn.start.x, conn.end.x);
+                            const absT = Math.min(conn.start.y, conn.end.y);
+                            const w = Math.abs(conn.end.x - conn.start.x);
+                            const h = Math.abs(conn.end.y - conn.start.y);
+                            items.push({ id, type: 'connector', el, x: absL, y: absT, w, h, conn });
                         }
-                        parent = parent.parentElement;
-                    }
+                    } else {
+                        let absL = parseFloat(el.style.left) || 0;
+                        let absT = parseFloat(el.style.top) || 0;
+                        
+                        let parent = el.parentElement;
+                        while (parent && parent !== doc.body) {
+                            if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                                absL += parseFloat(parent.style.left) || 0;
+                                absT += parseFloat(parent.style.top) || 0;
+                            }
+                            parent = parent.parentElement;
+                        }
 
-                    const w = el.offsetWidth;
-                    const h = el.offsetHeight;
-                    items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: absL, y: absT, w, h });
+                        const w = el.offsetWidth;
+                        const h = el.offsetHeight;
+                        items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: absL, y: absT, w, h });
+                    }
                 }
             });
 
@@ -4617,6 +4681,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             let minY = Math.min(...items.map(i => i.y));
             let maxX = Math.max(...items.map(i => i.x + i.w));
             let maxY = Math.max(...items.map(i => i.y + i.h));
+
+            let hasConnectorChanges = false;
 
             if (alignType === 'distribute_h') {
                 if (items.length < 3) {
@@ -4634,21 +4700,38 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     
                     if (dx === 0) return;
                     const newAbsX = item.x + dx;
-                    let parentL = 0;
-                    let parent = item.el.parentElement;
-                    while (parent && parent !== doc.body) {
-                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
-                            parentL += parseFloat(parent.style.left) || 0;
+
+                    if (item.type === 'connector') {
+                        if (item.conn) {
+                            item.conn.start.x += dx;
+                            item.conn.end.x += dx;
+                            item.conn.start.targetId = null; item.conn.start.side = null;
+                            item.conn.end.targetId = null; item.conn.end.side = null;
+                            hasConnectorChanges = true;
                         }
-                        parent = parent.parentElement;
-                    }
-                    item.el.style.left = (newAbsX - parentL) + 'px';
-                    if (item.type === 'marker') {
-                        const idx = parseInt(item.id.replace('v4-pin-', ''));
-                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: item.y });
+                    } else {
+                        let parentL = 0;
+                        let parent = item.el.parentElement;
+                        while (parent && parent !== doc.body) {
+                            if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                                parentL += parseFloat(parent.style.left) || 0;
+                            }
+                            parent = parent.parentElement;
+                        }
+                        item.el.style.left = (newAbsX - parentL) + 'px';
+                        if (item.type === 'marker') {
+                            const idx = parseInt(item.id.replace('v4-pin-', ''));
+                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: item.y });
+                        }
                     }
                 });
                 allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+                if (hasConnectorChanges) {
+                    if (window.parent && window.parent.ConnectorEngine) {
+                        window.parent.ConnectorEngine.redrawAll();
+                    }
+                    notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+                }
                 markDirty();
                 return;
             }
@@ -4669,21 +4752,38 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     
                     if (dy === 0) return;
                     const newAbsY = item.y + dy;
-                    let parentT = 0;
-                    let parent = item.el.parentElement;
-                    while (parent && parent !== doc.body) {
-                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
-                            parentT += parseFloat(parent.style.top) || 0;
+
+                    if (item.type === 'connector') {
+                        if (item.conn) {
+                            item.conn.start.y += dy;
+                            item.conn.end.y += dy;
+                            item.conn.start.targetId = null; item.conn.start.side = null;
+                            item.conn.end.targetId = null; item.conn.end.side = null;
+                            hasConnectorChanges = true;
                         }
-                        parent = parent.parentElement;
-                    }
-                    item.el.style.top = (newAbsY - parentT) + 'px';
-                    if (item.type === 'marker') {
-                        const idx = parseInt(item.id.replace('v4-pin-', ''));
-                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: item.x, y: newAbsY });
+                    } else {
+                        let parentT = 0;
+                        let parent = item.el.parentElement;
+                        while (parent && parent !== doc.body) {
+                            if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                                parentT += parseFloat(parent.style.top) || 0;
+                            }
+                            parent = parent.parentElement;
+                        }
+                        item.el.style.top = (newAbsY - parentT) + 'px';
+                        if (item.type === 'marker') {
+                            const idx = parseInt(item.id.replace('v4-pin-', ''));
+                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: item.x, y: newAbsY });
+                        }
                     }
                 });
                 allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+                if (hasConnectorChanges) {
+                    if (window.parent && window.parent.ConnectorEngine) {
+                        window.parent.ConnectorEngine.redrawAll();
+                    }
+                    notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+                }
                 markDirty();
                 return;
             }
@@ -4701,28 +4801,46 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
                 if (dx === 0 && dy === 0) return;
 
-                const newAbsX = item.x + dx;
-                const newAbsY = item.y + dy;
-
-                let parentL = 0;
-                let parentT = 0;
-                let parent = item.el.parentElement;
-                while (parent && parent !== doc.body) {
-                    if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
-                        parentL += parseFloat(parent.style.left) || 0;
-                        parentT += parseFloat(parent.style.top) || 0;
+                if (item.type === 'connector') {
+                    if (item.conn) {
+                        item.conn.start.x += dx;
+                        item.conn.start.y += dy;
+                        item.conn.end.x += dx;
+                        item.conn.end.y += dy;
+                        item.conn.start.targetId = null; item.conn.start.side = null;
+                        item.conn.end.targetId = null; item.conn.end.side = null;
+                        hasConnectorChanges = true;
                     }
-                    parent = parent.parentElement;
-                }
+                } else {
+                    const newAbsX = item.x + dx;
+                    const newAbsY = item.y + dy;
 
-                item.el.style.left = (newAbsX - parentL) + 'px';
-                item.el.style.top = (newAbsY - parentT) + 'px';
-                
-                if (item.type === 'marker') {
-                    const idx = parseInt(item.id.replace('v4-pin-', ''));
-                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: newAbsY });
+                    let parentL = 0;
+                    let parentT = 0;
+                    let parent = item.el.parentElement;
+                    while (parent && parent !== doc.body) {
+                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                            parentL += parseFloat(parent.style.left) || 0;
+                            parentT += parseFloat(parent.style.top) || 0;
+                        }
+                        parent = parent.parentElement;
+                    }
+
+                    item.el.style.left = (newAbsX - parentL) + 'px';
+                    item.el.style.top = (newAbsY - parentT) + 'px';
+                    
+                    if (item.type === 'marker') {
+                        const idx = parseInt(item.id.replace('v4-pin-', ''));
+                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: newAbsY });
+                    }
                 }
             });
+            if (hasConnectorChanges) {
+                if (window.parent && window.parent.ConnectorEngine) {
+                    window.parent.ConnectorEngine.redrawAll();
+                }
+                notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+            }
             markDirty();
         } else if (d.type === 'LF_GROUP_SELECTED') {
             const ids = d.ids || [];
@@ -4733,7 +4851,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const host = doc.body;
 
             const comps = ids.map(id => doc.getElementById(id)).filter(el => el && !el.classList.contains('connector-line'));
-            if (comps.length < 2) return;
+            const groupedConnectorIds = ids.filter(id => id.startsWith('conn_'));
+            if (comps.length < 2 && (comps.length + groupedConnectorIds.length) < 2) return;
 
             // Sort comps based on their current DOM order to preserve relative layering inside the group
             comps.sort((a, b) => {
@@ -4748,10 +4867,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 window.suspendDesignSystem();
             }
 
-            // 1. Calculate exact coordinates using ONLY the raw inline style properties.
-            // (Atoms are normalized by enforceDesignSystem() before this runs, so style.width/height are always set.)
             let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-            const items = comps.map((c, idx) => {
+            const items = [];
+
+            comps.forEach(c => {
                 const l = parseFloat(c.style.left) || 0;
                 const t = parseFloat(c.style.top) || 0;
                 const w = parseFloat(c.style.width) || c.offsetWidth || 0;
@@ -4761,7 +4880,27 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 minY = Math.min(minY, t);
                 maxX = Math.max(maxX, l + w);
                 maxY = Math.max(maxY, t + h);
-                return { el: c, l, t, w, h };
+                items.push({ el: c, l, t, w, h, type: 'comp' });
+            });
+
+            groupedConnectorIds.forEach(id => {
+                const conn = (window.parent && window.parent.state && window.parent.state.connectors) 
+                    ? window.parent.state.connectors.find(c => c.id === id) 
+                    : null;
+                if (conn) {
+                    const l = Math.min(conn.start.x, conn.end.x);
+                    const t = Math.min(conn.start.y, conn.end.y);
+                    const w = Math.abs(conn.end.x - conn.start.x);
+                    const h = Math.abs(conn.end.y - conn.start.y);
+
+                    minX = Math.min(minX, l);
+                    minY = Math.min(minY, t);
+                    maxX = Math.max(maxX, l + w);
+                    maxY = Math.max(maxY, t + h);
+                    
+                    const el = doc.getElementById(id);
+                    items.push({ el, l, t, w, h, type: 'connector', conn });
+                }
             });
 
             // 2. Hide handles for clean state AFTER gathering coordinates
@@ -4778,10 +4917,17 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const group = doc.createElement('div');
             group.id = groupId;
             group.className = 'lf-component lf-group selected';
+            if (groupedConnectorIds.length > 0) {
+                group.setAttribute('data-connectors', JSON.stringify(groupedConnectorIds));
+            }
             
             // Insert the group exactly before the topmost selected component in the DOM to preserve layer depth
-            const topmostComp = comps[comps.length - 1];
-            topmostComp.parentNode.insertBefore(group, topmostComp);
+            const topmostComp = comps[comps.length - 1] || (items.length > 0 ? items[items.length - 1].el : null);
+            if (topmostComp) {
+                topmostComp.parentNode.insertBefore(group, topmostComp);
+            } else {
+                host.appendChild(group);
+            }
 
             Object.assign(group.style, {
                 position: 'absolute', left: groupBaseL + 'px', top: groupBaseT + 'px',
@@ -4794,6 +4940,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 
             items.forEach(item => {
+                if (item.type === 'connector') return; // virtual, don't move into DOM
                 item.el.style.left = (item.l - minX) + 'px';
                 item.el.style.top = (item.t - minY) + 'px';
                 item.el.style.width = item.w + 'px';
@@ -4830,6 +4977,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const groupL = parseFloat(group.style.left) || 0;
             const groupT = parseFloat(group.style.top) || 0;
 
+            const groupedConnectorIdsStr = group.getAttribute('data-connectors');
+            const groupedConnectorIds = groupedConnectorIdsStr ? JSON.parse(groupedConnectorIdsStr) : [];
+
             const children = Array.from(group.children).filter(c => c.classList.contains('lf-component'));
             const newIds = [];
 
@@ -4860,8 +5010,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 group.parentNode.insertBefore(c, group);
             });
 
+            groupedConnectorIds.forEach(connId => {
+                newIds.push(connId);
+            });
+
             group.remove();
-            notifyParent({ type: 'LF_DESELECT' });
+            notifyParent({ type: 'LF_UNGROUPED_SYNC_SELECTION', ids: newIds });
             markDirty();
         } else if (d.type === 'LF_EXTRACT_MOLECULE') {
             const group = document.getElementById(d.id);
@@ -5249,4 +5403,5 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     window.initHandles();
 })();
 
-</script></body></html>
+</script>
+</body></html>
