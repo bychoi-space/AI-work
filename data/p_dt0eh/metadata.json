@@ -74,6 +74,12 @@
         }
       ],
       "connectors": []
+    },
+    "05_Admin_Onesphere_733.html": {
+      "title": "05_Admin_Onesphere_733",
+      "type": "admin-onesphere",
+      "updatedAt": "2026-07-03T06:43:11.727Z",
+      "template": "template_onesphere.html"
     }
   },
   "assignee": "최범열",
