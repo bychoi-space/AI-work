@@ -80,6 +80,12 @@
       "type": "admin-onesphere",
       "updatedAt": "2026-07-03T06:43:11.727Z",
       "template": "template_onesphere.html"
+    },
+    "05_Admin_Onesphere_904.html": {
+      "title": "05_Admin_Onesphere_904",
+      "type": "admin-onesphere",
+      "updatedAt": "2026-07-03T07:15:39.314Z",
+      "template": "template_onesphere.html"
     }
   },
   "assignee": "최범열",
