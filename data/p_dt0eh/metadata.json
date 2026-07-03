@@ -57,6 +57,12 @@
       "connectors": [],
       "defaultTab": "editor",
       "screenDesc": "[object Object]"
+    },
+    "99_Blank_455.html": {
+      "title": "99_Blank_455",
+      "type": "blank",
+      "updatedAt": "2026-07-03T05:26:36.037Z",
+      "template": "template_blank.html"
     }
   },
   "assignee": "최범열",
