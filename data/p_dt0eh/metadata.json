@@ -61,7 +61,7 @@
     "99_Blank_455.html": {
       "title": "99_Blank_455",
       "type": "blank",
-      "updatedAt": "2026-07-03T07:18:19.857Z",
+      "updatedAt": "2026-07-03T06:42:58.095Z",
       "template": "template_blank.html",
       "description": [
         {
@@ -81,5 +81,11 @@
   "period": "2026.06.29(월) ~ 2026.07.10(금)",
   "jira": "LFML-144209",
   "themeIndex": 4,
-  "updated": "2026-07-03 16:18:19"
+  "updated": "2026-07-03 16:18:19",
+  "screenOrder": [
+    "00_Cover_753.html",
+    "99_Blank_914.html",
+    "06_Mobile_Design_2_148.html",
+    "99_Blank_455.html"
+  ]
 }
