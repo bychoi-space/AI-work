@@ -61,7 +61,7 @@
     "99_Blank_455.html": {
       "title": "99_Blank_455",
       "type": "blank",
-      "updatedAt": "2026-07-03T05:46:19.560Z",
+      "updatedAt": "2026-07-03T06:42:25.621Z",
       "template": "template_blank.html",
       "description": [
         {
@@ -81,5 +81,5 @@
   "period": "2026.06.29(월) ~ 2026.07.10(금)",
   "jira": "LFML-144209",
   "themeIndex": 4,
-  "updated": "2026-07-03 14:46:19"
+  "updated": "2026-07-03 15:42:25"
 }
