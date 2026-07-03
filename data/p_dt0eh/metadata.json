@@ -42,7 +42,7 @@
     "99_Blank_914.html": {
       "title": "어드민 기능",
       "type": "admin-onesphere",
-      "updatedAt": "2026-07-03T07:31:45.161Z",
+      "updatedAt": "2026-07-03T05:25:28.985Z",
       "template": "template_blank.html",
       "description": [
         {
@@ -61,7 +61,7 @@
     "99_Blank_455.html": {
       "title": "어드민 _ 상세",
       "type": "admin-onesphere",
-      "updatedAt": "2026-07-03T07:19:07.523Z",
+      "updatedAt": "2026-07-03T08:37:05.638Z",
       "template": "template_blank.html",
       "description": [
         {
@@ -83,7 +83,7 @@
   "period": "2026.06.29(월) ~ 2026.07.10(금)",
   "jira": "LFML-144209",
   "themeIndex": 4,
-  "updated": "2026-07-03 16:31:45",
+  "updated": "2026-07-03 17:37:05",
   "screenOrder": [
     "00_Cover_753.html",
     "06_Mobile_Design_2_148.html",
