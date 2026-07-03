@@ -42,7 +42,7 @@
     "99_Blank_914.html": {
       "title": "어드민 기능",
       "type": "admin-onesphere",
-      "updatedAt": "2026-07-01T04:21:40.856Z",
+      "updatedAt": "2026-07-03T02:10:50.417Z",
       "template": "template_blank.html",
       "description": [
         {
@@ -64,5 +64,5 @@
   "period": "2026.06.29(월) ~ 2026.07.10(금)",
   "jira": "LFML-144209",
   "themeIndex": 4,
-  "updated": "2026-07-02 11:42:42"
+  "updated": "2026-07-03 11:10:50"
 }
