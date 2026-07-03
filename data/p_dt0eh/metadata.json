@@ -59,9 +59,9 @@
       "screenDesc": "[object Object]"
     },
     "99_Blank_455.html": {
-      "title": "99_Blank_455",
-      "type": "blank",
-      "updatedAt": "2026-07-03T06:42:58.095Z",
+      "title": "어드민 _ 상세",
+      "type": "admin-onesphere",
+      "updatedAt": "2026-07-03T07:19:07.523Z",
       "template": "template_blank.html",
       "description": [
         {
@@ -73,7 +73,9 @@
           "standardized": true
         }
       ],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": "[object Object]"
     }
   },
   "assignee": "최범열",
