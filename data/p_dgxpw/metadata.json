@@ -1,5 +1,5 @@
 {
-  "title": "[배송] 매장상품배송 서비스 - 상품목록 추가 작업",
+  "title": "[배송] 매장상품배송 - 상품목록 추가",
   "screens": {
     "06_Mobile_Design_2_785.html": {
       "title": "06_Mobile_Design_2_785",
@@ -127,7 +127,7 @@
   },
   "assignee": "최범열",
   "developer": "이민우",
-  "period": "2026.06.29(월) ~ 2026.08.28(금)",
+  "period": "2026.06.29 ~ 2026.08.28",
   "jira": "LFML-144682",
   "themeIndex": 2,
   "updated": "2026-07-02 17:38:27"
