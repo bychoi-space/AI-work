@@ -318,7 +318,13 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
 
 
 
-<script id="v4-inlined-script">
+
+<div id="v4-comp-1783068618636" class="lf-component" style="position: absolute; top: 191.019px; left: 381.6px; z-index: 1000; transform: none; width: 300px; height: 30px;" data-resized="true">
+            <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;">
+                <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;">Placeholder</div>
+                <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;" data-events-bound="true"></div>
+                <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: block; font-family: inherit;">0/100</div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-text-1783069630421" class="lf-component v4-text-box" style="position: absolute; top: 146.706px; left: 381.6px; z-index: 1000; transform: none; width: 42px; height: 21px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 0px 4px 2px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><span style="font-size: 14px;">1234</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><script id="v4-inlined-script">
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -1262,23 +1268,35 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const showEndDate = dp.getAttribute('data-show-end-date') !== 'false';
             const sep = dp.querySelector('.v4-dp-separator');
             const groups = dp.querySelectorAll('.v4-dp-input-group');
-            if (sep) {
-                const targetDisplay = showEndDate ? 'inline-flex' : 'none';
-                if (sep.style.display !== targetDisplay) sep.style.display = targetDisplay;
-            }
-            if (groups && groups.length > 1) {
-                const targetDisplay = showEndDate ? 'inline-flex' : 'none';
-                if (groups[1].style.display !== targetDisplay) groups[1].style.display = targetDisplay;
+            const mode = dp.getAttribute('data-mode') || 'simple';
+            
+            if (mode !== 'detailed') {
+                if (sep) {
+                    const targetDisplay = showEndDate ? 'inline-flex' : 'none';
+                    if (sep.style.display !== targetDisplay) sep.style.display = targetDisplay;
+                }
+                if (groups && groups.length > 1) {
+                    const targetDisplay = showEndDate ? 'inline-flex' : 'none';
+                    if (groups[1].style.display !== targetDisplay) groups[1].style.display = targetDisplay;
+                }
             }
 
             const startEl = dp.querySelector('.v4-dp-start');
             const endEl = dp.querySelector('.v4-dp-end');
+            const startTimeEl = dp.querySelector('.v4-dp-start-time');
+            const endTimeEl = dp.querySelector('.v4-dp-end-time');
+            
             const storedStart = dp.getAttribute('data-start-date') || '';
             const storedEnd = dp.getAttribute('data-end-date') || '';
+            const storedStartTime = dp.getAttribute('data-start-time') || '10:00:00';
+            const storedEndTime = dp.getAttribute('data-end-time') || '12:00:00';
+            
             const defaultPreset = dp.getAttribute('data-default-preset') || 'none';
 
             if (startEl && storedStart && startEl.innerText !== storedStart) startEl.innerText = storedStart;
             if (endEl && storedEnd && endEl.innerText !== storedEnd) endEl.innerText = storedEnd;
+            if (startTimeEl && storedStartTime && startTimeEl.innerText !== storedStartTime) startTimeEl.innerText = storedStartTime;
+            if (endTimeEl && storedEndTime && endTimeEl.innerText !== storedEndTime) endTimeEl.innerText = storedEndTime;
 
             if (startEl && !startEl.innerText && defaultPreset && defaultPreset !== 'none') {
                 const today = new Date();
@@ -2222,6 +2240,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const dpDefaultPreset = dpContainer ? (dpContainer.getAttribute('data-default-preset') || 'none') : 'none';
         const dpStartDate = dpContainer ? (dpContainer.getAttribute('data-start-date') || '') : '';
         const dpEndDate = dpContainer ? (dpContainer.getAttribute('data-end-date') || '') : '';
+        const dpMode = dpContainer ? (dpContainer.getAttribute('data-mode') || 'simple') : 'simple';
+        const dpStartTime = dpContainer ? (dpContainer.getAttribute('data-start-time') || '') : '';
+        const dpEndTime = dpContainer ? (dpContainer.getAttribute('data-end-time') || '') : '';
 
         // Accordion Atom Detection
         const isAccordion = isGroup ? false : (!!c.querySelector('.v4-accordion-container') || c.classList.contains('v4-accordion-container'));
@@ -2445,6 +2466,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             dpDefaultPreset: dpDefaultPreset,
             dpStartDate: dpStartDate,
             dpEndDate: dpEndDate,
+            dpMode: dpMode,
+            dpStartTime: dpStartTime,
+            dpEndTime: dpEndTime,
             isAccordion: isAccordion,
             accordionHeaderText: accordionHeaderText,
             accordionSubCount: accordionSubCount,
@@ -2897,6 +2921,19 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             markDirty();
             const comp = e.target.closest('.lf-component');
             if (comp) {
+                const dpContainer = comp.querySelector('.v4-datepicker-container') || (comp.classList.contains('v4-datepicker-container') ? comp : null);
+                if (dpContainer) {
+                    const text = e.target.innerText || '';
+                    if (e.target.classList.contains('v4-dp-start')) {
+                        dpContainer.setAttribute('data-start-date', text);
+                    } else if (e.target.classList.contains('v4-dp-end')) {
+                        dpContainer.setAttribute('data-end-date', text);
+                    } else if (e.target.classList.contains('v4-dp-start-time')) {
+                        dpContainer.setAttribute('data-start-time', text);
+                    } else if (e.target.classList.contains('v4-dp-end-time')) {
+                        dpContainer.setAttribute('data-end-time', text);
+                    }
+                }
                 if (typeof window.enforceDesignSystem === 'function') {
                     window.enforceDesignSystem();
                 } else if (typeof window.resizeAtomToFitText === 'function') {
@@ -4363,55 +4400,106 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     return { start: startDt ? _fmt(startDt) : '', end: endDt ? _fmt(endDt) : '' };
                 };
 
+                                const rebuildDatePicker = (cnt) => {
+                    const mode = cnt.getAttribute('data-mode') || 'simple';
+                    const showPresets = cnt.getAttribute('data-show-presets') !== 'false';
+                    const showEndDate = cnt.getAttribute('data-show-end-date') !== 'false';
+                    const startDate = cnt.getAttribute('data-start-date') || '';
+                    const endDate = cnt.getAttribute('data-end-date') || '';
+                    const startTime = cnt.getAttribute('data-start-time') || '10:00:00';
+                    const endTime = cnt.getAttribute('data-end-time') || '12:00:00';
+                    const defaultPreset = cnt.getAttribute('data-default-preset') || 'none';
+
+                    if (mode === 'detailed') {
+                        cnt.innerHTML = `
+                            <div class="v4-dp-detailed-wrapper" style="display: flex; align-items: center; gap: 6px; width: 100%; height: 100%;">
+                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; box-sizing: border-box;">
+                                    <div class="v4-dp-date-field v4-dp-start v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;">${startDate}</div>
+                                </div>
+                                <div class="v4-dp-icon-wrapper" style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); box-sizing: border-box; flex-shrink: 0;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; box-sizing: border-box;">
+                                    <div class="v4-dp-time-field v4-dp-start-time v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 60px; font-family: inherit; -webkit-user-select: text; user-select: text;">${startTime}</div>
+                                </div>
+                                
+                                <div class="v4-dp-separator" style="color: var(--v4-placeholder-color, #9ca3af); font-size: 13px; padding: 0 2px; flex-shrink: 0; font-family: inherit;">-</div>
+
+                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; box-sizing: border-box;">
+                                    <div class="v4-dp-date-field v4-dp-end v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;">${endDate}</div>
+                                </div>
+                                <div class="v4-dp-icon-wrapper" style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); box-sizing: border-box; flex-shrink: 0;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; box-sizing: border-box;">
+                                    <div class="v4-dp-time-field v4-dp-end-time v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 60px; font-family: inherit; -webkit-user-select: text; user-select: text;">${endTime}</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        cnt.innerHTML = `
+                            <div class="v4-dp-fields" style="display: inline-flex; align-items: center; gap: 0; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; overflow: hidden; box-sizing: border-box; flex-shrink: 0;">
+                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; gap: 6px; height: 100%;">
+                                    <div class="v4-dp-date-field v4-dp-start v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;">${startDate}</div>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                                <div class="v4-dp-separator" style="color: var(--v4-placeholder-color, #9ca3af); font-size: 13px; padding: 0 2px; flex-shrink: 0; font-family: inherit; display: ${showEndDate ? 'inline-flex' : 'none'};">-</div>
+                                <div class="v4-dp-input-group" style="display: ${showEndDate ? 'inline-flex' : 'none'}; align-items: center; padding: 0 10px; gap: 6px; height: 100%;">
+                                    <div class="v4-dp-date-field v4-dp-end v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;">${endDate}</div>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                            </div>
+                            <div class="v4-dp-presets" style="display: ${showPresets ? 'inline-flex' : 'none'}; align-items: center; gap: 4px; flex-shrink: 0;">
+                                <button class="v4-dp-preset-btn" data-preset="1D" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: ${defaultPreset === '1D' ? 'var(--v4-primary)' : 'var(--v4-component-bg, #ffffff)'}; color: ${defaultPreset === '1D' ? '#ffffff' : 'var(--v4-text-color, #374151)'}; font-size: 12px; font-weight: ${defaultPreset === '1D' ? '700' : '600'}; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1D</button>
+                                <button class="v4-dp-preset-btn" data-preset="1W" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: ${defaultPreset === '1W' ? 'var(--v4-primary)' : 'var(--v4-component-bg, #ffffff)'}; color: ${defaultPreset === '1W' ? '#ffffff' : 'var(--v4-text-color, #374151)'}; font-size: 12px; font-weight: ${defaultPreset === '1W' ? '700' : '600'}; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1W</button>
+                                <button class="v4-dp-preset-btn" data-preset="1M" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: ${defaultPreset === '1M' ? 'var(--v4-primary)' : 'var(--v4-component-bg, #ffffff)'}; color: ${defaultPreset === '1M' ? '#ffffff' : 'var(--v4-text-color, #374151)'}; font-size: 12px; font-weight: ${defaultPreset === '1M' ? '700' : '600'}; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1M</button>
+                                <button class="v4-dp-preset-btn" data-preset="6M" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: ${defaultPreset === '6M' ? 'var(--v4-primary)' : 'var(--v4-component-bg, #ffffff)'}; color: ${defaultPreset === '6M' ? '#ffffff' : 'var(--v4-text-color, #374151)'}; font-size: 12px; font-weight: ${defaultPreset === '6M' ? '700' : '600'}; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">6M</button>
+                                <button class="v4-dp-preset-btn" data-preset="all" style="height: 30px; min-width: 36px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: ${defaultPreset === 'all' ? 'var(--v4-primary)' : 'var(--v4-component-bg, #ffffff)'}; color: ${defaultPreset === 'all' ? '#ffffff' : 'var(--v4-text-color, #374151)'}; font-size: 12px; font-weight: ${defaultPreset === 'all' ? '700' : '600'}; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">전체</button>
+                            </div>
+                        `;
+                    }
+                };
+
+                if (d.mode !== undefined) {
+                    container.setAttribute('data-mode', d.mode);
+                    if (d.mode === 'detailed') {
+                        s.style.width = '490px';
+                    } else {
+                        s.style.width = '300px';
+                    }
+                }
+
                 if (d.showPresets !== undefined) {
                     container.setAttribute('data-show-presets', d.showPresets ? 'true' : 'false');
-                    const presetsDiv = container.querySelector('.v4-dp-presets');
-                    if (presetsDiv) presetsDiv.style.display = d.showPresets ? 'inline-flex' : 'none';
                 }
 
                 if (d.showEndDate !== undefined) {
                     container.setAttribute('data-show-end-date', d.showEndDate ? 'true' : 'false');
-                    const sep = container.querySelector('.v4-dp-separator');
-                    const groups = container.querySelectorAll('.v4-dp-input-group');
-                    if (sep) sep.style.display = d.showEndDate ? 'inline-flex' : 'none';
-                    if (groups && groups.length > 1) {
-                        groups[1].style.display = d.showEndDate ? 'inline-flex' : 'none';
-                    }
                 }
 
                 if (d.defaultPreset !== undefined) {
                     container.setAttribute('data-default-preset', d.defaultPreset);
-                    container.querySelectorAll('.v4-dp-preset-btn').forEach(btn => {
-                        const isActive = btn.getAttribute('data-preset') === d.defaultPreset;
-                        btn.style.background = isActive ? '#1d4ed8' : '#ffffff';
-                        btn.style.borderColor = isActive ? '#1d4ed8' : '#cccccc';
-                        btn.style.color = isActive ? '#ffffff' : '#374151';
-                        btn.style.fontWeight = isActive ? '700' : '600';
-                        if (isActive) btn.classList.add('v4-dp-preset-active');
-                        else btn.classList.remove('v4-dp-preset-active');
-                    });
                     if (d.defaultPreset !== 'none') {
                         const computed = _applyPreset(d.defaultPreset);
                         container.setAttribute('data-start-date', computed.start);
                         container.setAttribute('data-end-date', computed.end);
-                        const startEl = container.querySelector('.v4-dp-start');
-                        const endEl = container.querySelector('.v4-dp-end');
-                        if (startEl && startEl.innerText !== computed.start) startEl.innerText = computed.start;
-                        if (endEl && endEl.innerText !== computed.end) endEl.innerText = computed.end;
                     }
                 }
 
                 if (d.startDate !== undefined) {
                     container.setAttribute('data-start-date', d.startDate);
-                    const startEl = container.querySelector('.v4-dp-start');
-                    if (startEl && startEl.innerText !== d.startDate) startEl.innerText = d.startDate;
                 }
                 if (d.endDate !== undefined) {
                     container.setAttribute('data-end-date', d.endDate);
-                    const endEl = container.querySelector('.v4-dp-end');
-                    if (endEl && endEl.innerText !== d.endDate) endEl.innerText = d.endDate;
+                }
+                if (d.startTime !== undefined) {
+                    container.setAttribute('data-start-time', d.startTime);
+                }
+                if (d.endTime !== undefined) {
+                    container.setAttribute('data-end-time', d.endTime);
                 }
 
+                rebuildDatePicker(container);
                 markDirty();
 
                 if (typeof window._getCompStyles === 'function') {
@@ -5609,9 +5697,29 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 })();
 
 </script>
-<div id="v4-comp-1783068618636" class="lf-component" style="position: absolute; top: 191.019px; left: 381.6px; z-index: 1000; transform: none; width: 300px; height: 30px;" data-resized="true">
-            <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;">
-                <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;">Placeholder</div>
-                <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;" data-events-bound="true"></div>
-                <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: block; font-family: inherit;">0/100</div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-text-1783069630421" class="lf-component v4-text-box" style="position: absolute; top: 146.706px; left: 381.6px; z-index: 1000; transform: none; width: 42px; height: 21px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 0px 4px 2px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><span style="font-size: 14px;">1234</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></body></html>
+<div id="v4-comp-1783069957606" class="lf-component" style="position: absolute; top: 240.619px; left: 381.6px; z-index: 1000; transform: none; width: 500px; height: 30px;" data-resized="true">
+            <div class="v4-datepicker-container" data-show-presets="true" data-show-end-date="true" data-default-preset="1M" data-start-date="" data-end-date="9999/12/31" style="position: relative; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; flex-wrap: nowrap; width: 100%; height: 100%;" data-mode="detailed" data-start-time="09:12:11" data-end-time="23:59:59">
+                            <div class="v4-dp-detailed-wrapper" style="display: flex; align-items: center; gap: 6px; width: 100%; height: 100%;">
+                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; box-sizing: border-box;">
+                                    <div class="v4-dp-date-field v4-dp-start v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;">2026/06/03</div>
+                                </div>
+                                <div class="v4-dp-icon-wrapper" style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); box-sizing: border-box; flex-shrink: 0;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke-width="1.6" style="stroke-width: 1.6; vector-effect: non-scaling-stroke;"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; box-sizing: border-box;">
+                                    <div class="v4-dp-time-field v4-dp-start-time v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 60px; font-family: inherit; -webkit-user-select: text; user-select: text;">09:12:11</div>
+                                </div>
+                                
+                                <div class="v4-dp-separator" style="color: var(--v4-placeholder-color, #9ca3af); font-size: 13px; padding: 0 2px; flex-shrink: 0; font-family: inherit;">-</div>
+
+                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; box-sizing: border-box;">
+                                    <div class="v4-dp-date-field v4-dp-end v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;">9999/12/31</div>
+                                </div>
+                                <div class="v4-dp-icon-wrapper" style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); box-sizing: border-box; flex-shrink: 0;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke-width="1.6" style="stroke-width: 1.6; vector-effect: non-scaling-stroke;"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                </div>
+                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; box-sizing: border-box;">
+                                    <div class="v4-dp-time-field v4-dp-end-time v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 60px; font-family: inherit; -webkit-user-select: text; user-select: text;">23:59:59</div>
+                                </div>
+                            </div>
+                        </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></body></html>
