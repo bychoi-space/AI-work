@@ -62,6 +62,7 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .v4-premium-table tr:last-child td { border-bottom: none !important; }
 .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
+.v4-editable-cell p { margin: 0 !important; padding: 0 !important; }
 .selected-cell {
     outline: 1.6px dashed #6366f1 !important;
     outline-offset: -1.6px !important;
@@ -138,7 +139,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 
 /* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
 .text-marker, .v4-text-box { 
-    position: absolute; padding: 2px 6px; border-radius: 4px; 
+    position: absolute; padding: 0 !important; border-radius: 4px; 
     border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
     white-space: normal; cursor: grab; pointer-events: auto; z-index: 100; 
     transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, outline 0.2s;
@@ -146,8 +147,9 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     box-shadow: none; box-sizing: border-box;
     color: #1e293b; text-align: left;
     width: fit-content !important;
+    display: flex !important; align-items: center !important; justify-content: flex-start !important;
 }
-.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell { padding: 2px 4px; display: block; text-align: left; }
+.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell { padding: 0px 4px 2px 4px !important; display: block !important; width: 100%; text-align: left; }
 .text-marker .v4-editable-cell p, .v4-text-box .v4-editable-cell p { margin: 0; padding: 0; }
 .text-marker:hover, .v4-text-box:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
 .text-marker.selected, .v4-text-box.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
@@ -231,8 +233,54 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
 }
 .v4-custom-btn.style-primary { background: #4f46e5 !important; border-color: #4f46e5 !important; color: #ffffff !important; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35) !important; }
 .v4-custom-btn.style-primary:hover { box-shadow: 0 6px 18px rgba(79, 70, 229, 0.5) !important; }
-.v4-custom-btn.style-normal { background: #ffffff !important; border-color: #cbd5e1 !important; color: #1f2937 !important; }
 .v4-custom-btn.style-negative { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #475569 !important; }
+.lf-connector-port {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #00e5ff;
+    border: 1.5px solid #ffffff;
+    border-radius: 50%;
+    z-index: 10003;
+    display: none;
+    cursor: crosshair;
+    box-shadow: 0 0 4px rgba(0,229,255,0.6);
+}
+body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
+    display: block;
+}
+.lf-component.lf-group > .lf-connector-port,
+.lf-component.connector-line > .lf-connector-port {
+    display: none !important;
+}
+.lf-connector-port.port-top { top: -4px; left: 50%; transform: translateX(-50%); }
+.lf-connector-port.port-bottom { bottom: -4px; left: 50%; transform: translateX(-50%); }
+.lf-connector-port.port-left { left: -4px; top: 50%; transform: translateY(-50%); }
+.lf-connector-port.port-right { right: -4px; top: 50%; transform: translateY(-50%); }
+.lf-component.connector-line.selected {
+    outline: none !important;
+}
+.lf-component.connector-line.selected path:nth-of-type(2) {
+    stroke: #3b82f6 !important;
+    filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.8));
+}
+.v4-shape-text-content p, .v4-shape-text-overlay p {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+/* Unify Grid UI Table Cell Typography and Colors */
+.v4-grid-container td.v4-grid-cell {
+    font-size: 12px !important;
+    font-family: 'Inter', sans-serif !important;
+    color: #334155 !important;
+    font-weight: 400 !important;
+}
+.v4-grid-container th.v4-grid-cell {
+    font-size: 12px !important;
+    font-family: 'Inter', sans-serif !important;
+    color: #334155 !important;
+    font-weight: 600 !important;
+}
 
 </style>
 </head>
@@ -244,26 +292,26 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
 
 
 <div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 200px; height: 900px; border-color: transparent;" data-resized="true" id="v4-comp-1782719198792-1">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(0, 0, 0); border: 1.6px solid transparent; border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><div class="lf-component text-marker" style="position: absolute; top: 20px; left: 29.5px; z-index: 1000; transform: none; width: 143px; height: 33px;" id="v4-pin-0"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 18px; color: rgb(255, 255, 255);">LF Onesphere</span></p></div></div><div class="lf-component" style="position: absolute; top: 72px; left: 20px; z-index: 1000; transform: none; width: 160px; height: 30px;" data-resized="true" id="v4-comp-1782719198792-3">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(50, 50, 50); border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="color: rgb(255, 255, 255); font-size: 12px;">모든 메뉴 보기</span></p></div></div></div><div class="lf-component" style="position: absolute; top: 122px; left: 19.5px; z-index: 1000; transform: none; width: 80px; height: 30px;" data-resized="true" id="v4-comp-1782719198792-4">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(0, 0, 0); border: 1.6px solid transparent; border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><strong style="font-size: 12px; color: rgb(255, 255, 255);">전체 메뉴</strong></p></div></div></div><div class="lf-component" style="position: absolute; top: 122px; left: 99.5px; z-index: 1000; transform: none; width: 80px; height: 30px;" id="v4-comp-1782719198792-5">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(0, 0, 0); border: 1.6px solid transparent; border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px; color: rgb(187, 187, 187);">즐겨찾기</span></p></div></div></div><div class="lf-component" style="position: absolute; top: 152px; left: 19.5px; z-index: 1000; transform: none; width: 160px; height: 1px;" data-resized="true" id="v4-comp-1782719198792-6">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><div class="lf-component" style="position: absolute; top: 151px; left: 19.5px; z-index: 1000; transform: none; width: 80px; height: 2px;" data-resized="true" id="v4-comp-1782719198792-7">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><div class="lf-component" style="position: absolute; top: 400px; left: 199px; z-index: 1000; transform: none; width: 10px; height: 100px;" data-resized="true" id="v4-comp-1782719198792-8">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(0, 0, 0); border: 1.6px solid transparent; border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><div class="lf-component" style="position: absolute; top: 445px; left: 195px; z-index: 1000; transform: none; width: 15px; height: 15px;" data-resized="true" id="v4-comp-1782719198792-9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 100%; height: 100%; color: rgb(255, 255, 255); stroke: rgb(255, 255, 255);"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(0, 0, 0); border: 1.6px solid transparent; border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component text-marker" style="position: absolute; top: 20px; left: 29.5px; z-index: 1000; transform: none; width: 143px; height: 33px;" id="v4-pin-0"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 18px; color: rgb(255, 255, 255);">LF Onesphere</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 72px; left: 20px; z-index: 1000; transform: none; width: 160px; height: 30px;" data-resized="true" id="v4-comp-1782719198792-3">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(50, 50, 50); border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="color: rgb(255, 255, 255); font-size: 12px;">모든 메뉴 보기</span></p></div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 122px; left: 19.5px; z-index: 1000; transform: none; width: 80px; height: 30px;" data-resized="true" id="v4-comp-1782719198792-4">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(0, 0, 0); border: 1.6px solid transparent; border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><strong style="font-size: 12px; color: rgb(255, 255, 255);">전체 메뉴</strong></p></div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 122px; left: 99.5px; z-index: 1000; transform: none; width: 80px; height: 30px;" id="v4-comp-1782719198792-5">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(0, 0, 0); border: 1.6px solid transparent; border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><span style="font-size: 12px; color: rgb(187, 187, 187);">즐겨찾기</span></p></div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 152px; left: 19.5px; z-index: 1000; transform: none; width: 160px; height: 1px;" data-resized="true" id="v4-comp-1782719198792-6">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 151px; left: 19.5px; z-index: 1000; transform: none; width: 80px; height: 2px;" data-resized="true" id="v4-comp-1782719198792-7">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 400px; left: 199px; z-index: 1000; transform: none; width: 10px; height: 100px;" data-resized="true" id="v4-comp-1782719198792-8">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(0, 0, 0); border: 1.6px solid transparent; border-radius: 0px; display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 445px; left: 195px; z-index: 1000; transform: none; width: 15px; height: 15px;" data-resized="true" id="v4-comp-1782719198792-9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 100%; height: 100%; color: rgb(255, 255, 255); stroke: rgb(255, 255, 255);"><polyline points="15 18 9 12 15 6"></polyline></svg><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
 
 <div id="v4-comp-1782784967444" class="lf-component" style="position: absolute; top: 0px; left: 200px; z-index: 1000; transform: none; width: 1240px; height: 50px;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: var(--v4-component-bg, rgb(255, 255, 255)); border-top-color: ; border-top-style: ; border-width: 1.6px !important; border-right-color: ; border-right-style: ; border-bottom-color: ; border-bottom-style: ; border-left-color: ; border-left-style: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 0px; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div></div><div id="group-1782785698119" class="lf-component lf-group" style="position: absolute; left: 220px; top: 10px; width: 72px; height: 30px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div id="lf-comp-1782785013020" class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 30px; height: 30px; color: rgb(0, 0, 0);" data-resized="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 100%; height: 100%; padding: 8px; box-sizing: border-box; background-image: none !important; color: rgb(50, 50, 50); stroke: rgb(50, 50, 50);"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke-width="1.6" style="stroke-width: 1.6; vector-effect: non-scaling-stroke;"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></div><div id="v4-text-1782785054824" class="lf-component v4-text-box" style="position: absolute; top: 1px; left: 18px; z-index: 1000; transform: none; width: 54px; height: 28px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:var(--v4-text-color, #000000); padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 10px;"> LFmall</span></p></div></div></div>
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: var(--v4-component-bg, rgb(255, 255, 255)); border-top-color: ; border-top-style: ; border-width: 1.6px !important; border-right-color: ; border-right-style: ; border-bottom-color: ; border-bottom-style: ; border-left-color: ; border-left-style: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 0px; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;"><div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; box-sizing: border-box; overflow: hidden;"><p><br></p></div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="group-1782785698119" class="lf-component lf-group" style="position: absolute; left: 220px; top: 10px; width: 72px; height: 30px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div id="lf-comp-1782785013020" class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 30px; height: 30px; color: rgb(0, 0, 0);" data-resized="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 100%; height: 100%; padding: 8px; box-sizing: border-box; background-image: none !important; color: rgb(50, 50, 50); stroke: rgb(50, 50, 50);"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke-width="1.6" style="stroke-width: 1.6; vector-effect: non-scaling-stroke;"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-text-1782785054824" class="lf-component v4-text-box" style="position: absolute; top: 1px; left: 18px; z-index: 1000; transform: none; width: 54px; height: 28px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:var(--v4-text-color, #000000); padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 10px;"> LFmall</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></div>
 
-<div id="lf-comp-1782785287456" class="lf-component" style="position: absolute; top: 10px; left: 670px; z-index: 1000; transform: none; width: 300px; height: 30px;" data-resized="true"><div class="v4-searchbar-container" data-placeholder="원스피어 통합검색" style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200); border-radius: 9999px; padding: 0px 12px 0px 16px; box-sizing: border-box; overflow: hidden; pointer-events: auto;" data-fontsize="12"><div class="v4-searchbar-text v4-editable-cell" contenteditable="true" data-placeholder="원스피어 통합검색" style="flex: 1 1 0%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; font-size: 12px; color: rgb(0, 0, 0); font-family: Inter, sans-serif; min-width: 0px; padding: 0px; line-height: 1.2; user-select: text; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;"></div><div class="v4-searchbar-icon-wrap" style="display:flex; align-items:center; justify-content:center; width:20px; height:20px; flex-shrink:0; margin-left:8px; pointer-events:none;"><svg viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%; background-image:none !important;"><circle cx="11" cy="11" r="8" stroke-width="1.6" style="stroke-width: 1.6; vector-effect: non-scaling-stroke;"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div></div></div><div id="group-1782785694665" class="lf-component lf-group" style="position: absolute; left: 302px; top: 10px; width: 93px; height: 30px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div id="lf-comp-1782785632074" class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 30px; height: 30px; color: rgb(0, 0, 0);" data-resized="true"><div class="lf-icon lf-icon-my" style="filter: brightness(0);"></div></div><div id="v4-comp-1782785646927409" class="lf-component v4-text-box" style="position: absolute; top: 1px; left: 21px; z-index: 1000; transform: none; width: 72px; height: 28px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:var(--v4-text-color, #000000); padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 10px;">담당자 확인</span></p></div></div></div><div id="lf-comp-1782785740843" class="lf-component" style="position: absolute; top: 10px; left: 1148px; z-index: 1000; transform: none; width: 30px; height: 30px; color: rgb(0, 0, 0);" data-resized="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 100%; height: 100%; padding: 8px; box-sizing: border-box; color: rgb(50, 50, 50); stroke: rgb(50, 50, 50);"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke-width="1.6" style="stroke-width: 1.6; vector-effect: non-scaling-stroke;"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></div><div id="v4-text-1782785776532" class="lf-component v4-text-box" style="position: absolute; top: 11px; left: 1188px; z-index: 1000; transform: none; width: fit-content; height: auto;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:var(--v4-text-color, #000000); padding:2px 4px; display:block; text-align:left;"><p><strong style="font-size: 12px;">홍길동</strong><span style="font-size: 12px;"> </span><span style="color: rgb(136, 136, 136); font-size: 12px;">Mall 서비스기획 BSU (admin ID)</span></p></div></div>
+<div id="lf-comp-1782785287456" class="lf-component" style="position: absolute; top: 10px; left: 670px; z-index: 1000; transform: none; width: 300px; height: 30px;" data-resized="true"><div class="v4-searchbar-container" data-placeholder="원스피어 통합검색" style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200); border-radius: 9999px; padding: 0px 12px 0px 16px; box-sizing: border-box; overflow: hidden; pointer-events: auto;" data-fontsize="12"><div class="v4-searchbar-text v4-editable-cell" contenteditable="true" data-placeholder="원스피어 통합검색" style="flex: 1 1 0%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; font-size: 12px; color: rgb(0, 0, 0); font-family: Inter, sans-serif; min-width: 0px; padding: 0px; line-height: 1.2; user-select: text; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;"></div><div class="v4-searchbar-icon-wrap" style="display:flex; align-items:center; justify-content:center; width:20px; height:20px; flex-shrink:0; margin-left:8px; pointer-events:none;"><svg viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%; background-image:none !important;"><circle cx="11" cy="11" r="8" stroke-width="1.6" style="stroke-width: 1.6; vector-effect: non-scaling-stroke;"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="group-1782785694665" class="lf-component lf-group" style="position: absolute; left: 302px; top: 10px; width: 93px; height: 30px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div id="lf-comp-1782785632074" class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 30px; height: 30px; color: rgb(0, 0, 0);" data-resized="true"><div class="lf-icon lf-icon-my" style="filter: brightness(0);"></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782785646927409" class="lf-component v4-text-box" style="position: absolute; top: 1px; left: 21px; z-index: 1000; transform: none; width: 72px; height: 28px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:var(--v4-text-color, #000000); padding:2px 4px; display:block; text-align:left;"><p><span style="font-size: 10px;">담당자 확인</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></div><div id="lf-comp-1782785740843" class="lf-component" style="position: absolute; top: 10px; left: 1148px; z-index: 1000; transform: none; width: 30px; height: 30px; color: rgb(0, 0, 0);" data-resized="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 100%; height: 100%; padding: 8px; box-sizing: border-box; color: rgb(50, 50, 50); stroke: rgb(50, 50, 50);"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke-width="1.6" style="stroke-width: 1.6; vector-effect: non-scaling-stroke;"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-text-1782785776532" class="lf-component v4-text-box" style="position: absolute; top: 11px; left: 1188px; z-index: 1000; transform: none; width: fit-content; height: auto;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:var(--v4-text-color, #000000); padding:2px 4px; display:block; text-align:left;"><p><strong style="font-size: 12px;">홍길동</strong><span style="font-size: 12px;"> </span><span style="color: rgb(136, 136, 136); font-size: 12px;">Mall 서비스기획 BSU (admin ID)</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
-<div id="v4-text-1782786323956" class="lf-component v4-text-box" style="position: absolute; top: 80px; left: 230px; z-index: 1000; transform: none; width: fit-content; height: auto;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:var(--v4-text-color, #000000); padding:2px 4px; display:block; text-align:left;"><p><strong style="font-size: 16px;">결제혜택 관리</strong></p></div></div>
-<div id="lf-comp-1782795663556" class="lf-component" style="position: absolute; top: 173px; left: 10px; z-index: 1000; transform: none; width: 180px; height: 600px; background: rgb(0, 0, 0); border-color: transparent;"><div class="v4-accordion-container" data-expanded="true" data-sub-count="3" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: rgb(0, 0, 0); border: 1.6px solid transparent; border-radius: 8px; overflow: hidden; box-sizing: border-box;" data-events-bound="true" data-depth-type="2depth" data-hierarchy="[{&quot;text&quot;:&quot;카드 관리&quot;,&quot;children&quot;:[]},{&quot;text&quot;:&quot;화면 관리&quot;},{&quot;text&quot;:&quot;전시 메뉴&quot;},{&quot;text&quot;:&quot;가변탭 스케줄 관리&quot;,&quot;children&quot;:[]},{&quot;text&quot;:&quot;배너 관리&quot;,&quot;children&quot;:[]},{&quot;text&quot;:&quot;LIVE 관리&quot;,&quot;children&quot;:[]},{&quot;text&quot;:&quot;앱 스플래시 관리&quot;,&quot;children&quot;:[]},{&quot;text&quot;:&quot;서비스 페이지&quot;,&quot;children&quot;:[{&quot;text&quot;:&quot;출석체크 관리&quot;,&quot;active&quot;:false},{&quot;text&quot;:&quot;출석체크 (아울렛) 관리&quot;,&quot;active&quot;:false},{&quot;text&quot;:&quot;소문내기 관리&quot;,&quot;active&quot;:false},{&quot;text&quot;:&quot;LFmall 신용카드 관리&quot;,&quot;active&quot;:false},{&quot;text&quot;:&quot;친구초대 관리&quot;,&quot;active&quot;:false},{&quot;text&quot;:&quot;앱푸시 수신 동의 관리&quot;,&quot;active&quot;:false},{&quot;text&quot;:&quot;결제혜택 관리&quot;,&quot;active&quot;:true}]}]"><div class="v4-accordion-header" style="height:36px; padding:0 12px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; background:rgba(255, 255, 255, 0.05); user-select:none; border-bottom:1.6px solid rgba(255,255,255,0.1); box-sizing:border-box; width:100%; flex-shrink:0;"><span class="v4-accordion-title-text" style="color:#ffffff; font-size:12px; font-weight:700; font-family:'Inter',sans-serif; pointer-events:none;">전시관리</span><span class="v4-accordion-chevron" style="color: rgb(255, 255, 255); font-size: 10px; pointer-events: none; transition: transform 0.2s; transform: rotate(180deg);">▼</span></div><div class="v4-accordion-body" style="display: flex; flex-direction: column; width: 100%; box-sizing: border-box; background: rgba(0, 0, 0, 0.15);"><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">카드 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">화면 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">전시 메뉴</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">가변탭 스케줄 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">배너 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">LIVE 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">앱 스플래시 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">서비스 페이지</span><span class="tier-arrow" style="width: 6px; height: 6px; border-right: 1.6px solid rgb(148, 163, 184); border-bottom: 1.6px solid rgb(148, 163, 184); transform: rotate(45deg); transition: transform 0.2s; margin-right: 8px; display: inline-block; flex-shrink: 0;"></span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">출석체크 관리</span></div></div><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">출석체크 (아울렛) 관리</span></div></div><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">소문내기 관리</span></div></div><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">LFmall 신용카드 관리</span></div></div><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">친구초대 관리</span></div></div><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">앱푸시 수신 동의 관리</span></div></div><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" checked="true" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%; text-decoration: underline;">결제혜택 관리</span></div></div></div></div></div></div></div><div id="v4-comp-1782795853337123" class="lf-component" style="position: absolute; top: 793px; left: 10px; z-index: 1000; transform: none; width: 180px; height: 111px; background: rgb(0, 0, 0); border-color: transparent;"><div class="v4-accordion-container" data-expanded="true" data-sub-count="3" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: rgb(0, 0, 0); border: 1.6px solid transparent; border-radius: 8px; overflow: hidden; box-sizing: border-box;" data-events-bound="true" data-depth-type="2depth" data-hierarchy="[{&quot;text&quot;:&quot;권한 관리&quot;,&quot;active&quot;:false,&quot;children&quot;:[]},{&quot;text&quot;:&quot;리소스 관리&quot;,&quot;active&quot;:false}]"><div class="v4-accordion-header" style="height:36px; padding:0 12px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; background:rgba(255, 255, 255, 0.05); user-select:none; border-bottom:1.6px solid rgba(255,255,255,0.1); box-sizing:border-box; width:100%; flex-shrink:0;"><span class="v4-accordion-title-text" style="color:#ffffff; font-size:12px; font-weight:700; font-family:'Inter',sans-serif; pointer-events:none;">시스템 관리</span><span class="v4-accordion-chevron" style="color: rgb(255, 255, 255); font-size: 10px; pointer-events: none; transition: transform 0.2s; transform: rotate(180deg);">▼</span></div><div class="v4-accordion-body" style="display: flex; flex-direction: column; width: 100%; box-sizing: border-box; background: rgba(0, 0, 0, 0.15);"><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">권한 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">리소스 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div></div></div></div>
+<div id="v4-text-1782786323956" class="lf-component v4-text-box" style="position: absolute; top: 80px; left: 230px; z-index: 1000; transform: none; width: fit-content; height: auto;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:var(--v4-text-color, #000000); padding:2px 4px; display:block; text-align:left;"><p><strong style="font-size: 16px;">결제혜택 관리</strong></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
+<div id="lf-comp-1782795663556" class="lf-component" style="position: absolute; top: 173px; left: 10px; z-index: 1000; transform: none; width: 180px; height: 600px; background: rgb(0, 0, 0); border-color: transparent;"><div class="v4-accordion-container" data-expanded="true" data-sub-count="3" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: rgb(0, 0, 0); border: 1.6px solid transparent; border-radius: 8px; overflow: hidden; box-sizing: border-box;" data-events-bound="true" data-depth-type="2depth" data-hierarchy="[{&quot;text&quot;:&quot;카드 관리&quot;,&quot;children&quot;:[]},{&quot;text&quot;:&quot;화면 관리&quot;},{&quot;text&quot;:&quot;전시 메뉴&quot;},{&quot;text&quot;:&quot;가변탭 스케줄 관리&quot;,&quot;children&quot;:[]},{&quot;text&quot;:&quot;배너 관리&quot;,&quot;children&quot;:[]},{&quot;text&quot;:&quot;LIVE 관리&quot;,&quot;children&quot;:[]},{&quot;text&quot;:&quot;앱 스플래시 관리&quot;,&quot;children&quot;:[]},{&quot;text&quot;:&quot;서비스 페이지&quot;,&quot;children&quot;:[{&quot;text&quot;:&quot;출석체크 관리&quot;,&quot;active&quot;:false},{&quot;text&quot;:&quot;출석체크 (아울렛) 관리&quot;,&quot;active&quot;:false},{&quot;text&quot;:&quot;소문내기 관리&quot;,&quot;active&quot;:false},{&quot;text&quot;:&quot;LFmall 신용카드 관리&quot;,&quot;active&quot;:false},{&quot;text&quot;:&quot;친구초대 관리&quot;,&quot;active&quot;:false},{&quot;text&quot;:&quot;앱푸시 수신 동의 관리&quot;,&quot;active&quot;:false},{&quot;text&quot;:&quot;결제혜택 관리&quot;,&quot;active&quot;:true}]}]"><div class="v4-accordion-header" style="height:36px; padding:0 12px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; background:rgba(255, 255, 255, 0.05); user-select:none; border-bottom:1.6px solid rgba(255,255,255,0.1); box-sizing:border-box; width:100%; flex-shrink:0;"><span class="v4-accordion-title-text" style="color:#ffffff; font-size:12px; font-weight:700; font-family:'Inter',sans-serif; pointer-events:none;">전시관리</span><span class="v4-accordion-chevron" style="color: rgb(255, 255, 255); font-size: 10px; pointer-events: none; transition: transform 0.2s; transform: rotate(180deg);">▼</span></div><div class="v4-accordion-body" style="display: flex; flex-direction: column; width: 100%; box-sizing: border-box; background: rgba(0, 0, 0, 0.15);"><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">카드 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">화면 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">전시 메뉴</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">가변탭 스케줄 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">배너 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">LIVE 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">앱 스플래시 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">서비스 페이지</span><span class="tier-arrow" style="width: 6px; height: 6px; border-right: 1.6px solid rgb(148, 163, 184); border-bottom: 1.6px solid rgb(148, 163, 184); transform: rotate(45deg); transition: transform 0.2s; margin-right: 8px; display: inline-block; flex-shrink: 0;"></span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">출석체크 관리</span></div></div><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">출석체크 (아울렛) 관리</span></div></div><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">소문내기 관리</span></div></div><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">LFmall 신용카드 관리</span></div></div><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">친구초대 관리</span></div></div><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">앱푸시 수신 동의 관리</span></div></div><div class="v4-accordion-tier2-wrapper" style="display: flex; flex-direction: column; border-bottom: 1.6px solid rgba(255, 255, 255, 0.02);"><div class="v4-accordion-tier2-header" style="padding: 8px 12px 8px 24px; font-size: 11px; color: rgb(226, 232, 240); display: flex; align-items: center; cursor: pointer; height: 36px; box-sizing: border-box;"><input type="radio" name="accordion-select-lf-comp-1782795663556" class="v4-accordion-radio" checked="true" style="margin-right: 8px; accent-color: rgb(0, 229, 255); cursor: pointer;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%; text-decoration: underline;">결제혜택 관리</span></div></div></div></div></div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782795853337123" class="lf-component" style="position: absolute; top: 793px; left: 10px; z-index: 1000; transform: none; width: 180px; height: 111px; background: rgb(0, 0, 0); border-color: transparent;"><div class="v4-accordion-container" data-expanded="true" data-sub-count="3" style="width: 100%; height: 100%; display: flex; flex-direction: column; background: rgb(0, 0, 0); border: 1.6px solid transparent; border-radius: 8px; overflow: hidden; box-sizing: border-box;" data-events-bound="true" data-depth-type="2depth" data-hierarchy="[{&quot;text&quot;:&quot;권한 관리&quot;,&quot;active&quot;:false,&quot;children&quot;:[]},{&quot;text&quot;:&quot;리소스 관리&quot;,&quot;active&quot;:false}]"><div class="v4-accordion-header" style="height:36px; padding:0 12px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; background:rgba(255, 255, 255, 0.05); user-select:none; border-bottom:1.6px solid rgba(255,255,255,0.1); box-sizing:border-box; width:100%; flex-shrink:0;"><span class="v4-accordion-title-text" style="color:#ffffff; font-size:12px; font-weight:700; font-family:'Inter',sans-serif; pointer-events:none;">시스템 관리</span><span class="v4-accordion-chevron" style="color: rgb(255, 255, 255); font-size: 10px; pointer-events: none; transition: transform 0.2s; transform: rotate(180deg);">▼</span></div><div class="v4-accordion-body" style="display: flex; flex-direction: column; width: 100%; box-sizing: border-box; background: rgba(0, 0, 0, 0.15);"><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">권한 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div><div class="v4-accordion-tier1-group" style="border-bottom: 1.6px solid rgba(255, 255, 255, 0.05); display: flex; flex-direction: column;"><div class="v4-accordion-tier1-header" style="padding: 8px 12px; font-size: 12px; font-weight: bold; color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: space-between; cursor: pointer; background: rgba(255, 255, 255, 0.02); height: 36px; box-sizing: border-box;"><span class="v4-editable-cell" contenteditable="true" style="outline: none; flex: 1 1 0%;">리소스 관리</span></div><div class="v4-accordion-tier1-body" style="display: flex; flex-direction: column; transition: 0.2s; overflow: hidden;"></div></div></div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 <div id="v4-comp-1782799292607" class="lf-component" style="position: absolute; top: 130px; left: 230px; z-index: 1000; transform: none; width: 1180px; height: 100px;" data-resized="true">
             <div class="v4-admin-settings-container" data-row-count="2" data-row-height="50" data-row1-label="기간" data-row1-cols="1" data-row1-type="textbox" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background: #ffffff; border: 1.6px solid rgb(226, 232, 240); border-radius: 8px; font-family: inherit; display: flex; flex-direction: column; overflow: hidden; pointer-events: auto;" data-row2-label="결제혜택명, 상태" data-row2-cols="2" data-row2-type="textbox">
                 <div class="v4-admin-settings-table" style="display: flex; flex-direction: column; width: 100%; height: 100%;"><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 50px;"><div class="v4-admin-label-cell" style="width: 140px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">기간</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; box-sizing: border-box; height: 50px;"><div class="v4-admin-label-cell" style="width: 140px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">결제혜택명</div><div class="v4-admin-content-cell" style="flex: 1 0 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box; border-right: 1.6px solid rgb(226, 232, 240); width: 30%;"></div><div class="v4-admin-label-cell" style="width: 140px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">상태</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div></div>
-            </div></div><div id="v4-comp-1782799387414" class="lf-component" style="position: absolute; top: 140.813px; left: 381.6px; z-index: 1000; transform: none; width: 495px; height: 30px;">
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782799387414" class="lf-component" style="position: absolute; top: 140.813px; left: 381.6px; z-index: 1000; transform: none; width: 495px; height: 30px;">
             <div class="v4-datepicker-container" data-show-presets="true" data-show-end-date="true" data-default-preset="1M" data-start-date="" data-end-date="" style="position: relative; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; flex-wrap: nowrap; width: 100%; height: 100%;">
                 <div class="v4-dp-fields" style="display: inline-flex; align-items: center; gap: 0; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; overflow: hidden; box-sizing: border-box; flex-shrink: 0;">
                     <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; gap: 6px; height: 100%;">
@@ -283,26 +331,27 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
                     <button class="v4-dp-preset-btn" data-preset="6M" style="height: 30px; min-width: 36px; padding: 0px 10px; border-color: rgb(204, 204, 204); border-top-style: ; border-top-width: ; border-right-style: ; border-right-width: ; border-bottom-style: ; border-bottom-width: ; border-left-style: ; border-left-width: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 8px; background: rgb(255, 255, 255); color: rgb(55, 65, 81); font-size: 12px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: 0.15s; font-family: inherit;">6M</button>
                     <button class="v4-dp-preset-btn" data-preset="all" style="height: 30px; min-width: 36px; padding: 0px 12px; border-color: rgb(204, 204, 204); border-top-style: ; border-top-width: ; border-right-style: ; border-right-width: ; border-bottom-style: ; border-bottom-width: ; border-left-style: ; border-left-width: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 8px; background: rgb(255, 255, 255); color: rgb(55, 65, 81); font-size: 12px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: 0.15s; font-family: inherit;">전체</button>
                 </div>
-            </div></div><div id="v4-comp-1782799415930" class="lf-component" style="position: absolute; top: 189.213px; left: 381.6px; z-index: 1000; transform: none; width: 150px; height: 30px;">
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782799415930" class="lf-component" style="position: absolute; top: 189.213px; left: 381.6px; z-index: 1000; transform: none; width: 150px; height: 30px;">
             <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;">
                 <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;">Placeholder</div>
                 <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;" data-events-bound="true"></div>
                 <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: block; font-family: inherit;">0/100</div>
-            </div></div><div id="v4-comp-1782799443037" class="lf-component" style="position: absolute; top: 260px; left: 230px; z-index: 1000; transform: none; width: 80px; height: 30px;" data-resized="true">
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782799443037" class="lf-component" style="position: absolute; top: 260px; left: 230px; z-index: 1000; transform: none; width: 80px; height: 30px;" data-resized="true">
             <div class="v4-btn-container" data-text="조건저장" data-btn-style="normal" data-btn-radius="6" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
                 <button class="v4-custom-btn style-normal" style="width: 100%; height: 100%; border-radius: 6px; background: var(--v4-component-bg, #ffffff); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px; box-sizing: border-box; transition: 0.2s; font-family: inherit; border-top-color:  !important; border-style: solid !important; border-width: 1.6px !important; border-right-color:  !important; border-bottom-color:  !important; border-left-color:  !important; border-image-source:  !important; border-image-slice:  !important; border-image-width:  !important; border-image-outset:  !important; border-image-repeat:  !important;">조건저장</button>
-            </div></div>
-<div id="lf-comp-1782801246264" class="lf-component" style="position: absolute; top: 188.213px; left: 970.8px; z-index: 1000; transform: none; width: 58px; height: 32px;" data-resized="true"><div class="v4-checkbox-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-checkbox lf-icon" style="width: 20px; height: 20px; background: rgb(50, 50, 50); border: 1.6px solid rgb(255, 255, 255); border-radius: 6px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%; pointer-events:none;"><polyline points="20 6 9 17 4 12"></polyline></svg></div><div class="v4-checkbox-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">전체</div></div></div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
+<div id="lf-comp-1782801246264" class="lf-component" style="position: absolute; top: 188.213px; left: 970.8px; z-index: 1000; transform: none; width: 58px; height: 32px;" data-resized="true"><div class="v4-checkbox-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-checkbox lf-icon" style="width: 20px; height: 20px; background: rgb(50, 50, 50); border: 1.6px solid rgb(255, 255, 255); border-radius: 6px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%; pointer-events:none;"><polyline points="20 6 9 17 4 12"></polyline></svg></div><div class="v4-checkbox-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">전체</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 <div id="v4-comp-1782801419266381" class="lf-component" style="position: absolute; top: 260px; left: 780px; z-index: 1000; transform: none; width: 80px; height: 30px;" data-resized="true">
             <div class="v4-btn-container" data-text="초기화" data-btn-style="normal" data-btn-radius="6" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
                 <button class="v4-custom-btn style-normal" style="width: 100%; height: 100%; border-radius: 6px; background: var(--v4-component-bg, #ffffff); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px; box-sizing: border-box; transition: 0.2s; font-family: inherit; border-top-color:  !important; border-style: solid !important; border-width: 1.6px !important; border-right-color:  !important; border-bottom-color:  !important; border-left-color:  !important; border-image-source:  !important; border-image-slice:  !important; border-image-width:  !important; border-image-outset:  !important; border-image-repeat:  !important;">초기화</button>
-            </div></div><div id="v4-comp-1782802131331673" class="lf-component" style="position: absolute; top: 260px; left: 870px; z-index: 1000; transform: none; width: 80px; height: 30px;" data-resized="true">
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782802131331673" class="lf-component" style="position: absolute; top: 260px; left: 870px; z-index: 1000; transform: none; width: 80px; height: 30px;" data-resized="true">
             <div class="v4-btn-container" data-text="조회" data-btn-style="primary" data-btn-radius="6" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
                 <button class="v4-custom-btn style-primary" style="width: 100%; height: 100%; border-radius: 6px; background: var(--v4-component-bg, #ffffff); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px; box-sizing: border-box; transition: 0.2s; font-family: inherit; border-top-color:  !important; border-style: solid !important; border-width: 1.6px !important; border-right-color:  !important; border-bottom-color:  !important; border-left-color:  !important; border-image-source:  !important; border-image-slice:  !important; border-image-width:  !important; border-image-outset:  !important; border-image-repeat:  !important;">조회</button>
-            </div></div><div id="v4-comp-1782802157558107" class="lf-component" style="position: absolute; top: 260px; left: 1330.1px; z-index: 1000; transform: none; width: 80px; height: 30px;" data-resized="true">
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782802157558107" class="lf-component" style="position: absolute; top: 260px; left: 1330.1px; z-index: 1000; transform: none; width: 80px; height: 30px;" data-resized="true">
             <div class="v4-btn-container" data-text="신규등록" data-btn-style="custom" data-btn-radius="6" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
                 <button class="v4-custom-btn style-custom" style="width: 100%; height: 100%; border-radius: 6px; background: rgb(220, 220, 250); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px; box-sizing: border-box; transition: 0.2s; font-family: inherit; border-style: solid !important; border-width: 1.6px !important; border-color: transparent; color: rgb(50, 50, 50);">신규등록</button>
-            </div></div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
+
 
 
 <script id="v4-inlined-script">
@@ -558,7 +607,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
     // Clear selection when clicking empty spaces inside canvas
     document.addEventListener('mousedown', (e) => {
-        if (!e.target.closest('table.v4-premium-table') && !e.target.closest('.lf-delete-trigger') && !e.target.closest('.lf-drag-handle') && !e.target.closest('.lf-resizer')) {
+        if (!e.target.closest('table.v4-premium-table') && !e.target.closest('.v4-grid-container table') && !e.target.closest('.lf-delete-trigger') && !e.target.closest('.lf-drag-handle') && !e.target.closest('.lf-resizer')) {
             TableSelection.clearSelection();
         }
     });
@@ -662,7 +711,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     const resizeAtomToFitText = (s) => {
         if (!s) return;
         // Skip resizing if the atom component is already grouped inside an 'lf-group' to prevent layout breakages.
-        if (s.parentElement && s.parentElement.classList.contains('lf-group')) {
+        if (s.closest && s.closest('.lf-group')) {
             return;
         }
         const container = s.querySelector('.v4-checkbox-container, .v4-radio-container');
@@ -864,11 +913,109 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
     };
 
+    const resizeToFitText = (c, isShapeText) => {
+        if (!c) return;
+        const cell = c.querySelector('.v4-editable-cell');
+        if (!cell) return;
+
+        const origW = c.style.width;
+        const origH = c.style.height;
+
+        const targetPadding = '0px 4px 2px 4px';
+        if (cell.style.padding !== targetPadding) {
+            cell.style.setProperty('padding', targetPadding, 'important');
+        }
+
+        if (c.style.minWidth !== 'unset') c.style.setProperty('min-width', 'unset', 'important');
+        if (c.style.minHeight !== 'unset') c.style.setProperty('min-height', 'unset', 'important');
+
+        const compStyle = window.getComputedStyle(cell);
+        const measureSpan = document.createElement('span');
+        measureSpan.style.visibility = 'hidden';
+        measureSpan.style.position = 'absolute';
+        measureSpan.style.whiteSpace = 'pre';
+        measureSpan.style.fontFamily = compStyle.fontFamily;
+        measureSpan.style.fontSize = compStyle.fontSize;
+        measureSpan.style.fontWeight = compStyle.fontWeight;
+        measureSpan.style.lineHeight = compStyle.lineHeight;
+        measureSpan.style.letterSpacing = compStyle.letterSpacing;
+        
+        measureSpan.innerText = (cell.innerText || '').replace(/\n$/, '');
+        document.body.appendChild(measureSpan);
+
+        const textW = measureSpan.offsetWidth;
+        const textH = measureSpan.offsetHeight;
+        document.body.removeChild(measureSpan);
+
+        const paddingW = 8 + 2;
+        const paddingH = 2 + 2;
+
+        const targetW = (textW + paddingW) + 'px';
+        const targetH = (textH + paddingH) + 'px';
+
+        console.log("[vctrl_design_system] resizeToFitText running for:", c.id, "text:", cell.innerText, "measured width:", textW, "targetW:", targetW);
+
+        if (origW !== targetW) c.style.width = targetW;
+        if (origH !== targetH) c.style.height = targetH;
+
+        const shape = c.querySelector('.v4-shape');
+        if (shape) {
+            shape.style.width = '100%';
+            shape.style.height = '100%';
+        }
+        cell.style.width = '100%';
+        cell.style.height = '100%';
+
+        const resizer = c.querySelector(':scope > .lf-resizer');
+        if (resizer) {
+            if (resizer.style.display !== 'none') {
+                resizer.style.setProperty('display', 'none', 'important');
+            }
+        }
+        const handle = c.querySelector(':scope > .lf-drag-handle');
+        if (handle) {
+            const targetOffset = c.classList.contains('selected') ? '-22px' : '-16px';
+            if (handle.style.top !== targetOffset) {
+                handle.style.setProperty('top', targetOffset, 'important');
+                handle.style.setProperty('left', targetOffset, 'important');
+            }
+        }
+    };
+
     window.enforceDesignSystem = () => {
-        if (typeof window.initHandles === 'function') window.initHandles();
-        bindStepperEvents();
-        bindFileuploadEvents();
-        bindAccordionEvents();
+        if (typeof window.initHandles === 'function') {
+            try { window.initHandles(); } catch(e) { console.error("Error in initHandles:", e); }
+        }
+        
+        try {
+            document.querySelectorAll('.lf-component').forEach(c => {
+                const shapeText = c.querySelector('.v4-shape-text');
+                if (shapeText) {
+                    const cell = c.querySelector('.v4-editable-cell');
+                    const isFocused = cell && (document.activeElement === cell || cell.contains(document.activeElement));
+                    const isDefault = cell && (cell.innerText === 'Enter Premium Text' || cell.innerText === 'Edit Text');
+                    const isSelected = c.classList.contains('selected');
+                    if (isFocused || isDefault || isSelected) {
+                        resizeToFitText(c, true);
+                    }
+                }
+            });
+            document.querySelectorAll('.text-marker, .v4-text-box').forEach(c => {
+                const cell = c.querySelector('.v4-editable-cell') || c;
+                const isFocused = cell && (document.activeElement === cell || cell.contains(document.activeElement));
+                const isDefault = cell && (cell.innerText === 'Edit Text' || cell.innerText === 'Text' || cell.innerText === 'Enter Premium Text');
+                const isSelected = c.classList.contains('selected');
+                if (isFocused || isDefault || isSelected) {
+                    resizeToFitText(c, false);
+                }
+            });
+        } catch(e) {
+            console.error("[DesignSystem] Error in early resizeToFitText:", e);
+        }
+
+        try { bindStepperEvents(); } catch(e) { console.error("Error in bindStepperEvents:", e); }
+        try { bindFileuploadEvents(); } catch(e) { console.error("Error in bindFileuploadEvents:", e); }
+        try { bindAccordionEvents(); } catch(e) { console.error("Error in bindAccordionEvents:", e); }
         
         const seenIds = new Set();
         document.querySelectorAll('.lf-component').forEach((c, idx) => {
@@ -909,6 +1056,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         document.querySelectorAll('.lf-component').forEach(c => {
             // Skip group wrappers (their size is calculated separately)
             if (c.classList.contains('lf-group')) return;
+            // Skip if the component is inside a group
+            if (c.closest && c.closest('.lf-group')) return;
             // Skip if the outer wrapper already has explicit dimensions (preserve SSOT)
             if (c.style.width && c.style.height) return;
             // Only normalize atom components
@@ -923,6 +1072,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const accordion = c.querySelector('.v4-accordion-container');
             if (accordion) {
                 const expanded = accordion.getAttribute('data-expanded') === 'true';
@@ -969,6 +1119,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const stepper = c.querySelector('.v4-stepper-container');
             if (stepper) {
                 const btnEnabled = stepper.getAttribute('data-btn-enabled') !== 'false';
@@ -986,6 +1137,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const selectbox = c.querySelector('.v4-selectbox-container');
             if (selectbox) {
                 const dropdownActive = selectbox.getAttribute('data-dropdown-active') === 'true';
@@ -1006,6 +1158,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const fileupload = c.querySelector('.v4-fileupload-container');
             if (fileupload) {
                 const targetW = '300px';
@@ -1022,6 +1175,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const alert = c.querySelector('.v4-alert-container');
             if (alert) {
                 const btn1 = alert.querySelector('.v4-alert-btn-1');
@@ -1082,6 +1236,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const btnContainer = c.querySelector('.v4-btn-container');
             if (btnContainer) {
                 const btn = btnContainer.querySelector('.v4-custom-btn');
@@ -1122,6 +1277,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
 
         document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const dp = c.querySelector('.v4-datepicker-container');
             if (!dp) return;
 
@@ -1393,15 +1549,36 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         });
 
+
+
         document.querySelectorAll('.v4-shape').forEach(s => {
-            if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle')) {
+            if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle') || s.classList.contains('v4-shape-arrow')) {
                 s.style.setProperty('border-width', '0px', 'important');
                 return;
             }
             if (s.style.borderWidth !== '1.6px') s.style.setProperty('border-width', '1.6px', 'important');
         });
-        document.querySelectorAll('table.v4-premium-table').forEach(t => {
+        document.querySelectorAll('table.v4-premium-table, .v4-grid-container table').forEach(t => {
             if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
+            if (t.closest('.v4-grid-container')) {
+                if (t.style.width !== 'max-content') t.style.width = 'max-content';
+                if (t.style.minWidth !== '100%') t.style.minWidth = '100%';
+                
+                // Enforce editable behavior on legacy grid cells
+                t.querySelectorAll('td, th').forEach(cell => {
+                    const isCheckbox = cell.classList.contains('v4-grid-check-col') || 
+                                     cell.querySelector('input[type="checkbox"]') || 
+                                     cell.getAttribute('data-type') === 'checkbox';
+                    if (!isCheckbox) {
+                        if (!cell.classList.contains('v4-editable-cell')) {
+                            cell.classList.add('v4-editable-cell');
+                        }
+                        if (cell.getAttribute('contenteditable') !== 'true') {
+                            cell.setAttribute('contenteditable', 'true');
+                        }
+                    }
+                });
+            }
             if (window.TableSelection) window.TableSelection.bindEvents(t);
         });
         document.querySelectorAll('.v4-grid-container').forEach(grid => {
@@ -1612,6 +1789,23 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     };
 
     document.addEventListener('keydown', e => {
+        if (e.altKey && ['1','2','3','4','5','6'].includes(e.key)) {
+            e.preventDefault();
+            const typeMap = {
+                '1': 'left',
+                '2': 'center',
+                '3': 'right',
+                '4': 'top',
+                '5': 'middle',
+                '6': 'bottom'
+            };
+            notifyParent({
+                type: 'LF_SHORTCUT_ALIGN',
+                alignType: typeMap[e.key]
+            });
+            return;
+        }
+
         if (e.key === 'F2' || e.code === 'F2') {
             e.preventDefault();
             const selected = document.querySelectorAll('.lf-component.selected');
@@ -1709,6 +1903,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         }
                         
                         if (c.classList.contains('lf-group')) {
+                            const connIdsStr = c.getAttribute('data-connectors');
+                            const connIds = connIdsStr ? JSON.parse(connIdsStr) : [];
+                            connIds.forEach(connId => {
+                                notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: connId, dx: dx, dy: dy });
+                            });
                             c.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
                                 const idx = parseInt(child.id.replace('v4-pin-', ''));
                                 const childRect = child.getBoundingClientRect();
@@ -1861,6 +2060,89 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
     console.log("[V4 Iframe] Script initialized (V144_SHORTCUT_SAVE_FIX)");
     let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
+    let isDrawingConnector = false, startComponentId = null, startPortSide = null;
+    let connDragStartX = 0, connDragStartY = 0, hoveredPort = null;
+    let tempSvg = null;
+    let isDraggingLine = false, activeLineId = null, startLineCoords = null;
+
+    function drawTempLine(x1, y1, x2, y2) {
+        if (!tempSvg) {
+            tempSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            tempSvg.style.cssText = 'position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:10005; overflow:visible;';
+            tempSvg.innerHTML = '<path stroke="#00e5ff" stroke-width="2" stroke-dasharray="4,4" fill="none" />';
+            document.body.appendChild(tempSvg);
+        }
+        const path = tempSvg.querySelector('path');
+        const midX = (x1 + x2) / 2;
+        const pathData = 'M ' + x1 + ' ' + y1 + ' H ' + midX + ' V ' + y2 + ' H ' + x2;
+        path.setAttribute('d', pathData);
+    }
+
+    function removeTempLine() {
+        if (tempSvg) {
+            tempSvg.remove();
+            tempSvg = null;
+        }
+    }
+
+    window.calculatePathData = (c, s, e) => {
+        if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
+        
+        const sSide = c.start.side || 'right';
+        const eSide = c.end.side || 'left';
+        
+        const getDirOffset = (side, amount) => {
+            if (side === 'left') return { dx: -amount, dy: 0 };
+            if (side === 'right') return { dx: amount, dy: 0 };
+            if (side === 'top') return { dx: 0, dy: -amount };
+            if (side === 'bottom') return { dx: 0, dy: amount };
+            return { dx: 0, dy: 0 };
+        };
+        
+        const offset = 20;
+        const oStart = getDirOffset(sSide, offset);
+        const oEnd = getDirOffset(eSide, offset);
+        
+        const ptStart = { x: s.x + oStart.dx, y: s.y + oStart.dy };
+        const ptEnd = { x: e.x + oEnd.dx, y: e.y + oEnd.dy };
+        
+        let path = 'M ' + s.x + ' ' + s.y + ' L ' + ptStart.x + ' ' + ptStart.y;
+        
+        if (sSide === 'left' || sSide === 'right') {
+            if (eSide === 'left' || eSide === 'right') {
+                const midX = (ptStart.x + ptEnd.x) / 2;
+                path += ' H ' + midX + ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
+            } else {
+                path += ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
+            }
+        } else {
+            if (eSide === 'top' || eSide === 'bottom') {
+                const midY = (ptStart.y + ptEnd.y) / 2;
+                path += ' V ' + midY + ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
+            } else {
+                path += ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
+            }
+        }
+        return path;
+    };
+
+    function startConnectorDragFromPort(comp, side, e) {
+        isDrawingConnector = true;
+        document.body.classList.add('drawing-line-active');
+        startComponentId = comp.id;
+        startPortSide = side;
+        
+        const compLeft = parseFloat(comp.style.left) || 0;
+        const compTop = parseFloat(comp.style.top) || 0;
+        const compWidth = comp.offsetWidth;
+        const compHeight = comp.offsetHeight;
+        
+        if (side === 'top') { connDragStartX = compLeft + compWidth / 2; connDragStartY = compTop; }
+        else if (side === 'bottom') { connDragStartX = compLeft + compWidth / 2; connDragStartY = compTop + compHeight; }
+        else if (side === 'left') { connDragStartX = compLeft; connDragStartY = compTop + compHeight / 2; }
+        else if (side === 'right') { connDragStartX = compLeft + compWidth; connDragStartY = compTop + compHeight / 2; }
+    }
+
     let startX, startY, startW, startH, startTop, startLeft, startRect;
     function notifyParent(data) { window.parent.postMessage(data, '*'); }
     function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
@@ -2143,7 +2425,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             id: c.id,
             x: parseFloat(c.style.left) || 0,
             y: parseFloat(c.style.top) || 0,
-            isTable: !!table,
+            shapeType: shape ? (shape.classList.contains('v4-shape-rect') ? 'rect' : (shape.classList.contains('v4-shape-circle') ? 'circle' : (shape.classList.contains('v4-shape-triangle') ? 'triangle' : (shape.classList.contains('v4-shape-diamond') ? 'diamond' : (shape.classList.contains('v4-shape-arrow') ? 'arrow' : ''))))) : '',
+            arrowDir: shape && shape.classList.contains('v4-shape-arrow') ? (shape.getAttribute('data-arrow-dir') || 'right') : '',
+            isTable: !!table && !isGrid,
             isShape: !!shape,
             isIcon: !!icon,
             isImage: isImage,
@@ -2259,8 +2543,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         if (!c) return;
         const t = parseInt(c.style.top) || 0;
         const l = parseInt(c.style.left) || 0;
-        const drag = c.querySelector('.lf-drag-handle');
-        const del = c.querySelector('.lf-delete-trigger');
+        const drag = c.querySelector(':scope > .lf-drag-handle');
+        const del = c.querySelector(':scope > .lf-delete-trigger');
         if (drag) { drag.style.top = t < 16 ? '4px' : '-16px'; drag.style.left = l < 16 ? '4px' : '-16px'; }
         if (del) { 
             del.style.top = t < 16 ? '4px' : '-12px'; 
@@ -2275,6 +2559,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     });
 
     let isMarquee = false;
+    let groupChildrenStart = null;
     document.addEventListener('mousedown', e => {
         if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.header-metadata')) return;
 
@@ -2315,6 +2600,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         if (c) {
             isMarquee = false;
             const isMulti = e.shiftKey || e.ctrlKey;
+            
+            // Check if already selected and clicking an editable cell
+            const isEditableClick = e.target.closest('.v4-editable-cell');
+            const isAlreadySelected = c.classList.contains('selected');
+            
             if (isMulti) {
                 c.classList.toggle('selected');
             } else {
@@ -2322,11 +2612,14 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 c.classList.add('selected');
             }
             window.updateHandles(c);
-            notifyParent({ 
-                type: "LF_COMP_SELECTED", 
-                shiftKey: isMulti,
-                ...window._getCompStyles(c)
-            });
+            
+            if (!isEditableClick || !isAlreadySelected) {
+                notifyParent({ 
+                    type: "LF_COMP_SELECTED", 
+                    shiftKey: isMulti,
+                    ...window._getCompStyles(c)
+                });
+            }
         } else {
             isMarquee = true;
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
@@ -2357,16 +2650,35 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             activeEl = r.parentElement; 
             startX = e.clientX; startY = e.clientY; 
             startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; 
+            
+            if (activeEl.classList.contains('lf-group')) {
+                groupChildrenStart = Array.from(activeEl.children)
+                    .filter(child => child.classList.contains('lf-component'))
+                    .map(child => ({
+                        el: child,
+                        left: parseFloat(child.style.left) || 0,
+                        top: parseFloat(child.style.top) || 0,
+                        width: parseFloat(child.style.width) || child.offsetWidth || 0,
+                        height: parseFloat(child.style.height) || child.offsetHeight || 0
+                    }));
+            } else {
+                groupChildrenStart = null;
+            }
+            
             e.preventDefault(); 
         }
         else if (h || c) { 
+            // If clicking inside an editable cell (like a grid cell), do not start dragging
+            if (e.target.closest('.v4-editable-cell')) {
+                return;
+            }
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             isDragging = true; activeEl = c; 
             startX = e.clientX; startY = e.clientY; 
             startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
             startRect = activeEl.getBoundingClientRect();
             notifyParent({ type: 'LF_SNAP_START' });
-            if (h || e.target.closest('.v4-editable-cell')) e.preventDefault(); 
+            if (h) e.preventDefault(); 
             document.querySelectorAll('.lf-component.selected').forEach(s => s.classList.add('dragging-now'));
         }
     });
@@ -2382,6 +2694,65 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
     let rafId = null;
     document.addEventListener('mousemove', e => {
+        if (isDraggingLine && activeLineId) {
+            const scale = (window.parent?.state?.transform?.scale) || 1;
+            const dx = (e.clientX - startX) / scale;
+            const dy = (e.clientY - startY) / scale;
+            const conn = window.parent?.state?.connectors?.find(c => c.id === activeLineId);
+            if (conn && startLineCoords) {
+                conn.start.x = startLineCoords.start.x + dx;
+                conn.start.y = startLineCoords.start.y + dy;
+                conn.end.x = startLineCoords.end.x + dx;
+                conn.end.y = startLineCoords.end.y + dy;
+                conn.start.targetId = null; conn.start.side = null;
+                conn.end.targetId = null; conn.end.side = null;
+                window.updateConnectorPathLocal(activeLineId);
+            }
+            return;
+        }
+
+        if (isDrawingConnector) {
+            const rect = document.body.getBoundingClientRect();
+            const scale = (window.parent?.state?.transform?.scale) || 1;
+            const logicalX = (e.clientX - rect.left) / scale;
+            const logicalY = (e.clientY - rect.top) / scale;
+            
+            drawTempLine(connDragStartX, connDragStartY, logicalX, logicalY);
+            
+            // Toggle near-connector class based on distance inside iframe
+            document.querySelectorAll('.lf-component').forEach(comp => {
+                if (comp.id === startComponentId) return;
+                const r = comp.getBoundingClientRect();
+                const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
+                const dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 100) {
+                    comp.classList.add('near-connector');
+                } else {
+                    comp.classList.remove('near-connector');
+                }
+            });
+
+            const targetPort = e.target.closest('.lf-connector-port');
+            if (targetPort && targetPort.parentElement.id !== startComponentId) {
+                if (hoveredPort && hoveredPort !== targetPort) {
+                    hoveredPort.style.transform = '';
+                    hoveredPort.style.background = '#00e5ff';
+                }
+                hoveredPort = targetPort;
+                hoveredPort.style.transform = 'scale(1.8)';
+                hoveredPort.style.background = '#fb7185';
+            } else {
+                if (hoveredPort) {
+                    hoveredPort.style.transform = '';
+                    hoveredPort.style.background = '#00e5ff';
+                    hoveredPort = null;
+                }
+            }
+            return;
+        }
+
         if (isMarquee) {
             notifyParent({ type: 'LF_MARQUEE_MOVE', x: e.clientX, y: e.clientY });
             window.getSelection()?.removeAllRanges();
@@ -2412,10 +2783,59 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 markDirty(); 
             }
             else if (isResizing && activeEl) { 
-                const nw = Math.max(10, startW + e.clientX - startX);
-                const nh = Math.max(10, startH + e.clientY - startY);
+                const scale = (window.parent?.state?.transform?.scale) || 1;
+                const nw = Math.max(10, startW + (e.clientX - startX) / scale);
+                const nh = Math.max(10, startH + (e.clientY - startY) / scale);
+                
+                const scaleX = nw / startW;
+                const scaleY = nh / startH;
+                
                 activeEl.style.width = nw + 'px'; 
                 activeEl.style.height = nh + 'px'; 
+                
+                if (groupChildrenStart) {
+                    groupChildrenStart.forEach(child => {
+                        const newL = child.left * scaleX;
+                        const newT = child.top * scaleY;
+                        const newW = child.width * scaleX;
+                        const newH = child.height * scaleY;
+                        
+                        child.el.style.left = newL + 'px';
+                        child.el.style.top = newT + 'px';
+                        child.el.style.width = newW + 'px';
+                        child.el.style.height = newH + 'px';
+                        child.el.setAttribute('data-resized', 'true');
+                        
+                        // Rescale inner elements for checkboxes / radios / other atoms
+                        const innerBox = child.el.querySelector('.v4-checkbox, .v4-radio');
+                        if (innerBox) {
+                            const isTextEnabled = child.el.querySelector('.v4-checkbox-container, .v4-radio-container')?.getAttribute('data-text-enabled') !== 'false';
+                            if (!isTextEnabled) {
+                                innerBox.style.width = newW + 'px';
+                                innerBox.style.height = newH + 'px';
+                            }
+                        }
+                        
+                        // Scale selectboxes, inputs, buttons inside grouped atoms
+                        const selectbox = child.el.querySelector('.v4-selectbox-header');
+                        if (selectbox) {
+                            selectbox.style.width = '100%';
+                        }
+                        const inputWrap = child.el.querySelector('.v4-textbox-container, .v4-textarea-container');
+                        if (inputWrap) {
+                            inputWrap.style.width = '100%';
+                            inputWrap.style.height = '100%';
+                        }
+                        const btn = child.el.querySelector('.v4-custom-btn, .v4-btn-container');
+                        if (btn) {
+                            btn.style.width = '100%';
+                            btn.style.height = '100%';
+                        }
+                        
+                        window.updateHandles(child.el);
+                    });
+                }
+                
                 window.updateHandles(activeEl);
                 markDirty(); 
                 notifyParent({ type: 'LF_COMP_RESIZED', w: nw, h: nh });
@@ -2424,8 +2844,42 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     });
 
     document.addEventListener('mouseup', () => { 
+        document.querySelectorAll('.lf-component').forEach(comp => comp.classList.remove('near-connector'));
+        if (isDraggingLine) {
+            isDraggingLine = false;
+            startLineCoords = null;
+            activeLineId = null;
+            notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+            markDirty();
+            return;
+        }
+
+        if (isDrawingConnector) {
+            isDrawingConnector = false;
+            document.body.classList.remove('drawing-line-active');
+            document.querySelectorAll('.lf-component').forEach(comp => comp.classList.remove('near-connector'));
+            removeTempLine();
+            if (hoveredPort) {
+                const targetComponentId = hoveredPort.parentElement.id;
+                const targetPortSide = hoveredPort.getAttribute('data-side');
+                hoveredPort.style.transform = '';
+                hoveredPort.style.background = '#00e5ff';
+                hoveredPort = null;
+                
+                notifyParent({
+                    type: 'LF_CREATE_CONNECTOR',
+                    startId: startComponentId,
+                    startSide: startPortSide,
+                    endId: targetComponentId,
+                    endSide: targetPortSide
+                });
+            }
+            return;
+        }
+
         if (isConnectorDragging) {
             isConnectorDragging = false;
+            document.body.classList.remove('drawing-line-active');
             notifyParent({ type: 'LF_CONNECTOR_HANDLE_UP' });
         }
         if (isMarquee) {
@@ -2480,12 +2934,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             markDirty();
             const comp = e.target.closest('.lf-component');
             if (comp) {
-                if (comp.querySelector('.v4-checkbox-container') || comp.querySelector('.v4-radio-container')) {
-                    if (typeof window.resizeAtomToFitText === 'function') {
-                        window.resizeAtomToFitText(comp);
-                    } else if (typeof window.enforceDesignSystem === 'function') {
-                        window.enforceDesignSystem();
-                    }
+                if (typeof window.enforceDesignSystem === 'function') {
+                    window.enforceDesignSystem();
+                } else if (typeof window.resizeAtomToFitText === 'function') {
+                    window.resizeAtomToFitText(comp);
                 }
                 // Notify parent of text changes to sync the Quill editor in real-time
                 const isPin = comp.classList.contains('text-marker') || comp.classList.contains('pin-marker') || comp.classList.contains('v4-text-box');
@@ -2513,6 +2965,31 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
     }, { passive: false });
 
+    // Allow direct cell selection, click focusing, and editing inside Grid UI components
+    document.addEventListener('mousedown', function(e) {
+        var cell = e.target.closest('.v4-grid-cell.v4-editable-cell');
+        if (cell) {
+            // Stop selection and dragging handlers from intercepting the mousedown
+            e.stopPropagation();
+        }
+    });
+
+    document.addEventListener('dblclick', function(e) {
+        var cell = e.target.closest('.v4-grid-cell.v4-editable-cell');
+        if (cell) {
+            e.stopPropagation();
+            cell.focus();
+            
+            // Put cursor at the end of the text
+            var range = document.createRange();
+            var sel = window.getSelection();
+            range.selectNodeContents(cell);
+            range.collapse(false);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+    });
+
     window.renderGrid = function(container, columns, rowCount, showPagination) {
         if (!container) return;
         
@@ -2520,6 +2997,250 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         container.setAttribute('data-row-count', rowCount);
         container.setAttribute('data-pagination', showPagination ? 'true' : 'false');
         
+        var mockList = [
+            { no: '1024', name: '[헤지스] 여름 맞이 린넨 셔츠 특가 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '김엘에프', date: '2026-07-01 11:00:00' },
+            { no: '1023', name: '[닥스] 프리미엄 실크 타이 단독 런칭 쇼', status: '방송예정', statusColor: '#d97706', statusBg: 'rgba(251,191,36,0.15)', author: '이닥스', date: '2026-06-30 18:30:20' },
+            { no: '1022', name: '[라푸마] 아웃도어 바람막이 클리어런스 세일', status: '방송종료', statusColor: '#ef4444', statusBg: 'rgba(239,68,68,0.1)', author: '박라푸마', date: '2026-06-29 14:15:10' },
+            { no: '1021', name: '[질스튜어트] 봄 신상 스니커즈 한정 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '최질스', date: '2026-06-28 10:00:00' },
+            { no: '1020', name: '[바네사브루노] 가을 컬렉션 룩북 공개 생방송', status: '방송예정', statusColor: '#d97706', statusBg: 'rgba(251,191,36,0.15)', author: '정바네', date: '2026-06-27 16:45:00' }
+        ];
+
+        var getStatusBadgeHtml = function(col, rowIndex) {
+            var optsStr = col.options || '방송중, 방송예정, 방송종료';
+            var opts = optsStr.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+            if (opts.length === 0) opts = ['상태'];
+            var statusText = opts[rowIndex % opts.length];
+            
+            var badgeStyles = [
+                { bg: 'rgba(52,211,153,0.15)', color: '#10b981' }, // Emerald / Green
+                { bg: 'rgba(251,191,36,0.15)', color: '#d97706' }, // Amber / Yellow
+                { bg: 'rgba(239,68,68,0.1)', color: '#ef4444' },    // Red
+                { bg: 'rgba(59,130,246,0.15)', color: '#3b82f6' },  // Blue
+                { bg: 'rgba(139,92,246,0.15)', color: '#8b5cf6' },  // Purple
+                { bg: 'rgba(244,63,94,0.15)', color: '#f43f5e' },   // Pink
+                { bg: 'rgba(100,116,139,0.15)', color: '#64748b' }  // Grey
+            ];
+            
+            var styleIdx = rowIndex % opts.length;
+            var style = badgeStyles[styleIdx % badgeStyles.length];
+            
+            return '<span style="background:' + style.bg + '; color:' + style.color + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + statusText + '</span>';
+        };
+
+        var isMockValue = function(text, type) {
+            if (!text) return true;
+            var t = text.trim();
+            if (type === 'number') {
+                return /^d+$/.test(t);
+            }
+            if (type === 'status') {
+                return true;
+            }
+            if (type === 'author') {
+                return ['김엘에프', '이닥스', '박라푸마', '최질스', '정바네'].indexOf(t) >= 0;
+            }
+            if (type === 'datetime') {
+                return t.indexOf('2026-') === 0;
+            }
+            if (type === 'text') {
+                var mocks = [
+                    '[헤지스] 여름 맞이 린넨 셔츠 특가 라이브',
+                    '[닥스] 프리미엄 실크 타이 단독 런칭 쇼',
+                    '[라푸마] 아웃도어 바람막이 클리어런스 세일',
+                    '[질스튜어트] 봄 신상 스니커즈 한정 라이브',
+                    '[바네사브루노] 가을 컬렉션 룩북 공개 생방송',
+                    'New', '새 항목', 'Header', 'Data'
+                ];
+                return mocks.indexOf(t) >= 0 || t === '';
+            }
+            return true;
+        };
+
+        var table = container.querySelector('table');
+        if (table) {
+            // In-place mutative update to preserve inline styling, text edits, background, borders etc!
+            var colgroup = table.querySelector('colgroup');
+            if (colgroup) {
+                colgroup.innerHTML = '';
+                columns.forEach(function(col) {
+                    var w = col.width || '100px';
+                    if (/^d+$/.test(w.trim()) || /^d*.d+$/.test(w.trim())) {
+                        w = w.trim() + 'px';
+                    }
+                    var colEl = document.createElement('col');
+                    colEl.style.width = w;
+                    colgroup.appendChild(colEl);
+                });
+            }
+            
+            var thead = table.querySelector('thead');
+            if (thead) {
+                var headerRow = thead.querySelector('tr');
+                if (headerRow) {
+                    headerRow.style.background = '#ffffff';
+                    var ths = Array.from(headerRow.querySelectorAll('th'));
+                    while (ths.length < columns.length) {
+                        var newTh = document.createElement('th');
+                        newTh.className = 'v4-grid-cell v4-editable-cell';
+                        newTh.contentEditable = 'true';
+                        newTh.style.display = 'table-cell';
+                        newTh.style.verticalAlign = 'middle';
+                        newTh.style.boxSizing = 'border-box';
+                        newTh.style.fontSize = '12px';
+                        newTh.style.fontWeight = '500';
+                        newTh.style.color = '#334155';
+                        headerRow.appendChild(newTh);
+                        ths.push(newTh);
+                    }
+                    while (ths.length > columns.length) {
+                        headerRow.removeChild(ths.pop());
+                    }
+                    
+                    columns.forEach(function(col, idx) {
+                        var th = ths[idx];
+                        var isLast = (idx === columns.length - 1);
+                        // Save existing styles
+                        var bg = th.style.background || th.style.backgroundColor;
+                        var color = th.style.color;
+                        var fontSize = th.style.fontSize;
+                        var fontFamily = th.style.fontFamily;
+
+                        th.style.borderRight = isLast ? 'none' : '1.6px solid rgb(226,232,240)';
+                        th.style.textAlign = col.type === 'checkbox' ? 'center' : 'left';
+                        th.style.padding = col.type === 'checkbox' ? '0' : '0 8px';
+                        th.style.fontWeight = '500';
+                        th.style.color = '#334155';
+                        
+                        if (col.type === 'checkbox') {
+                            th.className = 'v4-grid-cell v4-grid-check-col';
+                            th.contentEditable = 'false';
+                            th.setAttribute('data-type', 'checkbox');
+                            th.innerHTML = '<input type="checkbox">';
+                        } else {
+                            th.className = 'v4-grid-cell v4-editable-cell';
+                            th.contentEditable = 'true';
+                            th.setAttribute('data-type', col.type);
+                            var desiredText = (col.name || '') + ' ⇅';
+                            if (th.innerText !== desiredText && th.innerText !== col.name) {
+                                th.innerText = desiredText;
+                            }
+                        }
+
+                        // Restore styles
+                        if (bg) th.style.setProperty('background', bg, 'important');
+                        if (color) th.style.setProperty('color', color, 'important');
+                        if (fontSize) th.style.setProperty('font-size', fontSize, 'important');
+                        if (fontFamily) th.style.setProperty('font-family', fontFamily, 'important');
+                    });
+                }
+            }
+            
+            var tbody = table.querySelector('tbody');
+            if (tbody) {
+                var rows = Array.from(tbody.querySelectorAll('tr'));
+                while (rows.length < rowCount) {
+                    var newRow = document.createElement('tr');
+                    newRow.style.height = '36px';
+                    newRow.style.background = '#ffffff';
+                    newRow.style.boxSizing = 'border-box';
+                    tbody.appendChild(newRow);
+                    rows.push(newRow);
+                }
+                while (rows.length > rowCount) {
+                    tbody.removeChild(rows.pop());
+                }
+                
+                rows.forEach(function(row, rIdx) {
+                    var isLastRow = (rIdx === rowCount - 1);
+                    row.style.borderBottom = isLastRow ? 'none' : '1.6px solid rgb(226,232,240)';
+                    
+                    var tds = Array.from(row.querySelectorAll('td'));
+                    while (tds.length < columns.length) {
+                        var newTd = document.createElement('td');
+                        newTd.className = 'v4-grid-cell v4-editable-cell';
+                        newTd.contentEditable = 'true';
+                        newTd.style.display = 'table-cell';
+                        newTd.style.verticalAlign = 'middle';
+                        newTd.style.boxSizing = 'border-box';
+                        newTd.style.fontSize = '12px';
+                        row.appendChild(newTd);
+                        tds.push(newTd);
+                    }
+                    while (tds.length > columns.length) {
+                        row.removeChild(tds.pop());
+                    }
+                    
+                    columns.forEach(function(col, cIdx) {
+                        var td = tds[cIdx];
+                        var isLastCol = (cIdx === columns.length - 1);
+                        td.style.borderRight = isLastCol ? 'none' : '1.6px solid rgb(226,232,240)';
+                        
+                        var prevType = td.getAttribute('data-type');
+                        // Legacy support: if checkbox td doesn't have data-type, resolve it
+                        if (!prevType && (td.classList.contains('v4-grid-check-col') || td.querySelector('input[type="checkbox"]'))) {
+                            prevType = 'checkbox';
+                            td.setAttribute('data-type', 'checkbox');
+                        }
+
+                        var currentText = td.innerText || '';
+                        var shouldOverwrite = (prevType !== col.type) || td.innerHTML === '' || isMockValue(currentText, prevType);
+
+                        if (shouldOverwrite) {
+                            // Save existing styles
+                            var bg = td.style.background || td.style.backgroundColor;
+                            var color = td.style.color;
+                            var fontSize = td.style.fontSize;
+                            var fontFamily = td.style.fontFamily;
+
+                            td.setAttribute('data-type', col.type);
+                            if (col.type === 'checkbox') {
+                                td.className = 'v4-grid-cell';
+                                td.contentEditable = 'false';
+                                td.style.textAlign = 'center';
+                                td.style.padding = '0';
+                                td.innerHTML = '<input type="checkbox">';
+                            } else {
+                                td.className = 'v4-grid-cell v4-editable-cell';
+                                td.contentEditable = 'true';
+                                td.style.textAlign = 'left';
+                                td.style.padding = '0 8px';
+                                
+                                var data = mockList[rIdx % mockList.length];
+                                if (col.type === 'number') {
+                                    td.innerText = (1024 - rIdx);
+                                } else if (col.type === 'status') {
+                                    td.innerHTML = getStatusBadgeHtml(col, rIdx);
+                                } else if (col.type === 'author') {
+                                    td.innerText = data.author;
+                                } else if (col.type === 'datetime') {
+                                    td.innerText = data.date;
+                                } else {
+                                    td.innerText = data.name;
+                                }
+                            }
+
+                            // Restore styles
+                            if (bg) td.style.setProperty('background', bg, 'important');
+                            if (color) td.style.setProperty('color', color, 'important');
+                            if (fontSize) td.style.setProperty('font-size', fontSize, 'important');
+                            if (fontFamily) td.style.setProperty('font-family', fontFamily, 'important');
+                        }
+                    });
+                });
+            }
+            
+            var footer = container.querySelector('.v4-grid-footer');
+            if (footer) {
+                footer.style.display = showPagination ? 'flex' : 'none';
+            }
+            var wrapper = container.querySelector('.v4-grid-table-wrapper');
+            if (wrapper) {
+                wrapper.style.height = showPagination ? 'calc(100% - 72px)' : 'calc(100% - 36px)';
+            }
+            return;
+        }
+
+        // Full rebuild if table is completely missing
         var colgroupHtml = '<colgroup>';
         columns.forEach(function(col) {
             var w = col.width;
@@ -2535,29 +3256,19 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
         colgroupHtml += '</colgroup>';
         
-        // Render Table Header
-        var headerHtml = '<tr style="height:36px; background:#f8fafc; border-bottom:1.6px solid rgb(226,232,240); box-sizing:border-box;">';
+        var headerHtml = '<tr style="height:36px; background:#ffffff; border-bottom:1.6px solid rgb(226,232,240); box-sizing:border-box;">';
         columns.forEach(function(col, index) {
             var isLast = (index === columns.length - 1);
             var borderRight = isLast ? '' : ' border-right:1.6px solid rgb(226,232,240);';
             if (col.type === 'checkbox') {
-                headerHtml += '<th class="v4-grid-cell v4-grid-check-col" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0; font-weight:normal;"><input type="checkbox"></th>';
+                headerHtml += '<th class="v4-grid-cell v4-grid-check-col" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0; font-weight:normal;"><input type="checkbox"></th>';
             } else {
-                headerHtml += '<th class="v4-grid-cell" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; font-weight:700; color:#334155; user-select:none;">' + (col.name || '') + ' ⇅</th>';
+                headerHtml += '<th class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="' + col.type + '" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; font-weight:500; color:#334155; user-select:none;">' + (col.name || '') + ' ⇅</th>';
             }
         });
         headerHtml += '</tr>';
         
-        // Render Table Body
         var bodyHtml = '';
-        var mockList = [
-            { no: '1024', name: '[헤지스] 여름 맞이 린넨 셔츠 특가 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '김엘에프', date: '2026-07-01 11:00:00' },
-            { no: '1023', name: '[닥스] 프리미엄 실크 타이 단독 런칭 쇼', status: '방송예정', statusColor: '#d97706', statusBg: 'rgba(251,191,36,0.15)', author: '이닥스', date: '2026-06-30 18:30:20' },
-            { no: '1022', name: '[라푸마] 아웃도어 바람막이 클리어런스 세일', status: '방송종료', statusColor: '#ef4444', statusBg: 'rgba(239,68,68,0.1)', author: '박라푸마', date: '2026-06-29 14:15:10' },
-            { no: '1021', name: '[질스튜어트] 봄 신상 스니커즈 한정 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '최질스', date: '2026-06-28 10:00:00' },
-            { no: '1020', name: '[바네사브루노] 가을 컬렉션 룩북 공개 생방송', status: '방송예정', statusColor: '#d97706', statusBg: 'rgba(251,191,36,0.15)', author: '정바네', date: '2026-06-27 16:45:00' }
-        ];
-        
         for (var i = 0; i < rowCount; i++) {
             var data = mockList[i % mockList.length];
             var isLastRow = (i === rowCount - 1);
@@ -2570,17 +3281,17 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 var borderRight = isLastCol ? '' : ' border-right:1.6px solid rgb(226,232,240);';
                 
                 if (col.type === 'checkbox') {
-                    bodyHtml += '<td class="v4-grid-cell" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0;"><input type="checkbox"></td>';
+                    bodyHtml += '<td class="v4-grid-cell" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0;"><input type="checkbox"></td>';
                 } else if (col.type === 'number') {
-                    bodyHtml += '<td class="v4-grid-cell" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#334155;">' + (1024 - i) + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="number" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#334155;">' + (1024 - i) + '</td>';
                 } else if (col.type === 'status') {
-                    bodyHtml += '<td class="v4-grid-cell" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box;"><span style="background:' + data.statusBg + '; color:' + data.statusColor + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + data.status + '</span></td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="status" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box;">' + getStatusBadgeHtml(col, i) + '</td>';
                 } else if (col.type === 'author') {
-                    bodyHtml += '<td class="v4-grid-cell" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#64748b;">' + data.author + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="author" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#64748b;">' + data.author + '</td>';
                 } else if (col.type === 'datetime') {
-                    bodyHtml += '<td class="v4-grid-cell" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#64748b;">' + data.date + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="datetime" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#64748b;">' + data.date + '</td>';
                 } else {
-                    bodyHtml += '<td class="v4-grid-cell" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.name + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="text" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.name + '</td>';
                 }
             });
             bodyHtml += '</tr>';
@@ -2590,7 +3301,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         var tableHeight = showPagination ? 'calc(100% - 72px)' : 'calc(100% - 36px)';
         
         var tableContainerHtml = '<div class="v4-grid-table-wrapper" style="width:100%; height:' + tableHeight + '; overflow:auto; box-sizing:border-box;">' +
-                                 '<table style="width:100%; table-layout:fixed; border-collapse:collapse; background:#ffffff; box-sizing:border-box;">' +
+                                 '<table style="width:max-content; min-width:100%; table-layout:fixed; border-collapse:collapse; background:#ffffff; box-sizing:border-box;">' +
                                  colgroupHtml +
                                  '<thead>' + headerHtml + '</thead>' +
                                  '<tbody style="box-sizing:border-box;">' + bodyHtml + '</tbody>' +
@@ -2866,11 +3577,56 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const snapDy = d.y - curTop;
             if (Math.abs(snapDx) > 0.1 || Math.abs(snapDy) > 0.1) {
                 const comps = document.querySelectorAll('.lf-component.selected');
+                let hasConnectorChanges = false;
                 comps.forEach(c => {
-                    c.style.left = (parseInt(c.style.left || 0) + snapDx) + 'px';
-                    c.style.top = (parseInt(c.style.top || 0) + snapDy) + 'px';
-                    window.updateHandles(c);
+                    const isConnector = c.classList.contains('connector-line');
+                    const isGroup = c.classList.contains('lf-group');
+                    if (isConnector) {
+                        const conn = (window.parent && window.parent.state && window.parent.state.connectors)
+                            ? window.parent.state.connectors.find(x => x.id === c.id)
+                            : null;
+                        if (conn) {
+                            conn.start.x += snapDx;
+                            conn.start.y += snapDy;
+                            conn.end.x += snapDx;
+                            conn.end.y += snapDy;
+                            conn.start.targetId = null; conn.start.side = null;
+                            conn.end.targetId = null; conn.end.side = null;
+                            hasConnectorChanges = true;
+                        }
+                    } else {
+                        c.style.left = (parseInt(c.style.left || 0) + snapDx) + 'px';
+                        c.style.top = (parseInt(c.style.top || 0) + snapDy) + 'px';
+                        window.updateHandles(c);
+                        if (isGroup) {
+                            const connIdsStr = c.getAttribute('data-connectors');
+                            const connIds = connIdsStr ? JSON.parse(connIdsStr) : [];
+                            connIds.forEach(connId => {
+                                const conn = (window.parent && window.parent.state && window.parent.state.connectors)
+                                    ? window.parent.state.connectors.find(x => x.id === connId)
+                                    : null;
+                                if (conn) {
+                                    conn.start.x += snapDx;
+                                    conn.start.y += snapDy;
+                                    conn.end.x += snapDx;
+                                    conn.end.y += snapDy;
+                                    conn.start.targetId = null; conn.start.side = null;
+                                    conn.end.targetId = null; conn.end.side = null;
+                                    hasConnectorChanges = true;
+                                }
+                            });
+                        }
+                        if (typeof window.updateAnchoredConnectorsLocal === 'function') {
+                            window.updateAnchoredConnectorsLocal(c.id);
+                        }
+                    }
                 });
+                if (hasConnectorChanges) {
+                    if (window.parent && window.parent.ConnectorEngine) {
+                        window.parent.ConnectorEngine.redrawAll();
+                    }
+                    notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+                }
             }
         }
         else if (d.type === 'LF_IMPORT_PINS') {
@@ -3003,12 +3759,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 const rStart = rel(conn.start);
                 const rEnd = rel(conn.end);
 
-                const calculatePathData = (c, s, e) => {
-                    if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
-                    const midX = (s.x + e.x) / 2;
-                    return 'M ' + s.x + ' ' + s.y + ' H ' + midX + ' V ' + e.y + ' H ' + e.x;
-                };
-                const pathData = calculatePathData(conn, rStart, rEnd);
+                const pathData = window.calculatePathData(conn, rStart, rEnd);
 
                 const startMId = 'm-start-' + conn.id;
                 const endMId = 'm-end-' + conn.id;
@@ -3033,6 +3784,15 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     hitArea.onmousedown = (e) => {
                         e.stopPropagation();
                         notifyParent({ type: 'LF_CONNECTOR_CLICKED', id: conn.id, shiftKey: e.shiftKey });
+                        if (window.V4UndoManager) window.V4UndoManager.saveState();
+                        isDraggingLine = true;
+                        activeLineId = conn.id;
+                        startX = e.clientX;
+                        startY = e.clientY;
+                        startLineCoords = {
+                            start: { x: conn.start.x, y: conn.start.y },
+                            end: { x: conn.end.x, y: conn.end.y }
+                        };
                     };
                 }
 
@@ -3047,6 +3807,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         handle.onmousedown = (e) => {
                             e.stopPropagation();
                             isConnectorDragging = true;
+                            document.body.classList.add('drawing-line-active');
                             notifyParent({ type: 'LF_CONNECTOR_HANDLE_DOWN', id: conn.id, pointType: type });
                         };
                         svg.appendChild(handle);
@@ -3208,12 +3969,34 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     const existingContent = shape.innerHTML;
                     textContainer = document.createElement('div');
                     textContainer.className = 'v4-shape-text-content';
-                    textContainer.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;overflow:hidden;';
+                    textContainer.style.cssText = 'width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;overflow:hidden;';
                     shape.innerHTML = '';
                     textContainer.innerHTML = existingContent;
                     shape.appendChild(textContainer);
                 }
                 textContainer.innerHTML = d.html;
+            }
+            markDirty();
+        }
+        else if (d.type === 'LF_UPDATE_ARROW_DIRECTION') {
+            const s = document.querySelector('.lf-component.selected'); 
+            if (!s) return;
+            const shape = s.querySelector('.v4-shape.v4-shape-arrow');
+            if (!shape) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            const path = shape.querySelector('.v4-arrow-path');
+            if (path) {
+                const dir = d.direction || 'right';
+                shape.setAttribute('data-arrow-dir', dir);
+                
+                const PATHS = {
+                    right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
+                    left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
+                    up: 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z',
+                    down: 'M 30,0 L 30,60 L 10,60 L 50,100 L 90,60 L 70,60 L 70,0 Z'
+                };
+                path.setAttribute('d', PATHS[dir] || PATHS.right);
             }
             markDirty();
         }
@@ -3825,6 +4608,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (!t && s.classList.contains('text-marker')) {
                 t = s.querySelector('.v4-editable-cell') || s;
             }
+            const shape = s.querySelector('.v4-shape');
+            if (shape && !d.selector) t = shape;
             const boxEl = s.querySelector('.v4-checkbox, .v4-radio');
             if (boxEl && !d.selector) t = boxEl;
             
@@ -3884,7 +4669,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 if (svgShape) {
                     if (d.style.backgroundColor || d.style.background) {
                         svgShape.style.fill = d.style.backgroundColor || d.style.background;
-                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave')) {
+                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave') || t.classList.contains('v4-shape-arrow')) {
                             t.style.backgroundColor = 'transparent';
                         }
                     }
@@ -4064,7 +4849,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             allHandles.forEach(h => h.style.display = 'none');
 
             const validIds = ids.filter(id => {
-                if (id.startsWith('conn_')) return false;
                 const el = doc.getElementById(id);
                 if (!el) return false;
                 
@@ -4078,23 +4862,37 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
             validIds.forEach(id => {
                 const isMarker = id.startsWith('v4-pin-');
+                const isConnector = id.startsWith('conn_');
                 const el = doc.getElementById(id);
                 if (el) {
-                    let absL = parseFloat(el.style.left) || 0;
-                    let absT = parseFloat(el.style.top) || 0;
-                    
-                    let parent = el.parentElement;
-                    while (parent && parent !== doc.body) {
-                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
-                            absL += parseFloat(parent.style.left) || 0;
-                            absT += parseFloat(parent.style.top) || 0;
+                    if (isConnector) {
+                        const conn = (window.parent && window.parent.state && window.parent.state.connectors) 
+                            ? window.parent.state.connectors.find(c => c.id === id) 
+                            : null;
+                        if (conn) {
+                            const absL = Math.min(conn.start.x, conn.end.x);
+                            const absT = Math.min(conn.start.y, conn.end.y);
+                            const w = Math.abs(conn.end.x - conn.start.x);
+                            const h = Math.abs(conn.end.y - conn.start.y);
+                            items.push({ id, type: 'connector', el, x: absL, y: absT, w, h, conn });
                         }
-                        parent = parent.parentElement;
-                    }
+                    } else {
+                        let absL = parseFloat(el.style.left) || 0;
+                        let absT = parseFloat(el.style.top) || 0;
+                        
+                        let parent = el.parentElement;
+                        while (parent && parent !== doc.body) {
+                            if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                                absL += parseFloat(parent.style.left) || 0;
+                                absT += parseFloat(parent.style.top) || 0;
+                            }
+                            parent = parent.parentElement;
+                        }
 
-                    const w = el.offsetWidth;
-                    const h = el.offsetHeight;
-                    items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: absL, y: absT, w, h });
+                        const w = el.offsetWidth;
+                        const h = el.offsetHeight;
+                        items.push({ id, type: isMarker ? 'marker' : 'comp', el, x: absL, y: absT, w, h });
+                    }
                 }
             });
 
@@ -4105,6 +4903,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             let minY = Math.min(...items.map(i => i.y));
             let maxX = Math.max(...items.map(i => i.x + i.w));
             let maxY = Math.max(...items.map(i => i.y + i.h));
+
+            let hasConnectorChanges = false;
 
             if (alignType === 'distribute_h') {
                 if (items.length < 3) {
@@ -4122,21 +4922,38 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     
                     if (dx === 0) return;
                     const newAbsX = item.x + dx;
-                    let parentL = 0;
-                    let parent = item.el.parentElement;
-                    while (parent && parent !== doc.body) {
-                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
-                            parentL += parseFloat(parent.style.left) || 0;
+
+                    if (item.type === 'connector') {
+                        if (item.conn) {
+                            item.conn.start.x += dx;
+                            item.conn.end.x += dx;
+                            item.conn.start.targetId = null; item.conn.start.side = null;
+                            item.conn.end.targetId = null; item.conn.end.side = null;
+                            hasConnectorChanges = true;
                         }
-                        parent = parent.parentElement;
-                    }
-                    item.el.style.left = (newAbsX - parentL) + 'px';
-                    if (item.type === 'marker') {
-                        const idx = parseInt(item.id.replace('v4-pin-', ''));
-                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: item.y });
+                    } else {
+                        let parentL = 0;
+                        let parent = item.el.parentElement;
+                        while (parent && parent !== doc.body) {
+                            if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                                parentL += parseFloat(parent.style.left) || 0;
+                            }
+                            parent = parent.parentElement;
+                        }
+                        item.el.style.left = (newAbsX - parentL) + 'px';
+                        if (item.type === 'marker') {
+                            const idx = parseInt(item.id.replace('v4-pin-', ''));
+                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: item.y });
+                        }
                     }
                 });
                 allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+                if (hasConnectorChanges) {
+                    if (window.parent && window.parent.ConnectorEngine) {
+                        window.parent.ConnectorEngine.redrawAll();
+                    }
+                    notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+                }
                 markDirty();
                 return;
             }
@@ -4157,21 +4974,38 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     
                     if (dy === 0) return;
                     const newAbsY = item.y + dy;
-                    let parentT = 0;
-                    let parent = item.el.parentElement;
-                    while (parent && parent !== doc.body) {
-                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
-                            parentT += parseFloat(parent.style.top) || 0;
+
+                    if (item.type === 'connector') {
+                        if (item.conn) {
+                            item.conn.start.y += dy;
+                            item.conn.end.y += dy;
+                            item.conn.start.targetId = null; item.conn.start.side = null;
+                            item.conn.end.targetId = null; item.conn.end.side = null;
+                            hasConnectorChanges = true;
                         }
-                        parent = parent.parentElement;
-                    }
-                    item.el.style.top = (newAbsY - parentT) + 'px';
-                    if (item.type === 'marker') {
-                        const idx = parseInt(item.id.replace('v4-pin-', ''));
-                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: item.x, y: newAbsY });
+                    } else {
+                        let parentT = 0;
+                        let parent = item.el.parentElement;
+                        while (parent && parent !== doc.body) {
+                            if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                                parentT += parseFloat(parent.style.top) || 0;
+                            }
+                            parent = parent.parentElement;
+                        }
+                        item.el.style.top = (newAbsY - parentT) + 'px';
+                        if (item.type === 'marker') {
+                            const idx = parseInt(item.id.replace('v4-pin-', ''));
+                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: item.x, y: newAbsY });
+                        }
                     }
                 });
                 allHandles.forEach((h, i) => h.style.display = handleStates[i]);
+                if (hasConnectorChanges) {
+                    if (window.parent && window.parent.ConnectorEngine) {
+                        window.parent.ConnectorEngine.redrawAll();
+                    }
+                    notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+                }
                 markDirty();
                 return;
             }
@@ -4189,28 +5023,46 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
                 if (dx === 0 && dy === 0) return;
 
-                const newAbsX = item.x + dx;
-                const newAbsY = item.y + dy;
-
-                let parentL = 0;
-                let parentT = 0;
-                let parent = item.el.parentElement;
-                while (parent && parent !== doc.body) {
-                    if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
-                        parentL += parseFloat(parent.style.left) || 0;
-                        parentT += parseFloat(parent.style.top) || 0;
+                if (item.type === 'connector') {
+                    if (item.conn) {
+                        item.conn.start.x += dx;
+                        item.conn.start.y += dy;
+                        item.conn.end.x += dx;
+                        item.conn.end.y += dy;
+                        item.conn.start.targetId = null; item.conn.start.side = null;
+                        item.conn.end.targetId = null; item.conn.end.side = null;
+                        hasConnectorChanges = true;
                     }
-                    parent = parent.parentElement;
-                }
+                } else {
+                    const newAbsX = item.x + dx;
+                    const newAbsY = item.y + dy;
 
-                item.el.style.left = (newAbsX - parentL) + 'px';
-                item.el.style.top = (newAbsY - parentT) + 'px';
-                
-                if (item.type === 'marker') {
-                    const idx = parseInt(item.id.replace('v4-pin-', ''));
-                    notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: newAbsY });
+                    let parentL = 0;
+                    let parentT = 0;
+                    let parent = item.el.parentElement;
+                    while (parent && parent !== doc.body) {
+                        if (parent.classList.contains('lf-component') || parent.classList.contains('lf-group')) {
+                            parentL += parseFloat(parent.style.left) || 0;
+                            parentT += parseFloat(parent.style.top) || 0;
+                        }
+                        parent = parent.parentElement;
+                    }
+
+                    item.el.style.left = (newAbsX - parentL) + 'px';
+                    item.el.style.top = (newAbsY - parentT) + 'px';
+                    
+                    if (item.type === 'marker') {
+                        const idx = parseInt(item.id.replace('v4-pin-', ''));
+                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: newAbsX, y: newAbsY });
+                    }
                 }
             });
+            if (hasConnectorChanges) {
+                if (window.parent && window.parent.ConnectorEngine) {
+                    window.parent.ConnectorEngine.redrawAll();
+                }
+                notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+            }
             markDirty();
         } else if (d.type === 'LF_GROUP_SELECTED') {
             const ids = d.ids || [];
@@ -4221,7 +5073,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const host = doc.body;
 
             const comps = ids.map(id => doc.getElementById(id)).filter(el => el && !el.classList.contains('connector-line'));
-            if (comps.length < 2) return;
+            const groupedConnectorIds = ids.filter(id => id.startsWith('conn_'));
+            if (comps.length < 2 && (comps.length + groupedConnectorIds.length) < 2) return;
 
             // Sort comps based on their current DOM order to preserve relative layering inside the group
             comps.sort((a, b) => {
@@ -4236,10 +5089,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 window.suspendDesignSystem();
             }
 
-            // 1. Calculate exact coordinates using ONLY the raw inline style properties.
-            // (Atoms are normalized by enforceDesignSystem() before this runs, so style.width/height are always set.)
             let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-            const items = comps.map((c, idx) => {
+            const items = [];
+
+            comps.forEach(c => {
                 const l = parseFloat(c.style.left) || 0;
                 const t = parseFloat(c.style.top) || 0;
                 const w = parseFloat(c.style.width) || c.offsetWidth || 0;
@@ -4249,7 +5102,27 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 minY = Math.min(minY, t);
                 maxX = Math.max(maxX, l + w);
                 maxY = Math.max(maxY, t + h);
-                return { el: c, l, t, w, h };
+                items.push({ el: c, l, t, w, h, type: 'comp' });
+            });
+
+            groupedConnectorIds.forEach(id => {
+                const conn = (window.parent && window.parent.state && window.parent.state.connectors) 
+                    ? window.parent.state.connectors.find(c => c.id === id) 
+                    : null;
+                if (conn) {
+                    const l = Math.min(conn.start.x, conn.end.x);
+                    const t = Math.min(conn.start.y, conn.end.y);
+                    const w = Math.abs(conn.end.x - conn.start.x);
+                    const h = Math.abs(conn.end.y - conn.start.y);
+
+                    minX = Math.min(minX, l);
+                    minY = Math.min(minY, t);
+                    maxX = Math.max(maxX, l + w);
+                    maxY = Math.max(maxY, t + h);
+                    
+                    const el = doc.getElementById(id);
+                    items.push({ el, l, t, w, h, type: 'connector', conn });
+                }
             });
 
             // 2. Hide handles for clean state AFTER gathering coordinates
@@ -4266,6 +5139,18 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const group = doc.createElement('div');
             group.id = groupId;
             group.className = 'lf-component lf-group selected';
+            if (groupedConnectorIds.length > 0) {
+                group.setAttribute('data-connectors', JSON.stringify(groupedConnectorIds));
+            }
+            
+            // Insert the group exactly before the topmost selected component in the DOM to preserve layer depth
+            const topmostComp = comps[comps.length - 1] || (items.length > 0 ? items[items.length - 1].el : null);
+            if (topmostComp) {
+                topmostComp.parentNode.insertBefore(group, topmostComp);
+            } else {
+                host.appendChild(group);
+            }
+
             Object.assign(group.style, {
                 position: 'absolute', left: groupBaseL + 'px', top: groupBaseT + 'px',
                 width: groupBaseW + 'px', height: groupBaseH + 'px',
@@ -4275,11 +5160,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             group.innerHTML = '<div class="lf-drag-handle"><svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg></div>' +
                               '<div class="lf-resizer"></div><div class="lf-delete-trigger">&times;</div>';
 
-            // Insert the group exactly before the first selected component in the DOM
-            const firstComp = comps[0];
-            firstComp.parentNode.insertBefore(group, firstComp);
 
             items.forEach(item => {
+                if (item.type === 'connector') return; // virtual, don't move into DOM
                 item.el.style.left = (item.l - minX) + 'px';
                 item.el.style.top = (item.t - minY) + 'px';
                 item.el.style.width = item.w + 'px';
@@ -4316,6 +5199,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const groupL = parseFloat(group.style.left) || 0;
             const groupT = parseFloat(group.style.top) || 0;
 
+            const groupedConnectorIdsStr = group.getAttribute('data-connectors');
+            const groupedConnectorIds = groupedConnectorIdsStr ? JSON.parse(groupedConnectorIdsStr) : [];
+
             const children = Array.from(group.children).filter(c => c.classList.contains('lf-component'));
             const newIds = [];
 
@@ -4346,8 +5232,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 group.parentNode.insertBefore(c, group);
             });
 
+            groupedConnectorIds.forEach(connId => {
+                newIds.push(connId);
+            });
+
             group.remove();
-            notifyParent({ type: 'LF_DESELECT' });
+            notifyParent({ type: 'LF_UNGROUPED_SYNC_SELECTION', ids: newIds });
             markDirty();
         } else if (d.type === 'LF_EXTRACT_MOLECULE') {
             const group = document.getElementById(d.id);
@@ -4476,6 +5366,55 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         } else if (d.type === 'LF_TABLE_ACTION') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
+            
+            const isGrid = s.classList.contains('v4-grid-container') || s.querySelector('.v4-grid-container');
+            if (isGrid) {
+                const gridContainer = s.classList.contains('v4-grid-container') ? s : s.querySelector('.v4-grid-container');
+                const rowCount = parseInt(gridContainer.getAttribute('data-row-count')) || 5;
+                const pagination = gridContainer.getAttribute('data-pagination') !== 'false';
+                
+                var currentCols = [];
+                var rawCols = gridContainer.getAttribute('data-columns');
+                if (rawCols) {
+                    try { currentCols = JSON.parse(rawCols); } catch(e) {}
+                }
+                if (!currentCols || currentCols.length === 0) {
+                    currentCols = [
+                        { name: '', type: 'checkbox', width: '50px' },
+                        { name: '번호', type: 'number', width: '100px' },
+                        { name: '라이브 방송명', type: 'text', width: '200px' },
+                        { name: '방송상태', type: 'status', width: '120px' },
+                        { name: '등록/수정자', type: 'author', width: '120px' }
+                    ];
+                }
+                
+                const act = (d.action || "").toLowerCase();
+                if (act === 'add-row' || act === 'add_row') {
+                    window.renderGrid(gridContainer, currentCols, rowCount + 1, pagination);
+                } else if (act === 'del-row' || act === 'del_row') {
+                    if (rowCount > 1) {
+                        window.renderGrid(gridContainer, currentCols, rowCount - 1, pagination);
+                    }
+                } else if (act === 'add-col' || act === 'add_col') {
+                    if (currentCols.length < 10) {
+                        currentCols.push({ name: '새 항목', type: 'text', width: '150px' });
+                        window.renderGrid(gridContainer, currentCols, rowCount, pagination);
+                    }
+                } else if (act === 'del-col' || act === 'del_col') {
+                    if (currentCols.length > 1) {
+                        currentCols.pop();
+                        window.renderGrid(gridContainer, currentCols, rowCount, pagination);
+                    }
+                }
+                
+                notifyParent(Object.assign({
+                    type: "LF_COMP_SELECTED"
+                }, window._getCompStyles(s)));
+                
+                markDirty();
+                return;
+            }
+            
             const table = s.querySelector('table'); if (!table) return;
             const focused = table.querySelector('.v4-editable-cell:focus') || table.querySelector('td, th');
             const row = focused ? focused.closest('tr') : null;
@@ -4536,24 +5475,150 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
     });
 
+    window.updateConnectorPathLocal = (connId) => {
+        const conn = window.parent?.state?.connectors?.find(c => c.id === connId);
+        if (!conn) return;
+        const svg = document.getElementById(conn.id);
+        if (!svg) return;
+        
+        const headLength = Math.max(12, parseFloat(conn.style.strokeWidth || 1.6) * 4.5);
+        const padding = headLength + 10;
+        const minX = Math.min(conn.start.x, conn.end.x) - padding;
+        const minY = Math.min(conn.start.y, conn.end.y) - padding;
+        const w = Math.max(conn.start.x, conn.end.x) + padding - minX;
+        const h = Math.max(conn.start.y, conn.end.y) + padding - minY;
+        
+        svg.style.left = minX + 'px';
+        svg.style.top = minY + 'px';
+        svg.style.width = w + 'px';
+        svg.style.height = h + 'px';
+        
+        const rel = (pt) => ({ x: pt.x - minX, y: pt.y - minY });
+        const rStart = rel(conn.start);
+        const rEnd = rel(conn.end);
+        
+        const paths = svg.querySelectorAll('path');
+        if (paths.length >= 2) {
+            const pathData = window.calculatePathData(conn, rStart, rEnd);
+            paths[0].setAttribute('d', pathData);
+            paths[1].setAttribute('d', pathData);
+        }
+        
+        const circles = svg.querySelectorAll('circle');
+        if (circles.length === 2) {
+            circles[0].setAttribute('cx', rStart.x);
+            circles[0].setAttribute('cy', rStart.y);
+            circles[1].setAttribute('cx', rEnd.x);
+            circles[1].setAttribute('cy', rEnd.y);
+        }
+    };
+
+    window.updateAnchoredConnectorsLocal = (movedId) => {
+        const scale = (window.parent?.state?.transform?.scale) || 1;
+        const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
+        const hostRect = host.getBoundingClientRect();
+        
+        const connectors = window.parent?.state?.connectors || [];
+        connectors.forEach(conn => {
+            if (conn.start.targetId === movedId || conn.end.targetId === movedId) {
+                const svg = document.getElementById(conn.id);
+                if (svg) {
+                    let sX = conn.start.x, sY = conn.start.y;
+                    let eX = conn.end.x, eY = conn.end.y;
+                    
+                    if (conn.start.targetId) {
+                        const tEl = document.getElementById(conn.start.targetId);
+                        if (tEl) {
+                            const r = tEl.getBoundingClientRect();
+                            if (conn.start.side === 'left') { sX = (r.left - hostRect.left) / scale; sY = (r.top + r.height/2 - hostRect.top) / scale; }
+                            else if (conn.start.side === 'right') { sX = (r.right - hostRect.left) / scale; sY = (r.top + r.height/2 - hostRect.top) / scale; }
+                            else if (conn.start.side === 'top') { sX = (r.left + r.width/2 - hostRect.left) / scale; sY = (r.top - hostRect.top) / scale; }
+                            else if (conn.start.side === 'bottom') { sX = (r.left + r.width/2 - hostRect.left) / scale; sY = (r.bottom - hostRect.top) / scale; }
+                        }
+                    }
+                    
+                    if (conn.end.targetId) {
+                        const tEl = document.getElementById(conn.end.targetId);
+                        if (tEl) {
+                            const r = tEl.getBoundingClientRect();
+                            if (conn.end.side === 'left') { eX = (r.left - hostRect.left) / scale; eY = (r.top + r.height/2 - hostRect.top) / scale; }
+                            else if (conn.end.side === 'right') { eX = (r.right - hostRect.left) / scale; eY = (r.top + r.height/2 - hostRect.top) / scale; }
+                            else if (conn.end.side === 'top') { eX = (r.left + r.width/2 - hostRect.left) / scale; eY = (r.top - hostRect.top) / scale; }
+                            else if (conn.end.side === 'bottom') { eX = (r.left + r.width/2 - hostRect.left) / scale; eY = (r.bottom - hostRect.top) / scale; }
+                        }
+                    }
+                    
+                    conn.start.x = sX; conn.start.y = sY;
+                    conn.end.x = eX; conn.end.y = eY;
+                    
+                    const headLength = Math.max(12, parseFloat(conn.style.strokeWidth || 1.6) * 4.5);
+                    const padding = headLength + 10;
+                    const minX = Math.min(sX, eX) - padding;
+                    const minY = Math.min(sY, eY) - padding;
+                    const w = Math.max(conn.start.x, conn.end.x) + padding - minX;
+                    const h = Math.max(conn.start.y, conn.end.y) + padding - minY;
+                    
+                    svg.style.left = minX + 'px';
+                    svg.style.top = minY + 'px';
+                    svg.style.width = w + 'px';
+                    svg.style.height = h + 'px';
+                    
+                    const rel = (pt) => ({ x: pt.x - minX, y: pt.y - minY });
+                    const rStart = rel(conn.start);
+                    const rEnd = rel(conn.end);
+                    
+                    const paths = svg.querySelectorAll('path');
+                    if (paths.length >= 2) {
+                        const pathData = window.calculatePathData(conn, rStart, rEnd);
+                        paths[0].setAttribute('d', pathData);
+                        paths[1].setAttribute('d', pathData);
+                    }
+                    
+                    const circles = svg.querySelectorAll('circle');
+                    if (circles.length === 2) {
+                        circles[0].setAttribute('cx', rStart.x);
+                        circles[0].setAttribute('cy', rStart.y);
+                        circles[1].setAttribute('cx', rEnd.x);
+                        circles[1].setAttribute('cy', rEnd.y);
+                    }
+                }
+            }
+        });
+    };
+
     window.initHandles = () => {
         document.querySelectorAll('.lf-component').forEach(c => {
-            if (!c.querySelector('.lf-drag-handle')) {
+            if (!c.querySelector(':scope > .lf-drag-handle')) {
                 const h = document.createElement('div');
                 h.className = 'lf-drag-handle';
                 h.innerHTML = '<svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor;"><path d="M10,13V11H14V13H10M10,9V7H14V9H10M10,17V15H14V17H10M6,13V11H8V13H6M6,9V7H8V9H6M6,17V15H8V17H6M16,13V11H18V13H16M16,9V7H18V9H16M16,17V15H18V17H16Z"/></svg>';
                 c.appendChild(h);
             }
-            if (!c.querySelector('.lf-resizer')) {
+            if (!c.querySelector(':scope > .lf-resizer')) {
                 const r = document.createElement('div');
                 r.className = 'lf-resizer';
                 c.appendChild(r);
             }
-            if (!c.querySelector('.lf-delete-trigger')) {
+            if (!c.querySelector(':scope > .lf-delete-trigger')) {
                 const d = document.createElement('div');
                 d.className = 'lf-delete-trigger';
                 d.innerHTML = '&times;';
                 c.appendChild(d);
+            }
+            if (!c.classList.contains('lf-group') && !c.classList.contains('connector-line')) {
+                ['top', 'bottom', 'left', 'right'].forEach(side => {
+                    if (!c.querySelector(':scope > .lf-connector-port.port-' + side)) {
+                        const port = document.createElement('div');
+                        port.className = 'lf-connector-port port-' + side;
+                        port.setAttribute('data-side', side);
+                        port.addEventListener('mousedown', (e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            startConnectorDragFromPort(c, side, e);
+                        });
+                        c.appendChild(port);
+                    }
+                });
             }
         });
     };
@@ -4561,4 +5626,4 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 })();
 
 </script>
-</body></html>
+<div id="lf-comp-1783044563467" class="lf-component" style="position: absolute; top: 309px; left: 230px; z-index: 1000; transform: none; width: 1180px; height: 280px;" data-resized="true"><div class="v4-grid-container" data-pagination="true" data-row-count="5" data-columns="[{&quot;name&quot;:&quot;&quot;,&quot;type&quot;:&quot;checkbox&quot;,&quot;width&quot;:&quot;50px&quot;,&quot;options&quot;:&quot;&quot;},{&quot;name&quot;:&quot;번호&quot;,&quot;type&quot;:&quot;number&quot;,&quot;width&quot;:&quot;100px&quot;,&quot;options&quot;:&quot;&quot;},{&quot;name&quot;:&quot;결제혜택명&quot;,&quot;type&quot;:&quot;text&quot;,&quot;width&quot;:&quot;200px&quot;,&quot;options&quot;:&quot;&quot;},{&quot;name&quot;:&quot;방송상태&quot;,&quot;type&quot;:&quot;status&quot;,&quot;width&quot;:&quot;120px&quot;,&quot;options&quot;:&quot;방송중, 방송예정, 방송종료&quot;},{&quot;name&quot;:&quot;등록/수정자&quot;,&quot;type&quot;:&quot;author&quot;,&quot;width&quot;:&quot;120px&quot;,&quot;options&quot;:&quot;&quot;}]" style="width:100%; height:100%; display:flex; flex-direction:column; background:#ffffff; border:1.6px solid rgb(226,232,240); border-radius:8px; overflow:hidden; box-sizing:border-box;"><div class="v4-grid-table-wrapper" style="width: 100%; height: calc(100% - 72px); overflow: auto; box-sizing: border-box;"><table style="width: max-content; min-width: 100%; table-layout: fixed; border-collapse: collapse; background: rgb(255, 255, 255); box-sizing: border-box; border-width: 1.6px !important;" data-table-selection-bound="true"><colgroup><col style="width: 50px;"><col style="width: 100px;"><col style="width: 200px;"><col style="width: 120px;"><col style="width: 120px;"></colgroup><thead><tr style="height: 36px; background: rgb(255, 255, 255); border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box;"><th class="v4-grid-cell v4-grid-check-col" style="display: table-cell; vertical-align: middle; text-align: center; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; padding: 0px; font-weight: 500; color: rgb(51, 65, 85) !important;" contenteditable="false" data-type="checkbox"><input type="checkbox"></th><th class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; font-weight: 500; color: rgb(51, 65, 85) !important; user-select: none;" contenteditable="true" data-type="number">번호 ⇅</th><th class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; font-weight: 500; color: rgb(51, 65, 85) !important; user-select: none;" contenteditable="true" data-type="text">결제혜택명 ⇅</th><th class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; font-weight: 500; color: rgb(51, 65, 85) !important; user-select: none;" contenteditable="true" data-type="status">방송상태 ⇅</th><th class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; box-sizing: border-box; font-size: 12px !important; font-weight: 500; color: rgb(51, 65, 85) !important; user-select: none; border-right-width: medium; border-right-style: none; border-right-color: currentcolor;" contenteditable="true" data-type="author">등록/수정자 ⇅</th></tr></thead><tbody style="box-sizing:border-box;"><tr style="height:36px; border-bottom:1.6px solid rgb(226,232,240); box-sizing:border-box; background:#ffffff;"><td class="v4-grid-cell" style="display:table-cell; vertical-align:middle; text-align:center; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box; padding:0;" data-type="checkbox" contenteditable="false"><input type="checkbox"></td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; color: rgb(51, 65, 85) !important;" contenteditable="true" data-type="number">1024</td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; color: rgb(15, 23, 42) !important; font-weight: 500;" contenteditable="true" data-type="text">26년 6월 결제혜택</td><td class="v4-grid-cell v4-editable-cell" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box;" contenteditable="true" data-type="status"><span style="background:rgba(52,211,153,0.15); color:#10b981; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">방송중</span></td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; font-size: 12px !important; color: rgb(100, 116, 139) !important; border-right-width: medium; border-right-style: none; border-right-color: currentcolor;" contenteditable="true" data-type="author">김엘에프</td></tr><tr style="height:36px; border-bottom:1.6px solid rgb(226,232,240); box-sizing:border-box; background:#ffffff;"><td class="v4-grid-cell" style="display:table-cell; vertical-align:middle; text-align:center; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box; padding:0;" data-type="checkbox" contenteditable="false"><input type="checkbox"></td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; color: rgb(51, 65, 85) !important;" contenteditable="true" data-type="number">1023</td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; color: rgb(15, 23, 42) !important; font-weight: 500;" contenteditable="true" data-type="text">26년 5월 결제혜택</td><td class="v4-grid-cell v4-editable-cell" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box;" contenteditable="true" data-type="status"><span style="background:rgba(251,191,36,0.15); color:#d97706; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">방송예정</span></td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; font-size: 12px !important; color: rgb(100, 116, 139) !important; border-right-width: medium; border-right-style: none; border-right-color: currentcolor;" contenteditable="true" data-type="author">이닥스</td></tr><tr style="height:36px; border-bottom:1.6px solid rgb(226,232,240); box-sizing:border-box; background:#ffffff;"><td class="v4-grid-cell" style="display:table-cell; vertical-align:middle; text-align:center; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box; padding:0;" data-type="checkbox" contenteditable="false"><input type="checkbox"></td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; color: rgb(51, 65, 85) !important;" contenteditable="true" data-type="number">1022</td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; color: rgb(15, 23, 42) !important; font-weight: 500;" contenteditable="true" data-type="text">26년 4월 결제혜택</td><td class="v4-grid-cell v4-editable-cell" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box;" contenteditable="true" data-type="status"><span style="background:rgba(239,68,68,0.1); color:#ef4444; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">방송종료</span></td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; font-size: 12px !important; color: rgb(100, 116, 139) !important; border-right-width: medium; border-right-style: none; border-right-color: currentcolor;" contenteditable="true" data-type="author">박라푸마</td></tr><tr style="height:36px; border-bottom:1.6px solid rgb(226,232,240); box-sizing:border-box; background:#ffffff;"><td class="v4-grid-cell" style="display:table-cell; vertical-align:middle; text-align:center; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box; padding:0;" data-type="checkbox" contenteditable="false"><input type="checkbox"></td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; color: rgb(51, 65, 85) !important;" contenteditable="true" data-type="number">1021</td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; color: rgb(15, 23, 42) !important; font-weight: 500;" contenteditable="true" data-type="text">26년 3월 결제혜택</td><td class="v4-grid-cell v4-editable-cell" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box;" contenteditable="true" data-type="status"><span style="background:rgba(52,211,153,0.15); color:#10b981; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">방송중</span></td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; font-size: 12px !important; color: rgb(100, 116, 139) !important; border-right-width: medium; border-right-style: none; border-right-color: currentcolor;" contenteditable="true" data-type="author">최질스</td></tr><tr style="height:36px; border-bottom:none; box-sizing:border-box; background:#ffffff;"><td class="v4-grid-cell" style="display:table-cell; vertical-align:middle; text-align:center; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box; padding:0;" data-type="checkbox" contenteditable="false"><input type="checkbox"></td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; color: rgb(51, 65, 85) !important;" contenteditable="true" data-type="number">1020</td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; font-size: 12px !important; color: rgb(15, 23, 42) !important; font-weight: 500;" contenteditable="true" data-type="text">26년 2월 결제혜택</td><td class="v4-grid-cell v4-editable-cell" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px; border-right:1.6px solid rgb(226,232,240); box-sizing:border-box;" contenteditable="true" data-type="status"><span style="background:rgba(251,191,36,0.15); color:#d97706; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">방송예정</span></td><td class="v4-grid-cell v4-editable-cell" style="display: table-cell; vertical-align: middle; text-align: left; padding: 0px 8px; font-size: 12px !important; color: rgb(100, 116, 139) !important; border-right-width: medium; border-right-style: none; border-right-color: currentcolor;" contenteditable="true" data-type="author">정바네</td></tr></tbody></table></div><div class="v4-grid-footer" style="height:36px; padding:0 12px; display:flex; align-items:center; justify-content:space-between; background:#f8fafc; border-top:1.6px solid rgb(226,232,240); box-sizing:border-box; width:100%; flex-shrink:0;"><span style="font-size:11px; color:#64748b; font-family:'Inter',sans-serif;">1/27</span><div class="v4-grid-pages" style="font-size:11px; color:#64748b; cursor:pointer; font-family:'Inter',sans-serif;">◀ 1 2 3 4 5 ▶</div><span style="font-size:11px; color:#64748b; font-family:'Inter',sans-serif;">Page Size 100</span></div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></body></html>
