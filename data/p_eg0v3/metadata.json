@@ -773,6 +773,13 @@
       "connectors": [],
       "defaultTab": "editor",
       "screenDesc": ""
+    },
+    "00_Cover_452.html": {
+      "title": "00_Cover_452",
+      "type": "cover",
+      "updatedAt": "2026-07-06T06:30:53.670Z",
+      "template": "template_cover.html",
+      "version": 0.1
     }
   },
   "assignee": "최범열",
@@ -787,7 +794,8 @@
     "07_PC_Design_266.html",
     "99_Blank_798.html",
     "카드 설정2.html",
-    "얼럿 정리.html"
+    "얼럿 정리.html",
+    "00_Cover_452.html"
   ],
   "updated": "2026-06-25 17:52:40"
 }
