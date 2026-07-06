@@ -788,14 +788,14 @@
   "jira": "LFML-143997",
   "themeIndex": 5,
   "screenOrder": [
+    "00_Cover_452.html",
     "프로젝트 커버.html",
     "06_Mobile_Design_2_793.html",
     "06_Mobile_Design_2_901.html",
     "07_PC_Design_266.html",
     "99_Blank_798.html",
     "카드 설정2.html",
-    "얼럿 정리.html",
-    "00_Cover_452.html"
+    "얼럿 정리.html"
   ],
   "updated": "2026-06-25 17:52:40"
 }
