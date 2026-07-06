@@ -89,6 +89,9 @@
     function syncAllColors(s) {
         const colorInputs = document.querySelectorAll('.v4-color-input');
         colorInputs.forEach(input => {
+            if (input.id === 'prop-admin-group-header-bg' || input.id === 'prop-admin-group-header-color') {
+                return;
+            }
             const prop = input.dataset.prop;
             const wrapper = input.closest('.v4-color-wrapper');
             

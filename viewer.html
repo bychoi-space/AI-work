@@ -1607,6 +1607,38 @@
                             </div>
                         </div>
 
+                        <!-- Group Header Configuration -->
+                        <div class="prop-group" style="margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                            <label style="font-size: 9px; color: #94a3b8; display: flex; align-items: center; gap: 6px; cursor: pointer; margin-bottom: 6px;">
+                                <input type="checkbox" id="prop-admin-group-header-enable" style="cursor: pointer; accent-color: var(--accent);">
+                                그룹 타이틀(대제목) 표시
+                            </label>
+                            
+                            <div id="admin-group-header-config-sub" style="display: none; flex-direction: column; gap: 8px; margin-top: 8px;">
+                                <div class="prop-group">
+                                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">그룹 타이틀 명칭</label>
+                                    <input type="text" id="prop-admin-group-header-title" value="그룹명" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                    <div class="prop-group">
+                                        <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">배경 컬러</label>
+                                        <div style="display: flex; gap: 4px; align-items: center;">
+                                            <div class="v4-color-wrapper v4-checkerboard-bg" id="admin-group-header-bg-wrapper">
+                                                <input type="color" id="prop-admin-group-header-bg" class="v4-color-input" data-prop="background" value="#73829c">
+                                            </div>
+                                            <button id="btn-admin-group-header-bg-none" class="v4-color-none-btn" data-prop="background" title="Transparent BG" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; box-sizing: border-box;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="prop-group">
+                                        <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">텍스트 컬러</label>
+                                        <div class="v4-color-wrapper v4-checkerboard-bg" id="admin-group-header-color-wrapper">
+                                            <input type="color" id="prop-admin-group-header-color" class="v4-color-input" data-prop="color" value="#ffffff">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Row Configurations -->
                         <div id="admin-rows-configuration-container" style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
                             <!-- Dynamic Row Configs will be loaded here -->
@@ -1855,12 +1887,12 @@
     <!-- Revision History Modal dynamically loaded on-demand -->
 
     <!-- Script modularization: Pure Vanilla V3 Migration -->
-    <script src="assets/templates.js?v=V185_TOGGLE_SIZE"></script>
+    <script src="assets/templates.js?v=V186_BUTTON_HEIGHT"></script>
     <script src="assets/app.js?v=V181_PC_UI_TEMPLATE"></script>
     
     <!-- Modularized Engine -->
     <script src="assets/vctrl_undo.js?v=V194_DATEPICKER"></script>
-    <script src="assets/vctrl_design_system.js?v=V223_TOGGLE_SIZE"></script>
+    <script src="assets/vctrl_design_system.js?v=V224_BUTTON_HEIGHT"></script>
     <script src="assets/vctrl_shortcuts.js?v=V219_NUDGE_CONNECTOR_FIX"></script>
     <script src="assets/vctrl_iframe_script.js?v=V238_TOGGLE"></script>
     <script src="assets/vctrl_core.js?v=V213_MULTI_SELECT_COLLAPSE_FIX"></script>
@@ -1874,6 +1906,6 @@
     <!-- V4 Premium Addons -->
     <script src="enhanced_v4/component_library_v4.js?v=V232_TOGGLE"></script>
     <script src="assets/vctrl_table.js?v=V134_CELL_FIX"></script>
-    <script src="assets/vctrl_v4_addon.js?v=V233_TOGGLE_SIZE"></script>
+    <script src="assets/vctrl_v4_addon.js?v=V234_BUTTON_HEIGHT"></script>
 </body>
 </html>

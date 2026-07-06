@@ -173,6 +173,14 @@ window.loadScreen = async function(fileName) {
                 console.log('[SmartGuide] Targets pre-warmed after screen load.');
             }
         }, 300);
+
+        // [Bug Fix 2] Recalculate center scale after layout has fully settled in iframe.
+        setTimeout(() => {
+            if (typeof window.centerView === 'function') {
+                window.centerView();
+                console.log('[INIT] Layout settled, ran centerView.');
+            }
+        }, 150);
     };
 
     let scMeta = (state.projectMetadata.screens || {})[fileName] || {};
@@ -666,17 +674,20 @@ window.MessageHub = {
                 if (window.SmartGuide) {
                     window.SmartGuide.findSnapTargets();
                 }
+                const activeEl = document.activeElement;
+                const isTyping = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title' || activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA');
+
                 if (data.isDescriptionPin) {
                     state.isEditing = false;
                     state.editingIndex = -1;
-                    if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab('description');
+                    if (!isTyping && typeof window.switchSidebarTab === 'function') window.switchSidebarTab('description');
                     if (typeof window.focusDescriptionRow === 'function') {
                         window.focusDescriptionRow(data.pinIndex);
                     }
                 } else {
                     state.isEditing = true;
                     state.editingIndex = data.id;
-                    if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab('editor');
+                    if (!isTyping && typeof window.switchSidebarTab === 'function') window.switchSidebarTab('editor');
                     
                     if (window.GroupingManager) {
                         let selectedIds = (typeof window.GroupingManager.getSelectedIds === 'function') ? [...window.GroupingManager.getSelectedIds()] : [];

@@ -1731,6 +1731,72 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         try { bindFileuploadEvents(); } catch(e) { console.error("Error in bindFileuploadEvents:", e); }
         try { bindAccordionEvents(); } catch(e) { console.error("Error in bindAccordionEvents:", e); }
         try { bindToggleEvents(); } catch(e) { console.error("Error in bindToggleEvents:", e); }
+
+        try {
+            document.querySelectorAll('.v4-admin-group-header').forEach(header => {
+                const container = header.closest('.v4-admin-settings-container');
+                if (container) {
+                    const bgCol = container.getAttribute('data-group-header-bg') || '#73829c';
+                    const textCol = container.getAttribute('data-group-header-color') || '#ffffff';
+                    
+                    if (header.style.height !== '50px') header.style.height = '50px';
+                    if (header.style.display !== 'flex') header.style.display = 'flex';
+                    if (header.style.alignItems !== 'center') header.style.alignItems = 'center';
+                    if (header.style.padding !== '0px 16px') header.style.padding = '0 16px';
+                    if (header.style.fontSize !== '14px') header.style.fontSize = '14px';
+                    if (header.style.fontWeight !== '700') header.style.fontWeight = '700';
+                    if (header.style.boxSizing !== 'border-box') header.style.boxSizing = 'border-box';
+                    if (header.style.width !== '100%') header.style.width = '100%';
+                    if (header.style.outline !== 'none') header.style.outline = 'none';
+                    if (header.style.borderBottom !== '1.6px solid rgb(226, 232, 240)') header.style.borderBottom = '1.6px solid rgb(226, 232, 240)';
+                    if (header.style.flexShrink !== '0') header.style.flexShrink = '0';
+                    
+                    if (header.getAttribute('data-enforced-bg') !== bgCol) {
+                        header.style.backgroundColor = bgCol;
+                        header.setAttribute('data-enforced-bg', bgCol);
+                    }
+                    if (header.getAttribute('data-enforced-color') !== textCol) {
+                        header.style.color = textCol;
+                        header.setAttribute('data-enforced-color', textCol);
+                    }
+                    
+                    if (!header.dataset.inputBound) {
+                        header.dataset.inputBound = 'true';
+                        header.oninput = (e) => {
+                            container.setAttribute('data-group-header-title', e.target.innerText);
+                            markDirty();
+                        };
+                    }
+                }
+            });
+
+            document.querySelectorAll('.v4-admin-settings-container').forEach(container => {
+                const table = container.querySelector('.v4-admin-settings-table');
+                if (table) {
+                    if (table.style.flex !== '1 1 0%' && table.style.flex !== '1') table.style.flex = '1';
+                    if (table.style.height !== 'auto') table.style.height = 'auto';
+                }
+                const comp = container.closest('.lf-component');
+                if (comp) {
+                    const hasGroupHeader = container.getAttribute('data-show-group-header') === 'true';
+                    const headerHeight = hasGroupHeader ? 50 : 0;
+                    const totalRows = parseInt(container.getAttribute('data-row-count')) || 1;
+                    const globalRowHeight = parseInt(container.getAttribute('data-row-height')) || 50;
+                    
+                    let expectedHeight = headerHeight;
+                    for (let i = 1; i <= totalRows; i++) {
+                        const specificHeight = parseInt(container.getAttribute('data-row' + i + '-height')) || globalRowHeight;
+                        expectedHeight += specificHeight;
+                    }
+                    
+                    const currentHeight = parseInt(comp.style.height) || 0;
+                    if (currentHeight !== expectedHeight) {
+                        comp.style.height = expectedHeight + 'px';
+                        if (typeof window.updateHandles === 'function') window.updateHandles(comp);
+                    }
+                }
+            });
+        } catch(e) { console.error("Error in admin settings enforceDesignSystem:", e); }
         
         const seenIds = new Set();
         document.querySelectorAll('.lf-component').forEach((c, idx) => {
@@ -1994,7 +2060,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 if (c.getAttribute('data-resized') !== 'true') {
                     const targetW = '80px';
-                    const targetH = '40px';
+                    const targetH = '30px';
                     if (c.style.width !== targetW) c.style.width = targetW;
                     if (c.style.height !== targetH) c.style.height = targetH;
                 }
@@ -3067,11 +3133,18 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const isAdminSettings = isGroup ? false : (!!c.querySelector('.v4-admin-settings-container') || c.classList.contains('v4-admin-settings-container'));
         const adminSettingsContainer = isGroup ? null : (c.querySelector('.v4-admin-settings-container') || (isAdminSettings ? c : null));
         const adminRowCount = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-count')) || 3 : 3;
+        
+        const adminShowGroupHeader = adminSettingsContainer ? adminSettingsContainer.getAttribute('data-show-group-header') === 'true' : false;
+        const adminGroupHeaderTitle = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-title') || '그룹명') : '그룹명';
+        const adminGroupHeaderBg = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-bg') || '#73829c') : '#73829c';
+        const adminGroupHeaderColor = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-color') || '#ffffff') : '#ffffff';
+
         const adminRowData = {};
         for (let i = 1; i <= 10; i++) {
             adminRowData['adminRow' + i + 'Label'] = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row' + i + '-label') || '') : '';
             adminRowData['adminRow' + i + 'Cols'] = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row' + i + '-cols')) || 1 : 1;
             adminRowData['adminRow' + i + 'Type'] = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row' + i + '-type') || 'textbox') : 'textbox';
+            adminRowData['adminRow' + i + 'Height'] = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row' + i + '-height')) || (adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-height')) || 50 : 50) : 50;
         }
 
         // Toggle Button Detection
@@ -3222,6 +3295,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             gridShowPagination: gridShowPagination,
             isAdminSettings: isAdminSettings,
             adminRowCount: adminRowCount,
+            adminShowGroupHeader: adminShowGroupHeader,
+            adminGroupHeaderTitle: adminGroupHeaderTitle,
+            adminGroupHeaderBg: adminGroupHeaderBg,
+            adminGroupHeaderColor: adminGroupHeaderColor,
             ...adminRowData,
             adminRowHeight: adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-height')) || 50 : 50,
             isToggle: isToggle,
@@ -3236,7 +3313,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 bg: _rgb2hex(getCompBg()),
                 border: _rgb2hex(getCompBorder()),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : (buttonEl ? _getVal(buttonEl, "color") : "")),
-                fontSize: parseInt(_getVal(textCell, "fontSize")) || (shape ? parseInt(_getVal(shape.querySelector('.v4-shape-text-content, .v4-shape-text-overlay'), "fontSize")) || 14 : (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 14 : 14)),
+                fontSize: parseInt(_getVal(textCell, "fontSize")) || (shape ? parseInt(_getVal(shape.querySelector('.v4-editable-cell, .v4-shape-text-content, .v4-shape-text-overlay'), "fontSize")) || 14 : (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 14 : 14)),
                 fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
@@ -3251,7 +3328,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     const colorVal = getCompBorder();
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
-                textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
+                textAlign: shape ? (_getVal(shape.querySelector('.v4-editable-cell, .v4-shape-text-content'), 'textAlign') || 'center') : 'center'
             }
         };
     };
@@ -5200,11 +5277,47 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     if (d.rowType !== undefined) container.setAttribute('data-row' + rNum + '-type', d.rowType);
                 }
 
+                // Update Group Header Attributes
+                if (d.showGroupHeader !== undefined) container.setAttribute('data-show-group-header', d.showGroupHeader ? 'true' : 'false');
+                if (d.groupHeaderTitle !== undefined) container.setAttribute('data-group-header-title', d.groupHeaderTitle);
+                if (d.groupHeaderBg !== undefined) container.setAttribute('data-group-header-bg', d.groupHeaderBg);
+                if (d.groupHeaderColor !== undefined) container.setAttribute('data-group-header-color', d.groupHeaderColor);
+
+                const hasGroupHeader = container.getAttribute('data-show-group-header') === 'true';
+                const headerHeight = hasGroupHeader ? 50 : 0;
+
+                // Dynamically render Group Header
+                let headerEl = container.querySelector('.v4-admin-group-header');
+                if (hasGroupHeader) {
+                    if (!headerEl) {
+                        headerEl = document.createElement('div');
+                        headerEl.className = 'v4-admin-group-header';
+                        container.insertBefore(headerEl, container.firstChild);
+                    }
+                    const titleText = container.getAttribute('data-group-header-title') || '그룹명';
+                    const bgCol = container.getAttribute('data-group-header-bg') || '#73829c';
+                    const textCol = container.getAttribute('data-group-header-color') || '#ffffff';
+                    
+                    if (headerEl.innerText !== titleText) headerEl.innerText = titleText;
+                    headerEl.contentEditable = 'true';
+                    headerEl.style.cssText = 'height: 50px; display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 700; background: ' + bgCol + '; color: ' + textCol + '; box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240);';
+                    
+                    if (!headerEl.dataset.inputBound) {
+                        headerEl.dataset.inputBound = 'true';
+                        headerEl.oninput = (e) => {
+                            container.setAttribute('data-group-header-title', e.target.innerText);
+                            markDirty();
+                        };
+                    }
+                } else {
+                    if (headerEl) headerEl.remove();
+                }
+
                 const totalRows = parseInt(container.getAttribute('data-row-count')) || 1;
                 const rowHeight = parseInt(container.getAttribute('data-row-height')) || 50;
                 
-                // Automatically resize component height: (rowHeight * totalRows)
-                const newHeight = totalRows * rowHeight;
+                // Automatically resize component height: (rowHeight * totalRows) + headerHeight
+                const newHeight = (totalRows * rowHeight) + headerHeight;
                 s.style.height = newHeight + 'px';
                 if (typeof window.updateHandles === 'function') window.updateHandles(s);
 

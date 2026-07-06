@@ -379,6 +379,72 @@ window.v4DesignSystemScript = `
         try { bindFileuploadEvents(); } catch(e) { console.error("Error in bindFileuploadEvents:", e); }
         try { bindAccordionEvents(); } catch(e) { console.error("Error in bindAccordionEvents:", e); }
         try { bindToggleEvents(); } catch(e) { console.error("Error in bindToggleEvents:", e); }
+
+        try {
+            document.querySelectorAll('.v4-admin-group-header').forEach(header => {
+                const container = header.closest('.v4-admin-settings-container');
+                if (container) {
+                    const bgCol = container.getAttribute('data-group-header-bg') || '#73829c';
+                    const textCol = container.getAttribute('data-group-header-color') || '#ffffff';
+                    
+                    if (header.style.height !== '50px') header.style.height = '50px';
+                    if (header.style.display !== 'flex') header.style.display = 'flex';
+                    if (header.style.alignItems !== 'center') header.style.alignItems = 'center';
+                    if (header.style.padding !== '0px 16px') header.style.padding = '0 16px';
+                    if (header.style.fontSize !== '14px') header.style.fontSize = '14px';
+                    if (header.style.fontWeight !== '700') header.style.fontWeight = '700';
+                    if (header.style.boxSizing !== 'border-box') header.style.boxSizing = 'border-box';
+                    if (header.style.width !== '100%') header.style.width = '100%';
+                    if (header.style.outline !== 'none') header.style.outline = 'none';
+                    if (header.style.borderBottom !== '1.6px solid rgb(226, 232, 240)') header.style.borderBottom = '1.6px solid rgb(226, 232, 240)';
+                    if (header.style.flexShrink !== '0') header.style.flexShrink = '0';
+                    
+                    if (header.getAttribute('data-enforced-bg') !== bgCol) {
+                        header.style.backgroundColor = bgCol;
+                        header.setAttribute('data-enforced-bg', bgCol);
+                    }
+                    if (header.getAttribute('data-enforced-color') !== textCol) {
+                        header.style.color = textCol;
+                        header.setAttribute('data-enforced-color', textCol);
+                    }
+                    
+                    if (!header.dataset.inputBound) {
+                        header.dataset.inputBound = 'true';
+                        header.oninput = (e) => {
+                            container.setAttribute('data-group-header-title', e.target.innerText);
+                            markDirty();
+                        };
+                    }
+                }
+            });
+
+            document.querySelectorAll('.v4-admin-settings-container').forEach(container => {
+                const table = container.querySelector('.v4-admin-settings-table');
+                if (table) {
+                    if (table.style.flex !== '1 1 0%' && table.style.flex !== '1') table.style.flex = '1';
+                    if (table.style.height !== 'auto') table.style.height = 'auto';
+                }
+                const comp = container.closest('.lf-component');
+                if (comp) {
+                    const hasGroupHeader = container.getAttribute('data-show-group-header') === 'true';
+                    const headerHeight = hasGroupHeader ? 50 : 0;
+                    const totalRows = parseInt(container.getAttribute('data-row-count')) || 1;
+                    const globalRowHeight = parseInt(container.getAttribute('data-row-height')) || 50;
+                    
+                    let expectedHeight = headerHeight;
+                    for (let i = 1; i <= totalRows; i++) {
+                        const specificHeight = parseInt(container.getAttribute('data-row' + i + '-height')) || globalRowHeight;
+                        expectedHeight += specificHeight;
+                    }
+                    
+                    const currentHeight = parseInt(comp.style.height) || 0;
+                    if (currentHeight !== expectedHeight) {
+                        comp.style.height = expectedHeight + 'px';
+                        if (typeof window.updateHandles === 'function') window.updateHandles(comp);
+                    }
+                }
+            });
+        } catch(e) { console.error("Error in admin settings enforceDesignSystem:", e); }
         
         const seenIds = new Set();
         document.querySelectorAll('.lf-component').forEach((c, idx) => {
@@ -642,7 +708,7 @@ window.v4DesignSystemScript = `
                 
                 if (c.getAttribute('data-resized') !== 'true') {
                     const targetW = '80px';
-                    const targetH = '40px';
+                    const targetH = '30px';
                     if (c.style.width !== targetW) c.style.width = targetW;
                     if (c.style.height !== targetH) c.style.height = targetH;
                 }

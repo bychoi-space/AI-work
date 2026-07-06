@@ -199,7 +199,7 @@ function restorePropertiesSections() {
 // --- 3. UI Rendering Functions ---
 window.updateProperties = function(compStyles) {
     const activeEl = document.activeElement;
-    const isTypingInAdminProps = activeEl && activeEl.classList.contains('admin-col-label-input');
+    const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title');
     const isTypingCheckboxLabel = activeEl && activeEl.id === 'prop-atom-text-content';
     const isTypingInGridProps = activeEl && (activeEl.closest('#grid-inspector-section') || activeEl.classList.contains('grid-col-width-input') || activeEl.classList.contains('grid-col-name-input') || activeEl.classList.contains('grid-col-type-select'));
     const isTypingInDatePickerProps = activeEl && (
@@ -299,6 +299,9 @@ const ProjectMetadataManager = {
         }
 
         // Hide all sections first
+        const activeEl = document.activeElement;
+        const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title');
+
         const arrowGroupInit = document.getElementById('shape-arrow-direction-group');
         if (arrowGroupInit) arrowGroupInit.style.display = 'none';
         if (DOM.textPropSection) DOM.textPropSection.style.display = 'none';
@@ -316,7 +319,7 @@ const ProjectMetadataManager = {
         if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'none';
         if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'none';
         if (DOM.togglePropSection) DOM.togglePropSection.style.display = 'none';
-        if (DOM.adminSettingsPropSection) DOM.adminSettingsPropSection.style.display = 'none';
+        if (DOM.adminSettingsPropSection && !isTypingInAdminProps) DOM.adminSettingsPropSection.style.display = 'none';
 
         if (compStyles) {
             state.isEditing = true;
@@ -428,7 +431,7 @@ const ProjectMetadataManager = {
                 if (DOM.adminSettingsPropSection) DOM.adminSettingsPropSection.style.display = 'block';
                 // Focus guard: Do not rebuild the inputs if the user is actively typing in one of them
                 const activeEl = document.activeElement;
-                const isTypingInAdminProps = activeEl && activeEl.classList.contains('admin-col-label-input');
+                const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title');
                 if (!isTypingInAdminProps) {
                     _syncAdminSettingsProps(compStyles);
                 }
@@ -544,7 +547,7 @@ const ProjectMetadataManager = {
         // Dynamically move active panels into floating inspector card body
         const floatingBody = document.getElementById('floating-inspector-body');
         if (floatingBody) {
-            const isTypingInAdminProps = activeEl && activeEl.classList.contains('admin-col-label-input');
+            const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title');
             const isTypingCheckboxLabel = activeEl && activeEl.id === 'prop-atom-text-content';
             const isTypingInDatePickerProps = activeEl && (
                 activeEl.id === 'prop-dp-start-date' ||
@@ -1772,6 +1775,30 @@ function _syncAdminSettingsProps(comp) {
         rowCountText.innerText = comp.adminRowCount;
     }
 
+    // Sync Group Header Inputs
+    const enableChk = document.getElementById('prop-admin-group-header-enable');
+    const titleInp = document.getElementById('prop-admin-group-header-title');
+    const bgInp = document.getElementById('prop-admin-group-header-bg');
+    const colorInp = document.getElementById('prop-admin-group-header-color');
+    const configSub = document.getElementById('admin-group-header-config-sub');
+    const bgWrapper = document.getElementById('admin-group-header-bg-wrapper');
+
+    if (enableChk) {
+        enableChk.checked = comp.adminShowGroupHeader === true;
+        if (configSub) configSub.style.display = enableChk.checked ? 'flex' : 'none';
+    }
+    if (titleInp && comp.adminGroupHeaderTitle !== undefined) {
+        titleInp.value = comp.adminGroupHeaderTitle;
+    }
+    if (bgInp && comp.adminGroupHeaderBg !== undefined) {
+        const isTransparent = comp.adminGroupHeaderBg === 'transparent';
+        if (bgWrapper) bgWrapper.classList.toggle('transparent-active', isTransparent);
+        if (!isTransparent) bgInp.value = comp.adminGroupHeaderBg;
+    }
+    if (colorInp && comp.adminGroupHeaderColor !== undefined) {
+        colorInp.value = comp.adminGroupHeaderColor;
+    }
+
     const container = document.getElementById('admin-rows-configuration-container');
     if (!container) return;
     container.innerHTML = '';
@@ -1780,6 +1807,7 @@ function _syncAdminSettingsProps(comp) {
     for (let i = 1; i <= rowCount; i++) {
         const labelsVal = comp[`adminRow${i}Label`] || '';
         const colsVal = comp[`adminRow${i}Cols`] || 1;
+        const specificHeightVal = comp[`adminRow${i}Height`] || 50;
 
         // Split current labels
         const labelsArr = labelsVal.split(',').map(l => l.trim());
@@ -1791,13 +1819,19 @@ function _syncAdminSettingsProps(comp) {
         // Start building HTML
         let htmlContent = `
             <div style="font-size: 10px; font-weight: bold; color: #00e5ff;">ROW ${i} CONFIG</div>
-            <div class="prop-group">
-                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">조회 컬럼 개수</label>
-                <select class="v4-prop-input admin-row-cols" data-row="${i}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px; border-radius: 4px; font-size: 11px; height: 23px;">
-                    <option value="1" ${colsVal === 1 ? 'selected' : ''}>1개 컬럼</option>
-                    <option value="2" ${colsVal === 2 ? 'selected' : ''}>2개 컬럼</option>
-                    <option value="3" ${colsVal === 3 ? 'selected' : ''}>3개 컬럼</option>
-                </select>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div class="prop-group">
+                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">조회 컬럼 개수</label>
+                    <select class="v4-prop-input admin-row-cols" data-row="${i}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px; border-radius: 4px; font-size: 11px; height: 23px; box-sizing: border-box;">
+                        <option value="1" ${colsVal === 1 ? 'selected' : ''}>1개 컬럼</option>
+                        <option value="2" ${colsVal === 2 ? 'selected' : ''}>2개 컬럼</option>
+                        <option value="3" ${colsVal === 3 ? 'selected' : ''}>3개 컬럼</option>
+                    </select>
+                </div>
+                <div class="prop-group">
+                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">행 높이 (Height px)</label>
+                    <input type="number" class="v4-prop-input admin-row-height-input" data-row="${i}" value="${specificHeightVal}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit; height: 23px;">
+                </div>
             </div>
             <div class="admin-row-labels-container" style="display: flex; flex-direction: column; gap: 8px;">
         `;
@@ -1808,7 +1842,7 @@ function _syncAdminSettingsProps(comp) {
             htmlContent += `
                 <div class="prop-group">
                     <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">컬럼 ${c + 1} 항목명</label>
-                    <input type="text" class="v4-prop-input admin-col-label-input" data-col-idx="${c}" value="${currentLabel}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                    <input type="text" class="v4-prop-input admin-col-label-input" data-col-idx="${c}" value="${currentLabel}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box;">
                 </div>
             `;
         }
@@ -1818,6 +1852,7 @@ function _syncAdminSettingsProps(comp) {
         container.appendChild(rowDiv);
 
         const colSelect = rowDiv.querySelector('.admin-row-cols');
+        const heightInp = rowDiv.querySelector('.admin-row-height-input');
         const labelsContainer = rowDiv.querySelector('.admin-row-labels-container');
 
         const getMergedLabels = () => {
@@ -1833,7 +1868,8 @@ function _syncAdminSettingsProps(comp) {
                     rowNum: i,
                     label: getMergedLabels(),
                     cols: parseInt(colSelect.value) || 1,
-                    rowType: 'textbox'
+                    rowType: 'textbox',
+                    rowSpecificHeight: parseInt(heightInp.value) || 50
                 });
             }
         };
@@ -1848,7 +1884,7 @@ function _syncAdminSettingsProps(comp) {
                 newHtml += `
                     <div class="prop-group">
                         <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">컬럼 ${c + 1} 항목명</label>
-                        <input type="text" class="v4-prop-input admin-col-label-input" data-col-idx="${c}" value="${currentLabel}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                        <input type="text" class="v4-prop-input admin-col-label-input" data-col-idx="${c}" value="${currentLabel}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box;">
                     </div>
                 `;
             }
@@ -1862,7 +1898,8 @@ function _syncAdminSettingsProps(comp) {
             updateConfig();
         };
 
-        // Bind input events to initial inputs
+        // Bind input events to height input & initial labels
+        if (heightInp) heightInp.oninput = updateConfig;
         labelsContainer.querySelectorAll('.admin-col-label-input').forEach(inp => {
             inp.oninput = updateConfig;
         });

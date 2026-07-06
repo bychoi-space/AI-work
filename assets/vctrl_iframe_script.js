@@ -534,11 +534,17 @@ window.v4Script = `
         const adminSettingsContainer = isGroup ? null : (c.querySelector('.v4-admin-settings-container') || (isAdminSettings ? c : null));
         const adminRowCount = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-count')) || 3 : 3;
         
+        const adminShowGroupHeader = adminSettingsContainer ? adminSettingsContainer.getAttribute('data-show-group-header') === 'true' : false;
+        const adminGroupHeaderTitle = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-title') || '그룹명') : '그룹명';
+        const adminGroupHeaderBg = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-bg') || '#73829c') : '#73829c';
+        const adminGroupHeaderColor = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-color') || '#ffffff') : '#ffffff';
+
         const adminRowData = {};
         for (let i = 1; i <= 10; i++) {
             adminRowData['adminRow' + i + 'Label'] = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row' + i + '-label') || '') : '';
             adminRowData['adminRow' + i + 'Cols'] = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row' + i + '-cols')) || 1 : 1;
             adminRowData['adminRow' + i + 'Type'] = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row' + i + '-type') || 'textbox') : 'textbox';
+            adminRowData['adminRow' + i + 'Height'] = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row' + i + '-height')) || (adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-height')) || 50 : 50) : 50;
         }
 
         // Toggle Button Detection
@@ -687,6 +693,10 @@ window.v4Script = `
             gridShowPagination: gridShowPagination,
             isAdminSettings: isAdminSettings,
             adminRowCount: adminRowCount,
+            adminShowGroupHeader: adminShowGroupHeader,
+            adminGroupHeaderTitle: adminGroupHeaderTitle,
+            adminGroupHeaderBg: adminGroupHeaderBg,
+            adminGroupHeaderColor: adminGroupHeaderColor,
             ...adminRowData,
             adminRowHeight: adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-height')) || 50 : 50,
             isToggle: isToggle,
@@ -701,7 +711,7 @@ window.v4Script = `
                 bg: _rgb2hex(getCompBg()),
                 border: _rgb2hex(getCompBorder()),
                 text: _rgb2hex(textCell ? _getVal(textCell, "color") : (buttonEl ? _getVal(buttonEl, "color") : "")),
-                fontSize: parseInt(_getVal(textCell, "fontSize")) || (shape ? parseInt(_getVal(shape.querySelector('.v4-shape-text-content, .v4-shape-text-overlay'), "fontSize")) || 14 : (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 14 : 14)),
+                fontSize: parseInt(_getVal(textCell, "fontSize")) || (shape ? parseInt(_getVal(shape.querySelector('.v4-editable-cell, .v4-shape-text-content, .v4-shape-text-overlay'), "fontSize")) || 14 : (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 14 : 14)),
                 fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
                 tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
                 tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
@@ -716,7 +726,7 @@ window.v4Script = `
                     const colorVal = getCompBorder();
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
-                textAlign: shape ? (shape.querySelector('.v4-shape-text-content')?.style.textAlign || 'center') : 'center'
+                textAlign: shape ? (_getVal(shape.querySelector('.v4-editable-cell, .v4-shape-text-content'), 'textAlign') || 'center') : 'center'
             }
         };
     };
@@ -2564,33 +2574,75 @@ window.v4Script = `
                     if (d.label !== undefined) container.setAttribute('data-row' + rNum + '-label', d.label);
                     if (d.cols !== undefined) container.setAttribute('data-row' + rNum + '-cols', d.cols);
                     if (d.rowType !== undefined) container.setAttribute('data-row' + rNum + '-type', d.rowType);
+                    if (d.rowSpecificHeight !== undefined) container.setAttribute('data-row' + rNum + '-height', d.rowSpecificHeight);
+                }
+
+                // Update Group Header Attributes
+                if (d.showGroupHeader !== undefined) container.setAttribute('data-show-group-header', d.showGroupHeader ? 'true' : 'false');
+                if (d.groupHeaderTitle !== undefined) container.setAttribute('data-group-header-title', d.groupHeaderTitle);
+                if (d.groupHeaderBg !== undefined) container.setAttribute('data-group-header-bg', d.groupHeaderBg);
+                if (d.groupHeaderColor !== undefined) container.setAttribute('data-group-header-color', d.groupHeaderColor);
+
+                const hasGroupHeader = container.getAttribute('data-show-group-header') === 'true';
+                const headerHeight = hasGroupHeader ? 50 : 0;
+
+                // Dynamically render Group Header
+                let headerEl = container.querySelector('.v4-admin-group-header');
+                if (hasGroupHeader) {
+                    if (!headerEl) {
+                        headerEl = document.createElement('div');
+                        headerEl.className = 'v4-admin-group-header';
+                        container.insertBefore(headerEl, container.firstChild);
+                    }
+                    const titleText = container.getAttribute('data-group-header-title') || '그룹명';
+                    const bgCol = container.getAttribute('data-group-header-bg') || '#73829c';
+                    const textCol = container.getAttribute('data-group-header-color') || '#ffffff';
+                    
+                    if (headerEl.innerText !== titleText) headerEl.innerText = titleText;
+                    headerEl.contentEditable = 'true';
+                    headerEl.style.cssText = 'height: 50px; display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 700; background: ' + bgCol + '; color: ' + textCol + '; box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;';
+                    
+                    if (!headerEl.dataset.inputBound) {
+                        headerEl.dataset.inputBound = 'true';
+                        headerEl.oninput = (e) => {
+                            container.setAttribute('data-group-header-title', e.target.innerText);
+                            markDirty();
+                        };
+                    }
+                } else {
+                    if (headerEl) headerEl.remove();
                 }
 
                 const totalRows = parseInt(container.getAttribute('data-row-count')) || 1;
-                const rowHeight = parseInt(container.getAttribute('data-row-height')) || 50;
+                const globalRowHeight = parseInt(container.getAttribute('data-row-height')) || 50;
                 
-                // Automatically resize component height: (rowHeight * totalRows)
-                const newHeight = totalRows * rowHeight;
+                // Automatically resize component height: sum of specific row heights + headerHeight
+                let newHeight = headerHeight;
+                for (let i = 1; i <= totalRows; i++) {
+                    const specificHeight = parseInt(container.getAttribute('data-row' + i + '-height')) || globalRowHeight;
+                    newHeight += specificHeight;
+                }
                 s.style.height = newHeight + 'px';
                 if (typeof window.updateHandles === 'function') window.updateHandles(s);
 
                 // Re-render HTML representation of the rows
                 const tableDiv = container.querySelector('.v4-admin-settings-table');
                 if (tableDiv) {
+                    tableDiv.style.cssText = 'display: flex; flex-direction: column; width: 100%; flex: 1 !important; height: auto !important;';
                     tableDiv.innerHTML = '';
-                    const totalRows = parseInt(container.getAttribute('data-row-count')) || 3;
                     
                     for (let i = 1; i <= totalRows; i++) {
                         const labelAttr = container.getAttribute('data-row' + i + '-label') || ('항목 ' + i);
                         const colsAttr = parseInt(container.getAttribute('data-row' + i + '-cols')) || 1;
                         const typeAttr = container.getAttribute('data-row' + i + '-type') || 'textbox';
+                        const specificHeight = parseInt(container.getAttribute('data-row' + i + '-height')) || globalRowHeight;
                         
                         const isLastRow = (i === totalRows);
                         const rowBorder = isLastRow ? 'none' : '1.6px solid rgb(226, 232, 240)';
                         
                         const rowEl = document.createElement('div');
                         rowEl.className = 'v4-admin-row';
-                        rowEl.style.cssText = 'display: flex; width: 100%; border-bottom: ' + rowBorder + '; box-sizing: border-box; height: ' + rowHeight + 'px;';
+                        rowEl.style.cssText = 'display: flex; width: 100%; border-bottom: ' + rowBorder + '; box-sizing: border-box; height: ' + specificHeight + 'px;';
                         
                         // Split labels by comma
                         const labels = labelAttr.split(',').map(l => l.trim());

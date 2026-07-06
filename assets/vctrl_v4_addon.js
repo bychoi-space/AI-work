@@ -416,14 +416,16 @@
 
     const _applyTextAlign = (align) => {
         _syncAlignBtns(align);
-        const jc = align === 'left' ? 'flex-start' : (align === 'right' ? 'flex-end' : 'center');
+        const horizontalAlign = align === 'left' ? 'flex-start' : (align === 'right' ? 'flex-end' : 'center');
         
         notifyIframe({
             type: 'LF_UPDATE_STYLE',
-            selector: '.v4-shape .v4-editable-cell',
+            selector: '.v4-shape .v4-editable-cell, .v4-shape .v4-shape-text-content',
             style: {
-                justifyContent: jc,
-                textAlign: align
+                alignItems: horizontalAlign,
+                textAlign: align,
+                boxSizing: 'border-box',
+                padding: '20px'
             }
         });
     };
@@ -2279,6 +2281,53 @@
                     }
                 }
             };
+        }
+
+        // Initialize Group Title Configuration Event Listeners
+        const enableChk = document.getElementById('prop-admin-group-header-enable');
+        const titleInp = document.getElementById('prop-admin-group-header-title');
+        const bgInp = document.getElementById('prop-admin-group-header-bg');
+        const colorInp = document.getElementById('prop-admin-group-header-color');
+        const configSub = document.getElementById('admin-group-header-config-sub');
+        const bgNoneBtn = document.getElementById('btn-admin-group-header-bg-none');
+
+        const updateGroupHeader = (isBgNone = false) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                const bgWrapper = document.getElementById('admin-group-header-bg-wrapper');
+                let finalBg = bgInp.value;
+                
+                if (isBgNone) {
+                    finalBg = 'transparent';
+                    if (bgWrapper) bgWrapper.classList.add('transparent-active');
+                } else {
+                    if (bgWrapper) bgWrapper.classList.remove('transparent-active');
+                }
+
+                window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ADMIN_SETTINGS_PROPERTIES', {
+                    showGroupHeader: enableChk.checked,
+                    groupHeaderTitle: titleInp.value,
+                    groupHeaderBg: finalBg,
+                    groupHeaderColor: colorInp.value
+                });
+                if (configSub) configSub.style.display = enableChk.checked ? 'flex' : 'none';
+            }
+        };
+
+        if (enableChk) {
+            enableChk.onchange = () => updateGroupHeader(false);
+        }
+        if (titleInp) {
+            titleInp.oninput = () => updateGroupHeader(false);
+        }
+        if (bgInp) {
+            bgInp.oninput = () => updateGroupHeader(false);
+        }
+        if (colorInp) {
+            colorInp.oninput = () => updateGroupHeader(false);
+        }
+        if (bgNoneBtn) {
+            bgNoneBtn.onclick = () => updateGroupHeader(true);
         }
     };
     const initToggleEvents = () => {
