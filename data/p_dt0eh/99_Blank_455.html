@@ -62,7 +62,6 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .v4-premium-table tr:last-child td { border-bottom: none !important; }
 .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
-.v4-editable-cell p { margin: 0 !important; padding: 0 !important; }
 .selected-cell {
     outline: 1.6px dashed #6366f1 !important;
     outline-offset: -1.6px !important;
@@ -139,7 +138,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 
 /* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
 .text-marker, .v4-text-box { 
-    position: absolute; padding: 0 !important; border-radius: 4px; 
+    position: absolute; padding: 2px 6px; border-radius: 4px; 
     border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
     white-space: normal; cursor: grab; pointer-events: auto; z-index: 100; 
     transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, outline 0.2s;
@@ -147,9 +146,8 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     box-shadow: none; box-sizing: border-box;
     color: #1e293b; text-align: left;
     width: fit-content !important;
-    display: flex !important; align-items: center !important; justify-content: flex-start !important;
 }
-.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell { padding: 0px 4px 2px 4px !important; display: block !important; width: 100%; text-align: left; }
+.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell { padding: 2px 4px; display: block; text-align: left; }
 .text-marker .v4-editable-cell p, .v4-text-box .v4-editable-cell p { margin: 0; padding: 0; }
 .text-marker:hover, .v4-text-box:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
 .text-marker.selected, .v4-text-box.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
@@ -234,7 +232,6 @@ body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; 
 .v4-custom-btn.style-primary { background: #4f46e5 !important; border-color: #4f46e5 !important; color: #ffffff !important; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35) !important; }
 .v4-custom-btn.style-primary:hover { box-shadow: 0 6px 18px rgba(79, 70, 229, 0.5) !important; }
 .v4-custom-btn.style-negative { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #475569 !important; }
-.v4-custom-btn.style-normal { background: #ffffff !important; border-color: rgb(150, 150, 150) !important; color: #1f2937 !important; font-weight: normal !important; }
 .lf-connector-port {
     position: absolute;
     width: 8px;
@@ -268,23 +265,6 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
 .v4-shape-text-content p, .v4-shape-text-overlay p {
     margin: 0 !important;
     padding: 0 !important;
-}
-/* Unify Grid UI Table Cell Typography and Colors */
-.v4-grid-container td.v4-grid-cell {
-    font-size: 12px !important;
-    font-family: 'Inter', sans-serif !important;
-    color: #334155 !important;
-    font-weight: 400 !important;
-}
-.v4-grid-container th.v4-grid-cell {
-    font-size: 12px !important;
-    font-family: 'Inter', sans-serif !important;
-    color: #334155 !important;
-    font-weight: 600 !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 10 !important;
-    background: #f8fafc !important;
 }
 
 </style>
@@ -369,7 +349,18 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
                 </div>
                 <button class="v4-fileupload-button" style="height: 30px; padding: 0 14px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); font-size: 12px; font-weight: 600; color: var(--v4-text-color, #374151); cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">파일첨부</button>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
-<script id="v4-inlined-script">
+
+<div id="v4-comp-1783302213622" class="lf-component" style="position: absolute; top: 457.019px; left: 381.6px; z-index: 1000; transform: none; width: 500px; height: 30px;" data-resized="true">
+            <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;">
+                <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;">Placeholder</div>
+                <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;" data-events-bound="true"></div>
+                <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: block; font-family: inherit;">0/100</div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1783302241830654" class="lf-component" style="position: absolute; top: 507.381px; left: 381.6px; z-index: 1000; transform: none; width: 500px; height: 30px;">
+            <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;">
+                <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;">Placeholder</div>
+                <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;" data-events-bound="true"></div>
+                <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: block; font-family: inherit;">0/100</div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><script id="v4-inlined-script">
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -928,6 +919,68 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
     };
 
+    const bindToggleEvents = () => {
+        document.querySelectorAll('.v4-toggle-container').forEach(container => {
+            const handle = container.querySelector('.v4-toggle-handle');
+            if (container.dataset.eventsBound === "true") {
+                const isChecked = container.getAttribute('data-checked') === 'true';
+                const toggleColor = container.getAttribute('data-color') || '#3b82f6';
+                if (handle) {
+                    if (isChecked) {
+                        container.style.setProperty('background-color', toggleColor, 'important');
+                        container.style.setProperty('border-color', toggleColor, 'important');
+                        const trackW = container.offsetWidth || 80;
+                        const trackH = container.offsetHeight || 30;
+                        const trans = trackW - trackH;
+                        handle.style.transform = 'translateX(' + trans + 'px)';
+                    } else {
+                        container.style.setProperty('background-color', 'rgb(203, 213, 225)', 'important');
+                        container.style.setProperty('border-color', 'rgb(200, 200, 200)', 'important');
+                        handle.style.transform = 'translateX(0)';
+                    }
+                }
+                return;
+            }
+            container.dataset.eventsBound = "true";
+
+            container.onclick = (e) => {
+                e.stopPropagation();
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                const isChecked = container.getAttribute('data-checked') === 'true';
+                container.setAttribute('data-checked', isChecked ? 'false' : 'true');
+                
+                bindToggleEvents();
+                markDirty();
+                
+                if (typeof window._getCompStyles === 'function') {
+                    notifyParent({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(container.closest('.lf-component'))
+                    });
+                }
+            };
+
+            const isChecked = container.getAttribute('data-checked') === 'true';
+            const toggleColor = container.getAttribute('data-color') || '#3b82f6';
+            if (handle) {
+                if (isChecked) {
+                    container.style.setProperty('background-color', toggleColor, 'important');
+                    container.style.setProperty('border-color', toggleColor, 'important');
+                    const trackW = container.offsetWidth || 80;
+                    const trackH = container.offsetHeight || 30;
+                    const trans = trackW - trackH;
+                    handle.style.transform = 'translateX(' + trans + 'px)';
+                } else {
+                    container.style.setProperty('background-color', 'rgb(203, 213, 225)', 'important');
+                    container.style.setProperty('border-color', 'rgb(200, 200, 200)', 'important');
+                    handle.style.transform = 'translateX(0)';
+                }
+            }
+        });
+    };
+
+
     const resizeToFitText = (c, isShapeText) => {
         if (!c) return;
         const cell = c.querySelector('.v4-editable-cell');
@@ -1031,6 +1084,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         try { bindStepperEvents(); } catch(e) { console.error("Error in bindStepperEvents:", e); }
         try { bindFileuploadEvents(); } catch(e) { console.error("Error in bindFileuploadEvents:", e); }
         try { bindAccordionEvents(); } catch(e) { console.error("Error in bindAccordionEvents:", e); }
+        try { bindToggleEvents(); } catch(e) { console.error("Error in bindToggleEvents:", e); }
         
         const seenIds = new Set();
         document.querySelectorAll('.lf-component').forEach((c, idx) => {
@@ -1065,7 +1119,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             '.v4-selectbox-container', '.v4-fileupload-container',
             '.v4-alert-container', '.v4-btn-container',
             '.v4-datepicker-container', '.v4-accordion-container',
-            '.v4-grid-container', '.v4-admin-settings-container'
+            '.v4-grid-container', '.v4-admin-settings-container',
+            '.v4-toggle-container'
         ].join(', ');
 
         document.querySelectorAll('.lf-component').forEach(c => {
@@ -1246,6 +1301,20 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     if (alert.style.width !== '100%') alert.style.width = '100%';
                     if (alert.style.height !== '100%') alert.style.height = '100%';
                 }
+                if (typeof window.updateHandles === 'function') window.updateHandles(c);
+            }
+        });
+
+        document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
+            const toggle = c.querySelector('.v4-toggle-container');
+            if (toggle) {
+                if (c.getAttribute('data-resized') !== 'true') {
+                    if (c.style.width !== '80px') c.style.width = '80px';
+                    if (c.style.height !== '30px') c.style.height = '30px';
+                }
+                if (toggle.style.width !== '100%') toggle.style.width = '100%';
+                if (toggle.style.height !== '100%') toggle.style.height = '100%';
                 if (typeof window.updateHandles === 'function') window.updateHandles(c);
             }
         });
@@ -2285,9 +2354,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const dpDefaultPreset = dpContainer ? (dpContainer.getAttribute('data-default-preset') || 'none') : 'none';
         const dpStartDate = dpContainer ? (dpContainer.getAttribute('data-start-date') || '') : '';
         const dpEndDate = dpContainer ? (dpContainer.getAttribute('data-end-date') || '') : '';
-        const dpMode = dpContainer ? (dpContainer.getAttribute('data-mode') || 'simple') : 'simple';
-        const dpStartTime = dpContainer ? (dpContainer.getAttribute('data-start-time') || '') : '';
-        const dpEndTime = dpContainer ? (dpContainer.getAttribute('data-end-time') || '') : '';
 
         // Accordion Atom Detection
         const isAccordion = isGroup ? false : (!!c.querySelector('.v4-accordion-container') || c.classList.contains('v4-accordion-container'));
@@ -2375,6 +2441,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             adminRowData['adminRow' + i + 'Type'] = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row' + i + '-type') || 'textbox') : 'textbox';
         }
 
+        // Toggle Button Detection
+        const isToggle = isGroup ? false : (!!c.querySelector('.v4-toggle-container') || c.classList.contains('v4-toggle-container'));
+        const toggleContainer = isGroup ? null : (c.querySelector('.v4-toggle-container') || (isToggle ? c : null));
+        const toggleChecked = toggleContainer ? (toggleContainer.getAttribute('data-checked') === 'true') : false;
+        const toggleColor = toggleContainer ? (toggleContainer.getAttribute('data-color') || '#3b82f6') : '#3b82f6';
+
         const boxEl = isGroup ? null : c.querySelector('.v4-checkbox, .v4-radio');
         const buttonEl = isGroup ? null : c.querySelector('.v4-custom-btn');
         
@@ -2445,8 +2517,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             id: c.id,
             x: parseFloat(c.style.left) || 0,
             y: parseFloat(c.style.top) || 0,
-            shapeType: shape ? (shape.classList.contains('v4-shape-rect') ? 'rect' : (shape.classList.contains('v4-shape-circle') ? 'circle' : (shape.classList.contains('v4-shape-triangle') ? 'triangle' : (shape.classList.contains('v4-shape-diamond') ? 'diamond' : (shape.classList.contains('v4-shape-arrow') ? 'arrow' : ''))))) : '',
-            arrowDir: shape && shape.classList.contains('v4-shape-arrow') ? (shape.getAttribute('data-arrow-dir') || 'right') : '',
             isTable: !!table && !isGrid,
             isShape: !!shape,
             isIcon: !!icon,
@@ -2502,9 +2572,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             dpDefaultPreset: dpDefaultPreset,
             dpStartDate: dpStartDate,
             dpEndDate: dpEndDate,
-            dpMode: dpMode,
-            dpStartTime: dpStartTime,
-            dpEndTime: dpEndTime,
             isAccordion: isAccordion,
             accordionHeaderText: accordionHeaderText,
             accordionSubCount: accordionSubCount,
@@ -2522,6 +2589,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             adminRowCount: adminRowCount,
             ...adminRowData,
             adminRowHeight: adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-height')) || 50 : 50,
+            isToggle: isToggle,
+            toggleChecked: toggleChecked,
+            toggleColor: toggleColor,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
@@ -2612,11 +2682,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         if (c) {
             isMarquee = false;
             const isMulti = e.shiftKey || e.ctrlKey;
-            
-            // Check if already selected and clicking an editable cell
-            const isEditableClick = e.target.closest('.v4-editable-cell');
-            const isAlreadySelected = c.classList.contains('selected');
-            
             if (isMulti) {
                 c.classList.toggle('selected');
             } else {
@@ -2624,14 +2689,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 c.classList.add('selected');
             }
             window.updateHandles(c);
-            
-            if (!isEditableClick || !isAlreadySelected) {
-                notifyParent({ 
-                    type: "LF_COMP_SELECTED", 
-                    shiftKey: isMulti,
-                    ...window._getCompStyles(c)
-                });
-            }
+            notifyParent({ 
+                type: "LF_COMP_SELECTED", 
+                shiftKey: isMulti,
+                ...window._getCompStyles(c)
+            });
         } else {
             isMarquee = true;
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
@@ -2680,17 +2742,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             e.preventDefault(); 
         }
         else if (h || c) { 
-            // If clicking inside an editable cell (like a grid cell), do not start dragging
-            if (e.target.closest('.v4-editable-cell')) {
-                return;
-            }
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             isDragging = true; activeEl = c; 
             startX = e.clientX; startY = e.clientY; 
             startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
             startRect = activeEl.getBoundingClientRect();
             notifyParent({ type: 'LF_SNAP_START' });
-            if (h) e.preventDefault(); 
+            if (h || e.target.closest('.v4-editable-cell')) e.preventDefault(); 
             document.querySelectorAll('.lf-component.selected').forEach(s => s.classList.add('dragging-now'));
         }
     });
@@ -2946,23 +3004,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             markDirty();
             const comp = e.target.closest('.lf-component');
             if (comp) {
-                const dpContainer = comp.querySelector('.v4-datepicker-container') || (comp.classList.contains('v4-datepicker-container') ? comp : null);
-                if (dpContainer) {
-                    const text = e.target.innerText || '';
-                    if (e.target.classList.contains('v4-dp-start')) {
-                        dpContainer.setAttribute('data-start-date', text);
-                    } else if (e.target.classList.contains('v4-dp-end')) {
-                        dpContainer.setAttribute('data-end-date', text);
-                    } else if (e.target.classList.contains('v4-dp-start-time')) {
-                        dpContainer.setAttribute('data-start-time', text);
-                    } else if (e.target.classList.contains('v4-dp-end-time')) {
-                        dpContainer.setAttribute('data-end-time', text);
+                if (comp.querySelector('.v4-checkbox-container') || comp.querySelector('.v4-radio-container')) {
+                    if (typeof window.resizeAtomToFitText === 'function') {
+                        window.resizeAtomToFitText(comp);
+                    } else if (typeof window.enforceDesignSystem === 'function') {
+                        window.enforceDesignSystem();
                     }
-                }
-                if (typeof window.enforceDesignSystem === 'function') {
-                    window.enforceDesignSystem();
-                } else if (typeof window.resizeAtomToFitText === 'function') {
-                    window.resizeAtomToFitText(comp);
                 }
                 // Notify parent of text changes to sync the Quill editor in real-time
                 const isPin = comp.classList.contains('text-marker') || comp.classList.contains('pin-marker') || comp.classList.contains('v4-text-box');
@@ -2990,52 +3037,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
     }, { passive: false });
 
-    // Allow direct cell selection, click focusing, and editing inside Grid UI components
-    document.addEventListener('mousedown', function(e) {
-        var cell = e.target.closest('.v4-grid-cell.v4-editable-cell');
-        if (cell) {
-            // Stop selection and dragging handlers from intercepting the mousedown
-            e.stopPropagation();
-        }
-    });
-
-    document.addEventListener('dblclick', function(e) {
-        var cell = e.target.closest('.v4-grid-cell.v4-editable-cell');
-        if (cell) {
-            e.stopPropagation();
-            cell.focus();
-            
-            // Put cursor at the end of the text
-            var range = document.createRange();
-            var sel = window.getSelection();
-            range.selectNodeContents(cell);
-            range.collapse(false);
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
-    });
-
     window.renderGrid = function(container, columns, rowCount, showPagination) {
         if (!container) return;
         
         container.setAttribute('data-columns', JSON.stringify(columns));
         container.setAttribute('data-row-count', rowCount);
         container.setAttribute('data-pagination', showPagination ? 'true' : 'false');
-        
-        // Calculate explicit table width based on columns
-        var totalWidth = 0;
-        var hasFlexCol = false;
-        columns.forEach(function(col) {
-            var w = col.width || '100px';
-            w = w.trim();
-            if (w.includes('fr') || w.includes('%') || w === 'auto') {
-                hasFlexCol = true;
-            } else {
-                var val = parseFloat(w) || 100;
-                totalWidth += val;
-            }
-        });
-        var tableWidthStyle = hasFlexCol ? 'width: 100%;' : 'width: ' + totalWidth + 'px;';
         
         var mockList = [
             { no: '1024', name: '[헤지스] 여름 맞이 린넨 셔츠 특가 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '김엘에프', date: '2026-07-01 11:00:00' },
@@ -3045,28 +3052,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             { no: '1020', name: '[바네사브루노] 가을 컬렉션 룩북 공개 생방송', status: '방송예정', statusColor: '#d97706', statusBg: 'rgba(251,191,36,0.15)', author: '정바네', date: '2026-06-27 16:45:00' }
         ];
 
-        var getStatusBadgeHtml = function(col, rowIndex) {
-            var optsStr = col.options || '방송중, 방송예정, 방송종료';
-            var opts = optsStr.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
-            if (opts.length === 0) opts = ['상태'];
-            var statusText = opts[rowIndex % opts.length];
-            
-            var badgeStyles = [
-                { bg: 'rgba(52,211,153,0.15)', color: '#10b981' }, // Emerald / Green
-                { bg: 'rgba(251,191,36,0.15)', color: '#d97706' }, // Amber / Yellow
-                { bg: 'rgba(239,68,68,0.1)', color: '#ef4444' },    // Red
-                { bg: 'rgba(59,130,246,0.15)', color: '#3b82f6' },  // Blue
-                { bg: 'rgba(139,92,246,0.15)', color: '#8b5cf6' },  // Purple
-                { bg: 'rgba(244,63,94,0.15)', color: '#f43f5e' },   // Pink
-                { bg: 'rgba(100,116,139,0.15)', color: '#64748b' }  // Grey
-            ];
-            
-            var styleIdx = rowIndex % opts.length;
-            var style = badgeStyles[styleIdx % badgeStyles.length];
-            
-            return '<span style="background:' + style.bg + '; color:' + style.color + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + statusText + '</span>';
-        };
-
         var isMockValue = function(text, type) {
             if (!text) return true;
             var t = text.trim();
@@ -3074,7 +3059,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 return /^d+$/.test(t);
             }
             if (type === 'status') {
-                return true;
+                return t.indexOf('방송중') >= 0 || t.indexOf('방송예정') >= 0 || t.indexOf('방송종료') >= 0;
             }
             if (type === 'author') {
                 return ['김엘에프', '이닥스', '박라푸마', '최질스', '정바네'].indexOf(t) >= 0;
@@ -3098,15 +3083,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
         var table = container.querySelector('table');
         if (table) {
-            // Update table width dynamically
-            if (hasFlexCol) {
-                table.style.width = '100%';
-                table.style.minWidth = '100%';
-            } else {
-                table.style.width = totalWidth + 'px';
-                table.style.minWidth = ''; // Clear min-width so the table can shrink below 100%
-            }
-            
             // In-place mutative update to preserve inline styling, text edits, background, borders etc!
             var colgroup = table.querySelector('colgroup');
             if (colgroup) {
@@ -3154,7 +3130,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         var fontSize = th.style.fontSize;
                         var fontFamily = th.style.fontFamily;
 
-                        th.style.borderRight = '1.6px solid rgb(226,232,240)';
+                        th.style.borderRight = isLast ? 'none' : '1.6px solid rgb(226,232,240)';
                         th.style.textAlign = col.type === 'checkbox' ? 'center' : 'left';
                         th.style.padding = col.type === 'checkbox' ? '0' : '0 8px';
                         th.style.fontWeight = '500';
@@ -3200,7 +3176,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 }
                 
                 rows.forEach(function(row, rIdx) {
-                    row.style.borderBottom = '1.6px solid rgb(226,232,240)';
+                    var isLastRow = (rIdx === rowCount - 1);
+                    row.style.borderBottom = isLastRow ? 'none' : '1.6px solid rgb(226,232,240)';
                     
                     var tds = Array.from(row.querySelectorAll('td'));
                     while (tds.length < columns.length) {
@@ -3221,7 +3198,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     columns.forEach(function(col, cIdx) {
                         var td = tds[cIdx];
                         var isLastCol = (cIdx === columns.length - 1);
-                        td.style.borderRight = '1.6px solid rgb(226,232,240)';
+                        td.style.borderRight = isLastCol ? 'none' : '1.6px solid rgb(226,232,240)';
                         
                         var prevType = td.getAttribute('data-type');
                         // Legacy support: if checkbox td doesn't have data-type, resolve it
@@ -3257,7 +3234,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                                 if (col.type === 'number') {
                                     td.innerText = (1024 - rIdx);
                                 } else if (col.type === 'status') {
-                                    td.innerHTML = getStatusBadgeHtml(col, rIdx);
+                                    td.innerHTML = '<span style="background:' + data.statusBg + '; color:' + data.statusColor + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + data.status + '</span>';
                                 } else if (col.type === 'author') {
                                     td.innerText = data.author;
                                 } else if (col.type === 'datetime') {
@@ -3283,7 +3260,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
             var wrapper = container.querySelector('.v4-grid-table-wrapper');
             if (wrapper) {
-                wrapper.style.height = showPagination ? 'calc(100% - 36px)' : '100%';
+                wrapper.style.height = showPagination ? 'calc(100% - 72px)' : 'calc(100% - 36px)';
             }
             return;
         }
@@ -3304,9 +3281,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
         colgroupHtml += '</colgroup>';
         
-        var headerHtml = '<tr style="height:36px; background:#f8fafc; border-bottom:1.6px solid rgb(226,232,240); box-sizing:border-box;">';
+        var headerHtml = '<tr style="height:36px; background:#ffffff; border-bottom:1.6px solid rgb(226,232,240); box-sizing:border-box;">';
         columns.forEach(function(col, index) {
-            var borderRight = ' border-right:1.6px solid rgb(226,232,240);';
+            var isLast = (index === columns.length - 1);
+            var borderRight = isLast ? '' : ' border-right:1.6px solid rgb(226,232,240);';
             if (col.type === 'checkbox') {
                 headerHtml += '<th class="v4-grid-cell v4-grid-check-col" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0; font-weight:normal;"><input type="checkbox"></th>';
             } else {
@@ -3318,19 +3296,21 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         var bodyHtml = '';
         for (var i = 0; i < rowCount; i++) {
             var data = mockList[i % mockList.length];
-            var borderBottom = '1.6px solid rgb(226,232,240)';
+            var isLastRow = (i === rowCount - 1);
+            var borderBottom = isLastRow ? 'none' : '1.6px solid rgb(226,232,240)';
             
             bodyHtml += '<tr style="height:36px; border-bottom:' + borderBottom + '; box-sizing:border-box; background:#ffffff;">';
             
             columns.forEach(function(col, colIndex) {
-                var borderRight = ' border-right:1.6px solid rgb(226,232,240);';
+                var isLastCol = (colIndex === columns.length - 1);
+                var borderRight = isLastCol ? '' : ' border-right:1.6px solid rgb(226,232,240);';
                 
                 if (col.type === 'checkbox') {
                     bodyHtml += '<td class="v4-grid-cell" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0;"><input type="checkbox"></td>';
                 } else if (col.type === 'number') {
                     bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="number" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#334155;">' + (1024 - i) + '</td>';
                 } else if (col.type === 'status') {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="status" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box;">' + getStatusBadgeHtml(col, i) + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="status" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box;"><span style="background:' + data.statusBg + '; color:' + data.statusColor + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + data.status + '</span></td>';
                 } else if (col.type === 'author') {
                     bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="author" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#64748b;">' + data.author + '</td>';
                 } else if (col.type === 'datetime') {
@@ -3343,10 +3323,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
         
         var displayFooter = showPagination ? 'flex' : 'none';
-        var tableHeight = showPagination ? 'calc(100% - 36px)' : '100%';
+        var tableHeight = showPagination ? 'calc(100% - 72px)' : 'calc(100% - 36px)';
         
         var tableContainerHtml = '<div class="v4-grid-table-wrapper" style="width:100%; height:' + tableHeight + '; overflow:auto; box-sizing:border-box;">' +
-                                 '<table style="' + tableWidthStyle + ' table-layout:fixed; border-collapse:collapse; background:#ffffff; box-sizing:border-box;">' +
+                                 '<table style="width:100%; table-layout:fixed; border-collapse:collapse; background:#ffffff; box-sizing:border-box;">' +
                                  colgroupHtml +
                                  '<thead>' + headerHtml + '</thead>' +
                                  '<tbody style="box-sizing:border-box;">' + bodyHtml + '</tbody>' +
@@ -4023,28 +4003,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
             markDirty();
         }
-        else if (d.type === 'LF_UPDATE_ARROW_DIRECTION') {
-            const s = document.querySelector('.lf-component.selected'); 
-            if (!s) return;
-            const shape = s.querySelector('.v4-shape.v4-shape-arrow');
-            if (!shape) return;
-            if (window.V4UndoManager) window.V4UndoManager.saveState();
-
-            const path = shape.querySelector('.v4-arrow-path');
-            if (path) {
-                const dir = d.direction || 'right';
-                shape.setAttribute('data-arrow-dir', dir);
-                
-                const PATHS = {
-                    right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
-                    left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
-                    up: 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z',
-                    down: 'M 30,0 L 30,60 L 10,60 L 50,100 L 90,60 L 70,60 L 70,0 Z'
-                };
-                path.setAttribute('d', PATHS[dir] || PATHS.right);
-            }
-            markDirty();
-        }
         else if (d.type === 'LF_UPDATE_ATOM_STATE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -4425,106 +4383,55 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     return { start: startDt ? _fmt(startDt) : '', end: endDt ? _fmt(endDt) : '' };
                 };
 
-                                const rebuildDatePicker = (cnt) => {
-                    const mode = cnt.getAttribute('data-mode') || 'simple';
-                    const showPresets = cnt.getAttribute('data-show-presets') !== 'false';
-                    const showEndDate = cnt.getAttribute('data-show-end-date') !== 'false';
-                    const startDate = cnt.getAttribute('data-start-date') || '';
-                    const endDate = cnt.getAttribute('data-end-date') || '';
-                    const startTime = cnt.getAttribute('data-start-time') || '10:00:00';
-                    const endTime = cnt.getAttribute('data-end-time') || '12:00:00';
-                    const defaultPreset = cnt.getAttribute('data-default-preset') || 'none';
-
-                    if (mode === 'detailed') {
-                        cnt.innerHTML = `
-                            <div class="v4-dp-detailed-wrapper" style="display: flex; align-items: center; gap: 6px; width: 100%; height: 100%;">
-                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; box-sizing: border-box;">
-                                    <div class="v4-dp-date-field v4-dp-start v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;">${startDate}</div>
-                                </div>
-                                <div class="v4-dp-icon-wrapper" style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); box-sizing: border-box; flex-shrink: 0;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                </div>
-                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; box-sizing: border-box;">
-                                    <div class="v4-dp-time-field v4-dp-start-time v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 60px; font-family: inherit; -webkit-user-select: text; user-select: text;">${startTime}</div>
-                                </div>
-                                
-                                <div class="v4-dp-separator" style="color: var(--v4-placeholder-color, #9ca3af); font-size: 13px; padding: 0 2px; flex-shrink: 0; font-family: inherit;">-</div>
-
-                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; box-sizing: border-box;">
-                                    <div class="v4-dp-date-field v4-dp-end v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;">${endDate}</div>
-                                </div>
-                                <div class="v4-dp-icon-wrapper" style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); box-sizing: border-box; flex-shrink: 0;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                </div>
-                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; box-sizing: border-box;">
-                                    <div class="v4-dp-time-field v4-dp-end-time v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 60px; font-family: inherit; -webkit-user-select: text; user-select: text;">${endTime}</div>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        cnt.innerHTML = `
-                            <div class="v4-dp-fields" style="display: inline-flex; align-items: center; gap: 0; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; overflow: hidden; box-sizing: border-box; flex-shrink: 0;">
-                                <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; gap: 6px; height: 100%;">
-                                    <div class="v4-dp-date-field v4-dp-start v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;">${startDate}</div>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                </div>
-                                <div class="v4-dp-separator" style="color: var(--v4-placeholder-color, #9ca3af); font-size: 13px; padding: 0 2px; flex-shrink: 0; font-family: inherit; display: ${showEndDate ? 'inline-flex' : 'none'};">-</div>
-                                <div class="v4-dp-input-group" style="display: ${showEndDate ? 'inline-flex' : 'none'}; align-items: center; padding: 0 10px; gap: 6px; height: 100%;">
-                                    <div class="v4-dp-date-field v4-dp-end v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;">${endDate}</div>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                </div>
-                            </div>
-                            <div class="v4-dp-presets" style="display: ${showPresets ? 'inline-flex' : 'none'}; align-items: center; gap: 4px; flex-shrink: 0;">
-                                <button class="v4-dp-preset-btn" data-preset="1D" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: ${defaultPreset === '1D' ? 'var(--v4-primary)' : 'var(--v4-component-bg, #ffffff)'}; color: ${defaultPreset === '1D' ? '#ffffff' : 'var(--v4-text-color, #374151)'}; font-size: 12px; font-weight: ${defaultPreset === '1D' ? '700' : '600'}; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1D</button>
-                                <button class="v4-dp-preset-btn" data-preset="1W" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: ${defaultPreset === '1W' ? 'var(--v4-primary)' : 'var(--v4-component-bg, #ffffff)'}; color: ${defaultPreset === '1W' ? '#ffffff' : 'var(--v4-text-color, #374151)'}; font-size: 12px; font-weight: ${defaultPreset === '1W' ? '700' : '600'}; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1W</button>
-                                <button class="v4-dp-preset-btn" data-preset="1M" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: ${defaultPreset === '1M' ? 'var(--v4-primary)' : 'var(--v4-component-bg, #ffffff)'}; color: ${defaultPreset === '1M' ? '#ffffff' : 'var(--v4-text-color, #374151)'}; font-size: 12px; font-weight: ${defaultPreset === '1M' ? '700' : '600'}; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1M</button>
-                                <button class="v4-dp-preset-btn" data-preset="6M" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: ${defaultPreset === '6M' ? 'var(--v4-primary)' : 'var(--v4-component-bg, #ffffff)'}; color: ${defaultPreset === '6M' ? '#ffffff' : 'var(--v4-text-color, #374151)'}; font-size: 12px; font-weight: ${defaultPreset === '6M' ? '700' : '600'}; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">6M</button>
-                                <button class="v4-dp-preset-btn" data-preset="all" style="height: 30px; min-width: 36px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: ${defaultPreset === 'all' ? 'var(--v4-primary)' : 'var(--v4-component-bg, #ffffff)'}; color: ${defaultPreset === 'all' ? '#ffffff' : 'var(--v4-text-color, #374151)'}; font-size: 12px; font-weight: ${defaultPreset === 'all' ? '700' : '600'}; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">전체</button>
-                            </div>
-                        `;
-                    }
-                };
-
-                if (d.mode !== undefined) {
-                    container.setAttribute('data-mode', d.mode);
-                    if (d.mode === 'detailed') {
-                        s.style.width = '490px';
-                    } else {
-                        s.style.width = '300px';
-                    }
-                }
-
                 if (d.showPresets !== undefined) {
                     container.setAttribute('data-show-presets', d.showPresets ? 'true' : 'false');
+                    const presetsDiv = container.querySelector('.v4-dp-presets');
+                    if (presetsDiv) presetsDiv.style.display = d.showPresets ? 'inline-flex' : 'none';
                 }
 
                 if (d.showEndDate !== undefined) {
                     container.setAttribute('data-show-end-date', d.showEndDate ? 'true' : 'false');
+                    const sep = container.querySelector('.v4-dp-separator');
+                    const groups = container.querySelectorAll('.v4-dp-input-group');
+                    if (sep) sep.style.display = d.showEndDate ? 'inline-flex' : 'none';
+                    if (groups && groups.length > 1) {
+                        groups[1].style.display = d.showEndDate ? 'inline-flex' : 'none';
+                    }
                 }
 
                 if (d.defaultPreset !== undefined) {
                     container.setAttribute('data-default-preset', d.defaultPreset);
+                    container.querySelectorAll('.v4-dp-preset-btn').forEach(btn => {
+                        const isActive = btn.getAttribute('data-preset') === d.defaultPreset;
+                        btn.style.background = isActive ? '#1d4ed8' : '#ffffff';
+                        btn.style.borderColor = isActive ? '#1d4ed8' : '#cccccc';
+                        btn.style.color = isActive ? '#ffffff' : '#374151';
+                        btn.style.fontWeight = isActive ? '700' : '600';
+                        if (isActive) btn.classList.add('v4-dp-preset-active');
+                        else btn.classList.remove('v4-dp-preset-active');
+                    });
                     if (d.defaultPreset !== 'none') {
                         const computed = _applyPreset(d.defaultPreset);
                         container.setAttribute('data-start-date', computed.start);
                         container.setAttribute('data-end-date', computed.end);
+                        const startEl = container.querySelector('.v4-dp-start');
+                        const endEl = container.querySelector('.v4-dp-end');
+                        if (startEl && startEl.innerText !== computed.start) startEl.innerText = computed.start;
+                        if (endEl && endEl.innerText !== computed.end) endEl.innerText = computed.end;
                     }
                 }
 
                 if (d.startDate !== undefined) {
                     container.setAttribute('data-start-date', d.startDate);
+                    const startEl = container.querySelector('.v4-dp-start');
+                    if (startEl && startEl.innerText !== d.startDate) startEl.innerText = d.startDate;
                 }
                 if (d.endDate !== undefined) {
                     container.setAttribute('data-end-date', d.endDate);
-                }
-                if (d.startTime !== undefined) {
-                    container.setAttribute('data-start-time', d.startTime);
-                }
-                if (d.endTime !== undefined) {
-                    container.setAttribute('data-end-time', d.endTime);
+                    const endEl = container.querySelector('.v4-dp-end');
+                    if (endEl && endEl.innerText !== d.endDate) endEl.innerText = d.endDate;
                 }
 
-                rebuildDatePicker(container);
                 markDirty();
 
                 if (typeof window._getCompStyles === 'function') {
@@ -4669,6 +4576,30 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 markDirty();
             }
         }
+        else if (d.type === 'LF_UPDATE_TOGGLE_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-toggle-container') || (s.classList.contains('v4-toggle-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+                if (d.checked !== undefined) {
+                    container.setAttribute('data-checked', d.checked ? 'true' : 'false');
+                }
+                if (d.color !== undefined) {
+                    container.setAttribute('data-color', d.color);
+                }
+
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
+                markDirty();
+
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
+            }
+        }
         else if (d.type === 'LF_UPDATE_SEARCHBAR_PROPERTIES') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-searchbar-container');
@@ -4765,7 +4696,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 if (svgShape) {
                     if (d.style.backgroundColor || d.style.background) {
                         svgShape.style.fill = d.style.backgroundColor || d.style.background;
-                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave') || t.classList.contains('v4-shape-arrow')) {
+                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave')) {
                             t.style.backgroundColor = 'transparent';
                         }
                     }
@@ -5722,14 +5653,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 })();
 
 </script>
-<div id="v4-comp-1783302213622" class="lf-component" style="position: absolute; top: 457.019px; left: 381.6px; z-index: 1000; transform: none; width: 500px; height: 30px;" data-resized="true">
-            <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;">
-                <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;">Placeholder</div>
-                <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;" data-events-bound="true"></div>
-                <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: block; font-family: inherit;">0/100</div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1783302241830654" class="lf-component" style="position: absolute; top: 507.381px; left: 381.6px; z-index: 1000; transform: none; width: 500px; height: 30px;">
-            <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;">
-                <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;">Placeholder</div>
-                <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;" data-events-bound="true"></div>
-                <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: block; font-family: inherit;">0/100</div>
+<div id="v4-comp-1783302641135" class="lf-component" style="position: absolute; top: 556.731px; left: 381.6px; z-index: 1000; transform: none; width: 80px; height: 30px;">
+            <div class="v4-toggle-container" data-checked="true" data-color="#3b82f6" style="position: relative; width: 100%; height: 100%; border-radius: 9999px; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial; background-color: rgb(59, 130, 246) !important; box-sizing: border-box; cursor: pointer; transition: 0.2s; padding: 0px; border: 1.6px solid rgb(59, 130, 246) !important;" data-events-bound="true">
+                <div class="v4-toggle-handle" style="position: absolute; top: 3.4px; left: 3.4px; height: calc(100% - 6.8px); aspect-ratio: 1 / 1; border-radius: 50%; background: rgb(255, 255, 255); transition: transform 0.2s; box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 3px; transform: translateX(50px);"></div>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></body></html>
