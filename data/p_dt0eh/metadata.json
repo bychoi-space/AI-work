@@ -61,7 +61,7 @@
     "99_Blank_455.html": {
       "title": "어드민 _ 상세",
       "type": "admin-onesphere",
-      "updatedAt": "2026-07-06T01:17:22.921Z",
+      "updatedAt": "2026-07-06T01:22:06.467Z",
       "template": "template_blank.html",
       "description": [
         {
@@ -83,7 +83,7 @@
   "period": "2026.06.29(월) ~ 2026.07.10(금)",
   "jira": "LFML-144209",
   "themeIndex": 4,
-  "updated": "2026-07-06 10:17:22",
+  "updated": "2026-07-06 10:22:06",
   "screenOrder": [
     "00_Cover_753.html",
     "06_Mobile_Design_2_148.html",
