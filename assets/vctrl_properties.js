@@ -225,6 +225,129 @@
         }
     });
 
+    // Custom Color Palette System
+    const PALETTE_COLORS = [
+        // Grayscale / Neutral
+        '#ffffff', '#f1f5f9', '#cbd5e1', '#94a3b8', '#475569', '#0f172a',
+        // Red / Orange
+        '#ef4444', '#b91c1c', '#f97316', '#c2410c', '#f59e0b', '#d97706',
+        // Green / Teal
+        '#10b981', '#047857', '#06b6d4', '#0891b2', '#3b82f6', '#1d4ed8',
+        // Indigo / Purple / Pink
+        '#6366f1', '#4338ca', '#8b5cf6', '#6d28d9', '#ec4899', '#be185d'
+    ];
+
+    let activePaletteInput = null;
+    let palettePopup = null;
+
+    function createPalettePopup() {
+        if (palettePopup) return;
+
+        palettePopup = document.createElement('div');
+        palettePopup.id = 'lf-color-palette-popup';
+        palettePopup.className = 'lf-color-palette-popup';
+        palettePopup.style.display = 'none';
+
+        // Grid of colors
+        const grid = document.createElement('div');
+        grid.className = 'lf-palette-grid';
+
+        PALETTE_COLORS.forEach(color => {
+            const swatch = document.createElement('div');
+            swatch.className = 'lf-palette-swatch';
+            swatch.style.backgroundColor = color;
+            swatch.title = color;
+            swatch.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (activePaletteInput) {
+                    activePaletteInput.value = color;
+                    // Trigger input and change events
+                    activePaletteInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    activePaletteInput.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                hidePalettePopup();
+            });
+            grid.appendChild(swatch);
+        });
+
+        palettePopup.appendChild(grid);
+
+        // Custom setting button
+        const customBtn = document.createElement('button');
+        customBtn.className = 'lf-palette-custom-btn';
+        customBtn.innerHTML = `
+            <span class="material-icons-outlined" style="font-size: 14px;">palette</span>
+            <span>직접 설정하기</span>
+        `;
+        customBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (activePaletteInput) {
+                activePaletteInput.__show_native = true;
+                activePaletteInput.click();
+            }
+            hidePalettePopup();
+        });
+        palettePopup.appendChild(customBtn);
+
+        document.body.appendChild(palettePopup);
+
+        // Close on clicking outside
+        document.addEventListener('click', (e) => {
+            if (palettePopup.style.display !== 'none' && !palettePopup.contains(e.target)) {
+                hidePalettePopup();
+            }
+        });
+    }
+
+    function showPalettePopup(input) {
+        createPalettePopup();
+        activePaletteInput = input;
+
+        // Position popup near the wrapper or the input
+        const rect = input.getBoundingClientRect();
+        
+        // Align popup nicely below or above the input
+        let top = rect.bottom + 6;
+        let left = rect.left;
+
+        // Keep inside viewport bounds
+        const popupWidth = 172;
+        const popupHeight = 150; // approximate height
+        if (left + popupWidth > window.innerWidth) {
+            left = window.innerWidth - popupWidth - 12;
+        }
+        if (top + popupHeight > window.innerHeight) {
+            top = rect.top - popupHeight - 6;
+        }
+
+        palettePopup.style.top = top + 'px';
+        palettePopup.style.left = left + 'px';
+        palettePopup.style.display = 'flex';
+    }
+
+    function hidePalettePopup() {
+        if (palettePopup) {
+            palettePopup.style.display = 'none';
+        }
+        activePaletteInput = null;
+    }
+
+    // Intercept click on any input[type="color"]
+    document.addEventListener('click', (e) => {
+        const input = e.target.closest('input[type="color"]');
+        if (!input) return;
+
+        if (input.__show_native) {
+            // Flag is consumed, let native picker open
+            return;
+        }
+
+        // Intercept and show custom palette
+        e.preventDefault();
+        e.stopPropagation();
+        showPalettePopup(input);
+    }, true); // Use capture phase to intercept early
+
     function applyStyle(prop, value) {
         if (!activeCompId || !window.DOM || !window.DOM.iframe || !window.DOM.iframe.contentWindow) return;
         

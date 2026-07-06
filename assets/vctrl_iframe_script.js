@@ -534,21 +534,18 @@ window.v4Script = `
         const adminSettingsContainer = isGroup ? null : (c.querySelector('.v4-admin-settings-container') || (isAdminSettings ? c : null));
         const adminRowCount = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-count')) || 3 : 3;
         
-        const adminRow1Label = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row1-label') || '') : '';
-        const adminRow1Cols = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row1-cols')) || 1 : 1;
-        const adminRow1Type = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row1-type') || 'textbox') : 'textbox';
+        const adminRowData = {};
+        for (let i = 1; i <= 10; i++) {
+            adminRowData['adminRow' + i + 'Label'] = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row' + i + '-label') || '') : '';
+            adminRowData['adminRow' + i + 'Cols'] = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row' + i + '-cols')) || 1 : 1;
+            adminRowData['adminRow' + i + 'Type'] = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row' + i + '-type') || 'textbox') : 'textbox';
+        }
 
-        const adminRow2Label = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row2-label') || '') : '';
-        const adminRow2Cols = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row2-cols')) || 1 : 1;
-        const adminRow2Type = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row2-type') || 'textbox') : 'textbox';
-
-        const adminRow3Label = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row3-label') || '') : '';
-        const adminRow3Cols = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row3-cols')) || 1 : 1;
-        const adminRow3Type = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row3-type') || 'textbox') : 'textbox';
-
-        const adminRow4Label = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row4-label') || '') : '';
-        const adminRow4Cols = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row4-cols')) || 1 : 1;
-        const adminRow4Type = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row4-type') || 'textbox') : 'textbox';
+        // Toggle Button Detection
+        const isToggle = isGroup ? false : (!!c.querySelector('.v4-toggle-container') || c.classList.contains('v4-toggle-container'));
+        const toggleContainer = isGroup ? null : (c.querySelector('.v4-toggle-container') || (isToggle ? c : null));
+        const toggleChecked = toggleContainer ? (toggleContainer.getAttribute('data-checked') === 'true') : false;
+        const toggleColor = toggleContainer ? (toggleContainer.getAttribute('data-color') || '#3b82f6') : '#3b82f6';
 
         const boxEl = isGroup ? null : c.querySelector('.v4-checkbox, .v4-radio');
         const buttonEl = isGroup ? null : c.querySelector('.v4-custom-btn');
@@ -690,19 +687,11 @@ window.v4Script = `
             gridShowPagination: gridShowPagination,
             isAdminSettings: isAdminSettings,
             adminRowCount: adminRowCount,
-            adminRow1Label: adminRow1Label,
-            adminRow1Cols: adminRow1Cols,
-            adminRow1Type: adminRow1Type,
-            adminRow2Label: adminRow2Label,
-            adminRow2Cols: adminRow2Cols,
-            adminRow2Type: adminRow2Type,
-            adminRow3Label: adminRow3Label,
-            adminRow3Cols: adminRow3Cols,
-            adminRow3Type: adminRow3Type,
-            adminRow4Label: adminRow4Label,
-            adminRow4Cols: adminRow4Cols,
-            adminRow4Type: adminRow4Type,
+            ...adminRowData,
             adminRowHeight: adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-height')) || 50 : 50,
+            isToggle: isToggle,
+            toggleChecked: toggleChecked,
+            toggleColor: toggleColor,
             pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
             html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
             isGroup: c.classList.contains('lf-group'),
@@ -2685,6 +2674,30 @@ window.v4Script = `
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
+            }
+        }
+        else if (d.type === 'LF_UPDATE_TOGGLE_PROPERTIES') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-toggle-container') || (s.classList.contains('v4-toggle-container') ? s : null);
+            if (container) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+                if (d.checked !== undefined) {
+                    container.setAttribute('data-checked', d.checked ? 'true' : 'false');
+                }
+                if (d.color !== undefined) {
+                    container.setAttribute('data-color', d.color);
+                }
+
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
+                markDirty();
+
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_SEARCHBAR_PROPERTIES') {

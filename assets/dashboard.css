@@ -40,6 +40,10 @@ body {
     flex-direction: column;
     gap: 30px;
     overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+}
+#dashboard-view::-webkit-scrollbar {
+    display: none !important; /* Safari and Chrome */
 }
 
 /* Premium Animated Background - Light Mesh Version */

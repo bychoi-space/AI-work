@@ -171,6 +171,17 @@ window.V4_COMPONENT_LIBRARY = {
             </div>`
         },
         {
+            id: 'v4-atom-toggle',
+            name: 'Toggle Button',
+            koName: '토글 버튼 스위치 toggle switch',
+            category: 'Atoms',
+            previewHtml: `<div style="width:30px; height:15px; border-radius:10px; background:#3b82f6; position:relative; display:flex; align-items:center; box-sizing:border-box; padding:2px;"><div style="width:11px; height:11px; border-radius:50%; background:#fff; position:absolute; right:2px;"></div></div>`,
+            html: `
+            <div class="v4-toggle-container" data-checked="false" data-color="#3b82f6" style="position: relative; width: 100%; height: 100%; border-radius: 9999px; background: rgb(203, 213, 225); border: 1.6px solid rgb(200, 200, 200) !important; box-sizing: border-box; cursor: pointer; transition: all 0.2s; padding: 0;">
+                <div class="v4-toggle-handle" style="position: absolute; top: 3.4px; left: 3.4px; height: calc(100% - 6.8px); aspect-ratio: 1 / 1; border-radius: 50%; background: #ffffff; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transform: translateX(0);"></div>
+            </div>`
+        },
+        {
             id: 'v4-atom-image',
             name: 'Image',
             koName: '이미지 업로드 첨부',
@@ -320,12 +331,29 @@ window.V4_COMPONENT_LIBRARY = {
             </div>`
         },
         {
+            id: 'v4-shape-arrow',
+            name: 'Arrow',
+            koName: '화살표 방향 지시 흐름도',
+            category: 'Shapes',
+            icon: 'trending_flat',
+            iconColor: '#00e5ff',
+            cardStyle: 'background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important;',
+            previewHtml: `<svg viewBox="0 0 100 100" style="width: 30px; height: 30px; overflow: visible;"><path d="M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z" style="fill: var(--v4-component-bg, rgb(255, 255, 255)); stroke: var(--v4-border-color, rgb(200, 200, 200)); stroke-width: 1.6; vector-effect: non-scaling-stroke;" /></svg>`,
+            html: `
+            <div class="v4-shape v4-shape-arrow" data-arrow-dir="right" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: visible; box-sizing: border-box; position: relative;">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible;">
+                    <path class="v4-arrow-path" d="M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z" style="fill: var(--v4-component-bg, rgb(255, 255, 255)); stroke: var(--v4-border-color, rgb(200, 200, 200)); stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
+                </svg>
+                <div contenteditable="true" class="v4-editable-cell" style="width: 50%; height: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; outline: none; font-weight: 700; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; font-size: 14px; z-index: 2; position: relative;">Arrow</div>
+            </div>`
+        },
+        {
             id: 'v4-connector-straight',
             name: 'Line (Straight)',
             koName: '직선 화살표 선 커넥터',
             category: 'Shapes',
             iconType: 'svg',
-            iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>',
+            iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><line x1="5" y1="12" x2="19" y2="12"></line></svg>',
             cardStyle: 'background: rgba(148, 163, 184, 0.1); border: 1.6px solid rgba(148, 163, 184, 0.2) !important;',
             previewHtml: `<div style="display: flex; align-items: center; width: 30px;"><div style="flex: 1; height: 2px; background: #3b82f6;"></div><div style="width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #3b82f6;"></div></div>`,
             onclick: "window.ConnectorEngine && window.ConnectorEngine.spawnLine('straight')"
@@ -336,7 +364,7 @@ window.V4_COMPONENT_LIBRARY = {
             koName: '꺾인선 화살표 선 커넥터',
             category: 'Shapes',
             iconType: 'svg',
-            iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="9 10 9 19 18 19"></polyline><polyline points="14 14 19 19 14 24"></polyline></svg>',
+            iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><polyline points="9 10 9 19 18 19"></polyline></svg>',
             cardStyle: 'background: rgba(148, 163, 184, 0.1); border: 1.6px solid rgba(148, 163, 184, 0.2) !important;',
             previewHtml: `<div style="width: 24px; height: 24px; border-left: 2px solid #3b82f6; border-bottom: 2px solid #3b82f6; position: relative;"><div style="position: absolute; right: -6px; bottom: -4px; width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid #3b82f6;"></div></div>`,
             onclick: "window.ConnectorEngine && window.ConnectorEngine.spawnLine('elbow')"

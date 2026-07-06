@@ -81,7 +81,8 @@ window.DOM = {
     fileuploadPropSection: get('fileupload-inspector-section'),
     alertPropSection: get('alert-inspector-section'),
     buttonPropSection: get('button-inspector-section'),
-    datePickerPropSection: get('datepicker-inspector-section'),
+    datepickerPropSection: get('datepicker-inspector-section'),
+    togglePropSection: get('toggle-inspector-section'),
     accordionPropSection: get('accordion-inspector-section'),
     gridPropSection: get('grid-inspector-section'),
     adminSettingsPropSection: get('admin-settings-inspector-section'),
@@ -181,6 +182,7 @@ function restorePropertiesSections() {
             document.getElementById('alert-inspector-section'),
             document.getElementById('button-inspector-section'),
             document.getElementById('datepicker-inspector-section'),
+            document.getElementById('toggle-inspector-section'),
             document.getElementById('searchbar-inspector-section'),
             document.getElementById('accordion-inspector-section'),
             document.getElementById('grid-inspector-section'),
@@ -200,8 +202,15 @@ window.updateProperties = function(compStyles) {
     const isTypingInAdminProps = activeEl && activeEl.classList.contains('admin-col-label-input');
     const isTypingCheckboxLabel = activeEl && activeEl.id === 'prop-atom-text-content';
     const isTypingInGridProps = activeEl && (activeEl.closest('#grid-inspector-section') || activeEl.classList.contains('grid-col-width-input') || activeEl.classList.contains('grid-col-name-input') || activeEl.classList.contains('grid-col-type-select'));
+    const isTypingInDatePickerProps = activeEl && (
+        activeEl.id === 'prop-dp-start-date' ||
+        activeEl.id === 'prop-dp-end-date' ||
+        activeEl.id === 'prop-dp-start-time' ||
+        activeEl.id === 'prop-dp-end-time' ||
+        activeEl.closest('#datepicker-inspector-section')
+    );
     
-    if (!isTypingInAdminProps && !isTypingCheckboxLabel && !isTypingInGridProps) {
+    if (!isTypingInAdminProps && !isTypingCheckboxLabel && !isTypingInGridProps && !isTypingInDatePickerProps) {
         restorePropertiesSections();
     }
     const pm = state.projectMetadata || {};
@@ -212,10 +221,7 @@ const ProjectMetadataManager = {
     renderBar(pm) {
         DOM.metadataPanel.innerHTML = `
             <div class="v4-meta-horizontal">
-                <div class="v4-meta-item" style="flex: 0 0 180px;">
-                    <label>PROJECT TITLE</label>
-                    <input type="text" id="viewer-meta-title" value="${pm.title || ''}" placeholder="프로젝트 제목">
-                </div>
+                <input type="hidden" id="viewer-meta-title" value="${pm.title || ''}">
                 <div class="v4-meta-item" style="flex: 0 0 80px;">
                     <label>ASSIGNEE</label>
                     <input type="text" id="viewer-meta-assignee" value="${pm.assignee || ''}" placeholder="담당자">
@@ -293,6 +299,8 @@ const ProjectMetadataManager = {
         }
 
         // Hide all sections first
+        const arrowGroupInit = document.getElementById('shape-arrow-direction-group');
+        if (arrowGroupInit) arrowGroupInit.style.display = 'none';
         if (DOM.textPropSection) DOM.textPropSection.style.display = 'none';
         if (DOM.tablePropSection) DOM.tablePropSection.style.display = 'none';
         if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'none';
@@ -307,6 +315,7 @@ const ProjectMetadataManager = {
         if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'none';
         if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'none';
         if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'none';
+        if (DOM.togglePropSection) DOM.togglePropSection.style.display = 'none';
         if (DOM.adminSettingsPropSection) DOM.adminSettingsPropSection.style.display = 'none';
 
         if (compStyles) {
@@ -328,6 +337,7 @@ const ProjectMetadataManager = {
             else if (compStyles.isAlert) type = 'alert';
             else if (compStyles.isButton) type = 'button';
             else if (compStyles.isDatePicker) type = 'datepicker';
+            else if (compStyles.isToggle) type = 'toggle';
             else if (compStyles.isAccordion) type = 'accordion';
             else if (compStyles.isAdminSettings) type = 'admin-settings';
             else if (compStyles.isIcon) type = 'icon';
@@ -343,6 +353,32 @@ const ProjectMetadataManager = {
                 // Shape도 CONTENT EDITOR 공유 사용 (단, 이미지 도형인 경우 텍스트 편집기 표시 제외)
                 if (DOM.textPropSection && !compStyles.isImage) {
                     DOM.textPropSection.style.display = 'block';
+                }
+
+                // Show/hide Arrow direction config group & Corner style group
+                const arrowGroup = document.getElementById('shape-arrow-direction-group');
+                const cornerGroup = document.getElementById('shape-corner-style-group');
+                const isArrow = (compStyles.shapeType === 'arrow' || compStyles.id === 'v4-shape-arrow');
+                if (cornerGroup) {
+                    cornerGroup.style.display = isArrow ? 'none' : 'block';
+                }
+                if (arrowGroup) {
+                    if (isArrow) {
+                        arrowGroup.style.display = 'block';
+                        const currentDir = compStyles.arrowDir || 'right';
+                        document.querySelectorAll('.v4-arrow-dir-btn').forEach(btn => {
+                            const btnDir = btn.dataset.dir;
+                            if (btnDir === currentDir) {
+                                btn.classList.add('active');
+                                btn.style.cssText = 'height: 28px; background: rgba(0,229,255,0.15); border: 1.6px solid rgba(0,229,255,0.4); border-radius: 6px; color: #00e5ff; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;';
+                            } else {
+                                btn.classList.remove('active');
+                                btn.style.cssText = 'height: 28px; background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(255, 255, 255, 0.15); border-radius: 6px; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;';
+                            }
+                        });
+                    } else {
+                        arrowGroup.style.display = 'none';
+                    }
                 }
             } else if (state.editingType === 'table') {
                 if (DOM.tablePropSection) DOM.tablePropSection.style.display = 'block';
@@ -404,6 +440,9 @@ const ProjectMetadataManager = {
                     if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'block';
                     _syncCheckboxRadioProps(compStyles);
                 }
+            } else if (state.editingType === 'toggle') {
+                if (DOM.togglePropSection) DOM.togglePropSection.style.display = 'block';
+                _syncToggleProps(compStyles);
             }
 
             // Sync Property Controls
@@ -505,11 +544,23 @@ const ProjectMetadataManager = {
         // Dynamically move active panels into floating inspector card body
         const floatingBody = document.getElementById('floating-inspector-body');
         if (floatingBody) {
-            const activeEl = document.activeElement;
             const isTypingInAdminProps = activeEl && activeEl.classList.contains('admin-col-label-input');
             const isTypingCheckboxLabel = activeEl && activeEl.id === 'prop-atom-text-content';
+            const isTypingInDatePickerProps = activeEl && (
+                activeEl.id === 'prop-dp-start-date' ||
+                activeEl.id === 'prop-dp-end-date' ||
+                activeEl.id === 'prop-dp-start-time' ||
+                activeEl.id === 'prop-dp-end-time' ||
+                activeEl.closest('#datepicker-inspector-section')
+            );
+            const isTypingInGridProps = activeEl && (
+                activeEl.closest('#grid-inspector-section') || 
+                activeEl.classList.contains('grid-col-width-input') || 
+                activeEl.classList.contains('grid-col-name-input') || 
+                activeEl.classList.contains('grid-col-type-select')
+            );
             
-            if (!isTypingInAdminProps && !isTypingCheckboxLabel) {
+            if (!isTypingInAdminProps && !isTypingCheckboxLabel && !isTypingInGridProps && !isTypingInDatePickerProps) {
                 floatingBody.innerHTML = '';
                 const selectionBar = document.getElementById('selection-actions-bar');
                 if (selectionBar) {
@@ -521,7 +572,7 @@ const ProjectMetadataManager = {
                     DOM.linePropSection, DOM.iconPropSection, DOM.checkboxRadioPropSection,
                     DOM.textboxTextareaPropSection, DOM.searchbarPropSection, DOM.stepperPropSection, DOM.selectboxPropSection,
                     DOM.fileuploadPropSection, DOM.alertPropSection, DOM.buttonPropSection,
-                    DOM.datePickerPropSection, DOM.accordionPropSection, DOM.gridPropSection,
+                    DOM.datePickerPropSection, DOM.togglePropSection, DOM.accordionPropSection, DOM.gridPropSection,
                     DOM.adminSettingsPropSection
                 ];
                 sections.forEach(sec => {
@@ -557,6 +608,7 @@ const ProjectMetadataManager = {
         if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'none';
         if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'none';
         if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'none';
+        if (DOM.togglePropSection) DOM.togglePropSection.style.display = 'none';
         if (DOM.accordionPropSection) DOM.accordionPropSection.style.display = 'none';
         if (DOM.gridPropSection) DOM.gridPropSection.style.display = 'none';
         if (DOM.searchbarPropSection) DOM.searchbarPropSection.style.display = 'none';
@@ -1010,6 +1062,23 @@ function _syncDatePickerProps(comp) {
         btn.style.fontWeight = isActive ? 'bold' : 'normal';
     };
 
+    // Sync Mode selector
+    const btnModeSimple = document.getElementById('btn-dp-mode-simple');
+    const btnModeDetailed = document.getElementById('btn-dp-mode-detailed');
+    const mode = comp.dpMode || 'simple';
+    highlightActive(btnModeSimple, mode === 'simple');
+    highlightActive(btnModeDetailed, mode === 'detailed');
+
+    const timeWrapper = document.getElementById('dp-time-inputs-wrapper');
+    const presetsToggleWrapper = document.getElementById('dp-presets-toggle-wrapper');
+    const showEndToggleWrapper = document.getElementById('dp-show-end-toggle-wrapper');
+    const defaultPresetWrapper = document.getElementById('dp-default-preset-wrapper');
+
+    if (timeWrapper) timeWrapper.style.display = mode === 'detailed' ? 'block' : 'none';
+    if (presetsToggleWrapper) presetsToggleWrapper.style.display = mode === 'detailed' ? 'none' : 'block';
+    if (showEndToggleWrapper) showEndToggleWrapper.style.display = mode === 'detailed' ? 'none' : 'block';
+    if (defaultPresetWrapper) defaultPresetWrapper.style.display = mode === 'detailed' ? 'none' : 'block';
+
     // Sync presets show/hide toggle
     const presetsY = document.getElementById('btn-dp-presets-y');
     const presetsN = document.getElementById('btn-dp-presets-n');
@@ -1035,8 +1104,22 @@ function _syncDatePickerProps(comp) {
     // Sync date inputs
     const startInput = document.getElementById('prop-dp-start-date');
     const endInput = document.getElementById('prop-dp-end-date');
-    if (startInput && comp.dpStartDate !== undefined) startInput.value = comp.dpStartDate;
-    if (endInput && comp.dpEndDate !== undefined) endInput.value = comp.dpEndDate;
+    if (startInput && comp.dpStartDate !== undefined) {
+        if (document.activeElement !== startInput) startInput.value = comp.dpStartDate;
+    }
+    if (endInput && comp.dpEndDate !== undefined) {
+        if (document.activeElement !== endInput) endInput.value = comp.dpEndDate;
+    }
+
+    // Sync time inputs
+    const startTimeInput = document.getElementById('prop-dp-start-time');
+    const endTimeInput = document.getElementById('prop-dp-end-time');
+    if (startTimeInput && comp.dpStartTime !== undefined) {
+        if (document.activeElement !== startTimeInput) startTimeInput.value = comp.dpStartTime || '';
+    }
+    if (endTimeInput && comp.dpEndTime !== undefined) {
+        if (document.activeElement !== endTimeInput) endTimeInput.value = comp.dpEndTime || '';
+    }
 }
 
 window.renderScreenList = function(screens, activeName) {
@@ -1619,6 +1702,31 @@ if (btnShowHistory) {
 }
 
 
+// Bind Arrow Direction Button Click Events
+document.querySelectorAll('.v4-arrow-dir-btn').forEach(btn => {
+    btn.onclick = () => {
+        const dir = btn.dataset.dir;
+        document.querySelectorAll('.v4-arrow-dir-btn').forEach(b => {
+            if (b === btn) {
+                b.classList.add('active');
+                b.style.cssText = 'height: 28px; background: rgba(0,229,255,0.15); border: 1.6px solid rgba(0,229,255,0.4); border-radius: 6px; color: #00e5ff; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;';
+            } else {
+                b.classList.remove('active');
+                b.style.cssText = 'height: 28px; background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(255, 255, 255, 0.15); border-radius: 6px; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;';
+            }
+        });
+
+        const iframe = document.getElementById('main-iframe');
+        if (iframe && iframe.contentWindow && window.MessageHub) {
+            MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ARROW_DIRECTION', {
+                direction: dir
+            });
+        }
+        if (typeof window.markAsDirty === 'function') window.markAsDirty();
+    };
+});
+
+
 window.showLoading = (text) => { const overlay = get('loading-overlay'); if (overlay) { const txt = overlay.querySelector('.loading-text'); if (txt) txt.innerText = text; overlay.classList.remove('fade-out'); } };
 window.hideLoading = () => { const overlay = get('loading-overlay'); if (overlay) overlay.classList.add('fade-out'); setTimeout(() => { if (typeof window.centerView === 'function') window.centerView(); }, 600); };
 window.showAuthModal = () => { const modal = get('auth-modal'); if (modal) modal.classList.add('active'); };
@@ -1769,7 +1877,7 @@ function _syncAdminSettingsProps(comp) {
             const iframe = document.getElementById('main-iframe');
             if (iframe && iframe.contentWindow && window.MessageHub) {
                 const currentCount = parseInt(rowCountText.innerText) || 1;
-                if (currentCount < 4) {
+                if (currentCount < 10) {
                     const newCount = currentCount + 1;
                     window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ADMIN_SETTINGS_PROPERTIES', {
                         rowCount: newCount
@@ -1791,7 +1899,7 @@ function _syncAdminSettingsProps(comp) {
                                 editingType: 'admin-settings',
                                 adminRowCount: newCount
                             };
-                            for (let r = 1; r <= 4; r++) {
+                            for (let r = 1; r <= 10; r++) {
                                 syncData[`adminRow${r}Label`] = containerEl.getAttribute(`data-row${r}-label`) || '';
                                 syncData[`adminRow${r}Cols`] = parseInt(containerEl.getAttribute(`data-row${r}-cols`)) || 1;
                                 syncData[`adminRow${r}Type`] = containerEl.getAttribute(`data-row${r}-type`) || 'textbox';
@@ -1825,7 +1933,7 @@ function _syncAdminSettingsProps(comp) {
                                 editingType: 'admin-settings',
                                 adminRowCount: newCount
                             };
-                            for (let r = 1; r <= 4; r++) {
+                            for (let r = 1; r <= 10; r++) {
                                 syncData[`adminRow${r}Label`] = containerEl.getAttribute(`data-row${r}-label`) || '';
                                 syncData[`adminRow${r}Cols`] = parseInt(containerEl.getAttribute(`data-row${r}-cols`)) || 1;
                                 syncData[`adminRow${r}Type`] = containerEl.getAttribute(`data-row${r}-type`) || 'textbox';
@@ -1836,6 +1944,27 @@ function _syncAdminSettingsProps(comp) {
                 }
             }
         };
+    }
+}
+
+function _syncToggleProps(comp) {
+    const highlightActive = (btn, isActive) => {
+        if (!btn) return;
+        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+    };
+
+    const btnOn = document.getElementById('btn-toggle-on');
+    const btnOff = document.getElementById('btn-toggle-off');
+    const isChecked = comp.toggleChecked === true;
+    highlightActive(btnOn, isChecked);
+    highlightActive(btnOff, !isChecked);
+
+    const colorPicker = document.getElementById('prop-toggle-color');
+    if (colorPicker && comp.toggleColor) {
+        colorPicker.value = comp.toggleColor;
     }
 }
 

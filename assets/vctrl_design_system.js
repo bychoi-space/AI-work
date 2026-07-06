@@ -213,11 +213,172 @@ window.v4DesignSystemScript = `
         });
     };
 
+    const bindToggleEvents = () => {
+        document.querySelectorAll('.v4-toggle-container').forEach(container => {
+            const handle = container.querySelector('.v4-toggle-handle');
+            if (container.dataset.eventsBound === "true") {
+                const isChecked = container.getAttribute('data-checked') === 'true';
+                const toggleColor = container.getAttribute('data-color') || '#3b82f6';
+                if (handle) {
+                    if (isChecked) {
+                        container.style.setProperty('background-color', toggleColor, 'important');
+                        container.style.setProperty('border-color', toggleColor, 'important');
+                        const trackW = container.offsetWidth || 80;
+                        const trackH = container.offsetHeight || 30;
+                        const trans = trackW - trackH;
+                        handle.style.transform = 'translateX(' + trans + 'px)';
+                    } else {
+                        container.style.setProperty('background-color', 'rgb(203, 213, 225)', 'important');
+                        container.style.setProperty('border-color', 'rgb(200, 200, 200)', 'important');
+                        handle.style.transform = 'translateX(0)';
+                    }
+                }
+                return;
+            }
+            container.dataset.eventsBound = "true";
+
+            container.onclick = (e) => {
+                e.stopPropagation();
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                
+                const isChecked = container.getAttribute('data-checked') === 'true';
+                container.setAttribute('data-checked', isChecked ? 'false' : 'true');
+                
+                bindToggleEvents();
+                markDirty();
+                
+                if (typeof window._getCompStyles === 'function') {
+                    notifyParent({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(container.closest('.lf-component'))
+                    });
+                }
+            };
+
+            const isChecked = container.getAttribute('data-checked') === 'true';
+            const toggleColor = container.getAttribute('data-color') || '#3b82f6';
+            if (handle) {
+                if (isChecked) {
+                    container.style.setProperty('background-color', toggleColor, 'important');
+                    container.style.setProperty('border-color', toggleColor, 'important');
+                    const trackW = container.offsetWidth || 80;
+                    const trackH = container.offsetHeight || 30;
+                    const trans = trackW - trackH;
+                    handle.style.transform = 'translateX(' + trans + 'px)';
+                } else {
+                    container.style.setProperty('background-color', 'rgb(203, 213, 225)', 'important');
+                    container.style.setProperty('border-color', 'rgb(200, 200, 200)', 'important');
+                    handle.style.transform = 'translateX(0)';
+                }
+            }
+        });
+    };
+
+
+    const resizeToFitText = (c, isShapeText) => {
+        if (!c) return;
+        const cell = c.querySelector('.v4-editable-cell');
+        if (!cell) return;
+
+        const origW = c.style.width;
+        const origH = c.style.height;
+
+        const targetPadding = '0px 4px 2px 4px';
+        if (cell.style.padding !== targetPadding) {
+            cell.style.setProperty('padding', targetPadding, 'important');
+        }
+
+        if (c.style.minWidth !== 'unset') c.style.setProperty('min-width', 'unset', 'important');
+        if (c.style.minHeight !== 'unset') c.style.setProperty('min-height', 'unset', 'important');
+
+        const compStyle = window.getComputedStyle(cell);
+        const measureSpan = document.createElement('span');
+        measureSpan.style.visibility = 'hidden';
+        measureSpan.style.position = 'absolute';
+        measureSpan.style.whiteSpace = 'pre';
+        measureSpan.style.fontFamily = compStyle.fontFamily;
+        measureSpan.style.fontSize = compStyle.fontSize;
+        measureSpan.style.fontWeight = compStyle.fontWeight;
+        measureSpan.style.lineHeight = compStyle.lineHeight;
+        measureSpan.style.letterSpacing = compStyle.letterSpacing;
+        
+        measureSpan.innerText = (cell.innerText || '').replace(/\\n$/, '');
+        document.body.appendChild(measureSpan);
+
+        const textW = measureSpan.offsetWidth;
+        const textH = measureSpan.offsetHeight;
+        document.body.removeChild(measureSpan);
+
+        const paddingW = 8 + 2;
+        const paddingH = 2 + 2;
+
+        const targetW = (textW + paddingW) + 'px';
+        const targetH = (textH + paddingH) + 'px';
+
+        console.log("[vctrl_design_system] resizeToFitText running for:", c.id, "text:", cell.innerText, "measured width:", textW, "targetW:", targetW);
+
+        if (origW !== targetW) c.style.width = targetW;
+        if (origH !== targetH) c.style.height = targetH;
+
+        const shape = c.querySelector('.v4-shape');
+        if (shape) {
+            shape.style.width = '100%';
+            shape.style.height = '100%';
+        }
+        cell.style.width = '100%';
+        cell.style.height = '100%';
+
+        const resizer = c.querySelector(':scope > .lf-resizer');
+        if (resizer) {
+            if (resizer.style.display !== 'none') {
+                resizer.style.setProperty('display', 'none', 'important');
+            }
+        }
+        const handle = c.querySelector(':scope > .lf-drag-handle');
+        if (handle) {
+            const targetOffset = c.classList.contains('selected') ? '-22px' : '-16px';
+            if (handle.style.top !== targetOffset) {
+                handle.style.setProperty('top', targetOffset, 'important');
+                handle.style.setProperty('left', targetOffset, 'important');
+            }
+        }
+    };
+
     window.enforceDesignSystem = () => {
-        if (typeof window.initHandles === 'function') window.initHandles();
-        bindStepperEvents();
-        bindFileuploadEvents();
-        bindAccordionEvents();
+        if (typeof window.initHandles === 'function') {
+            try { window.initHandles(); } catch(e) { console.error("Error in initHandles:", e); }
+        }
+        
+        try {
+            document.querySelectorAll('.lf-component').forEach(c => {
+                const shapeText = c.querySelector('.v4-shape-text');
+                if (shapeText) {
+                    const cell = c.querySelector('.v4-editable-cell');
+                    const isFocused = cell && (document.activeElement === cell || cell.contains(document.activeElement));
+                    const isDefault = cell && (cell.innerText === 'Enter Premium Text' || cell.innerText === 'Edit Text');
+                    const isSelected = c.classList.contains('selected');
+                    if (isFocused || isDefault || isSelected) {
+                        resizeToFitText(c, true);
+                    }
+                }
+            });
+            document.querySelectorAll('.text-marker, .v4-text-box').forEach(c => {
+                const cell = c.querySelector('.v4-editable-cell') || c;
+                const isFocused = cell && (document.activeElement === cell || cell.contains(document.activeElement));
+                const isDefault = cell && (cell.innerText === 'Edit Text' || cell.innerText === 'Text' || cell.innerText === 'Enter Premium Text');
+                const isSelected = c.classList.contains('selected');
+                if (isFocused || isDefault || isSelected) {
+                    resizeToFitText(c, false);
+                }
+            });
+        } catch(e) {
+            console.error("[DesignSystem] Error in early resizeToFitText:", e);
+        }
+
+        try { bindStepperEvents(); } catch(e) { console.error("Error in bindStepperEvents:", e); }
+        try { bindFileuploadEvents(); } catch(e) { console.error("Error in bindFileuploadEvents:", e); }
+        try { bindAccordionEvents(); } catch(e) { console.error("Error in bindAccordionEvents:", e); }
+        try { bindToggleEvents(); } catch(e) { console.error("Error in bindToggleEvents:", e); }
         
         const seenIds = new Set();
         document.querySelectorAll('.lf-component').forEach((c, idx) => {
@@ -252,7 +413,8 @@ window.v4DesignSystemScript = `
             '.v4-selectbox-container', '.v4-fileupload-container',
             '.v4-alert-container', '.v4-btn-container',
             '.v4-datepicker-container', '.v4-accordion-container',
-            '.v4-grid-container', '.v4-admin-settings-container'
+            '.v4-grid-container', '.v4-admin-settings-container',
+            '.v4-toggle-container'
         ].join(', ');
 
         document.querySelectorAll('.lf-component').forEach(c => {
@@ -439,6 +601,20 @@ window.v4DesignSystemScript = `
 
         document.querySelectorAll('.lf-component').forEach(c => {
             if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
+            const toggle = c.querySelector('.v4-toggle-container');
+            if (toggle) {
+                if (c.getAttribute('data-resized') !== 'true') {
+                    if (c.style.width !== '40px') c.style.width = '40px';
+                    if (c.style.height !== '20px') c.style.height = '20px';
+                }
+                if (toggle.style.width !== '100%') toggle.style.width = '100%';
+                if (toggle.style.height !== '100%') toggle.style.height = '100%';
+                if (typeof window.updateHandles === 'function') window.updateHandles(c);
+            }
+        });
+
+        document.querySelectorAll('.lf-component').forEach(c => {
+            if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const btnContainer = c.querySelector('.v4-btn-container');
             if (btnContainer) {
                 const btn = btnContainer.querySelector('.v4-custom-btn');
@@ -500,23 +676,35 @@ window.v4DesignSystemScript = `
             const showEndDate = dp.getAttribute('data-show-end-date') !== 'false';
             const sep = dp.querySelector('.v4-dp-separator');
             const groups = dp.querySelectorAll('.v4-dp-input-group');
-            if (sep) {
-                const targetDisplay = showEndDate ? 'inline-flex' : 'none';
-                if (sep.style.display !== targetDisplay) sep.style.display = targetDisplay;
-            }
-            if (groups && groups.length > 1) {
-                const targetDisplay = showEndDate ? 'inline-flex' : 'none';
-                if (groups[1].style.display !== targetDisplay) groups[1].style.display = targetDisplay;
+            const mode = dp.getAttribute('data-mode') || 'simple';
+            
+            if (mode !== 'detailed') {
+                if (sep) {
+                    const targetDisplay = showEndDate ? 'inline-flex' : 'none';
+                    if (sep.style.display !== targetDisplay) sep.style.display = targetDisplay;
+                }
+                if (groups && groups.length > 1) {
+                    const targetDisplay = showEndDate ? 'inline-flex' : 'none';
+                    if (groups[1].style.display !== targetDisplay) groups[1].style.display = targetDisplay;
+                }
             }
 
             const startEl = dp.querySelector('.v4-dp-start');
             const endEl = dp.querySelector('.v4-dp-end');
+            const startTimeEl = dp.querySelector('.v4-dp-start-time');
+            const endTimeEl = dp.querySelector('.v4-dp-end-time');
+            
             const storedStart = dp.getAttribute('data-start-date') || '';
             const storedEnd = dp.getAttribute('data-end-date') || '';
+            const storedStartTime = dp.getAttribute('data-start-time') || '10:00:00';
+            const storedEndTime = dp.getAttribute('data-end-time') || '12:00:00';
+            
             const defaultPreset = dp.getAttribute('data-default-preset') || 'none';
 
             if (startEl && storedStart && startEl.innerText !== storedStart) startEl.innerText = storedStart;
             if (endEl && storedEnd && endEl.innerText !== storedEnd) endEl.innerText = storedEnd;
+            if (startTimeEl && storedStartTime && startTimeEl.innerText !== storedStartTime) startTimeEl.innerText = storedStartTime;
+            if (endTimeEl && storedEndTime && endTimeEl.innerText !== storedEndTime) endTimeEl.innerText = storedEndTime;
 
             if (startEl && !startEl.innerText && defaultPreset && defaultPreset !== 'none') {
                 const today = new Date();
@@ -751,8 +939,10 @@ window.v4DesignSystemScript = `
             }
         });
 
+
+
         document.querySelectorAll('.v4-shape').forEach(s => {
-            if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle')) {
+            if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle') || s.classList.contains('v4-shape-arrow')) {
                 s.style.setProperty('border-width', '0px', 'important');
                 return;
             }
@@ -760,6 +950,24 @@ window.v4DesignSystemScript = `
         });
         document.querySelectorAll('table.v4-premium-table, .v4-grid-container table').forEach(t => {
             if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
+            if (t.closest('.v4-grid-container')) {
+                // Keep table width managed by renderGrid
+                
+                // Enforce editable behavior on legacy grid cells
+                t.querySelectorAll('td, th').forEach(cell => {
+                    const isCheckbox = cell.classList.contains('v4-grid-check-col') || 
+                                     cell.querySelector('input[type="checkbox"]') || 
+                                     cell.getAttribute('data-type') === 'checkbox';
+                    if (!isCheckbox) {
+                        if (!cell.classList.contains('v4-editable-cell')) {
+                            cell.classList.add('v4-editable-cell');
+                        }
+                        if (cell.getAttribute('contenteditable') !== 'true') {
+                            cell.setAttribute('contenteditable', 'true');
+                        }
+                    }
+                });
+            }
             if (window.TableSelection) window.TableSelection.bindEvents(t);
         });
         document.querySelectorAll('.v4-grid-container').forEach(grid => {

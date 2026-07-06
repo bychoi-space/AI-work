@@ -65,6 +65,9 @@
             } else if (item.id === 'v4-atom-datepicker') {
                 style.width = '500px';
                 style.height = '30px';
+            } else if (item.id === 'v4-atom-toggle') {
+                style.width = '40px';
+                style.height = '20px';
             } else if (item.id === 'v4-atom-admin-settings') {
                 style.width = '1180px';
                 style.height = '50px';
@@ -417,7 +420,7 @@
         
         notifyIframe({
             type: 'LF_UPDATE_STYLE',
-            selector: '.v4-shape .v4-shape-text-content',
+            selector: '.v4-shape .v4-editable-cell',
             style: {
                 justifyContent: jc,
                 textAlign: align
@@ -1426,17 +1429,106 @@
             }
         });
 
+        // Mode Selector Buttons
+        const modeSimpleBtn = document.getElementById('btn-dp-mode-simple');
+        const modeDetailedBtn = document.getElementById('btn-dp-mode-detailed');
+        const timeInputsWrapper = document.getElementById('dp-time-inputs-wrapper');
+        const presetsToggleWrapper = document.getElementById('dp-presets-toggle-wrapper');
+        const showEndToggleWrapper = document.getElementById('dp-show-end-toggle-wrapper');
+        const defaultPresetWrapper = document.getElementById('dp-default-preset-wrapper');
+        
+        if (modeSimpleBtn) {
+            modeSimpleBtn.onclick = () => {
+                highlightActive(modeSimpleBtn, true);
+                highlightActive(modeDetailedBtn, false);
+                if (timeInputsWrapper) timeInputsWrapper.style.display = 'none';
+                if (presetsToggleWrapper) presetsToggleWrapper.style.display = 'block';
+                if (showEndToggleWrapper) showEndToggleWrapper.style.display = 'block';
+                if (defaultPresetWrapper) defaultPresetWrapper.style.display = 'block';
+                notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', mode: 'simple' });
+            };
+        }
+        if (modeDetailedBtn) {
+            modeDetailedBtn.onclick = () => {
+                highlightActive(modeDetailedBtn, true);
+                highlightActive(modeSimpleBtn, false);
+                if (timeInputsWrapper) timeInputsWrapper.style.display = 'block';
+                if (presetsToggleWrapper) presetsToggleWrapper.style.display = 'none';
+                if (showEndToggleWrapper) showEndToggleWrapper.style.display = 'none';
+                if (defaultPresetWrapper) defaultPresetWrapper.style.display = 'none';
+                notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', mode: 'detailed' });
+            };
+        }
+
+        // Auto-slash formatter for YYYY/MM/DD
+        const formatSlashDate = (value) => {
+            let val = value.replace(/[^0-9]/g, '');
+            let formatted = '';
+            if (val.length > 0) {
+                formatted += val.substring(0, 4);
+                if (val.length > 4) {
+                    formatted += '/' + val.substring(4, 6);
+                    if (val.length > 6) {
+                        formatted += '/' + val.substring(6, 8);
+                    }
+                }
+            }
+            return formatted;
+        };
+
+        // Auto-colon formatter for HH:MM:SS
+        const formatColonTime = (value) => {
+            let val = value.replace(/[^0-9]/g, '');
+            let formatted = '';
+            if (val.length > 0) {
+                formatted += val.substring(0, 2);
+                if (val.length > 2) {
+                    formatted += ':' + val.substring(2, 4);
+                    if (val.length > 4) {
+                        formatted += ':' + val.substring(4, 6);
+                    }
+                }
+            }
+            return formatted;
+        };
+
         // Start/End Date Direct Input
         const startInput = document.getElementById('prop-dp-start-date');
         if (startInput) {
-            startInput.addEventListener('change', function() {
+            startInput.addEventListener('input', function(e) {
+                if (e.inputType !== 'deleteContentBackward') {
+                    this.value = formatSlashDate(this.value);
+                }
                 notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', startDate: this.value });
             });
         }
         const endInput = document.getElementById('prop-dp-end-date');
         if (endInput) {
-            endInput.addEventListener('change', function() {
+            endInput.addEventListener('input', function(e) {
+                if (e.inputType !== 'deleteContentBackward') {
+                    this.value = formatSlashDate(this.value);
+                }
                 notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', endDate: this.value });
+            });
+        }
+
+        // Start/End Time Direct Input
+        const startTimeInput = document.getElementById('prop-dp-start-time');
+        if (startTimeInput) {
+            startTimeInput.addEventListener('input', function(e) {
+                if (e.inputType !== 'deleteContentBackward') {
+                    this.value = formatColonTime(this.value);
+                }
+                notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', startTime: this.value });
+            });
+        }
+        const endTimeInput = document.getElementById('prop-dp-end-time');
+        if (endTimeInput) {
+            endTimeInput.addEventListener('input', function(e) {
+                if (e.inputType !== 'deleteContentBackward') {
+                    this.value = formatColonTime(this.value);
+                }
+                notifyIframeDp({ type: 'LF_UPDATE_DATEPICKER', endTime: this.value });
             });
         }
     };
@@ -1861,11 +1953,23 @@
             const parsedW = parseInt(col.width);
             const numericWidth = isNaN(parsedW) ? (isCheckbox ? 50 : (col.type === 'text' ? 200 : 100)) : parsedW;
             
+            const showStatusOptions = (col.type === 'status');
+            const statusOptionsHtml = showStatusOptions ? `
+                <div style="display:flex; flex-direction:column; gap:2px; grid-column: span 3; margin-top: 4px;">
+                    <label style="font-size: 8px; color: #94a3b8;">상태 옵션 설정 (쉼표로 구분)</label>
+                    <input type="text" class="v4-prop-input grid-col-options-input" data-index="${index}" value="${col.options || '방송중, 방송예정, 방송종료'}" placeholder="예: 진행중, 완료, 대기" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 6px; border-radius: 4px; font-size: 11px;">
+                </div>
+            ` : '';
+
             const div = document.createElement('div');
             div.style.cssText = 'display:flex; flex-direction:column; gap:6px; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;';
             div.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <label style="font-size: 10px; color: #00e5ff; font-weight: bold;">COLUMN ${index + 1}</label>
+                    <div style="display: flex; gap: 4px;">
+                        <button class="v4-inspector-btn btn-move-col-up" data-index="${index}" style="height: 18px; width: 18px; display: flex; align-items: center; justify-content: center; font-size: 8px; border-radius: 4px; padding: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer;" title="위로 이동" ${index === 0 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>▲</button>
+                        <button class="v4-inspector-btn btn-move-col-down" data-index="${index}" style="height: 18px; width: 18px; display: flex; align-items: center; justify-content: center; font-size: 8px; border-radius: 4px; padding: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer;" title="아래로 이동" ${index === colsList.length - 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>▼</button>
+                    </div>
                 </div>
                 <div style="display:grid; grid-template-columns: 1.2fr 1fr 0.8fr; gap:6px;">
                     <div style="display:flex; flex-direction:column; gap:2px;">
@@ -1887,6 +1991,7 @@
                         <label style="font-size: 8px; color: #94a3b8;">가로크기(px)</label>
                         <input type="number" min="10" max="1000" class="v4-prop-input grid-col-width-input" data-index="${index}" value="${numericWidth}" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 6px; border-radius: 4px; font-size: 11px;">
                     </div>
+                    ${statusOptionsHtml}
                 </div>
             `;
             container.appendChild(div);
@@ -1894,33 +1999,70 @@
             const nameInp = div.querySelector('.grid-col-name-input');
             const typeSel = div.querySelector('.grid-col-type-select');
             const widthInp = div.querySelector('.grid-col-width-input');
+            const optionsInp = div.querySelector('.grid-col-options-input');
+            const btnUp = div.querySelector('.btn-move-col-up');
+            const btnDown = div.querySelector('.btn-move-col-down');
 
-            const triggerColUpdate = () => {
+            const getCurrentColsFromInputs = () => {
                 const nameInputs = Array.from(container.querySelectorAll('.grid-col-name-input'));
-                const updatedCols = nameInputs.map((inp) => {
+                return nameInputs.map((inp) => {
                     const idx = inp.getAttribute('data-index');
-                    const typeSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
-                    const widthInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
-                    const t = typeSel ? typeSel.value : 'text';
-                    const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
+                    const tSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
+                    const wInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
+                    const oInp = container.querySelector(`.grid-col-options-input[data-index="${idx}"]`);
+                    const t = tSel ? tSel.value : 'text';
+                    const wVal = wInp ? (parseInt(wInp.value) || 100) : 100;
+                    const oVal = oInp ? oInp.value : '';
                     return {
                         name: t === 'checkbox' ? '' : inp.value,
                         type: t,
-                        width: wVal + 'px'
+                        width: wVal + 'px',
+                        options: oVal
                     };
                 });
-                console.log("[DEBUG Grid] triggerColUpdate sent columns:", JSON.stringify(updatedCols));
+            };
 
+            const triggerColUpdateWithCols = (cols) => {
                 const iframe = document.getElementById('main-iframe');
                 if (iframe && iframe.contentWindow && window.MessageHub) {
                     window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_GRID_PROPERTIES', {
-                        columns: updatedCols
+                        columns: cols
                     });
                 }
             };
 
+            if (btnUp && index > 0) {
+                btnUp.onclick = () => {
+                    const currentCols = getCurrentColsFromInputs();
+                    const temp = currentCols[index];
+                    currentCols[index] = currentCols[index - 1];
+                    currentCols[index - 1] = temp;
+                    window.syncGridHeaderInputs(currentCols);
+                    triggerColUpdateWithCols(currentCols);
+                };
+            }
+
+            if (btnDown && index < colsList.length - 1) {
+                btnDown.onclick = () => {
+                    const currentCols = getCurrentColsFromInputs();
+                    const temp = currentCols[index];
+                    currentCols[index] = currentCols[index + 1];
+                    currentCols[index + 1] = temp;
+                    window.syncGridHeaderInputs(currentCols);
+                    triggerColUpdateWithCols(currentCols);
+                };
+            }
+
+            const triggerColUpdate = () => {
+                const currentCols = getCurrentColsFromInputs();
+                triggerColUpdateWithCols(currentCols);
+            };
+
             nameInp.oninput = triggerColUpdate;
             widthInp.oninput = triggerColUpdate;
+            if (optionsInp) {
+                optionsInp.oninput = triggerColUpdate;
+            }
             
             typeSel.onchange = () => {
                 const t = typeSel.value;
@@ -1939,7 +2081,14 @@
                     nameInp.style.borderColor = 'rgba(255,255,255,0.1)';
                     nameInp.style.color = '#fff';
                 }
-                triggerColUpdate();
+                
+                // Trigger update and redraw inputs immediately to show/hide status options config input
+                const updatedCols = getCurrentColsFromInputs();
+                triggerColUpdateWithCols(updatedCols);
+                
+                if (typeof syncGridHeaderInputs === 'function') {
+                    syncGridHeaderInputs(updatedCols, []);
+                }
             };
         });
     };
@@ -1982,11 +2131,20 @@
                     const idx = inp.getAttribute('data-index');
                     const typeSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
                     const widthInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
+                    const optionsInp = container.querySelector(`.grid-col-options-input[data-index="${idx}"]`);
                     const t = typeSel ? typeSel.value : 'text';
                     const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
-                    return { name: inp.value, type: t, width: wVal + 'px' };
+                    const oVal = optionsInp ? optionsInp.value : '';
+                    return { name: inp.value, type: t, width: wVal + 'px', options: oVal };
                 });
                 notifyGrid({ columns: updatedCols });
+                if (typeof syncGridHeaderInputs === 'function') {
+                    syncGridHeaderInputs(updatedCols, []);
+                }
+                const colCountInp = document.getElementById('prop-grid-col-count');
+                if (colCountInp) {
+                    colCountInp.value = updatedCols.length;
+                }
             };
         }
 
@@ -2001,9 +2159,11 @@
                     const idx = inp.getAttribute('data-index');
                     const typeSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
                     const widthInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
+                    const optionsInp = container.querySelector(`.grid-col-options-input[data-index="${idx}"]`);
                     const t = typeSel ? typeSel.value : 'text';
                     const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
-                    return { name: inp.value, type: t, width: wVal + 'px' };
+                    const oVal = optionsInp ? optionsInp.value : '';
+                    return { name: inp.value, type: t, width: wVal + 'px', options: oVal };
                 });
                 updatedCols.push({
                     name: '새 항목',
@@ -2011,6 +2171,13 @@
                     width: '200px'
                 });
                 notifyGrid({ columns: updatedCols });
+                if (typeof syncGridHeaderInputs === 'function') {
+                    syncGridHeaderInputs(updatedCols, []);
+                }
+                const colCountInp = document.getElementById('prop-grid-col-count');
+                if (colCountInp) {
+                    colCountInp.value = updatedCols.length;
+                }
             };
         }
 
@@ -2097,13 +2264,12 @@
                             }
                             // Trigger sync again
                             const compStyles = window.state.activeFile.components?.find(c => c.id === activeId) || {};
-                            // Gather attributes to sync
                             const syncData = {
                                 id: activeId,
                                 editingType: 'admin-settings',
                                 adminRowCount: val
                             };
-                            for (let i = 1; i <= 4; i++) {
+                            for (let i = 1; i <= 10; i++) {
                                 syncData[`adminRow${i}Label`] = container.getAttribute(`data-row${i}-label`) || '';
                                 syncData[`adminRow${i}Cols`] = parseInt(container.getAttribute(`data-row${i}-cols`)) || 1;
                                 syncData[`adminRow${i}Type`] = container.getAttribute(`data-row${i}-type`) || 'textbox';
@@ -2115,6 +2281,48 @@
             };
         }
     };
+    const initToggleEvents = () => {
+        const notifyIframeToggle = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                window.MessageHub.send(iframe.contentWindow, data.type, data);
+            }
+        };
+
+        const highlightActive = (btn, isActive) => {
+            if (!btn) return;
+            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+            btn.style.fontWeight = isActive ? 'bold' : 'normal';
+        };
+
+        const btnOn = document.getElementById('btn-toggle-on');
+        const btnOff = document.getElementById('btn-toggle-off');
+        if (btnOn) {
+            btnOn.onclick = () => {
+                highlightActive(btnOn, true);
+                highlightActive(btnOff, false);
+                notifyIframeToggle({ type: 'LF_UPDATE_TOGGLE_PROPERTIES', checked: true });
+            };
+        }
+        if (btnOff) {
+            btnOff.onclick = () => {
+                highlightActive(btnOff, true);
+                highlightActive(btnOn, false);
+                notifyIframeToggle({ type: 'LF_UPDATE_TOGGLE_PROPERTIES', checked: false });
+            };
+        }
+
+        const colorInput = document.getElementById('prop-toggle-color');
+        if (colorInput) {
+            colorInput.oninput = function() {
+                notifyIframeToggle({ type: 'LF_UPDATE_TOGGLE_PROPERTIES', color: this.value });
+            };
+        }
+    };
+    initToggleEvents();
+
     initAdminSettingsEvents();
 
     // Parent-side paste event listener for handling pasted image files when parent has focus
