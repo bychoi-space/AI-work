@@ -1,19 +1,13 @@
 {
   "title": "[배송] 7월 배송예정일 이슈",
   "screens": {
-    "03_Delivery_Notice_414.html": {
-      "title": "03_Delivery_Notice_414",
-      "type": "plan-delivery",
-      "updatedAt": "2026-07-07T06:13:06.221Z",
-      "template": "template_plan_delivery.html",
-      "description": [],
-      "connectors": []
-    },
     "03_Delivery_Notice_740.html": {
       "title": "03_Delivery_Notice_740",
       "type": "plan-delivery",
       "updatedAt": "2026-07-07T06:55:53.024Z",
-      "template": "template_plan_delivery.html"
+      "template": "template_plan_delivery.html",
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
