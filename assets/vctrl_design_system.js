@@ -1024,10 +1024,11 @@ window.v4DesignSystemScript = `
                 if (!isCheckbox) {
                     const nestedEditable = cell.querySelector('.v4-editable-cell, [contenteditable="true"]');
                     if (nestedEditable) {
-                        cell.classList.remove('v4-editable-cell');
-                        cell.removeAttribute('contenteditable');
+                        const text = nestedEditable.innerText || nestedEditable.innerHTML || '';
+                        nestedEditable.remove();
+                        cell.innerHTML = text;
                     }
-                    const target = nestedEditable || cell;
+                    const target = cell;
 
                     if (!target.classList.contains('v4-editable-cell')) {
                         target.classList.add('v4-editable-cell');

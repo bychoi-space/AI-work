@@ -34,6 +34,7 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .v4-grid-container th.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; position: sticky !important; top: 0 !important; z-index: 10 !important; background: #f8fafc !important; }
 .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; }
+th.v4-editable-cell:focus, td.v4-editable-cell:focus { outline-offset: -2px !important; }
 :not(th):not(td).v4-editable-cell:focus { background: rgba(99, 102, 241, 0.05) !important; }
 .selected-cell {
     outline: 1.6px dashed #6366f1 !important;
@@ -3756,13 +3757,9 @@ window.v4Script = `
                 
                 for (let i = 0; i < colCount; i++) {
                     const c = newRow.insertCell();
-                    const innerDiv = document.createElement('div');
-                    innerDiv.className = 'v4-editable-cell';
-                    innerDiv.contentEditable = 'true';
-                    innerDiv.innerText = 'Data';
-                    innerDiv.style.outline = 'none';
-                    innerDiv.style.padding = '4px';
-                    c.appendChild(innerDiv);
+                    c.className = 'v4-editable-cell';
+                    c.contentEditable = 'true';
+                    c.innerText = 'Data';
                     
                     if (templateRow && templateRow.cells[i]) {
                         const tc = templateRow.cells[i];
@@ -3780,13 +3777,9 @@ window.v4Script = `
                     const c = r.insertCell(insertIdx);
                     if (idx === 0) {
                         const th = document.createElement('th');
-                        const innerDiv = document.createElement('div');
-                        innerDiv.className = 'v4-editable-cell';
-                        innerDiv.contentEditable = 'true';
-                        innerDiv.innerText = 'Header';
-                        innerDiv.style.outline = 'none';
-                        innerDiv.style.padding = '4px';
-                        th.appendChild(innerDiv);
+                        th.className = 'v4-editable-cell';
+                        th.contentEditable = 'true';
+                        th.innerText = 'Header';
                         
                         th.style.background = 'var(--header-dark, #374151)';
                         th.style.color = '#ffffff';
@@ -3798,13 +3791,9 @@ window.v4Script = `
                         th.style.width = '120px';
                         r.replaceChild(th, c);
                     } else {
-                        const innerDiv = document.createElement('div');
-                        innerDiv.className = 'v4-editable-cell';
-                        innerDiv.contentEditable = 'true';
-                        innerDiv.innerText = '-';
-                        innerDiv.style.outline = 'none';
-                        innerDiv.style.padding = '4px';
-                        c.appendChild(innerDiv);
+                        c.className = 'v4-editable-cell';
+                        c.contentEditable = 'true';
+                        c.innerText = '-';
                         
                         c.style.borderBottom = '1.6px solid var(--v4-border-color, #cbd5e1)';
                         c.style.padding = '12px 6px';
