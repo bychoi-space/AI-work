@@ -4,7 +4,7 @@
     "03_Delivery_Notice_740.html": {
       "title": "03_Delivery_Notice_740",
       "type": "plan-delivery",
-      "updatedAt": "2026-07-07T06:55:53.024Z",
+      "updatedAt": "2026-07-07T07:30:12.426Z",
       "template": "template_plan_delivery.html",
       "description": [],
       "connectors": []
@@ -15,5 +15,5 @@
   "period": "2026.07.06(월) ~ 2026.07.20(월)",
   "jira": "LFML-144852",
   "themeIndex": 6,
-  "updated": "2026-07-07 15:13:06"
+  "updated": "2026-07-07 16:30:12"
 }
