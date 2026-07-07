@@ -3,6 +3,7 @@ window.v4TableScript = `
     // Table Selection Engine
     const TableSelection = {
         isDragging: false,
+        isDraggingCandidate: false,
         startRow: -1,
         startCol: -1,
         activeTable: null,
@@ -12,40 +13,57 @@ window.v4TableScript = `
             table.dataset.tableSelectionBound = "true";
 
             table.addEventListener('mousedown', (e) => {
-                // Ignore right clicks
                 if (e.button !== 0) return;
                 const cell = e.target.closest('td, th');
                 if (!cell) return;
 
-                // If editing text inside cell, don't trigger drag selection
                 const isEditing = e.target.isContentEditable && document.activeElement === e.target;
-                if (isEditing) {
-                    return; 
-                }
-
+                
                 this.activeTable = table;
-                this.isDragging = true;
                 this.startRow = cell.parentElement.rowIndex;
                 this.startCol = cell.cellIndex;
 
+                if (isEditing) {
+                    this.isDraggingCandidate = true;
+                    this.isDragging = false;
+                    return; 
+                }
+
+                this.isDragging = true;
+                this.isDraggingCandidate = false;
+
                 if (!e.shiftKey) {
-                    // Clear other selections
                     TableSelection.clearSelection(table);
                     cell.classList.add('selected-cell');
                 } else {
-                    // Toggle selection with shift key
                     cell.classList.toggle('selected-cell');
                 }
 
-                // Prevent default text selection during drag
                 e.preventDefault();
                 this.notifySelectionChanged();
             });
 
             table.addEventListener('mouseenter', (e) => {
-                if (!this.isDragging || this.activeTable !== table) return;
                 const cell = e.target.closest('td, th');
                 if (!cell) return;
+
+                if (this.isDraggingCandidate && this.activeTable === table) {
+                    const currentRow = cell.parentElement.rowIndex;
+                    const currentCol = cell.cellIndex;
+                    if (currentRow !== this.startRow || currentCol !== this.startCol) {
+                        if (document.activeElement && document.activeElement.isContentEditable) {
+                            document.activeElement.blur();
+                        }
+                        this.isDragging = true;
+                        this.isDraggingCandidate = false;
+                        window.getSelection()?.removeAllRanges();
+                        TableSelection.clearSelection(table);
+                        const startCell = table.rows[this.startRow]?.cells[this.startCol];
+                        if (startCell) startCell.classList.add('selected-cell');
+                    }
+                }
+
+                if (!this.isDragging || this.activeTable !== table) return;
 
                 const currentRow = cell.parentElement.rowIndex;
                 const currentCol = cell.cellIndex;
@@ -55,7 +73,6 @@ window.v4TableScript = `
                 const minCol = Math.min(this.startCol, currentCol);
                 const maxCol = Math.max(this.startCol, currentCol);
 
-                // Apply selection rectangle
                 Array.from(table.rows).forEach((row, rIdx) => {
                     Array.from(row.cells).forEach((colCell, cIdx) => {
                         const inRange = rIdx >= minRow && rIdx <= maxRow && cIdx >= minCol && cIdx <= maxCol;
@@ -67,7 +84,7 @@ window.v4TableScript = `
                     });
                 });
                 this.notifySelectionChanged();
-            }, true); // Use capture phase for cell events
+            }, true);
         },
 
         clearSelection(table) {
@@ -112,10 +129,9 @@ window.v4TableScript = `
 
     // Global listener to end dragging
     document.addEventListener('mouseup', () => {
-        if (TableSelection.isDragging) {
-            TableSelection.isDragging = false;
-            TableSelection.activeTable = null;
-        }
+        TableSelection.isDragging = false;
+        TableSelection.isDraggingCandidate = false;
+        TableSelection.activeTable = null;
     });
 
     // Clear selection when clicking empty spaces inside canvas
