@@ -1,6 +1,13 @@
 {
   "title": "[배송] 7월 배송예정일 이슈",
-  "screens": {},
+  "screens": {
+    "03_Delivery_Notice_414.html": {
+      "title": "03_Delivery_Notice_414",
+      "type": "plan-delivery",
+      "updatedAt": "2026-07-07T05:41:21.989Z",
+      "template": "template_plan_delivery.html"
+    }
+  },
   "assignee": "최범열",
   "developer": "",
   "period": "2026.07.06(월) ~ 2026.07.20(월)",
