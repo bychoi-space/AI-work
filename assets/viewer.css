@@ -457,4 +457,44 @@ body.fullscreen-mode #btn-fullscreen-exit {
     gap: 4px !important;
 }
 
+/* 13. Interactive Hover Transitions & Soft Glow Animations */
+.sidebar-handle {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.sidebar-handle:hover {
+    background: var(--accent-nav) !important;
+    color: #0f1721 !important;
+    box-shadow: 0 0 15px rgba(34, 211, 238, 0.5);
+    width: 24px;
+}
+
+.tool-btn {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.tool-btn:hover {
+    transform: scale(1.08);
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-primary) !important;
+}
+.tool-btn.active:hover {
+    background: rgba(34, 211, 238, 0.15) !important;
+    color: var(--accent-nav) !important;
+}
+
+@keyframes saveBtnPulse {
+    0% {
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    }
+    50% {
+        box-shadow: 0 4px 25px rgba(99, 102, 241, 0.65);
+    }
+    100% {
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    }
+}
+#btn-global-save {
+    animation: saveBtnPulse 2.5s infinite ease-in-out;
+}
+
+
 
