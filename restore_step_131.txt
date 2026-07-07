@@ -1,2 +1,0 @@
-﻿"        const scale = window.state.transform.scale || 1;\n        const pRect = pinsLayer.getBoundingClientRect();\n        const iRect = iframe.getBoundingClientRect();\n\n        // 1. Gather all selected element bounds in normalized virtual space\n    
-<truncated 3762 bytes>

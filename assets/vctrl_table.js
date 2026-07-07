@@ -18,7 +18,7 @@ window.v4TableScript = `
                 if (!cell) return;
 
                 // If editing text inside cell, don't trigger drag selection
-                if (e.target.isContentEditable && e.target === document.activeElement) {
+                if (e.target.closest('.v4-editable-cell') || e.target.isContentEditable) {
                     return; 
                 }
 

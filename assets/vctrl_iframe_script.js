@@ -28,6 +28,10 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .v4-premium-table th { padding: 14px 16px; text-align: left; border-bottom: 1.6px solid #475569 !important; font-weight: 700; white-space: nowrap; }
 .v4-premium-table td { padding: 14px 16px; border-bottom: 1.6px solid #cbd5e1 !important; }
 .v4-premium-table tr:last-child td { border-bottom: none !important; }
+.v4-grid-container table th, .v4-grid-container table td { border-right: 1.6px solid rgb(226, 232, 240) !important; }
+.v4-grid-container table tr { border-bottom: 1.6px solid rgb(226, 232, 240) !important; }
+.v4-grid-container td.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; }
+.v4-grid-container th.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; position: sticky !important; top: 0 !important; z-index: 10 !important; background: #f8fafc !important; }
 .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
 .selected-cell {
@@ -538,6 +542,8 @@ window.v4Script = `
         const adminGroupHeaderTitle = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-title') || '그룹명') : '그룹명';
         const adminGroupHeaderBg = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-bg') || '#73829c') : '#73829c';
         const adminGroupHeaderColor = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-color') || '#ffffff') : '#ffffff';
+        const firstLabel = adminSettingsContainer ? adminSettingsContainer.querySelector('.v4-admin-label-cell') : null;
+        const adminLabelWidth = firstLabel ? (parseInt(firstLabel.style.width) || parseInt(window.getComputedStyle(firstLabel).width) || 140) : 140;
 
         const adminRowData = {};
         for (let i = 1; i <= 10; i++) {
@@ -623,6 +629,8 @@ window.v4Script = `
             id: c.id,
             x: parseFloat(c.style.left) || 0,
             y: parseFloat(c.style.top) || 0,
+            shapeType: shape ? (shape.classList.contains('v4-shape-rect') ? 'rect' : (shape.classList.contains('v4-shape-circle') ? 'circle' : (shape.classList.contains('v4-shape-triangle') ? 'triangle' : (shape.classList.contains('v4-shape-diamond') ? 'diamond' : (shape.classList.contains('v4-shape-arrow') ? 'arrow' : ''))))) : '',
+            arrowDir: shape && shape.classList.contains('v4-shape-arrow') ? (shape.getAttribute('data-arrow-dir') || 'right') : '',
             isTable: !!table && !isGrid,
             isShape: !!shape,
             isIcon: !!icon,
@@ -697,6 +705,7 @@ window.v4Script = `
             adminGroupHeaderTitle: adminGroupHeaderTitle,
             adminGroupHeaderBg: adminGroupHeaderBg,
             adminGroupHeaderColor: adminGroupHeaderColor,
+            adminLabelWidth: adminLabelWidth,
             ...adminRowData,
             adminRowHeight: adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-height')) || 50 : 50,
             isToggle: isToggle,
@@ -1208,11 +1217,35 @@ window.v4Script = `
                 });
             }
             
+            var colgroup = table.querySelector('colgroup');
+            if (colgroup) {
+                var cols = Array.from(colgroup.querySelectorAll('col'));
+                while (cols.length < columns.length) {
+                    var newCol = document.createElement('col');
+                    colgroup.appendChild(newCol);
+                    cols.push(newCol);
+                }
+                while (cols.length > columns.length) {
+                    colgroup.removeChild(cols.pop());
+                }
+                columns.forEach(function(col, idx) {
+                    var w = col.width;
+                    if (!w) {
+                        w = '100px';
+                    } else {
+                        w = w.trim();
+                        if (/^\d+$/.test(w) || /^\d*\.\d+$/.test(w)) {
+                            w = w + 'px';
+                        }
+                    }
+                    cols[idx].style.width = w;
+                });
+            }
+
             var thead = table.querySelector('thead');
             if (thead) {
                 var headerRow = thead.querySelector('tr');
                 if (headerRow) {
-                    headerRow.style.background = '#ffffff';
                     var ths = Array.from(headerRow.querySelectorAll('th'));
                     while (ths.length < columns.length) {
                         var newTh = document.createElement('th');
@@ -1240,7 +1273,7 @@ window.v4Script = `
                         var fontSize = th.style.fontSize;
                         var fontFamily = th.style.fontFamily;
 
-                        th.style.borderRight = isLast ? 'none' : '1.6px solid rgb(226,232,240)';
+                        th.style.borderRight = '1.6px solid rgb(226,232,240)';
                         th.style.textAlign = col.type === 'checkbox' ? 'center' : 'left';
                         th.style.padding = col.type === 'checkbox' ? '0' : '0 8px';
                         th.style.fontWeight = '500';
@@ -1258,6 +1291,46 @@ window.v4Script = `
                             var desiredText = (col.name || '') + ' ⇅';
                             if (th.innerText !== desiredText && th.innerText !== col.name) {
                                 th.innerText = desiredText;
+                            }
+                             if (!th.dataset.eventsBound) {
+                                th.dataset.eventsBound = 'true';
+                                
+                                const selectParentComponent = () => {
+                                    const comp = th.closest('.lf-component');
+                                    if (comp && !comp.classList.contains('selected')) {
+                                        document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                                        comp.classList.add('selected');
+                                        if (window.updateHandles) window.updateHandles(comp);
+                                        
+                                        notifyParent({
+                                            type: "LF_COMP_SELECTED",
+                                            shiftKey: false,
+                                            ...window._getCompStyles(comp)
+                                        });
+                                    }
+                                };
+
+                                th.addEventListener('mousedown', function(e) {
+                                    e.stopPropagation();
+                                    selectParentComponent();
+                                });
+                                th.addEventListener('click', function(e) {
+                                    e.stopPropagation();
+                                    selectParentComponent();
+                                });
+                                th.addEventListener('input', function() {
+                                    markDirty();
+                                    try {
+                                        const gridContainer = th.closest('.v4-grid-container');
+                                        if (gridContainer) {
+                                            const cols = JSON.parse(gridContainer.getAttribute('data-columns') || '[]');
+                                            if (cols[idx]) {
+                                                cols[idx].name = th.innerText.replace(' ⇅', '').trim();
+                                                gridContainer.setAttribute('data-columns', JSON.stringify(cols));
+                                            }
+                                        }
+                                    } catch(err) {}
+                                });
                             }
                         }
 
@@ -1286,8 +1359,7 @@ window.v4Script = `
                 }
                 
                 rows.forEach(function(row, rIdx) {
-                    var isLastRow = (rIdx === rowCount - 1);
-                    row.style.borderBottom = isLastRow ? 'none' : '1.6px solid rgb(226,232,240)';
+                    row.style.borderBottom = '1.6px solid rgb(226,232,240)';
                     
                     var tds = Array.from(row.querySelectorAll('td'));
                     while (tds.length < columns.length) {
@@ -1307,14 +1379,47 @@ window.v4Script = `
                     
                     columns.forEach(function(col, cIdx) {
                         var td = tds[cIdx];
-                        var isLastCol = (cIdx === columns.length - 1);
-                        td.style.borderRight = isLastCol ? 'none' : '1.6px solid rgb(226,232,240)';
+                        td.style.borderRight = '1.6px solid rgb(226,232,240)';
                         
                         var prevType = td.getAttribute('data-type');
                         // Legacy support: if checkbox td doesn't have data-type, resolve it
                         if (!prevType && (td.classList.contains('v4-grid-check-col') || td.querySelector('input[type="checkbox"]'))) {
                             prevType = 'checkbox';
                             td.setAttribute('data-type', 'checkbox');
+                        }
+
+                        // Bind event listeners on non-checkbox cells to allow direct editing
+                        if (col.type !== 'checkbox') {
+                            if (!td.dataset.eventsBound) {
+                                td.dataset.eventsBound = 'true';
+                                
+                                const selectParentComponent = () => {
+                                    const comp = td.closest('.lf-component');
+                                    if (comp && !comp.classList.contains('selected')) {
+                                        document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                                        comp.classList.add('selected');
+                                        if (window.updateHandles) window.updateHandles(comp);
+                                        
+                                        notifyParent({
+                                            type: "LF_COMP_SELECTED",
+                                            shiftKey: false,
+                                            ...window._getCompStyles(comp)
+                                        });
+                                    }
+                                };
+
+                                td.addEventListener('mousedown', function(e) {
+                                    e.stopPropagation();
+                                    selectParentComponent();
+                                });
+                                td.addEventListener('click', function(e) {
+                                    e.stopPropagation();
+                                    selectParentComponent();
+                                });
+                                td.addEventListener('input', function() {
+                                    markDirty();
+                                });
+                            }
                         }
 
                         var currentText = td.innerText || '';
@@ -1340,6 +1445,11 @@ window.v4Script = `
                                 td.style.textAlign = 'left';
                                 td.style.padding = '0 8px';
                                 
+                                // Reset inline styles so they inherit unified defaults from viewer.css
+                                td.style.color = '';
+                                td.style.fontWeight = '';
+                                td.style.fontSize = '';
+                                
                                 var data = mockList[rIdx % mockList.length];
                                 if (col.type === 'number') {
                                     td.innerText = (1024 - rIdx);
@@ -1356,9 +1466,11 @@ window.v4Script = `
 
                             // Restore styles
                             if (bg) td.style.setProperty('background', bg, 'important');
-                            if (color) td.style.setProperty('color', color, 'important');
-                            if (fontSize) td.style.setProperty('font-size', fontSize, 'important');
-                            if (fontFamily) td.style.setProperty('font-family', fontFamily, 'important');
+                            if (col.type === 'status' || col.type === 'checkbox') {
+                                if (color) td.style.setProperty('color', color, 'important');
+                                if (fontSize) td.style.setProperty('font-size', fontSize, 'important');
+                                if (fontFamily) td.style.setProperty('font-family', fontFamily, 'important');
+                            }
                         }
                     });
                 });
@@ -1370,7 +1482,7 @@ window.v4Script = `
             }
             var wrapper = container.querySelector('.v4-grid-table-wrapper');
             if (wrapper) {
-                wrapper.style.height = showPagination ? 'calc(100% - 72px)' : 'calc(100% - 36px)';
+                wrapper.style.height = showPagination ? 'calc(100% - 36px)' : '100%';
             }
             return;
         }
@@ -1393,12 +1505,11 @@ window.v4Script = `
         
         var headerHtml = '<tr style="height:36px; background:#ffffff; border-bottom:1.6px solid rgb(226,232,240); box-sizing:border-box;">';
         columns.forEach(function(col, index) {
-            var isLast = (index === columns.length - 1);
-            var borderRight = isLast ? '' : ' border-right:1.6px solid rgb(226,232,240);';
+            var borderRight = ' border-right:1.6px solid rgb(226,232,240);';
             if (col.type === 'checkbox') {
                 headerHtml += '<th class="v4-grid-cell v4-grid-check-col" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0; font-weight:normal;"><input type="checkbox"></th>';
             } else {
-                headerHtml += '<th class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="' + col.type + '" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; font-weight:500; color:#334155; user-select:none;">' + (col.name || '') + ' ⇅</th>';
+                headerHtml += '<th class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="' + col.type + '" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; font-weight:500; color:#0f172a; user-select:none;">' + (col.name || '') + ' ⇅</th>';
             }
         });
         headerHtml += '</tr>';
@@ -1407,24 +1518,23 @@ window.v4Script = `
         for (var i = 0; i < rowCount; i++) {
             var data = mockList[i % mockList.length];
             var isLastRow = (i === rowCount - 1);
-            var borderBottom = isLastRow ? 'none' : '1.6px solid rgb(226,232,240)';
+            var borderBottom = '1.6px solid rgb(226,232,240)';
             
             bodyHtml += '<tr style="height:36px; border-bottom:' + borderBottom + '; box-sizing:border-box; background:#ffffff;">';
             
             columns.forEach(function(col, colIndex) {
-                var isLastCol = (colIndex === columns.length - 1);
-                var borderRight = isLastCol ? '' : ' border-right:1.6px solid rgb(226,232,240);';
+                var borderRight = ' border-right:1.6px solid rgb(226,232,240);';
                 
                 if (col.type === 'checkbox') {
                     bodyHtml += '<td class="v4-grid-cell" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0;"><input type="checkbox"></td>';
                 } else if (col.type === 'number') {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="number" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#334155;">' + (1024 - i) + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="number" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + (1024 - i) + '</td>';
                 } else if (col.type === 'status') {
                     bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="status" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box;"><span style="background:' + data.statusBg + '; color:' + data.statusColor + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + data.status + '</span></td>';
                 } else if (col.type === 'author') {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="author" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#64748b;">' + data.author + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="author" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.author + '</td>';
                 } else if (col.type === 'datetime') {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="datetime" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#64748b;">' + data.date + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="datetime" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.date + '</td>';
                 } else {
                     bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="text" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.name + '</td>';
                 }
@@ -1433,7 +1543,7 @@ window.v4Script = `
         }
         
         var displayFooter = showPagination ? 'flex' : 'none';
-        var tableHeight = showPagination ? 'calc(100% - 72px)' : 'calc(100% - 36px)';
+        var tableHeight = showPagination ? 'calc(100% - 36px)' : '100%';
         
         var tableContainerHtml = '<div class="v4-grid-table-wrapper" style="width:100%; height:' + tableHeight + '; overflow:auto; box-sizing:border-box;">' +
                                  '<table style="width:100%; table-layout:fixed; border-collapse:collapse; background:#ffffff; box-sizing:border-box;">' +
@@ -2084,32 +2194,59 @@ window.v4Script = `
             if (!shape) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
-            const isSvgShape = shape.classList.contains('v4-shape-diamond') || 
-                               shape.classList.contains('v4-shape-triangle') || 
-                               shape.classList.contains('v4-shape-wave');
-
-            if (isSvgShape) {
-                let textOverlay = shape.querySelector('.v4-shape-text-overlay');
-                if (!textOverlay) {
-                    textOverlay = document.createElement('div');
-                    textOverlay.className = 'v4-shape-text-overlay';
-                    textOverlay.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;text-align:center;pointer-events:none;padding:4px;box-sizing:border-box;z-index:2;';
-                    shape.style.position = 'relative';
-                    shape.appendChild(textOverlay);
-                }
-                textOverlay.innerHTML = d.html;
+            const editableCell = shape.querySelector('.v4-editable-cell');
+            if (editableCell) {
+                editableCell.innerHTML = d.html;
             } else {
-                let textContainer = shape.querySelector('.v4-shape-text-content');
-                if (!textContainer) {
-                    const existingContent = shape.innerHTML;
-                    textContainer = document.createElement('div');
-                    textContainer.className = 'v4-shape-text-content';
-                    textContainer.style.cssText = 'width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;overflow:hidden;';
-                    shape.innerHTML = '';
-                    textContainer.innerHTML = existingContent;
-                    shape.appendChild(textContainer);
+                const isSvgShape = shape.classList.contains('v4-shape-diamond') || 
+                                   shape.classList.contains('v4-shape-triangle') || 
+                                   shape.classList.contains('v4-shape-wave');
+
+                if (isSvgShape) {
+                    let textOverlay = shape.querySelector('.v4-shape-text-overlay');
+                    if (!textOverlay) {
+                        textOverlay = document.createElement('div');
+                        textOverlay.className = 'v4-shape-text-overlay';
+                        textOverlay.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;text-align:center;pointer-events:none;padding:4px;box-sizing:border-box;z-index:2;';
+                        shape.style.position = 'relative';
+                        shape.appendChild(textOverlay);
+                    }
+                    textOverlay.innerHTML = d.html;
+                } else {
+                    let textContainer = shape.querySelector('.v4-shape-text-content');
+                    if (!textContainer) {
+                        const existingContent = shape.innerHTML;
+                        textContainer = document.createElement('div');
+                        textContainer.className = 'v4-shape-text-content';
+                        textContainer.style.cssText = 'width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px;box-sizing:border-box;overflow:hidden;';
+                        shape.innerHTML = '';
+                        textContainer.innerHTML = existingContent;
+                        shape.appendChild(textContainer);
+                    }
+                    textContainer.innerHTML = d.html;
                 }
-                textContainer.innerHTML = d.html;
+            }
+            markDirty();
+        }
+        else if (d.type === 'LF_UPDATE_ARROW_DIRECTION') {
+            const s = document.querySelector('.lf-component.selected'); 
+            if (!s) return;
+            const shape = s.querySelector('.v4-shape.v4-shape-arrow');
+            if (!shape) return;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            const path = shape.querySelector('.v4-arrow-path');
+            if (path) {
+                const dir = d.direction || 'right';
+                shape.setAttribute('data-arrow-dir', dir);
+                
+                const PATHS = {
+                    right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
+                    left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
+                    up: 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z',
+                    down: 'M 30,0 L 30,60 L 10,60 L 50,100 L 90,60 L 70,60 L 70,0 Z'
+                };
+                path.setAttribute('d', PATHS[dir] || PATHS.right);
             }
             markDirty();
         }
@@ -2568,6 +2705,11 @@ window.v4Script = `
                     container.setAttribute('data-row-height', d.rowHeight);
                 }
 
+                // Update Label Width
+                if (d.labelWidth !== undefined) {
+                    container.setAttribute('data-label-width', d.labelWidth);
+                }
+
                 // Update Specific Row Configuration
                 if (d.rowNum !== undefined) {
                     const rNum = d.rowNum;
@@ -2650,10 +2792,12 @@ window.v4Script = `
                         for (let c = 0; c < colsAttr; c++) {
                             const colLabel = labels[c] || (labels[0] + (c > 0 ? ' ' + (c + 1) : ''));
                             
+                            const labelWidth = container.getAttribute('data-label-width') || '140';
+                            
                             // Label cell
                             const labelCell = document.createElement('div');
                             labelCell.className = 'v4-admin-label-cell';
-                            labelCell.style.cssText = 'width: 140px; background: #f1f5f9; display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 600; color: #334155; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;';
+                            labelCell.style.cssText = 'width: ' + labelWidth + 'px; background: #f1f5f9; display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 600; color: #334155; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;';
                             labelCell.innerText = colLabel;
                             rowEl.appendChild(labelCell);
                             
@@ -2848,7 +2992,7 @@ window.v4Script = `
                 if (svgShape) {
                     if (d.style.backgroundColor || d.style.background) {
                         svgShape.style.fill = d.style.backgroundColor || d.style.background;
-                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave')) {
+                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave') || t.classList.contains('v4-shape-arrow')) {
                             t.style.backgroundColor = 'transparent';
                         }
                     }

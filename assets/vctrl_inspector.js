@@ -82,6 +82,7 @@ window.DOM = {
     alertPropSection: get('alert-inspector-section'),
     buttonPropSection: get('button-inspector-section'),
     datepickerPropSection: get('datepicker-inspector-section'),
+    datePickerPropSection: get('datepicker-inspector-section'),
     togglePropSection: get('toggle-inspector-section'),
     accordionPropSection: get('accordion-inspector-section'),
     gridPropSection: get('grid-inspector-section'),
@@ -199,7 +200,7 @@ function restorePropertiesSections() {
 // --- 3. UI Rendering Functions ---
 window.updateProperties = function(compStyles) {
     const activeEl = document.activeElement;
-    const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title');
+    const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title' || activeEl.id === 'prop-admin-label-width-slider' || activeEl.id === 'prop-admin-label-width-number');
     const isTypingCheckboxLabel = activeEl && activeEl.id === 'prop-atom-text-content';
     const isTypingInGridProps = activeEl && (activeEl.closest('#grid-inspector-section') || activeEl.classList.contains('grid-col-width-input') || activeEl.classList.contains('grid-col-name-input') || activeEl.classList.contains('grid-col-type-select'));
     const isTypingInDatePickerProps = activeEl && (
@@ -300,7 +301,7 @@ const ProjectMetadataManager = {
 
         // Hide all sections first
         const activeEl = document.activeElement;
-        const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title');
+        const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title' || activeEl.id === 'prop-admin-label-width-slider' || activeEl.id === 'prop-admin-label-width-number');
 
         const arrowGroupInit = document.getElementById('shape-arrow-direction-group');
         if (arrowGroupInit) arrowGroupInit.style.display = 'none';
@@ -431,7 +432,7 @@ const ProjectMetadataManager = {
                 if (DOM.adminSettingsPropSection) DOM.adminSettingsPropSection.style.display = 'block';
                 // Focus guard: Do not rebuild the inputs if the user is actively typing in one of them
                 const activeEl = document.activeElement;
-                const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title');
+                const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title' || activeEl.id === 'prop-admin-label-width-slider' || activeEl.id === 'prop-admin-label-width-number');
                 if (!isTypingInAdminProps) {
                     _syncAdminSettingsProps(compStyles);
                 }
@@ -547,7 +548,7 @@ const ProjectMetadataManager = {
         // Dynamically move active panels into floating inspector card body
         const floatingBody = document.getElementById('floating-inspector-body');
         if (floatingBody) {
-            const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title');
+            const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title' || activeEl.id === 'prop-admin-label-width-slider' || activeEl.id === 'prop-admin-label-width-number');
             const isTypingCheckboxLabel = activeEl && activeEl.id === 'prop-atom-text-content';
             const isTypingInDatePickerProps = activeEl && (
                 activeEl.id === 'prop-dp-start-date' ||
@@ -1773,6 +1774,48 @@ function _syncAdminSettingsProps(comp) {
     const rowCountText = document.getElementById('txt-admin-row-count');
     if (rowCountText && comp.adminRowCount !== undefined) {
         rowCountText.innerText = comp.adminRowCount;
+    }
+
+    const labelWidthSlider = document.getElementById('prop-admin-label-width-slider');
+    const labelWidthNum = document.getElementById('prop-admin-label-width-number');
+    if (labelWidthSlider && labelWidthNum) {
+        if (comp.adminLabelWidth !== undefined) {
+            labelWidthSlider.value = comp.adminLabelWidth;
+            labelWidthNum.value = comp.adminLabelWidth;
+        }
+        
+        const updateWidth = (val) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ADMIN_SETTINGS_PROPERTIES', {
+                    labelWidth: val
+                });
+            }
+        };
+
+        labelWidthSlider.oninput = (e) => {
+            const val = parseInt(e.target.value) || 140;
+            labelWidthNum.value = val;
+            updateWidth(val);
+        };
+
+        labelWidthNum.oninput = (e) => {
+            let val = parseInt(e.target.value) || 140;
+            // Allow loose typing but constrain values on final update
+            if (val >= 60 && val <= 300) {
+                labelWidthSlider.value = val;
+                updateWidth(val);
+            }
+        };
+        
+        labelWidthNum.onblur = (e) => {
+            let val = parseInt(e.target.value) || 140;
+            if (val < 60) val = 60;
+            if (val > 300) val = 300;
+            labelWidthNum.value = val;
+            labelWidthSlider.value = val;
+            updateWidth(val);
+        };
     }
 
     // Sync Group Header Inputs

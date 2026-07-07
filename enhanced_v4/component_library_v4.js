@@ -134,6 +134,23 @@ window.V4_COMPONENT_LIBRARY = {
             </div>`
         },
         {
+            id: 'v4-atom-popup',
+            name: 'Popup Window',
+            koName: '팝업 모달 다이얼로그 창',
+            category: 'Atoms',
+            previewHtml: `<div style="display: flex; flex-direction: column; width: 80px; height: 55px; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 6px; box-shadow: 0 6px 16px rgba(0,0,0,0.15); overflow: hidden; font-size: 8px; box-sizing: border-box;"><div style="background: var(--v4-disabled-bg, #f1f5f9); height: 14px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; border-bottom: 1px solid var(--v4-border-color, #ccc); font-weight: bold; color: #1e293b;"><span>Popup</span><span>&times;</span></div><div style="flex: 1; padding: 4px; background: transparent;"></div></div>`,
+            html: `
+            <div class="v4-shape v4-popup-container" style="width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; flex-direction: column; background: var(--v4-component-bg, rgb(255, 255, 255)); border: 1.6px solid var(--v4-border-color, rgb(200, 200, 200)) !important; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 2px 10px rgba(0,0,0,0.06); overflow: hidden;">
+                <div class="v4-popup-header" style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: var(--v4-disabled-bg, #f1f5f9); border-bottom: 1.6px solid var(--v4-border-color, rgb(200, 200, 200)) !important; box-sizing: border-box; width: 100%; flex-shrink: 0; pointer-events: auto;">
+                    <div contenteditable="true" class="v4-editable-cell v4-popup-title" style="font-size: 13px; font-weight: 700; color: var(--v4-text-color, #1e293b); outline: none; text-align: left; flex: 1;">Popup Title</div>
+                    <span class="v4-popup-close" style="cursor: pointer; color: var(--v4-placeholder-color, #94a3b8); font-size: 16px; font-weight: bold; line-height: 1; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px;">&times;</span>
+                </div>
+                <div class="v4-popup-body" style="flex: 1; width: 100%; padding: 12px; box-sizing: border-box; background: transparent; position: relative;">
+                    
+                </div>
+            </div>`
+        },
+        {
             id: 'v4-atom-button',
             name: 'Button',
             category: 'Atoms',

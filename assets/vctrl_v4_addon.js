@@ -59,6 +59,9 @@
             } else if (item.id === 'v4-atom-alert') {
                 style.width = '250px';
                 style.height = '120px';
+            } else if (item.id === 'v4-atom-popup') {
+                style.width = '300px';
+                style.height = '200px';
             } else if (item.id === 'v4-atom-button') {
                 style.width = '80px';
                 style.height = '40px';

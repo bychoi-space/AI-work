@@ -170,3 +170,19 @@
     - `Alt + 6`: 하단 정렬 (Bottom)
     - iframe 내부 포커스 상태에서도 동일하게 키 입력이 감지될 수 있도록 `MessageHub`를 통해 부모(Orchestrator)로 정렬 요청을 프록시 전달해야 합니다.
 
+
+## 📊 Grid UI(그리드 UI) 컴포넌트 렌더링 및 스타일링 규칙
+- **자식 Iframe과 부모 CSS의 격리 특성 (Iframe Sandbox Isolation)**:
+  - Grid UI와 같이 iframe 내부에 렌더링되는 컴포넌트는 부모 창의 스타일시트(예: `viewer.css`)가 전혀 상속되지 않습니다.
+  - 따라서 Grid table 셀(`td`, `th`)의 기본 글꼴 크기, 패밀리, 정렬 등 비주얼 테마를 설정할 때는 부모가 아닌 iframe 내부 스타일시트(`window.v4Styles` in `vctrl_iframe_script.js`)에 스타일 룰을 명시적으로 주입해야 브라우저 기본값 오작동을 차단할 수 있습니다.
+- **텍스트 계열 컬럼 스타일 초기화 및 통일 (Text-like Columns Typography Unification)**:
+  - 번호, 작성자, 일시, 일반 텍스트 등 텍스트 계열 컬럼(`text`, `number`, `author`, `datetime`)은 타입 변경 시 기존에 개별적으로 부여되어 있던 인라인 스타일(`color`, `font-weight`, `font-size`)을 빈 값(`""`)으로 리셋하고, 폰트 스타일의 inline 복원을 스킵하여 iframe 전용 stylesheet 규칙을 온전히 상속받게 함으로써 모든 열이 100% 동일한 폰트 규격을 유지하도록 보장해야 합니다.
+  - 단, 체크박스(`checkbox`) 및 상태 배지(`status`)는 각각의 고유 비주얼 테마와 스팬 스타일을 렌더링하고 스타일 복원을 허용합니다.
+- **테이블 높이 및 푸터 여백 보정 (Table Height & Footer Offset)**:
+  - Grid UI 하단에 원인 모를 36px 여백이 발생하거나 마지막 로우가 잘리는 현상을 차단하기 위해, 푸터가 활성화(`showPagination === true`)되어 있을 때의 테이블 영역 높이는 `calc(100% - 36px)`로 정확히 지정하고, 푸터가 꺼져 있을 때는 `100%`를 온전히 사용해야 합니다. (이전의 `-72px` 및 `-36px` 보정치는 36px 여백을 발생시키는 버그이므로 절대 금지합니다.)
+- **최상단 헤더 로우 스타일 보존 (Header Row Background Preservation)**:
+  - partial update 시점에 최상단 헤더 로우(`thead tr`)의 배경을 강제로 `#ffffff`로 덮어쓰는 코드는 사용자가 작성해 둔 커스텀 헤더 배경 스타일을 파괴하므로 절대 배제해야 하며, 원래의 스타일을 그대로 유지하도록 보호해야 합니다.
+- **Partial Update 시 `<colgroup>` 동시 동기화 (Colgroup Synchronization)**:
+  - partial update 루프에서 `thead` 및 `tbody`만 갱신하고 `<colgroup>`을 동기화하지 않으면 열 너비 불일치 및 우측 빈 열 노출 현상이 발생하므로, 변경된 컬럼 개수와 너비 스펙에 맞추어 `<colgroup>` 내 `<col>` 요소의 개수와 너비도 실시간으로 동시 동기화해주어야 합니다.
+
+

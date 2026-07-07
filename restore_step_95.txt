@@ -1,2 +1,0 @@
-﻿"                        <!-- Selection Alignment Bar (2-Row Stacked Layout for narrow sidebar) -->\n                        <div id=\"selection-align-bar\" style=\"display: none; flex-direction: column; gap: 6px; width: 100%; margin-top: 12px; padding-top
-<truncated 3023 bytes>

@@ -1019,7 +1019,6 @@ window.v4DesignSystemScript = `
             if (t.closest('.v4-grid-container')) {
                 // Keep table width managed by renderGrid
                 
-                // Enforce editable behavior on legacy grid cells
                 t.querySelectorAll('td, th').forEach(cell => {
                     const isCheckbox = cell.classList.contains('v4-grid-check-col') || 
                                      cell.querySelector('input[type="checkbox"]') || 
@@ -1030,6 +1029,49 @@ window.v4DesignSystemScript = `
                         }
                         if (cell.getAttribute('contenteditable') !== 'true') {
                             cell.setAttribute('contenteditable', 'true');
+                        }
+                        if (!cell.dataset.eventsBound) {
+                            cell.dataset.eventsBound = 'true';
+                            
+                            const selectParentComponent = () => {
+                                const comp = cell.closest('.lf-component');
+                                if (comp && !comp.classList.contains('selected')) {
+                                    document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                                    comp.classList.add('selected');
+                                    if (window.updateHandles) window.updateHandles(comp);
+                                    
+                                    notifyParent({
+                                        type: "LF_COMP_SELECTED",
+                                        shiftKey: false,
+                                        ...window._getCompStyles(comp)
+                                    });
+                                }
+                            };
+
+                            cell.addEventListener('mousedown', function(e) {
+                                e.stopPropagation();
+                                selectParentComponent();
+                            });
+                            cell.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                selectParentComponent();
+                            });
+                            cell.addEventListener('input', function() {
+                                if (window.markDirty) window.markDirty();
+                                if (cell.tagName === 'TH') {
+                                    try {
+                                        const gridContainer = cell.closest('.v4-grid-container');
+                                        if (gridContainer) {
+                                            const cols = JSON.parse(gridContainer.getAttribute('data-columns') || '[]');
+                                            const idx = Array.from(cell.parentElement.children).indexOf(cell);
+                                            if (cols[idx]) {
+                                                cols[idx].name = cell.innerText.replace(' ⇅', '').trim();
+                                                gridContainer.setAttribute('data-columns', JSON.stringify(cols));
+                                            }
+                                        }
+                                    } catch(err) {}
+                                }
+                            });
                         }
                     }
                 });
