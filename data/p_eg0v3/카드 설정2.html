@@ -60,6 +60,8 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .v4-premium-table th { padding: 14px 16px; text-align: left; border-bottom: 1.6px solid #475569 !important; font-weight: 700; white-space: nowrap; }
 .v4-premium-table td { padding: 14px 16px; border-bottom: 1.6px solid #cbd5e1 !important; }
 .v4-premium-table tr:last-child td { border-bottom: none !important; }
+.v4-grid-container table th, .v4-grid-container table td { border-right: 1.6px solid rgb(226, 232, 240) !important; }
+.v4-grid-container table tr { border-bottom: 1.6px solid rgb(226, 232, 240) !important; }
 .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
 .selected-cell {
@@ -1728,16 +1730,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (t.closest('.v4-grid-container')) {
                 // Keep table width managed by renderGrid
                 
-                // Enforce borders on all cells and rows
-                t.querySelectorAll('tr').forEach(row => {
-                    if (row.style.borderBottom !== '1.6px solid rgb(226, 232, 240)') {
-                        row.style.setProperty('border-bottom', '1.6px solid rgb(226, 232, 240)', 'important');
-                    }
-                });
                 t.querySelectorAll('td, th').forEach(cell => {
-                    if (cell.style.borderRight !== '1.6px solid rgb(226, 232, 240)') {
-                        cell.style.setProperty('border-right', '1.6px solid rgb(226, 232, 240)', 'important');
-                    }
                     const isCheckbox = cell.classList.contains('v4-grid-check-col') || 
                                      cell.querySelector('input[type="checkbox"]') || 
                                      cell.getAttribute('data-type') === 'checkbox';
@@ -1750,11 +1743,29 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         }
                         if (!cell.dataset.eventsBound) {
                             cell.dataset.eventsBound = 'true';
+                            
+                            const selectParentComponent = () => {
+                                const comp = cell.closest('.lf-component');
+                                if (comp && !comp.classList.contains('selected')) {
+                                    document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                                    comp.classList.add('selected');
+                                    if (window.updateHandles) window.updateHandles(comp);
+                                    
+                                    notifyParent({
+                                        type: "LF_COMP_SELECTED",
+                                        shiftKey: false,
+                                        ...window._getCompStyles(comp)
+                                    });
+                                }
+                            };
+
                             cell.addEventListener('mousedown', function(e) {
                                 e.stopPropagation();
+                                selectParentComponent();
                             });
                             cell.addEventListener('click', function(e) {
                                 e.stopPropagation();
+                                selectParentComponent();
                             });
                             cell.addEventListener('input', function() {
                                 if (window.markDirty) window.markDirty();
@@ -3266,13 +3277,31 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                             if (th.innerText !== desiredText && th.innerText !== col.name) {
                                 th.innerText = desiredText;
                             }
-                            if (!th.dataset.eventsBound) {
+                             if (!th.dataset.eventsBound) {
                                 th.dataset.eventsBound = 'true';
+                                
+                                const selectParentComponent = () => {
+                                    const comp = th.closest('.lf-component');
+                                    if (comp && !comp.classList.contains('selected')) {
+                                        document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                                        comp.classList.add('selected');
+                                        if (window.updateHandles) window.updateHandles(comp);
+                                        
+                                        notifyParent({
+                                            type: "LF_COMP_SELECTED",
+                                            shiftKey: false,
+                                            ...window._getCompStyles(comp)
+                                        });
+                                    }
+                                };
+
                                 th.addEventListener('mousedown', function(e) {
                                     e.stopPropagation();
+                                    selectParentComponent();
                                 });
                                 th.addEventListener('click', function(e) {
                                     e.stopPropagation();
+                                    selectParentComponent();
                                 });
                                 th.addEventListener('input', function() {
                                     markDirty();
@@ -3334,6 +3363,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     }
                     
                     columns.forEach(function(col, cIdx) {
+                        var td = tds[cIdx];
                         td.style.borderRight = '1.6px solid rgb(226,232,240)';
                         
                         var prevType = td.getAttribute('data-type');
@@ -3347,11 +3377,29 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         if (col.type !== 'checkbox') {
                             if (!td.dataset.eventsBound) {
                                 td.dataset.eventsBound = 'true';
+                                
+                                const selectParentComponent = () => {
+                                    const comp = td.closest('.lf-component');
+                                    if (comp && !comp.classList.contains('selected')) {
+                                        document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                                        comp.classList.add('selected');
+                                        if (window.updateHandles) window.updateHandles(comp);
+                                        
+                                        notifyParent({
+                                            type: "LF_COMP_SELECTED",
+                                            shiftKey: false,
+                                            ...window._getCompStyles(comp)
+                                        });
+                                    }
+                                };
+
                                 td.addEventListener('mousedown', function(e) {
                                     e.stopPropagation();
+                                    selectParentComponent();
                                 });
                                 td.addEventListener('click', function(e) {
                                     e.stopPropagation();
+                                    selectParentComponent();
                                 });
                                 td.addEventListener('input', function() {
                                     markDirty();
@@ -5878,4 +5926,5 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     window.initHandles();
 })();
 
-</script></body></html>
+</script>
+</body></html>
