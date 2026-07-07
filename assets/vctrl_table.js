@@ -113,6 +113,7 @@ window.v4TableScript = `
             const repCell = selected[0];
             const bg = repCell.style.backgroundColor || repCell.style.background || '';
             const color = repCell.style.color || '';
+            const align = repCell.style.textAlign || window.getComputedStyle(repCell).textAlign || 'center';
             
             // Measure actual dimensions
             const width = repCell.style.width ? parseInt(repCell.style.width) : repCell.offsetWidth;
@@ -125,6 +126,7 @@ window.v4TableScript = `
                         count: selected.length,
                         backgroundColor: bg,
                         color: color,
+                        textAlign: align,
                         width: width,
                         height: height
                     }
@@ -171,6 +173,9 @@ window.v4TableScript = `
                     }
                     if (style.color !== undefined) {
                         target.style.setProperty('color', style.color, 'important');
+                    }
+                    if (style.textAlign !== undefined) {
+                        target.style.setProperty('text-align', style.textAlign, 'important');
                     }
                 });
             });

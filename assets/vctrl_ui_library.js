@@ -311,6 +311,20 @@
                     </div>
                 </div>
                 <div class="prop-group" style="margin-bottom: 8px;">
+                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">셀 텍스트 정렬</label>
+                    <div style="display: flex; gap: 4px;">
+                        <button id="btn-cell-align-left" title="Align Left" style="flex: 1; height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <span class="material-icons-outlined" style="font-size: 14px;">format_align_left</span>
+                        </button>
+                        <button id="btn-cell-align-center" title="Align Center" style="flex: 1; height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <span class="material-icons-outlined" style="font-size: 14px;">format_align_center</span>
+                        </button>
+                        <button id="btn-cell-align-right" title="Align Right" style="flex: 1; height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.1); border-radius: 6px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                            <span class="material-icons-outlined" style="font-size: 14px;">format_align_right</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="prop-group" style="margin-bottom: 8px;">
                     <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">선택 열 너비 (<span id="txt-cell-col-width">150</span>px)</label>
                     <input type="range" id="cell-col-width" min="30" max="600" value="150" style="width:100%;">
                 </div>

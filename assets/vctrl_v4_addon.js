@@ -265,6 +265,37 @@
         });
     }
 
+    // Cell Text Alignment Buttons
+    const updateCellAlignButtonsUI = (align) => {
+        const btnLeft = document.getElementById('btn-cell-align-left');
+        const btnCenter = document.getElementById('btn-cell-align-center');
+        const btnRight = document.getElementById('btn-cell-align-right');
+        if (!btnLeft || !btnCenter || !btnRight) return;
+
+        btnLeft.style.background = align === 'left' ? 'rgba(0,229,255,0.15)' : 'rgba(255,255,255,0.05)';
+        btnLeft.style.borderColor = align === 'left' ? 'rgba(0,229,255,0.3)' : 'rgba(255,255,255,0.1)';
+        btnCenter.style.background = align === 'center' ? 'rgba(0,229,255,0.15)' : 'rgba(255,255,255,0.05)';
+        btnCenter.style.borderColor = align === 'center' ? 'rgba(0,229,255,0.3)' : 'rgba(255,255,255,0.1)';
+        btnRight.style.background = align === 'right' ? 'rgba(0,229,255,0.15)' : 'rgba(255,255,255,0.05)';
+        btnRight.style.borderColor = align === 'right' ? 'rgba(0,229,255,0.3)' : 'rgba(255,255,255,0.1)';
+    };
+
+    window._updateCellAlignButtonsUI = updateCellAlignButtonsUI;
+
+    const bindCellAlignButton = (id, align) => {
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.addEventListener('click', function() {
+                notifyIframe({ type: 'LF_UPDATE_CELL_STYLE', style: { textAlign: align } });
+                updateCellAlignButtonsUI(align);
+            });
+        }
+    };
+
+    bindCellAlignButton('btn-cell-align-left', 'left');
+    bindCellAlignButton('btn-cell-align-center', 'center');
+    bindCellAlignButton('btn-cell-align-right', 'right');
+
     // Shape Style Bindings
     bindStyleUpdate('shape-font-size', (val) => ({
         type: 'LF_UPDATE_STYLE',
@@ -726,6 +757,11 @@
                     heightInput.value = cd.height;
                     const txt = document.getElementById('txt-cell-row-height');
                     if (txt) txt.innerText = cd.height;
+                }
+
+                // Sync Text Align Buttons
+                if (cd.textAlign && window._updateCellAlignButtonsUI) {
+                    window._updateCellAlignButtonsUI(cd.textAlign);
                 }
             }
         }
