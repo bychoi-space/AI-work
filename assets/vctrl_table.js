@@ -119,7 +119,7 @@ window.v4TableScript = `
 
     // Clear selection when clicking empty spaces inside canvas
     document.addEventListener('mousedown', (e) => {
-        if (!e.target.closest('table.v4-premium-table') && !e.target.closest('.v4-grid-container table') && !e.target.closest('.lf-delete-trigger') && !e.target.closest('.lf-drag-handle') && !e.target.closest('.lf-resizer')) {
+        if (!e.target.closest('table.v4-premium-table') && !e.target.closest('table.v4-table') && !e.target.closest('.v4-grid-container table') && !e.target.closest('.lf-delete-trigger') && !e.target.closest('.lf-drag-handle') && !e.target.closest('.lf-resizer')) {
             TableSelection.clearSelection();
         }
     });
