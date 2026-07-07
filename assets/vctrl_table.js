@@ -17,6 +17,12 @@ window.v4TableScript = `
                 const cell = e.target.closest('td, th');
                 if (!cell) return;
 
+                // Blur any other active editing cells to prevent dual focus highlight
+                const activeCellElement = document.activeElement?.closest('td, th');
+                if (activeCellElement && activeCellElement !== cell) {
+                    document.activeElement.blur();
+                }
+
                 const isEditing = e.target.isContentEditable && document.activeElement === e.target;
                 
                 this.activeTable = table;
