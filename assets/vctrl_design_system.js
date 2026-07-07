@@ -57,7 +57,7 @@ window.v4DesignSystemScript = `
             const incBtn = container.querySelector('.v4-stepper-inc');
             const valEl = container.querySelector('.v4-stepper-value');
 
-            if (container.dataset.eventsBound === "true") {
+            if (container._eventsBound) {
                 const isDisabled = container.getAttribute('data-disabled') === 'true';
                 if (isDisabled) {
                     if (decBtn) {
@@ -84,7 +84,8 @@ window.v4DesignSystemScript = `
                 }
                 return;
             }
-            container.dataset.eventsBound = "true";
+            container._eventsBound = true;
+            container.removeAttribute('data-events-bound');
             
             const updateVal = (newVal) => {
                 const currentMin = parseInt(container.getAttribute('data-min')) || 1;
@@ -164,8 +165,9 @@ window.v4DesignSystemScript = `
                 }
             }
 
-            if (container.dataset.eventsBound === "true") return;
-            container.dataset.eventsBound = "true";
+            if (container._eventsBound) return;
+            container._eventsBound = true;
+            container.removeAttribute('data-events-bound');
             
             if (delBtn) {
                 delBtn.onclick = (e) => {
@@ -195,8 +197,9 @@ window.v4DesignSystemScript = `
         document.querySelectorAll('.v4-accordion-container').forEach(container => {
             const header = container.querySelector('.v4-accordion-header');
             if (!header) return;
-            if (container.dataset.eventsBound === "true") return;
-            container.dataset.eventsBound = "true";
+            if (container._eventsBound) return;
+            container._eventsBound = true;
+            container.removeAttribute('data-events-bound');
 
             header.onclick = (e) => {
                 e.stopPropagation();
@@ -216,7 +219,7 @@ window.v4DesignSystemScript = `
     const bindToggleEvents = () => {
         document.querySelectorAll('.v4-toggle-container').forEach(container => {
             const handle = container.querySelector('.v4-toggle-handle');
-            if (container.dataset.eventsBound === "true") {
+            if (container._eventsBound) {
                 const isChecked = container.getAttribute('data-checked') === 'true';
                 const toggleColor = container.getAttribute('data-color') || '#3b82f6';
                 if (handle) {
@@ -235,7 +238,8 @@ window.v4DesignSystemScript = `
                 }
                 return;
             }
-            container.dataset.eventsBound = "true";
+            container._eventsBound = true;
+            container.removeAttribute('data-events-bound');
 
             container.onclick = (e) => {
                 e.stopPropagation();
@@ -848,7 +852,7 @@ window.v4DesignSystemScript = `
                 }
             };
 
-            if (input.dataset.eventsBound === "true") {
+            if (input._eventsBound) {
                 const max = parseInt(container.getAttribute('data-maxlength')) || 100;
                 const showCounter = container.getAttribute('data-show-counter') !== 'false';
                 const text = input.innerText || "";
@@ -862,7 +866,8 @@ window.v4DesignSystemScript = `
                 restoreFonts();
                 return;
             }
-            input.dataset.eventsBound = "true";
+            input._eventsBound = true;
+            input.removeAttribute('data-events-bound');
             restoreFonts();
             
             const getMaxLength = () => parseInt(container.getAttribute('data-maxlength')) || 100;
@@ -1036,8 +1041,9 @@ window.v4DesignSystemScript = `
                     if (target.getAttribute('contenteditable') !== 'true') {
                         target.setAttribute('contenteditable', 'true');
                     }
-                    if (!target.dataset.eventsBound) {
-                        target.dataset.eventsBound = 'true';
+                    if (!target._eventsBound) {
+                        target._eventsBound = true;
+                        target.removeAttribute('data-events-bound');
                         
                         const selectParentComponent = () => {
                             const comp = target.closest('.lf-component');

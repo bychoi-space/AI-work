@@ -9,8 +9,9 @@ window.v4TableScript = `
         activeTable: null,
 
         bindEvents(table) {
-            if (table.dataset.tableSelectionBound) return;
-            table.dataset.tableSelectionBound = "true";
+            if (table._tableSelectionBound) return;
+            table._tableSelectionBound = true;
+            table.removeAttribute('data-table-selection-bound');
 
             table.addEventListener('mousedown', (e) => {
                 if (e.button !== 0) return;
