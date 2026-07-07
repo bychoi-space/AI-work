@@ -4,16 +4,16 @@
     "03_Delivery_Notice_414.html": {
       "title": "03_Delivery_Notice_414",
       "type": "plan-delivery",
-      "updatedAt": "2026-07-07T05:51:24.604Z",
+      "updatedAt": "2026-07-07T05:52:00.096Z",
       "template": "template_plan_delivery.html",
       "description": [],
       "connectors": []
     }
   },
   "assignee": "최범열",
-  "developer": "",
+  "developer": "신소연",
   "period": "2026.07.06(월) ~ 2026.07.20(월)",
   "jira": "LFML-144852",
   "themeIndex": 6,
-  "updated": "2026-07-07 14:51:24"
+  "updated": "2026-07-07 14:52:00"
 }
