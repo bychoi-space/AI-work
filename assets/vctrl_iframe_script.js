@@ -861,7 +861,7 @@ window.v4Script = `
             
             e.preventDefault(); 
         }
-        else if (h || c) { 
+        else if (h || (c && !e.target.closest('td, th'))) { 
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             isDragging = true; activeEl = c; 
             startX = e.clientX; startY = e.clientY; 
