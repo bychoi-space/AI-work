@@ -1016,66 +1016,71 @@ window.v4DesignSystemScript = `
         });
         document.querySelectorAll('table.v4-premium-table, table.v4-table, .v4-grid-container table').forEach(t => {
             if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
-            if (t.closest('.v4-grid-container')) {
-                // Keep table width managed by renderGrid
-                
-                t.querySelectorAll('td, th').forEach(cell => {
-                    const isCheckbox = cell.classList.contains('v4-grid-check-col') || 
-                                     cell.querySelector('input[type="checkbox"]') || 
-                                     cell.getAttribute('data-type') === 'checkbox';
-                    if (!isCheckbox) {
-                        if (!cell.classList.contains('v4-editable-cell')) {
-                            cell.classList.add('v4-editable-cell');
-                        }
-                        if (cell.getAttribute('contenteditable') !== 'true') {
-                            cell.setAttribute('contenteditable', 'true');
-                        }
-                        if (!cell.dataset.eventsBound) {
-                            cell.dataset.eventsBound = 'true';
-                            
-                            const selectParentComponent = () => {
-                                const comp = cell.closest('.lf-component');
-                                if (comp && !comp.classList.contains('selected')) {
-                                    document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
-                                    comp.classList.add('selected');
-                                    if (window.updateHandles) window.updateHandles(comp);
-                                    
-                                    notifyParent({
-                                        type: "LF_COMP_SELECTED",
-                                        shiftKey: false,
-                                        ...window._getCompStyles(comp)
-                                    });
-                                }
-                            };
-
-                            cell.addEventListener('mousedown', function(e) {
-                                e.stopPropagation();
-                                selectParentComponent();
-                            });
-                            cell.addEventListener('click', function(e) {
-                                e.stopPropagation();
-                                selectParentComponent();
-                            });
-                            cell.addEventListener('input', function() {
-                                if (window.markDirty) window.markDirty();
-                                if (cell.tagName === 'TH') {
-                                    try {
-                                        const gridContainer = cell.closest('.v4-grid-container');
-                                        if (gridContainer) {
-                                            const cols = JSON.parse(gridContainer.getAttribute('data-columns') || '[]');
-                                            const idx = Array.from(cell.parentElement.children).indexOf(cell);
-                                            if (cols[idx]) {
-                                                cols[idx].name = cell.innerText.replace(' ⇅', '').trim();
-                                                gridContainer.setAttribute('data-columns', JSON.stringify(cols));
-                                            }
-                                        }
-                                    } catch(err) {}
-                                }
-                            });
-                        }
+            
+            t.querySelectorAll('td, th').forEach(cell => {
+                const isCheckbox = cell.classList.contains('v4-grid-check-col') || 
+                                 cell.querySelector('input[type="checkbox"]') || 
+                                 cell.getAttribute('data-type') === 'checkbox';
+                if (!isCheckbox) {
+                    const nestedEditable = cell.querySelector('.v4-editable-cell, [contenteditable="true"]');
+                    if (nestedEditable) {
+                        cell.classList.remove('v4-editable-cell');
+                        cell.removeAttribute('contenteditable');
                     }
-                });
-            }
+                    const target = nestedEditable || cell;
+
+                    if (!target.classList.contains('v4-editable-cell')) {
+                        target.classList.add('v4-editable-cell');
+                    }
+                    if (target.getAttribute('contenteditable') !== 'true') {
+                        target.setAttribute('contenteditable', 'true');
+                    }
+                    if (!target.dataset.eventsBound) {
+                        target.dataset.eventsBound = 'true';
+                        
+                        const selectParentComponent = () => {
+                            const comp = target.closest('.lf-component');
+                            if (comp && !comp.classList.contains('selected')) {
+                                document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                                comp.classList.add('selected');
+                                if (window.updateHandles) window.updateHandles(comp);
+                                
+                                notifyParent({
+                                    type: "LF_COMP_SELECTED",
+                                    shiftKey: false,
+                                    ...window._getCompStyles(comp)
+                                });
+                            }
+                        };
+
+                        target.addEventListener('mousedown', function(e) {
+                            e.stopPropagation();
+                            selectParentComponent();
+                        });
+                        target.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            selectParentComponent();
+                        });
+                        target.addEventListener('input', function() {
+                            if (window.markDirty) window.markDirty();
+                            const thCell = target.tagName === 'TH' ? target : target.closest('th');
+                            if (thCell) {
+                                try {
+                                    const gridContainer = thCell.closest('.v4-grid-container');
+                                    if (gridContainer) {
+                                        const cols = JSON.parse(gridContainer.getAttribute('data-columns') || '[]');
+                                        const idx = Array.from(thCell.parentElement.children).indexOf(thCell);
+                                        if (cols[idx]) {
+                                            cols[idx].name = thCell.innerText.replace(' ⇅', '').trim();
+                                            gridContainer.setAttribute('data-columns', JSON.stringify(cols));
+                                        }
+                                    }
+                                } catch(err) {}
+                            }
+                        });
+                    }
+                }
+            });
             if (window.TableSelection) window.TableSelection.bindEvents(t);
         });
         document.querySelectorAll('.v4-grid-container').forEach(grid => {
