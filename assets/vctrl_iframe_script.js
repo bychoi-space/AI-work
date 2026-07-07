@@ -3740,47 +3740,91 @@ window.v4Script = `
             }
             
             const table = s.querySelector('table'); if (!table) return;
-            const focused = table.querySelector('.v4-editable-cell:focus') || table.querySelector('td, th');
-            const row = focused ? focused.closest('tr') : null;
-            const cell = focused ? focused.closest('td, th') : null;
+            const focusedCell = table.querySelector('.v4-editable-cell:focus') || document.activeElement?.closest('td, th');
+            const selectedCell = table.querySelector('.selected-cell');
+            const activeCell = focusedCell ? focusedCell.closest('td, th') : (selectedCell ? selectedCell.closest('td, th') : null);
+            
+            const targetRow = activeCell ? activeCell.closest('tr') : null;
+            const targetColIndex = activeCell ? activeCell.cellIndex : -1;
             const act = (d.action || "").toLowerCase();
             
             if (act === 'add-row' || act === 'add_row') {
-                const newRow = table.insertRow(row ? row.rowIndex + 1 : -1);
-                const colCount = table.rows[0].cells.length;
+                const insertIdx = targetRow ? targetRow.rowIndex + 1 : -1;
+                const newRow = table.insertRow(insertIdx);
+                const colCount = table.rows[0] ? table.rows[0].cells.length : 1;
+                const templateRow = targetRow || table.rows[table.rows.length - 2] || table.rows[0];
+                
                 for (let i = 0; i < colCount; i++) {
                     const c = newRow.insertCell();
-                    c.className = 'v4-editable-cell';
-                    c.contentEditable = 'true';
-                    c.innerText = 'New';
-                    c.style.borderBottom = '1.6px solid #cbd5e1';
-                    c.style.padding = '16px';
+                    const innerDiv = document.createElement('div');
+                    innerDiv.className = 'v4-editable-cell';
+                    innerDiv.contentEditable = 'true';
+                    innerDiv.innerText = 'Data';
+                    innerDiv.style.outline = 'none';
+                    innerDiv.style.padding = '4px';
+                    c.appendChild(innerDiv);
+                    
+                    if (templateRow && templateRow.cells[i]) {
+                        const tc = templateRow.cells[i];
+                        c.style.cssText = tc.style.cssText;
+                    } else {
+                        c.style.borderBottom = '1.6px solid var(--v4-border-color, #cbd5e1)';
+                        c.style.padding = '12px 6px';
+                        c.style.textAlign = 'center';
+                        c.style.verticalAlign = 'middle';
+                    }
                 }
             } else if (act === 'add-col' || act === 'add_col') {
+                const insertIdx = targetColIndex !== -1 ? targetColIndex + 1 : -1;
                 Array.from(table.rows).forEach((r, idx) => {
-                    const c = idx === 0 ? r.insertCell(-1) : r.insertCell(-1);
+                    const c = r.insertCell(insertIdx);
                     if (idx === 0) {
                         const th = document.createElement('th');
-                        th.className = 'v4-editable-cell';
-                        th.contentEditable = 'true';
-                        th.innerText = 'Header';
-                        th.style.background = '#cbd5e1';
-                        th.style.borderBottom = '1.6px solid #475569';
-                        th.style.padding = '16px';
+                        const innerDiv = document.createElement('div');
+                        innerDiv.className = 'v4-editable-cell';
+                        innerDiv.contentEditable = 'true';
+                        innerDiv.innerText = 'Header';
+                        innerDiv.style.outline = 'none';
+                        innerDiv.style.padding = '4px';
+                        th.appendChild(innerDiv);
+                        
+                        th.style.background = 'var(--header-dark, #374151)';
+                        th.style.color = '#ffffff';
+                        th.style.fontWeight = '800';
+                        th.style.borderBottom = '1.6px solid var(--v4-border-color, #475569)';
+                        th.style.padding = '12px 6px';
+                        th.style.textAlign = 'center';
+                        th.style.verticalAlign = 'middle';
+                        th.style.width = '120px';
                         r.replaceChild(th, c);
                     } else {
-                        c.className = 'v4-editable-cell';
-                        c.contentEditable = 'true';
-                        c.innerText = 'Data';
-                        c.style.borderBottom = '1.6px solid #cbd5e1';
-                        c.style.padding = '16px';
+                        const innerDiv = document.createElement('div');
+                        innerDiv.className = 'v4-editable-cell';
+                        innerDiv.contentEditable = 'true';
+                        innerDiv.innerText = '-';
+                        innerDiv.style.outline = 'none';
+                        innerDiv.style.padding = '4px';
+                        c.appendChild(innerDiv);
+                        
+                        c.style.borderBottom = '1.6px solid var(--v4-border-color, #cbd5e1)';
+                        c.style.padding = '12px 6px';
+                        c.style.textAlign = 'center';
+                        c.style.verticalAlign = 'middle';
                     }
                 });
-            } else if ((act === 'del-row' || act === 'del_row') && row && table.rows.length > 1) {
-                row.remove();
-            } else if ((act === 'del-col' || act === 'del_col') && cell) {
-                const idx = cell.cellIndex;
-                Array.from(table.rows).forEach(r => { if (r.cells[idx]) r.cells[idx].remove(); });
+            } else if (act === 'del-row' || act === 'del_row') {
+                if (table.rows.length > 1) {
+                    const rowToRemove = targetRow || table.rows[table.rows.length - 1];
+                    if (rowToRemove) rowToRemove.remove();
+                }
+            } else if (act === 'del-col' || act === 'del_col') {
+                const colCount = table.rows[0] ? table.rows[0].cells.length : 0;
+                if (colCount > 1) {
+                    const idxToRemove = targetColIndex !== -1 ? targetColIndex : colCount - 1;
+                    Array.from(table.rows).forEach(r => {
+                        if (r.cells[idxToRemove]) r.cells[idxToRemove].remove();
+                    });
+                }
             }
             markDirty();
         } else if (d.type === 'LF_UPDATE_CELL_STYLE') {
