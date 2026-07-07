@@ -18,7 +18,8 @@ window.v4TableScript = `
                 if (!cell) return;
 
                 // If editing text inside cell, don't trigger drag selection
-                if (e.target.closest('.v4-editable-cell') || e.target.isContentEditable) {
+                const isEditing = e.target.isContentEditable && document.activeElement === e.target;
+                if (isEditing) {
                     return; 
                 }
 
@@ -133,18 +134,23 @@ window.v4TableScript = `
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
             selected.forEach(cell => {
-                if (style.backgroundColor !== undefined) {
-                    if (style.backgroundColor === 'none' || style.backgroundColor === 'transparent' || style.backgroundColor === '') {
-                        cell.style.setProperty('background-color', 'transparent', 'important');
-                        cell.style.setProperty('background', 'transparent', 'important');
-                    } else {
-                        cell.style.setProperty('background-color', style.backgroundColor, 'important');
-                        cell.style.setProperty('background', style.backgroundColor, 'important');
+                const nestedEditable = cell.querySelector('.v4-editable-cell, [contenteditable="true"]');
+                const targets = nestedEditable ? [cell, nestedEditable] : [cell];
+
+                targets.forEach(target => {
+                    if (style.backgroundColor !== undefined) {
+                        if (style.backgroundColor === 'none' || style.backgroundColor === 'transparent' || style.backgroundColor === '') {
+                            target.style.setProperty('background-color', 'transparent', 'important');
+                            target.style.setProperty('background', 'transparent', 'important');
+                        } else {
+                            target.style.setProperty('background-color', style.backgroundColor, 'important');
+                            target.style.setProperty('background', style.backgroundColor, 'important');
+                        }
                     }
-                }
-                if (style.color !== undefined) {
-                    cell.style.setProperty('color', style.color, 'important');
-                }
+                    if (style.color !== undefined) {
+                        target.style.setProperty('color', style.color, 'important');
+                    }
+                });
             });
 
             if (window.markDirty) window.markDirty();

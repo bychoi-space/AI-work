@@ -1054,7 +1054,6 @@ window.v4DesignSystemScript = `
                         };
 
                         target.addEventListener('mousedown', function(e) {
-                            e.stopPropagation();
                             selectParentComponent();
                         });
                         target.addEventListener('click', function(e) {
