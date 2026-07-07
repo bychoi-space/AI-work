@@ -293,9 +293,9 @@ window.LF_TEMPLATES = {
         .v4-editable-cell { outline:none; padding:4px; transition:background 0.2s; }
         .v4-editable-cell:focus { background:rgba(99,102,241,0.05); box-shadow:inset 0 0 0 1px var(--v4-accent); border-radius:2px; }
         .v4-shape-container { width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:700; }
-        .v4-table { width:100%; border-collapse:collapse; font-size:13px; table-layout:fixed; border:1px solid #000; }
-        .v4-table th,.v4-table td { border:1px solid #bbb; padding:12px 6px; text-align:center; vertical-align:middle; line-height:1.4; }
-        .v4-table th { background:var(--header-dark); color:#fff; font-weight:800; }
+        .v4-premium-table { width:100%; border-collapse:collapse; font-size:13px; table-layout:fixed; border:1.6px solid var(--v4-border-color, #475569) !important; border-radius: 8px; overflow: hidden; }
+        .v4-premium-table th,.v4-premium-table td { border:1.6px solid var(--v4-border-color, #cbd5e1) !important; padding:12px 6px; text-align:center; vertical-align:middle; line-height:1.4; }
+        .v4-premium-table th { background:var(--header-dark); color:#fff; font-weight:800; border-bottom:1.6px solid var(--v4-border-color, #475569) !important; }
         .h-blue { background:var(--header-blue) !important; }
         .h-red { background:var(--header-red) !important; }
         .bg-peach { background:#fee2e2 !important; }
@@ -329,7 +329,7 @@ window.LF_TEMPLATES = {
         <!-- Main Data Table -->
         <div class="lf-component" id="comp-main-table" style="top:130px; left:40px; width:1360px; height:auto;">
             <div class="table-scroll-wrap">
-                <table class="v4-table">
+                <table class="v4-premium-table">
                     <thead>
                         <tr>
                             <th style="width:180px;">YMD</th>
