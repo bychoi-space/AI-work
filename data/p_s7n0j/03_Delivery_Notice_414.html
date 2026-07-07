@@ -64,7 +64,8 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .v4-grid-container td.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; }
 .v4-grid-container th.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; position: sticky !important; top: 0 !important; z-index: 10 !important; background: #f8fafc !important; }
 .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; }
-.v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
+.v4-editable-cell:focus { outline: 2px solid #6366f1; }
+:not(th):not(td).v4-editable-cell:focus { background: rgba(99, 102, 241, 0.05) !important; }
 .selected-cell {
     outline: 1.6px dashed #6366f1 !important;
     outline-offset: -1.6px !important;
@@ -280,96 +281,96 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
         <!-- Main Data Table -->
         <div class="lf-component" id="comp-main-table" style="top: 126px; left: 40px; width: 1360px; height: auto;">
             <div class="table-scroll-wrap">
-                <table class="v4-table">
+                <table class="v4-table" style="border-width: 1.6px !important;" data-table-selection-bound="true">
                     <thead>
                         <tr>
-                            <th style="width:180px;">YMD</th>
-                            <th style="width:180px;">일자</th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">D-Day</div></th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">D+1</div></th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">D+2</div></th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">D+3</div></th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">D+4</div></th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">D+5</div></th>
-                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">D+6</div></th>
+                            <th style="width:180px;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">YMD</th>
+                            <th style="width:180px;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">일자</th>
+                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">07월 16일</div></th>
+                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">07월 17일</div></th>
+                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">07월 18일</div></th>
+                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">D+3</div></th>
+                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">D+4</div></th>
+                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">D+5</div></th>
+                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">D+6</div></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td style="background:#f9fafb;">WRHS_GI_YN</td>
-                            <td>안산 출고 여부</td>
-                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
+                        <tr><td class="v4-editable-cell" contenteditable="true" style="border-bottom: 1.6px solid rgb(203, 213, 225); padding: 16px;" data-events-bound="true">New</td><td class="v4-editable-cell" contenteditable="true" style="border-bottom: 1.6px solid rgb(203, 213, 225); padding: 16px;" data-events-bound="true">New</td><td class="v4-editable-cell" contenteditable="true" style="border-bottom: 1.6px solid rgb(203, 213, 225); padding: 16px;" data-events-bound="true">New</td><td class="v4-editable-cell" contenteditable="true" style="border-bottom: 1.6px solid rgb(203, 213, 225); padding: 16px;" data-events-bound="true">New</td><td class="v4-editable-cell" contenteditable="true" style="border-bottom: 1.6px solid rgb(203, 213, 225); padding: 16px;" data-events-bound="true">New</td><td class="v4-editable-cell" contenteditable="true" style="border-bottom: 1.6px solid rgb(203, 213, 225); padding: 16px;" data-events-bound="true">New</td><td class="v4-editable-cell" contenteditable="true" style="border-bottom: 1.6px solid rgb(203, 213, 225); padding: 16px;" data-events-bound="true">New</td><td class="v4-editable-cell" contenteditable="true" style="border-bottom: 1.6px solid rgb(203, 213, 225); padding: 16px;" data-events-bound="true">New</td><td class="v4-editable-cell" contenteditable="true" style="border-bottom: 1.6px solid rgb(203, 213, 225); padding: 16px;" data-events-bound="true">New</td></tr><tr>
+                            <td style="background:#f9fafb;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">WRHS_GI_YN</td>
+                            <td class="v4-editable-cell" contenteditable="true" data-events-bound="true">안산 출고 여부</td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
                         </tr>
                         <tr>
-                            <td style="background:#f9fafb;">DLSR_GOFG_YN</td>
-                            <td>택배 집하 여부</td>
-                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
+                            <td style="background:#f9fafb;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">DLSR_GOFG_YN</td>
+                            <td class="v4-editable-cell" contenteditable="true" data-events-bound="true">택배 집하 여부</td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
                         </tr>
                         <tr>
-                            <td style="background:#f9fafb;">DLSR_MVMN_YN</td>
-                            <td>택배 배달 여부</td>
-                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
+                            <td style="background:#f9fafb;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">DLSR_MVMN_YN</td>
+                            <td class="v4-editable-cell" contenteditable="true" data-events-bound="true">택배 배달 여부</td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
                         </tr>
                         <tr>
-                            <td style="background:#f9fafb;">GI_CLSN_HR</td>
-                            <td>당일 출고 마감 시간</td>
-                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">18</div></td>
+                            <td style="background:#f9fafb;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">GI_CLSN_HR</td>
+                            <td class="v4-editable-cell" contenteditable="true" data-events-bound="true">당일 출고 마감 시간</td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">18</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">18</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">18</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">18</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">18</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">18</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">18</div></td>
                         </tr>
                         <tr>
-                            <td style="background:#f9fafb;">HODY_YN</td>
-                            <td>연휴 여부</td>
-                            <td colspan="7" rowspan="6" class="bg-gray-area"></td>
+                            <td style="background:#f9fafb;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">HODY_YN</td>
+                            <td class="v4-editable-cell" contenteditable="true" data-events-bound="true">연휴 여부</td>
+                            <td colspan="7" rowspan="6" class="bg-gray-area v4-editable-cell" contenteditable="true" data-events-bound="true"></td>
                         </tr>
-                        <tr><td style="background:#f9fafb;">HODY_NM</td><td>연휴 구분</td></tr>
-                        <tr><td style="background:#f9fafb;">HODY_GDNC_STRT_HR</td><td>연휴 안내 시작 시간</td></tr>
-                        <tr><td style="background:#f9fafb;">HODY_GDNC_END_HR</td><td>연휴 안내 종료 시간</td></tr>
-                        <tr><td style="background:#f9fafb;">HODY_ARVA_PRRN_DD</td><td>연휴 내 도착 예정일</td></tr>
-                        <tr><td style="background:#f9fafb;">HODY_GDNC_DSCR</td><td>연휴 안내 문구</td></tr>
+                        <tr><td style="background:#f9fafb;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">HODY_NM</td><td class="v4-editable-cell" contenteditable="true" data-events-bound="true">연휴 구분</td></tr>
+                        <tr><td style="background:#f9fafb;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">HODY_GDNC_STRT_HR</td><td class="v4-editable-cell" contenteditable="true" data-events-bound="true">연휴 안내 시작 시간</td></tr>
+                        <tr><td style="background:#f9fafb;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">HODY_GDNC_END_HR</td><td class="v4-editable-cell" contenteditable="true" data-events-bound="true">연휴 안내 종료 시간</td></tr>
+                        <tr><td style="background:#f9fafb;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">HODY_ARVA_PRRN_DD</td><td class="v4-editable-cell" contenteditable="true" data-events-bound="true">연휴 내 도착 예정일</td></tr>
+                        <tr><td style="background:#f9fafb;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">HODY_GDNC_DSCR</td><td class="v4-editable-cell" contenteditable="true" data-events-bound="true">연휴 안내 문구</td></tr>
                         <!-- Result Section -->
                         <tr>
-                            <td rowspan="2" style="background:#e5e7eb; font-weight:800;">RESULT<br>배송예정일</td>
-                            <td style="background:#f3f4f6;">출고 마감 이전</td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
+                            <td rowspan="2" style="background:#e5e7eb; font-weight:800;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">RESULT<br>배송예정일</td>
+                            <td style="background:#f3f4f6;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">출고 마감 이전</td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
                         </tr>
                         <tr>
-                            <td style="background:#f3f4f6;">출고 마감 이후</td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
-                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
+                            <td style="background:#f3f4f6;" class="v4-editable-cell" contenteditable="true" data-events-bound="true">출고 마감 이후</td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true" data-events-bound="true">-</div></td>
                         </tr>
                     </tbody>
                 </table>
@@ -387,7 +388,8 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
 <div id="v4-comp-1783402920083" class="lf-component" style="position: absolute; top: 20px; left: 20px; z-index: 1000; transform: none; width: 300px; height: 40px;" data-resized="true">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(71, 85, 105); border-color: transparent; border-top-style: ; border-width: 1.6px !important; border-right-style: ; border-bottom-style: ; border-left-style: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><p><span style="font-size: 14px; color: rgb(255, 255, 255);">7월 배송예정일 이슈</span></p></div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><script id="v4-inlined-script">
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
+<script id="v4-inlined-script">
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -640,7 +642,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
     // Clear selection when clicking empty spaces inside canvas
     document.addEventListener('mousedown', (e) => {
-        if (!e.target.closest('table.v4-premium-table') && !e.target.closest('.v4-grid-container table') && !e.target.closest('.lf-delete-trigger') && !e.target.closest('.lf-drag-handle') && !e.target.closest('.lf-resizer')) {
+        if (!e.target.closest('table.v4-premium-table') && !e.target.closest('table.v4-table') && !e.target.closest('.v4-grid-container table') && !e.target.closest('.lf-delete-trigger') && !e.target.closest('.lf-drag-handle') && !e.target.closest('.lf-resizer')) {
             TableSelection.clearSelection();
         }
     });
@@ -1747,68 +1749,73 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
             if (s.style.borderWidth !== '1.6px') s.style.setProperty('border-width', '1.6px', 'important');
         });
-        document.querySelectorAll('table.v4-premium-table, .v4-grid-container table').forEach(t => {
+        document.querySelectorAll('table.v4-premium-table, table.v4-table, .v4-grid-container table').forEach(t => {
             if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
-            if (t.closest('.v4-grid-container')) {
-                // Keep table width managed by renderGrid
-                
-                t.querySelectorAll('td, th').forEach(cell => {
-                    const isCheckbox = cell.classList.contains('v4-grid-check-col') || 
-                                     cell.querySelector('input[type="checkbox"]') || 
-                                     cell.getAttribute('data-type') === 'checkbox';
-                    if (!isCheckbox) {
-                        if (!cell.classList.contains('v4-editable-cell')) {
-                            cell.classList.add('v4-editable-cell');
-                        }
-                        if (cell.getAttribute('contenteditable') !== 'true') {
-                            cell.setAttribute('contenteditable', 'true');
-                        }
-                        if (!cell.dataset.eventsBound) {
-                            cell.dataset.eventsBound = 'true';
-                            
-                            const selectParentComponent = () => {
-                                const comp = cell.closest('.lf-component');
-                                if (comp && !comp.classList.contains('selected')) {
-                                    document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
-                                    comp.classList.add('selected');
-                                    if (window.updateHandles) window.updateHandles(comp);
-                                    
-                                    notifyParent({
-                                        type: "LF_COMP_SELECTED",
-                                        shiftKey: false,
-                                        ...window._getCompStyles(comp)
-                                    });
-                                }
-                            };
-
-                            cell.addEventListener('mousedown', function(e) {
-                                e.stopPropagation();
-                                selectParentComponent();
-                            });
-                            cell.addEventListener('click', function(e) {
-                                e.stopPropagation();
-                                selectParentComponent();
-                            });
-                            cell.addEventListener('input', function() {
-                                if (window.markDirty) window.markDirty();
-                                if (cell.tagName === 'TH') {
-                                    try {
-                                        const gridContainer = cell.closest('.v4-grid-container');
-                                        if (gridContainer) {
-                                            const cols = JSON.parse(gridContainer.getAttribute('data-columns') || '[]');
-                                            const idx = Array.from(cell.parentElement.children).indexOf(cell);
-                                            if (cols[idx]) {
-                                                cols[idx].name = cell.innerText.replace(' ⇅', '').trim();
-                                                gridContainer.setAttribute('data-columns', JSON.stringify(cols));
-                                            }
-                                        }
-                                    } catch(err) {}
-                                }
-                            });
-                        }
+            
+            t.querySelectorAll('td, th').forEach(cell => {
+                const isCheckbox = cell.classList.contains('v4-grid-check-col') || 
+                                 cell.querySelector('input[type="checkbox"]') || 
+                                 cell.getAttribute('data-type') === 'checkbox';
+                if (!isCheckbox) {
+                    const nestedEditable = cell.querySelector('.v4-editable-cell, [contenteditable="true"]');
+                    if (nestedEditable) {
+                        cell.classList.remove('v4-editable-cell');
+                        cell.removeAttribute('contenteditable');
                     }
-                });
-            }
+                    const target = nestedEditable || cell;
+
+                    if (!target.classList.contains('v4-editable-cell')) {
+                        target.classList.add('v4-editable-cell');
+                    }
+                    if (target.getAttribute('contenteditable') !== 'true') {
+                        target.setAttribute('contenteditable', 'true');
+                    }
+                    if (!target.dataset.eventsBound) {
+                        target.dataset.eventsBound = 'true';
+                        
+                        const selectParentComponent = () => {
+                            const comp = target.closest('.lf-component');
+                            if (comp && !comp.classList.contains('selected')) {
+                                document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                                comp.classList.add('selected');
+                                if (window.updateHandles) window.updateHandles(comp);
+                                
+                                notifyParent({
+                                    type: "LF_COMP_SELECTED",
+                                    shiftKey: false,
+                                    ...window._getCompStyles(comp)
+                                });
+                            }
+                        };
+
+                        target.addEventListener('mousedown', function(e) {
+                            e.stopPropagation();
+                            selectParentComponent();
+                        });
+                        target.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            selectParentComponent();
+                        });
+                        target.addEventListener('input', function() {
+                            if (window.markDirty) window.markDirty();
+                            const thCell = target.tagName === 'TH' ? target : target.closest('th');
+                            if (thCell) {
+                                try {
+                                    const gridContainer = thCell.closest('.v4-grid-container');
+                                    if (gridContainer) {
+                                        const cols = JSON.parse(gridContainer.getAttribute('data-columns') || '[]');
+                                        const idx = Array.from(thCell.parentElement.children).indexOf(thCell);
+                                        if (cols[idx]) {
+                                            cols[idx].name = thCell.innerText.replace(' ⇅', '').trim();
+                                            gridContainer.setAttribute('data-columns', JSON.stringify(cols));
+                                        }
+                                    }
+                                } catch(err) {}
+                            }
+                        });
+                    }
+                }
+            });
             if (window.TableSelection) window.TableSelection.bindEvents(t);
         });
         document.querySelectorAll('.v4-grid-container').forEach(grid => {
