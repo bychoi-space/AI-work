@@ -225,20 +225,20 @@ const ProjectMetadataManager = {
                 <input type="hidden" id="viewer-meta-title" value="${pm.title || ''}">
                 <div class="v4-meta-item" style="flex: 0 0 80px;">
                     <label>ASSIGNEE</label>
-                    <input type="text" id="viewer-meta-assignee" value="${pm.assignee || ''}" placeholder="담당자">
+                    <input type="text" id="viewer-meta-assignee" value="${pm.assignee || ''}" placeholder="담당자" autocomplete="off">
                 </div>
                 <div class="v4-meta-item" style="flex: 0 0 80px;">
                     <label>DEVELOPER</label>
-                    <input type="text" id="viewer-meta-developer" value="${pm.developer || ''}" placeholder="개발자">
+                    <input type="text" id="viewer-meta-developer" value="${pm.developer || ''}" placeholder="개발자" autocomplete="off">
                 </div>
                 <div class="v4-meta-item" style="flex: 0 0 200px;">
                     <label>PERIOD</label>
-                    <input type="text" id="viewer-meta-period" value="${pm.period || ''}" placeholder="사업 기간">
+                    <input type="text" id="viewer-meta-period" value="${pm.period || ''}" placeholder="사업 기간" autocomplete="off">
                 </div>
                 <div class="v4-meta-item" style="flex: 0 0 220px; position: relative;">
                     <label>JIRA / LINKS</label>
                     <div style="display: flex; align-items: center; gap: 6px;">
-                        <input type="text" id="viewer-meta-jira" value="${pm.jira || ''}" placeholder="예) LFML-123456" style="flex: 1;">
+                        <input type="text" id="viewer-meta-jira" value="${pm.jira || ''}" placeholder="예) LFML-123456" style="flex: 1;" autocomplete="off">
                         <a id="btn-jira-link" href="${(pm.jira && typeof pm.jira === 'string') ? 'https://jira.lfcorp.com/browse/' + pm.jira.trim() : '#'}" target="_blank" rel="noopener noreferrer" class="btn-secondary" style="display: ${(pm.jira && typeof pm.jira === 'string' && pm.jira.trim()) ? 'flex' : 'none'}; height: 22px; padding: 0 8px; font-size: 11px;">바로가기</a>
                     </div>
                 </div>

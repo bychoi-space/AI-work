@@ -368,10 +368,11 @@ body {
     color: var(--text-primary) !important;
     font-size: 11px !important;
     font-weight: 600 !important;
-    height: 18px !important;
+    height: 22px !important;
     padding: 0 !important;
     outline: none !important;
     font-family: inherit;
+    line-height: normal !important;
 }
 
 /* 12. Placeholder Card Glow & Glassmorphism Upgrade */
@@ -406,6 +407,16 @@ body {
         filter: drop-shadow(0 0 20px rgba(34, 211, 238, 0.6));
         opacity: 1;
     }
+}
+
+/* Autofill override to preserve dark theme colors and avoid clipping */
+.v4-meta-item input:-webkit-autofill,
+.v4-meta-item input:-webkit-autofill:hover, 
+.v4-meta-item input:-webkit-autofill:focus, 
+.v4-meta-item input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgba(10, 11, 14, 0.95) inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 
