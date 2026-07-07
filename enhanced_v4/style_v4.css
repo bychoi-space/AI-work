@@ -255,6 +255,8 @@
 /* Editable Cell UI */
 .v4-editable-cell:focus {
     outline: 2px solid var(--v4-primary);
+}
+:not(th):not(td).v4-editable-cell:focus {
     background: rgba(99, 102, 241, 0.05) !important;
 }
 

@@ -33,7 +33,8 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .v4-grid-container td.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; }
 .v4-grid-container th.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; position: sticky !important; top: 0 !important; z-index: 10 !important; background: #f8fafc !important; }
 .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; }
-.v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
+.v4-editable-cell:focus { outline: 2px solid #6366f1; }
+:not(th):not(td).v4-editable-cell:focus { background: rgba(99, 102, 241, 0.05) !important; }
 .selected-cell {
     outline: 1.6px dashed #6366f1 !important;
     outline-offset: -1.6px !important;
