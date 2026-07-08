@@ -6635,7 +6635,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
             </div>
-            <div class="mobile-home-indicator"></div>
         </div>
     </div>
 </body>
@@ -6699,7 +6698,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
             </div>
-            <div class="mobile-home-indicator"></div>
         </div>
         <!-- Screen 2 -->
         <div class="mobile-frame">
@@ -6707,7 +6705,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
             </div>
-            <div class="mobile-home-indicator"></div>
         </div>
     </div>
 </body>
@@ -6771,7 +6768,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
             </div>
-            <div class="mobile-home-indicator"></div>
         </div>
         <!-- Screen 2 -->
         <div class="mobile-frame">
@@ -6779,7 +6775,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
             </div>
-            <div class="mobile-home-indicator"></div>
         </div>
         <!-- Screen 3 -->
         <div class="mobile-frame">
@@ -6787,7 +6782,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
             </div>
-            <div class="mobile-home-indicator"></div>
         </div>
     </div>
 </body>
