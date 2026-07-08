@@ -6634,26 +6634,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="mobile-statusbar"><span>9:41</span><span>5G 100%</span></div>
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
-                <div id="m1-header" class="lf-component" style="top:52px; left:20px; width:335px; height:46px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-header"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Mobile Home</div><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; font-weight:700; color:#64748b;">Search</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m1-hero" class="lf-component" style="top:118px; left:20px; width:335px; height:138px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-card"><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; opacity:.75;">Campaign Area</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; font-size:20px; line-height:1.25; font-weight:900;">Key mobile message</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:14px; font-size:13px; line-height:1.35;">Edit this block for main offer, guide, or UX note.</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m1-list" class="lf-component" style="top:284px; left:20px; width:335px; height:196px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-list"><div contenteditable="true" class="v4-editable-cell" style="font-size:16px; font-weight:900;">Content Modules</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:14px; padding:12px; border-radius:14px; background:#fff; font-size:14px;">01. Primary card / banner</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; padding:12px; border-radius:14px; background:#fff; font-size:14px;">02. Product or form row</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; padding:12px; border-radius:14px; background:#fff; font-size:14px;">03. CTA / confirmation</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m1-nav" class="lf-component" style="top:724px; left:0; width:375px; height:64px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-nav"><div contenteditable="true" class="v4-editable-cell">Home</div><div contenteditable="true" class="v4-editable-cell">Category</div><div contenteditable="true" class="v4-editable-cell">Cart</div><div contenteditable="true" class="v4-editable-cell">My</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
             </div>
             <div class="mobile-home-indicator"></div>
         </div>
@@ -6718,21 +6698,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="mobile-statusbar"><span>9:41</span><span>5G 100%</span></div>
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
-                <div id="m2-a-header" class="lf-component" style="top:52px; left:20px; width:335px; height:46px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-header"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">List</div><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; font-weight:700; color:#64748b;">Filter</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m2-a-card" class="lf-component" style="top:124px; left:20px; width:335px; height:124px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-card"><div contenteditable="true" class="v4-editable-cell" style="font-size:20px; font-weight:900;">Entry Screen</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:12px; font-size:13px; line-height:1.35;">Use this screen for browsing, discovery, or a first-step form.</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m2-a-list" class="lf-component" style="top:276px; left:20px; width:335px; height:260px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-list"><div contenteditable="true" class="v4-editable-cell" style="font-size:16px; font-weight:900;">Selectable Items</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:14px; padding:14px; border-radius:14px; background:#fff;">Item row A</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; padding:14px; border-radius:14px; background:#fff;">Item row B</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; padding:14px; border-radius:14px; background:#fff;">Item row C</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
             </div>
             <div class="mobile-home-indicator"></div>
         </div>
@@ -6741,26 +6706,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="mobile-statusbar"><span>9:41</span><span>5G 100%</span></div>
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
-                <div id="m2-b-header" class="lf-component" style="top:52px; left:20px; width:335px; height:46px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-header"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Detail</div><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; font-weight:700; color:#64748b;">Share</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m2-b-hero" class="lf-component" style="top:120px; left:20px; width:335px; height:240px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-list" style="display:flex; align-items:center; justify-content:center; background:#e2e8f0;"><div contenteditable="true" class="v4-editable-cell" style="font-size:16px; font-weight:900; color:#475569;">Image / Preview</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m2-b-info" class="lf-component" style="top:386px; left:20px; width:335px; height:150px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-list"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Detail Title</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; font-size:14px; line-height:1.45;">Describe selected state, data, policy, or UX behavior here.</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m2-b-cta" class="lf-component" style="top:716px; left:20px; width:335px; height:50px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div contenteditable="true" class="v4-editable-cell" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:25px; background:#111827; color:#fff; font-size:14px; font-weight:800;">Primary CTA</div>
-                    <div class="lf-resizer"></div>
-                </div>
             </div>
             <div class="mobile-home-indicator"></div>
         </div>
@@ -6825,21 +6770,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="mobile-statusbar"><span>9:41</span><span>5G</span></div>
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
-                <div id="m3-a-header" class="lf-component" style="top:52px; left:20px; width:335px; height:46px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-header"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Step 1</div><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; font-weight:700; color:#64748b;">Start</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m3-a-card" class="lf-component" style="top:124px; left:20px; width:335px; height:148px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-card"><div contenteditable="true" class="v4-editable-cell" style="font-size:20px; font-weight:900;">Landing State</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:12px; font-size:13px; line-height:1.35;">Introduce the flow and key user action.</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m3-a-cta" class="lf-component" style="top:706px; left:20px; width:335px; height:50px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div contenteditable="true" class="v4-editable-cell" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:25px; background:#111827; color:#fff; font-size:14px; font-weight:800;">Continue</div>
-                    <div class="lf-resizer"></div>
-                </div>
             </div>
             <div class="mobile-home-indicator"></div>
         </div>
@@ -6848,21 +6778,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="mobile-statusbar"><span>9:41</span><span>5G</span></div>
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
-                <div id="m3-b-header" class="lf-component" style="top:52px; left:20px; width:335px; height:46px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-header"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Step 2</div><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; font-weight:700; color:#64748b;">Input</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m3-b-form" class="lf-component" style="top:122px; left:20px; width:335px; height:330px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-list"><div contenteditable="true" class="v4-editable-cell" style="font-size:16px; font-weight:900;">Form / Options</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:14px; padding:14px; border-radius:14px; background:#fff;">Field label and value</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; padding:14px; border-radius:14px; background:#fff;">Selection state</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; padding:14px; border-radius:14px; background:#fff;">Validation message</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m3-b-cta" class="lf-component" style="top:706px; left:20px; width:335px; height:50px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div contenteditable="true" class="v4-editable-cell" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:25px; background:#111827; color:#fff; font-size:14px; font-weight:800;">Apply</div>
-                    <div class="lf-resizer"></div>
-                </div>
             </div>
             <div class="mobile-home-indicator"></div>
         </div>
@@ -6871,21 +6786,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="mobile-statusbar"><span>9:41</span><span>5G</span></div>
             <div class="mobile-header-notch"></div>
             <div class="mobile-content">
-                <div id="m3-c-header" class="lf-component" style="top:52px; left:20px; width:335px; height:46px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-header"><div contenteditable="true" class="v4-editable-cell" style="font-size:18px; font-weight:900;">Step 3</div><div contenteditable="true" class="v4-editable-cell" style="font-size:13px; font-weight:700; color:#64748b;">Done</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m3-c-result" class="lf-component" style="top:150px; left:20px; width:335px; height:230px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;"><div contenteditable="true" class="v4-editable-cell" style="font-size:40px; line-height:1;">OK</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:18px; font-size:20px; font-weight:900;">Completion State</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:10px; font-size:13px; line-height:1.4;">Summarize the final user result.</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
-                <div id="m3-c-summary" class="lf-component" style="top:410px; left:20px; width:335px; height:154px;">
-                    <div class="lf-drag-handle">::</div><div class="lf-delete-trigger">&times;</div>
-                    <div class="mobile-ui-list"><div contenteditable="true" class="v4-editable-cell" style="font-size:16px; font-weight:900;">Summary</div><div contenteditable="true" class="v4-editable-cell" style="margin-top:12px; font-size:14px; line-height:1.45;">Show selected values, next action, and related notices.</div></div>
-                    <div class="lf-resizer"></div>
-                </div>
             </div>
             <div class="mobile-home-indicator"></div>
         </div>
