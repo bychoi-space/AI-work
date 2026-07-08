@@ -18,6 +18,12 @@
       "type": "architecture",
       "updatedAt": "2026-07-08T05:18:03.572Z",
       "template": "template_architecture.html"
+    },
+    "03_UI_Screen_401.html": {
+      "title": "03_UI_Screen_401",
+      "type": "ui",
+      "updatedAt": "2026-07-08T05:18:51.837Z",
+      "template": "template_front_ui.html"
     }
   },
   "developer": "",
