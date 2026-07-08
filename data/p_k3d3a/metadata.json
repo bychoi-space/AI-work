@@ -24,6 +24,12 @@
       "type": "ui",
       "updatedAt": "2026-07-08T05:18:51.837Z",
       "template": "template_front_ui.html"
+    },
+    "04_Admin_NBOS_293.html": {
+      "title": "04_Admin_NBOS_293",
+      "type": "admin-nbos",
+      "updatedAt": "2026-07-08T05:19:57.519Z",
+      "template": "template_nbos.html"
     }
   },
   "developer": "",
