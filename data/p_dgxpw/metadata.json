@@ -123,6 +123,12 @@
       "version": 0.1,
       "description": [],
       "connectors": []
+    },
+    "06_Mobile_Design_2_155.html": {
+      "title": "06_Mobile_Design_2_155",
+      "type": "mobile-ui",
+      "updatedAt": "2026-07-08T08:12:52.220Z",
+      "template": "template_mobile_ui_2.html"
     }
   },
   "assignee": "최범열",
