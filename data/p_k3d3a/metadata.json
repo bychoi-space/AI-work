@@ -102,6 +102,12 @@
       "type": "mobile-ui",
       "updatedAt": "2026-07-08T06:52:37.862Z",
       "template": "template_mobile_ui_3.html"
+    },
+    "06_Mobile_Design_2_537.html": {
+      "title": "06_Mobile_Design_2_537",
+      "type": "mobile-ui",
+      "updatedAt": "2026-07-08T06:56:14.240Z",
+      "template": "template_mobile_ui_2.html"
     }
   },
   "developer": "",
