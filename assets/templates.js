@@ -7124,40 +7124,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             <div class="chrome-content-area"></div>
         </div>
 
-        <!-- Default mock elements inside browser window -->
-        <div id="pc-header" class="lf-component" style="top:82px; left:0px; width:1440px; height:60px;">
-            <div class="lf-drag-handle">::</div>
-            <div style="width: 100%; height: 100%; background: #ffffff; border-bottom: 1.6px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; box-sizing: border-box;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <div style="font-size: 20px; font-weight: 900; color: #1e293b; letter-spacing: -0.5px;">LFmall</div>
-                </div>
-                <div style="display: flex; gap: 32px; font-size: 14px; font-weight: 700; color: #64748b;">
-                    <div>카테고리</div>
-                    <div>브랜드</div>
-                    <div>아울렛</div>
-                    <div>이벤트</div>
-                </div>
-                <div style="display: flex; gap: 20px; color: #64748b;">
-                    <span class="material-icons-outlined" style="font-size: 20px;">search</span>
-                    <span class="material-icons-outlined" style="font-size: 20px;">shopping_cart</span>
-                </div>
-            </div>
-            <div class="lf-resizer"></div>
-        </div>
-
-        <div id="pc-banner" class="lf-component" style="top:172px; left:80px; width:1280px; height:240px;">
-            <div class="lf-drag-handle">::</div>
-            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #4f46e5, #06b6d4); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; padding: 40px 60px; box-sizing: border-box; color: #ffffff; box-shadow: 0 10px 25px rgba(79, 70, 229, 0.15);">
-                <div style="max-width: 60%;">
-                    <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.9; color: #00e5ff;">PC UI Template</div>
-                    <div style="font-size: 28px; font-weight: 900; margin-top: 10px; line-height: 1.2;">Premium PC UI Workspace</div>
-                    <div style="font-size: 14px; margin-top: 14px; opacity: 0.8; line-height: 1.4;">이 템플릿은 Google Chrome 브라우저 프레임이 입혀진 PC 전용 작업 영역입니다. 이곳에 PC 웹사이트 디자인을 설계하세요.</div>
-                </div>
-                <div style="font-size: 80px; opacity: 0.2; font-weight: 900; user-select: none;">PC</div>
-            </div>
-            <div class="lf-resizer"></div>
-        </div>
-
     </div>
     <script id="v4-inlined-script">
         /* Dynamic scripts will be injected here */
