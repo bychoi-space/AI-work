@@ -116,19 +116,23 @@
       ]
     },
     "00_Cover_724.html": {
-      "title": "00_Cover_724",
+      "title": "프로젝트 커버",
       "type": "cover",
-      "updatedAt": "2026-07-02T08:23:46.883Z",
+      "updatedAt": "2026-07-08T08:13:07.045Z",
       "template": "template_cover.html",
       "version": 0.1,
       "description": [],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": ""
     },
     "06_Mobile_Design_2_155.html": {
       "title": "06_Mobile_Design_2_155",
       "type": "mobile-ui",
       "updatedAt": "2026-07-08T08:12:52.220Z",
-      "template": "template_mobile_ui_2.html"
+      "template": "template_mobile_ui_2.html",
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
