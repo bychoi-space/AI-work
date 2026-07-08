@@ -129,7 +129,7 @@
     "06_Mobile_Design_2_155.html": {
       "title": "06_Mobile_Design_2_155",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-08T08:31:57.621Z",
+      "updatedAt": "2026-07-08T08:45:43.735Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -169,6 +169,26 @@
             "stroke": "#94a3b8",
             "strokeWidth": 1
           }
+        },
+        {
+          "id": "conn_1783500293370",
+          "type": "straight",
+          "start": {
+            "x": 325.2,
+            "y": 170,
+            "targetId": null,
+            "side": null
+          },
+          "end": {
+            "x": 355.2,
+            "y": 170,
+            "targetId": null,
+            "side": null
+          },
+          "style": {
+            "stroke": "#0f172a",
+            "strokeWidth": 3
+          }
         }
       ]
     }
@@ -178,5 +198,5 @@
   "period": "2026.06.29 ~ 2026.08.28",
   "jira": "LFML-144682",
   "themeIndex": 2,
-  "updated": "2026-07-08 17:31:57"
+  "updated": "2026-07-08 17:45:43"
 }
