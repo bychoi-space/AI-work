@@ -3623,15 +3623,14 @@ window.v4Script = `
             document.querySelectorAll('.mobile-frame').forEach((f, idx) => {
                 const content = f.querySelector('.mobile-content');
                 if (content) {
-                    let el = content;
-                    let l = 0, t = 0;
-                    while(el) {
-                        l += el.offsetLeft;
-                        t += el.offsetTop;
-                        el = el.offsetParent;
-                    }
-                    const w = content.offsetWidth;
-                    const h = content.offsetHeight;
+                    const rect = content.getBoundingClientRect();
+                    const scrollX = window.scrollX || 0;
+                    const scrollY = window.scrollY || 0;
+                    const l = rect.left + scrollX;
+                    const t = rect.top + scrollY;
+                    const w = rect.width;
+                    const h = rect.height;
+                    
                     const sName = 'UI Area ' + (idx + 1);
                     const bezel = 0;
                     
@@ -3647,13 +3646,44 @@ window.v4Script = `
                     targets.push({ x: l + w / 2, label: sName, part: 'Center', type: 'h' });
                     targets.push({ y: t + h / 2, label: sName, part: 'Middle', type: 'v' });
 
+                    // Divide mobile screen borders into 4 separate edge walls for proper inner spacing detection
                     rects.push({
-                        id: 'mobile-frame-' + idx,
-                        label: sName,
+                        id: 'mobile-frame-' + idx + '-left',
+                        label: sName + ' Left',
                         left: leftVal,
                         top: topVal,
-                        width: rightVal - leftVal,
-                        height: bottomVal - topVal,
+                        width: 0,
+                        height: h,
+                        right: leftVal,
+                        bottom: bottomVal
+                    });
+                    rects.push({
+                        id: 'mobile-frame-' + idx + '-right',
+                        label: sName + ' Right',
+                        left: rightVal,
+                        top: topVal,
+                        width: 0,
+                        height: h,
+                        right: rightVal,
+                        bottom: bottomVal
+                    });
+                    rects.push({
+                        id: 'mobile-frame-' + idx + '-top',
+                        label: sName + ' Top',
+                        left: leftVal,
+                        top: topVal,
+                        width: w,
+                        height: 0,
+                        right: rightVal,
+                        bottom: topVal
+                    });
+                    rects.push({
+                        id: 'mobile-frame-' + idx + '-bottom',
+                        label: sName + ' Bottom',
+                        left: leftVal,
+                        top: bottomVal,
+                        width: w,
+                        height: 0,
                         right: rightVal,
                         bottom: bottomVal
                     });
