@@ -1487,20 +1487,12 @@
                             <div class="template-name">프로젝트 커버</div>
                             <div class="template-badge">Cover</div>
                         </div>
-                        <div class="template-card" data-template="template_architecture.html" data-default-name="01_Architecture">
-                            <div class="template-thumb">
-                                <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">account_tree</span>
-                                <div class="template-check"><span class="material-icons">check_circle</span></div>
-                            </div>
-                            <div class="template-name">아키텍처/정보설계</div>
-                            <div class="template-badge">Arch</div>
-                        </div>
                         <div class="template-card" data-template="template_plan.html" data-default-name="02_Plan">
                             <div class="template-thumb">
                                 <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">event_note</span>
                                 <div class="template-check"><span class="material-icons">check_circle</span></div>
                             </div>
-                            <div class="template-name">사업 진행 일정</div>
+                            <div class="template-name">진행 일정</div>
                             <div class="template-badge">Plan</div>
                         </div>
                         <div class="template-card" data-template="template_plan_delivery.html" data-default-name="03_Delivery_Notice">
@@ -1510,22 +1502,6 @@
                             </div>
                             <div class="template-name">배송예정일 설정</div>
                             <div class="template-badge">Plan</div>
-                        </div>
-                        <div class="template-card" data-template="template_front_ui.html" data-default-name="03_UI_Screen">
-                            <div class="template-thumb">
-                                <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">smartphone</span>
-                                <div class="template-check"><span class="material-icons">check_circle</span></div>
-                            </div>
-                            <div class="template-name">Front UI (Mobile)</div>
-                            <div class="template-badge">UI</div>
-                        </div>
-                        <div class="template-card" data-template="template_nbos.html" data-default-name="04_Admin_NBOS">
-                            <div class="template-thumb">
-                                <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">desktop_windows</span>
-                                <div class="template-check"><span class="material-icons">check_circle</span></div>
-                            </div>
-                            <div class="template-name">Admin (nBOS)</div>
-                            <div class="template-badge">Admin</div>
                         </div>
                         <div class="template-card" data-template="template_mobile_ui_1.html" data-default-name="06_Mobile_Design_1">
                             <div class="template-thumb">
