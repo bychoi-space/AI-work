@@ -40,6 +40,7 @@
             activeCompId = data.id;
             updateAllInputs(data.w, data.h);
             syncAllColors(data.currentStyles || {});
+            hidePalettePopup();
 
             // Show/hide Preserve Aspect Ratio row depending on whether this is an image
             const ratioRow = document.getElementById('shape-aspect-ratio-row');
@@ -68,6 +69,7 @@
             activeImageRatio = null;
             updateAllInputs(0, 0);
             syncAllColors({});
+            hidePalettePopup();
 
             // Hide ratio row on deselect
             const ratioRow = document.getElementById('shape-aspect-ratio-row');
