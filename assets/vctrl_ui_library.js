@@ -1576,12 +1576,6 @@
                             <div class="template-badge">Blank</div>
                         </div>
                     </div>
-
-                    <div class="modal-section-title">또는 직접 업로드</div>
-                    <button id="btn-upload-local" class="btn-secondary" style="width: 100%; border-style: dashed; border-color: var(--accent); color: var(--accent);">
-                        <span class="material-icons-outlined" style="font-size: 18px; vertical-align: middle; margin-right: 8px;">upload_file</span>
-                        로컬 파일 선택하기
-                    </button>
                 </div>
                 <div class="modal-footer">
                     <button id="btn-add-screen-cancel" class="btn-secondary">취소</button>

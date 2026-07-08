@@ -40,7 +40,6 @@ window.DOM = {
     
     // Screen Management
     btnAddScreen: get('btn-add-screen'),
-    addScreenUpload: get('add-screen-upload'),
     addScreenModal: get('add-screen-modal'),
     btnCancelAdd: get('btn-add-screen-cancel'),
     btnSubmitAdd: get('btn-add-screen-submit'),
