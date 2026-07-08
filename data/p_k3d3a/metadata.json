@@ -30,6 +30,12 @@
       "type": "admin-nbos",
       "updatedAt": "2026-07-08T05:19:57.519Z",
       "template": "template_nbos.html"
+    },
+    "07_PC_Design_387.html": {
+      "title": "07_PC_Design_387",
+      "type": "default",
+      "updatedAt": "2026-07-08T05:21:38.085Z",
+      "template": "template_pc_ui.html"
     }
   },
   "developer": "",
