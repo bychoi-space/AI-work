@@ -243,7 +243,7 @@
                     
                     if (t.x === undefined) continue;
                     // Apply distance-based filtering (reduced to 150px radius for cleaner dragging, except Canvas)
-                    if (t.label !== 'Canvas') {
+                    if (t.label !== 'Canvas' && !(t.label && t.label.includes('UI Area'))) {
                         const activeCenterX = x + w / 2;
                         const isRowCol = t.label && (t.label.includes('Row ') || t.label.includes('Col '));
                         const maxRadius = isRowCol ? 250 : 150; // Allow slightly wider radius for query items
@@ -272,7 +272,7 @@
 
                     if (t.y === undefined) continue;
                     // Apply distance-based filtering
-                    if (t.label !== 'Canvas') {
+                    if (t.label !== 'Canvas' && !(t.label && t.label.includes('UI Area'))) {
                         const activeCenterY = y + h / 2;
                         const isRowCol = t.label && (t.label.includes('Row ') || t.label.includes('Col '));
                         const maxRadius = isRowCol ? 250 : 150;
