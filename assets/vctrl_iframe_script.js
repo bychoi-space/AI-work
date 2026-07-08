@@ -3633,7 +3633,7 @@ window.v4Script = `
                     const w = content.offsetWidth;
                     const h = content.offsetHeight;
                     const sName = 'UI Area ' + (idx + 1);
-                    const bezel = 8;
+                    const bezel = 0;
                     
                     const leftVal = l + bezel;
                     const rightVal = l + w - bezel;
