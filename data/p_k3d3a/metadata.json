@@ -12,6 +12,12 @@
       "type": "architecture",
       "updatedAt": "2026-07-08T05:11:30.648Z",
       "template": "template_architecture.html"
+    },
+    "01_Architecture_836.html": {
+      "title": "01_Architecture_836",
+      "type": "architecture",
+      "updatedAt": "2026-07-08T05:18:03.572Z",
+      "template": "template_architecture.html"
     }
   },
   "developer": "",
