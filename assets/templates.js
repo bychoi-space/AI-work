@@ -6562,7 +6562,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
         /* Mobile Frame Styling */
         .mobile-frame {
-            width: 375px; height: 852px;
+            width: 375px; height: 840px;
             background: var(--v4-frame-bg);
             border-radius: 40px;
             position: relative;
@@ -6579,7 +6579,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         .mobile-content {
             width: 360px; height: 800px;
             position: absolute;
-            top: 40px; left: 7.5px;
+            top: 30px; left: 7.5px;
             background-image:
                 linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
@@ -6654,9 +6654,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         :root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg: #1e293b; --v4-frame-bg: #ffffff; }
         body { margin: 0; padding: 0; background: var(--v4-bg); font-family: 'Inter', 'Noto Sans KR', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
         .page { width: 1440px; height: 900px; position: relative; display: flex; justify-content: center; align-items: center; gap: 80px; }
-        .mobile-frame { width: 375px; height: 852px; background: var(--v4-frame-bg); border-radius: 40px; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111; overflow: hidden; border: 4px solid #334155; z-index: 10; }
+        .mobile-frame { width: 375px; height: 840px; background: var(--v4-frame-bg); border-radius: 40px; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111; overflow: hidden; border: 4px solid #334155; z-index: 10; }
         .mobile-header-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 150px; height: 30px; background: #111; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; z-index: 1000; }
-        .mobile-content { width: 360px; height: 800px; position: absolute; top: 40px; left: 7.5px; background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 20px 20px; overflow-y: auto; overflow-x: hidden; border: none !important; box-sizing: border-box; }
+        .mobile-content { width: 360px; height: 800px; position: absolute; top: 30px; left: 7.5px; background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 20px 20px; overflow-y: auto; overflow-x: hidden; border: none !important; box-sizing: border-box; }
         .mobile-statusbar { position: absolute; top: 10px; left: 24px; right: 24px; height: 20px; display: flex; align-items: center; justify-content: space-between; color: #111827; font-size: 12px; font-weight: 800; z-index: 1001; pointer-events: none; white-space: nowrap; }
         .mobile-home-indicator { position: absolute; bottom: 8px; left: 50%; width: 132px; height: 5px; border-radius: 999px; background: #111827; transform: translateX(-50%); z-index: 1001; pointer-events: none; }
         .mobile-ui-header, .mobile-ui-card, .mobile-ui-nav, .mobile-ui-list { width: 100%; height: 100%; box-sizing: border-box; color: #0f172a; font-family: 'Inter', 'Noto Sans KR', sans-serif; }
@@ -6724,9 +6724,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         :root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg: #1e293b; --v4-frame-bg: #ffffff; }
         body { margin: 0; padding: 0; background: var(--v4-bg); font-family: 'Inter', 'Noto Sans KR', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
         .page { width: 1440px; height: 900px; position: relative; display: flex; justify-content: center; align-items: center; gap: 40px; }
-        .mobile-frame { width: 375px; height: 852px; background: var(--v4-frame-bg); border-radius: 40px; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111; overflow: hidden; border: 4px solid #334155; z-index: 10; }
+        .mobile-frame { width: 375px; height: 840px; background: var(--v4-frame-bg); border-radius: 40px; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111; overflow: hidden; border: 4px solid #334155; z-index: 10; }
         .mobile-header-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 150px; height: 30px; background: #111; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; z-index: 1000; }
-        .mobile-content { width: 360px; height: 800px; position: absolute; top: 40px; left: 7.5px; background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 20px 20px; overflow-y: auto; overflow-x: hidden; border: none !important; box-sizing: border-box; }
+        .mobile-content { width: 360px; height: 800px; position: absolute; top: 30px; left: 7.5px; background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px); background-size: 20px 20px; overflow-y: auto; overflow-x: hidden; border: none !important; box-sizing: border-box; }
         .mobile-statusbar { position: absolute; top: 10px; left: 24px; right: 24px; height: 20px; display: flex; align-items: center; justify-content: space-between; color: #111827; font-size: 12px; font-weight: 800; z-index: 1001; pointer-events: none; white-space: nowrap; }
         .mobile-home-indicator { position: absolute; bottom: 8px; left: 50%; width: 132px; height: 5px; border-radius: 999px; background: #111827; transform: translateX(-50%); z-index: 1001; pointer-events: none; }
         .mobile-ui-header, .mobile-ui-card, .mobile-ui-nav, .mobile-ui-list { width: 100%; height: 100%; box-sizing: border-box; color: #0f172a; font-family: 'Inter', 'Noto Sans KR', sans-serif; }
