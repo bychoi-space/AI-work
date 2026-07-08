@@ -266,20 +266,26 @@ window.V4_COMPONENT_LIBRARY = {
             category: 'Shapes',
             icon: 'table_chart',
             iconColor: '#818cf8',
+            width: '200px',
+            height: '100px',
             cardStyle: 'background: rgba(99, 102, 241, 0.05); border: 1.6px solid rgba(99, 102, 241, 0.1) !important;',
             previewHtml: `<div style="width: 80px; height: 40px; border: 1.6px solid var(--v4-border-color, #475569); background: var(--v4-disabled-bg, #e2e8f0); border-radius: 4px;"></div>`,
             html: `
-            <table class="v4-premium-table" style="background: var(--v4-disabled-bg, #e2e8f0); border: 1.6px solid var(--v4-border-color, #475569); color: var(--v4-text-color, #0f172a); width: 100%; height: 100%;">
+            <table class="v4-premium-table" style="background: var(--v4-disabled-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); width: 100%; height: 100%; table-layout: fixed; border-collapse: collapse; box-sizing: border-box;">
+                <colgroup>
+                    <col style="width: 100px;">
+                    <col style="width: 100px;">
+                </colgroup>
                 <thead>
-                    <tr>
-                        <th contenteditable="true" class="v4-editable-cell" style="background: var(--v4-input-bg, #cbd5e1); color: var(--v4-text-color, #0f172a); border-bottom: 1.6px solid var(--v4-border-color, #475569); font-size: 14px; font-weight: 700;">구분</th>
-                        <th contenteditable="true" class="v4-editable-cell" style="background: var(--v4-input-bg, #cbd5e1); color: var(--v4-text-color, #0f172a); border-bottom: 1.6px solid var(--v4-border-color, #475569); font-size: 14px; font-weight: 700;">상세 내용</th>
+                    <tr style="height: 50px;">
+                        <th contenteditable="true" class="v4-editable-cell" style="background: var(--v4-input-bg, #f8fafc); color: var(--v4-text-color, #334155); border: 1.6px solid var(--v4-border-color, #cbd5e1); font-size: 12px; font-weight: 700; padding: 0 8px; text-align: left; vertical-align: middle; box-sizing: border-box;">구분</th>
+                        <th contenteditable="true" class="v4-editable-cell" style="background: var(--v4-input-bg, #f8fafc); color: var(--v4-text-color, #334155); border: 1.6px solid var(--v4-border-color, #cbd5e1); font-size: 12px; font-weight: 700; padding: 0 8px; text-align: left; vertical-align: middle; box-sizing: border-box;">상세 내용</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td contenteditable="true" class="v4-editable-cell" style="border-bottom: 1.6px solid var(--v4-input-bg, #cbd5e1); color: var(--v4-text-color, #0f172a); font-size: 14px;">내용</td>
-                        <td contenteditable="true" class="v4-editable-cell" style="border-bottom: 1.6px solid var(--v4-input-bg, #cbd5e1); color: var(--v4-text-color, #0f172a); font-size: 14px;">정보</td>
+                    <tr style="height: 50px;">
+                        <td contenteditable="true" class="v4-editable-cell" style="border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); font-size: 12px; padding: 0 8px; text-align: left; vertical-align: middle; box-sizing: border-box;">내용</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); font-size: 12px; padding: 0 8px; text-align: left; vertical-align: middle; box-sizing: border-box;">정보</td>
                     </tr>
                 </tbody>
             </table>`

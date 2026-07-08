@@ -40,10 +40,20 @@ body {
     flex-direction: column;
     gap: 30px;
     overflow-y: auto;
-    scrollbar-width: none; /* Firefox */
 }
 #dashboard-view::-webkit-scrollbar {
-    display: none !important; /* Safari and Chrome */
+    width: 6px;
+}
+#dashboard-view::-webkit-scrollbar-track {
+    background: transparent;
+}
+#dashboard-view::-webkit-scrollbar-thumb {
+    background: rgba(79, 70, 229, 0.15);
+    border-radius: 3px;
+    transition: background 0.2s;
+}
+#dashboard-view::-webkit-scrollbar-thumb:hover {
+    background: rgba(79, 70, 229, 0.35);
 }
 
 /* Premium Animated Background - Light Mesh Version */

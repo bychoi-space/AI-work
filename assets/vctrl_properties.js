@@ -285,8 +285,12 @@
         customBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (activePaletteInput) {
-                activePaletteInput.__show_native = true;
-                activePaletteInput.click();
+                const targetInput = activePaletteInput;
+                targetInput.__show_native = true;
+                targetInput.click();
+                setTimeout(() => {
+                    targetInput.__show_native = false;
+                }, 100);
             }
             hidePalettePopup();
         });

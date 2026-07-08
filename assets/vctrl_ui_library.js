@@ -273,6 +273,11 @@
                 <button id="btn-del-col" class="v4-inspector-btn danger" style="font-size: 11px;">Col-</button>
             </div>
             
+            <div class="v4-tool-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                <button id="btn-merge-cells" class="v4-inspector-btn" style="font-size: 11px; opacity: 0.5; cursor: not-allowed;" disabled>셀 병합</button>
+                <button id="btn-split-cells" class="v4-inspector-btn" style="font-size: 11px; opacity: 0.5; cursor: not-allowed;" disabled>셀 분할</button>
+            </div>
+            
             <div style="display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 8px;">
                 <div class="prop-group">
                     <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">표 테두리</label>
@@ -325,11 +330,40 @@
                     </div>
                 </div>
                 <div class="prop-group" style="margin-bottom: 8px;">
-                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">선택 열 너비 (<span id="txt-cell-col-width">150</span>px)</label>
+                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">셀 테두리 설정 (CELL BORDERS)</label>
+                    <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                        <button id="btn-cell-border-all" title="All Borders" style="flex: 1; min-width: 28px; height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.1) !important; border-radius: 6px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 14px;">border_all</span>
+                        </button>
+                        <button id="btn-cell-border-none" title="No Borders" style="flex: 1; min-width: 28px; height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.1) !important; border-radius: 6px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 14px;">border_clear</span>
+                        </button>
+                        <button id="btn-cell-border-top" title="Top Border" style="flex: 1; min-width: 28px; height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.1) !important; border-radius: 6px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 14px;">border_top</span>
+                        </button>
+                        <button id="btn-cell-border-bottom" title="Bottom Border" style="flex: 1; min-width: 28px; height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.1) !important; border-radius: 6px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 14px;">border_bottom</span>
+                        </button>
+                        <button id="btn-cell-border-left" title="Left Border" style="flex: 1; min-width: 28px; height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.1) !important; border-radius: 6px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 14px;">border_left</span>
+                        </button>
+                        <button id="btn-cell-border-right" title="Right Border" style="flex: 1; min-width: 28px; height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.1) !important; border-radius: 6px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+                            <span class="material-icons-outlined" style="font-size: 14px;">border_right</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="prop-group" style="margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label style="font-size: 9px; color: #94a3b8;">선택 열 너비 (px)</label>
+                        <input type="number" id="cell-col-width-num" min="30" max="1000" value="150" style="width: 65px; background: rgba(0,0,0,0.3); border: 1.6px solid rgba(255,255,255,0.1) !important; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 10px; text-align: right;">
+                    </div>
                     <input type="range" id="cell-col-width" min="30" max="600" value="150" style="width:100%;">
                 </div>
-                <div class="prop-group">
-                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">선택 행 높이 (<span id="txt-cell-row-height">50</span>px)</label>
+                <div class="prop-group" style="margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label style="font-size: 9px; color: #94a3b8;">선택 행 높이 (px)</label>
+                        <input type="number" id="cell-row-height-num" min="20" max="500" value="50" style="width: 65px; background: rgba(0,0,0,0.3); border: 1.6px solid rgba(255,255,255,0.1) !important; color: #fff; padding: 2px 6px; border-radius: 4px; font-size: 10px; text-align: right;">
+                    </div>
                     <input type="range" id="cell-row-height" min="20" max="200" value="50" style="width:100%;">
                 </div>
             </div>

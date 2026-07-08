@@ -24,10 +24,9 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
 .lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none !important; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10002; font-size: 14px; font-weight: bold; }
 .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: none !important; }
-.v4-premium-table { table-layout: fixed; border-collapse: collapse; overflow: hidden; border-radius: 8px; border: 1.6px solid #475569 !important; font-family: 'Inter', sans-serif; }
-.v4-premium-table th { padding: 14px 16px; text-align: left; border-bottom: 1.6px solid #475569 !important; font-weight: 700; white-space: nowrap; }
-.v4-premium-table td { padding: 14px 16px; border-bottom: 1.6px solid #cbd5e1 !important; }
-.v4-premium-table tr:last-child td { border-bottom: none !important; }
+.v4-premium-table { table-layout: fixed; border-collapse: collapse; border: 1.6px solid #cbd5e1 !important; font-family: 'Inter', sans-serif; }
+.v4-premium-table th { padding: 14px 16px; text-align: left; border: 1.6px solid #cbd5e1 !important; font-weight: 700; white-space: nowrap; }
+.v4-premium-table td { padding: 14px 16px; border: 1.6px solid #cbd5e1 !important; }
 .v4-grid-container table th, .v4-grid-container table td { border-right: 1.6px solid rgb(226, 232, 240) !important; }
 .v4-grid-container table tr { border-bottom: 1.6px solid rgb(226, 232, 240) !important; }
 .v4-grid-container td.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; }
@@ -1350,7 +1349,7 @@ window.v4Script = `
                 var rows = Array.from(tbody.querySelectorAll('tr'));
                 while (rows.length < rowCount) {
                     var newRow = document.createElement('tr');
-                    newRow.style.height = '36px';
+                    newRow.style.height = '50px';
                     newRow.style.background = '#ffffff';
                     newRow.style.boxSizing = 'border-box';
                     tbody.appendChild(newRow);
@@ -3096,7 +3095,15 @@ window.v4Script = `
             }
             
             if (d.subSelector && d.subStyle) {
-                t.querySelectorAll(d.subSelector).forEach(sub => Object.assign(sub.style, d.subStyle));
+                t.querySelectorAll(d.subSelector).forEach(sub => {
+                    Object.keys(d.subStyle).forEach(key => {
+                        const cssKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
+                        sub.style.setProperty(cssKey, d.subStyle[key], 'important');
+                    });
+                });
+            }
+            if (typeof window.syncTableComponentSize === 'function') {
+                window.syncTableComponentSize();
             }
             window.updateHandles(s);
             markDirty();
@@ -3689,6 +3696,46 @@ window.v4Script = `
 
             notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets, rects });
         } else if (d.type === 'LF_TABLE_ACTION') {
+            window.syncTableComponentSize = function() {
+                const s = document.querySelector('.lf-component.selected');
+                if (!s) return;
+                
+                const table = s.querySelector('table');
+                if (!table) return;
+                
+                const isGrid = s.classList.contains('v4-grid-container') || s.querySelector('.v4-grid-container');
+                
+                let newWidth, newHeight;
+                if (isGrid) {
+                    newWidth = table.offsetWidth;
+                    newHeight = table.offsetHeight + 36;
+                } else {
+                    const colgroup = table.querySelector('colgroup');
+                    if (colgroup && colgroup.children.length > 0) {
+                        let totalWidth = 0;
+                        Array.from(colgroup.children).forEach(col => {
+                            const wStr = col.style.width || col.getAttribute('width') || '100px';
+                            totalWidth += parseInt(wStr) || 100;
+                        });
+                        newWidth = totalWidth;
+                    } else {
+                        newWidth = table.offsetWidth;
+                    }
+                    
+                    const origHeight = table.style.height;
+                    table.style.height = 'auto';
+                    newHeight = table.offsetHeight;
+                    table.style.height = origHeight || '100%';
+                }
+                
+                notifyParent({
+                    type: 'LF_TABLE_SIZE_CHANGED',
+                    compId: s.id,
+                    width: newWidth,
+                    height: newHeight
+                });
+            }
+
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             
@@ -3737,6 +3784,7 @@ window.v4Script = `
                 }, window._getCompStyles(s)));
                 
                 markDirty();
+                setTimeout(window.syncTableComponentSize, 50);
                 return;
             }
             
@@ -3755,6 +3803,12 @@ window.v4Script = `
                 const colCount = table.rows[0] ? table.rows[0].cells.length : 1;
                 const templateRow = targetRow || table.rows[table.rows.length - 2] || table.rows[0];
                 
+                if (templateRow && templateRow.style.height) {
+                    newRow.style.height = templateRow.style.height;
+                } else {
+                    newRow.style.height = '50px';
+                }
+                
                 for (let i = 0; i < colCount; i++) {
                     const c = newRow.insertCell();
                     c.className = 'v4-editable-cell';
@@ -3765,7 +3819,7 @@ window.v4Script = `
                         const tc = templateRow.cells[i];
                         c.style.cssText = tc.style.cssText;
                     } else {
-                        c.style.borderBottom = '1.6px solid var(--v4-border-color, #cbd5e1)';
+                        c.style.border = '1.6px solid var(--v4-border-color, #cbd5e1)';
                         c.style.padding = '12px 6px';
                         c.style.textAlign = 'center';
                         c.style.verticalAlign = 'middle';
@@ -3773,7 +3827,32 @@ window.v4Script = `
                 }
             } else if (act === 'add-col' || act === 'add_col') {
                 const insertIdx = targetColIndex !== -1 ? targetColIndex + 1 : -1;
+                
+                // Synchronize colgroup
+                let colgroup = table.querySelector('colgroup');
+                if (!colgroup) {
+                    colgroup = document.createElement('colgroup');
+                    const currentColsCount = table.rows[0] ? table.rows[0].cells.length : 2;
+                    for (let i = 0; i < currentColsCount; i++) {
+                        const col = document.createElement('col');
+                        col.style.width = '100px';
+                        colgroup.appendChild(col);
+                    }
+                    table.insertBefore(colgroup, table.firstChild);
+                }
+                const newCol = document.createElement('col');
+                newCol.style.width = '100px';
+                if (insertIdx !== -1 && colgroup.children[insertIdx]) {
+                    colgroup.insertBefore(newCol, colgroup.children[insertIdx]);
+                } else {
+                    colgroup.appendChild(newCol);
+                }
+
                 Array.from(table.rows).forEach((r, idx) => {
+                    const templateCell = (insertIdx !== -1 && r.cells[insertIdx - 1]) || 
+                                         r.cells[insertIdx] || 
+                                         r.cells[r.cells.length - 1];
+                                         
                     const c = r.insertCell(insertIdx);
                     if (idx === 0) {
                         const th = document.createElement('th');
@@ -3781,41 +3860,86 @@ window.v4Script = `
                         th.contentEditable = 'true';
                         th.innerText = 'Header';
                         
-                        th.style.background = 'var(--header-dark, #374151)';
-                        th.style.color = '#ffffff';
-                        th.style.fontWeight = '800';
-                        th.style.borderBottom = '1.6px solid var(--v4-border-color, #475569)';
-                        th.style.padding = '12px 6px';
-                        th.style.textAlign = 'center';
-                        th.style.verticalAlign = 'middle';
-                        th.style.width = '120px';
+                        if (templateCell) {
+                            th.style.cssText = templateCell.style.cssText;
+                        } else {
+                            th.style.background = 'var(--header-dark, #374151)';
+                            th.style.color = '#ffffff';
+                            th.style.fontWeight = '800';
+                            th.style.border = '1.6px solid var(--v4-border-color, #475569)';
+                            th.style.padding = '12px 6px';
+                            th.style.textAlign = 'center';
+                            th.style.verticalAlign = 'middle';
+                        }
                         r.replaceChild(th, c);
                     } else {
                         c.className = 'v4-editable-cell';
                         c.contentEditable = 'true';
                         c.innerText = '-';
                         
-                        c.style.borderBottom = '1.6px solid var(--v4-border-color, #cbd5e1)';
-                        c.style.padding = '12px 6px';
-                        c.style.textAlign = 'center';
-                        c.style.verticalAlign = 'middle';
+                        if (templateCell) {
+                            c.style.cssText = templateCell.style.cssText;
+                        } else {
+                            c.style.border = '1.6px solid var(--v4-border-color, #cbd5e1)';
+                            c.style.padding = '12px 6px';
+                            c.style.textAlign = 'center';
+                            c.style.verticalAlign = 'middle';
+                        }
                     }
                 });
             } else if (act === 'del-row' || act === 'del_row') {
-                if (table.rows.length > 1) {
-                    const rowToRemove = targetRow || table.rows[table.rows.length - 1];
-                    if (rowToRemove) rowToRemove.remove();
+                if (window.TableManager && window.TableManager.deleteRow) {
+                    const rowIndex = targetRow ? targetRow.rowIndex : table.rows.length - 1;
+                    window.TableManager.deleteRow(table, rowIndex);
+                } else {
+                    if (table.rows.length > 1) {
+                        const rowToRemove = targetRow || table.rows[table.rows.length - 1];
+                        if (rowToRemove) rowToRemove.remove();
+                    }
                 }
             } else if (act === 'del-col' || act === 'del_col') {
-                const colCount = table.rows[0] ? table.rows[0].cells.length : 0;
-                if (colCount > 1) {
-                    const idxToRemove = targetColIndex !== -1 ? targetColIndex : colCount - 1;
-                    Array.from(table.rows).forEach(r => {
-                        if (r.cells[idxToRemove]) r.cells[idxToRemove].remove();
-                    });
+                if (window.TableManager && window.TableManager.deleteColumn) {
+                    let colIndex = -1;
+                    if (activeCell) {
+                        colIndex = window.TableManager.getCellVisualColumnIndex(table, activeCell);
+                    }
+                    if (colIndex === -1) {
+                        const grid = window.TableManager.getTableGridMap(table);
+                        colIndex = grid[0] ? grid[0].length - 1 : 0;
+                    }
+                    
+                    const colgroup = table.querySelector('colgroup');
+                    if (colgroup && colgroup.children[colIndex]) {
+                        colgroup.children[colIndex].remove();
+                    }
+                    
+                    window.TableManager.deleteColumn(table, colIndex);
+                } else {
+                    const colCount = table.rows[0] ? table.rows[0].cells.length : 0;
+                    if (colCount > 1) {
+                        const idxToRemove = targetColIndex !== -1 ? targetColIndex : colCount - 1;
+                        
+                        const colgroup = table.querySelector('colgroup');
+                        if (colgroup && colgroup.children[idxToRemove]) {
+                            colgroup.children[idxToRemove].remove();
+                        }
+                        
+                        Array.from(table.rows).forEach(r => {
+                            if (r.cells[idxToRemove]) r.cells[idxToRemove].remove();
+                        });
+                    }
+                }
+            } else if (act === 'merge_cells' || act === 'merge-cells') {
+                if (window.TableManager && window.TableManager.mergeSelectedCells) {
+                    window.TableManager.mergeSelectedCells(table);
+                }
+            } else if (act === 'split_cells' || act === 'split-cells') {
+                if (window.TableManager && window.TableManager.splitSelectedCells) {
+                    window.TableManager.splitSelectedCells(table);
                 }
             }
             markDirty();
+            setTimeout(window.syncTableComponentSize, 50);
         } else if (d.type === 'LF_UPDATE_CELL_STYLE') {
             if (window.TableManager) {
                 window.TableManager.updateSelectedCellsStyle(d.style);
@@ -3828,6 +3952,12 @@ window.v4Script = `
                 if (d.height !== undefined) {
                     window.TableManager.updateSelectedRowHeight(d.height);
                 }
+                markDirty();
+                setTimeout(window.syncTableComponentSize, 50);
+            }
+        } else if (d.type === 'LF_UPDATE_CELL_BORDER') {
+            if (window.TableManager && window.TableManager.updateSelectedCellsBorder) {
+                window.TableManager.updateSelectedCellsBorder(d.borderType, d.color);
             }
         }
     });

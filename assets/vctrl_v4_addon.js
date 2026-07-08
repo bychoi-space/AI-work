@@ -245,23 +245,53 @@
         });
     }
 
-    // Cell Width Slider
+    // Cell Width Slider & Number Input
     const cellColWidthEl = document.getElementById('cell-col-width');
+    const cellColWidthNumEl = document.getElementById('cell-col-width-num');
+
+    const updateCellWidth = (val) => {
+        const numVal = parseInt(val);
+        if (isNaN(numVal) || numVal < 10) return;
+        notifyIframe({ type: 'LF_UPDATE_CELL_DIMENSION', width: numVal });
+        if (cellColWidthEl && cellColWidthEl.value != numVal) cellColWidthEl.value = numVal;
+        if (cellColWidthNumEl && cellColWidthNumEl.value != numVal) cellColWidthNumEl.value = numVal;
+        const txt = document.getElementById('txt-cell-col-width');
+        if (txt) txt.innerText = numVal;
+    };
+
     if (cellColWidthEl) {
         cellColWidthEl.addEventListener('input', function() {
-            notifyIframe({ type: 'LF_UPDATE_CELL_DIMENSION', width: parseInt(this.value) });
-            const txt = document.getElementById('txt-cell-col-width');
-            if (txt) txt.innerText = this.value;
+            updateCellWidth(this.value);
+        });
+    }
+    if (cellColWidthNumEl) {
+        cellColWidthNumEl.addEventListener('input', function() {
+            updateCellWidth(this.value);
         });
     }
 
-    // Cell Height Slider
+    // Cell Height Slider & Number Input
     const cellRowHeightEl = document.getElementById('cell-row-height');
+    const cellRowHeightNumEl = document.getElementById('cell-row-height-num');
+
+    const updateCellHeight = (val) => {
+        const numVal = parseInt(val);
+        if (isNaN(numVal) || numVal < 10) return;
+        notifyIframe({ type: 'LF_UPDATE_CELL_DIMENSION', height: numVal });
+        if (cellRowHeightEl && cellRowHeightEl.value != numVal) cellRowHeightEl.value = numVal;
+        if (cellRowHeightNumEl && cellRowHeightNumEl.value != numVal) cellRowHeightNumEl.value = numVal;
+        const txt = document.getElementById('txt-cell-row-height');
+        if (txt) txt.innerText = numVal;
+    };
+
     if (cellRowHeightEl) {
         cellRowHeightEl.addEventListener('input', function() {
-            notifyIframe({ type: 'LF_UPDATE_CELL_DIMENSION', height: parseInt(this.value) });
-            const txt = document.getElementById('txt-cell-row-height');
-            if (txt) txt.innerText = this.value;
+            updateCellHeight(this.value);
+        });
+    }
+    if (cellRowHeightNumEl) {
+        cellRowHeightNumEl.addEventListener('input', function() {
+            updateCellHeight(this.value);
         });
     }
 
@@ -295,6 +325,29 @@
     bindCellAlignButton('btn-cell-align-left', 'left');
     bindCellAlignButton('btn-cell-align-center', 'center');
     bindCellAlignButton('btn-cell-align-right', 'right');
+
+    // Cell Borders Event Bindings
+    const getTableBorderColor = () => {
+        const el = document.getElementById('table-border-color');
+        return (el && el.value) ? el.value : '#475569';
+    };
+
+    const bindCellBorderButton = (id, borderType) => {
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.addEventListener('click', function() {
+                const color = getTableBorderColor();
+                notifyIframe({ type: 'LF_UPDATE_CELL_BORDER', borderType: borderType, color: color });
+            });
+        }
+    };
+
+    bindCellBorderButton('btn-cell-border-all', 'all');
+    bindCellBorderButton('btn-cell-border-none', 'none');
+    bindCellBorderButton('btn-cell-border-top', 'top');
+    bindCellBorderButton('btn-cell-border-bottom', 'bottom');
+    bindCellBorderButton('btn-cell-border-left', 'left');
+    bindCellBorderButton('btn-cell-border-right', 'right');
 
     // Shape Style Bindings
     bindStyleUpdate('shape-font-size', (val) => ({
@@ -558,6 +611,8 @@
     bindAction('btn-del-col', 'DEL_COL');
     bindAction('btn-layout-h', 'LAYOUT_H');
     bindAction('btn-layout-v', 'LAYOUT_V');
+    bindAction('btn-merge-cells', 'MERGE_CELLS');
+    bindAction('btn-split-cells', 'SPLIT_CELLS');
 
     window.addEventListener('message', e => {
         const data = e.data;
@@ -721,6 +776,9 @@
             }
         } 
         else if (data.type === 'LF_CELL_SELECTED') {
+            const mergeBtn = document.getElementById('btn-merge-cells');
+            const splitBtn = document.getElementById('btn-split-cells');
+
             if (data.cellData) {
                 const cd = data.cellData;
                 
@@ -743,18 +801,22 @@
                     textPicker.value = _rgb2hex(cd.color);
                 }
 
-                // Sync Width Slider
+                // Sync Width Slider & Number Input
                 const widthInput = document.getElementById('cell-col-width');
-                if (widthInput && cd.width) {
-                    widthInput.value = cd.width;
+                const widthNumInput = document.getElementById('cell-col-width-num');
+                if (cd.width) {
+                    if (widthInput) widthInput.value = cd.width;
+                    if (widthNumInput) widthNumInput.value = cd.width;
                     const txt = document.getElementById('txt-cell-col-width');
                     if (txt) txt.innerText = cd.width;
                 }
 
-                // Sync Height Slider
+                // Sync Height Slider & Number Input
                 const heightInput = document.getElementById('cell-row-height');
-                if (heightInput && cd.height) {
-                    heightInput.value = cd.height;
+                const heightNumInput = document.getElementById('cell-row-height-num');
+                if (cd.height) {
+                    if (heightInput) heightInput.value = cd.height;
+                    if (heightNumInput) heightNumInput.value = cd.height;
                     const txt = document.getElementById('txt-cell-row-height');
                     if (txt) txt.innerText = cd.height;
                 }
@@ -762,6 +824,29 @@
                 // Sync Text Align Buttons
                 if (cd.textAlign && window._updateCellAlignButtonsUI) {
                     window._updateCellAlignButtonsUI(cd.textAlign);
+                }
+
+                // Enable/disable merge and split buttons based on count
+                if (mergeBtn) {
+                    mergeBtn.disabled = (cd.count < 2);
+                    mergeBtn.style.opacity = (cd.count < 2) ? '0.5' : '1';
+                    mergeBtn.style.cursor = (cd.count < 2) ? 'not-allowed' : 'pointer';
+                }
+                if (splitBtn) {
+                    splitBtn.disabled = (cd.count < 1);
+                    splitBtn.style.opacity = (cd.count < 1) ? '0.5' : '1';
+                    splitBtn.style.cursor = (cd.count < 1) ? 'not-allowed' : 'pointer';
+                }
+            } else {
+                if (mergeBtn) {
+                    mergeBtn.disabled = true;
+                    mergeBtn.style.opacity = '0.5';
+                    mergeBtn.style.cursor = 'not-allowed';
+                }
+                if (splitBtn) {
+                    splitBtn.disabled = true;
+                    splitBtn.style.opacity = '0.5';
+                    splitBtn.style.cursor = 'not-allowed';
                 }
             }
         }

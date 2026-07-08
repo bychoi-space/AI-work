@@ -293,9 +293,9 @@ window.LF_TEMPLATES = {
         .v4-editable-cell { outline:none; padding:4px; transition:background 0.2s; }
         .v4-editable-cell:focus { background:rgba(99,102,241,0.05); box-shadow:inset 0 0 0 1px var(--v4-accent); border-radius:2px; }
         .v4-shape-container { width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:700; }
-        .v4-premium-table { width:100%; border-collapse:collapse; font-size:13px; table-layout:fixed; border:1.6px solid var(--v4-border-color, #475569) !important; border-radius: 8px; overflow: hidden; }
+        .v4-premium-table { width:100%; border-collapse:collapse; font-size:13px; table-layout:fixed; border:1.6px solid var(--v4-border-color, #475569) !important; }
         .v4-premium-table th,.v4-premium-table td { border:1.6px solid var(--v4-border-color, #cbd5e1) !important; padding:12px 6px; text-align:center; vertical-align:middle; line-height:1.4; }
-        .v4-premium-table th { background:var(--header-dark); color:#fff; font-weight:800; border-bottom:1.6px solid var(--v4-border-color, #475569) !important; }
+        .v4-premium-table th { background:var(--header-dark); color:#fff; font-weight:800; }
         .h-blue { background:var(--header-blue) !important; }
         .h-red { background:var(--header-red) !important; }
         .bg-peach { background:#fee2e2 !important; }
@@ -709,10 +709,9 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
 .lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none !important; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10002; font-size: 14px; font-weight: bold; }
 .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: none !important; }
-.v4-premium-table { table-layout: fixed; border-collapse: collapse; overflow: hidden; border-radius: 8px; border: 1.6px solid #475569 !important; font-family: 'Inter', sans-serif; }
-.v4-premium-table th { padding: 14px 16px; text-align: left; border-bottom: 1.6px solid #475569 !important; font-weight: 700; white-space: nowrap; }
-.v4-premium-table td { padding: 14px 16px; border-bottom: 1.6px solid #cbd5e1 !important; }
-.v4-premium-table tr:last-child td { border-bottom: none !important; }
+.v4-premium-table { table-layout: fixed; border-collapse: collapse; border: 1.6px solid #cbd5e1 !important; font-family: 'Inter', sans-serif; }
+.v4-premium-table th { padding: 14px 16px; text-align: left; border: 1.6px solid #cbd5e1 !important; font-weight: 700; white-space: nowrap; }
+.v4-premium-table td { padding: 14px 16px; border: 1.6px solid #cbd5e1 !important; }
 .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; background: rgba(99, 102, 241, 0.05) !important; }
 .v4-editable-cell p { margin: 0 !important; padding: 0 !important; }
@@ -3958,7 +3957,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 var rows = Array.from(tbody.querySelectorAll('tr'));
                 while (rows.length < rowCount) {
                     var newRow = document.createElement('tr');
-                    newRow.style.height = '36px';
+                    newRow.style.height = '50px';
                     newRow.style.background = '#ffffff';
                     newRow.style.boxSizing = 'border-box';
                     tbody.appendChild(newRow);
@@ -6238,6 +6237,32 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
             notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets, rects });
         } else if (d.type === 'LF_TABLE_ACTION') {
+            function syncTableComponentSize() {
+                const s = document.querySelector('.lf-component.selected');
+                if (!s) return;
+                
+                const table = s.querySelector('table');
+                if (!table) return;
+                
+                const isGrid = s.classList.contains('v4-grid-container') || s.querySelector('.v4-grid-container');
+                
+                let newWidth, newHeight;
+                if (isGrid) {
+                    newWidth = table.offsetWidth;
+                    newHeight = table.offsetHeight + 36;
+                } else {
+                    newWidth = table.offsetWidth;
+                    newHeight = table.offsetHeight;
+                }
+                
+                notifyParent({
+                    type: 'LF_TABLE_SIZE_CHANGED',
+                    compId: s.id,
+                    width: newWidth,
+                    height: newHeight
+                });
+            }
+
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             
@@ -6286,6 +6311,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 }, window._getCompStyles(s)));
                 
                 markDirty();
+                setTimeout(syncTableComponentSize, 50);
                 return;
             }
             
@@ -6333,6 +6359,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 Array.from(table.rows).forEach(r => { if (r.cells[idx]) r.cells[idx].remove(); });
             }
             markDirty();
+            setTimeout(syncTableComponentSize, 50);
         } else if (d.type === 'LF_UPDATE_CELL_STYLE') {
             if (window.TableManager) {
                 window.TableManager.updateSelectedCellsStyle(d.style);

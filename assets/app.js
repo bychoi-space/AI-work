@@ -103,12 +103,22 @@ async function listRepoRoot() {
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
     if (token) headers['Authorization'] = `token ${token}`;
 
-    let res = await fetch(url, { headers, credentials: 'omit' });
-    if (!res.ok && (res.status === 401 || res.status === 403)) {
-        if (localStorage.getItem('gh_token')) localStorage.removeItem('gh_token');
-        res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    try {
+        let res = await fetch(url, { headers, credentials: 'omit', signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        if (!res.ok && (res.status === 401 || res.status === 403)) {
+            console.warn("[Auth] GitHub API token returned 401/403 on root request. Retrying anonymously.");
+            res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
+        }
+        return res.ok ? await res.json() : [];
+    } catch (e) {
+        console.warn("[API] listRepoRoot failed or timed out:", e.message);
+        return [];
     }
-    return res.ok ? await res.json() : [];
 }
 
 async function fetchFileContent(path, isRoot = false) {
@@ -120,19 +130,32 @@ async function fetchFileContent(path, isRoot = false) {
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
     if (token) headers['Authorization'] = `token ${token}`;
 
-    let res = await fetch(url, { headers, credentials: 'omit' });
-    if (!res.ok && (res.status === 401 || res.status === 403)) {
-        if (localStorage.getItem('gh_token')) localStorage.removeItem('gh_token');
-        res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    try {
+        let res = await fetch(url, { headers, credentials: 'omit', signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (!res.ok && (res.status === 401 || res.status === 403)) {
+            console.warn("[Auth] GitHub API token returned 401/403 on file request. Retrying anonymously.");
+            res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
+        }
+        
+        if (!res.ok) return null;
+        const data = await res.json();
+        if (data && data.content) {
+            window.shaCache = window.shaCache || {};
+            window.shaCache[path] = data.sha;
+            try {
+                return decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+            } catch(e) { return null; }
+        }
+        return null;
+    } catch (e) {
+        console.warn(`[API] fetchFileContent for ${path} failed or timed out:`, e.message);
+        return null;
     }
-    
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (data && data.sha) {
-        window.shaCache = window.shaCache || {};
-        window.shaCache[path] = data.sha;
-    }
-    return decodeURIComponent(escape(atob(data.content)));
 }
 
 async function fetchProjectFileContent(project, filename) {
@@ -249,25 +272,31 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
         const headers = { 'Accept': 'application/vnd.github.v3+json' };
         if (token) headers['Authorization'] = `token ${token}`;
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
         if (!sha) {
             try {
-                const res = await fetch(url + `?t=${Date.now()}`, { headers, credentials: 'omit' });
-                if (res.status === 401 || res.status === 403) {
-                    if (localStorage.getItem('gh_token')) {
-                        localStorage.removeItem('gh_token');
-                    }
-                }
+                const res = await fetch(url + `?t=${Date.now()}`, { headers, credentials: 'omit', signal: controller.signal });
+                clearTimeout(timeoutId);
+                
                 if (res.ok) { 
                     const json = await res.json(); 
                     sha = json.sha; 
                     window.shaCache[cacheKey] = sha;
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.warn("[API] Failed to pre-fetch SHA for upload:", e.message);
+            }
         }
 
         const finalContent = isBinary ? content : btoa(unescape(encodeURIComponent(content)));
 
         if (statusCallback) statusCallback('Saving...', '#facc15');
+        
+        const writeController = new AbortController();
+        const writeTimeoutId = setTimeout(() => writeController.abort(), 8000); // Give upload slightly longer (8s)
+
         let putRes = await fetch(url, {
             method: 'PUT',
             headers: { 
@@ -276,12 +305,14 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
                 'Content-Type': 'application/json' 
             },
             credentials: 'omit',
+            signal: writeController.signal,
             body: JSON.stringify({
                 message: `Update ${filename}`,
                 content: finalContent,
                 sha: sha
             })
         });
+        clearTimeout(writeTimeoutId);
 
         // 409 Conflict Self-Healing & Retry Mechanism
         if (putRes.status === 409) {
