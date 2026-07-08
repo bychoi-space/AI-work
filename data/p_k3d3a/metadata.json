@@ -1,6 +1,13 @@
 {
   "title": "테스트",
-  "screens": {},
+  "screens": {
+    "99_Blank_544.html": {
+      "title": "99_Blank_544",
+      "type": "blank",
+      "updatedAt": "2026-07-08T01:53:13.680Z",
+      "template": "template_blank.html"
+    }
+  },
   "developer": "",
   "themeIndex": 3
 }
