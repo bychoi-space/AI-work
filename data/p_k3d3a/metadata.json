@@ -54,6 +54,12 @@
       "type": "default",
       "updatedAt": "2026-07-08T05:46:17.425Z",
       "template": "template_pc_ui.html"
+    },
+    "06_Mobile_Design_1_418.html": {
+      "title": "06_Mobile_Design_1_418",
+      "type": "mobile-ui",
+      "updatedAt": "2026-07-08T05:46:35.343Z",
+      "template": "template_mobile_ui_1.html"
     }
   },
   "developer": "",
