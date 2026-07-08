@@ -96,6 +96,12 @@
       "type": "mobile-ui",
       "updatedAt": "2026-07-08T06:48:49.236Z",
       "template": "template_mobile_ui_1.html"
+    },
+    "06_Mobile_Design_3_88.html": {
+      "title": "06_Mobile_Design_3_88",
+      "type": "mobile-ui",
+      "updatedAt": "2026-07-08T06:52:37.862Z",
+      "template": "template_mobile_ui_3.html"
     }
   },
   "developer": "",
