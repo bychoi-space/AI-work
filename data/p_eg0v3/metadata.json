@@ -779,24 +779,24 @@
     "06_Mobile_Design_2_324.html": {
       "title": "06_Mobile_Design_2_324",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-09T01:36:02.551Z",
+      "updatedAt": "2026-07-09T01:37:39.143Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
-          "x": 52.823,
-          "y": 11.6493,
+          "x": 360.51251220703125,
+          "y": 71.8375015258789,
           "standardized": true,
           "type": "text",
           "text": "기획전 명칭",
           "html": "<p>기획전 명칭</p>"
         },
         {
-          "x": 448,
-          "y": 151,
+          "x": 432.7,
+          "y": 143,
           "standardized": true,
           "type": "text",
           "text": "Card Title",
-          "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>"
+          "html": "<p><strong style=\"font-size: 18px;\">Card Title<span class=\"ql-cursor\">﻿</span></strong></p>"
         },
         {
           "x": 435,
@@ -889,5 +889,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-09 10:36:02"
+  "updated": "2026-07-09 10:37:39"
 }
