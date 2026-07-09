@@ -4,7 +4,7 @@
     "06_Mobile_Design_2_785.html": {
       "title": "06_Mobile_Design_2_785",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-02T08:38:27.948Z",
+      "updatedAt": "2026-07-09T01:24:20.310Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -113,7 +113,9 @@
             "strokeWidth": 2
           }
         }
-      ]
+      ],
+      "defaultTab": "editor",
+      "screenDesc": "[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
     },
     "00_Cover_724.html": {
       "title": "프로젝트 커버",
