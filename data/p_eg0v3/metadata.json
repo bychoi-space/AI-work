@@ -779,12 +779,12 @@
     "06_Mobile_Design_2_324.html": {
       "title": "06_Mobile_Design_2_324",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-09T01:37:39.143Z",
+      "updatedAt": "2026-07-09T01:54:11.530Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
-          "x": 360.51251220703125,
-          "y": 71.8375015258789,
+          "x": 52.823,
+          "y": 11.6493,
           "standardized": true,
           "type": "text",
           "text": "기획전 명칭",
@@ -869,6 +869,22 @@
           "type": "text",
           "text": "전체",
           "html": "<p><strong>전체</strong></p>"
+        },
+        {
+          "x": 448,
+          "y": 151,
+          "standardized": true,
+          "type": "text",
+          "text": "Card Title",
+          "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>"
+        },
+        {
+          "x": 435,
+          "y": 183,
+          "standardized": true,
+          "type": "text",
+          "text": "Card Description",
+          "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>"
         }
       ],
       "connectors": []
@@ -889,5 +905,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-09 10:37:39"
+  "updated": "2026-07-09 10:54:11"
 }
