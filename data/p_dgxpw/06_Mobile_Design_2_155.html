@@ -320,6 +320,7 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-text-1782969882378" class="lf-component v4-text-box" style="position: absolute; top: 131px; left: 317.7px; z-index: 1000; transform: none; width: 36px; height: 21px; min-width: unset !important; min-height: unset !important;" data-resized="true"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 0px 4px 2px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><strong style="font-size: 12px;">전체</strong></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782970167798212" class="lf-component v4-text-box" style="position: absolute; top: 131px; left: 357.9px; z-index: 1000; transform: none; width: 36px; height: 21px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 0px 4px 2px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><span style="color: rgb(68, 68, 68); font-size: 12px;">반팔</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782970174891278" class="lf-component v4-text-box" style="position: absolute; top: 131px; left: 398.1px; z-index: 1000; transform: none; width: 74px; height: 21px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 0px 4px 2px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><span style="font-size: 12px; color: rgb(68, 68, 68);">슬리브리스</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782970183600589" class="lf-component v4-text-box" style="position: absolute; top: 131px; left: 471.3px; z-index: 1000; transform: none; width: 49px; height: 21px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 0px 4px 2px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><span style="font-size: 12px; color: rgb(68, 68, 68);">플리츠</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782970188940150" class="lf-component v4-text-box" style="position: absolute; top: 131px; left: 522.5px; z-index: 1000; transform: none; width: 36px; height: 21px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 0px 4px 2px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><span style="font-size: 12px; color: rgb(68, 68, 68);">긴팔</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782970193711520" class="lf-component v4-text-box" style="position: absolute; top: 131px; left: 562.7px; z-index: 1000; transform: none; width: 79px; height: 21px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 0px 4px 2px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><span style="font-size: 12px; color: rgb(68, 68, 68);">스웻/맨투맨</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
 
+
 <script id="v4-inlined-script">
 
 window.V4UndoManager = (function() {
@@ -3240,6 +3241,18 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             
             const targets = [];
             document.querySelectorAll('.lf-component').forEach(c => {
+                // Ignore nested components that are inside another .lf-group
+                let parent = c.parentElement;
+                let isNested = false;
+                while (parent && parent !== document.body && parent !== document.documentElement) {
+                    if (parent.classList.contains('lf-group')) {
+                        isNested = true;
+                        break;
+                    }
+                    parent = parent.parentElement;
+                }
+                if (isNested) return;
+
                 targets.push({
                     id: c.id,
                     x: parseFloat(c.style.left) || 0,
@@ -5861,11 +5874,21 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 const conn = (window.parent && window.parent.state && window.parent.state.connectors) 
                     ? window.parent.state.connectors.find(c => c.id === id) 
                     : null;
-                if (conn) {
-                    const l = Math.min(conn.start.x, conn.end.x);
-                    const t = Math.min(conn.start.y, conn.end.y);
-                    const w = Math.abs(conn.end.x - conn.start.x);
-                    const h = Math.abs(conn.end.y - conn.start.y);
+                if (conn && conn.start && conn.end) {
+                    const sx = parseFloat(conn.start.x);
+                    const sy = parseFloat(conn.start.y);
+                    const ex = parseFloat(conn.end.x);
+                    const ey = parseFloat(conn.end.y);
+                    
+                    if (isNaN(sx) || isNaN(sy) || isNaN(ex) || isNaN(ey)) {
+                        console.warn("[VCTRL GROUPING] Connector has NaN coordinates, skipping boundary calculation:", conn);
+                        return;
+                    }
+
+                    const l = Math.min(sx, ex);
+                    const t = Math.min(sy, ey);
+                    const w = Math.abs(ex - sx);
+                    const h = Math.abs(ey - sy);
 
                     minX = Math.min(minX, l);
                     minY = Math.min(minY, t);
@@ -6451,49 +6474,58 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     };
 
     window.updateAnchoredConnectorsLocal = (movedId) => {
-        const scale = (window.parent?.state?.transform?.scale) || 1;
-        const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
-        const hostRect = host.getBoundingClientRect();
+        const movedEl = document.getElementById(movedId);
+        const movedIds = [movedId];
+        if (movedEl && movedEl.classList.contains('lf-group')) {
+            movedEl.querySelectorAll('.lf-component').forEach(child => {
+                if (child.id) movedIds.push(child.id);
+            });
+        }
         
         const connectors = window.parent?.state?.connectors || [];
         connectors.forEach(conn => {
-            if (conn.start.targetId === movedId || conn.end.targetId === movedId) {
+            if (movedIds.includes(conn.start.targetId) || movedIds.includes(conn.end.targetId)) {
                 const svg = document.getElementById(conn.id);
                 if (svg) {
-                    let sX = conn.start.x, sY = conn.start.y;
-                    let eX = conn.end.x, eY = conn.end.y;
-                    
-                    if (conn.start.targetId) {
-                        const tEl = document.getElementById(conn.start.targetId);
-                        if (tEl) {
-                            const r = tEl.getBoundingClientRect();
-                            if (conn.start.side === 'left') { sX = (r.left - hostRect.left) / scale; sY = (r.top + r.height/2 - hostRect.top) / scale; }
-                            else if (conn.start.side === 'right') { sX = (r.right - hostRect.left) / scale; sY = (r.top + r.height/2 - hostRect.top) / scale; }
-                            else if (conn.start.side === 'top') { sX = (r.left + r.width/2 - hostRect.left) / scale; sY = (r.top - hostRect.top) / scale; }
-                            else if (conn.start.side === 'bottom') { sX = (r.left + r.width/2 - hostRect.left) / scale; sY = (r.bottom - hostRect.top) / scale; }
+                    ['start', 'end'].forEach(type => {
+                        const pt = conn[type];
+                        if (pt.targetId) {
+                            const targetEl = document.getElementById(pt.targetId);
+                            if (targetEl) {
+                                let left = parseFloat(targetEl.style.left) || 0;
+                                let top = parseFloat(targetEl.style.top) || 0;
+                                
+                                let parent = targetEl.parentElement;
+                                while (parent && parent !== document.body && parent !== document.documentElement) {
+                                    if (parent.style.position === 'absolute' || parent.classList.contains('lf-group')) {
+                                        left += parseFloat(parent.style.left) || 0;
+                                        top += parseFloat(parent.style.top) || 0;
+                                    }
+                                    parent = parent.parentElement;
+                                }
+
+                                const width = targetEl.offsetWidth;
+                                const height = targetEl.offsetHeight;
+
+                                if (pt.side === 'left') { pt.x = left; pt.y = top + height/2; }
+                                else if (pt.side === 'right') { pt.x = left + width; pt.y = top + height/2; }
+                                else if (pt.side === 'top') { pt.x = left + width/2; pt.y = top; }
+                                else if (pt.side === 'bottom') { pt.x = left + width/2; pt.y = top + height; }
+                            }
                         }
-                    }
+                    });
                     
-                    if (conn.end.targetId) {
-                        const tEl = document.getElementById(conn.end.targetId);
-                        if (tEl) {
-                            const r = tEl.getBoundingClientRect();
-                            if (conn.end.side === 'left') { eX = (r.left - hostRect.left) / scale; eY = (r.top + r.height/2 - hostRect.top) / scale; }
-                            else if (conn.end.side === 'right') { eX = (r.right - hostRect.left) / scale; eY = (r.top + r.height/2 - hostRect.top) / scale; }
-                            else if (conn.end.side === 'top') { eX = (r.left + r.width/2 - hostRect.left) / scale; eY = (r.top - hostRect.top) / scale; }
-                            else if (conn.end.side === 'bottom') { eX = (r.left + r.width/2 - hostRect.left) / scale; eY = (r.bottom - hostRect.top) / scale; }
-                        }
-                    }
-                    
-                    conn.start.x = sX; conn.start.y = sY;
-                    conn.end.x = eX; conn.end.y = eY;
+                    const sX = conn.start.x;
+                    const sY = conn.start.y;
+                    const eX = conn.end.x;
+                    const eY = conn.end.y;
                     
                     const headLength = Math.max(12, parseFloat(conn.style.strokeWidth || 1.6) * 4.5);
                     const padding = headLength + 10;
                     const minX = Math.min(sX, eX) - padding;
                     const minY = Math.min(sY, eY) - padding;
-                    const w = Math.max(conn.start.x, conn.end.x) + padding - minX;
-                    const h = Math.max(conn.start.y, conn.end.y) + padding - minY;
+                    const w = Math.max(sX, eX) + padding - minX;
+                    const h = Math.max(sY, eY) + padding - minY;
                     
                     svg.style.left = minX + 'px';
                     svg.style.top = minY + 'px';
@@ -6563,4 +6595,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 })();
 
 </script>
-</body></html>
+<div id="v4-comp-178356023160356" class="lf-component v4-text-box" style="position: absolute; top: 209.667px; left: 332.5px; z-index: 1000; transform: none; width: 36px; height: 21px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 0px 4px 2px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><span style="font-size: 12px; color: rgb(230, 0, 0);">시즌</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1783560231604897" class="lf-component v4-text-box" style="position: absolute; top: 209.667px; left: 377.323px; z-index: 1000; transform: none; width: 49px; height: 21px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 0px 4px 2px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><span style="font-size: 12px;">아울렛</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1783560231604260" class="lf-component" style="position: absolute; top: 208.667px; left: 622px; z-index: 1000; transform: none; width: 80px; height: 30px;">
+            <div class="v4-btn-container" data-text="필터" data-btn-style="custom" data-btn-radius="6" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
+                <button class="v4-custom-btn style-custom" style="width: 100%; height: 100%; border-radius: 6px; background: rgb(0, 0, 0); font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px; box-sizing: border-box; transition: 0.2s; font-family: inherit; border-color: transparent; border-style: solid !important; border-width: 1.6px !important; border-image-source:  !important; border-image-slice:  !important; border-image-width:  !important; border-image-outset:  !important; border-image-repeat:  !important; color: rgb(255, 255, 255);">필터</button>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1783560231604602" class="lf-component v4-text-box" style="position: absolute; top: 249px; left: 332.5px; z-index: 1000; transform: none; width: 96px; height: 21px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 0px 4px 2px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><strong style="font-size: 12px;">12,345</strong><span style="font-size: 12px;">개 상품</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-178356023160453" class="lf-component lf-group" style="position: absolute; top: 291px; left: 497.5px; z-index: 1000; transform: none; width: 170px; height: 271px;"><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 160px; height: 180px;" id="v4-comp-1782971710864-25">
+            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component text-marker" style="position: absolute; top: 183.5px; left: 0px; z-index: 1000; transform: none; width: fit-content !important; height: auto !important;" id="v4-pin-2"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: rgb(0, 0, 0); padding: 2px 4px; display: block; text-align: left; width: auto !important; height: auto !important;"><p><strong>Brand Name</strong></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component text-marker" style="position: absolute; top: 204.5px; left: 0px; z-index: 1000; transform: none; width: fit-content !important; height: auto !important;" id="v4-pin-3"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: rgb(0, 0, 0); padding: 2px 4px; display: block; text-align: left; width: auto !important; height: auto !important;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component text-marker" style="position: absolute; top: 243.5px; left: 0px; z-index: 1000; transform: none; width: fit-content !important; height: auto !important;" id="v4-pin-4"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: rgb(0, 0, 0); padding: 2px 4px; display: block; text-align: left; width: auto !important; height: auto !important;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></div><div id="v4-comp-1783560231605696" class="lf-component lf-group" style="position: absolute; left: 327.5px; top: 291px; width: 170px; height: 271px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div class="lf-component" style="position: absolute; top: 0px; left: 9.5px; z-index: 1000; transform: none; width: 160px; height: 180px;" id="v4-comp-1782971710864-30">
+            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid #475569; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component text-marker" style="position: absolute; top: 183.5px; left: 0px; z-index: 1000; transform: none; width: fit-content !important; height: auto !important;" id="v4-pin-5"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: rgb(0, 0, 0); padding: 2px 4px; display: block; text-align: left; width: auto !important; height: auto !important;"><p><strong>Brand Name</strong></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component text-marker" style="position: absolute; top: 204.5px; left: 0px; z-index: 1000; transform: none; width: fit-content !important; height: auto !important;" id="v4-pin-6"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: rgb(0, 0, 0); padding: 2px 4px; display: block; text-align: left; width: auto !important; height: auto !important;"><p><span style="font-size: 12px;">Product Name</span></p><p><span style="font-size: 12px;">2줄까지 표현</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component text-marker" style="position: absolute; top: 243.5px; left: 0px; z-index: 1000; transform: none; width: fit-content !important; height: auto !important;" id="v4-pin-7"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: rgb(0, 0, 0); padding: 2px 4px; display: block; text-align: left; width: auto !important; height: auto !important;"><p><strong style="color: rgb(230, 0, 0); font-size: 14px;">20%</strong><strong style="font-size: 14px;"> 123,000<span class="ql-cursor">﻿﻿﻿﻿</span></strong></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></div><div id="v4-comp-1783560231606581" class="lf-component lf-group" style="position: absolute; left: 561px; top: 249px; width: 66px; height: 28px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; z-index: 1000;"><div id="v4-comp-1782981424316996" class="lf-component v4-text-box" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: fit-content !important; height: auto !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 2px 4px; display: block; text-align: left; width: auto !important; height: auto !important;"><p><span style="font-size: 12px;">추천순</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1782981470462755" class="lf-component" style="position: absolute; top: 4px; left: 46px; z-index: 1000; transform: none; width: 20px; height: 20px; color: rgb(50, 50, 50);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 100%; height: 100%; color: rgb(50, 50, 50); stroke: rgb(50, 50, 50);"><polyline points="6 9 12 15 18 9"></polyline></svg><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></div></body></html>
