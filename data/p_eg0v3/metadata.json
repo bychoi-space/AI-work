@@ -779,8 +779,99 @@
     "06_Mobile_Design_2_324.html": {
       "title": "06_Mobile_Design_2_324",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-09T01:35:37.872Z",
-      "template": "template_mobile_ui_2.html"
+      "updatedAt": "2026-07-09T01:36:02.551Z",
+      "template": "template_mobile_ui_2.html",
+      "description": [
+        {
+          "x": 52.823,
+          "y": 11.6493,
+          "standardized": true,
+          "type": "text",
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>"
+        },
+        {
+          "x": 448,
+          "y": 151,
+          "standardized": true,
+          "type": "text",
+          "text": "Card Title",
+          "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>"
+        },
+        {
+          "x": 435,
+          "y": 183,
+          "standardized": true,
+          "type": "text",
+          "text": "Card Description",
+          "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>"
+        },
+        {
+          "x": 102,
+          "y": 0,
+          "standardized": true,
+          "type": "text",
+          "text": "실시간",
+          "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>"
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "standardized": true,
+          "type": "text",
+          "text": "남성 · 40대",
+          "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>"
+        },
+        {
+          "x": 515.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "가방/잡화",
+          "html": "<p>가방/잡화</p>"
+        },
+        {
+          "x": 594.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "슈즈",
+          "html": "<p>슈즈</p>"
+        },
+        {
+          "x": 634,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "골프",
+          "html": "<p>골프</p>"
+        },
+        {
+          "x": 447.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "남성의류",
+          "html": "<p>남성의류</p>"
+        },
+        {
+          "x": 374.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "여성의류",
+          "html": "<p>여성의류</p>"
+        },
+        {
+          "x": 330.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "전체",
+          "html": "<p><strong>전체</strong></p>"
+        }
+      ],
+      "connectors": []
     }
   },
   "assignee": "최범열",
@@ -798,5 +889,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-09 09:53:28"
+  "updated": "2026-07-09 10:36:02"
 }
