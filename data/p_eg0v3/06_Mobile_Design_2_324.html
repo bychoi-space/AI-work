@@ -1387,104 +1387,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     };
 
 
-    const resizeToFitText = (c, isShapeText) => {
-        if (!c) return;
-        const cell = c.querySelector('.v4-editable-cell');
-        if (!cell) return;
-
-        const origW = c.style.width;
-        const origH = c.style.height;
-
-        const targetPadding = '0px 4px 2px 4px';
-        if (cell.style.padding !== targetPadding) {
-            cell.style.setProperty('padding', targetPadding, 'important');
-        }
-
-        if (c.style.minWidth !== 'unset') c.style.setProperty('min-width', 'unset', 'important');
-        if (c.style.minHeight !== 'unset') c.style.setProperty('min-height', 'unset', 'important');
-
-        const compStyle = window.getComputedStyle(cell);
-        const measureSpan = document.createElement('span');
-        measureSpan.style.visibility = 'hidden';
-        measureSpan.style.position = 'absolute';
-        measureSpan.style.whiteSpace = 'pre';
-        measureSpan.style.fontFamily = compStyle.fontFamily;
-        measureSpan.style.fontSize = compStyle.fontSize;
-        measureSpan.style.fontWeight = compStyle.fontWeight;
-        measureSpan.style.lineHeight = compStyle.lineHeight;
-        measureSpan.style.letterSpacing = compStyle.letterSpacing;
-        
-        measureSpan.innerText = (cell.innerText || '').replace(/\n$/, '');
-        document.body.appendChild(measureSpan);
-
-        const textW = measureSpan.offsetWidth;
-        const textH = measureSpan.offsetHeight;
-        document.body.removeChild(measureSpan);
-
-        const paddingW = 8 + 2;
-        const paddingH = 2 + 2;
-
-        const targetW = (textW + paddingW) + 'px';
-        const targetH = (textH + paddingH) + 'px';
-
-        console.log("[vctrl_design_system] resizeToFitText running for:", c.id, "text:", cell.innerText, "measured width:", textW, "targetW:", targetW);
-
-        if (origW !== targetW) c.style.width = targetW;
-        if (origH !== targetH) c.style.height = targetH;
-
-        const shape = c.querySelector('.v4-shape');
-        if (shape) {
-            shape.style.width = '100%';
-            shape.style.height = '100%';
-        }
-        cell.style.width = '100%';
-        cell.style.height = '100%';
-
-        const resizer = c.querySelector(':scope > .lf-resizer');
-        if (resizer) {
-            if (resizer.style.display !== 'none') {
-                resizer.style.setProperty('display', 'none', 'important');
-            }
-        }
-        const handle = c.querySelector(':scope > .lf-drag-handle');
-        if (handle) {
-            const targetOffset = c.classList.contains('selected') ? '-22px' : '-16px';
-            if (handle.style.top !== targetOffset) {
-                handle.style.setProperty('top', targetOffset, 'important');
-                handle.style.setProperty('left', targetOffset, 'important');
-            }
-        }
-    };
-
     window.enforceDesignSystem = () => {
         if (typeof window.initHandles === 'function') {
             try { window.initHandles(); } catch(e) { console.error("Error in initHandles:", e); }
-        }
-        
-        try {
-            document.querySelectorAll('.lf-component').forEach(c => {
-                const shapeText = c.querySelector('.v4-shape-text');
-                if (shapeText) {
-                    const cell = c.querySelector('.v4-editable-cell');
-                    const isFocused = cell && (document.activeElement === cell || cell.contains(document.activeElement));
-                    const isDefault = cell && (cell.innerText === 'Enter Premium Text' || cell.innerText === 'Edit Text');
-                    const isSelected = c.classList.contains('selected');
-                    if (isFocused || isDefault || isSelected) {
-                        resizeToFitText(c, true);
-                    }
-                }
-            });
-            document.querySelectorAll('.text-marker, .v4-text-box').forEach(c => {
-                const cell = c.querySelector('.v4-editable-cell') || c;
-                const isFocused = cell && (document.activeElement === cell || cell.contains(document.activeElement));
-                const isDefault = cell && (cell.innerText === 'Edit Text' || cell.innerText === 'Text' || cell.innerText === 'Enter Premium Text');
-                const isSelected = c.classList.contains('selected');
-                if (isFocused || isDefault || isSelected) {
-                    resizeToFitText(c, false);
-                }
-            });
-        } catch(e) {
-            console.error("[DesignSystem] Error in early resizeToFitText:", e);
         }
 
         try { bindStepperEvents(); } catch(e) { console.error("Error in bindStepperEvents:", e); }
@@ -6594,4 +6499,5 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     window.initHandles();
 })();
 
-</script></body></html>
+</script>
+<div id="v4-pin-11" class="lf-component text-marker" style="position: absolute; top: 151px; left: 448px; z-index: 1000; transform: none; width: 107px; height: 32px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p><strong style="font-size: 18px;">Card Title</strong></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-pin-12" class="lf-component text-marker" style="position: absolute; top: 183px; left: 435px; z-index: 1000; transform: none; width: 133px; height: 27px;"><div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;"><p style="text-align: center;"><span style="font-size: 14px;">Card Description</span></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></body></html>
