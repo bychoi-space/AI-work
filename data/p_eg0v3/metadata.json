@@ -776,19 +776,22 @@
       "defaultTab": "editor",
       "screenDesc": ""
     },
-    "06_Mobile_Design_2_324.html": {
-      "title": "06_Mobile_Design_2_324",
-      "type": "mobile-ui",
-      "updatedAt": "2026-07-09T02:29:47.134Z",
-      "template": "template_mobile_ui_2.html",
-      "description": [],
-      "connectors": []
-    },
     "99_Blank_183.html": {
       "title": "99_Blank_183",
       "type": "blank",
       "updatedAt": "2026-07-09T07:13:00.284Z",
-      "template": "template_blank.html"
+      "template": "template_blank.html",
+      "description": [
+        {
+          "x": 29.5,
+          "y": 20,
+          "standardized": true,
+          "type": "text",
+          "text": "LF Onesphere",
+          "html": "<p><span style=\"font-size: 18px; color: rgb(255, 255, 255);\">LF Onesphere</span></p>"
+        }
+      ],
+      "connectors": []
     }
   },
   "assignee": "최범열",
@@ -800,7 +803,6 @@
     "00_Cover_921.html",
     "06_Mobile_Design_2_793.html",
     "06_Mobile_Design_2_901.html",
-    "06_Mobile_Design_2_324.html",
     "07_PC_Design_266.html",
     "99_Blank_798.html",
     "카드 설정2.html",
