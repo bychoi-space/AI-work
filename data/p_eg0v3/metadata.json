@@ -765,17 +765,6 @@
       "defaultTab": "editor",
       "screenDesc": ""
     },
-    "00_Cover_452.html": {
-      "title": "과제 커버",
-      "type": "cover",
-      "updatedAt": "2026-07-06T06:31:20.397Z",
-      "template": "template_cover.html",
-      "version": 0.1,
-      "description": [],
-      "connectors": [],
-      "defaultTab": "editor",
-      "screenDesc": ""
-    },
     "00_Cover_921.html": {
       "title": "00_Cover_921",
       "type": "cover",
@@ -790,7 +779,6 @@
   "jira": "LFML-143997",
   "themeIndex": 5,
   "screenOrder": [
-    "00_Cover_452.html",
     "00_Cover_921.html",
     "06_Mobile_Design_2_793.html",
     "06_Mobile_Design_2_901.html",
