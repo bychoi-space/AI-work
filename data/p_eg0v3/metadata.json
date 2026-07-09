@@ -779,7 +779,7 @@
     "06_Mobile_Design_2_324.html": {
       "title": "06_Mobile_Design_2_324",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-09T01:54:11.530Z",
+      "updatedAt": "2026-07-09T02:28:56.386Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -869,22 +869,6 @@
           "type": "text",
           "text": "전체",
           "html": "<p><strong>전체</strong></p>"
-        },
-        {
-          "x": 448,
-          "y": 151,
-          "standardized": true,
-          "type": "text",
-          "text": "Card Title",
-          "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>"
-        },
-        {
-          "x": 435,
-          "y": 183,
-          "standardized": true,
-          "type": "text",
-          "text": "Card Description",
-          "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>"
         }
       ],
       "connectors": []
@@ -905,5 +889,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-09 10:54:11"
+  "updated": "2026-07-09 11:28:56"
 }
