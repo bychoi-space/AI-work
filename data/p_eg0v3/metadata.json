@@ -775,6 +775,12 @@
       "connectors": [],
       "defaultTab": "editor",
       "screenDesc": ""
+    },
+    "06_Mobile_Design_2_324.html": {
+      "title": "06_Mobile_Design_2_324",
+      "type": "mobile-ui",
+      "updatedAt": "2026-07-09T01:35:37.872Z",
+      "template": "template_mobile_ui_2.html"
     }
   },
   "assignee": "최범열",
@@ -789,7 +795,8 @@
     "07_PC_Design_266.html",
     "99_Blank_798.html",
     "카드 설정2.html",
-    "얼럿 정리.html"
+    "얼럿 정리.html",
+    "06_Mobile_Design_2_324.html"
   ],
   "updated": "2026-07-09 09:53:28"
 }
