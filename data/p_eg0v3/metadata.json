@@ -783,6 +783,12 @@
       "template": "template_mobile_ui_2.html",
       "description": [],
       "connectors": []
+    },
+    "99_Blank_183.html": {
+      "title": "99_Blank_183",
+      "type": "blank",
+      "updatedAt": "2026-07-09T07:13:00.284Z",
+      "template": "template_blank.html"
     }
   },
   "assignee": "최범열",
@@ -798,7 +804,8 @@
     "07_PC_Design_266.html",
     "99_Blank_798.html",
     "카드 설정2.html",
-    "얼럿 정리.html"
+    "얼럿 정리.html",
+    "99_Blank_183.html"
   ],
   "updated": "2026-07-09 11:29:47"
 }
