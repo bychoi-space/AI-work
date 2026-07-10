@@ -796,7 +796,7 @@
     "06_Mobile_Design_2_471.html": {
       "title": "06_Mobile_Design_2_471",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-10T02:37:21.124Z",
+      "updatedAt": "2026-07-10T02:38:16.030Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1049,7 +1049,7 @@
         },
         {
           "x": 452,
-          "y": 351,
+          "y": 352,
           "standardized": true,
           "type": "text",
           "text": "Product Name 1줄로 길게 표현...",
@@ -1057,7 +1057,7 @@
         },
         {
           "x": 452,
-          "y": 390,
+          "y": 382,
           "standardized": true,
           "type": "text",
           "text": "20% 123,000",
@@ -1091,5 +1091,5 @@
     "얼럿 정리.html",
     "99_Blank_183.html"
   ],
-  "updated": "2026-07-10 11:37:21"
+  "updated": "2026-07-10 11:38:15"
 }
