@@ -796,7 +796,7 @@
     "06_Mobile_Design_2_471.html": {
       "title": "06_Mobile_Design_2_471",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-10T01:18:12.124Z",
+      "updatedAt": "2026-07-10T01:21:34.780Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -880,7 +880,7 @@
           "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>"
         },
         {
-          "x": 515.5,
+          "x": 501.556,
           "y": 241.5,
           "standardized": true,
           "type": "text",
@@ -888,7 +888,7 @@
           "html": "<p>가방/잡화</p>"
         },
         {
-          "x": 594.5,
+          "x": 580.556,
           "y": 241.5,
           "standardized": true,
           "type": "text",
@@ -896,7 +896,7 @@
           "html": "<p>슈즈</p>"
         },
         {
-          "x": 634,
+          "x": 620.056,
           "y": 241.5,
           "standardized": true,
           "type": "text",
@@ -904,7 +904,7 @@
           "html": "<p>골프</p>"
         },
         {
-          "x": 447.5,
+          "x": 433.556,
           "y": 241.5,
           "standardized": true,
           "type": "text",
@@ -912,7 +912,7 @@
           "html": "<p>남성의류</p>"
         },
         {
-          "x": 374.5,
+          "x": 360.556,
           "y": 241.5,
           "standardized": true,
           "type": "text",
@@ -920,7 +920,7 @@
           "html": "<p>여성의류</p>"
         },
         {
-          "x": 330.5,
+          "x": 316.556,
           "y": 241.5,
           "standardized": true,
           "type": "text",
@@ -928,7 +928,7 @@
           "html": "<p><strong>전체</strong></p>"
         },
         {
-          "x": 952.25,
+          "x": 937.25,
           "y": 290.5,
           "standardized": true,
           "type": "text",
@@ -936,7 +936,7 @@
           "html": "<p>블라우스</p>"
         },
         {
-          "x": 1025.5,
+          "x": 1010.5,
           "y": 290.5,
           "standardized": true,
           "type": "text",
@@ -944,7 +944,7 @@
           "html": "<p>니트/스웨터</p>"
         },
         {
-          "x": 1116,
+          "x": 1101,
           "y": 290.5,
           "standardized": true,
           "type": "text",
@@ -952,7 +952,7 @@
           "html": "<p>팬츠</p>"
         },
         {
-          "x": 903,
+          "x": 888,
           "y": 290.5,
           "standardized": true,
           "type": "text",
@@ -960,7 +960,7 @@
           "html": "<p>셔츠</p>"
         },
         {
-          "x": 842.5,
+          "x": 827.5,
           "y": 290.5,
           "standardized": true,
           "type": "text",
@@ -968,7 +968,7 @@
           "html": "<p>티셔츠</p>"
         },
         {
-          "x": 794.5,
+          "x": 779.5,
           "y": 290.5,
           "standardized": true,
           "type": "text",
@@ -976,7 +976,7 @@
           "html": "<p><strong>전체</strong></p>"
         },
         {
-          "x": 979.5,
+          "x": 964.5,
           "y": 241.5,
           "standardized": true,
           "type": "text",
@@ -984,7 +984,7 @@
           "html": "<p>가방/잡화</p>"
         },
         {
-          "x": 1058.5,
+          "x": 1043.5,
           "y": 241.5,
           "standardized": true,
           "type": "text",
@@ -992,7 +992,7 @@
           "html": "<p>슈즈</p>"
         },
         {
-          "x": 1098,
+          "x": 1083,
           "y": 241.5,
           "standardized": true,
           "type": "text",
@@ -1000,7 +1000,7 @@
           "html": "<p>골프</p>"
         },
         {
-          "x": 911.5,
+          "x": 896.5,
           "y": 241.5,
           "standardized": true,
           "type": "text",
@@ -1008,7 +1008,7 @@
           "html": "<p>남성의류</p>"
         },
         {
-          "x": 838.5,
+          "x": 823.5,
           "y": 241.5,
           "standardized": true,
           "type": "text",
@@ -1016,7 +1016,7 @@
           "html": "<p><b>여성의류</b></p>"
         },
         {
-          "x": 794.5,
+          "x": 779.5,
           "y": 241.5,
           "standardized": true,
           "type": "text",
@@ -1043,5 +1043,5 @@
     "얼럿 정리.html",
     "99_Blank_183.html"
   ],
-  "updated": "2026-07-10 10:18:12"
+  "updated": "2026-07-10 10:21:34"
 }
