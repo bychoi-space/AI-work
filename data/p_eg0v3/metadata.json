@@ -796,8 +796,27 @@
     "06_Mobile_Design_2_471.html": {
       "title": "06_Mobile_Design_2_471",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-10T01:02:13.612Z",
-      "template": "template_mobile_ui_2.html"
+      "updatedAt": "2026-07-10T01:03:25.656Z",
+      "template": "template_mobile_ui_2.html",
+      "description": [
+        {
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
+          "x": 822.9861450195312,
+          "y": 71.6388931274414,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
+          "x": 52.823,
+          "y": 11.6493,
+          "type": "text",
+          "standardized": true
+        }
+      ],
+      "connectors": []
     }
   },
   "assignee": "최범열",
@@ -816,5 +835,5 @@
     "얼럿 정리.html",
     "99_Blank_183.html"
   ],
-  "updated": "2026-07-10 09:48:12"
+  "updated": "2026-07-10 10:03:25"
 }
