@@ -796,7 +796,7 @@
     "06_Mobile_Design_2_471.html": {
       "title": "06_Mobile_Design_2_471",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-10T02:17:56.684Z",
+      "updatedAt": "2026-07-10T02:26:10.004Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -832,16 +832,16 @@
           "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>"
         },
         {
-          "x": 102,
-          "y": 0,
+          "x": 1065.5,
+          "y": 318.75,
           "standardized": true,
           "type": "text",
           "text": "실시간",
           "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>"
         },
         {
-          "x": 0,
-          "y": 0,
+          "x": 963.5,
+          "y": 318.75,
           "standardized": true,
           "type": "text",
           "text": "남성 · 40대",
@@ -864,16 +864,16 @@
           "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>"
         },
         {
-          "x": 102,
-          "y": 0,
+          "x": 584,
+          "y": 268,
           "standardized": true,
           "type": "text",
           "text": "실시간",
           "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>"
         },
         {
-          "x": 0,
-          "y": 0,
+          "x": 484,
+          "y": 268,
           "standardized": true,
           "type": "text",
           "text": "남성 · 40대",
@@ -881,7 +881,7 @@
         },
         {
           "x": 501.556,
-          "y": 209.5,
+          "y": 212,
           "standardized": true,
           "type": "text",
           "text": "가방/잡화",
@@ -889,7 +889,7 @@
         },
         {
           "x": 580.556,
-          "y": 209.5,
+          "y": 212,
           "standardized": true,
           "type": "text",
           "text": "슈즈",
@@ -897,7 +897,7 @@
         },
         {
           "x": 620.056,
-          "y": 209.5,
+          "y": 212,
           "standardized": true,
           "type": "text",
           "text": "골프",
@@ -905,7 +905,7 @@
         },
         {
           "x": 433.556,
-          "y": 209.5,
+          "y": 212,
           "standardized": true,
           "type": "text",
           "text": "남성의류",
@@ -913,7 +913,7 @@
         },
         {
           "x": 360.556,
-          "y": 209.5,
+          "y": 212,
           "standardized": true,
           "type": "text",
           "text": "여성의류",
@@ -921,7 +921,7 @@
         },
         {
           "x": 316.556,
-          "y": 209.5,
+          "y": 212,
           "standardized": true,
           "type": "text",
           "text": "전체",
@@ -929,7 +929,7 @@
         },
         {
           "x": 937.25,
-          "y": 258.5,
+          "y": 261,
           "standardized": true,
           "type": "text",
           "text": "블라우스",
@@ -937,7 +937,7 @@
         },
         {
           "x": 1010.5,
-          "y": 258.5,
+          "y": 261,
           "standardized": true,
           "type": "text",
           "text": "니트/스웨터",
@@ -945,7 +945,7 @@
         },
         {
           "x": 1101,
-          "y": 258.5,
+          "y": 261,
           "standardized": true,
           "type": "text",
           "text": "팬츠",
@@ -953,7 +953,7 @@
         },
         {
           "x": 888,
-          "y": 258.5,
+          "y": 261,
           "standardized": true,
           "type": "text",
           "text": "셔츠",
@@ -961,7 +961,7 @@
         },
         {
           "x": 827.5,
-          "y": 258.5,
+          "y": 261,
           "standardized": true,
           "type": "text",
           "text": "티셔츠",
@@ -969,7 +969,7 @@
         },
         {
           "x": 779.5,
-          "y": 258.5,
+          "y": 261,
           "standardized": true,
           "type": "text",
           "text": "전체",
@@ -977,7 +977,7 @@
         },
         {
           "x": 964.5,
-          "y": 209.5,
+          "y": 212,
           "standardized": true,
           "type": "text",
           "text": "가방/잡화",
@@ -985,7 +985,7 @@
         },
         {
           "x": 1043.5,
-          "y": 209.5,
+          "y": 212,
           "standardized": true,
           "type": "text",
           "text": "슈즈",
@@ -993,7 +993,7 @@
         },
         {
           "x": 1083,
-          "y": 209.5,
+          "y": 212,
           "standardized": true,
           "type": "text",
           "text": "골프",
@@ -1001,7 +1001,7 @@
         },
         {
           "x": 896.5,
-          "y": 209.5,
+          "y": 212,
           "standardized": true,
           "type": "text",
           "text": "남성의류",
@@ -1009,7 +1009,7 @@
         },
         {
           "x": 823.5,
-          "y": 209.5,
+          "y": 212,
           "standardized": true,
           "type": "text",
           "text": "여성의류",
@@ -1017,7 +1017,7 @@
         },
         {
           "x": 779.5,
-          "y": 209.5,
+          "y": 212,
           "standardized": true,
           "type": "text",
           "text": "전체",
@@ -1043,5 +1043,5 @@
     "얼럿 정리.html",
     "99_Blank_183.html"
   ],
-  "updated": "2026-07-10 11:17:56"
+  "updated": "2026-07-10 11:26:09"
 }
