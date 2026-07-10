@@ -796,36 +796,36 @@
     "06_Mobile_Design_2_471.html": {
       "title": "06_Mobile_Design_2_471",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-10T01:03:54.182Z",
+      "updatedAt": "2026-07-10T01:18:12.124Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
           "text": "기획전 명칭",
           "html": "<p>기획전 명칭</p>",
-          "x": 52.823,
-          "y": 11.6493,
+          "x": 822.9750366210938,
+          "y": 71.63750457763672,
           "type": "text",
           "standardized": true
         },
         {
           "text": "기획전 명칭",
           "html": "<p>기획전 명칭</p>",
-          "x": 52.823,
-          "y": 11.6493,
+          "x": 360.8625183105469,
+          "y": 71.63750457763672,
           "type": "text",
           "standardized": true
         },
         {
-          "x": 912,
-          "y": 151,
+          "x": 901.1669999999999,
+          "y": 130,
           "standardized": true,
           "type": "text",
           "text": "Card Title",
           "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>"
         },
         {
-          "x": 899,
-          "y": 183,
+          "x": 888.1669999999999,
+          "y": 156,
           "standardized": true,
           "type": "text",
           "text": "Card Description",
@@ -848,16 +848,16 @@
           "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>"
         },
         {
-          "x": 448,
-          "y": 151,
+          "x": 439.05600000000004,
+          "y": 130,
           "standardized": true,
           "type": "text",
           "text": "Card Title",
           "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>"
         },
         {
-          "x": 435,
-          "y": 183,
+          "x": 426.05600000000004,
+          "y": 156,
           "standardized": true,
           "type": "text",
           "text": "Card Description",
@@ -1043,5 +1043,5 @@
     "얼럿 정리.html",
     "99_Blank_183.html"
   ],
-  "updated": "2026-07-10 10:03:54"
+  "updated": "2026-07-10 10:18:12"
 }
