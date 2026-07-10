@@ -796,7 +796,7 @@
     "06_Mobile_Design_2_471.html": {
       "title": "06_Mobile_Design_2_471",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-10T02:33:36.529Z",
+      "updatedAt": "2026-07-10T02:37:21.124Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1040,36 +1040,36 @@
           "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>"
         },
         {
-          "x": 0,
-          "y": 0,
+          "x": 452,
+          "y": 330,
           "standardized": true,
           "type": "text",
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>"
         },
         {
-          "x": 0,
-          "y": 21,
+          "x": 452,
+          "y": 351,
           "standardized": true,
           "type": "text",
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>"
+          "text": "Product Name 1줄로 길게 표현...",
+          "html": "<p><span style=\"font-size: 12px;\">Product Name 1줄로 길게 표현...</span></p>"
         },
         {
-          "x": 0,
-          "y": 60,
+          "x": 452,
+          "y": 390,
           "standardized": true,
           "type": "text",
           "text": "20% 123,000",
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>"
         },
         {
-          "x": 792.75,
-          "y": 480.5,
+          "x": 323,
+          "y": 369,
           "standardized": true,
           "type": "text",
           "text": "1",
-          "html": "<p><strong style=\"font-size: 24px;\">1</strong></p>"
+          "html": "<p><strong style=\"font-size: 14px;\">1</strong></p>"
         }
       ],
       "connectors": []
@@ -1091,5 +1091,5 @@
     "얼럿 정리.html",
     "99_Blank_183.html"
   ],
-  "updated": "2026-07-10 11:33:36"
+  "updated": "2026-07-10 11:37:21"
 }
