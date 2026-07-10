@@ -796,14 +796,14 @@
     "06_Mobile_Design_2_471.html": {
       "title": "06_Mobile_Design_2_471",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-10T01:03:25.656Z",
+      "updatedAt": "2026-07-10T01:03:54.182Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
           "text": "기획전 명칭",
           "html": "<p>기획전 명칭</p>",
-          "x": 822.9861450195312,
-          "y": 71.6388931274414,
+          "x": 52.823,
+          "y": 11.6493,
           "type": "text",
           "standardized": true
         },
@@ -814,6 +814,214 @@
           "y": 11.6493,
           "type": "text",
           "standardized": true
+        },
+        {
+          "x": 912,
+          "y": 151,
+          "standardized": true,
+          "type": "text",
+          "text": "Card Title",
+          "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>"
+        },
+        {
+          "x": 899,
+          "y": 183,
+          "standardized": true,
+          "type": "text",
+          "text": "Card Description",
+          "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>"
+        },
+        {
+          "x": 102,
+          "y": 0,
+          "standardized": true,
+          "type": "text",
+          "text": "실시간",
+          "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>"
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "standardized": true,
+          "type": "text",
+          "text": "남성 · 40대",
+          "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>"
+        },
+        {
+          "x": 448,
+          "y": 151,
+          "standardized": true,
+          "type": "text",
+          "text": "Card Title",
+          "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>"
+        },
+        {
+          "x": 435,
+          "y": 183,
+          "standardized": true,
+          "type": "text",
+          "text": "Card Description",
+          "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>"
+        },
+        {
+          "x": 102,
+          "y": 0,
+          "standardized": true,
+          "type": "text",
+          "text": "실시간",
+          "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>"
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "standardized": true,
+          "type": "text",
+          "text": "남성 · 40대",
+          "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>"
+        },
+        {
+          "x": 515.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "가방/잡화",
+          "html": "<p>가방/잡화</p>"
+        },
+        {
+          "x": 594.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "슈즈",
+          "html": "<p>슈즈</p>"
+        },
+        {
+          "x": 634,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "골프",
+          "html": "<p>골프</p>"
+        },
+        {
+          "x": 447.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "남성의류",
+          "html": "<p>남성의류</p>"
+        },
+        {
+          "x": 374.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "여성의류",
+          "html": "<p>여성의류</p>"
+        },
+        {
+          "x": 330.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "전체",
+          "html": "<p><strong>전체</strong></p>"
+        },
+        {
+          "x": 952.25,
+          "y": 290.5,
+          "standardized": true,
+          "type": "text",
+          "text": "블라우스",
+          "html": "<p>블라우스</p>"
+        },
+        {
+          "x": 1025.5,
+          "y": 290.5,
+          "standardized": true,
+          "type": "text",
+          "text": "니트/스웨터",
+          "html": "<p>니트/스웨터</p>"
+        },
+        {
+          "x": 1116,
+          "y": 290.5,
+          "standardized": true,
+          "type": "text",
+          "text": "팬츠",
+          "html": "<p>팬츠</p>"
+        },
+        {
+          "x": 903,
+          "y": 290.5,
+          "standardized": true,
+          "type": "text",
+          "text": "셔츠",
+          "html": "<p>셔츠</p>"
+        },
+        {
+          "x": 842.5,
+          "y": 290.5,
+          "standardized": true,
+          "type": "text",
+          "text": "티셔츠",
+          "html": "<p>티셔츠</p>"
+        },
+        {
+          "x": 794.5,
+          "y": 290.5,
+          "standardized": true,
+          "type": "text",
+          "text": "전체",
+          "html": "<p><strong>전체</strong></p>"
+        },
+        {
+          "x": 979.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "가방/잡화",
+          "html": "<p>가방/잡화</p>"
+        },
+        {
+          "x": 1058.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "슈즈",
+          "html": "<p>슈즈</p>"
+        },
+        {
+          "x": 1098,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "골프",
+          "html": "<p>골프</p>"
+        },
+        {
+          "x": 911.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "남성의류",
+          "html": "<p>남성의류</p>"
+        },
+        {
+          "x": 838.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "여성의류",
+          "html": "<p><b>여성의류</b></p>"
+        },
+        {
+          "x": 794.5,
+          "y": 241.5,
+          "standardized": true,
+          "type": "text",
+          "text": "전체",
+          "html": "<p><strong>전체</strong></p>"
         }
       ],
       "connectors": []
@@ -835,5 +1043,5 @@
     "얼럿 정리.html",
     "99_Blank_183.html"
   ],
-  "updated": "2026-07-10 10:03:25"
+  "updated": "2026-07-10 10:03:54"
 }
