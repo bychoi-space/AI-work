@@ -779,7 +779,7 @@
     "06_Mobile_Design_2_471.html": {
       "title": "랭킹 카드 1열 UI",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-13T05:18:53.828Z",
+      "updatedAt": "2026-07-13T05:19:18.275Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1043,5 +1043,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-13 14:18:53"
+  "updated": "2026-07-13 14:19:18"
 }
