@@ -798,11 +798,10 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     min-width: unset; min-height: unset; background: transparent; 
     box-shadow: none; box-sizing: border-box;
     color: #1e293b; text-align: left;
-    width: fit-content !important;
-    display: flex !important; align-items: center !important; justify-content: flex-start !important;
+    width: auto;
 }
-.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell { padding: 0px 4px 2px 4px !important; display: block !important; width: 100%; text-align: left; }
-.text-marker .v4-editable-cell p, .v4-text-box .v4-editable-cell p { margin: 0; padding: 0; }
+.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell { padding: 4px !important; margin: 0 !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: inherit; box-sizing: border-box !important; line-height: 1 !important; width: 100% !important; height: 100% !important; }
+.text-marker .v4-editable-cell p, .v4-text-box .v4-editable-cell p { margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; display: block !important; transform: translateY(var(--v4-text-adjust-y, 0px)) !important; }
 .text-marker:hover, .v4-text-box:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
 .text-marker.selected, .v4-text-box.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
 
@@ -917,10 +916,9 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
     stroke: #3b82f6 !important;
     filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.8));
 }
-.v4-shape-text-content p, .v4-shape-text-overlay p {
-    margin: 0 !important;
-    padding: 0 !important;
-}
+.v4-shape-text-content, .v4-shape-text-overlay, .v4-shape .v4-editable-cell { padding: 4px !important; margin: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; text-align: center !important; box-sizing: border-box !important; width: 100% !important; height: 100% !important; flex-direction: column !important; }
+.v4-shape-text-content p, .v4-shape-text-overlay p, .v4-shape .v4-editable-cell p { margin: 0 !important; padding: 0 !important; line-height: 1 !important; text-align: center !important; display: block !important; transform: translateY(var(--v4-text-adjust-y, 0px)) !important; }
+.v4-shape-text-content span, .v4-shape-text-overlay span, .v4-shape .v4-editable-cell span { line-height: 1 !important; display: inline-block !important; }
 /* Unify Grid UI Table Cell Typography and Colors */
 .v4-grid-container td.v4-grid-cell {
     font-size: 12px !important;

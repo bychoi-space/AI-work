@@ -281,13 +281,28 @@ window.v4DesignSystemScript = `
 
     const resizeToFitText = (c, isShapeText) => {
         if (!c) return;
-        const cell = c.querySelector('.v4-editable-cell');
+        const cell = c.querySelector('.v4-editable-cell') || c.querySelector('.v4-shape-text-content') || c.querySelector('.v4-shape-text-overlay');
         if (!cell) return;
+
+
+
+        // Zero-Drift Measurement: Temporarily hide active UI handles before offsetWidth/height query
+        const handle = c.querySelector(':scope > .lf-drag-handle');
+        const resizer = c.querySelector(':scope > .lf-resizer');
+        const delTrigger = c.querySelector(':scope > .lf-delete-trigger');
+        
+        const origHandleDisplay = handle ? handle.style.display : '';
+        const origResizerDisplay = resizer ? resizer.style.display : '';
+        const origDelDisplay = delTrigger ? delTrigger.style.display : '';
+        
+        if (handle) handle.style.setProperty('display', 'none', 'important');
+        if (resizer) resizer.style.setProperty('display', 'none', 'important');
+        if (delTrigger) delTrigger.style.setProperty('display', 'none', 'important');
 
         const origW = c.style.width;
         const origH = c.style.height;
 
-        const targetPadding = '0px 4px 2px 4px';
+        const targetPadding = isShapeText ? '0px' : '4px';
         if (cell.style.padding !== targetPadding) {
             cell.style.setProperty('padding', targetPadding, 'important');
         }
@@ -295,55 +310,115 @@ window.v4DesignSystemScript = `
         if (c.style.minWidth !== 'unset') c.style.setProperty('min-width', 'unset', 'important');
         if (c.style.minHeight !== 'unset') c.style.setProperty('min-height', 'unset', 'important');
 
-        const compStyle = window.getComputedStyle(cell);
+        let fontTarget = cell;
+        const cellFontSize = window.getComputedStyle(cell).fontSize;
+        const subEls = cell.querySelectorAll('span, font, strong, p');
+        for (let i = 0; i < subEls.length; i++) {
+            const subFs = window.getComputedStyle(subEls[i]).fontSize;
+            if (subFs && subFs !== cellFontSize) {
+                fontTarget = subEls[i];
+                break;
+            }
+        }
+        if (fontTarget === cell && subEls.length > 0) {
+            fontTarget = subEls[0];
+        }
+        const compStyle = window.getComputedStyle(fontTarget);
+        
         const measureSpan = document.createElement('span');
         measureSpan.style.visibility = 'hidden';
         measureSpan.style.position = 'absolute';
-        measureSpan.style.whiteSpace = 'pre';
+        measureSpan.style.whiteSpace = 'pre-wrap';
         measureSpan.style.fontFamily = compStyle.fontFamily;
         measureSpan.style.fontSize = compStyle.fontSize;
         measureSpan.style.fontWeight = compStyle.fontWeight;
-        measureSpan.style.lineHeight = compStyle.lineHeight;
+        measureSpan.style.lineHeight = '1';
         measureSpan.style.letterSpacing = compStyle.letterSpacing;
         
-        measureSpan.innerText = (cell.innerText || '').replace(/\\n$/, '');
+        const rawText = cell.innerText || '';
+        const lf = String.fromCharCode(10);
+        const cleanText = rawText
+            .split(lf)
+            .map(line => line.replace(/^[\\s\\u200B\\u00A0\\uFEFF]+|[\\s\\u200B\\u00A0\\uFEFF]+$/g, '').replace(/\\u200B/g, ''))
+            .join(lf);
+        const firstLine = cleanText.split(lf)[0] || 'T';
+        measureSpan.innerText = firstLine;
         document.body.appendChild(measureSpan);
+        const singleLineH = measureSpan.offsetHeight;
+        document.body.removeChild(measureSpan);
 
+        measureSpan.innerText = cleanText;
+        document.body.appendChild(measureSpan);
         const textW = measureSpan.offsetWidth;
         const textH = measureSpan.offsetHeight;
         document.body.removeChild(measureSpan);
+        
+        const isRealTextComp = (c.classList.contains('v4-text-box') || c.classList.contains('text-marker') || c.classList.contains('pin-marker')) && !c.querySelector('.v4-shape');
 
-        const paddingW = 8 + 2;
-        const paddingH = 2 + 2;
+        let paddingW = isShapeText ? 16 : 8;
+        let paddingH = isShapeText ? 16 : 8;
 
-        const targetW = (textW + paddingW) + 'px';
-        const targetH = (textH + paddingH) + 'px';
+        let targetW = textW + paddingW;
+        let targetH = textH + paddingH;
 
-        console.log("[vctrl_design_system] resizeToFitText running for:", c.id, "text:", cell.innerText, "measured width:", textW, "targetW:", targetW);
+        if (isRealTextComp || isShapeText) {
+            const normalizedText = rawText.replace(/\\r\\n/g, '\\n').replace(/\\r/g, '\\n');
+            const lineCount = normalizedText.split('\\n').length;
+            
+            if (lineCount === 1) {
+                targetW = textW + (isRealTextComp && !isShapeText ? 6 : paddingW);
+                targetH = textH + (isRealTextComp && !isShapeText ? 8 : paddingH);
+            } else {
+                const fsPx = parseFloat(compStyle.fontSize) || 14;
+                targetW = textW + (isRealTextComp && !isShapeText ? 6 : paddingW);
+                targetH = fsPx * 1.15 * lineCount + (isRealTextComp && !isShapeText ? 8 : paddingH);
+            }
+        }
 
-        if (origW !== targetW) c.style.width = targetW;
-        if (origH !== targetH) c.style.height = targetH;
+        // Zero-Offset Calibration: Micro-adjust small text rendering to bypass subpixel dropping.
+        const fsPx = parseFloat(compStyle.fontSize) || 14;
+        let adjustY = '0px';
+        if (fsPx <= 11) {
+            adjustY = '-0.6px';
+        }
+        c.style.setProperty('--v4-text-adjust-y', adjustY);
+
+        if (isRealTextComp || isShapeText) {
+            if (isShapeText && !isRealTextComp) {
+                // Text Shapes must preserve their manual/default dimensions, and only expand (Math.max) 
+                // when the text dimensions actually exceed the container boundaries. 
+                // Enforce minimum 36px height to prevent flat collapse.
+                const currentW = parseFloat(origW) || c.offsetWidth || 120;
+                const currentH = parseFloat(origH) || c.offsetHeight || 36;
+                
+                const newW = Math.max(currentW, targetW) + 'px';
+                const newH = Math.max(currentH, targetH, 36) + 'px';
+                if (origW !== newW) c.style.width = newW;
+                if (origH !== newH) c.style.height = newH;
+            } else {
+                const finalW = targetW + 'px';
+                const finalH = targetH + 'px';
+                if (origW !== finalW) c.style.width = finalW;
+                if (origH !== finalH) c.style.height = finalH;
+            }
+        }
 
         const shape = c.querySelector('.v4-shape');
         if (shape) {
-            shape.style.width = '100%';
-            shape.style.height = '100%';
+            if (shape.style.width !== '100%') shape.style.width = '100%';
+            if (shape.style.height !== '100%') shape.style.height = '100%';
         }
-        cell.style.width = '100%';
-        cell.style.height = '100%';
+        if (cell.style.width !== '100%') cell.style.width = '100%';
+        if (cell.style.height !== '100%') cell.style.height = '100%';
 
-        const resizer = c.querySelector(':scope > .lf-resizer');
+        // Restore UI handle styles to correct layout visibility
+        if (handle) handle.style.display = origHandleDisplay;
+        if (delTrigger) delTrigger.style.display = origDelDisplay;
+        
         if (resizer) {
-            if (resizer.style.display !== 'none') {
-                resizer.style.setProperty('display', 'none', 'important');
-            }
-        }
-        const handle = c.querySelector(':scope > .lf-drag-handle');
-        if (handle) {
-            const targetOffset = c.classList.contains('selected') ? '-22px' : '-16px';
-            if (handle.style.top !== targetOffset) {
-                handle.style.setProperty('top', targetOffset, 'important');
-                handle.style.setProperty('left', targetOffset, 'important');
+            const targetDisplay = isRealTextComp ? (isShapeText ? 'block' : 'none') : (origResizerDisplay || 'block');
+            if (resizer.style.display !== targetDisplay) {
+                resizer.style.setProperty('display', targetDisplay, 'important');
             }
         }
     };
@@ -356,14 +431,24 @@ window.v4DesignSystemScript = `
         try {
             document.querySelectorAll('.lf-component').forEach(c => {
                 const shapeText = c.querySelector('.v4-shape-text');
-                if (shapeText) {
-                    const cell = c.querySelector('.v4-editable-cell');
-                    const isFocused = cell && (document.activeElement === cell || cell.contains(document.activeElement));
-                    const isDefault = cell && (cell.innerText === 'Enter Premium Text' || cell.innerText === 'Edit Text');
-                    const isSelected = c.classList.contains('selected');
-                    if (isFocused || isDefault || isSelected) {
-                        resizeToFitText(c, true);
+                const hasText = c.querySelector('.v4-shape-text-content') || c.querySelector('.v4-shape-text-overlay') || c.querySelector('.v4-editable-cell') || (shapeText && shapeText.querySelector('p'));
+                if (shapeText && hasText) {
+                    let textContainer = shapeText.querySelector('.v4-shape-text-content') || shapeText.querySelector('.v4-shape-text-overlay') || shapeText.querySelector('.v4-editable-cell');
+                    if (!textContainer) {
+                        const pElements = Array.from(shapeText.querySelectorAll('p, span, font'));
+                        const container = document.createElement('div');
+                        container.className = 'v4-shape-text-content';
+                        container.style.cssText = 'width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0px; box-sizing: border-box; overflow: hidden;';
+                        pElements.forEach(p => container.appendChild(p));
+                        if (container.childNodes.length === 0) {
+                            container.innerHTML = '<p><br></p>';
+                        }
+                        shapeText.appendChild(container);
+                        textContainer = container;
                     }
+                    
+                    // Trigger auto-resize & shrink
+                    resizeToFitText(c, true);
                 }
             });
             document.querySelectorAll('.text-marker, .v4-text-box').forEach(c => {
@@ -1130,12 +1215,22 @@ window.v4DesignSystemScript = `
     };
 
     let dsObserver = null;
+    let enforceQueued = false;
     const runEnforceSafe = () => {
-        if (dsObserver) dsObserver.disconnect();
-        window.enforceDesignSystem();
-        if (dsObserver) {
-            dsObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
-        }
+        if (enforceQueued) return;
+        enforceQueued = true;
+        window.requestAnimationFrame(() => {
+            if (dsObserver) dsObserver.disconnect();
+            try {
+                window.enforceDesignSystem();
+            } catch(e) {
+                console.error("[DesignSystem] enforceDesignSystem error:", e);
+            }
+            if (dsObserver) {
+                dsObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+            }
+            enforceQueued = false;
+        });
     };
 
     window.suspendDesignSystem = () => {

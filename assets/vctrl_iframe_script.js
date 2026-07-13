@@ -18,8 +18,9 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .lf-in-group .lf-drag-handle,
 .lf-in-group .lf-resizer,
 .lf-in-group .lf-delete-trigger { display: none !important; }
-.lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 2px solid #fff; z-index: 10002; }
-.lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -16px; left: -16px; }
+.lf-drag-handle { position: absolute; top: -9px; left: -9px; width: 18px; height: 18px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 1.6px solid #fff; z-index: 10002; }
+.lf-drag-handle svg { width: 10px !important; height: 10px !important; }
+.lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -12px; left: -12px; }
 .lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #6366f1; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10002; }
 .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
 .lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none !important; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10002; font-size: 14px; font-weight: bold; }
@@ -32,6 +33,12 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .v4-grid-container td.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; }
 .v4-grid-container th.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; position: sticky !important; top: 0 !important; z-index: 10 !important; background: #f8fafc !important; }
 .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; }
+.v4-shape-text-content, .v4-shape-text-overlay, .v4-shape .v4-editable-cell { padding: 4px !important; margin: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; text-align: center !important; box-sizing: border-box !important; width: 100% !important; height: 100% !important; flex-direction: column !important; }
+.v4-shape-text-content p, .v4-shape-text-overlay p, .v4-shape .v4-editable-cell p { margin: 0 !important; padding: 0 !important; line-height: 1 !important; text-align: center !important; display: block !important; transform: translateY(var(--v4-text-adjust-y, 0px)) !important; }
+.v4-shape-text-content span, .v4-shape-text-overlay span, .v4-shape .v4-editable-cell span { line-height: 1 !important; display: inline-block !important; }
+.v4-shape-text-content .ql-container { border: none !important; padding: 0 !important; margin: 0 !important; height: 100% !important; width: 100% !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+.v4-shape-text-content .ql-editor { padding: 0 !important; margin: 0 !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: center !important; min-height: unset !important; height: 100% !important; width: 100% !important; line-height: 1 !important; }
+.lf-component .v4-editable-cell { line-height: 1 !important; }
 .v4-editable-cell:focus { outline: 2px solid #6366f1; }
 th.v4-editable-cell:focus, td.v4-editable-cell:focus { outline-offset: -2px !important; }
 :not(th):not(td).v4-editable-cell:focus { background: rgba(99, 102, 241, 0.05) !important; }
@@ -111,17 +118,17 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 
 /* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
 .text-marker, .v4-text-box { 
-    position: absolute; padding: 2px 6px; border-radius: 4px; 
+    position: absolute; padding: 0 !important; border-radius: 4px; 
     border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
     white-space: normal; cursor: grab; pointer-events: auto; z-index: 100; 
     transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, outline 0.2s;
     min-width: unset; min-height: unset; background: transparent; 
     box-shadow: none; box-sizing: border-box;
     color: #1e293b; text-align: left;
-    width: fit-content !important;
+    width: auto;
 }
-.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell { padding: 2px 4px; display: block; text-align: left; }
-.text-marker .v4-editable-cell p, .v4-text-box .v4-editable-cell p { margin: 0; padding: 0; }
+.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell { padding: 4px !important; margin: 0 !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: inherit; box-sizing: border-box !important; line-height: 1 !important; width: 100% !important; height: 100% !important; }
+.text-marker .v4-editable-cell p, .v4-text-box .v4-editable-cell p { margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; display: block !important; transform: translateY(var(--v4-text-adjust-y, 0px)) !important; }
 .text-marker:hover, .v4-text-box:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
 .text-marker.selected, .v4-text-box.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
 
@@ -1816,6 +1823,15 @@ window.v4Script = `
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
 
+        if (d.type && window.v4MessageHandlers && typeof window.v4MessageHandlers[d.type.toUpperCase()] === 'function') {
+            try {
+                window.v4MessageHandlers[d.type.toUpperCase()](d);
+                return; // Intercepted and handled by modular component file!
+            } catch(err) {
+                console.error("[MessageDispatcher] Error running modular handler for " + d.type + ":", err);
+            }
+        }
+
         if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
             const curLeft = parseInt(activeEl.style.left) || 0;
             const curTop = parseInt(activeEl.style.top) || 0;
@@ -2957,7 +2973,18 @@ window.v4Script = `
                 if (d.style.width !== undefined || d.style.height !== undefined) {
                     s.setAttribute('data-resized', 'true');
                 }
-                if (d.style.html !== undefined) t.innerHTML = d.style.html;
+                if (d.style.html !== undefined) {
+                    if (t.classList.contains('v4-shape')) {
+                        const targetCell = t.querySelector('.v4-shape-text-content') || t.querySelector('.v4-editable-cell');
+                        if (targetCell) {
+                            targetCell.innerHTML = d.style.html;
+                        } else {
+                            t.innerHTML = '<div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0px; box-sizing: border-box; overflow: hidden;">' + d.style.html + '</div>';
+                        }
+                    } else {
+                        t.innerHTML = d.style.html;
+                    }
+                }
                 
                 const isInnerBox = t.classList.contains('v4-checkbox') || t.classList.contains('v4-radio');
                 
