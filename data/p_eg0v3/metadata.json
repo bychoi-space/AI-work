@@ -779,7 +779,7 @@
     "06_Mobile_Design_2_471.html": {
       "title": "랭킹 카드 1열 UI",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-13T02:38:52.383Z",
+      "updatedAt": "2026-07-13T05:01:51.486Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -991,16 +991,16 @@
           "html": "<p><strong>전체</strong></p>"
         },
         {
-          "x": 580.556,
-          "y": 268,
+          "x": 0,
+          "y": 0,
           "standardized": true,
           "type": "text",
           "text": "실시간",
           "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>"
         },
         {
-          "x": 479.056,
-          "y": 258,
+          "x": 0,
+          "y": 0,
           "standardized": true,
           "type": "text",
           "text": "남성 · 40대",
@@ -1023,28 +1023,44 @@
           "html": "<p><span style=\"font-size: 12px;\">Product Name 1줄로 길게 표현...</span></p>"
         },
         {
+          "text": "20% 123,000",
+          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
           "x": 433,
           "y": 382,
-          "standardized": true,
           "type": "text",
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>"
+          "standardized": true
         },
         {
+          "text": "1",
+          "html": "<p><strong style=\"font-size: 20px;\">1</strong></p>",
           "x": 313.5,
           "y": 354,
-          "standardized": true,
           "type": "text",
-          "text": "1",
-          "html": "<p><strong style=\"font-size: 20px;\">1</strong></p>"
+          "standardized": true
         },
         {
+          "text": "5",
+          "html": "<p><strong style=\"font-size: 20px;\">5</strong></p>",
           "x": 629,
           "y": 365,
-          "standardized": true,
           "type": "text",
-          "text": "5",
-          "html": "<p><strong style=\"font-size: 20px;\">5</strong></p>"
+          "standardized": true
+        },
+        {
+          "text": "실시간",
+          "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>",
+          "x": 955.5,
+          "y": 486,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "남성 · 40대",
+          "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>",
+          "x": 855,
+          "y": 486,
+          "type": "text",
+          "standardized": true
         }
       ],
       "connectors": [],
@@ -1067,5 +1083,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-13 11:38:52"
+  "updated": "2026-07-13 14:01:51"
 }
