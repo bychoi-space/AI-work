@@ -452,6 +452,7 @@ window.v4DesignSystemScript = `
                 }
             });
             document.querySelectorAll('.text-marker, .v4-text-box').forEach(c => {
+                if (c.querySelector('.v4-shape')) return; // Exclude Shape components from text marker auto-sizing loop
                 const cell = c.querySelector('.v4-editable-cell') || c;
                 const isFocused = cell && (document.activeElement === cell || cell.contains(document.activeElement));
                 const isDefault = cell && (cell.innerText === 'Edit Text' || cell.innerText === 'Text' || cell.innerText === 'Enter Premium Text');
