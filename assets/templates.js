@@ -790,7 +790,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 .v4-fileupload-button:hover { background-color: #f9fafb !important; border-color: #babcbe !important; }
 
 /* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
-.text-marker, .v4-text-box { 
+.text-marker, .v4-text-box, .v4-text-shape { 
     position: absolute; padding: 0 !important; border-radius: 4px; 
     border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
     white-space: normal; cursor: grab; pointer-events: auto; z-index: 100; 
@@ -800,10 +800,10 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     color: #1e293b; text-align: left;
     width: auto;
 }
-.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell { padding: 4px !important; margin: 0 !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: inherit; box-sizing: border-box !important; line-height: 1 !important; width: 100% !important; height: 100% !important; }
-.text-marker .v4-editable-cell p, .v4-text-box .v4-editable-cell p { margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; display: block !important; transform: translateY(var(--v4-text-adjust-y, 0px)) !important; }
-.text-marker:hover, .v4-text-box:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
-.text-marker.selected, .v4-text-box.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
+.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell, .v4-text-shape .v4-editable-cell { padding: 4px !important; margin: 0 !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: inherit; box-sizing: border-box !important; line-height: 1 !important; width: 100% !important; height: 100% !important; }
+.text-marker .v4-editable-cell p, .v4-text-box .v4-editable-cell p, .v4-text-shape .v4-editable-cell p { margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; display: block !important; transform: translateY(var(--v4-text-adjust-y, 0px)) !important; }
+.text-marker:hover, .v4-text-box:hover, .v4-text-shape:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
+.text-marker.selected, .v4-text-box.selected, .v4-text-shape.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
 
 /* Premium Pin Marker Styling */
 .pin-marker {

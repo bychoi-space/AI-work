@@ -102,7 +102,7 @@
             id: targetId,
             html: item.html,
             style: style,
-            className: isDescriptionPin ? 'pin-marker' : (isTextTool ? 'v4-text-box' : ''),
+            className: isDescriptionPin ? 'pin-marker' : (isTextTool ? 'v4-text-shape' : ''),
             isGroup: !!item.isGroup
         });
     };
@@ -197,20 +197,19 @@
         return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
     }
 
-    // Table Style Bindings
-    bindStyleUpdate('table-font-size', (val) => ({
-        type: 'LF_UPDATE_STYLE',
-        selector: 'table',
-        subSelector: 'td, th',
-        subStyle: { fontSize: val + 'px' }
-    }));
-    bindStyleUpdate('table-border-color', (val) => ({
-        type: 'LF_UPDATE_STYLE',
-        selector: 'table',
-        style: { borderColor: val },
-        subSelector: 'td, th',
-        subStyle: { borderColor: val }
-    }));
+    // Table & Shape Style Bindings (Declarative Migration)
+    const styleUpdateConfig = [
+        { id: 'table-font-size', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'table', subSelector: 'td, th', subStyle: { fontSize: val + 'px' } }) },
+        { id: 'table-border-color', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'table', style: { borderColor: val }, subSelector: 'td, th', subStyle: { borderColor: val } }) },
+        { id: 'shape-font-size', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell', style: { fontSize: val + 'px' } }) },
+        { id: 'shape-text-color', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell', style: { color: val } }) },
+        { id: 'shape-border-color', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape', style: { borderColor: val } }) },
+        { id: 'shape-border-radius', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape', style: { borderRadius: val + 'px' } }) },
+        { id: 'text-color-picker', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-editable-cell', style: { color: val } }) },
+        { id: 'icon-color', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'img, .lf-icon', style: { color: val } }) }
+    ];
+    styleUpdateConfig.forEach(conf => bindStyleUpdate(conf.id, conf.msg));
+
 
     // Cell Style & Dimension Direct Actions
     const bindCellColorInput = (id, prop) => {
@@ -349,12 +348,8 @@
     bindCellBorderButton('btn-cell-border-left', 'left');
     bindCellBorderButton('btn-cell-border-right', 'right');
 
-    // Shape Style Bindings
-    bindStyleUpdate('shape-font-size', (val) => ({
-        type: 'LF_UPDATE_STYLE',
-        selector: '.v4-shape .v4-editable-cell',
-        style: { fontSize: val + 'px' }
-    }));
+    // Shape Style inputs synced dynamically via styleUpdateConfig config loop
+
     const shapeBgColorEl = document.getElementById('shape-bg-color');
     if (shapeBgColorEl) {
         shapeBgColorEl.addEventListener('input', function() {
@@ -410,23 +405,8 @@
             }
         });
     }
-    bindStyleUpdate('shape-text-color', (val) => ({
-        type: 'LF_UPDATE_STYLE',
-        selector: '.v4-shape .v4-editable-cell',
-        style: { color: val }
-    }));
-    bindStyleUpdate('shape-border-color', (val) => ({
-        type: 'LF_UPDATE_STYLE',
-        selector: '.v4-shape',
-        style: { borderColor: val }
-    }));
+    // Additional shape text and border properties handled by declarative bindings loop
 
-    // Corner Radius Slider
-    bindStyleUpdate('shape-border-radius', (val) => ({
-        type: 'LF_UPDATE_STYLE',
-        selector: '.v4-shape',
-        style: { borderRadius: val + 'px' }
-    }));
 
     // Corner Style Toggle Buttons (Sharp / Round)
     const _syncCornerBtns = (radiusVal) => {
@@ -507,12 +487,11 @@
         
         notifyIframe({
             type: 'LF_UPDATE_STYLE',
-            selector: '.v4-shape .v4-editable-cell, .v4-shape .v4-shape-text-content',
+            selector: '.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell, .v4-text-box .v4-editable-cell, .v4-text-shape .v4-editable-cell, .text-marker .v4-editable-cell',
             style: {
                 alignItems: horizontalAlign,
                 textAlign: align,
-                boxSizing: 'border-box',
-                padding: '20px'
+                boxSizing: 'border-box'
             }
         });
     };
@@ -526,19 +505,8 @@
     const btnAlignRight = document.getElementById('btn-shape-align-right');
     if (btnAlignRight) btnAlignRight.onclick = () => _applyTextAlign('right');
 
-    // Text Marker Bindings
-    bindStyleUpdate('text-color-picker', (val) => ({
-        type: 'LF_UPDATE_STYLE',
-        selector: '.v4-editable-cell',
-        style: { color: val }
-    }));
+    // Text and Icon style properties are mapped dynamically via loop
 
-    // Icon Editor Bindings
-    bindStyleUpdate('icon-color', (val) => ({
-        type: 'LF_UPDATE_STYLE',
-        selector: 'img, .lf-icon',
-        style: { color: val }
-    }));
 
     // Universal Transparency Logic
     const transparencyConfig = [
@@ -605,14 +573,17 @@
         }
     };
 
-    bindAction('btn-add-row', 'ADD_ROW');
-    bindAction('btn-del-row', 'DEL_ROW');
-    bindAction('btn-add-col', 'ADD_COL');
-    bindAction('btn-del-col', 'DEL_COL');
-    bindAction('btn-layout-h', 'LAYOUT_H');
-    bindAction('btn-layout-v', 'LAYOUT_V');
-    bindAction('btn-merge-cells', 'MERGE_CELLS');
-    bindAction('btn-split-cells', 'SPLIT_CELLS');
+    const tableActions = [
+        { id: 'btn-add-row', action: 'ADD_ROW' },
+        { id: 'btn-del-row', action: 'DEL_ROW' },
+        { id: 'btn-add-col', action: 'ADD_COL' },
+        { id: 'btn-del-col', action: 'DEL_COL' },
+        { id: 'btn-layout-h', action: 'LAYOUT_H' },
+        { id: 'btn-layout-v', action: 'LAYOUT_V' },
+        { id: 'btn-merge-cells', action: 'MERGE_CELLS' },
+        { id: 'btn-split-cells', action: 'SPLIT_CELLS' }
+    ];
+    tableActions.forEach(conf => bindAction(conf.id, conf.action));
 
     window.addEventListener('message', e => {
         const data = e.data;

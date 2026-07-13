@@ -335,11 +335,22 @@ window.v4DesignSystemScript = `
         measureSpan.style.lineHeight = '1';
         measureSpan.style.letterSpacing = compStyle.letterSpacing;
         
-        const rawText = cell.innerText || '';
+        // Extract text containing only user-typed hard newlines
+        let rawText = '';
+        const paragraphs = cell.querySelectorAll('p');
+        if (paragraphs.length > 0) {
+            rawText = Array.from(paragraphs).map(p => p.textContent).join('\n');
+        } else {
+            const temp = document.createElement('div');
+            temp.innerHTML = cell.innerHTML;
+            temp.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+            rawText = temp.textContent || '';
+        }
+
         const lf = String.fromCharCode(10);
         const cleanText = rawText
             .split(lf)
-            .map(line => line.replace(/^[\\s\\u200B\\u00A0\\uFEFF]+|[\\s\\u200B\\u00A0\\uFEFF]+$/g, '').replace(/\\u200B/g, ''))
+            .map(line => line.replace(/^[\s\u200B\u00A0\uFEFF]+|[\s\u200B\u00A0\uFEFF]+$/g, '').replace(/\u200B/g, ''))
             .join(lf);
         const firstLine = cleanText.split(lf)[0] || 'T';
         measureSpan.innerText = firstLine;
@@ -353,7 +364,7 @@ window.v4DesignSystemScript = `
         const textH = measureSpan.offsetHeight;
         document.body.removeChild(measureSpan);
         
-        const isRealTextComp = (c.classList.contains('v4-text-box') || c.classList.contains('text-marker') || c.classList.contains('pin-marker')) && !c.querySelector('.v4-shape');
+        const isRealTextComp = c.classList.contains('v4-text-box') || c.classList.contains('v4-text-shape') || c.classList.contains('text-marker') || c.classList.contains('pin-marker');
 
         let paddingW = isShapeText ? 16 : 8;
         let paddingH = isShapeText ? 16 : 8;
@@ -451,7 +462,7 @@ window.v4DesignSystemScript = `
                     resizeToFitText(c, true);
                 }
             });
-            document.querySelectorAll('.text-marker, .v4-text-box').forEach(c => {
+            document.querySelectorAll('.text-marker, .v4-text-box, .v4-text-shape').forEach(c => {
                 if (c.querySelector('.v4-shape')) return; // Exclude Shape components from text marker auto-sizing loop
                 const cell = c.querySelector('.v4-editable-cell') || c;
                 const isFocused = cell && (document.activeElement === cell || cell.contains(document.activeElement));
