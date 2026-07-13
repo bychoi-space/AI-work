@@ -779,22 +779,22 @@
     "06_Mobile_Design_2_471.html": {
       "title": "랭킹 카드 1열 UI",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-13T00:45:09.785Z",
+      "updatedAt": "2026-07-13T00:54:20.170Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
           "text": "기획전 명칭",
           "html": "<p>기획전 명칭</p>",
-          "x": 52.823,
-          "y": 11.6493,
+          "x": 383,
+          "y": 74,
           "type": "text",
           "standardized": true
         },
         {
           "text": "기획전 명칭",
           "html": "<p>기획전 명칭</p>",
-          "x": 52.823,
-          "y": 11.6493,
+          "x": 830,
+          "y": 74,
           "type": "text",
           "standardized": true
         },
@@ -831,16 +831,16 @@
           "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>"
         },
         {
-          "x": 0,
-          "y": 0,
+          "x": 1051,
+          "y": 317,
           "standardized": true,
           "type": "text",
           "text": "실시간",
           "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>"
         },
         {
-          "x": 0,
-          "y": 0,
+          "x": 946.5,
+          "y": 307,
           "standardized": true,
           "type": "text",
           "text": "남성 · 40대",
@@ -991,16 +991,16 @@
           "html": "<p><strong>전체</strong></p>"
         },
         {
-          "x": 0,
-          "y": 0,
+          "x": 580.556,
+          "y": 268,
           "standardized": true,
           "type": "text",
           "text": "실시간",
           "html": "<p><span style=\"font-size: 12px;\">실시간</span></p>"
         },
         {
-          "x": 0,
-          "y": 0,
+          "x": 479.056,
+          "y": 258,
           "standardized": true,
           "type": "text",
           "text": "남성 · 40대",
@@ -1059,5 +1059,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-13 09:45:09"
+  "updated": "2026-07-13 09:54:20"
 }
