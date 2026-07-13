@@ -122,6 +122,11 @@ async function listRepoRoot() {
 }
 
 async function fetchFileContent(path, isRoot = false) {
+    window.fileContentCache = window.fileContentCache || {};
+    if (window.fileContentCache[path]) {
+        console.log("[Cache] Returning cached content for:", path);
+        return window.fileContentCache[path];
+    }
     const fullPath = isRoot ? path : `${ghConfig.dataDir}${path}`;
     const safePath = fullPath.split('/').map(segment => encodeURIComponent(segment).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16))).join('/');
     const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${safePath}?t=${Date.now()}`;
@@ -131,7 +136,7 @@ async function fetchFileContent(path, isRoot = false) {
     if (token) headers['Authorization'] = `token ${token}`;
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10-second timeout for stability
 
     try {
         let res = await fetch(url, { headers, credentials: 'omit', signal: controller.signal });
@@ -151,7 +156,9 @@ async function fetchFileContent(path, isRoot = false) {
             window.shaCache = window.shaCache || {};
             window.shaCache[path] = data.sha;
             try {
-                return decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+                const decoded = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+                window.fileContentCache[path] = decoded; // Cache successful fetch in-memory
+                return decoded;
             } catch(e) { return null; }
         }
         return null;
@@ -359,6 +366,13 @@ async function uploadToProject(project, filename, content, statusCallback, isBin
             const putData = await putRes.json().catch(() => null);
             if (putData && putData.content && putData.content.sha) {
                 window.shaCache[cacheKey] = putData.content.sha;
+            }
+            // Update the in-memory cache with the fresh content
+            window.fileContentCache = window.fileContentCache || {};
+            if (!isBinary) {
+                window.fileContentCache[cacheKey] = content;
+            } else {
+                delete window.fileContentCache[cacheKey];
             }
             if (statusCallback) {
                 statusCallback('Success', '#4ade80');
