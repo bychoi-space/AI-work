@@ -779,7 +779,7 @@
     "06_Mobile_Design_2_471.html": {
       "title": "랭킹 카드 1열 UI",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-13T00:44:52.460Z",
+      "updatedAt": "2026-07-13T00:45:09.785Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1007,22 +1007,6 @@
           "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>"
         },
         {
-          "x": 439.056,
-          "y": 130,
-          "standardized": true,
-          "type": "text",
-          "text": "Card Title",
-          "html": "<p><strong style=\"font-size: 18px;\">Card Title</strong></p>"
-        },
-        {
-          "x": 426.056,
-          "y": 156,
-          "standardized": true,
-          "type": "text",
-          "text": "Card Description",
-          "html": "<p style=\"text-align: center;\"><span style=\"font-size: 14px;\">Card Description</span></p>"
-        },
-        {
           "x": 452,
           "y": 330,
           "standardized": true,
@@ -1075,5 +1059,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-10 11:38:15"
+  "updated": "2026-07-13 09:45:09"
 }
