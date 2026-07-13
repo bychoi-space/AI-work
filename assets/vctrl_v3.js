@@ -141,7 +141,10 @@ window.spawnTextEditor = function(x, y, existingIndex) {
         window.quillEditor.focus();
     }
 
-    document.getElementById('btn-editor-apply').onclick = function() { closeActiveEditor(true); };
+    const applyBtn = document.getElementById('btn-editor-apply');
+    if (applyBtn) {
+        applyBtn.onclick = function() { closeActiveEditor(true); };
+    }
     const btnDel = document.getElementById('btn-editor-delete');
     if (btnDel) {
         btnDel.onclick = function() { deleteAnnotation(window.state.editingIndex); closeActiveEditor(false); };

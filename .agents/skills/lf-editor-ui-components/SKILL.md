@@ -53,6 +53,24 @@ description: Use when editing V4 components, .lf-icon SVG atoms, premium buttons
   - **4. 인라인 brightness 필터 금지**: 생성 템플릿에 `filter: brightness(0)`와 같은 하드코딩 필터 주입을 배제해야 하며, 스타일 업데이트 시 `t.style.filter = 'none'`을 우선 처리하여 채색 렌더러가 온전한 원색을 왜곡 없이 표현할 수 있게 보장합니다.
 
 ## Text And Layout
+- **도형 텍스트(SHAPE Text) 명칭 및 렌더링 아키텍처 규칙**:
+  - **1. 명칭 및 기획 정의 (SSOT)**:
+    - 우측 사이드바 `SHAPE` 카테고리의 첫 번째 항목인 **`T (Text)` (도형 텍스트)**를 가리키며, `ATOMIC LIBRARY`의 첫 번째 항목인 **`Textbox` (텍스트박스 아톰)**와 엄격하게 구분한다. 내부 클래스명인 `.v4-text-box`와 상관없이 UI 상의 명칭은 반드시 **'도형 텍스트'**로 통일한다.
+  - **2. 파일별 역할 분담 및 수정 가이드**:
+    - **[assets/templates.js](file:///c:/ai-work/assets/templates.js) (뼈대 및 기본 스타일)**:
+      - 도형 텍스트 최초 생성 시 삽입되는 HTML 구조 조각과 기본 CSS 정의부(예: `.v4-text-box` 및 `.text-marker` 클래스의 기본 렌더링 스타일, 마우스 selected/hover 효과)가 들어있다. 컴포넌트의 디폴트 여백 및 모양 변경 시 이 파일의 스타일 선언부를 수정해야 한다. (부모에 `display: flex`가 들어가서 하위 텍스트와 이동 핸들의 밀림을 유발하지 않도록 absolute 래퍼 형태로 유지해야 한다.)
+    - **[assets/vctrl_iframe_script.js](file:///c:/ai-work/assets/vctrl_iframe_script.js) (렌더링 엔진 스타일 쉘)**:
+      - iframe 캔버스 내부에 주입되는 스타일시트(`window.v4Styles`)를 통해 실시간 기하학적 정렬을 지배한다. 상하좌우 대칭 정렬을 위한 셀 패딩(`padding: 4px !important;`), 수직/수평 FLEX 정렬(`display: flex !important; align-items: center !important; justify-content: center !important;`), 줄높이 초기화(`line-height: 1 !important;`), 텍스트 치우침 보정을 위한 트랜스폼(`transform: translateY(var(--v4-text-adjust-y, 0px));`) 등의 CSS 규칙은 이 파일에서 관리한다.
+    - **[assets/vctrl_design_system.js](file:///c:/ai-work/assets/vctrl_design_system.js) (크기 계산 및 영점 보정 알고리즘)**:
+      - 폰트 크기 변경에 따른 동적 크기 보정 함수 `resizeToFitText()`를 소유한다. 
+      - **Zero-Drift Measurement**: 크기 측정 직전 `.lf-drag-handle`, `.lf-resizer`, `.lf-delete-trigger`를 일시적으로 감춰서 측정 왜곡을 방어한다.
+      - **Computed Style Lookup**: 자식 노드 중 폰트 크기 스타일이 지정된 첫 번째 요소의 computed style(`window.getComputedStyle(el).fontSize`)을 안전하게 낚아채어 오차 없이 측정한다.
+      - **Zero-Offset Calibration**: `10px` 등 11px 이하의 초소형 폰트 크기에서 발생하는 브라우저 고유의 아래 처짐 현상을 소멸시키기 위해 Y축 영점 보정 변수 `--v4-text-adjust-y: -0.6px`를 동적으로 부여한다.
+      - **텍스트 공백 정제**: 텍스트의 실제 가로/세로 픽셀을 측정하기 전, 유니코드 특수 공백(`\u200B`, `\u00A0` 등)과 개행을 정규식으로 완벽히 제거(`trim().replace(/\u200B/g, '')`)하여 과도한 좌우 공백 왜곡을 차단한다.
+    - **[assets/vctrl_v4_addon.js](file:///c:/ai-work/assets/vctrl_v4_addon.js) (부모-자식 스타일 중계기)**:
+      - 사이드바 조작에 따른 `LF_UPDATE_STYLE` 토스 핸들러를 정의한다. 폰트 크기(`shape-font-size`), 정렬(`_applyTextAlign`), 컬러(`shape-text-color`) 변경 메시지 송신 시, 도형 텍스트 영역을 포섭하도록 셀렉터 타겟에 `.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell` 3중 결합 경로가 정의되어야 한다.
+    - **[viewer.html](file:///c:/ai-work/viewer.html) (버전 캐시 무력화)**:
+      - 위 4개 파일을 수정하여 배포한 후에는, 브라우저가 이전 리액션 코드를 캐싱하여 오작동하는 것을 100% 방지하기 위해 이 파일의 스크립트 로드 태그의 버전 쿼리스트링 파라미터를 즉시 최신 버전 상수로 갱신(Version Bump)해야 한다.
 - Use font sizes within the project scale: 18-20px for main titles, 15-16px for section/table headers, 14-15px for body/table cells, 13px for labels/help text, and 12px for tiny markers/tags.
 - Apply `white-space: nowrap;` to dates and short labels that must stay on one line.
 - In polygon/shape text, calculate padding and `line-height` so text remains centered.

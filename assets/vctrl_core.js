@@ -26,64 +26,7 @@ window.state = {
     editingIndex: -1
 };
 
-// --- Cover Template Metadata Sync & Version Auto-Increment Helper ---
-function syncCoverMetadata(html, metadata, isSave = false, currentActiveFile = null) {
-    if (!html) return html;
-    
-    // 1. Title
-    const titleValue = metadata.title || '';
-    if (html.match(/(<div[^>]*id="cover-project-title"[^>]*>)/i)) {
-        html = html.replace(/(<div[^>]*id="cover-project-title"[^>]*>)[^<]*(<\/div>)/i, `$1${titleValue}$2`);
-    } else {
-        html = html.replace(/(<div[^>]*id="cover-title"[^>]*>[\s\S]*?<div[^>]*class="v4-editable-cell"[^>]*>)[^<]*(<\/div>)/i, `$1${titleValue}$2`);
-    }
-    
-    // 2. JIRA
-    const jiraValue = metadata.jira || '-';
-    html = html.replace(/(<div[^>]*id="cover-jira-id"[^>]*>)[^<]*(<\/div>)/i, `$1${jiraValue}$2`);
-    
-    // 3. Author
-    const authorValue = metadata.assignee || '-';
-    if (html.match(/(<td[^>]*id="cover-author"[^>]*>)/i)) {
-        html = html.replace(/(<td[^>]*id="cover-author"[^>]*>)[^<]*(<\/td>)/i, `$1${authorValue}$2`);
-    } else {
-        html = html.replace(/(Lead Designer \/ Author[\s\S]*?<td[^>]*class="v4-editable-cell"[^>]*>)[^<]*(<\/td>)/i, `$1${authorValue}$2`);
-    }
-    
-    // 4. Date
-    const dateValue = metadata.period || '-';
-    if (html.match(/(<td[^>]*id="cover-date"[^>]*>)/i)) {
-        html = html.replace(/(<td[^>]*id="cover-date"[^>]*>)[^<]*(<\/td>)/i, `$1${dateValue}$2`);
-    } else {
-        html = html.replace(/(Publication Date[\s\S]*?<td[^>]*class="v4-editable-cell"[^>]*>)[^<]*(<\/td>)/i, `$1${dateValue}$2`);
-    }
-    
-    // 5. Version
-    if (currentActiveFile) {
-        let currentVer = 0.1;
-        const verMatch = html.match(/(<div[^>]*id="cover-version-val"[^>]*>v?)([\d.]+)(<\/div>)/i) || 
-                         html.match(/(<div[^>]*id="cover-version"[^>]*>[\s\S]*?<div[^>]*class="v4-editable-cell"[^>]*>v?)([\d.]+)(<\/div>)/i);
-        
-        if (verMatch && verMatch[2]) {
-            currentVer = parseFloat(verMatch[2]);
-        } else if (metadata.screens && metadata.screens[currentActiveFile] && metadata.screens[currentActiveFile].version !== undefined) {
-            currentVer = parseFloat(metadata.screens[currentActiveFile].version);
-        }
-        
-        let nextVerStr = currentVer.toFixed(1);
-        if (isSave) {
-            nextVerStr = (currentVer + 0.1).toFixed(1);
-        }
-        
-        if (html.match(/(<div[^>]*id="cover-version-val"[^>]*>)/i)) {
-            html = html.replace(/(<div[^>]*id="cover-version-val"[^>]*>v?)[^<]*(<\/div>)/i, `$1${nextVerStr}$2`);
-        } else {
-            html = html.replace(/(<div[^>]*id="cover-version"[^>]*>[\s\S]*?<div[^>]*class="v4-editable-cell")([^>]*>v?)([^<]*)(<\/div>)/i, `$1 id="cover-version-val" $2${nextVerStr}$4`);
-        }
-    }
-    
-    return html;
-}
+// Note: syncCoverMetadata has been externalized into vctrl_parser_utils.js to reduce module footprint.
 
 
 // --- Core Logic ---
@@ -115,16 +58,22 @@ window.loadScreen = async function(fileName) {
 
     // Inject/Update Script
     const scriptBlock = '<script id="v4-inlined-script">\n' + 
+        '// Cache Buster Timestamp: ' + Date.now() + '\n' +
         (window.v4UndoScript || '') + '\n' + 
         (window.v4TableScript || '') + '\n' + 
         (window.v4DesignSystemScript || '') + '\n' + 
         (window.v4ShortcutsScript || '') + '\n' + 
+        (window.v4CommonScript || '') + '\n' +
+        (window.v4ObjectTextScript || '') + '\n' +
+        (window.v4ObjectShapeScript || '') + '\n' +
+        (window.v4ObjectTableScript || '') + '\n' +
+        (window.v4ObjectConnectorScript || '') + '\n' +
         (window.v4Script || '') + '\n</script>';
 
     // Forcefully strip out any existing inlined scripts of our engine to avoid duplicates or stale code
     finalContent = finalContent.replace(/<script id="v4-inlined-script">[\s\S]*?<\/script>/gi, '');
     // Enhanced regex to sweep any script containing our core engine symbols
-    finalContent = finalContent.replace(/<script[^>]*>([\s\S]*?(?:V4UndoManager|reorderAllPins|v4Script|v4ShortcutsScript|v4DesignSystemScript|LF_GROUP_SELECTED|GroupingManager)[\s\S]*?)<\/script>/gi, '');
+    finalContent = finalContent.replace(/<script[^>]*>([\s\S]*?(?:V4UndoManager|reorderAllPins|v4Script|v4ShortcutsScript|v4DesignSystemScript|v4CommonScript|v4ObjectTextScript|v4ObjectShapeScript|v4ObjectTableScript|v4ObjectConnectorScript|LF_GROUP_SELECTED|GroupingManager)[\s\S]*?)<\/script>/gi, '');
 
     // Inject the fresh script block right before </body>
     if (finalContent.includes('</body>')) {

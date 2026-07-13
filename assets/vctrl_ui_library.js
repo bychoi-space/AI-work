@@ -258,7 +258,6 @@
                 <span id="content-editor-label" style="font-size: 10px; font-weight: 900; color: var(--accent);">TEXT EDITOR</span>
             </div>
             <div id="editor-container" style="background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 12px;"></div>
-            <button id="btn-editor-apply" class="v4-inspector-btn primary" style="width: 100%; height: 32px;">APPLY CHANGES</button>
         </div>
 
         <!-- table-inspector-section -->
