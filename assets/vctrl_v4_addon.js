@@ -84,8 +84,8 @@
             style.height = 'auto';
         }
         if (item.id === 'v4-tool-text') {
-            style.width = 'fit-content';
-            style.height = 'auto';
+            style.width = '120px';
+            style.height = '30px';
         }
 
         const isTextTool = item.id === 'v4-tool-text';

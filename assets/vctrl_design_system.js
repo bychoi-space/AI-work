@@ -353,15 +353,24 @@ window.v4DesignSystemScript = `
             .map(line => line.replace(/^[\\s\\u200B\\u00A0\\uFEFF]+|[\\s\\u200B\\u00A0\\uFEFF]+$/g, '').replace(/\\u200B/g, ''))
             .join(lf);
         const firstLine = cleanText.split(lf)[0] || 'T';
+        
+        measureSpan.style.whiteSpace = 'nowrap';
+        document.body.appendChild(measureSpan);
+        
         measureSpan.innerText = firstLine;
-        document.body.appendChild(measureSpan);
         const singleLineH = measureSpan.offsetHeight;
-        document.body.removeChild(measureSpan);
-
-        measureSpan.innerText = cleanText;
-        document.body.appendChild(measureSpan);
-        const textW = measureSpan.offsetWidth;
-        const textH = measureSpan.offsetHeight;
+        
+        const lines = cleanText.split(lf);
+        let maxLineW = 0;
+        lines.forEach(line => {
+            measureSpan.innerText = line || ' ';
+            const w = measureSpan.offsetWidth;
+            if (w > maxLineW) maxLineW = w;
+        });
+        
+        const textW = maxLineW;
+        const textH = singleLineH * lines.length;
+        
         document.body.removeChild(measureSpan);
         
         const isRealTextComp = c.classList.contains('v4-text-box') || c.classList.contains('v4-text-shape') || c.classList.contains('text-marker') || c.classList.contains('pin-marker');
