@@ -339,18 +339,18 @@ window.v4DesignSystemScript = `
         let rawText = '';
         const paragraphs = cell.querySelectorAll('p');
         if (paragraphs.length > 0) {
-            rawText = Array.from(paragraphs).map(p => p.textContent).join('\n');
+            rawText = Array.from(paragraphs).map(p => p.textContent).join('\\n');
         } else {
             const temp = document.createElement('div');
             temp.innerHTML = cell.innerHTML;
-            temp.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+            temp.querySelectorAll('br').forEach(br => br.replaceWith('\\n'));
             rawText = temp.textContent || '';
         }
 
         const lf = String.fromCharCode(10);
         const cleanText = rawText
             .split(lf)
-            .map(line => line.replace(/^[\s\u200B\u00A0\uFEFF]+|[\s\u200B\u00A0\uFEFF]+$/g, '').replace(/\u200B/g, ''))
+            .map(line => line.replace(/^[\\s\\u200B\\u00A0\\uFEFF]+|[\\s\\u200B\\u00A0\\uFEFF]+$/g, '').replace(/\\u200B/g, ''))
             .join(lf);
         const firstLine = cleanText.split(lf)[0] || 'T';
         measureSpan.innerText = firstLine;
