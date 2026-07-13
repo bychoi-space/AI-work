@@ -776,23 +776,6 @@
       "defaultTab": "editor",
       "screenDesc": ""
     },
-    "99_Blank_183.html": {
-      "title": "99_Blank_183",
-      "type": "blank",
-      "updatedAt": "2026-07-09T07:13:00.284Z",
-      "template": "template_blank.html",
-      "description": [
-        {
-          "x": 29.5,
-          "y": 20,
-          "standardized": true,
-          "type": "text",
-          "text": "LF Onesphere",
-          "html": "<p><span style=\"font-size: 18px; color: rgb(255, 255, 255);\">LF Onesphere</span></p>"
-        }
-      ],
-      "connectors": []
-    },
     "06_Mobile_Design_2_471.html": {
       "title": "06_Mobile_Design_2_471",
       "type": "mobile-ui",
@@ -1088,8 +1071,7 @@
     "07_PC_Design_266.html",
     "99_Blank_798.html",
     "카드 설정2.html",
-    "얼럿 정리.html",
-    "99_Blank_183.html"
+    "얼럿 정리.html"
   ],
   "updated": "2026-07-10 11:38:15"
 }
