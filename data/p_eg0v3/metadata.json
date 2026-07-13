@@ -339,7 +339,7 @@
     "07_PC_Design_266.html": {
       "title": "랭킹카드 - PC",
       "type": "ui",
-      "updatedAt": "2026-06-25T08:52:40.990Z",
+      "updatedAt": "2026-07-13T05:54:17.370Z",
       "template": "template_pc_ui.html",
       "description": [
         {
@@ -412,7 +412,7 @@
           "standardized": true,
           "type": "text",
           "text": "수입/명품",
-          "html": "<p>&nbsp;수입/명품</p>"
+          "html": "<p><span style=\"font-size: 14px;\">수입/명품</span></p>"
         },
         {
           "x": 814.5,
@@ -779,7 +779,7 @@
     "06_Mobile_Design_2_471.html": {
       "title": "랭킹 카드 1열 UI",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-13T05:53:33.294Z",
+      "updatedAt": "2026-07-13T05:19:18.275Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1339,5 +1339,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-13 14:53:33"
+  "updated": "2026-07-13 14:54:17"
 }
