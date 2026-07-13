@@ -387,11 +387,11 @@ window.v4DesignSystemScript = `
             
             if (lineCount === 1) {
                 targetW = textW + (isRealTextComp && !isShapeText ? 12 : paddingW);
-                targetH = textH + (isRealTextComp && !isShapeText ? 12 : paddingH);
+                targetH = textH + (isRealTextComp && !isShapeText ? 8 : paddingH);
             } else {
                 const fsPx = parseFloat(compStyle.fontSize) || 14;
                 targetW = textW + (isRealTextComp && !isShapeText ? 12 : paddingW);
-                targetH = fsPx * 1.15 * lineCount + (isRealTextComp && !isShapeText ? 12 : paddingH);
+                targetH = fsPx * 1.15 * lineCount + (isRealTextComp && !isShapeText ? 8 : paddingH);
             }
         }
 
@@ -473,11 +473,8 @@ window.v4DesignSystemScript = `
             });
             document.querySelectorAll('.text-marker, .v4-text-box, .v4-text-shape').forEach(c => {
                 if (c.querySelector('.v4-shape')) return; // Exclude Shape components from text marker auto-sizing loop
-                const cell = c.querySelector('.v4-editable-cell') || c;
-                const isFocused = cell && (document.activeElement === cell || cell.contains(document.activeElement));
-                const isDefault = cell && (cell.innerText === 'Edit Text' || cell.innerText === 'Text' || cell.innerText === 'Enter Premium Text');
-                const isSelected = c.classList.contains('selected');
-                if (isFocused || isDefault || isSelected) {
+                const isManualResized = c.getAttribute('data-resized') === 'true';
+                if (!isManualResized) {
                     resizeToFitText(c, false);
                 }
             });
