@@ -1,14 +1,14 @@
 window.v4ObjectTextScript = `
 (function() {
     console.log("[V4 Object Text] Module initialized.");
-    window.v4MessageHandlers = window.v4MessageHandlers || {};
+    window.v4ObjectText = window.v4ObjectText || {};
 
-    window.v4MessageHandlers['LF_UPDATE_STYLE'] = (d) => {
-        const s = document.querySelector('.lf-component.selected'); if (!s) return;
+    window.v4ObjectText.handleUpdateStyle = (d) => {
+        const s = document.querySelector('.lf-component.selected'); if (!s) return false;
         const isText = s.classList.contains('text-marker') || s.classList.contains('v4-text-box') || s.classList.contains('v4-text-shape');
         if (!isText) {
             // Let dispatcher fallback handle non-text components
-            return;
+            return false;
         }
 
         if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -38,6 +38,7 @@ window.v4ObjectTextScript = `
         if (typeof window.enforceDesignSystem === 'function') {
             window.enforceDesignSystem();
         }
+        return true;
     };
 })();
 `;

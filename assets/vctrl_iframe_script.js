@@ -2942,6 +2942,15 @@ window.v4Script = `
         }
         else if (d.type === 'LF_UPDATE_STYLE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            
+            // Route to modular helpers first
+            if (window.v4ObjectText && typeof window.v4ObjectText.handleUpdateStyle === 'function') {
+                if (window.v4ObjectText.handleUpdateStyle(d)) return;
+            }
+            if (window.v4ObjectShape && typeof window.v4ObjectShape.handleUpdateStyle === 'function') {
+                if (window.v4ObjectShape.handleUpdateStyle(d)) return;
+            }
+
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             
             let t = d.selector ? s.querySelector(d.selector) : s;

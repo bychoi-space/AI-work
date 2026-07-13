@@ -1,20 +1,20 @@
 window.v4ObjectShapeScript = `
 (function() {
     console.log("[V4 Object Shape] Module initialized.");
-    window.v4MessageHandlers = window.v4MessageHandlers || {};
+    window.v4ObjectShape = window.v4ObjectShape || {};
 
-    window.v4MessageHandlers['LF_UPDATE_STYLE'] = (d) => {
-        const s = document.querySelector('.lf-component.selected'); if (!s) return;
+    window.v4ObjectShape.handleUpdateStyle = (d) => {
+        const s = document.querySelector('.lf-component.selected'); if (!s) return false;
         const shape = s.querySelector('.v4-shape');
         if (!shape) {
             // If the selected component is not a shape, let the legacy fallback inside dispatcher handle it!
-            return;
+            return false;
         }
 
         if (window.V4UndoManager) window.V4UndoManager.saveState();
         
         let t = d.selector ? s.querySelector(d.selector) : shape;
-        if (!t) return;
+        if (!t) return false;
 
         if (d.style) {
             if (d.style.width !== undefined || d.style.height !== undefined) {
@@ -63,6 +63,7 @@ window.v4ObjectShapeScript = `
         if (typeof window.enforceDesignSystem === 'function') {
             window.enforceDesignSystem();
         }
+        return true;
     };
 })();
 `;
