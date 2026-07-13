@@ -366,12 +366,12 @@ window.v4DesignSystemScript = `
             const lineCount = normalizedText.split('\\n').length;
             
             if (lineCount === 1) {
-                targetW = textW + (isRealTextComp && !isShapeText ? 6 : paddingW);
-                targetH = textH + (isRealTextComp && !isShapeText ? 8 : paddingH);
+                targetW = textW + (isRealTextComp && !isShapeText ? 10 : paddingW);
+                targetH = textH + (isRealTextComp && !isShapeText ? 10 : paddingH);
             } else {
                 const fsPx = parseFloat(compStyle.fontSize) || 14;
-                targetW = textW + (isRealTextComp && !isShapeText ? 6 : paddingW);
-                targetH = fsPx * 1.15 * lineCount + (isRealTextComp && !isShapeText ? 8 : paddingH);
+                targetW = textW + (isRealTextComp && !isShapeText ? 10 : paddingW);
+                targetH = fsPx * 1.15 * lineCount + (isRealTextComp && !isShapeText ? 10 : paddingH);
             }
         }
 
