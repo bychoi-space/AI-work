@@ -135,37 +135,54 @@ async function fetchFileContent(path, isRoot = false) {
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
     if (token) headers['Authorization'] = `token ${token}`;
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10-second timeout for stability
+    const maxRetries = 2;
+    let attempt = 0;
+    
+    while (attempt <= maxRetries) {
+        attempt++;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10-second timeout for stability
 
-    try {
-        let res = await fetch(url, { headers, credentials: 'omit', signal: controller.signal });
-        clearTimeout(timeoutId);
+        try {
+            let res = await fetch(url, { headers, credentials: 'omit', signal: controller.signal });
+            clearTimeout(timeoutId);
 
-        if (!res.ok && (res.status === 401 || res.status === 403)) {
-            console.warn("[Auth] GitHub API token returned 401/403 on file request. Retrying anonymously.");
-            res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
-        }
-        
-        if (!res.ok) {
-            if (res.status === 404) return "__NOT_FOUND__";
+            if (!res.ok && (res.status === 401 || res.status === 403)) {
+                console.warn("[Auth] GitHub API token returned 401/403 on file request. Retrying anonymously.");
+                res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
+            }
+            
+            if (!res.ok) {
+                if (res.status === 404) return "__NOT_FOUND__";
+                if ((res.status >= 500 && res.status <= 504) && attempt <= maxRetries) {
+                    console.warn(`[API] GitHub API returned transient status ${res.status}. Retrying attempt ${attempt}...`);
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    continue;
+                }
+                return null;
+            }
+            const data = await res.json();
+            if (data && data.content) {
+                window.shaCache = window.shaCache || {};
+                window.shaCache[path] = data.sha;
+                try {
+                    const decoded = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
+                    window.fileContentCache[path] = decoded; // Cache successful fetch in-memory
+                    return decoded;
+                } catch(e) { return null; }
+            }
+            return null;
+        } catch (e) {
+            clearTimeout(timeoutId);
+            console.warn(`[API] fetchFileContent for ${path} failed or timed out (attempt ${attempt}/${maxRetries + 1}):`, e.message);
+            if (attempt <= maxRetries) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+                continue;
+            }
             return null;
         }
-        const data = await res.json();
-        if (data && data.content) {
-            window.shaCache = window.shaCache || {};
-            window.shaCache[path] = data.sha;
-            try {
-                const decoded = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ''))));
-                window.fileContentCache[path] = decoded; // Cache successful fetch in-memory
-                return decoded;
-            } catch(e) { return null; }
-        }
-        return null;
-    } catch (e) {
-        console.warn(`[API] fetchFileContent for ${path} failed or timed out:`, e.message);
-        return null;
     }
+    return null;
 }
 
 async function fetchProjectFileContent(project, filename) {
