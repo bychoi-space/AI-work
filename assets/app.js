@@ -142,7 +142,10 @@ async function fetchFileContent(path, isRoot = false) {
             res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
         }
         
-        if (!res.ok) return null;
+        if (!res.ok) {
+            if (res.status === 404) return "__NOT_FOUND__";
+            return null;
+        }
         const data = await res.json();
         if (data && data.content) {
             window.shaCache = window.shaCache || {};
@@ -159,15 +162,23 @@ async function fetchFileContent(path, isRoot = false) {
 }
 
 async function fetchProjectFileContent(project, filename) {
-    return await fetchFileContent(`${project}/${filename}`);
+    const content = await fetchFileContent(`${project}/${filename}`);
+    return content === "__NOT_FOUND__" ? null : content;
 }
 
 async function fetchProjectMetadata(project) {
     const content = await fetchFileContent(`${project}/metadata.json`);
-    try {
-        return content ? JSON.parse(content) : { title: project, screens: {} };
-    } catch(e) {
+    if (content === "__NOT_FOUND__") {
         return { title: project, screens: {} };
+    }
+    if (content === null) {
+        throw new Error("GitHub API와 통신하는 중 오류가 발생했거나 권한이 없습니다. 메타데이터 유실 방지를 위해 저장이 차단됩니다.");
+    }
+    try {
+        return JSON.parse(content);
+    } catch(e) {
+        console.error("[Metadata] JSON parse error:", e);
+        throw new Error("메타데이터 파일이 손상되었습니다: " + e.message);
     }
 }
 
