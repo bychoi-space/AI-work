@@ -325,13 +325,31 @@ window.v4DesignSystemScript = `
         }
         const compStyle = window.getComputedStyle(fontTarget);
         
+        let hasBold = cell.querySelector('strong, b') || false;
+        if (!hasBold) {
+            const allEls = cell.querySelectorAll('*');
+            for (let i = 0; i < allEls.length; i++) {
+                const fw = window.getComputedStyle(allEls[i]).fontWeight;
+                if (fw === 'bold' || fw === '700' || parseInt(fw) >= 700) {
+                    hasBold = true;
+                    break;
+                }
+            }
+        }
+        if (!hasBold) {
+            const cellFw = window.getComputedStyle(cell).fontWeight;
+            if (cellFw === 'bold' || cellFw === '700' || parseInt(cellFw) >= 700) {
+                hasBold = true;
+            }
+        }
+
         const measureSpan = document.createElement('span');
         measureSpan.style.visibility = 'hidden';
         measureSpan.style.position = 'absolute';
         measureSpan.style.whiteSpace = 'pre-wrap';
         measureSpan.style.fontFamily = compStyle.fontFamily;
         measureSpan.style.fontSize = compStyle.fontSize;
-        measureSpan.style.fontWeight = compStyle.fontWeight;
+        measureSpan.style.fontWeight = hasBold ? 'bold' : compStyle.fontWeight;
         measureSpan.style.lineHeight = '1';
         measureSpan.style.letterSpacing = compStyle.letterSpacing;
         
