@@ -61,6 +61,8 @@ window.loadScreen = async function(fileName) {
         '// Cache Buster Timestamp: ' + Date.now() + '\n' +
         (window.v4UndoScript || '') + '\n' + 
         (window.v4TableScript || '') + '\n' + 
+        (window.v4TextMeasurerScript || '') + '\n' + 
+        (window.v4UIAtomsScript || '') + '\n' + 
         (window.v4DesignSystemScript || '') + '\n' + 
         (window.v4ShortcutsScript || '') + '\n' + 
         (window.v4CommonScript || '') + '\n' +
@@ -72,8 +74,20 @@ window.loadScreen = async function(fileName) {
 
     // Forcefully strip out any existing inlined scripts of our engine to avoid duplicates or stale code
     finalContent = finalContent.replace(/<script id="v4-inlined-script">[\s\S]*?<\/script>/gi, '');
-    // Enhanced regex to sweep any script containing our core engine symbols
-    finalContent = finalContent.replace(/<script[^>]*>([\s\S]*?(?:V4UndoManager|reorderAllPins|v4Script|v4ShortcutsScript|v4DesignSystemScript|v4CommonScript|v4ObjectTextScript|v4ObjectShapeScript|v4ObjectTableScript|v4ObjectConnectorScript|LF_GROUP_SELECTED|GroupingManager)[\s\S]*?)<\/script>/gi, '');
+    
+    // Fast and safe script stripping loop to prevent ReDoS / catastrophic backtracking on large HTML screens
+    const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gi;
+    const keywords = [
+        'V4UndoManager', 'reorderAllPins', 'v4Script', 'v4ShortcutsScript',
+        'v4DesignSystemScript', 'v4TextMeasurerScript', 'v4UIAtomsScript',
+        'v4CommonScript', 'v4ObjectTextScript', 'v4ObjectShapeScript',
+        'v4ObjectTableScript', 'v4ObjectConnectorScript', 'LF_GROUP_SELECTED',
+        'GroupingManager'
+    ];
+    finalContent = finalContent.replace(scriptRegex, (match, scriptBody) => {
+        const shouldStrip = keywords.some(keyword => scriptBody.includes(keyword));
+        return shouldStrip ? '' : match;
+    });
 
     // Inject the fresh script block right before </body>
     if (finalContent.includes('</body>')) {
@@ -839,18 +853,21 @@ window.init = async function() {
         console.log("[INIT] Target Project:", project);
 
         // Fetch data
-        const [contents, metadata, globalComps] = await Promise.all([
-            listContents(project),
+        const [metadata, globalComps] = await Promise.all([
             fetchProjectMetadata(project),
             (typeof fetchGlobalComponents === 'function') ? fetchGlobalComponents() : Promise.resolve([])
         ]);
         state.projectMetadata = metadata || {};
         state.globalComponents = globalComps || [];
 
-        
-        const repoScreens = (contents || []).filter(i => i.type === 'file' && i.name.endsWith('.html'));
+        // Synthesize screen list from metadata.json to ensure instant loading without waiting for directory API (CORS/Proxy safe)
         const order = state.projectMetadata.screenOrder || [];
-        const sortedScreens = repoScreens.sort((a,b) => {
+        const metaScreens = state.projectMetadata.screens || {};
+        const initialScreens = Object.keys(metaScreens).map(name => ({
+            name: name,
+            type: 'file',
+            sha: metaScreens[name].sha || ''
+        })).sort((a, b) => {
             const indexA = order.indexOf(a.name);
             const indexB = order.indexOf(b.name);
             if (indexA === -1 && indexB === -1) return 0;
@@ -859,7 +876,7 @@ window.init = async function() {
             return indexA - indexB;
         });
 
-        state.screens = sortedScreens;
+        state.screens = initialScreens;
         
         if (!fileName && state.screens.length > 0) {
             fileName = state.screens[0].name;
@@ -878,6 +895,43 @@ window.init = async function() {
             if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = "프로젝트 스크린을 추가해주세요.";
             if (DOM.btnAddScreen) DOM.btnAddScreen.classList.add('pulse-attention');
         }
+
+        // Fetch contents in the background to sync SHAs and discover any untracked screens asynchronously
+        listContents(project).then(contents => {
+            if (contents && contents.length > 0) {
+                const repoScreens = contents.filter(i => i.type === 'file' && i.name.endsWith('.html'));
+                let changed = false;
+                repoScreens.forEach(rs => {
+                    const existing = state.screens.find(s => s.name === rs.name);
+                    if (existing) {
+                        if (existing.sha !== rs.sha) {
+                            existing.sha = rs.sha;
+                            changed = true;
+                        }
+                    } else {
+                        state.screens.push({
+                            name: rs.name,
+                            type: 'file',
+                            sha: rs.sha
+                        });
+                        changed = true;
+                    }
+                });
+                if (changed) {
+                    state.screens.sort((a, b) => {
+                        const indexA = order.indexOf(a.name);
+                        const indexB = order.indexOf(b.name);
+                        if (indexA === -1 && indexB === -1) return 0;
+                        if (indexA === -1) return 1;
+                        if (indexB === -1) return -1;
+                        return indexA - indexB;
+                    });
+                    if (typeof renderScreenList === 'function') {
+                        renderScreenList(state.screens, state.activeFile?.name || fileName);
+                    }
+                }
+            }
+        }).catch(err => console.warn("[V4 Core] Background listContents failed:", err));
 
         // --- ATTACH GLOBAL LISTENERS ---
         console.log("[INIT] Attaching global listeners...");

@@ -61,40 +61,57 @@ async function listContents(path) {
 
     console.log("[API] Requesting contents for:", path);
     
-    // 5-second Timeout Protection
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const maxRetries = 2;
+    let attempt = 0;
+    
+    while (attempt <= maxRetries) {
+        attempt++;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10-second timeout
 
-    try {
-        let res = await fetch(url, { headers, credentials: 'omit', signal: controller.signal });
-        clearTimeout(timeoutId);
-        
-        if (!res.ok && (res.status === 401 || res.status === 403)) {
-            if (localStorage.getItem('gh_token')) {
-                localStorage.removeItem('gh_token');
-                res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
+        try {
+            let res = await fetch(url, { headers, credentials: 'omit', signal: controller.signal });
+            clearTimeout(timeoutId);
+            
+            if (!res.ok && (res.status === 401 || res.status === 403)) {
+                if (localStorage.getItem('gh_token')) {
+                    console.warn("[Auth] GitHub API token returned 401/403 on list request. Retrying anonymously.");
+                    localStorage.removeItem('gh_token');
+                    res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, credentials: 'omit' });
+                }
+            }
+            if (res.ok) {
+                const list = await res.json();
+                window.shaCache = window.shaCache || {};
+                if (Array.isArray(list)) {
+                    list.forEach(item => {
+                        if (item.type === 'file' && item.sha) {
+                            const relativePath = item.path.startsWith(ghConfig.dataDir)
+                                ? item.path.substring(ghConfig.dataDir.length)
+                                : item.path;
+                            window.shaCache[relativePath] = item.sha;
+                        }
+                    });
+                }
+                return list;
+            }
+            if ((res.status >= 500 && res.status <= 504) && attempt <= maxRetries) {
+                console.warn(`[API] listContents returned transient status ${res.status}. Retrying attempt ${attempt}...`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                continue;
+            }
+            return [];
+        } catch (e) {
+            clearTimeout(timeoutId);
+            console.warn(`[API] listContents for ${path} failed or timed out (attempt ${attempt}/${maxRetries + 1}):`, e.message);
+            if (attempt <= maxRetries) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+            } else {
+                return [];
             }
         }
-        if (res.ok) {
-            const list = await res.json();
-            window.shaCache = window.shaCache || {};
-            if (Array.isArray(list)) {
-                list.forEach(item => {
-                    if (item.type === 'file' && item.sha) {
-                        const relativePath = item.path.startsWith(ghConfig.dataDir)
-                            ? item.path.substring(ghConfig.dataDir.length)
-                            : item.path;
-                        window.shaCache[relativePath] = item.sha;
-                    }
-                });
-            }
-            return list;
-        }
-        return [];
-    } catch (e) {
-        console.warn("[API] listContents failed or timed out:", e.message);
-        return [];
     }
+    return [];
 }
 
 async function listRepoRoot() {
