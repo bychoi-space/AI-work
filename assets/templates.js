@@ -2548,6 +2548,20 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             v.style.left = (item.left + offset) + 'px';
             v.style.top = (item.top + offset) + 'px';
             v.innerHTML = item.html;
+
+            // Regenerate IDs of all nested child components to prevent duplicate ID issues
+            const childrenWithId = v.querySelectorAll('[id]');
+            childrenWithId.forEach(child => {
+                const oldId = child.id;
+                let prefix = 'v4-comp-';
+                if (child.classList.contains('pin-marker') || oldId.startsWith('v4-pin-')) {
+                    prefix = 'v4-pin-';
+                }
+                const uniqueSuffix = Date.now() + Math.floor(Math.random() * 1000000);
+                const newChildId = prefix + uniqueSuffix;
+                child.id = newChildId;
+            });
+
             v.querySelectorAll('.lf-component').forEach(child => child.classList.remove('selected'));
             v.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
             host.appendChild(v);
