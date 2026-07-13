@@ -779,7 +779,7 @@
     "06_Mobile_Design_2_471.html": {
       "title": "랭킹 카드 1열 UI",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-13T00:54:20.170Z",
+      "updatedAt": "2026-07-13T02:27:31.058Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1007,7 +1007,7 @@
           "html": "<p><span style=\"font-size: 12px;\">남성 · 40대</span></p>"
         },
         {
-          "x": 452,
+          "x": 433,
           "y": 330,
           "standardized": true,
           "type": "text",
@@ -1015,7 +1015,7 @@
           "html": "<p><strong>Brand Name</strong></p>"
         },
         {
-          "x": 452,
+          "x": 433,
           "y": 352,
           "standardized": true,
           "type": "text",
@@ -1023,7 +1023,7 @@
           "html": "<p><span style=\"font-size: 12px;\">Product Name 1줄로 길게 표현...</span></p>"
         },
         {
-          "x": 452,
+          "x": 433,
           "y": 382,
           "standardized": true,
           "type": "text",
@@ -1031,12 +1031,12 @@
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>"
         },
         {
-          "x": 323,
-          "y": 369,
+          "x": 313.5,
+          "y": 354,
           "standardized": true,
           "type": "text",
           "text": "1",
-          "html": "<p><strong style=\"font-size: 14px;\">1</strong></p>"
+          "html": "<p><strong style=\"font-size: 20px;\">1</strong></p>"
         }
       ],
       "connectors": [],
@@ -1059,5 +1059,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-13 09:54:20"
+  "updated": "2026-07-13 11:27:31"
 }
