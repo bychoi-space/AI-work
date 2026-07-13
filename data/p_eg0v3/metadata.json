@@ -777,9 +777,9 @@
       "screenDesc": ""
     },
     "06_Mobile_Design_2_471.html": {
-      "title": "06_Mobile_Design_2_471",
+      "title": "랭킹 카드 1열 UI",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-10T02:38:16.030Z",
+      "updatedAt": "2026-07-13T00:44:52.460Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1055,7 +1055,9 @@
           "html": "<p><strong style=\"font-size: 14px;\">1</strong></p>"
         }
       ],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": "[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
     }
   },
   "assignee": "최범열",
