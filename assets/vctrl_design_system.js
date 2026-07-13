@@ -404,6 +404,7 @@ window.v4DesignSystemScript = `
         c.style.setProperty('--v4-text-adjust-y', adjustY);
 
         if (isRealTextComp || isShapeText) {
+            console.log("[DEBUG_RESIZE] id=" + c.id + " textW=" + textW + " targetW=" + targetW + " isRealTextComp=" + isRealTextComp + " isShapeText=" + isShapeText);
             if (isShapeText && !isRealTextComp) {
                 // Text Shapes must preserve their manual/default dimensions, and only expand (Math.max) 
                 // when the text dimensions actually exceed the container boundaries. 

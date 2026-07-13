@@ -2148,6 +2148,7 @@ window.v4Script = `
             host.appendChild(v);
             document.querySelectorAll('.lf-component').forEach(c => c.classList.remove('selected'));
             v.classList.add('selected');
+            console.log("[DEBUG_INSERT] id=" + v.id + " className=" + v.className + " html=" + v.innerHTML);
             const styles = window._getCompStyles(v);
             notifyParent({ 
                 type: 'LF_COMP_SELECTED', 
