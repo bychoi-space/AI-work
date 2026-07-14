@@ -4,13 +4,16 @@
     "99_Blank_118.html": {
       "title": "99_Blank_118",
       "type": "blank",
-      "updatedAt": "2026-07-14T09:02:54.258Z",
-      "template": "template_blank.html"
+      "updatedAt": "2026-07-14T09:04:06.794Z",
+      "template": "template_blank.html",
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
   "developer": "",
   "period": "2026.07.14(화) ~ 2026.08.06(목)",
   "jira": "LFML-145046",
-  "themeIndex": 5
+  "themeIndex": 5,
+  "updated": "2026-07-14 18:04:06"
 }
