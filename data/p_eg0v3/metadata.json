@@ -1326,7 +1326,7 @@
     "06_Mobile_Design_2_941.html": {
       "title": "06_Mobile_Design_2_941",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-14T01:53:05.852Z",
+      "updatedAt": "2026-07-14T01:55:09.480Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1426,64 +1426,64 @@
           "standardized": true
         },
         {
-          "x": 394.50619544511954,
-          "y": 800.864212601273,
+          "x": 319.556,
+          "y": 648.7,
           "standardized": true,
           "type": "text",
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>"
         },
         {
-          "x": 394.50619544511954,
-          "y": 826.790138527199,
+          "x": 319.556,
+          "y": 669.7,
           "standardized": true,
           "type": "text",
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>"
         },
         {
-          "x": 394.50619544511954,
-          "y": 874.9382866753472,
+          "x": 319.556,
+          "y": 708.7,
           "standardized": true,
           "type": "text",
           "text": "20% 123,000",
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>"
         },
         {
-          "x": 394.50619544511954,
-          "y": 756.1265733506943,
+          "x": 319.556,
+          "y": 612.467,
           "standardized": true,
           "type": "text",
           "text": "1",
           "html": "<p><span style=\"font-size: 30px;\">1</span></p>"
         },
         {
-          "x": 604.382738654996,
-          "y": 800.864212601273,
+          "x": 489.556,
+          "y": 648.7,
           "standardized": true,
           "type": "text",
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>"
         },
         {
-          "x": 604.382738654996,
-          "y": 826.790138527199,
+          "x": 489.556,
+          "y": 669.7,
           "standardized": true,
           "type": "text",
           "text": "Product Name\n\n2줄까지 표현",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>"
         },
         {
-          "x": 604.382738654996,
-          "y": 874.9382866753472,
+          "x": 489.556,
+          "y": 708.7,
           "standardized": true,
           "type": "text",
           "text": "20% 123,000",
           "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>"
         },
         {
-          "x": 604.382738654996,
-          "y": 756.1265733506943,
+          "x": 489.556,
+          "y": 612.467,
           "standardized": true,
           "type": "text",
           "text": "2",
@@ -1509,5 +1509,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-14 10:53:05"
+  "updated": "2026-07-14 10:55:09"
 }
