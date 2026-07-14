@@ -1326,7 +1326,7 @@
     "06_Mobile_Design_2_941.html": {
       "title": "06_Mobile_Design_2_941",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-14T02:17:38.130Z",
+      "updatedAt": "2026-07-14T02:20:25.265Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1493,7 +1493,7 @@
           "text": "Brand Name",
           "html": "<p><strong>Brand Name</strong></p>",
           "x": 783.7,
-          "y": 578,
+          "y": 500,
           "type": "text",
           "standardized": true
         },
@@ -1533,5 +1533,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-14 11:17:38"
+  "updated": "2026-07-14 11:20:25"
 }
