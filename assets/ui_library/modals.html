@@ -1,0 +1,147 @@
+
+        <!-- Edit Screen Modal -->
+        <div id="edit-screen-modal" class="modal-overlay">
+            <div class="modal-card" style="max-width: 450px;">
+                <div class="modal-header">
+                    <h3 class="modal-title">스크린 속성 편집</h3>
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;" id="edit-screen-filename">-</p>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">스크린 명칭 (Display Title)</label>
+                        <input type="text" id="edit-screen-title" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">스크린 유형 (Type)</label>
+                        <select id="edit-screen-type" class="form-input">
+                            <option value="default">미분류</option>
+                            <option value="cover">1. Cover</option>
+                            <option value="architecture">2. Architecture</option>
+                            <option value="plan">3. Plan</option>
+                            <option value="ui">4. Front UI</option>
+                            <option value="mobile-ui">5. Mobile UI 설계</option>
+                            <option value="admin-nbos">6. Admin (NBOS)</option>
+                            <option value="admin-onesphere">7. Admin (Onesphere)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">우측 기본 탭 (Default Tab)</label>
+                        <select id="edit-screen-default-tab" class="form-input">
+                            <option value="editor">에디터 (Editor) - 기본값</option>
+                            <option value="description">디스크립션 (Description)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">설명 (Description)</label>
+                        <textarea id="edit-screen-desc" class="form-input" style="height: 80px; resize: none;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-edit-screen-cancel" class="btn-secondary">취소</button>
+                    <button id="btn-edit-screen-submit" class="btn-primary">변경사항 저장</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Save Progress Overlay -->
+        <div id="save-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 99999; align-items: center; justify-content: center; flex-direction: column; gap: 16px; transition: opacity 0.3s ease;">
+            <div style="width: 48px; height: 48px; border: 4px solid rgba(99, 102, 241, 0.15); border-top-color: #6366f1; border-radius: 50%; animation: lf-spin 1s linear infinite;"></div>
+            <div style="color: #ffffff; font-weight: 600; font-size: 15px; letter-spacing: -0.03em; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">프로젝트를 안전하게 저장하는 중입니다...</div>
+        </div>
+
+        <!-- Add Screen Modal -->
+        <div id="add-screen-modal" class="modal-overlay">
+            <div class="modal-card" style="max-width: 1100px;">
+                <div class="modal-header">
+                    <h3 class="modal-title">새 화면 추가</h3>
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">프로젝트에 새로운 화면을 추가합니다.</p>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">화면 파일명 (영문)</label>
+                        <input type="text" id="new-screen-name" class="form-input" placeholder="예: product_detail">
+                    </div>
+
+                    <div class="modal-section-title">에셋 템플릿 선택</div>
+                    <div class="template-grid" id="template-list">
+                        <div class="template-card" data-template="template_cover.html" data-default-name="00_Cover">
+                            <div class="template-thumb">
+                                <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">auto_stories</span>
+                                <div class="template-check"><span class="material-icons">check_circle</span></div>
+                            </div>
+                            <div class="template-name">프로젝트 커버</div>
+                            <div class="template-badge">Cover</div>
+                        </div>
+                        <div class="template-card" data-template="template_plan.html" data-default-name="02_Plan">
+                            <div class="template-thumb">
+                                <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">event_note</span>
+                                <div class="template-check"><span class="material-icons">check_circle</span></div>
+                            </div>
+                            <div class="template-name">진행 일정</div>
+                            <div class="template-badge">Plan</div>
+                        </div>
+                        <div class="template-card" data-template="template_plan_delivery.html" data-default-name="03_Delivery_Notice">
+                            <div class="template-thumb">
+                                <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">local_shipping</span>
+                                <div class="template-check"><span class="material-icons">check_circle</span></div>
+                            </div>
+                            <div class="template-name">배송예정일 설정</div>
+                            <div class="template-badge">Plan</div>
+                        </div>
+                        <div class="template-card" data-template="template_mobile_ui_1.html" data-default-name="06_Mobile_Design_1">
+                            <div class="template-thumb">
+                                <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">smartphone</span>
+                                <div class="template-check"><span class="material-icons">check_circle</span></div>
+                            </div>
+                            <div class="template-name">Mobile UI (1개 화면)</div>
+                            <div class="template-badge">Mobile</div>
+                        </div>
+                        <div class="template-card" data-template="template_mobile_ui_2.html" data-default-name="06_Mobile_Design_2">
+                            <div class="template-thumb">
+                                <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">phonelink_setup</span>
+                                <div class="template-check"><span class="material-icons">check_circle</span></div>
+                            </div>
+                            <div class="template-name">Mobile UI (2개 화면)</div>
+                            <div class="template-badge">Mobile</div>
+                        </div>
+                        <div class="template-card" data-template="template_mobile_ui_3.html" data-default-name="06_Mobile_Design_3">
+                            <div class="template-thumb">
+                                <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">devices</span>
+                                <div class="template-check"><span class="material-icons">check_circle</span></div>
+                            </div>
+                            <div class="template-name">Mobile UI (3개 화면)</div>
+                            <div class="template-badge">Mobile</div>
+                        </div>
+                        <div class="template-card" data-template="template_onesphere.html" data-default-name="05_Admin_Onesphere">
+                            <div class="template-thumb">
+                                <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">cloud_queue</span>
+                                <div class="template-check"><span class="material-icons">check_circle</span></div>
+                            </div>
+                            <div class="template-name">Admin (OneSphere)</div>
+                            <div class="template-badge">Modern</div>
+                        </div>
+                        <div class="template-card" data-template="template_pc_ui.html" data-default-name="07_PC_Design">
+                            <div class="template-thumb">
+                                <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">desktop_mac</span>
+                                <div class="template-check"><span class="material-icons">check_circle</span></div>
+                            </div>
+                            <div class="template-name">PC UI (Chrome Frame)</div>
+                            <div class="template-badge">PC</div>
+                        </div>
+                        <div class="template-card" data-template="template_blank.html" data-default-name="99_Blank">
+                            <div class="template-thumb">
+                                <span class="material-icons-outlined" style="font-size: 32px; opacity: 0.5;">crop_din</span>
+                                <div class="template-check"><span class="material-icons">check_circle</span></div>
+                            </div>
+                            <div class="template-name">빈 화면</div>
+                            <div class="template-badge">Blank</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-add-screen-cancel" class="btn-secondary">취소</button>
+                    <button id="btn-add-screen-submit" class="btn-primary">화면 생성하기</button>
+                </div>
+            </div>
+        </div>
+    

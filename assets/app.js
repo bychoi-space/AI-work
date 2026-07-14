@@ -543,6 +543,18 @@ async function updateScreenMetadata(project, screenFilename, data, statusCallbac
 async function createScreenFromTemplate(project, screenName, templateName, injectData = {}, statusCallback) {
     try {
         let content = (window.LF_TEMPLATES && window.LF_TEMPLATES[templateName]);
+        if (!content) {
+            try {
+                const response = await fetch(`assets/templates/${templateName}`);
+                if (response.ok) {
+                    content = await response.text();
+                    window.LF_TEMPLATES = window.LF_TEMPLATES || {};
+                    window.LF_TEMPLATES[templateName] = content;
+                }
+            } catch (e) {
+                console.warn("[Templates] Dynamic fetch failed, falling back to window.LF_TEMPLATES:", e);
+            }
+        }
         if (!content) throw new Error("Template not found");
         
         // Inject metadata

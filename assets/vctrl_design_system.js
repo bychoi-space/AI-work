@@ -53,6 +53,40 @@ window.v4DesignSystemScript = `
         try { if (window.bindToggleEvents) window.bindToggleEvents(); } catch(e) { console.error("Error in bindToggleEvents:", e); }
 
         try {
+            // Restore pattern styles for pattern shapes
+            document.querySelectorAll('.v4-shape-pattern-grid').forEach(t => {
+                t.style.setProperty('overflow', 'hidden', 'important');
+                const pType = t.getAttribute('data-pattern-type') || 'grid';
+                console.log("[DesignSystem] Enforcing pattern style type:", pType, "on element:", t);
+                let bgImg = '';
+                let bgSize = '';
+                
+                if (pType === 'grid') {
+                    bgImg = 'linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)), linear-gradient(-45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08))';
+                    bgSize = '12px 12px';
+                } else if (pType === 'dots') {
+                    bgImg = 'radial-gradient(rgba(0, 0, 0, 0.15) 15%, transparent 16%)';
+                    bgSize = '12px 12px';
+                } else if (pType === 'stripes') {
+                    bgImg = 'linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.08) 75%, transparent 75%, transparent)';
+                    bgSize = '12px 12px';
+                } else if (pType === 'horizontal') {
+                    bgImg = 'linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 1px, transparent 1px)';
+                    bgSize = '100% 12px';
+                } else if (pType === 'vertical') {
+                    bgImg = 'linear-gradient(to right, rgba(0, 0, 0, 0.08) 1px, transparent 1px)';
+                    bgSize = '12px 100%';
+                }
+                
+                t.style.setProperty('background-image', bgImg, 'important');
+                t.style.setProperty('background-size', bgSize, 'important');
+                t.style.setProperty('background-color', '#ffffff', 'important');
+            });
+        } catch(e) {
+            console.error("Error in pattern shape style enforcement:", e);
+        }
+
+        try {
             document.querySelectorAll('.v4-admin-group-header').forEach(header => {
                 const container = header.closest('.v4-admin-settings-container');
                 if (container) {

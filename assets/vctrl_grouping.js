@@ -110,6 +110,9 @@ window.GroupingManager = (function() {
          const overlay = document.getElementById('pins-layer');
          if (!overlay) return;
  
+         // Wipes out any prior orphaned marquee boxes from the DOM
+         document.querySelectorAll('.v4-marquee-box').forEach(el => el.remove());
+ 
          isSelecting = true;
          startX = data.x;
          startY = data.y;
@@ -241,6 +244,7 @@ window.GroupingManager = (function() {
                  if (typeof window.updateProperties === 'function') window.updateProperties();
              }
          }
+         document.querySelectorAll('.v4-marquee-box').forEach(el => el.remove());
      };
 
     const getEffectiveSelectedIds = () => {

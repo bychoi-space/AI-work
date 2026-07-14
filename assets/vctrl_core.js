@@ -70,6 +70,7 @@ window.loadScreen = async function(fileName) {
         (window.v4ObjectShapeScript || '') + '\n' +
         (window.v4ObjectTableScript || '') + '\n' +
         (window.v4ObjectConnectorScript || '') + '\n' +
+        (window.v4ConnectorScript || '') + '\n' +
         (window.v4Script || '') + '\n</script>';
 
     // Forcefully strip out any existing inlined scripts of our engine to avoid duplicates or stale code
@@ -81,8 +82,8 @@ window.loadScreen = async function(fileName) {
         'V4UndoManager', 'reorderAllPins', 'v4Script', 'v4ShortcutsScript',
         'v4DesignSystemScript', 'v4TextMeasurerScript', 'v4UIAtomsScript',
         'v4CommonScript', 'v4ObjectTextScript', 'v4ObjectShapeScript',
-        'v4ObjectTableScript', 'v4ObjectConnectorScript', 'LF_GROUP_SELECTED',
-        'GroupingManager'
+        'v4ObjectTableScript', 'v4ObjectConnectorScript', 'v4ConnectorScript',
+        'LF_GROUP_SELECTED', 'GroupingManager'
     ];
     finalContent = finalContent.replace(scriptRegex, (match, scriptBody) => {
         const shouldStrip = keywords.some(keyword => scriptBody.includes(keyword));
@@ -576,6 +577,14 @@ window.MessageHub = {
     },
 
     init() {
+        // Global mouseup handler to release active drag/marquee states when releasing mouse outside of iframe
+        window.addEventListener('mouseup', () => {
+            const DOM = window.DOM;
+            if (DOM && DOM.iframe && DOM.iframe.contentWindow) {
+                DOM.iframe.contentWindow.postMessage({ type: 'LF_PARENT_MOUSEUP' }, '*');
+            }
+        });
+
         window.addEventListener('message', (e) => {
             const data = e.data;
             if (!data || !data.type) return;

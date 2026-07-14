@@ -8,6 +8,41 @@ console.log("%c [VCTRL INSPECTOR] Initializing UI Controller... ", "background: 
 // 1. Central DOM Registry
 window.get = (id) => document.getElementById(id) || { style: {}, classList: { add:() => {}, remove:() => {}, toggle:() => {} }, innerText: '', innerHTML: '', onclick: null, oninput: null };
 
+
+window.rebindInspectorDOM = function() {
+    console.log("[VCTRL INSPECTOR] Rebinding dynamic UI components selectors...");
+    const get = (id) => document.getElementById(id) || { style: {}, classList: { add:() => {}, remove:() => {}, toggle:() => {} }, innerText: '', innerHTML: '', onclick: null, oninput: null };
+    
+    DOM.textPropSection = get('text-editor-section');
+    DOM.tablePropSection = get('table-inspector-section');
+    DOM.shapePropSection = get('shape-inspector-section');
+    DOM.linePropSection = get('line-editor-section');
+    DOM.iconPropSection = get('icon-inspector-section');
+    DOM.checkboxRadioPropSection = get('checkbox-radio-inspector-section');
+    DOM.textboxTextareaPropSection = get('textbox-textarea-inspector-section');
+    DOM.searchbarPropSection = get('searchbar-inspector-section');
+    DOM.stepperPropSection = get('stepper-inspector-section');
+    DOM.selectboxPropSection = get('selectbox-inspector-section');
+    DOM.fileuploadPropSection = get('fileupload-inspector-section');
+    DOM.alertPropSection = get('alert-inspector-section');
+    DOM.buttonPropSection = get('button-inspector-section');
+    DOM.datepickerPropSection = get('datepicker-inspector-section');
+    DOM.datePickerPropSection = get('datepicker-inspector-section');
+    DOM.togglePropSection = get('toggle-inspector-section');
+    DOM.accordionPropSection = get('accordion-inspector-section');
+    DOM.gridPropSection = get('grid-inspector-section');
+    DOM.adminSettingsPropSection = get('admin-settings-inspector-section');
+
+    DOM.textColorPicker = get('text-color-picker');
+    DOM.selectionBar = get('selection-actions-bar');
+    DOM.selectionCount = get('selection-count');
+    DOM.selectionNumber = get('selection-number');
+    DOM.selectionLabel = get('selection-label');
+    DOM.btnGroup = get('btn-group-action');
+    DOM.btnUngroup = get('btn-ungroup-action');
+    DOM.btnAddToMolecules = get('btn-add-molecules-action');
+};
+
 window.DOM = {
     iframe: get('main-iframe'),
     artboardWrapper: get('artboard-wrapper'),
@@ -358,6 +393,27 @@ const ProjectMetadataManager = {
                     DOM.textPropSection.style.display = 'block';
                 }
 
+                // Pattern Type group vs BG Color/Opacity groups
+                const patternGroup = document.getElementById('shape-pattern-type-group');
+                const bgColorGroup = document.getElementById('shape-bg-color-group');
+                const bgOpacityGroup = document.getElementById('shape-bg-opacity-group');
+                const isPattern = (compStyles.shapeType === 'pattern');
+                
+                if (patternGroup) {
+                    patternGroup.style.display = isPattern ? 'block' : 'none';
+                    if (isPattern && compStyles.patternType) {
+                        if (typeof window._syncPatternVisualBtns === 'function') {
+                            window._syncPatternVisualBtns(compStyles.patternType);
+                        }
+                    }
+                }
+                if (bgColorGroup) {
+                    bgColorGroup.style.display = isPattern ? 'none' : 'grid';
+                }
+                if (bgOpacityGroup) {
+                    bgOpacityGroup.style.display = isPattern ? 'none' : 'block';
+                }
+
                 // Show/hide Arrow direction config group & Corner style group
                 const arrowGroup = document.getElementById('shape-arrow-direction-group');
                 const cornerGroup = document.getElementById('shape-corner-style-group');
@@ -580,7 +636,11 @@ const ProjectMetadataManager = {
                 ];
                 sections.forEach(sec => {
                     if (sec && sec.style.display === 'block') {
-                        floatingBody.appendChild(sec);
+                        if (sec instanceof Node) {
+                            floatingBody.appendChild(sec);
+                        } else {
+                            console.warn("[VCTRL INSPECTOR] Skipped appendChild: sec is not a valid DOM Node", sec);
+                        }
                     }
                 });
             }
