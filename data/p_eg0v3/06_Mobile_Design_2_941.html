@@ -128,18 +128,9 @@ th.v4-editable-cell:focus, td.v4-editable-cell:focus { outline-offset: -2px !imp
 .lf-rv-my { background-position: 100% 0% !important; }
 .v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; object-fit: contain; }
-.v4-shape-triangle { clip-path: none !important; border: none !important; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
-.v4-shape-triangle[data-direction="up"] { transform: rotate(0deg) !important; }
-.v4-shape-triangle[data-direction="right"] { transform: rotate(90deg) !important; }
-.v4-shape-triangle[data-direction="down"] { transform: rotate(180deg) !important; }
-.v4-shape-triangle[data-direction="left"] { transform: rotate(270deg) !important; }
-
-/* Counter-rotate text elements to keep them horizontal and clean */
-.v4-shape-triangle .v4-editable-cell, .v4-shape-triangle .v4-shape-text-overlay { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
-.v4-shape-triangle[data-direction="up"] .v4-editable-cell, .v4-shape-triangle[data-direction="up"] .v4-shape-text-overlay { transform: rotate(0deg) !important; }
-.v4-shape-triangle[data-direction="right"] .v4-editable-cell, .v4-shape-triangle[data-direction="right"] .v4-shape-text-overlay { transform: rotate(-90deg) !important; }
-.v4-shape-triangle[data-direction="down"] .v4-editable-cell, .v4-shape-triangle[data-direction="down"] .v4-shape-text-overlay { transform: rotate(-180deg) !important; }
-.v4-shape-triangle[data-direction="left"] .v4-editable-cell, .v4-shape-triangle[data-direction="left"] .v4-shape-text-overlay { transform: rotate(-270deg) !important; }
+.v4-shape-rect { border-radius: 8px; }
+.v4-shape-circle { border-radius: 50%; }
+.v4-shape-triangle { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); border: none !important; }
 .v4-shape-diamond { border: none !important; }
 .v4-shape-wave { border: none !important; }
 .v4-shape-pattern-grid { 
@@ -444,8 +435,9 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
                     <polygon points="50,1 1,99 99,99" style="fill: rgb(203, 213, 225); stroke: transparent; stroke-width: 1.6; vector-effect: non-scaling-stroke;" stroke-width="1.6"></polygon>
                 </svg>
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 10px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; z-index: 2; position: relative;"><p><br></p></div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><script id="v4-inlined-script">
-// Cache Buster Timestamp: 1784007363769
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
+<script id="v4-inlined-script">
+// Cache Buster Timestamp: 1784007910310
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -1757,12 +1749,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         try { if (window.bindToggleEvents) window.bindToggleEvents(); } catch(e) { console.error("Error in bindToggleEvents:", e); }
 
         try {
-            // Restore pattern styles for pattern shapes with strict Value Comparison Guard
+            // Restore pattern styles for pattern shapes
             document.querySelectorAll('.v4-shape-pattern-grid').forEach(t => {
-                if (t.style.overflow !== 'hidden') {
-                    t.style.setProperty('overflow', 'hidden', 'important');
-                }
+                t.style.setProperty('overflow', 'hidden', 'important');
                 const pType = t.getAttribute('data-pattern-type') || 'grid';
+                console.log("[DesignSystem] Enforcing pattern style type:", pType, "on element:", t);
                 let bgImg = '';
                 let bgSize = '';
                 
@@ -1783,22 +1774,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     bgSize = '12px 100%';
                 }
                 
-                // Compare and update only if values actually changed to prevent infinite MutationObserver recursive loops
-                const curBgImg = t.style.backgroundImage || '';
-                const curBgSize = t.style.backgroundSize || '';
-                const curBgColor = t.style.backgroundColor || '';
-                
-                const cleanImg = (str) => str.replace(/s+/g, '').replace(/['"]/g, '');
-                if (cleanImg(curBgImg) !== cleanImg(bgImg)) {
-                    t.style.setProperty('background-image', bgImg, 'important');
-                    console.log("[DesignSystem] Enforcing pattern style type:", pType, "on element:", t);
-                }
-                if (curBgSize !== bgSize) {
-                    t.style.setProperty('background-size', bgSize, 'important');
-                }
-                if (curBgColor !== 'rgb(255, 255, 255)' && curBgColor !== '#ffffff' && curBgColor !== 'white') {
-                    t.style.setProperty('background-color', '#ffffff', 'important');
-                }
+                t.style.setProperty('background-image', bgImg, 'important');
+                t.style.setProperty('background-size', bgSize, 'important');
+                t.style.setProperty('background-color', '#ffffff', 'important');
             });
         } catch(e) {
             console.error("Error in pattern shape style enforcement:", e);
@@ -2659,14 +2637,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 .filter(c => c && c !== 'selected' && c !== 'dragging-now')
                 .join(' ');
 
-            // Collect all custom data attributes and id for synchronization
-            const attrs = {};
-            Array.from(el.attributes).forEach(attr => {
-                if (attr.name.startsWith('data-') || attr.name === 'id') {
-                    attrs[attr.name] = attr.value;
-                }
-            });
-
             clipboardData.push({
                 html: el.innerHTML,
                 className: cleanClasses,
@@ -2675,8 +2645,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 top: parseFloat(el.style.top) || 0,
                 isGroup: el.classList.contains('lf-group'),
                 isPinMarker: el.classList.contains('pin-marker'),
-                isTextMarker: el.classList.contains('text-marker'),
-                attributes: attrs
+                isTextMarker: el.classList.contains('text-marker')
             });
         });
         v4Clipboard = clipboardData;
@@ -2709,17 +2678,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             v.style.top = (item.top + offset) + 'px';
             v.innerHTML = item.html;
 
-            // Restore all cloned data attributes to the new container
-            if (item.attributes) {
-                Object.keys(item.attributes).forEach(attrName => {
-                    if (attrName !== 'id') { // Skip binding the old parent container ID
-                        v.setAttribute(attrName, item.attributes[attrName]);
-                    }
-                });
-            }
-
             // Regenerate IDs of all nested child components to prevent duplicate ID issues
-            const idMap = {};
             const childrenWithId = v.querySelectorAll('[id]');
             childrenWithId.forEach(child => {
                 const oldId = child.id;
@@ -2727,25 +2686,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 if (child.classList.contains('pin-marker') || oldId.startsWith('v4-pin-')) {
                     prefix = 'v4-pin-';
                 }
-                const uniqueSuffix = Date.now() + Math.floor(Math.random() * 1000000) + Math.floor(Math.random() * 1000);
+                const uniqueSuffix = Date.now() + Math.floor(Math.random() * 1000000);
                 const newChildId = prefix + uniqueSuffix;
                 child.id = newChildId;
-                idMap[oldId] = newChildId;
             });
-
-            // If this is a group component, remap children IDs inside its metadata attributes
-            if (item.isGroup) {
-                const rawChildren = v.getAttribute('data-children');
-                if (rawChildren) {
-                    try {
-                        const childIds = JSON.parse(rawChildren);
-                        const newChildIds = childIds.map(oldId => idMap[oldId] || oldId);
-                        v.setAttribute('data-children', JSON.stringify(newChildIds));
-                    } catch (e) {
-                        console.warn("[Clipboard] Failed to remap data-children inside cloned group:", e);
-                    }
-                }
-            }
 
             v.querySelectorAll('.lf-component').forEach(child => child.classList.remove('selected'));
             v.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
@@ -3849,7 +3793,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             y: parseFloat(c.style.top) || 0,
             shapeType: shape ? (shape.classList.contains('v4-shape-pattern-grid') ? 'pattern' : (shape.classList.contains('v4-shape-rect') ? 'rect' : (shape.classList.contains('v4-shape-circle') ? 'circle' : (shape.classList.contains('v4-shape-triangle') ? 'triangle' : (shape.classList.contains('v4-shape-diamond') ? 'diamond' : (shape.classList.contains('v4-shape-arrow') ? 'arrow' : '')))))) : '',
             arrowDir: shape && shape.classList.contains('v4-shape-arrow') ? (shape.getAttribute('data-arrow-dir') || 'right') : '',
-            direction: shape && shape.classList.contains('v4-shape-triangle') ? (shape.getAttribute('data-direction') || 'up') : '',
             patternType: shape && shape.classList.contains('v4-shape-pattern-grid') ? (shape.getAttribute('data-pattern-type') || 'grid') : '',
             isTable: !!table && !isGrid,
             isShape: !!shape,
@@ -5463,30 +5406,24 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             markDirty();
         }
         else if (d.type === 'LF_UPDATE_ARROW_DIRECTION') {
-            console.log("[V4 Iframe] Received LF_UPDATE_ARROW_DIRECTION msg:", d);
             const s = document.querySelector('.lf-component.selected'); 
-            console.log("[V4 Iframe] Selected component s:", s);
             if (!s) return;
-            const shape = s.querySelector('.v4-shape.v4-shape-arrow, .v4-shape.v4-shape-triangle');
-            console.log("[V4 Iframe] Found shape inside s:", shape);
+            const shape = s.querySelector('.v4-shape.v4-shape-arrow');
             if (!shape) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
-            const dir = d.direction || 'up';
-            if (shape.classList.contains('v4-shape-arrow')) {
-                const path = shape.querySelector('.v4-arrow-path');
-                if (path) {
-                    shape.setAttribute('data-arrow-dir', dir);
-                    const PATHS = {
-                        right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
-                        left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
-                        up: 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z',
-                        down: 'M 30,0 L 30,60 L 10,60 L 50,100 L 90,60 L 70,60 L 70,0 Z'
-                    };
-                    path.setAttribute('d', PATHS[dir] || PATHS.right);
-                }
-            } else if (shape.classList.contains('v4-shape-triangle')) {
-                shape.setAttribute('data-direction', dir);
+            const path = shape.querySelector('.v4-arrow-path');
+            if (path) {
+                const dir = d.direction || 'right';
+                shape.setAttribute('data-arrow-dir', dir);
+                
+                const PATHS = {
+                    right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
+                    left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
+                    up: 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z',
+                    down: 'M 30,0 L 30,60 L 10,60 L 50,100 L 90,60 L 70,60 L 70,0 Z'
+                };
+                path.setAttribute('d', PATHS[dir] || PATHS.right);
             }
             markDirty();
         }
@@ -7430,4 +7367,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 })();
 
 </script>
-</body></html>
+<div id="v4-comp-1784007915718" class="lf-component" style="position: absolute; top: 188px; left: 78px; z-index: 1000; transform: none; width: 200px; height: 40px;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(67, 56, 202); border-color: transparent; border-top-style: ; border-width: 1.6px !important; border-right-style: ; border-bottom-style: ; border-left-style: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 100px !important; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><p><span style="font-size: 14px; color: rgb(255, 255, 255);">브랜드 랭킹 A 타입</span></p></div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1784007966173298" class="lf-component" style="position: absolute; top: 188px; left: 1160.7px; z-index: 1000; transform: none; width: 200px; height: 40px;">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(67, 56, 202); border-color: transparent; border-top-style: ; border-width: 1.6px !important; border-right-style: ; border-bottom-style: ; border-left-style: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 100px !important; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><p><span style="color: rgb(255, 255, 255); font-size: 14px;">브랜드 랭킹 B 타입</span></p></div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></body></html>
