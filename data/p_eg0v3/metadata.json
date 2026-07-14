@@ -1326,7 +1326,7 @@
     "06_Mobile_Design_2_941.html": {
       "title": "06_Mobile_Design_2_941",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-14T05:24:31.753Z",
+      "updatedAt": "2026-07-14T05:26:07.815Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1492,138 +1492,117 @@
         {
           "text": "Product Name\n\n2줄까지 표현...",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현...</span></p>",
-          "x": 689.6573589994393,
-          "y": 308.00803367290274,
+          "x": 340.003,
+          "y": 100,
           "type": "text",
           "standardized": true
         },
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"font-size: 12px; color: rgb(230, 0, 0);\">20%</strong><strong style=\"font-size: 12px;\"> 123,000 </strong></p>",
-          "x": 690.2782803224984,
-          "y": 330.36118235401733,
+          "x": 341.003,
+          "y": 136,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Product Name\n\n2줄까지 표현...",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현...</span></p>",
-          "x": 620.7350542418432,
-          "y": 308.00803367290274,
+          "x": 0,
+          "y": 0,
           "type": "text",
           "standardized": true
         },
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"font-size: 12px; color: rgb(230, 0, 0);\">20%</strong><strong style=\"font-size: 12px;\"> 123,000 </strong></p>",
-          "x": 621.3559755649022,
-          "y": 330.36118235401733,
+          "x": 1,
+          "y": 36,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Product Name\n\n2줄까지 표현...",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현...</span></p>",
-          "x": 555.2278546591023,
-          "y": 308.00803367290274,
+          "x": 0,
+          "y": -4,
           "type": "text",
           "standardized": true
         },
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"font-size: 12px; color: rgb(230, 0, 0);\">20%</strong><strong style=\"font-size: 12px;\"> 123,000 </strong></p>",
-          "x": 555.8487759821614,
-          "y": 330.36118235401733,
+          "x": 1,
+          "y": 32,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Product Name\n\n2줄까지 표현...",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현...</span></p>",
-          "x": 484.4583620226471,
-          "y": 308.00803367290274,
+          "x": 0,
+          "y": 0,
           "type": "text",
           "standardized": true
         },
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"font-size: 12px; color: rgb(230, 0, 0);\">20%</strong><strong style=\"font-size: 12px;\"> 123,000 </strong></p>",
-          "x": 485.07928334570624,
-          "y": 330.36118235401733,
+          "x": 1,
+          "y": 36,
           "type": "text",
           "standardized": true
         },
         {
           "text": "가방/잡화",
           "html": "<p>가방/잡화</p>",
-          "x": 599.0028079347727,
-          "y": 393.819349150269,
+          "x": 194,
+          "y": 238.2,
           "type": "text",
           "standardized": true
         },
         {
           "text": "슈즈",
           "html": "<p>슈즈</p>",
-          "x": 648.055630354476,
-          "y": 393.819349150269,
+          "x": 273.003,
+          "y": 238.2,
           "type": "text",
           "standardized": true
         },
         {
           "text": "골프",
           "html": "<p>골프</p>",
-          "x": 672.5820226153126,
-          "y": 393.819349150269,
+          "x": 312.503,
+          "y": 238.2,
           "type": "text",
           "standardized": true
         },
         {
           "text": "남성의류",
           "html": "<p>남성의류</p>",
-          "x": 556.7801579667502,
-          "y": 393.819349150269,
+          "x": 126,
+          "y": 238.2,
           "type": "text",
           "standardized": true
         },
         {
           "text": "여성의류",
           "html": "<p><span style=\"font-size: 14px;\">여성의류</span></p>",
-          "x": 511.4529013834319,
-          "y": 393.819349150269,
+          "x": 53,
+          "y": 238.2,
           "type": "text",
           "standardized": true
         },
         {
           "text": "전체",
           "html": "<p><strong>전체</strong></p>",
-          "x": 484.13236316882904,
-          "y": 393.819349150269,
+          "x": 9,
+          "y": 238.2,
           "type": "text",
           "standardized": true
         }
       ],
-      "connectors": [
-        {
-          "id": "conn_1784006436106",
-          "type": "straight",
-          "start": {
-            "x": 778.7,
-            "y": 386,
-            "targetId": null,
-            "side": null
-          },
-          "end": {
-            "x": 1118.7,
-            "y": 386,
-            "targetId": null,
-            "side": null
-          },
-          "style": {
-            "stroke": "#06b6d4",
-            "strokeWidth": 1.6
-          }
-        }
-      ]
+      "connectors": []
     }
   },
   "assignee": "최범열",
@@ -1642,5 +1621,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-14 14:24:31"
+  "updated": "2026-07-14 14:26:07"
 }
