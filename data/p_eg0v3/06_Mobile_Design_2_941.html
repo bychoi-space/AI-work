@@ -448,7 +448,7 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
 
 <div id="v4-comp-1784007915718" class="lf-component" style="position: absolute; top: 188px; left: 78px; z-index: 1000; transform: none; width: 200px; height: 40px;" data-resized="true">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(67, 56, 202); border-color: transparent; border-top-style: ; border-width: 1.6px !important; border-right-style: ; border-bottom-style: ; border-left-style: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 100px !important; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><p><span style="font-size: 14px; color: rgb(255, 255, 255);">브랜드 랭킹 A 타입</span></p></div>
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><p><span style="color: rgb(255, 255, 255); font-size: 14px;">브랜드 랭킹 A 타입 Edited</span></p></div>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1784007966173298" class="lf-component" style="position: absolute; top: 188px; left: 1160.7px; z-index: 1000; transform: none; width: 200px; height: 40px;">
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(67, 56, 202); border-color: transparent; border-top-style: ; border-width: 1.6px !important; border-right-style: ; border-bottom-style: ; border-left-style: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 100px !important; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;">
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><p><span style="color: rgb(255, 255, 255); font-size: 14px;">브랜드 랭킹 B 타입</span></p></div>
@@ -464,8 +464,9 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
                     <path class="v4-arrow-path" d="M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z" style="fill: rgb(255, 255, 255); stroke: transparent; stroke-width: 1.6; vector-effect: non-scaling-stroke;" stroke-width="1.6"></path>
                 </svg>
                 <div contenteditable="true" class="v4-editable-cell" style="width: 50%; height: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; outline: none; font-weight: 700; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; font-size: 14px; z-index: 2; position: relative;"><p><br></p></div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><script id="v4-inlined-script">
-// Cache Buster Timestamp: 1784008421580
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
+<script id="v4-inlined-script">
+// Cache Buster Timestamp: 1784017570416
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -3480,27 +3481,190 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 
 (function() {
-    // --- Console Log Auto-Clearing Guard inside iframe ---
-    (function() {
-        let logCount = 0;
-        const originalLog = console.log;
-        console.log = function(...args) {
-            logCount++;
-            if (logCount > 150) {
-                console.clear();
-                originalLog("[LF Editor Iframe] Auto-cleared console logs after reaching threshold.");
-                logCount = 0;
-            }
-            originalLog.apply(console, args);
-        };
-    })();
+    let isDragging = false;
+    let isResizing = false;
+    let startX = 0, startY = 0, startW = 0, startH = 0, startTop = 0, startLeft = 0;
+    let startRect = null;
+    let groupChildrenStart = null;
+    
+    const notifyParent = (data) => { if (window.parent) window.parent.postMessage(data, '*'); };
+    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
 
-    console.log("[V4 Iframe] Script initialized (V144_SHORTCUT_SAVE_FIX)");
-    let isDragging = false, isResizing = false, isConnectorDragging = false, activeEl = null;
-    let isDrawingConnector = false, startComponentId = null, startPortSide = null;
-    let connDragStartX = 0, connDragStartY = 0, hoveredPort = null;
+    window.V4DragResizeEngine = {
+        get isDragging() { return isDragging; },
+        set isDragging(v) { isDragging = v; },
+        get isResizing() { return isResizing; },
+        set isResizing(v) { isResizing = v; },
+        
+        handleMouseDown: function(e, h, r, d, c) {
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            isDragging = true;
+            window.activeEl = c;
+            startX = e.clientX;
+            startY = e.clientY;
+            startTop = parseInt(window.activeEl.style.top) || 0;
+            startLeft = parseInt(window.activeEl.style.left) || 0;
+            startRect = window.activeEl.getBoundingClientRect();
+            notifyParent({ type: 'LF_SNAP_START' });
+            if (h || e.target.closest('.v4-editable-cell')) e.preventDefault();
+            document.querySelectorAll('.lf-component.selected').forEach(s => s.classList.add('dragging-now'));
+        },
+        
+        handleMouseMove: function(e) {
+            if (isDragging && window.activeEl) {
+                let dx = e.clientX - startX;
+                let dy = e.clientY - startY;
+
+                if (e.shiftKey) {
+                    if (Math.abs(dx) >= Math.abs(dy)) dy = 0;
+                    else dx = 0;
+                }
+
+                const scale = (window.parent?.state?.transform?.scale) || 1;
+                const logicalX = startLeft + dx / scale;
+                const logicalY = startTop + dy / scale;
+
+                notifyParent({ type: 'LF_SNAP_REQUEST', x: logicalX, y: logicalY, w: window.activeEl.offsetWidth, h: window.activeEl.offsetHeight });
+                markDirty();
+            }
+            else if (isResizing && window.activeEl) {
+                const scale = (window.parent?.state?.transform?.scale) || 1;
+                const nw = Math.max(10, startW + (e.clientX - startX) / scale);
+                const nh = Math.max(10, startH + (e.clientY - startY) / scale);
+                
+                const scaleX = nw / startW;
+                const scaleY = nh / startH;
+                
+                window.activeEl.style.width = nw + 'px';
+                window.activeEl.style.height = nh + 'px';
+                
+                if (groupChildrenStart) {
+                    groupChildrenStart.forEach(child => {
+                        const newL = child.left * scaleX;
+                        const newT = child.top * scaleY;
+                        const newW = child.width * scaleX;
+                        const newH = child.height * scaleY;
+                        
+                        child.el.style.left = newL + 'px';
+                        child.el.style.top = newT + 'px';
+                        child.el.style.width = newW + 'px';
+                        child.el.style.height = newH + 'px';
+                        child.el.setAttribute('data-resized', 'true');
+                        
+                        // Rescale inner elements inside grouped atoms
+                        const innerBox = child.el.querySelector('.v4-checkbox, .v4-radio');
+                        if (innerBox) {
+                            const isTextEnabled = child.el.querySelector('.v4-checkbox-container, .v4-radio-container')?.getAttribute('data-text-enabled') !== 'false';
+                            if (!isTextEnabled) {
+                                innerBox.style.width = newW + 'px';
+                                innerBox.style.height = newH + 'px';
+                            }
+                        }
+                        const selectbox = child.el.querySelector('.v4-selectbox-header');
+                        if (selectbox) selectbox.style.width = '100%';
+                        const inputWrap = child.el.querySelector('.v4-textbox-container, .v4-textarea-container');
+                        if (inputWrap) {
+                            inputWrap.style.width = '100%';
+                            inputWrap.style.height = '100%';
+                        }
+                        const btn = child.el.querySelector('.v4-custom-btn, .v4-btn-container');
+                        if (btn) {
+                            btn.style.width = '100%';
+                            btn.style.height = '100%';
+                        }
+                        
+                        window.updateHandles(child.el);
+                    });
+                }
+                
+                window.updateHandles(window.activeEl);
+                markDirty();
+                notifyParent({ type: 'LF_COMP_RESIZED', w: nw, h: nh });
+            }
+        },
+        
+        handleMouseUp: function() {
+            if (isDragging && window.activeEl) {
+                notifyParent({ type: 'LF_SNAP_END' });
+                
+                if (window.activeEl.classList.contains('text-marker') || window.activeEl.classList.contains('pin-marker')) {
+                    const idx = parseInt(window.activeEl.id.replace('v4-pin-', ''));
+                    notifyParent({
+                        type: 'LF_UPDATE_PIN_POS',
+                        index: idx,
+                        x: parseFloat(window.activeEl.style.left) || 0,
+                        y: parseFloat(window.activeEl.style.top) || 0,
+                        standardized: true
+                    });
+                }
+                if (window.activeEl.classList.contains('lf-group')) {
+                    const scale = (window.parent && window.parent.state && window.parent.state.transform) ? window.parent.state.transform.scale : 1;
+                    const hostRect = document.body.getBoundingClientRect();
+                    window.activeEl.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
+                        const idx = parseInt(child.id.replace('v4-pin-', ''));
+                        if (!isNaN(idx)) {
+                            const childRect = child.getBoundingClientRect();
+                            const absX = (childRect.left - hostRect.left) / scale;
+                            const absY = (childRect.top - hostRect.top) / scale;
+                            notifyParent({
+                                type: 'LF_UPDATE_PIN_POS',
+                                index: idx,
+                                x: absX,
+                                y: absY,
+                                standardized: true
+                            });
+                        }
+                    });
+                }
+            }
+            if (isResizing && window.activeEl) {
+                window.activeEl.setAttribute('data-resized', 'true');
+                if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
+            }
+            document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
+            isDragging = false;
+            isResizing = false;
+            window.activeEl = null;
+            groupChildrenStart = null;
+        },
+        
+        startResize: function(e, r) {
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            isResizing = true;
+            window.activeEl = r.parentElement;
+            startX = e.clientX;
+            startY = e.clientY;
+            startW = window.activeEl.offsetWidth;
+            startH = window.activeEl.offsetHeight;
+            
+            if (window.activeEl.classList.contains('lf-group')) {
+                groupChildrenStart = Array.from(window.activeEl.querySelectorAll('.lf-component'))
+                    .map(child => ({
+                        el: child,
+                        left: parseFloat(child.style.left) || 0,
+                        top: parseFloat(child.style.top) || 0,
+                        width: parseFloat(child.style.width) || child.offsetWidth || 0,
+                        height: parseFloat(child.style.height) || child.offsetHeight || 0
+                    }));
+            } else {
+                groupChildrenStart = null;
+            }
+            e.preventDefault();
+        }
+    };
+})();
+
+
+(function() {
+    let isDrawingConnector = false;
+    let startComponentId = null;
+    let startPortSide = null;
+    let connDragStartX = 0, connDragStartY = 0;
+    let hoveredPort = null;
     let tempSvg = null;
-    let isDraggingLine = false, activeLineId = null, startLineCoords = null;
+    
+    const notifyParent = (data) => { if (window.parent) window.parent.postMessage(data, '*'); };
+    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
 
     function drawTempLine(x1, y1, x2, y2) {
         if (!tempSvg) {
@@ -3521,6 +3685,110 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             tempSvg = null;
         }
     }
+
+    window.V4PortConnectorEngine = {
+        get isDrawingConnector() { return isDrawingConnector; },
+        set isDrawingConnector(v) { isDrawingConnector = v; },
+        
+        startConnectorDragFromPort: function(comp, side, e) {
+            isDrawingConnector = true;
+            document.body.classList.add('drawing-line-active');
+            startComponentId = comp.id;
+            startPortSide = side;
+            
+            const compLeft = parseFloat(comp.style.left) || 0;
+            const compTop = parseFloat(comp.style.top) || 0;
+            const compWidth = comp.offsetWidth;
+            const compHeight = comp.offsetHeight;
+            
+            if (side === 'top') { connDragStartX = compLeft + compWidth / 2; connDragStartY = compTop; }
+            else if (side === 'bottom') { connDragStartX = compLeft + compWidth / 2; connDragStartY = compTop + compHeight; }
+            else if (side === 'left') { connDragStartX = compLeft; connDragStartY = compTop + compHeight / 2; }
+            else if (side === 'right') { connDragStartX = compLeft + compWidth; connDragStartY = compTop + compHeight / 2; }
+        },
+        
+        handleMouseMove: function(e) {
+            if (!isDrawingConnector) return;
+            const rect = document.body.getBoundingClientRect();
+            const scale = (window.parent?.state?.transform?.scale) || 1;
+            const logicalX = (e.clientX - rect.left) / scale;
+            const logicalY = (e.clientY - rect.top) / scale;
+            
+            drawTempLine(connDragStartX, connDragStartY, logicalX, logicalY);
+            
+            // Toggle near-connector class based on distance inside iframe
+            document.querySelectorAll('.lf-component').forEach(comp => {
+                if (comp.id === startComponentId) return;
+                const r = comp.getBoundingClientRect();
+                const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
+                const dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 100) comp.classList.add('near-connector');
+                else comp.classList.remove('near-connector');
+            });
+
+            const targetPort = e.target.closest('.lf-connector-port');
+            if (targetPort && targetPort.parentElement.id !== startComponentId) {
+                if (hoveredPort && hoveredPort !== targetPort) {
+                    hoveredPort.style.transform = '';
+                    hoveredPort.style.background = '#00e5ff';
+                }
+                hoveredPort = targetPort;
+                hoveredPort.style.transform = 'scale(1.8)';
+                hoveredPort.style.background = '#fb7185';
+            } else {
+                if (hoveredPort) {
+                    hoveredPort.style.transform = '';
+                    hoveredPort.style.background = '#00e5ff';
+                    hoveredPort = null;
+                }
+            }
+        },
+        
+        handleMouseUp: function() {
+            if (!isDrawingConnector) return;
+            isDrawingConnector = false;
+            document.body.classList.remove('drawing-line-active');
+            document.querySelectorAll('.lf-component').forEach(comp => comp.classList.remove('near-connector'));
+            removeTempLine();
+            if (hoveredPort) {
+                const targetComponentId = hoveredPort.parentElement.id;
+                const targetPortSide = hoveredPort.getAttribute('data-side');
+                hoveredPort.style.transform = '';
+                hoveredPort.style.background = '#00e5ff';
+                hoveredPort = null;
+                
+                notifyParent({
+                    type: 'LF_CREATE_CONNECTOR',
+                    startId: startComponentId,
+                    startSide: startPortSide,
+                    endId: targetComponentId,
+                    endSide: targetPortSide
+                });
+            }
+        }
+    };
+})();
+
+
+(function() {
+    // --- Console Log Auto-Clearing Guard inside iframe ---
+    (function() {
+        let logCount = 0;
+        const originalLog = console.log;
+        console.log = function(...args) {
+            logCount++;
+            if (logCount > 150) {
+                console.clear();
+                originalLog("[LF Editor Iframe] Auto-cleared console logs after reaching threshold.");
+                logCount = 0;
+            }
+            originalLog.apply(console, args);
+        };
+    })();
+
+    let isDraggingLine = false, activeLineId = null, startLineCoords = null;
 
     window.calculatePathData = (c, s, e) => {
         if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
@@ -4078,37 +4346,14 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             notifyParent({ type: 'LF_DESELECT' });
         }
         if (r) { 
-            if (window.V4UndoManager) window.V4UndoManager.saveState();
-            isResizing = true; 
-            activeEl = r.parentElement; 
-            startX = e.clientX; startY = e.clientY; 
-            startW = activeEl.offsetWidth; startH = activeEl.offsetHeight; 
-            
-            if (activeEl.classList.contains('lf-group')) {
-                groupChildrenStart = Array.from(activeEl.children)
-                    .filter(child => child.classList.contains('lf-component'))
-                    .map(child => ({
-                        el: child,
-                        left: parseFloat(child.style.left) || 0,
-                        top: parseFloat(child.style.top) || 0,
-                        width: parseFloat(child.style.width) || child.offsetWidth || 0,
-                        height: parseFloat(child.style.height) || child.offsetHeight || 0
-                    }));
-            } else {
-                groupChildrenStart = null;
+            if (window.V4DragResizeEngine) {
+                window.V4DragResizeEngine.startResize(e, r);
             }
-            
-            e.preventDefault(); 
         }
         else if (h || (c && !e.target.closest('td, th'))) { 
-            if (window.V4UndoManager) window.V4UndoManager.saveState();
-            isDragging = true; activeEl = c; 
-            startX = e.clientX; startY = e.clientY; 
-            startTop = parseInt(activeEl.style.top) || 0; startLeft = parseInt(activeEl.style.left) || 0; 
-            startRect = activeEl.getBoundingClientRect();
-            notifyParent({ type: 'LF_SNAP_START' });
-            if (h || e.target.closest('.v4-editable-cell')) e.preventDefault(); 
-            document.querySelectorAll('.lf-component.selected').forEach(s => s.classList.add('dragging-now'));
+            if (window.V4DragResizeEngine) {
+                window.V4DragResizeEngine.handleMouseDown(e, h, r, d, c);
+            }
         }
     });
 
@@ -4140,45 +4385,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             return;
         }
 
-        if (isDrawingConnector) {
-            const rect = document.body.getBoundingClientRect();
-            const scale = (window.parent?.state?.transform?.scale) || 1;
-            const logicalX = (e.clientX - rect.left) / scale;
-            const logicalY = (e.clientY - rect.top) / scale;
-            
-            drawTempLine(connDragStartX, connDragStartY, logicalX, logicalY);
-            
-            // Toggle near-connector class based on distance inside iframe
-            document.querySelectorAll('.lf-component').forEach(comp => {
-                if (comp.id === startComponentId) return;
-                const r = comp.getBoundingClientRect();
-                const dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
-                const dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                
-                if (dist < 100) {
-                    comp.classList.add('near-connector');
-                } else {
-                    comp.classList.remove('near-connector');
-                }
-            });
-
-            const targetPort = e.target.closest('.lf-connector-port');
-            if (targetPort && targetPort.parentElement.id !== startComponentId) {
-                if (hoveredPort && hoveredPort !== targetPort) {
-                    hoveredPort.style.transform = '';
-                    hoveredPort.style.background = '#00e5ff';
-                }
-                hoveredPort = targetPort;
-                hoveredPort.style.transform = 'scale(1.8)';
-                hoveredPort.style.background = '#fb7185';
-            } else {
-                if (hoveredPort) {
-                    hoveredPort.style.transform = '';
-                    hoveredPort.style.background = '#00e5ff';
-                    hoveredPort = null;
-                }
-            }
+        if (window.V4PortConnectorEngine && window.V4PortConnectorEngine.isDrawingConnector) {
+            window.V4PortConnectorEngine.handleMouseMove(e);
             return;
         }
 
@@ -4189,85 +4397,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
-            if (isConnectorDragging) {
-                notifyParent({ type: 'LF_CONNECTOR_HANDLE_MOVE', clientX: e.clientX, clientY: e.clientY });
-            }
-            if (isDragging && activeEl) { 
-                let dx = e.clientX - startX;
-                let dy = e.clientY - startY;
-
-                if (e.shiftKey) {
-                    if (Math.abs(dx) >= Math.abs(dy)) {
-                        dy = 0;
-                    } else {
-                        dx = 0;
-                    }
-                }
-
-                const scale = (window.parent?.state?.transform?.scale) || 1;
-                const logicalX = startLeft + dx / scale;
-                const logicalY = startTop + dy / scale;
-
-                notifyParent({ type: 'LF_SNAP_REQUEST', x: logicalX, y: logicalY, w: activeEl.offsetWidth, h: activeEl.offsetHeight });
-                markDirty(); 
-            }
-            else if (isResizing && activeEl) { 
-                const scale = (window.parent?.state?.transform?.scale) || 1;
-                const nw = Math.max(10, startW + (e.clientX - startX) / scale);
-                const nh = Math.max(10, startH + (e.clientY - startY) / scale);
-                
-                const scaleX = nw / startW;
-                const scaleY = nh / startH;
-                
-                activeEl.style.width = nw + 'px'; 
-                activeEl.style.height = nh + 'px'; 
-                
-                if (groupChildrenStart) {
-                    groupChildrenStart.forEach(child => {
-                        const newL = child.left * scaleX;
-                        const newT = child.top * scaleY;
-                        const newW = child.width * scaleX;
-                        const newH = child.height * scaleY;
-                        
-                        child.el.style.left = newL + 'px';
-                        child.el.style.top = newT + 'px';
-                        child.el.style.width = newW + 'px';
-                        child.el.style.height = newH + 'px';
-                        child.el.setAttribute('data-resized', 'true');
-                        
-                        // Rescale inner elements for checkboxes / radios / other atoms
-                        const innerBox = child.el.querySelector('.v4-checkbox, .v4-radio');
-                        if (innerBox) {
-                            const isTextEnabled = child.el.querySelector('.v4-checkbox-container, .v4-radio-container')?.getAttribute('data-text-enabled') !== 'false';
-                            if (!isTextEnabled) {
-                                innerBox.style.width = newW + 'px';
-                                innerBox.style.height = newH + 'px';
-                            }
-                        }
-                        
-                        // Scale selectboxes, inputs, buttons inside grouped atoms
-                        const selectbox = child.el.querySelector('.v4-selectbox-header');
-                        if (selectbox) {
-                            selectbox.style.width = '100%';
-                        }
-                        const inputWrap = child.el.querySelector('.v4-textbox-container, .v4-textarea-container');
-                        if (inputWrap) {
-                            inputWrap.style.width = '100%';
-                            inputWrap.style.height = '100%';
-                        }
-                        const btn = child.el.querySelector('.v4-custom-btn, .v4-btn-container');
-                        if (btn) {
-                            btn.style.width = '100%';
-                            btn.style.height = '100%';
-                        }
-                        
-                        window.updateHandles(child.el);
-                    });
-                }
-                
-                window.updateHandles(activeEl);
-                markDirty(); 
-                notifyParent({ type: 'LF_COMP_RESIZED', w: nw, h: nh });
+            if (window.V4DragResizeEngine && (window.V4DragResizeEngine.isDragging || window.V4DragResizeEngine.isResizing)) {
+                window.V4DragResizeEngine.handleMouseMove(e);
             }
         });
     });
@@ -4283,79 +4414,18 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             return;
         }
 
-        if (isDrawingConnector) {
-            isDrawingConnector = false;
-            document.body.classList.remove('drawing-line-active');
-            document.querySelectorAll('.lf-component').forEach(comp => comp.classList.remove('near-connector'));
-            removeTempLine();
-            if (hoveredPort) {
-                const targetComponentId = hoveredPort.parentElement.id;
-                const targetPortSide = hoveredPort.getAttribute('data-side');
-                hoveredPort.style.transform = '';
-                hoveredPort.style.background = '#00e5ff';
-                hoveredPort = null;
-                
-                notifyParent({
-                    type: 'LF_CREATE_CONNECTOR',
-                    startId: startComponentId,
-                    startSide: startPortSide,
-                    endId: targetComponentId,
-                    endSide: targetPortSide
-                });
-            }
+        if (window.V4PortConnectorEngine && window.V4PortConnectorEngine.isDrawingConnector) {
+            window.V4PortConnectorEngine.handleMouseUp();
             return;
         }
 
-        if (isConnectorDragging) {
-            isConnectorDragging = false;
-            document.body.classList.remove('drawing-line-active');
-            notifyParent({ type: 'LF_CONNECTOR_HANDLE_UP' });
-        }
         if (isMarquee) {
             isMarquee = false;
             notifyParent({ type: 'LF_MARQUEE_END' });
         }
-        if (isDragging && activeEl) {
-            notifyParent({ type: 'LF_SNAP_END' });
-            
-            if (activeEl.classList.contains('text-marker') || activeEl.classList.contains('pin-marker')) {
-                const idx = parseInt(activeEl.id.replace('v4-pin-', ''));
-                notifyParent({
-                    type: 'LF_UPDATE_PIN_POS',
-                    index: idx,
-                    x: parseFloat(activeEl.style.left) || 0,
-                    y: parseFloat(activeEl.style.top) || 0,
-                    standardized: true
-                });
-            }
-            if (activeEl.classList.contains('lf-group')) {
-                const scale = (window.parent && window.parent.state && window.parent.state.transform) ? window.parent.state.transform.scale : 1;
-                const hostRect = document.body.getBoundingClientRect();
-                activeEl.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
-                    const idx = parseInt(child.id.replace('v4-pin-', ''));
-                    if (!isNaN(idx)) {
-                        const childRect = child.getBoundingClientRect();
-                        const absX = (childRect.left - hostRect.left) / scale;
-                        const absY = (childRect.top - hostRect.top) / scale;
-                        notifyParent({
-                            type: 'LF_UPDATE_PIN_POS',
-                            index: idx,
-                            x: absX,
-                            y: absY,
-                            standardized: true
-                        });
-                    }
-                });
-            }
+        if (window.V4DragResizeEngine && (window.V4DragResizeEngine.isDragging || window.V4DragResizeEngine.isResizing)) {
+            window.V4DragResizeEngine.handleMouseUp();
         }
-        if (isResizing && activeEl) {
-            activeEl.setAttribute('data-resized', 'true');
-            if (typeof window.enforceDesignSystem === 'function') {
-                window.enforceDesignSystem();
-            }
-        }
-        document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
-        isDragging = false; isResizing = false; activeEl = null; 
     });
 
     document.addEventListener('input', e => { 
@@ -7438,7 +7508,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         port.addEventListener('mousedown', (e) => {
                             e.stopPropagation();
                             e.preventDefault();
-                            startConnectorDragFromPort(c, side, e);
+                            if (window.V4PortConnectorEngine) {
+                                window.V4PortConnectorEngine.startConnectorDragFromPort(c, side, e);
+                            }
                         });
                         c.appendChild(port);
                     }
@@ -7447,6 +7519,31 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
     };
     window.initHandles();
+
+    // Fullscreen presentation proxy listeners to notify parent window
+    window.addEventListener('mousemove', (e) => {
+        try {
+            if (window.parent && typeof window.parent.__lf_proxy_mousemove__ === 'function') {
+                window.parent.__lf_proxy_mousemove__(e, window.frameElement);
+            }
+        } catch(err) {}
+    });
+
+    window.addEventListener('keydown', (e) => {
+        try {
+            if (e.key === 'Shift' && window.parent && typeof window.parent.__lf_proxy_keydown__ === 'function') {
+                window.parent.__lf_proxy_keydown__(e);
+            }
+        } catch(err) {}
+    });
+
+    window.addEventListener('keyup', (e) => {
+        try {
+            if (e.key === 'Shift' && window.parent && typeof window.parent.__lf_proxy_keyup__ === 'function') {
+                window.parent.__lf_proxy_keyup__(e);
+            }
+        } catch(err) {}
+    });
 })();
 
 </script>
