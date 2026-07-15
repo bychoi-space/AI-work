@@ -1008,6 +1008,7 @@ window.v4Script = `
 
         var table = container.querySelector('table');
         if (table) {
+            table.style.setProperty('height', 'auto', 'important');
             // In-place mutative update to preserve inline styling, text edits, background, borders etc!
             var colgroup = table.querySelector('colgroup');
             if (colgroup) {

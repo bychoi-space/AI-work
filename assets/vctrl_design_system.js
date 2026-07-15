@@ -744,6 +744,7 @@ window.v4DesignSystemScript = `
         });
         document.querySelectorAll('table.v4-premium-table, table.v4-table, .v4-grid-container table').forEach(t => {
             if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
+            if (t.style.height !== 'auto') t.style.setProperty('height', 'auto', 'important');
             
             t.querySelectorAll('td, th').forEach(cell => {
                 const isCheckbox = cell.classList.contains('v4-grid-check-col') || 
