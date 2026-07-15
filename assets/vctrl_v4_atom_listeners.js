@@ -1213,6 +1213,7 @@
                     <div style="display: flex; gap: 4px;">
                         <button class="v4-inspector-btn btn-move-col-up" data-index="${index}" style="height: 18px; width: 18px; display: flex; align-items: center; justify-content: center; font-size: 8px; border-radius: 4px; padding: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer;" title="위로 이동" ${index === 0 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>▲</button>
                         <button class="v4-inspector-btn btn-move-col-down" data-index="${index}" style="height: 18px; width: 18px; display: flex; align-items: center; justify-content: center; font-size: 8px; border-radius: 4px; padding: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer;" title="아래로 이동" ${index === colsList.length - 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>▼</button>
+                        <button class="v4-inspector-btn btn-delete-col" data-index="${index}" style="height: 18px; width: 18px; display: flex; align-items: center; justify-content: center; font-size: 8px; border-radius: 4px; padding: 0; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; cursor: pointer;" title="삭제" ${colsList.length <= 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>&times;</button>
                     </div>
                 </div>
                 <div style="display:grid; grid-template-columns: 1.2fr 1fr 0.8fr; gap:6px;">
@@ -1297,6 +1298,22 @@
                 };
             }
 
+            const btnDelete = div.querySelector('.btn-delete-col');
+            if (btnDelete) {
+                btnDelete.onclick = () => {
+                    const currentCols = getCurrentColsFromInputs();
+                    if (currentCols.length <= 1) return;
+                    currentCols.splice(index, 1);
+                    window.syncGridHeaderInputs(currentCols);
+                    triggerColUpdateWithCols(currentCols);
+                    
+                    const colCountInp = document.getElementById('prop-grid-col-count');
+                    if (colCountInp) {
+                        colCountInp.value = currentCols.length;
+                    }
+                };
+            }
+
             const triggerColUpdate = () => {
                 const currentCols = getCurrentColsFromInputs();
                 triggerColUpdateWithCols(currentCols);
@@ -1348,6 +1365,7 @@
 
         const colMinusBtn = document.getElementById('btn-grid-col-minus');
         const colPlusBtn = document.getElementById('btn-grid-col-plus');
+        const colAddBtn = document.getElementById('btn-grid-add-col');
 
         const notifyGrid = (data) => {
             const iframe = document.getElementById('main-iframe');
@@ -1380,6 +1398,39 @@
                     const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
                     const oVal = optionsInp ? optionsInp.value : '';
                     return { name: inp.value, type: t, width: wVal + 'px', options: oVal };
+                });
+                notifyGrid({ columns: updatedCols });
+                if (typeof syncGridHeaderInputs === 'function') {
+                    syncGridHeaderInputs(updatedCols, []);
+                }
+                const colCountInp = document.getElementById('prop-grid-col-count');
+                if (colCountInp) {
+                    colCountInp.value = updatedCols.length;
+                }
+            };
+        }
+
+        if (colAddBtn) {
+            colAddBtn.onclick = () => {
+                const container = document.getElementById('grid-columns-container');
+                if (!container) return;
+                const nameInputs = Array.from(container.querySelectorAll('.grid-col-name-input'));
+                if (nameInputs.length >= 10) return;
+                
+                const updatedCols = nameInputs.map((inp) => {
+                    const idx = inp.getAttribute('data-index');
+                    const typeSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
+                    const widthInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
+                    const optionsInp = container.querySelector(`.grid-col-options-input[data-index="${idx}"]`);
+                    const t = typeSel ? typeSel.value : 'text';
+                    const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
+                    const oVal = optionsInp ? optionsInp.value : '';
+                    return { name: inp.value, type: t, width: wVal + 'px', options: oVal };
+                });
+                updatedCols.push({
+                    name: '새 항목',
+                    type: 'text',
+                    width: '200px'
                 });
                 notifyGrid({ columns: updatedCols });
                 if (typeof syncGridHeaderInputs === 'function') {
@@ -1444,6 +1495,14 @@
             rowCountInp.oninput = () => {
                 const val = parseInt(rowCountInp.value) || 5;
                 notifyGrid({ rowCount: val });
+            };
+        }
+
+        const rowHeightInp = document.getElementById('prop-grid-row-height');
+        if (rowHeightInp) {
+            rowHeightInp.oninput = () => {
+                const val = parseInt(rowHeightInp.value) || 50;
+                notifyGrid({ rowHeight: val });
             };
         }
 

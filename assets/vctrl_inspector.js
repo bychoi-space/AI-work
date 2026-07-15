@@ -234,18 +234,17 @@ function restorePropertiesSections() {
 // --- 3. UI Rendering Functions ---
 window.updateProperties = function(compStyles) {
     const activeEl = document.activeElement;
-    const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title' || activeEl.id === 'prop-admin-label-width-slider' || activeEl.id === 'prop-admin-label-width-number');
-    const isTypingCheckboxLabel = activeEl && activeEl.id === 'prop-atom-text-content';
-    const isTypingInGridProps = activeEl && (activeEl.closest('#grid-inspector-section') || activeEl.classList.contains('grid-col-width-input') || activeEl.classList.contains('grid-col-name-input') || activeEl.classList.contains('grid-col-type-select'));
-    const isTypingInDatePickerProps = activeEl && (
-        activeEl.id === 'prop-dp-start-date' ||
-        activeEl.id === 'prop-dp-end-date' ||
-        activeEl.id === 'prop-dp-start-time' ||
-        activeEl.id === 'prop-dp-end-time' ||
-        activeEl.closest('#datepicker-inspector-section')
+    const isTyping = activeEl && (
+        activeEl.tagName === 'INPUT' ||
+        activeEl.tagName === 'TEXTAREA' ||
+        activeEl.tagName === 'SELECT' ||
+        activeEl.contentEditable === 'true' ||
+        activeEl.closest('#floating-inspector-card') !== null ||
+        activeEl.closest('#tab-editor') !== null ||
+        activeEl.closest('#v4-shapes-body') !== null
     );
     
-    if (!isTypingInAdminProps && !isTypingCheckboxLabel && !isTypingInGridProps && !isTypingInDatePickerProps) {
+    if (!isTyping) {
         restorePropertiesSections();
     }
     const pm = state.projectMetadata || {};
@@ -483,6 +482,9 @@ const ProjectMetadataManager = {
                 if (!isTypingInGrid) {
                     _syncGridProps(compStyles);
                 }
+                if (typeof window.initGridEvents === 'function') {
+                    window.initGridEvents();
+                }
             } else if (state.editingType === 'admin-settings') {
                 if (DOM.adminSettingsPropSection) DOM.adminSettingsPropSection.style.display = 'block';
                 // Focus guard: Do not rebuild the inputs if the user is actively typing in one of them
@@ -603,23 +605,7 @@ const ProjectMetadataManager = {
         // Dynamically move active panels into floating inspector card body
         const floatingBody = document.getElementById('floating-inspector-body');
         if (floatingBody) {
-            const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title' || activeEl.id === 'prop-admin-label-width-slider' || activeEl.id === 'prop-admin-label-width-number');
-            const isTypingCheckboxLabel = activeEl && activeEl.id === 'prop-atom-text-content';
-            const isTypingInDatePickerProps = activeEl && (
-                activeEl.id === 'prop-dp-start-date' ||
-                activeEl.id === 'prop-dp-end-date' ||
-                activeEl.id === 'prop-dp-start-time' ||
-                activeEl.id === 'prop-dp-end-time' ||
-                activeEl.closest('#datepicker-inspector-section')
-            );
-            const isTypingInGridProps = activeEl && (
-                activeEl.closest('#grid-inspector-section') || 
-                activeEl.classList.contains('grid-col-width-input') || 
-                activeEl.classList.contains('grid-col-name-input') || 
-                activeEl.classList.contains('grid-col-type-select')
-            );
-            
-            if (!isTypingInAdminProps && !isTypingCheckboxLabel && !isTypingInGridProps && !isTypingInDatePickerProps) {
+            if (!isTyping) {
                 floatingBody.innerHTML = '';
                 const selectionBar = document.getElementById('selection-actions-bar');
                 if (selectionBar) {
@@ -743,7 +729,7 @@ function _syncSelectboxProps(comp) {
     if (dropdownControls) dropdownControls.style.display = isDropdown ? 'block' : 'none';
 
     const defaultTextInput = document.getElementById('prop-selectbox-default-text');
-    if (defaultTextInput && comp.selectboxDefaultText !== undefined) {
+    if (defaultTextInput && document.activeElement !== defaultTextInput && comp.selectboxDefaultText !== undefined) {
         defaultTextInput.value = comp.selectboxDefaultText;
     }
 
@@ -790,24 +776,24 @@ function _syncFileuploadProps(comp) {
     if (placeholderControls) placeholderControls.style.display = isSelected ? 'none' : 'block';
 
     const nameInput = document.getElementById('prop-fileupload-file-name');
-    if (nameInput && comp.fileName !== undefined) {
+    if (nameInput && document.activeElement !== nameInput && comp.fileName !== undefined) {
         nameInput.value = comp.fileName;
     }
 
     const placeholderInput = document.getElementById('prop-fileupload-placeholder');
-    if (placeholderInput && comp.filePlaceholder !== undefined) {
+    if (placeholderInput && document.activeElement !== placeholderInput && comp.filePlaceholder !== undefined) {
         placeholderInput.value = comp.filePlaceholder;
     }
 
     const btnTextInput = document.getElementById('prop-fileupload-btn-text');
-    if (btnTextInput && comp.fileButtonText !== undefined) {
+    if (btnTextInput && document.activeElement !== btnTextInput && comp.fileButtonText !== undefined) {
         btnTextInput.value = comp.fileButtonText;
     }
 }
 
 function _syncAlertProps(comp) {
     const msgText = document.getElementById('prop-alert-message');
-    if (msgText && comp.alertMessage !== undefined) {
+    if (msgText && document.activeElement !== msgText && comp.alertMessage !== undefined) {
         msgText.value = comp.alertMessage;
     }
     
@@ -824,13 +810,13 @@ function _syncAlertProps(comp) {
     }
     
     const btn1 = document.getElementById('prop-alert-btn-1');
-    if (btn1 && comp.alertBtnText1 !== undefined) btn1.value = comp.alertBtnText1;
+    if (btn1 && document.activeElement !== btn1 && comp.alertBtnText1 !== undefined) btn1.value = comp.alertBtnText1;
     const style1 = comp.alertBtnStyle1 || 'normal';
     const sel1 = document.getElementById('prop-alert-btn-style-1');
     if (sel1) sel1.value = style1;
     
     const btn2 = document.getElementById('prop-alert-btn-2');
-    if (btn2 && comp.alertBtnText2 !== undefined) btn2.value = comp.alertBtnText2;
+    if (btn2 && document.activeElement !== btn2 && comp.alertBtnText2 !== undefined) btn2.value = comp.alertBtnText2;
     const style2 = comp.alertBtnStyle2 || 'normal';
     const sel2 = document.getElementById('prop-alert-btn-style-2');
     if (sel2) sel2.value = style2;
@@ -838,7 +824,7 @@ function _syncAlertProps(comp) {
     if (btn2Container) btn2Container.style.display = count >= 2 ? 'flex' : 'none';
     
     const btn3 = document.getElementById('prop-alert-btn-3');
-    if (btn3 && comp.alertBtnText3 !== undefined) btn3.value = comp.alertBtnText3;
+    if (btn3 && document.activeElement !== btn3 && comp.alertBtnText3 !== undefined) btn3.value = comp.alertBtnText3;
     const style3 = comp.alertBtnStyle3 || 'normal';
     const sel3 = document.getElementById('prop-alert-btn-style-3');
     if (sel3) sel3.value = style3;
@@ -848,7 +834,7 @@ function _syncAlertProps(comp) {
 
 function _syncButtonProps(comp) {
     const txtInput = document.getElementById('prop-button-text');
-    if (txtInput && comp.buttonText !== undefined) {
+    if (txtInput && document.activeElement !== txtInput && comp.buttonText !== undefined) {
         txtInput.value = comp.buttonText;
     }
     
@@ -863,7 +849,7 @@ function _syncButtonProps(comp) {
     
     const radiusSlider = document.getElementById('prop-button-border-radius');
     const radiusTxt = document.getElementById('txt-button-border-radius');
-    if (radiusSlider && comp.buttonRadius !== undefined) {
+    if (radiusSlider && document.activeElement !== radiusSlider && comp.buttonRadius !== undefined) {
         const r = parseInt(comp.buttonRadius) || 0;
         radiusSlider.value = r;
         if (radiusTxt) radiusTxt.innerText = r;
@@ -901,13 +887,13 @@ function _syncTextboxTextareaProps(comp) {
     }
     
     const phInput = document.getElementById('prop-input-placeholder');
-    if (phInput && comp.placeholderText !== undefined) {
+    if (phInput && document.activeElement !== phInput && comp.placeholderText !== undefined) {
         phInput.value = comp.placeholderText;
     }
     
     const mlInput = document.getElementById('prop-input-maxlength');
     const mlTxt = document.getElementById('txt-input-maxlength');
-    if (mlInput && comp.maxLength !== undefined) {
+    if (mlInput && document.activeElement !== mlInput && comp.maxLength !== undefined) {
         mlInput.value = comp.maxLength;
         if (mlTxt) mlTxt.innerText = comp.maxLength;
     }
@@ -924,7 +910,7 @@ function _syncTextboxTextareaProps(comp) {
 
     // Sync Font Size & Font Family
     const fsInput = document.getElementById('prop-input-fontsize');
-    if (fsInput && s.fontSize !== undefined) {
+    if (fsInput && document.activeElement !== fsInput && s.fontSize !== undefined) {
         fsInput.value = s.fontSize;
     }
     const ffInput = document.getElementById('prop-input-fontfamily');
@@ -947,13 +933,13 @@ function _syncTextboxTextareaProps(comp) {
 
 function _syncSearchBarProps(comp) {
     const phInput = document.getElementById('prop-searchbar-placeholder');
-    if (phInput && comp.searchbarPlaceholder !== undefined) {
+    if (phInput && document.activeElement !== phInput && comp.searchbarPlaceholder !== undefined) {
         phInput.value = comp.searchbarPlaceholder;
     }
     
     const s = comp.currentStyles || {};
     const fsInput = document.getElementById('prop-searchbar-fontsize');
-    if (fsInput && s.fontSize !== undefined) {
+    if (fsInput && document.activeElement !== fsInput && s.fontSize !== undefined) {
         fsInput.value = s.fontSize;
     }
 }
@@ -964,21 +950,21 @@ function _syncAccordionProps(comp) {
     const expandY = document.getElementById('btn-accordion-expand-y');
     const expandN = document.getElementById('btn-accordion-expand-n');
     
-    if (headerTextInp && comp.accordionHeaderText !== undefined) {
+    if (headerTextInp && document.activeElement !== headerTextInp && comp.accordionHeaderText !== undefined) {
         headerTextInp.value = comp.accordionHeaderText;
     }
     
-    if (subCountInp && comp.accordionSubCount !== undefined) {
+    if (subCountInp && document.activeElement !== subCountInp && comp.accordionSubCount !== undefined) {
         subCountInp.value = comp.accordionSubCount;
     }
 
     const widthInp = document.getElementById('prop-accordion-width');
-    if (widthInp && comp.w !== undefined) {
+    if (widthInp && document.activeElement !== widthInp && comp.w !== undefined) {
         widthInp.value = comp.w;
     }
 
     const heightInp = document.getElementById('prop-accordion-height');
-    if (heightInp && comp.accordionItemHeight !== undefined) {
+    if (heightInp && document.activeElement !== heightInp && comp.accordionItemHeight !== undefined) {
         heightInp.value = comp.accordionItemHeight;
     }
     
@@ -1045,6 +1031,11 @@ function _syncGridProps(comp) {
     
     if (rowCountInp && comp.gridRowCount !== undefined) {
         rowCountInp.value = comp.gridRowCount;
+    }
+    
+    const rowHeightInp = document.getElementById('prop-grid-row-height');
+    if (rowHeightInp && comp.gridRowHeight !== undefined) {
+        rowHeightInp.value = comp.gridRowHeight;
     }
     
     const highlightActive = (btn, isActive) => {

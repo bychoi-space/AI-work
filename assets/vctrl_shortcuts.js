@@ -73,6 +73,14 @@ window.v4ShortcutsScript = `
                 .filter(c => c && c !== 'selected' && c !== 'dragging-now')
                 .join(' ');
 
+            // Collect all custom data attributes and id for synchronization
+            const attrs = {};
+            Array.from(el.attributes).forEach(attr => {
+                if (attr.name.startsWith('data-') || attr.name === 'id') {
+                    attrs[attr.name] = attr.value;
+                }
+            });
+
             clipboardData.push({
                 html: el.innerHTML,
                 className: cleanClasses,
@@ -81,7 +89,8 @@ window.v4ShortcutsScript = `
                 top: parseFloat(el.style.top) || 0,
                 isGroup: el.classList.contains('lf-group'),
                 isPinMarker: el.classList.contains('pin-marker'),
-                isTextMarker: el.classList.contains('text-marker')
+                isTextMarker: el.classList.contains('text-marker'),
+                attributes: attrs
             });
         });
         v4Clipboard = clipboardData;
@@ -114,7 +123,17 @@ window.v4ShortcutsScript = `
             v.style.top = (item.top + offset) + 'px';
             v.innerHTML = item.html;
 
+            // Restore all cloned data attributes to the new container
+            if (item.attributes) {
+                Object.keys(item.attributes).forEach(attrName => {
+                    if (attrName !== 'id') { // Skip binding the old parent container ID
+                        v.setAttribute(attrName, item.attributes[attrName]);
+                    }
+                });
+            }
+
             // Regenerate IDs of all nested child components to prevent duplicate ID issues
+            const idMap = {};
             const childrenWithId = v.querySelectorAll('[id]');
             childrenWithId.forEach(child => {
                 const oldId = child.id;
@@ -122,10 +141,25 @@ window.v4ShortcutsScript = `
                 if (child.classList.contains('pin-marker') || oldId.startsWith('v4-pin-')) {
                     prefix = 'v4-pin-';
                 }
-                const uniqueSuffix = Date.now() + Math.floor(Math.random() * 1000000);
+                const uniqueSuffix = Date.now() + Math.floor(Math.random() * 1000000) + Math.floor(Math.random() * 1000);
                 const newChildId = prefix + uniqueSuffix;
                 child.id = newChildId;
+                idMap[oldId] = newChildId;
             });
+
+            // If this is a group component, remap children IDs inside its metadata attributes
+            if (item.isGroup) {
+                const rawChildren = v.getAttribute('data-children');
+                if (rawChildren) {
+                    try {
+                        const childIds = JSON.parse(rawChildren);
+                        const newChildIds = childIds.map(oldId => idMap[oldId] || oldId);
+                        v.setAttribute('data-children', JSON.stringify(newChildIds));
+                    } catch (e) {
+                        console.warn("[Clipboard] Failed to remap data-children inside cloned group:", e);
+                    }
+                }
+            }
 
             v.querySelectorAll('.lf-component').forEach(child => child.classList.remove('selected'));
             v.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());

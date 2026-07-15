@@ -719,25 +719,60 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                 <span style="font-size: 10px; font-weight: 900; color: #00e5ff;">GRID UI OPTION</span>
             </div>
             
-            <!-- Default Value (On/Off) -->
-            <div class="prop-group" style="margin-bottom: 12px;">
-                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 8px;">GRID HEIGHT (그리드 높이)</label>
-                <input type="number" id="prop-grid-height" min="10" max="2000" class="v4-prop-input" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 11px;">
+            <div style="display: grid; grid-template-columns: 0.8fr 0.8fr 1.2fr; gap: 6px; margin-bottom: 12px;">
+                <div class="prop-group">
+                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">출력 행 개수</label>
+                    <input type="number" id="prop-grid-row-count" min="1" max="20" value="5" class="v4-prop-input" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 6px; border-radius: 4px; font-size: 11px; height: 26px; box-sizing: border-box;">
+                </div>
+                <div class="prop-group">
+                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">행 높이(px)</label>
+                    <input type="number" id="prop-grid-row-height" min="20" max="200" value="50" class="v4-prop-input" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 6px; border-radius: 4px; font-size: 11px; height: 26px; box-sizing: border-box;">
+                </div>
+                <div class="prop-group">
+                    <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">페이지네이션</label>
+                    <div style="display: flex; gap: 4px;">
+                        <button id="btn-grid-pagination-y" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                        <button id="btn-grid-pagination-n" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Toggle Color -->
-            <div class="prop-group" style="margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
-                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 8px;">배경 컬러 (Grid Background)</label>
-                <div style="display: flex; gap: 4px; align-items: center;">
-                    <div class="v4-color-wrapper v4-checkerboard-bg" id="grid-bg-wrapper">
-                        <input type="color" id="grid-bg-color" class="v4-color-input" data-prop="background" value="#ffffff">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                <!-- Background Color -->
+                <div class="prop-group">
+                    <label class="v4-color-label" data-prop="background" style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">배경 컬러</label>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <div class="v4-color-wrapper v4-checkerboard-bg" id="grid-bg-wrapper">
+                            <input type="color" id="grid-bg-color" class="v4-color-input" data-prop="background" value="#ffffff">
+                        </div>
+                        <button id="btn-grid-bg-none" class="v4-color-none-btn" data-prop="background" title="Transparent BG" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; box-sizing: border-box;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
                     </div>
-                    <button id="btn-grid-bg-none" class="v4-color-none-btn" data-prop="background" title="Transparent BG" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; box-sizing: border-box;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                </div>
+                <!-- Border Color -->
+                <div class="prop-group">
+                    <label class="v4-color-label" data-prop="borderColor" style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">테두리 컬러</label>
+                    <div style="display: flex; gap: 4px; align-items: center;">
+                        <div class="v4-color-wrapper v4-checkerboard-bg" id="grid-border-wrapper">
+                            <input type="color" id="grid-border-color" class="v4-color-input" data-prop="borderColor" value="#e2e8f0">
+                        </div>
+                        <button id="btn-grid-border-none" class="v4-color-none-btn" data-prop="borderColor" title="No Border" style="width: 24px; height: 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #f87171; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; box-sizing: border-box;"><span class="material-icons-outlined" style="font-size: 14px;">block</span></button>
+                    </div>
                 </div>
             </div>
 
             <!-- Dimensions -->
-            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 12px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                <div class="prop-group">
+                    <label class="v4-unified-label" data-prop="width" style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">가로 크기</label>
+                    <input type="number" class="v4-prop-input" data-prop="width" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                </div>
+                <div class="prop-group">
+                    <label class="v4-unified-label" data-prop="height" style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">세로 크기</label>
+                    <input type="number" class="v4-prop-input" data-prop="height" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <label style="font-size: 9px; color: #94a3b8;">열 정보 설정 (Columns Config)</label>
                     <button id="btn-grid-add-col" class="v4-inspector-btn primary" style="height: 20px; padding: 0 8px; font-size: 10px; border-radius: 10px;">+ 열 추가</button>

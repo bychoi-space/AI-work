@@ -824,7 +824,7 @@ window.v4DesignSystemScript = `
             }
             const wrapper = grid.querySelector('.v4-grid-table-wrapper');
             if (wrapper) {
-                const targetHeight = 'calc(100% - ' + rowHeight + 'px)';
+                const targetHeight = showPagination ? 'calc(100% - 36px)' : '100%';
                 if (wrapper.style.height !== targetHeight) wrapper.style.height = targetHeight;
             }
             if (grid.style.borderWidth !== '1.6px') grid.style.setProperty('border-width', '1.6px', 'important');

@@ -2095,6 +2095,7 @@
                     <div style="display: flex; gap: 4px;">
                         <button class="v4-inspector-btn btn-move-col-up" data-index="${index}" style="height: 18px; width: 18px; display: flex; align-items: center; justify-content: center; font-size: 8px; border-radius: 4px; padding: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer;" title="위로 이동" ${index === 0 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>▲</button>
                         <button class="v4-inspector-btn btn-move-col-down" data-index="${index}" style="height: 18px; width: 18px; display: flex; align-items: center; justify-content: center; font-size: 8px; border-radius: 4px; padding: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer;" title="아래로 이동" ${index === colsList.length - 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>▼</button>
+                        <button class="v4-inspector-btn btn-delete-col" data-index="${index}" style="height: 18px; width: 18px; display: flex; align-items: center; justify-content: center; font-size: 8px; border-radius: 4px; padding: 0; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; cursor: pointer;" title="삭제" ${colsList.length <= 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>&times;</button>
                     </div>
                 </div>
                 <div style="display:grid; grid-template-columns: 1.2fr 1fr 0.8fr; gap:6px;">
@@ -2179,6 +2180,22 @@
                 };
             }
 
+            const btnDelete = div.querySelector('.btn-delete-col');
+            if (btnDelete) {
+                btnDelete.onclick = () => {
+                    const currentCols = getCurrentColsFromInputs();
+                    if (currentCols.length <= 1) return;
+                    currentCols.splice(index, 1);
+                    window.syncGridHeaderInputs(currentCols);
+                    triggerColUpdateWithCols(currentCols);
+                    
+                    const colCountInp = document.getElementById('prop-grid-col-count');
+                    if (colCountInp) {
+                        colCountInp.value = currentCols.length;
+                    }
+                };
+            }
+
             const triggerColUpdate = () => {
                 const currentCols = getCurrentColsFromInputs();
                 triggerColUpdateWithCols(currentCols);
@@ -2219,149 +2236,6 @@
         });
     };
 
-    const initGridEvents = () => {
-        const rowCountInp = document.getElementById('prop-grid-row-count');
-        const bgColorInp = document.getElementById('grid-bg-color');
-        const bgNoneBtn = document.getElementById('btn-grid-bg-none');
-        const borderColorInp = document.getElementById('grid-border-color');
-        const borderNoneBtn = document.getElementById('btn-grid-border-none');
-        const paginationY = document.getElementById('btn-grid-pagination-y');
-        const paginationN = document.getElementById('btn-grid-pagination-n');
-
-        const colMinusBtn = document.getElementById('btn-grid-col-minus');
-        const colPlusBtn = document.getElementById('btn-grid-col-plus');
-
-        const notifyGrid = (data) => {
-            const iframe = document.getElementById('main-iframe');
-            if (iframe && iframe.contentWindow && window.MessageHub) {
-                window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_GRID_PROPERTIES', data);
-            }
-        };
-
-        const highlightActive = (btn, isActive) => {
-            if (!btn) return;
-            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-            btn.style.fontWeight = isActive ? 'bold' : 'normal';
-        };
-
-        if (colMinusBtn) {
-            colMinusBtn.onclick = () => {
-                const container = document.getElementById('grid-columns-container');
-                if (!container) return;
-                const nameInputs = Array.from(container.querySelectorAll('.grid-col-name-input'));
-                if (nameInputs.length <= 1) return;
-                
-                const updatedCols = nameInputs.slice(0, -1).map((inp) => {
-                    const idx = inp.getAttribute('data-index');
-                    const typeSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
-                    const widthInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
-                    const optionsInp = container.querySelector(`.grid-col-options-input[data-index="${idx}"]`);
-                    const t = typeSel ? typeSel.value : 'text';
-                    const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
-                    const oVal = optionsInp ? optionsInp.value : '';
-                    return { name: inp.value, type: t, width: wVal + 'px', options: oVal };
-                });
-                notifyGrid({ columns: updatedCols });
-                if (typeof syncGridHeaderInputs === 'function') {
-                    syncGridHeaderInputs(updatedCols, []);
-                }
-                const colCountInp = document.getElementById('prop-grid-col-count');
-                if (colCountInp) {
-                    colCountInp.value = updatedCols.length;
-                }
-            };
-        }
-
-        if (colPlusBtn) {
-            colPlusBtn.onclick = () => {
-                const container = document.getElementById('grid-columns-container');
-                if (!container) return;
-                const nameInputs = Array.from(container.querySelectorAll('.grid-col-name-input'));
-                if (nameInputs.length >= 10) return;
-                
-                const updatedCols = nameInputs.map((inp) => {
-                    const idx = inp.getAttribute('data-index');
-                    const typeSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
-                    const widthInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
-                    const optionsInp = container.querySelector(`.grid-col-options-input[data-index="${idx}"]`);
-                    const t = typeSel ? typeSel.value : 'text';
-                    const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
-                    const oVal = optionsInp ? optionsInp.value : '';
-                    return { name: inp.value, type: t, width: wVal + 'px', options: oVal };
-                });
-                updatedCols.push({
-                    name: '새 항목',
-                    type: 'text',
-                    width: '200px'
-                });
-                notifyGrid({ columns: updatedCols });
-                if (typeof syncGridHeaderInputs === 'function') {
-                    syncGridHeaderInputs(updatedCols, []);
-                }
-                const colCountInp = document.getElementById('prop-grid-col-count');
-                if (colCountInp) {
-                    colCountInp.value = updatedCols.length;
-                }
-            };
-        }
-
-        if (paginationY) {
-            paginationY.onclick = () => {
-                highlightActive(paginationY, true);
-                highlightActive(paginationN, false);
-                notifyGrid({ pagination: true });
-            };
-        }
-        if (paginationN) {
-            paginationN.onclick = () => {
-                highlightActive(paginationN, true);
-                highlightActive(paginationY, false);
-                notifyGrid({ pagination: false });
-            };
-        }
-
-        if (rowCountInp) {
-            rowCountInp.oninput = () => {
-                const val = parseInt(rowCountInp.value) || 5;
-                notifyGrid({ rowCount: val });
-            };
-        }
-
-        if (bgColorInp) {
-            bgColorInp.onchange = () => {
-                const wrapper = document.getElementById('grid-bg-wrapper');
-                if (wrapper) wrapper.classList.remove('transparent-active');
-                notifyGrid({ bg: bgColorInp.value });
-            };
-        }
-
-        if (bgNoneBtn) {
-            bgNoneBtn.onclick = () => {
-                const wrapper = document.getElementById('grid-bg-wrapper');
-                if (wrapper) wrapper.classList.add('transparent-active');
-                notifyGrid({ bg: 'transparent' });
-            };
-        }
-
-        if (borderColorInp) {
-            borderColorInp.onchange = () => {
-                const wrapper = document.getElementById('grid-border-wrapper');
-                if (wrapper) wrapper.classList.remove('transparent-active');
-                notifyGrid({ border: borderColorInp.value });
-            };
-        }
-
-        if (borderNoneBtn) {
-            borderNoneBtn.onclick = () => {
-                const wrapper = document.getElementById('grid-border-wrapper');
-                if (wrapper) wrapper.classList.add('transparent-active');
-                notifyGrid({ border: 'transparent' });
-            };
-        }
-    };
-    initGridEvents();
 
     const initAdminSettingsEvents = () => {
         const rowCountSelect = document.getElementById('prop-admin-row-count');

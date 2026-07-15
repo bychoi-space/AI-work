@@ -1517,6 +1517,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             
             if (!input) return;
 
+            if (placeholder) {
+                const phText = container.getAttribute('data-placeholder');
+                if (phText !== null && placeholder.textContent !== phText) {
+                    placeholder.textContent = phText;
+                }
+            }
+
             const restoreFonts = () => {
                 const fs = container.getAttribute('data-fontsize');
                 const ff = container.getAttribute('data-fontfamily');
@@ -4779,6 +4786,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
+
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_TOGGLE_PROPERTIES') {

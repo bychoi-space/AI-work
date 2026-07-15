@@ -28,7 +28,7 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .v4-premium-table { table-layout: fixed; border-collapse: collapse; border: 1.6px solid #cbd5e1 !important; font-family: 'Inter', sans-serif; }
 .v4-premium-table th { padding: 14px 16px; text-align: left; border: 1.6px solid #cbd5e1 !important; font-weight: 700; white-space: nowrap; }
 .v4-premium-table td { padding: 14px 16px; border: 1.6px solid #cbd5e1 !important; }
-.v4-grid-container table th, .v4-grid-container table td { border-right: 1.6px solid rgb(226, 232, 240) !important; height: inherit !important; line-height: 1.2 !important; padding: 0 8px !important; }
+.v4-grid-container table th, .v4-grid-container table td { border-right: 1.6px solid rgb(226, 232, 240) !important; line-height: 1.2 !important; padding: 0 8px !important; }
 .v4-grid-container table td[data-type="checkbox"], .v4-grid-container table th[data-type="checkbox"], .v4-grid-container table td.v4-grid-check-col, .v4-grid-container table th.v4-grid-check-col { padding: 0 !important; }
 .v4-grid-container table td *, .v4-grid-container table th * { margin: 0 !important; padding: 0 !important; line-height: inherit !important; }
 .v4-grid-container table tr { border-bottom: 1.6px solid rgb(226, 232, 240) !important; }
@@ -1088,7 +1088,7 @@ window.v4Script = `
                         th.style.setProperty('padding', col.type === 'checkbox' ? '0' : '0 8px', 'important');
                         th.style.fontWeight = '500';
                         th.style.color = '#334155';
-                        th.style.height = '';
+                        th.style.setProperty('height', rowHeightVal, 'important');
 
                         
                         if (col.type === 'checkbox') {
@@ -1193,7 +1193,7 @@ window.v4Script = `
                     columns.forEach(function(col, cIdx) {
                         var td = tds[cIdx];
                         td.style.borderRight = '1.6px solid rgb(226,232,240)';
-                        td.style.height = '';
+                        td.style.setProperty('height', rowHeightVal, 'important');
                         td.style.setProperty('padding', col.type === 'checkbox' ? '0' : '0 8px', 'important');
 
                         
@@ -1298,7 +1298,7 @@ window.v4Script = `
             }
             var wrapper = container.querySelector('.v4-grid-table-wrapper');
             if (wrapper) {
-                wrapper.style.height = 'calc(100% - ' + rowHeightVal + ')';
+                wrapper.style.height = showPagination ? 'calc(100% - 36px)' : '100%';
             }
             
             return;
@@ -1324,9 +1324,9 @@ window.v4Script = `
         columns.forEach(function(col, index) {
             var borderRight = ' border-right:1.6px solid rgb(226,232,240);';
             if (col.type === 'checkbox') {
-                headerHtml += '<th class="v4-grid-cell v4-grid-check-col" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0; font-weight:normal;"><input type="checkbox"></th>';
+                headerHtml += '<th class="v4-grid-cell v4-grid-check-col" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center; height:' + rowHeightVal + ' !important;' + borderRight + ' box-sizing:border-box; padding:0; font-weight:normal;"><input type="checkbox"></th>';
             } else {
-                headerHtml += '<th class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="' + col.type + '" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; font-weight:500; color:#0f172a; user-select:none;">' + (col.name || '') + ' ⇅</th>';
+                headerHtml += '<th class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="' + col.type + '" style="display:table-cell; vertical-align:middle; text-align:left; height:' + rowHeightVal + ' !important; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; font-weight:500; color:#0f172a; user-select:none;">' + (col.name || '') + ' ⇅</th>';
             }
         });
         headerHtml += '</tr>';
@@ -1341,19 +1341,20 @@ window.v4Script = `
             
             columns.forEach(function(col, colIndex) {
                 var borderRight = ' border-right:1.6px solid rgb(226,232,240);';
+                var heightStyle = ' height:' + rowHeightVal + ' !important;';
                 
                 if (col.type === 'checkbox') {
-                    bodyHtml += '<td class="v4-grid-cell" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0;"><input type="checkbox"></td>';
+                    bodyHtml += '<td class="v4-grid-cell" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + heightStyle + borderRight + ' box-sizing:border-box; padding:0;"><input type="checkbox"></td>';
                 } else if (col.type === 'number') {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="number" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + (1024 - i) + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="number" style="display:table-cell; vertical-align:middle; text-align:left;' + heightStyle + ' padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + (1024 - i) + '</td>';
                 } else if (col.type === 'status') {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="status" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box;"><span style="background:' + data.statusBg + '; color:' + data.statusColor + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + data.status + '</span></td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="status" style="display:table-cell; vertical-align:middle; text-align:left;' + heightStyle + ' padding:0 8px;' + borderRight + ' box-sizing:border-box;"><span style="background:' + data.statusBg + '; color:' + data.statusColor + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + data.status + '</span></td>';
                 } else if (col.type === 'author') {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="author" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.author + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="author" style="display:table-cell; vertical-align:middle; text-align:left;' + heightStyle + ' padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.author + '</td>';
                 } else if (col.type === 'datetime') {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="datetime" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.date + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="datetime" style="display:table-cell; vertical-align:middle; text-align:left;' + heightStyle + ' padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.date + '</td>';
                 } else {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="text" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.name + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="text" style="display:table-cell; vertical-align:middle; text-align:left;' + heightStyle + ' padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.name + '</td>';
                 }
             });
             bodyHtml += '</tr>';
@@ -3742,6 +3743,7 @@ window.v4Script = `
                 const gridContainer = s.classList.contains('v4-grid-container') ? s : s.querySelector('.v4-grid-container');
                 const rowCount = parseInt(gridContainer.getAttribute('data-row-count')) || 5;
                 const pagination = gridContainer.getAttribute('data-pagination') !== 'false';
+                const rowHeight = parseInt(gridContainer.getAttribute('data-row-height')) || 50;
                 
                 var currentCols = [];
                 var rawCols = gridContainer.getAttribute('data-columns');
@@ -3760,20 +3762,20 @@ window.v4Script = `
                 
                 const act = (d.action || "").toLowerCase();
                 if (act === 'add-row' || act === 'add_row') {
-                    window.renderGrid(gridContainer, currentCols, rowCount + 1, pagination);
+                    window.renderGrid(gridContainer, currentCols, rowCount + 1, pagination, rowHeight);
                 } else if (act === 'del-row' || act === 'del_row') {
                     if (rowCount > 1) {
-                        window.renderGrid(gridContainer, currentCols, rowCount - 1, pagination);
+                        window.renderGrid(gridContainer, currentCols, rowCount - 1, pagination, rowHeight);
                     }
                 } else if (act === 'add-col' || act === 'add_col') {
                     if (currentCols.length < 10) {
                         currentCols.push({ name: '새 항목', type: 'text', width: '150px' });
-                        window.renderGrid(gridContainer, currentCols, rowCount, pagination);
+                        window.renderGrid(gridContainer, currentCols, rowCount, pagination, rowHeight);
                     }
                 } else if (act === 'del-col' || act === 'del_col') {
                     if (currentCols.length > 1) {
                         currentCols.pop();
-                        window.renderGrid(gridContainer, currentCols, rowCount, pagination);
+                        window.renderGrid(gridContainer, currentCols, rowCount, pagination, rowHeight);
                     }
                 }
                 
@@ -4106,6 +4108,20 @@ window.v4Script = `
                         c.appendChild(port);
                     }
                 });
+            }
+        });
+        
+        // Initialize existing grid height and rendering details on load
+        document.querySelectorAll('.v4-grid-container').forEach(function(container) {
+            var currentCols = [];
+            try {
+                currentCols = JSON.parse(container.getAttribute('data-columns') || '[]');
+            } catch(e) {}
+            var rowCount = parseInt(container.getAttribute('data-row-count')) || 5;
+            var showPagination = container.getAttribute('data-pagination') === 'true';
+            var rowHeight = parseInt(container.getAttribute('data-row-height')) || 50;
+            if (window.renderGrid) {
+                window.renderGrid(container, currentCols, rowCount, showPagination, rowHeight);
             }
         });
     };

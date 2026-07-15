@@ -114,12 +114,12 @@ window.v4InteractionScript = `
             e.preventDefault(); 
         }
         else if (h || (c && !e.target.closest('td, th'))) { 
-            if (window.V4UndoManager) window.V4UndoManager.saveState();
-            window.isDragging = true; window.activeEl = c; 
+            window.isDragging = true; 
+            window.isDraggingStarted = false;
+            window.activeEl = c; 
             startX = e.clientX; startY = e.clientY; 
             startTop = parseInt(window.activeEl.style.top) || 0; startLeft = parseInt(window.activeEl.style.left) || 0; 
             startRect = window.activeEl.getBoundingClientRect();
-            notifyParent({ type: 'LF_SNAP_START' });
             if (h || e.target.closest('.v4-editable-cell')) e.preventDefault(); 
             document.querySelectorAll('.lf-component.selected').forEach(s => s.classList.add('dragging-now'));
         }
@@ -208,6 +208,17 @@ window.v4InteractionScript = `
             if (window.isDragging && window.activeEl) { 
                 let dx = e.clientX - startX;
                 let dy = e.clientY - startY;
+
+                // Threshold-based drag entry (Deadzone: 3px)
+                const moveDist = Math.sqrt(dx * dx + dy * dy);
+                if (!window.isDraggingStarted) {
+                    if (moveDist < 3) {
+                        return; // Ignore micro-movement
+                    }
+                    window.isDraggingStarted = true;
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    notifyParent({ type: 'LF_SNAP_START' });
+                }
 
                 if (e.shiftKey) {
                     if (Math.abs(dx) >= Math.abs(dy)) {
@@ -329,36 +340,38 @@ window.v4InteractionScript = `
             notifyParent({ type: 'LF_MARQUEE_END' });
         }
         if (window.isDragging && window.activeEl) {
-            notifyParent({ type: 'LF_SNAP_END' });
-            
-            if (window.activeEl.classList.contains('text-marker') || window.activeEl.classList.contains('pin-marker')) {
-                const idx = parseInt(window.activeEl.id.replace('v4-pin-', ''));
-                notifyParent({
-                    type: 'LF_UPDATE_PIN_POS',
-                    index: idx,
-                    x: parseFloat(window.activeEl.style.left) || 0,
-                    y: parseFloat(window.activeEl.style.top) || 0,
-                    standardized: true
-                });
-            }
-            if (window.activeEl.classList.contains('lf-group')) {
-                const scale = (window.parent && window.parent.state && window.parent.state.transform) ? window.parent.state.transform.scale : 1;
-                const hostRect = document.body.getBoundingClientRect();
-                window.activeEl.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
-                    const idx = parseInt(child.id.replace('v4-pin-', ''));
-                    if (!isNaN(idx)) {
-                        const childRect = child.getBoundingClientRect();
-                        const absX = (childRect.left - hostRect.left) / scale;
-                        const absY = (childRect.top - hostRect.top) / scale;
-                        notifyParent({
-                            type: 'LF_UPDATE_PIN_POS',
-                            index: idx,
-                            x: absX,
-                            y: absY,
-                            standardized: true
-                        });
-                    }
-                });
+            if (window.isDraggingStarted) {
+                notifyParent({ type: 'LF_SNAP_END' });
+                
+                if (window.activeEl.classList.contains('text-marker') || window.activeEl.classList.contains('pin-marker')) {
+                    const idx = parseInt(window.activeEl.id.replace('v4-pin-', ''));
+                    notifyParent({
+                        type: 'LF_UPDATE_PIN_POS',
+                        index: idx,
+                        x: parseFloat(window.activeEl.style.left) || 0,
+                        y: parseFloat(window.activeEl.style.top) || 0,
+                        standardized: true
+                    });
+                }
+                if (window.activeEl.classList.contains('lf-group')) {
+                    const scale = (window.parent && window.parent.state && window.parent.state.transform) ? window.parent.state.transform.scale : 1;
+                    const hostRect = document.body.getBoundingClientRect();
+                    window.activeEl.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
+                        const idx = parseInt(child.id.replace('v4-pin-', ''));
+                        if (!isNaN(idx)) {
+                            const childRect = child.getBoundingClientRect();
+                            const absX = (childRect.left - hostRect.left) / scale;
+                            const absY = (childRect.top - hostRect.top) / scale;
+                            notifyParent({
+                                type: 'LF_UPDATE_PIN_POS',
+                                index: idx,
+                                x: absX,
+                                y: absY,
+                                standardized: true
+                            });
+                        }
+                    });
+                }
             }
         }
         if (window.isResizing && window.activeEl) {
@@ -368,7 +381,10 @@ window.v4InteractionScript = `
             }
         }
         document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
-        window.isDragging = false; window.isResizing = false; window.activeEl = null; 
+        window.isDragging = false; 
+        window.isDraggingStarted = false;
+        window.isResizing = false; 
+        window.activeEl = null; 
     });
 })();
 `;

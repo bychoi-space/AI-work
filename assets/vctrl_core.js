@@ -71,6 +71,9 @@ window.loadScreen = async function(fileName) {
         (window.v4ObjectTableScript || '') + '\n' +
         (window.v4ObjectConnectorScript || '') + '\n' +
         (window.v4ConnectorScript || '') + '\n' +
+        (window.v4DragResizeScript || '') + '\n' +
+        (window.v4PortConnectorScript || '') + '\n' +
+        (window.v4InteractionScript || '') + '\n' +
         (window.v4Script || '') + '\n</script>';
 
     // Forcefully strip out any existing inlined scripts of our engine to avoid duplicates or stale code
@@ -83,7 +86,7 @@ window.loadScreen = async function(fileName) {
         'v4DesignSystemScript', 'v4TextMeasurerScript', 'v4UIAtomsScript',
         'v4CommonScript', 'v4ObjectTextScript', 'v4ObjectShapeScript',
         'v4ObjectTableScript', 'v4ObjectConnectorScript', 'v4ConnectorScript',
-        'LF_GROUP_SELECTED', 'GroupingManager'
+        'LF_GROUP_SELECTED', 'GroupingManager', 'renderGrid'
     ];
     finalContent = finalContent.replace(scriptRegex, (match, scriptBody) => {
         const shouldStrip = keywords.some(keyword => scriptBody.includes(keyword));
@@ -944,9 +947,76 @@ window.init = async function() {
 
         // --- ATTACH GLOBAL LISTENERS ---
         console.log("[INIT] Attaching global listeners...");
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', async (e) => {
+            // 1. Global Save Button
             if (e.target && e.target.closest('#btn-global-save')) {
                 handleGlobalSave();
+                return;
+            }
+
+            // 2. Submit Add Screen Button
+            if (e.target && e.target.closest('#btn-add-screen-submit')) {
+                e.preventDefault();
+                const btnSubmit = e.target.closest('#btn-add-screen-submit');
+                
+                const selectedCard = document.querySelector('.template-card.selected');
+                if (!selectedCard) {
+                    window.Notification?.alert("템플릿을 선택해주세요.", "알림", "warning");
+                    return;
+                }
+                
+                const inputName = document.getElementById('new-screen-name');
+                const screenName = inputName?.value?.trim();
+                if (!screenName) {
+                    window.Notification?.alert("화면 이름을 입력해주세요.", "알림", "warning");
+                    return;
+                }
+
+                btnSubmit.disabled = true;
+                btnSubmit.innerText = "생성 중..";
+
+                const template = selectedCard.dataset.template;
+                const success = await createScreenFromTemplate(state.currentProject, screenName, template, {
+                    PROJECT_TITLE: state.projectMetadata.title || '',
+                    PROJECT_NAME: state.projectMetadata.title || '',
+                    SCREEN_NAME: screenName,
+                    VERSION: '0.1',
+                    JIRA: state.projectMetadata.jira || '-',
+                    AUTHOR: state.projectMetadata.assignee || '-',
+                    DATE: state.projectMetadata.period || new Date().toLocaleDateString('ko-KR')
+                }, msg => { 
+                    const placeholderTxt = document.getElementById('placeholder-txt');
+                    if (placeholderTxt) placeholderTxt.innerText = msg; 
+                });
+
+                if (success) {
+                    location.reload();
+                } else {
+                    window.Notification?.alert("화면 생성에 실패했습니다.", "오류", "error");
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerText = "화면 생성하기";
+                }
+                return;
+            }
+
+            // 3. Template Card Selection
+            if (e.target && e.target.closest('.template-card')) {
+                const card = e.target.closest('.template-card');
+                document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                
+                const inputName = document.getElementById('new-screen-name');
+                if (inputName) {
+                    const defaultName = card.dataset.defaultName || "new_screen";
+                    inputName.value = defaultName + "_" + Math.floor(Math.random() * 1000);
+                }
+            }
+
+            // 4. Cancel Edit Screen Button
+            if (e.target && e.target.closest('#btn-edit-screen-cancel')) {
+                e.preventDefault();
+                const editModal = document.getElementById('edit-screen-modal');
+                if (editModal) editModal.classList.remove('active');
             }
         });
 
@@ -1004,58 +1074,18 @@ window.init = async function() {
         if (DOM.btnAddScreen) {
             DOM.btnAddScreen.onclick = () => {
                 if (state.isReadOnly) return window.showAuthModal?.();
-                if (DOM.addScreenModal) DOM.addScreenModal.classList.add('active');
+                const realModal = document.getElementById('add-screen-modal');
+                if (realModal) realModal.classList.add('active');
             };
         }
         if (DOM.btnCancelAdd) {
             DOM.btnCancelAdd.onclick = () => {
-                if (DOM.addScreenModal) DOM.addScreenModal.classList.remove('active');
+                const realModal = document.getElementById('add-screen-modal');
+                if (realModal) realModal.classList.remove('active');
             };
         }
         
-        // Template Selection Logic
-        document.querySelectorAll('.template-card').forEach(card => {
-            card.onclick = () => {
-                document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
-                card.classList.add('selected');
-                if (DOM.newScreenName) {
-                    const defaultName = card.dataset.defaultName || "new_screen";
-                    DOM.newScreenName.value = defaultName + "_" + Math.floor(Math.random() * 1000);
-                }
-            };
-        });
-
-        if (DOM.btnSubmitAdd) {
-            DOM.btnSubmitAdd.onclick = async () => {
-                const selectedCard = document.querySelector('.template-card.selected');
-                if (!selectedCard) return window.Notification?.alert("템플릿을 선택해주세요.", "알림", "warning");
-                
-                const screenName = DOM.newScreenName?.value?.trim();
-                if (!screenName) return window.Notification?.alert("화면 이름을 입력해주세요.", "알림", "warning");
-
-                DOM.btnSubmitAdd.disabled = true;
-                DOM.btnSubmitAdd.innerText = "생성 중..";
-
-                const template = selectedCard.dataset.template;
-                const success = await createScreenFromTemplate(state.currentProject, screenName, template, {
-                    PROJECT_TITLE: state.projectMetadata.title || '',
-                    PROJECT_NAME: state.projectMetadata.title || '',
-                    SCREEN_NAME: screenName,
-                    VERSION: '0.1',
-                    JIRA: state.projectMetadata.jira || '-',
-                    AUTHOR: state.projectMetadata.assignee || '-',
-                    DATE: state.projectMetadata.period || new Date().toLocaleDateString('ko-KR')
-                }, msg => { if (DOM.placeholderTxt) DOM.placeholderTxt.innerText = msg; });
-
-                if (success) {
-                    location.reload();
-                } else {
-                    window.Notification?.alert("화면 생성에 실패했습니다.", "오류", "error");
-                    DOM.btnSubmitAdd.disabled = false;
-                    DOM.btnSubmitAdd.innerText = "화면 생성하기";
-                }
-            };
-        }
+        // Note: Template card click selection and btnSubmitAdd submit logic have been refactored into global document-level click delegation at the top of INIT block for structural stability and zero race conditions.
 
         // Shortcuts & Key Event Proxying to Canvas Iframe
         window.addEventListener('keydown', (e) => {
@@ -1090,8 +1120,10 @@ window.init = async function() {
                     if (typeof window.toggleFullscreen === 'function') window.toggleFullscreen(true);
                     return;
                 }
-                if (DOM.addScreenModal) DOM.addScreenModal.classList.remove('active');
-                if (DOM.editScreenModal) DOM.editScreenModal.classList.remove('active');
+                const addModal = document.getElementById('add-screen-modal');
+                if (addModal) addModal.classList.remove('active');
+                const editModal = document.getElementById('edit-screen-modal');
+                if (editModal) editModal.classList.remove('active');
                 if (typeof window.hideAuthModal === 'function') window.hideAuthModal();
                 return;
             }

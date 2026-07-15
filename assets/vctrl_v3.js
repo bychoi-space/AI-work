@@ -325,6 +325,20 @@ function initV3Listeners() {
         if (window.centerView) window.centerView();
     });
 
+    if (DOM && DOM.canvas) {
+        if (window.ResizeObserver) {
+            const ro = new ResizeObserver(function(entries) {
+                for (var i = 0; i < entries.length; i++) {
+                    var entry = entries[i];
+                    if (entry.contentRect.width > 100 && entry.contentRect.height > 100) {
+                        if (window.centerView) window.centerView();
+                    }
+                }
+            });
+            ro.observe(DOM.canvas);
+        }
+    }
+
     console.log("[VCTRL V3] Utility Engine initialized successfully.");
 }
 
