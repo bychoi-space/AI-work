@@ -4,7 +4,7 @@
     "99_Blank_118.html": {
       "title": "99_Blank_118",
       "type": "blank",
-      "updatedAt": "2026-07-15T01:04:53.346Z",
+      "updatedAt": "2026-07-15T01:10:08.631Z",
       "template": "template_blank.html",
       "description": [],
       "connectors": []
@@ -15,5 +15,5 @@
   "period": "2026.07.14(화) ~ 2026.08.06(목)",
   "jira": "LFML-145046",
   "themeIndex": 5,
-  "updated": "2026-07-15 10:04:53"
+  "updated": "2026-07-15 10:10:08"
 }
