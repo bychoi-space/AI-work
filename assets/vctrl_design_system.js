@@ -53,11 +53,12 @@ window.v4DesignSystemScript = `
         try { if (window.bindToggleEvents) window.bindToggleEvents(); } catch(e) { console.error("Error in bindToggleEvents:", e); }
 
         try {
-            // Restore pattern styles for pattern shapes
+            // Restore pattern styles for pattern shapes with strict Value Comparison Guard
             document.querySelectorAll('.v4-shape-pattern-grid').forEach(t => {
-                t.style.setProperty('overflow', 'hidden', 'important');
+                if (t.style.overflow !== 'hidden') {
+                    t.style.setProperty('overflow', 'hidden', 'important');
+                }
                 const pType = t.getAttribute('data-pattern-type') || 'grid';
-                console.log("[DesignSystem] Enforcing pattern style type:", pType, "on element:", t);
                 let bgImg = '';
                 let bgSize = '';
                 
@@ -78,9 +79,22 @@ window.v4DesignSystemScript = `
                     bgSize = '12px 100%';
                 }
                 
-                t.style.setProperty('background-image', bgImg, 'important');
-                t.style.setProperty('background-size', bgSize, 'important');
-                t.style.setProperty('background-color', '#ffffff', 'important');
+                // Compare and update only if values actually changed to prevent infinite MutationObserver recursive loops
+                const curBgImg = t.style.backgroundImage || '';
+                const curBgSize = t.style.backgroundSize || '';
+                const curBgColor = t.style.backgroundColor || '';
+                
+                const cleanImg = (str) => str.replace(/\s+/g, '').replace(/['"]/g, '');
+                if (cleanImg(curBgImg) !== cleanImg(bgImg)) {
+                    t.style.setProperty('background-image', bgImg, 'important');
+                    console.log("[DesignSystem] Enforcing pattern style type:", pType, "on element:", t);
+                }
+                if (curBgSize !== bgSize) {
+                    t.style.setProperty('background-size', bgSize, 'important');
+                }
+                if (curBgColor !== 'rgb(255, 255, 255)' && curBgColor !== '#ffffff' && curBgColor !== 'white') {
+                    t.style.setProperty('background-color', '#ffffff', 'important');
+                }
             });
         } catch(e) {
             console.error("Error in pattern shape style enforcement:", e);
@@ -539,6 +553,13 @@ window.v4DesignSystemScript = `
             
             if (!input) return;
 
+            if (placeholder) {
+                const phText = container.getAttribute('data-placeholder');
+                if (phText !== null && placeholder.textContent !== phText) {
+                    placeholder.textContent = phText;
+                }
+            }
+
             const restoreFonts = () => {
                 const fs = container.getAttribute('data-fontsize');
                 const ff = container.getAttribute('data-fontfamily');
@@ -793,6 +814,18 @@ window.v4DesignSystemScript = `
         });
         document.querySelectorAll('.v4-grid-container').forEach(grid => {
             const showPagination = grid.getAttribute('data-pagination') !== 'false';
+            const rowCount = parseInt(grid.getAttribute('data-row-count')) || 5;
+            const rowHeight = parseInt(grid.getAttribute('data-row-height')) || 50;
+            const comp = grid.closest('.lf-component');
+            if (comp) {
+                const expectedHeight = rowHeight + (rowCount * rowHeight) + (showPagination ? 36 : 0) + 4;
+                const currentHeight = parseInt(comp.style.height) || 0;
+                if (currentHeight !== expectedHeight) {
+                    comp.style.height = expectedHeight + 'px';
+                    if (typeof window.updateHandles === 'function') window.updateHandles(comp);
+                }
+            }
+            
             const footer = grid.querySelector('.v4-grid-footer');
             if (footer) {
                 const targetDisplay = showPagination ? 'flex' : 'none';
@@ -800,7 +833,7 @@ window.v4DesignSystemScript = `
             }
             const wrapper = grid.querySelector('.v4-grid-table-wrapper');
             if (wrapper) {
-                const targetHeight = showPagination ? 'calc(100% - 36px)' : '100%';
+                const targetHeight = 'calc(100% - ' + rowHeight + 'px)';
                 if (wrapper.style.height !== targetHeight) wrapper.style.height = targetHeight;
             }
             if (grid.style.borderWidth !== '1.6px') grid.style.setProperty('border-width', '1.6px', 'important');

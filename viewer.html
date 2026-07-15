@@ -19,17 +19,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
-    <link rel="stylesheet" href="assets/viewer.css?v=V256_PREMIUM_UPGRADE">
+    <link rel="stylesheet" href="assets/viewer.css?v=V260_STAGE_ALIGN_FIX">
     <script>
-        // --- Console Log Auto-Clearing Guard ---
+        // --- Console Log Auto-Clearing Guard (Disabled console.clear for better debugging visibility) ---
         (function() {
             let logCount = 0;
             const originalLog = console.log;
             console.log = function(...args) {
                 logCount++;
-                if (logCount > 150) {
-                    console.clear();
-                    originalLog("[LF Editor] Auto-cleared console logs after reaching threshold.");
+                if (logCount > 1500) { // Bump limit
+                    // console.clear(); // Keep logs preserved
+                    originalLog("[LF Editor] Logger limit reached, preservation active.");
                     logCount = 0;
                 }
                 originalLog.apply(console, args);
@@ -111,19 +111,19 @@
     <!-- bottom-updated span: kept for JS compatibility, hidden -->
     <span id="bottom-updated" style="display:none;"><span></span></span>
 
-    <div id="workspace-view" style="display: flex; flex: 1; overflow: hidden;">
+    <div id="workspace-view">
         <!-- Left Sidebar: Project & Screens -->
-        <aside class="sidebar sidebar-left" id="sidebar-left" style="width: 260px; background: var(--panel-bg); display: flex; flex-direction: column;">
+        <aside class="sidebar sidebar-left" id="sidebar-left">
             <div class="sidebar-handle handle-left" id="btn-toggle-left" title="Toggle Metadata (L)">
                 <span class="material-icons-outlined">chevron_left</span>
             </div>
-            <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="panel-header">
                 <span>PROJECT SCREENS</span>
                 <button class="btn-add-action" id="btn-add-screen" title="새 화면 추가">
                     <span class="material-icons-outlined">add_circle</span>
                 </button>
             </div>
-            <div id="screens-list" style="flex: 1; overflow-y: auto; padding: 12px;">
+            <div id="screens-list">
                 <div class="empty-text">Loading screens...</div>
             </div>
             
@@ -178,7 +178,7 @@
         </div>
 
         <!-- Right Sidebar: Description & Editor -->
-        <aside class="sidebar sidebar-right" id="sidebar-right" style="width: 310px; background: var(--panel-bg); display: flex; flex-direction: column;">
+        <aside class="sidebar sidebar-right" id="sidebar-right">
             <div class="sidebar-handle handle-right" id="btn-toggle-right" title="Toggle Sidebar (R)">
                 <span class="material-icons-outlined">chevron_right</span>
             </div>
@@ -195,8 +195,8 @@
             </div>
 
             <!-- Tab: Description -->
-            <div id="tab-description" class="tab-pane" style="flex: 1; display: none; flex-direction: column; overflow: hidden;">
-                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div id="tab-description" class="tab-pane">
+                <div class="panel-header">
                     <span style="font-size: 10px; opacity: 0.6;">SCENE ANNOTATIONS</span>
                     <button class="btn-add-action" id="btn-add-description" title="새 행 추가 (화면 클릭)">
                         <span class="material-icons-outlined">add_circle</span>
@@ -210,7 +210,7 @@
             </div>
 
             <!-- Tab: Editor (V4 + Atomic Library) -->
-            <div id="tab-editor" class="tab-pane active" style="flex: 1; display: flex; flex-direction: column; overflow-y: auto;">
+            <div id="tab-editor" class="tab-pane active">
                 <!-- Selection Actions (Dynamic Stacked Layout) -->
                 <div id="selection-actions-bar" style="display: none; flex-direction: column; background: rgba(99, 102, 241, 0.05); border-bottom: 1px solid var(--border); padding: 12px 14px; gap: 10px; box-sizing: border-box;">
                     <div style="display: flex; align-items: center; gap: 6px;">
@@ -230,7 +230,7 @@
                                 UNGROUP
                             </button>
                         </div>
-                        <button id="btn-add-molecules-action" class="v4-inspector-btn btn-primary" style="width: 100%; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; gap: 8px; background: #1e293b; color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0; margin-bottom: 8px;">
+                        <button id="btn-add-molecules-action" class="v4-inspector-btn btn-primary">
                             <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M12 5v14M5 12h14"></path></svg>
                             ADD TO MOLECULES
                         </button>
@@ -313,7 +313,7 @@
                     <span style="font-size: 10px; font-weight: 800; color: #818cf8; letter-spacing: 1.5px;">SHAPE</span>
                 </div>
                 <div id="v4-shapes-body" class="components-body" style="padding: 12px;">
-                    <div id="v4-shapes-container" class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px;">
+                    <div id="v4-shapes-container" class="component-grid">
                         <!-- Dynamic shapes will be rendered here -->
                     </div>
 
@@ -326,7 +326,7 @@
                     <span style="font-size: 10px; font-weight: 800; color: #34d399; letter-spacing: 1.5px;">ATOMIC LIBRARY</span>
                 </div>
                 <div id="atomic-library-body" class="components-body" style="padding: 12px;">
-                    <div id="atomic-library-container" class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                    <div id="atomic-library-container" class="component-grid">
                         <!-- Extracted dynamically -->
                     </div>
                 </div>
@@ -336,7 +336,7 @@
                     <span style="font-size: 10px; font-weight: 800; color: #38bdf8; letter-spacing: 1.5px;">ICON LIBRARY</span>
                 </div>
                 <div id="icon-library-body" class="components-body" style="padding: 12px;">
-                    <div id="icon-library-container" class="component-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                    <div id="icon-library-container" class="component-grid">
                         <!-- Dynamic V4 Inspectors container will be handled by core/inspector -->
                     </div>
                 </div>
@@ -345,7 +345,7 @@
                     <span id="molecules-header-text" style="font-size: 10px; font-weight: 800; color: #f43f5e; letter-spacing: 1.5px; text-transform: uppercase;">COMPONENTS</span>
                 </div>
                 <div id="molecules-body" class="components-body" style="padding: 12px;">
-                    <div id="custom-molecules-container" class="v4-tool-grid" style="display: grid; grid-template-columns: 1fr; gap: 8px;">
+                    <div id="custom-molecules-container" class="v4-tool-grid">
                         <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LFmall Header')" style="height: 40px; font-weight: 700;">LFmall Header</button>
                         <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LFmall MO Header (Detail)')" style="height: 40px; font-weight: 700; margin-top: 8px;">LFmall MO Header (Detail)</button>
                     </div>
@@ -396,22 +396,25 @@
     <!-- Modularized Engine -->
     <script src="assets/vctrl_undo.js?v=V194_DATEPICKER"></script>
     <script src="assets/vctrl_iframe_connectors.js?v=V100_INIT"></script>
-    <script src="assets/vctrl_iframe_interactions.js?v=V100_INIT"></script>
+    <script src="assets/vctrl_iframe_interactions.js?v=V101_DEADZONE_3PX"></script>
     <script src="assets/vctrl_text_measurer.js?v=V100_INIT"></script>
     <script src="assets/vctrl_ui_atoms.js?v=V100_INIT"></script>
-    <script src="assets/vctrl_design_system.js?v=V292_PATTERN_DEBUG"></script>
+    <script src="assets/vctrl_design_system.js?v=V294_GRID_ROW_HEIGHT"></script>
     <script src="assets/vctrl_shortcuts.js?v=V220_DUPLICATE_ID_FIX"></script>
     <script src="assets/vctrl_common.js?v=V100_INIT"></script>
     <script src="assets/vctrl_object_text.js?v=V103_SHAPE_TEXT_ALIGN_FIX"></script>
     <script src="assets/vctrl_object_shape.js?v=V107_PATTERN_DEBUG"></script>
     <script src="assets/vctrl_object_table.js?v=V101_POPULATED"></script>
     <script src="assets/vctrl_object_connector.js?v=V101_POPULATED"></script>
-    <script src="assets/vctrl_iframe_script.js?v=V296_PATTERN_RADIUS"></script>
+    <script src="assets/vctrl_iframe_script.js?v=V308_GRID_ROW_HEIGHT"></script>
+    <script src="assets/vctrl_iframe_drag.js?v=V100_INIT"></script>
+    <script src="assets/vctrl_iframe_ports.js?v=V100_INIT"></script>
+    <script src="assets/vctrl_presentation_pen.js?v=V103_TOOLTIP_GUIDE"></script>
     <script src="assets/vctrl_parser_utils.js?v=V100_INIT"></script>
-    <script src="assets/vctrl_core.js?v=V233_PATTERN_TYPE"></script>
+    <script src="assets/vctrl_core.js?v=V239_INTERACTION_INLINE"></script>
     <script src="assets/vctrl_smartguide.js?v=V196_DEBUG_TOGGLE"></script>
     <script src="assets/vctrl_grouping.js?v=V182_MARQUEE_CLEANUP_FIX"></script>
-    <script src="assets/vctrl_inspector.js?v=V242_PATTERN_VISUAL"></script>
+    <script src="assets/vctrl_inspector.js?v=V247_LIVE_LOOKUP"></script>
     <script src="assets/vctrl_v3.js?v=V157_PIN_SYNC"></script>
     <script src="assets/vctrl_properties.js?v=V207_ALL_DIMENSIONS"></script>
     <script src="assets/vctrl_connectors.js?v=V116_PRECISION_SNAP_AND_SYNC_FIX"></script>
@@ -420,7 +423,7 @@
     <script src="enhanced_v4/component_library_v4.js?v=V233_POPUP"></script>
     <script src="assets/vctrl_table.js?v=V144_CELL_MERGE"></script>
     <script src="assets/vctrl_v4_insert.js?v=V100_INIT"></script>
-    <script src="assets/vctrl_v4_atom_listeners.js?v=V100_INIT"></script>
-    <script src="assets/vctrl_v4_addon.js?v=V246_PATTERN_VISUAL"></script>
+    <script src="assets/vctrl_v4_atom_listeners.js?v=V102_ROW_HEIGHT"></script>
+    <script src="assets/vctrl_v4_addon.js?v=V104_ROW_HEIGHT"></script>
 </body>
 </html>
