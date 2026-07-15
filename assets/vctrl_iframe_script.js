@@ -1082,7 +1082,7 @@ window.v4Script = `
 
                         th.style.borderRight = '1.6px solid rgb(226,232,240)';
                         th.style.textAlign = col.type === 'checkbox' ? 'center' : 'left';
-                        th.style.padding = col.type === 'checkbox' ? '0' : '0 8px';
+                        th.style.setProperty('padding', col.type === 'checkbox' ? '0' : '0 8px', 'important');
                         th.style.fontWeight = '500';
                         th.style.color = '#334155';
                         th.style.height = '';
@@ -1191,7 +1191,7 @@ window.v4Script = `
                         var td = tds[cIdx];
                         td.style.borderRight = '1.6px solid rgb(226,232,240)';
                         td.style.height = '';
-                        td.style.padding = col.type === 'checkbox' ? '0' : '0 8px';
+                        td.style.setProperty('padding', col.type === 'checkbox' ? '0' : '0 8px', 'important');
 
                         
                         var prevType = td.getAttribute('data-type');
@@ -1298,18 +1298,6 @@ window.v4Script = `
                 wrapper.style.height = 'calc(100% - ' + rowHeightVal + ')';
             }
             
-            // Sync outer component wrapper height with total rows / headers / footer heights
-            var comp = container.closest('.lf-component');
-            if (comp) {
-                var headerHeight = parseInt(rowHeightVal) || 50;
-                var bodyHeight = rowCount * headerHeight;
-                var footerHeight = showPagination ? 36 : 0;
-                var expectedHeight = headerHeight + bodyHeight + footerHeight + 4; // 4px border offset
-                if (parseInt(comp.style.height) !== expectedHeight) {
-                    comp.style.height = expectedHeight + 'px';
-                    if (window.updateHandles) window.updateHandles(comp);
-                }
-            }
             return;
         }
 

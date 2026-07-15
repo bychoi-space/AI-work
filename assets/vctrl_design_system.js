@@ -816,16 +816,6 @@ window.v4DesignSystemScript = `
             const showPagination = grid.getAttribute('data-pagination') !== 'false';
             const rowCount = parseInt(grid.getAttribute('data-row-count')) || 5;
             const rowHeight = parseInt(grid.getAttribute('data-row-height')) || 50;
-            const comp = grid.closest('.lf-component');
-            if (comp) {
-                const expectedHeight = rowHeight + (rowCount * rowHeight) + (showPagination ? 36 : 0) + 4;
-                const currentHeight = parseInt(comp.style.height) || 0;
-                if (currentHeight !== expectedHeight) {
-                    comp.style.height = expectedHeight + 'px';
-                    if (typeof window.updateHandles === 'function') window.updateHandles(comp);
-                }
-            }
-            
             const footer = grid.querySelector('.v4-grid-footer');
             if (footer) {
                 const targetDisplay = showPagination ? 'flex' : 'none';
