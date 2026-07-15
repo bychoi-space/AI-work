@@ -1,6 +1,13 @@
 {
   "title": "[기획전] 버블 탭 컨테이너",
-  "screens": {},
+  "screens": {
+    "06_Mobile_Design_2_718.html": {
+      "title": "06_Mobile_Design_2_718",
+      "type": "mobile-ui",
+      "updatedAt": "2026-07-15T05:48:02.986Z",
+      "template": "template_mobile_ui_2.html"
+    }
+  },
   "assignee": "최범열",
   "developer": "",
   "period": "2026.07.20(월) ~ 2026.08.27(목)",
