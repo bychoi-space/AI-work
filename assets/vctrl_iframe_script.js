@@ -28,7 +28,9 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .v4-premium-table { table-layout: fixed; border-collapse: collapse; border: 1.6px solid #cbd5e1 !important; font-family: 'Inter', sans-serif; }
 .v4-premium-table th { padding: 14px 16px; text-align: left; border: 1.6px solid #cbd5e1 !important; font-weight: 700; white-space: nowrap; }
 .v4-premium-table td { padding: 14px 16px; border: 1.6px solid #cbd5e1 !important; }
-.v4-grid-container table th, .v4-grid-container table td { border-right: 1.6px solid rgb(226, 232, 240) !important; }
+.v4-grid-container table th, .v4-grid-container table td { border-right: 1.6px solid rgb(226, 232, 240) !important; height: inherit !important; line-height: 1.2 !important; padding: 0 8px !important; }
+.v4-grid-container table td[data-type="checkbox"], .v4-grid-container table th[data-type="checkbox"], .v4-grid-container table td.v4-grid-check-col, .v4-grid-container table th.v4-grid-check-col { padding: 0 !important; }
+.v4-grid-container table td *, .v4-grid-container table th * { margin: 0 !important; padding: 0 !important; line-height: inherit !important; }
 .v4-grid-container table tr { border-bottom: 1.6px solid rgb(226, 232, 240) !important; }
 .v4-grid-container td.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; }
 .v4-grid-container th.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; position: sticky !important; top: 0 !important; z-index: 10 !important; background: #f8fafc !important; }
