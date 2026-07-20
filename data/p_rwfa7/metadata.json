@@ -29,9 +29,18 @@
     "99_Blank_245.html": {
       "title": "99_Blank_245",
       "type": "blank",
-      "updatedAt": "2026-07-20T05:45:04.772Z",
+      "updatedAt": "2026-07-20T08:06:16.912Z",
       "template": "template_blank.html",
-      "description": [],
+      "description": [
+        {
+          "text": "기획전 명칭",
+          "html": "<p><span style=\"font-size: 14px;\">기획전 명칭</span></p>",
+          "x": 39.823,
+          "y": 14,
+          "type": "text",
+          "standardized": true
+        }
+      ],
       "connectors": []
     },
     "99_Blank_658.html": {
@@ -48,5 +57,5 @@
   "period": "2026.07.20(월) ~ 2026.08.27(목)",
   "themeIndex": 5,
   "jira": "",
-  "updated": "2026-07-20 16:40:13"
+  "updated": "2026-07-20 17:06:16"
 }
