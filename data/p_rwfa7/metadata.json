@@ -25,6 +25,12 @@
         }
       ],
       "connectors": []
+    },
+    "99_Blank_245.html": {
+      "title": "99_Blank_245",
+      "type": "blank",
+      "updatedAt": "2026-07-20T01:40:13.431Z",
+      "template": "template_blank.html"
     }
   },
   "assignee": "최범열",
