@@ -1,12 +1,16 @@
 /**
  * assets/vctrl_design_system.js
  * Design System & Styling enforcement module for LF Editor Studio (Iframe Side).
+ * 
+ * [WARNING FOR DEVELOPERS & AI AGENTS]
+ * This file is wrapped in an outer template literal (window.v4DesignSystemScript = `...`).
+ * 1. DO NOT use unescaped backticks (`) inside this file.
+ * 2. Use double quotes (") or single quotes (') for string literals.
+ * 3. If you must use a backtick, it MUST be escaped as \` to avoid syntax errors.
  */
 
 window.v4DesignSystemScript = `
 (function() {
-    const notifyParent = (data) => { window.parent.postMessage(data, '*'); };
-    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
 
     window.enforceDesignSystem = () => {
         if (typeof window.initHandles === 'function') {

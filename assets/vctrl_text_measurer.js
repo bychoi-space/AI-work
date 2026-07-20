@@ -2,7 +2,6 @@ window.v4TextMeasurerScript = `
 (function() {
     console.log("[V4 Text Measurer] Module initialized.");
     
-    const notifyParent = (data) => { window.parent.postMessage(data, '*'); };
 
     const resizeAtomToFitText = (s) => {
         if (!s) return;

@@ -1,15 +1,19 @@
 /**
  * assets/vctrl_shortcuts.js
  * Keyboard Shortcuts & Clipboard sync module for LF Editor Studio (Iframe Side).
+ * 
+ * [WARNING FOR DEVELOPERS & AI AGENTS]
+ * This file is wrapped in an outer template literal (window.v4ShortcutsScript = `...`).
+ * 1. DO NOT use unescaped backticks (`) inside this file.
+ * 2. Use double quotes (") or single quotes (') for string literals.
+ * 3. If you must use a backtick, it MUST be escaped as \` to avoid syntax errors.
  */
 
 window.v4ShortcutsScript = `
 (function() {
     let v4Clipboard = [];
     let isArrowMoving = false;
-
-    const notifyParent = (data) => { window.parent.postMessage(data, '*'); };
-    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
+    
 
     window.reorderAllPins = () => {
         const pins = document.querySelectorAll('.text-marker, .pin-marker');

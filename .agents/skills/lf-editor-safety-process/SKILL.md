@@ -14,8 +14,8 @@ description: Use before risky LF Editor changes, broad refactors, metadata.json 
 
 ## Data And Git Safety
 - Do not flatten folders or move/delete subfolders without explicit user approval.
-- Do not delete or overwrite shared metadata such as `data/metadata.json`.
-- During conflicts, manually merge `metadata.json` `screens` arrays. Never blindly overwrite them.
+- Do not delete or overwrite metadata files such as `metadata.json` in each project folder.
+- During conflicts, manually merge each project's `metadata.json` `screens` arrays. Never blindly overwrite them.
 - Do not push to GitHub `main` unless local verification is complete and the user requested deployment.
 - Do not revert user changes. If existing changes affect the task, work with them or ask.
 

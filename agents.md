@@ -2,13 +2,17 @@
 
 ## 🛠️ 기술 스택 및 아키텍처 (엄격한 규칙)
 - **Vanilla JS 전용**: 프레임워크(React, Vue 등)를 절대 사용하지 마세요. 코드는 가볍고 직관적으로 유지해야 합니다.
-- **단일 진실 공급원 (SSOT)**: 모든 프로젝트 상태(화면 목록, 순서, 설명 등)는 각 프로젝트 폴더의 `metadata.json`에서만 배타적으로 관리되어야 합니다.
+- **단일 진실 공급원 (SSOT)**: 모든 프로젝트 상태(화면 목록, 순서, 설명 등)는 각 개별 프로젝트 폴더의 `metadata.json`(예: `data/p_xxxx/metadata.json`)에서만 배타적으로 관리되어야 합니다. (전역 공유 `data/metadata.json`은 사용하지 않습니다.)
 - **모듈러 아키텍처 (Modular Architecture)**: 엔진 안정성과 확장성을 위해 역할을 엄격히 분리합니다.
   - **`vctrl_core.js` (Core Orchestrator - Parent Side)**:
     - **역할**: 시스템의 '심장'. 전역 상태(`state`) 관리, GitHub API 연동(저장/로드), `MessageHub`를 통한 모듈 간 조율, 스크린 로딩 및 내비게이션 보호 로직 담당.
-    - **참고**: 스크린 로드 시점에 분리된 iframe 하위 스크립트 모듈들(`vctrl_undo.js`, `vctrl_design_system.js`, `vctrl_shortcuts.js`, `vctrl_iframe_script.js`)을 동적으로 병합하여 iframe `srcdoc`에 주입합니다.
+    - **참고**: 스크린 로드 시점에 분리된 여러 iframe 하위 스크립트 모듈들(`vctrl_undo.js`, `vctrl_design_system.js`, `vctrl_shortcuts.js`, `vctrl_iframe_drag.js`, `vctrl_iframe_grid.js`, `vctrl_iframe_accordion.js`, `vctrl_iframe_script.js` 등)을 동적으로 결합/컴파일하여 iframe `srcdoc`에 주입합니다.
   - **`vctrl_iframe_script.js` (Rendering Engine Shell - Iframe Side)**:
-    - **역할**: 시스템의 '근육'. iframe 내부의 DOM 직접 조작, 이벤트 리스너 바인딩, 드래그/리사이즈 마우스 인터랙션을 전담합니다.
+    - **역할**: 시스템의 '근육'. iframe 내부의 DOM 직접 조작, 기본 이벤트 리스너 바인딩, 메시지 디스패칭 등을 전담합니다.
+  - **`vctrl_iframe_drag.js` (Drag/Resize Engine - Iframe Side)**:
+    - **역할**: iframe 내부 요소의 마우스 드래그 이동 및 리사이즈 조작 인터랙션을 전담합니다.
+  - **`vctrl_iframe_grid.js` / `vctrl_iframe_accordion.js` (Component Renders - Iframe Side)**:
+    - **역할**: iframe 내부의 고가변 Grid UI 테이블 및 Accordion 계층 구조 컴포넌트의 전용 동적 렌더링을 전담합니다.
   - **`vctrl_undo.js` (Undo Layer - Iframe Side)**:
     - **역할**: iframe 내부의 V4UndoManager 및 Undo/Redo 로컬 상태 관리를 전담합니다.
   - **`vctrl_design_system.js` (Design Observer - Iframe Side)**:
@@ -110,9 +114,9 @@
       - **Zero-Offset Calibration**: `10px` 등 11px 이하의 초소형 폰트 크기에서 발생하는 브라우저 고유의 아래 처짐 현상을 소멸시키기 위해 Y축 영점 보정 변수 `--v4-text-adjust-y: -0.6px`를 동적으로 부여한다.
       - **텍스트 공백 정제**: 텍스트의 실제 가로/세로 픽셀을 측정하기 전, 유니코드 특수 공백(`\u200B`, `\u00A0` 등)과 개행을 정규식으로 완벽히 제거(`trim().replace(/\u200B/g, '')`)하여 과도한 좌우 공백 왜곡을 차단한다.
     - **[assets/vctrl_v4_addon.js](file:///c:/ai-work/assets/vctrl_v4_addon.js) (부모-자식 스타일 중계기)**:
-      - 사이드바 조작에 따른 `LF_UPDATE_STYLE` 토스 핸들러를 정의한다. 폰트 크기(`shape-font-size`), 정렬(`_applyTextAlign`), 컬러(`shape-text-color`) 변경 메시지 송신 시, 도형 텍스트 영역을 포섭하도록 셀렉터 타겟에 `.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell` 3중 결합 경로가 정의되어야 한다.
-    - **[viewer.html](file:///c:/ai-work/viewer.html) (버전 캐시 무력화)**:
-      - 위 4개 파일을 수정하여 배포한 후에는, 브라우저가 이전 리액션 코드를 캐싱하여 오작동하는 것을 100% 방지하기 위해 이 파일의 스크립트 로드 태그의 버전 쿼리스트링 파라미터를 즉시 최신 버전 상수로 갱신(Version Bump)해야 한다.
+      - 사이드바 조작에 따른 `LF_UPDATE_STYLE` 토스 핸들러를 정의한다. 폰트 크기(`shape-font-size`), 정렬(`_applyTextAlign`), 컬러(`shape-text-color`) 변경 메시지 송신 시, 도형 텍스트 영역을 포섭하도록 셀렉터 타겟에 `.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell` 3중 결합 경로가 정의되어야 합니다.
+    - **[vctrl_core.js] (자동 캐시 무력화)**:
+      - 모듈 스크립트를 수정한 후 배포 시 브라우저 캐싱 문제를 해결하기 위해, `loadScreen()` 시점 주입되는 인라인 스크립트 블록 최상단에 `Date.now()` 난수가 담긴 캐시 버스터 주석(`// Cache Buster Timestamp: ...`)을 자동으로 결합하도록 빌드 흐름을 설계 및 활용해야 합니다.
 
 
 ## 🛡️ 보안 및 통신 규칙 (매수 중요)
@@ -166,7 +170,7 @@
 
 ## 🚫 금기 사항 (Anti-Patterns)
 - **임의의 구조 변경 금지**: 사용자 승인 없이 폴더 구조나 핵심 파일명을 변경하지 마세요.
-- **데이터 훼손 금지**: `metadata.json` 등 공통 메타데이터를 임의로 삭제하거나 훼손하지 마세요.
+- **데이터 훼손 금지**: 각 개별 프로젝트 폴더의 `metadata.json` 등 공통 메타데이터를 임의로 삭제하거나 훼손하지 마세요.
 - **코드 무결성 유지**: 부분 교체 시 앞뒤 문맥을 철저히 대조하여 `SyntaxError`를 원천 차단하세요.
 - **국문 문서화**: 모든 개발 계획서와 로그는 국문 작성을 원칙으로 합니다.
 
@@ -180,7 +184,7 @@
   - 사용자가 항목명을 입력하는 동안에는 `updateProperties`의 `restorePropertiesSections()` 및 `floatingBody.innerHTML` 비우기 등의 DOM 탈착 작업을 건너뛰어(Focus Guard) 연속적인 타이핑 중 활성화가 풀리는 문제를 완벽하게 차단해야 합니다.
 - **정밀 스마트 가이드 스냅**:
   - `Query Item` 아톰 내부의 빈 공간으로 컴포넌트를 드래그해 배치할 때, 각 행의 **세로 정중앙(Middle)** 및 항목명 테두리로부터 **가로 10px 여백 위치(Start Left + 10px)**에 다다르면 자석처럼 스냅되며 수평/수직 가이드가 노출되어야 합니다.
-  - 좌표의 미세 오차를 원천 배제하기 위해, 모든 스냅 타겟 생성 및 계산 시 `getBoundingClientRect()` 기반의 브라우저 절대 좌표(스크롤 오프셋 포함)를 활용합니다.
+  - 좌표의 미세 오차와 줌 배율 간섭을 원천 배제하기 위해, 모든 스냅 타겟 생성 및 계산 시 브라우저 실제 크기 측정 대신 `style.left/top` px 수치 기반의 **Pure Data 연산(No-Measure Strategy)**을 활용합니다.
   - 캔버스의 시각적 공해를 줄이고 최적의 조작감을 보장하기 위해, 스마트 가이드 타겟의 기본 검색 반경은 **150px**로 좁히고, `Row` 및 `Col`이 붙은 가이드 타겟은 **가장 최상위 우선순위(Priority)**로 정렬하여 스냅되도록 매칭 로직을 구성합니다.
 - **다중 선택 및 그룹화 규칙 (Multi-Selection & Grouping Protocol)**:
   - **그룹 내 아톰 예외 처리 (Atom Design-System Bypass)**: 그룹(`.lf-group`) 내부의 컴포넌트는 `enforceDesignSystem()` 등 실시간 디자인 강제화 보정 규칙에서 즉시 제외되어야 합니다. 특히 `closest('.lf-group')` 체크를 통해 스캔 루프를 탈출함으로써 컴포넌트 크기나 구조가 강제로 기본값(예: 버튼 80px, 아코디언 높이 등)으로 덮어씌워져 내부 텍스트 레이아웃이 쪼그라들거나 깨지는 오작동을 차단해야 합니다.

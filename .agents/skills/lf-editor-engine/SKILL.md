@@ -21,9 +21,9 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 - **Nested Backtick Precaution**: `vctrl_core.js`의 `v4Script`와 같이 백틱(`)으로 감싸진 템플릿 리터럴 내부에서 다시 백틱을 사용하면 구문 에러가 발생한다. 내부에서는 반드시 일반 따옴표(`"` 또는 `'`)를 사용하거나 이스케이프(`\``) 처리를 해야 한다.
 - **Iframe State Initialization**: iframe 컨텍스트에서는 부모 창의 전역 변수(예: `window.state`)가 자동으로 공유되지 않는다. iframe 내부에 주입되는 스크립트(예: `v4UndoScript`)에서 상태를 참조하거나 저장할 때는 반드시 참조 전 초기화 여부(예: `if (!window.state) window.state = {};`)를 확인하여 `TypeError`를 방지하라.
 - **iframe 하위 스크립트 모듈화 및 동적 컴파일 (Modular Iframe Scripts & Dynamic Compilation)**:
-  - iframe의 `srcdoc`에 주입되는 스크립트는 기존의 비대했던 `v4Script` 대신 `vctrl_undo.js`, `vctrl_table.js`, `vctrl_design_system.js`, `vctrl_shortcuts.js`, `vctrl_iframe_script.js` 등의 모듈 파일로 완전히 분리되었습니다.
-  - `vctrl_core.js`의 `loadScreen()` 시점에 이 분리된 파일들을 동적으로 페치(Fetch) 및 결합(Compile)하여 iframe의 `srcdoc` 내부 `<script>` 영역에 순서대로 주입합니다.
-  - **캐시 무효화 (Cache Busting)**: 분리된 모듈 스크립트를 수정하는 경우, 브라우저 캐싱 문제를 막기 위해 **반드시 `viewer.html` 내의 스크립트 로드 태그의 버전 쿼리 파라미터(예: `vctrl_shortcuts.js?v=V193_MODULAR` 또는 공통 버전 상수)를 즉시 최신 버전으로 업데이트**하여 캐시를 무효화해야 합니다.
+  - iframe의 `srcdoc`에 주입되는 스크립트는 기존의 비대했던 `v4Script` 대신 `vctrl_undo.js`, `vctrl_table.js`, `vctrl_design_system.js`, `vctrl_shortcuts.js`, `vctrl_iframe_drag.js`, `vctrl_iframe_grid.js`, `vctrl_iframe_accordion.js`, `vctrl_iframe_script.js` 등 기능별 모듈 파일로 완전히 분리되었습니다.
+  - `vctrl_core.js`의 `loadScreen()` 시점에 이 분리된 파일들을 동적으로 결합(Compile)하여 iframe의 `srcdoc` 내부 `<script>` 영역에 순서대로 주입합니다.
+  - **자동 캐시 무효화 (Auto Cache Busting)**: 빌드 시점에 결합되는 스크립트 블록 최상단에 `Date.now()` 타임스탬프 난수가 담긴 버스터 주석(`// Cache Buster Timestamp: ...`)을 함께 인라인 주입하므로, 개발자는 쿼리스트링 버전을 매번 수동 범프할 필요가 없으며 로드 시마다 캐시 무효화가 자동으로 일어납니다.
 - **크로스 스크린 복사/붙여넣기 (Cross-Screen Clipboard Sync)**:
   - 각 스크린 iframe은 고유한 `srcdoc` 컨텍스트(또는 `file://` sandboxed context)에서 로드되므로 격리되어 있어 `localStorage`나 iframe 간의 단순 전역 변수 공유가 불가능합니다.
   - 이를 극복하고 서로 다른 스크린을 넘나들며 오브젝트 복사/붙여넣기(`Ctrl+C` / `Ctrl+V`)를 지원하기 위해 최상위 윈도우(`window.top`)의 전역 프로퍼티인 `window.top.__lf_global_clipboard__`를 클립보드 데이터의 SSOT로 정의하여 통신합니다.
@@ -45,7 +45,7 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 
 ## Connector and Cross-Window Interaction Principles
 - **Iframe Occlusion Protection**: 부모 창에서 드래그 인터랙션(커넥터 핸들 등)이 발생할 때, 마우스가 iframe 위로 올라가면 이벤트가 끊길 수 있다. `mousedown` 시 iframe에 `pointer-events: none`을 설정하고 `mouseup` 시 `auto`로 복구하여 끊김 없는 드래그를 보장하라.
-- **Iframe Coordinate Normalization**: 부모 창에서 iframe 내부 요소의 위치를 계산할 때, `getBoundingClientRect()` 결과에 iframe 자체의 `left`, `top` 오프셋을 반드시 더해주어야 부모 창 기준의 정확한 절대 좌표를 얻을 수 있다.
+- **Iframe Coordinate Normalization**: 부모 창에서 iframe 내부 요소의 물리적 위치(예: 드래그 중인 포트 커넥터 등)를 계산할 때, `getBoundingClientRect()` 결과에 iframe 자체의 `left`, `top` 오프셋을 반드시 더해주어야 부모 창 기준의 정확한 절대 좌표를 얻을 수 있습니다. 단, 스마트 가이드의 오브젝트 간 스냅 계산 시에는 줌 오차가 없는 `style.left/top` 기반의 Pure Data 연산을 우선합니다.
 - **Scale/Zoom Compensation**: 에디터가 줌(Scale) 상태일 때 마우스 이동 거리(`e.clientX - rect.left`)를 그대로 사용하면 안 된다. 반드시 현재의 스케일 값(`window.state.transform.scale`)으로 나누어 가상 캔버스 좌표로 보정하라.
 - **교차 창 좌표계 화해 (Coordinate Reconciliation)**: 
   - **iframe 내부**: `style.left/top`은 `body` 기준의 **논리 좌표(Unscaled)**이며, 모든 객체의 기준점이 된다.

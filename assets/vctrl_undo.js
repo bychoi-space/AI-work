@@ -1,6 +1,12 @@
 /**
  * assets/vctrl_undo.js
  * Undo & Redo management module for LF Editor Studio (Iframe Side).
+ * 
+ * [WARNING FOR DEVELOPERS & AI AGENTS]
+ * This file is wrapped in an outer template literal (window.v4UndoScript = `...`).
+ * 1. DO NOT use unescaped backticks (`) inside this file.
+ * 2. Use double quotes (") or single quotes (') for string literals.
+ * 3. If you must use a backtick, it MUST be escaped as \` to avoid syntax errors.
  */
 
 window.v4UndoScript = `
@@ -9,8 +15,6 @@ window.V4UndoManager = (function() {
     let undoStack = [];
     let currentConnectors = []; // Locally synced connectors for secure undo
     
-    function notifyParent(data) { if (window.parent) window.parent.postMessage(data, '*'); }
-    function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
     
     function getCleanHTML() {
         const host = document.body;

@@ -16,6 +16,15 @@
         }
     }
 
+    window.highlightActive = (btn, isActive) => {
+        if (!btn) return;
+        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+    };
+    const highlightActive = window.highlightActive;
+
     // 1. Component Insertion
     window.insertV4ComponentById = function(id, customIdx) {
         if (id === 'v4-atom-image') {
@@ -163,30 +172,7 @@
 
     // Dependencies are now pre-injected via vctrl_v3.js loadScreen() for security compliance.
 
-    // 2. Inspector Controls (Safe Style Updates)
-    const bindStyleUpdate = (inputId, message) => {
-        const el = document.getElementById(inputId);
-        if (el) {
-            el.addEventListener('input', function() {
-                const data = typeof message === 'function' ? message(this.value) : { ...message, style: { [message.prop]: this.value } };
-                notifyIframe(data);
-                if (document.getElementById('txt-' + inputId)) {
-                    document.getElementById('txt-' + inputId).innerText = this.value;
-                }
-            });
-        }
-    };
 
-    function _rgb2hex(rgb) {
-        if (!rgb) return '#ffffff';
-        if (rgb.startsWith('#')) return rgb;
-        const match = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)$/);
-        if (!match) return '#ffffff';
-        const r = parseInt(match[1]).toString(16).padStart(2, '0');
-        const g = parseInt(match[2]).toString(16).padStart(2, '0');
-        const b = parseInt(match[3]).toString(16).padStart(2, '0');
-        return '#' + r + g + b;
-    }
 
     function hexToRgba(hex, opacity) {
         if (!hex) return 'rgba(30, 41, 59, 1)';
@@ -197,18 +183,6 @@
         return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
     }
 
-    // Table & Shape Style Bindings (Declarative Migration)
-    const styleUpdateConfig = [
-        { id: 'table-font-size', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'table', subSelector: 'td, th', subStyle: { fontSize: val + 'px' } }) },
-        { id: 'table-border-color', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'table', style: { borderColor: val }, subSelector: 'td, th', subStyle: { borderColor: val } }) },
-        { id: 'shape-font-size', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell', style: { fontSize: val + 'px' } }) },
-        { id: 'shape-text-color', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell', style: { color: val } }) },
-        { id: 'shape-border-color', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape', style: { borderColor: val } }) },
-        { id: 'shape-border-radius', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape', style: { borderRadius: val + 'px' } }) },
-        { id: 'text-color-picker', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-editable-cell', style: { color: val } }) },
-        { id: 'icon-color', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'img, .lf-icon', style: { color: val } }) }
-    ];
-    styleUpdateConfig.forEach(conf => bindStyleUpdate(conf.id, conf.msg));
 
 
     // Cell Style & Dimension Direct Actions
@@ -438,7 +412,7 @@
 
 
     // Corner Style Toggle Buttons (Sharp / Round)
-    const _syncCornerBtns = (radiusVal) => {
+    window._syncCornerBtns = (radiusVal) => {
         const btnSharp = document.getElementById('btn-shape-corner-sharp');
         const btnRound = document.getElementById('btn-shape-corner-round');
         const isSharp = parseInt(radiusVal) === 0;
@@ -453,6 +427,7 @@
             btnRound.style.color = !isSharp ? '#00e5ff' : '#94a3b8';
         }
     };
+    const _syncCornerBtns = window._syncCornerBtns;
 
     const _applyCornerRadius = (val) => {
         const slider = document.getElementById('shape-border-radius');
@@ -486,7 +461,7 @@
     }
 
     // Text Align Presets Sync
-    const _syncAlignBtns = (alignVal) => {
+    window._syncAlignBtns = (alignVal) => {
         const btnLeft = document.getElementById('btn-shape-align-left');
         const btnCenter = document.getElementById('btn-shape-align-center');
         const btnRight = document.getElementById('btn-shape-align-right');
@@ -509,6 +484,7 @@
             btnRight.style.color = align === 'right' ? '#00e5ff' : '#94a3b8';
         }
     };
+    const _syncAlignBtns = window._syncAlignBtns;
 
     const _applyTextAlign = (align) => {
         _syncAlignBtns(align);
@@ -537,39 +513,6 @@
     // Text and Icon style properties are mapped dynamically via loop
 
 
-    // Universal Transparency Logic
-    const transparencyConfig = [
-        { btn: 'btn-shape-bg-none', wrapper: 'shape-bg-wrapper', selector: '.v4-shape', style: { background: 'transparent', backgroundColor: 'transparent' } },
-        { btn: 'btn-shape-border-none', wrapper: 'shape-border-wrapper', selector: '.v4-shape', style: { borderColor: 'transparent' } },
-        { btn: 'btn-table-border-none', wrapper: 'table-border-wrapper', selector: '.v4-table', style: { borderColor: 'transparent' } },
-        { btn: 'btn-icon-border-none', wrapper: 'icon-border-wrapper', selector: '.lf-icon', style: { borderColor: 'transparent' } },
-        { btn: 'btn-button-bg-none', wrapper: 'button-bg-wrapper', selector: '', style: { background: 'transparent', backgroundColor: 'transparent' } },
-        { btn: 'btn-button-border-none', wrapper: 'button-border-wrapper', selector: '', style: { borderColor: 'transparent' } }
-    ];
-
-    transparencyConfig.forEach(conf => {
-        const btn = document.getElementById(conf.btn);
-        if (btn) {
-            btn.onclick = () => {
-                const wrapper = document.getElementById(conf.wrapper);
-                if (wrapper) wrapper.classList.add('transparent-active');
-                
-                // shape-bg-opacity sync if shape bg is none
-                if (conf.btn === 'btn-shape-bg-none') {
-                    const slider = document.getElementById('shape-bg-opacity');
-                    const txt = document.getElementById('txt-shape-bg-opacity');
-                    if (slider) slider.value = 0;
-                    if (txt) txt.innerText = 0;
-                }
-
-                notifyIframe({
-                    type: 'LF_UPDATE_STYLE',
-                    selector: conf.selector,
-                    style: conf.style
-                });
-            };
-        }
-    });
 
     // Reset transparency when color is picked (Global)
     const colorIds = [
@@ -618,164 +561,7 @@
         const data = e.data;
         if (!data) return;
 
-        if (data.type === 'LF_COMP_SELECTED') {
-            // UI Sync with current styles (Visibility is now managed by vctrl_inspector.js)
-            if (data.currentStyles) {
-                const s = data.currentStyles;
-                
-                // Sync Shape Opacity
-                if (data.isShape && s.bgOpacity !== undefined) {
-                    const slider = document.getElementById('shape-bg-opacity');
-                    const txt = document.getElementById('txt-shape-bg-opacity');
-                    if (slider) slider.value = s.bgOpacity;
-                    if (txt) txt.innerText = s.bgOpacity;
-                }
-
-                // Sync Other Inputs
-                const fontSizeInput = document.getElementById(data.isTable ? 'table-font-size' : 'shape-font-size');
-                if (fontSizeInput) {
-                    fontSizeInput.value = data.currentStyles.fontSize;
-                    const txt = document.getElementById('txt-' + fontSizeInput.id);
-                    if (txt) txt.innerText = data.currentStyles.fontSize;
-                }
-
-                // Sync Corner Radius (Shape only)
-                if (data.isShape && data.currentStyles.borderRadius !== undefined) {
-                    const radiusVal = data.currentStyles.borderRadius;
-                    const slider = document.getElementById('shape-border-radius');
-                    const txt = document.getElementById('txt-shape-border-radius');
-                    if (slider) slider.value = radiusVal;
-                    if (txt) txt.innerText = radiusVal;
-                    _syncCornerBtns(radiusVal);
-                }
-
-                // Sync Text Align (Shape only)
-                if (data.isShape && data.currentStyles.textAlign !== undefined) {
-                    _syncAlignBtns(data.currentStyles.textAlign);
-                }
-
-                // Sync Checkbox / Radio BG & Border colors
-                if (data.isCheckbox || data.isRadio) {
-                }
-
-                // Sync Textbox / Textarea BG & Border colors and Properties
-                if (data.isTextbox || data.isTextarea) {
-                    const phInput = document.getElementById('prop-input-placeholder');
-                    if (phInput && data.placeholderText !== undefined) {
-                        phInput.value = data.placeholderText;
-                    }
-                }
-
-                // Sync Search Bar BG & Border colors and Properties
-                if (data.isSearchBar) {
-                    const phInput = document.getElementById('prop-searchbar-placeholder');
-                    if (phInput && data.searchbarPlaceholder !== undefined) {
-                        phInput.value = data.searchbarPlaceholder;
-                    }
-                    const mlInput = document.getElementById('prop-input-maxlength');
-                    const mlTxt = document.getElementById('txt-input-maxlength');
-                    if (mlInput && data.maxLength !== undefined) {
-                        mlInput.value = data.maxLength;
-                        if (mlTxt) mlTxt.innerText = data.maxLength;
-                    }
-                    
-                    const activeY = document.getElementById('btn-input-counter-y');
-                    const activeN = document.getElementById('btn-input-counter-n');
-                    const highlightActive = (btn, isActive) => {
-                        if (!btn) return;
-                        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-                        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-                        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-                        btn.style.fontWeight = isActive ? 'bold' : 'normal';
-                    };
-                    if (activeY && activeN && data.showCounter !== undefined) {
-                        highlightActive(activeY, data.showCounter === true);
-                        highlightActive(activeN, data.showCounter === false);
-                    }
-                }
-
-                // Sync Alert BG & Border colors and Properties
-                if (data.isAlert) {
-                    const activeDescY = document.getElementById('btn-alert-desc-y');
-                    const activeDescN = document.getElementById('btn-alert-desc-n');
-                    const descInput = document.getElementById('prop-alert-desc');
-                    const highlightActive = (btn, isActive) => {
-                        if (!btn) return;
-                        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-                        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-                        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-                        btn.style.fontWeight = isActive ? 'bold' : 'normal';
-                    };
-                    if (activeDescY && activeDescN && data.alertShowDesc !== undefined) {
-                        highlightActive(activeDescY, data.alertShowDesc === true);
-                        highlightActive(activeDescN, data.alertShowDesc === false);
-                    }
-                    if (descInput && data.alertDesc !== undefined) {
-                        descInput.value = data.alertDesc;
-                    }
-
-                    const msgInput = document.getElementById('prop-alert-message');
-                    if (msgInput && data.alertMessage !== undefined) {
-                        msgInput.value = data.alertMessage;
-                    }
-                    
-                    const count = data.alertBtnCount || 1;
-                    for (let i = 1; i <= 3; i++) {
-                        const btn = document.getElementById('btn-alert-count-' + i);
-                        if (btn) {
-                            const isActive = count === i;
-                            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-                            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-                            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-                            btn.style.fontWeight = isActive ? 'bold' : 'normal';
-                        }
-                    }
-                    
-                    const btn1 = document.getElementById('prop-alert-btn-1');
-                    if (btn1 && data.alertBtnText1 !== undefined) btn1.value = data.alertBtnText1;
-                    const sel1 = document.getElementById('prop-alert-btn-style-1');
-                    if (sel1 && data.alertBtnStyle1 !== undefined) sel1.value = data.alertBtnStyle1;
-                    
-                    const btn2 = document.getElementById('prop-alert-btn-2');
-                    if (btn2 && data.alertBtnText2 !== undefined) btn2.value = data.alertBtnText2;
-                    const sel2 = document.getElementById('prop-alert-btn-style-2');
-                    if (sel2 && data.alertBtnStyle2 !== undefined) sel2.value = data.alertBtnStyle2;
-                    const btn2Container = document.getElementById('prop-alert-btn-2-container');
-                    if (btn2Container) btn2Container.style.display = count >= 2 ? 'flex' : 'none';
-                    
-                    const btn3 = document.getElementById('prop-alert-btn-3');
-                    if (btn3 && data.alertBtnText3 !== undefined) btn3.value = data.alertBtnText3;
-                    const sel3 = document.getElementById('prop-alert-btn-style-3');
-                    if (sel3 && data.alertBtnStyle3 !== undefined) sel3.value = data.alertBtnStyle3;
-                    const btn3Container = document.getElementById('prop-alert-btn-3-container');
-                    if (btn3Container) btn3Container.style.display = count >= 3 ? 'flex' : 'none';
-                }
-
-                // Sync Button BG & Border colors and Properties
-                if (data.isButton) {
-                    const txtInput = document.getElementById('prop-button-text');
-                    if (txtInput && data.buttonText !== undefined) {
-                        txtInput.value = data.buttonText;
-                    }
-                    const selStyle = document.getElementById('prop-button-style');
-                    if (selStyle && data.buttonStyle !== undefined) {
-                        selStyle.value = data.buttonStyle;
-                        const customColorsDiv = document.getElementById('prop-button-custom-colors');
-                        if (customColorsDiv) {
-                            customColorsDiv.style.display = (data.buttonStyle === 'custom') ? 'block' : 'none';
-                        }
-                    }
-                    const radiusSlider = document.getElementById('prop-button-border-radius');
-                    const radiusTxt = document.getElementById('txt-button-border-radius');
-                    if (radiusSlider && data.buttonRadius !== undefined) {
-                        radiusSlider.value = data.buttonRadius;
-                        if (radiusTxt) radiusTxt.innerText = data.buttonRadius;
-                    }
-                }
-
-            }
-        } 
-        else if (data.type === 'LF_CELL_SELECTED') {
+        if (data.type === 'LF_CELL_SELECTED') {
             const mergeBtn = document.getElementById('btn-merge-cells');
             const splitBtn = document.getElementById('btn-split-cells');
 
@@ -790,7 +576,7 @@
                     if (isBgTransparent) {
                         bgPicker.value = '#ffffff'; // Default visible color when active again
                     } else {
-                        bgPicker.value = _rgb2hex(cd.backgroundColor);
+                        bgPicker.value = window.rgbToHex(cd.backgroundColor) || cd.backgroundColor;
                     }
                 }
                 if (bgWrapper) bgWrapper.classList.toggle('transparent-active', isBgTransparent);
@@ -798,7 +584,7 @@
                 // Sync Cell Text Color
                 const textPicker = document.getElementById('cell-text-color');
                 if (textPicker && cd.color) {
-                    textPicker.value = _rgb2hex(cd.color);
+                    textPicker.value = window.rgbToHex(cd.color) || cd.color;
                 }
 
                 // Sync Width Slider & Number Input
@@ -908,13 +694,6 @@
         const textY = document.getElementById('btn-atom-text-y');
         const textN = document.getElementById('btn-atom-text-n');
         
-        const highlightActive = (btn, isActive) => {
-            if (!btn) return;
-            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-            btn.style.fontWeight = isActive ? 'bold' : 'normal';
-        };
 
         if (activeY) {
             activeY.onclick = () => {
@@ -987,13 +766,6 @@
 
         const counterY = document.getElementById('btn-input-counter-y');
         const counterN = document.getElementById('btn-input-counter-n');
-        const highlightActive = (btn, isActive) => {
-            if (!btn) return;
-            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-            btn.style.fontWeight = isActive ? 'bold' : 'normal';
-        };
 
         if (counterY) {
             counterY.onclick = () => {
@@ -1090,13 +862,6 @@
 
         const activeY = document.getElementById('btn-stepper-btn-y');
         const activeN = document.getElementById('btn-stepper-btn-n');
-        const highlightActive = (btn, isActive) => {
-            if (!btn) return;
-            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-            btn.style.fontWeight = isActive ? 'bold' : 'normal';
-        };
 
         if (activeY) {
             activeY.onclick = () => {
@@ -1145,13 +910,6 @@
         const activeY = document.getElementById('btn-selectbox-dropdown-y');
         const activeN = document.getElementById('btn-selectbox-dropdown-n');
         
-        const highlightActive = (btn, isActive) => {
-            if (!btn) return;
-            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-            btn.style.fontWeight = isActive ? 'bold' : 'normal';
-        };
 
         if (activeY) {
             activeY.onclick = () => {
@@ -1245,13 +1003,6 @@
         const activeY = document.getElementById('btn-fileupload-selected-y');
         const activeN = document.getElementById('btn-fileupload-selected-n');
         
-        const highlightActive = (btn, isActive) => {
-            if (!btn) return;
-            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-            btn.style.fontWeight = isActive ? 'bold' : 'normal';
-        };
 
         if (activeY) {
             activeY.onclick = () => {
@@ -1312,13 +1063,6 @@
                 }
             };
 
-            const highlightActive = (btn, isActive) => {
-                if (!btn) return;
-                btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-                btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-                btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-                btn.style.fontWeight = isActive ? 'bold' : 'normal';
-            };
 
             const descY = document.getElementById('btn-alert-desc-y');
             const descN = document.getElementById('btn-alert-desc-n');
@@ -1496,13 +1240,6 @@
             }
         };
 
-        const highlightActive = (btn, isActive) => {
-            if (!btn) return;
-            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-            btn.style.fontWeight = isActive ? 'bold' : 'normal';
-        };
 
         // Show Presets Toggle
         const presetsY = document.getElementById('btn-dp-presets-y');
@@ -1855,13 +1592,6 @@
         const expandY = document.getElementById('btn-accordion-expand-y');
         const expandN = document.getElementById('btn-accordion-expand-n');
         
-        const highlightActive = (btn, isActive) => {
-            if (!btn) return;
-            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-            btn.style.fontWeight = isActive ? 'bold' : 'normal';
-        };
 
         if (expandY) {
             expandY.onclick = () => {
@@ -2336,13 +2066,6 @@
             }
         };
 
-        const highlightActive = (btn, isActive) => {
-            if (!btn) return;
-            btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
-            btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
-            btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
-            btn.style.fontWeight = isActive ? 'bold' : 'normal';
-        };
 
         const btnOn = document.getElementById('btn-toggle-on');
         const btnOff = document.getElementById('btn-toggle-off');
@@ -2371,6 +2094,200 @@
     initToggleEvents();
 
     initAdminSettingsEvents();
+
+    const initGridEvents = () => {
+        const rowCountInp = document.getElementById('prop-grid-row-count');
+        const bgColorInp = document.getElementById('grid-bg-color');
+        const bgNoneBtn = document.getElementById('btn-grid-bg-none');
+        const borderColorInp = document.getElementById('grid-border-color');
+        const borderNoneBtn = document.getElementById('btn-grid-border-none');
+        const paginationY = document.getElementById('btn-grid-pagination-y');
+        const paginationN = document.getElementById('btn-grid-pagination-n');
+
+        const colMinusBtn = document.getElementById('btn-grid-col-minus');
+        const colPlusBtn = document.getElementById('btn-grid-col-plus');
+        const colAddBtn = document.getElementById('btn-grid-add-col');
+
+        const notifyGrid = (data) => {
+            const iframe = document.getElementById('main-iframe');
+            if (iframe && iframe.contentWindow && window.MessageHub) {
+                window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_GRID_PROPERTIES', data);
+            }
+        };
+
+
+        if (colMinusBtn) {
+            colMinusBtn.onclick = () => {
+                const container = document.getElementById('grid-columns-container');
+                if (!container) return;
+                const nameInputs = Array.from(container.querySelectorAll('.grid-col-name-input'));
+                if (nameInputs.length <= 1) return;
+                
+                const updatedCols = nameInputs.slice(0, -1).map((inp) => {
+                    const idx = inp.getAttribute('data-index');
+                    const typeSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
+                    const widthInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
+                    const optionsInp = container.querySelector(`.grid-col-options-input[data-index="${idx}"]`);
+                    const t = typeSel ? typeSel.value : 'text';
+                    const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
+                    const oVal = optionsInp ? optionsInp.value : '';
+                    return { name: inp.value, type: t, width: wVal + 'px', options: oVal };
+                });
+                notifyGrid({ columns: updatedCols });
+                if (typeof syncGridHeaderInputs === 'function') {
+                    syncGridHeaderInputs(updatedCols, []);
+                }
+                const colCountInp = document.getElementById('prop-grid-col-count');
+                if (colCountInp) {
+                    colCountInp.value = updatedCols.length;
+                }
+            };
+        }
+
+        if (colAddBtn) {
+            colAddBtn.onclick = () => {
+                const container = document.getElementById('grid-columns-container');
+                if (!container) return;
+                const nameInputs = Array.from(container.querySelectorAll('.grid-col-name-input'));
+                if (nameInputs.length >= 10) return;
+                
+                const updatedCols = nameInputs.map((inp) => {
+                    const idx = inp.getAttribute('data-index');
+                    const typeSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
+                    const widthInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
+                    const optionsInp = container.querySelector(`.grid-col-options-input[data-index="${idx}"]`);
+                    const t = typeSel ? typeSel.value : 'text';
+                    const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
+                    const oVal = optionsInp ? optionsInp.value : '';
+                    return { name: inp.value, type: t, width: wVal + 'px', options: oVal };
+                });
+                updatedCols.push({
+                    name: '새 항목',
+                    type: 'text',
+                    width: '200px'
+                });
+                notifyGrid({ columns: updatedCols });
+                if (typeof syncGridHeaderInputs === 'function') {
+                    syncGridHeaderInputs(updatedCols, []);
+                }
+                const colCountInp = document.getElementById('prop-grid-col-count');
+                if (colCountInp) {
+                    colCountInp.value = updatedCols.length;
+                }
+            };
+        }
+
+        if (colPlusBtn) {
+            colPlusBtn.onclick = () => {
+                const container = document.getElementById('grid-columns-container');
+                if (!container) return;
+                const nameInputs = Array.from(container.querySelectorAll('.grid-col-name-input'));
+                if (nameInputs.length >= 10) return;
+                
+                const updatedCols = nameInputs.map((inp) => {
+                    const idx = inp.getAttribute('data-index');
+                    const typeSel = container.querySelector(`.grid-col-type-select[data-index="${idx}"]`);
+                    const widthInp = container.querySelector(`.grid-col-width-input[data-index="${idx}"]`);
+                    const optionsInp = container.querySelector(`.grid-col-options-input[data-index="${idx}"]`);
+                    const t = typeSel ? typeSel.value : 'text';
+                    const wVal = widthInp ? (parseInt(widthInp.value) || 100) : 100;
+                    const oVal = optionsInp ? optionsInp.value : '';
+                    return { name: inp.value, type: t, width: wVal + 'px', options: oVal };
+                });
+                updatedCols.push({
+                    name: '새 항목',
+                    type: 'text',
+                    width: '200px'
+                });
+                notifyGrid({ columns: updatedCols });
+                if (typeof syncGridHeaderInputs === 'function') {
+                    syncGridHeaderInputs(updatedCols, []);
+                }
+                const colCountInp = document.getElementById('prop-grid-col-count');
+                if (colCountInp) {
+                    colCountInp.value = updatedCols.length;
+                }
+            };
+        }
+
+        if (paginationY) {
+            paginationY.onclick = () => {
+                highlightActive(paginationY, true);
+                highlightActive(paginationN, false);
+                notifyGrid({ pagination: true });
+            };
+        }
+        if (paginationN) {
+            paginationN.onclick = () => {
+                highlightActive(paginationN, true);
+                highlightActive(paginationY, false);
+                notifyGrid({ pagination: false });
+            };
+        }
+
+        if (rowCountInp) {
+            rowCountInp.oninput = () => {
+                const val = parseInt(rowCountInp.value) || 5;
+                notifyGrid({ rowCount: val });
+            };
+        }
+
+        const rowHeightInp = document.getElementById('prop-grid-row-height');
+        if (rowHeightInp) {
+            rowHeightInp.oninput = () => {
+                const val = parseInt(rowHeightInp.value) || 50;
+                notifyGrid({ rowHeight: val });
+            };
+        }
+
+        if (bgColorInp) {
+            bgColorInp.onchange = () => {
+                const wrapper = document.getElementById('grid-bg-wrapper');
+                if (wrapper) wrapper.classList.remove('transparent-active');
+                notifyGrid({ bg: bgColorInp.value });
+            };
+        }
+
+        if (bgNoneBtn) {
+            bgNoneBtn.onclick = () => {
+                const wrapper = document.getElementById('grid-bg-wrapper');
+                if (wrapper) wrapper.classList.add('transparent-active');
+                notifyGrid({ bg: 'transparent' });
+            };
+        }
+
+        if (borderColorInp) {
+            borderColorInp.onchange = () => {
+                const wrapper = document.getElementById('grid-border-wrapper');
+                if (wrapper) wrapper.classList.remove('transparent-active');
+                notifyGrid({ border: borderColorInp.value });
+            };
+        }
+
+        if (borderNoneBtn) {
+            borderNoneBtn.onclick = () => {
+                const wrapper = document.getElementById('grid-border-wrapper');
+                if (wrapper) wrapper.classList.add('transparent-active');
+                notifyGrid({ border: 'transparent' });
+            };
+        }
+    };
+    initGridEvents();
+
+    // Export initialization triggers to window for compatibility
+    window.initCheckboxRadioEvents = initCheckboxRadioEvents;
+    window.initTextboxTextareaEvents = initTextboxTextareaEvents;
+    window.initSearchbarEvents = initSearchBarEvents;
+    window.initStepperEvents = initStepperEvents;
+    window.initSelectboxEvents = initSelectboxEvents;
+    window.initFileuploadEvents = initFileuploadEvents;
+    window.initAlertEvents = initAlertEvents;
+    window.initButtonEvents = initButtonEvents;
+    window.initDatePickerEvents = initDatePickerEvents;
+    window.initAccordionEvents = initAccordionEvents;
+    window.initGridEvents = initGridEvents;
+    window.initAdminSettingsEvents = initAdminSettingsEvents;
+    window.initToggleEvents = initToggleEvents;
 
     // Parent-side paste event listener for handling pasted image files when parent has focus
     window.addEventListener('paste', function(e) {
@@ -2409,29 +2326,6 @@
     window.initV4AddonEventListeners = function() {
         console.log("[V4 ADDON] Initializing addon event listeners on injected DOM...");
 
-        // 1. Table & Shape declarative updates (styleUpdateConfig)
-        const styleUpdateConfig = [
-            { id: 'table-font-size', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'table', subSelector: 'td, th', subStyle: { fontSize: val + 'px' } }) },
-            { id: 'table-border-color', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'table', style: { borderColor: val }, subSelector: 'td, th', subStyle: { borderColor: val } }) },
-            { id: 'shape-font-size', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell, .v4-text-box .v4-editable-cell, .v4-text-shape .v4-editable-cell, .text-marker .v4-editable-cell', style: { fontSize: val + 'px' } }) },
-            { id: 'shape-text-color', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell, .v4-text-box .v4-editable-cell, .v4-text-shape .v4-editable-cell, .text-marker .v4-editable-cell', style: { color: val } }) },
-            { id: 'shape-border-color', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape', style: { borderColor: val } }) },
-            { id: 'shape-border-radius', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape', style: { borderRadius: val + 'px' } }) },
-            { id: 'text-color-picker', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-editable-cell', style: { color: val } }) },
-            { id: 'icon-color', msg: (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'img, .lf-icon', style: { color: val } }) }
-        ];
-        
-        styleUpdateConfig.forEach(conf => {
-            const el = document.getElementById(conf.id);
-            if (el) {
-                el.oninput = function() {
-                    const data = typeof conf.msg === 'function' ? conf.msg(this.value) : { ...conf.msg, style: { [conf.msg.prop]: this.value } };
-                    notifyIframe(data);
-                    const txt = document.getElementById('txt-' + conf.id);
-                    if (txt) txt.innerText = this.value;
-                };
-            }
-        });
 
         // 2. Cell Bg & Text Color
         const cellBgColor = document.getElementById('cell-bg-color');

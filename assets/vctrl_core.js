@@ -70,10 +70,10 @@ window.loadScreen = async function(fileName) {
         (window.v4ObjectShapeScript || '') + '\n' +
         (window.v4ObjectTableScript || '') + '\n' +
         (window.v4ObjectConnectorScript || '') + '\n' +
-        (window.v4ConnectorScript || '') + '\n' +
-        (window.v4DragResizeScript || '') + '\n' +
-        (window.v4PortConnectorScript || '') + '\n' +
-        (window.v4InteractionScript || '') + '\n' +
+        (window.v4DragResizeScript || '') + '\n' + 
+        (window.v4PortConnectorScript || '') + '\n' + 
+        (window.v4GridScript || '') + '\n' + 
+        (window.v4AccordionScript || '') + '\n' + 
         (window.v4Script || '') + '\n</script>';
 
     // Forcefully strip out any existing inlined scripts of our engine to avoid duplicates or stale code
@@ -86,6 +86,7 @@ window.loadScreen = async function(fileName) {
         'v4DesignSystemScript', 'v4TextMeasurerScript', 'v4UIAtomsScript',
         'v4CommonScript', 'v4ObjectTextScript', 'v4ObjectShapeScript',
         'v4ObjectTableScript', 'v4ObjectConnectorScript', 'v4ConnectorScript',
+        'v4GridScript', 'v4AccordionScript',
         'LF_GROUP_SELECTED', 'GroupingManager', 'renderGrid'
     ];
     finalContent = finalContent.replace(scriptRegex, (match, scriptBody) => {
@@ -713,6 +714,11 @@ window.MessageHub = {
                             window.state.selectedIds = [...selectedIds];
                         }
                         
+                        // Sync selection state back to iframe DOM to prevent local desync
+                        if (DOM.iframe && DOM.iframe.contentWindow) {
+                            MessageHub.send(DOM.iframe.contentWindow, 'LF_UPDATE_MARQUEE_SELECTION', { ids: selectedIds });
+                        }
+                        
                         if (selectedIds.length === 1) {
                             if (typeof window.updateProperties === 'function') window.updateProperties(data);
                         } else {
@@ -1018,6 +1024,13 @@ window.init = async function() {
                 const editModal = document.getElementById('edit-screen-modal');
                 if (editModal) editModal.classList.remove('active');
             }
+
+            // 5. Cancel Add Screen Button
+            if (e.target && e.target.closest('#btn-add-screen-cancel')) {
+                e.preventDefault();
+                const addModal = document.getElementById('add-screen-modal');
+                if (addModal) addModal.classList.remove('active');
+            }
         });
 
         document.addEventListener('keydown', (e) => {
@@ -1107,6 +1120,7 @@ window.init = async function() {
                     return;
                 }
             }
+
 
             const isS = e.key.toLowerCase() === 's' || e.code === 'KeyS';
             if ((e.ctrlKey || e.metaKey) && isS) { 

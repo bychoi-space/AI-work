@@ -2,8 +2,6 @@ window.v4UIAtomsScript = `
 (function() {
     console.log("[V4 UI Atoms] Module initialized.");
     
-    const notifyParent = (data) => { window.parent.postMessage(data, '*'); };
-    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
 
     const bindStepperEvents = () => {
         document.querySelectorAll('.v4-stepper-container').forEach(container => {

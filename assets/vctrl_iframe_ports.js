@@ -10,30 +10,7 @@ window.v4PortConnectorScript = `
     let startPortSide = null;
     let connDragStartX = 0, connDragStartY = 0;
     let hoveredPort = null;
-    let tempSvg = null;
     
-    const notifyParent = (data) => { if (window.parent) window.parent.postMessage(data, '*'); };
-    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
-
-    function drawTempLine(x1, y1, x2, y2) {
-        if (!tempSvg) {
-            tempSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            tempSvg.style.cssText = 'position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:10005; overflow:visible;';
-            tempSvg.innerHTML = '<path stroke="#00e5ff" stroke-width="2" stroke-dasharray="4,4" fill="none" />';
-            document.body.appendChild(tempSvg);
-        }
-        const path = tempSvg.querySelector('path');
-        const midX = (x1 + x2) / 2;
-        const pathData = 'M ' + x1 + ' ' + y1 + ' H ' + midX + ' V ' + y2 + ' H ' + x2;
-        path.setAttribute('d', pathData);
-    }
-
-    function removeTempLine() {
-        if (tempSvg) {
-            tempSvg.remove();
-            tempSvg = null;
-        }
-    }
 
     window.V4PortConnectorEngine = {
         get isDrawingConnector() { return isDrawingConnector; },

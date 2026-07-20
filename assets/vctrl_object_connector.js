@@ -25,46 +25,6 @@ window.v4ObjectConnectorScript = `
         }
     };
 
-    window.calculatePathData = (c, s, e) => {
-        if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
-        
-        const sSide = c.start.side || 'right';
-        const eSide = c.end.side || 'left';
-        
-        const getDirOffset = (side, amount) => {
-            if (side === 'left') return { dx: -amount, dy: 0 };
-            if (side === 'right') return { dx: amount, dy: 0 };
-            if (side === 'top') return { dx: 0, dy: -amount };
-            if (side === 'bottom') return { dx: 0, dy: amount };
-            return { dx: 0, dy: 0 };
-        };
-        
-        const offset = 20;
-        const oStart = getDirOffset(sSide, offset);
-        const oEnd = getDirOffset(eSide, offset);
-        
-        const ptStart = { x: s.x + oStart.dx, y: s.y + oStart.dy };
-        const ptEnd = { x: e.x + oEnd.dx, y: e.y + oEnd.dy };
-        
-        let path = 'M ' + s.x + ' ' + s.y + ' L ' + ptStart.x + ' ' + ptStart.y;
-        
-        if (sSide === 'left' || sSide === 'right') {
-            if (eSide === 'left' || eSide === 'right') {
-                const midX = (ptStart.x + ptEnd.x) / 2;
-                path += ' H ' + midX + ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
-            } else {
-                path += ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
-            }
-        } else {
-            if (eSide === 'top' || eSide === 'bottom') {
-                const midY = (ptStart.y + ptEnd.y) / 2;
-                path += ' V ' + midY + ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
-            } else {
-                path += ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
-            }
-        }
-        return path;
-    };
 
     window.updateAnchoredConnectorsLocal = (movedId) => {
         const movedEl = document.getElementById(movedId);

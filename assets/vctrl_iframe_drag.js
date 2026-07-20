@@ -11,8 +11,6 @@ window.v4DragResizeScript = `
     let startRect = null;
     let groupChildrenStart = null;
     
-    const notifyParent = (data) => { if (window.parent) window.parent.postMessage(data, '*'); };
-    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
 
     window.V4DragResizeEngine = {
         get isDragging() { return isDragging; },

@@ -166,6 +166,8 @@ window.toggleSidebar = function(side, forceOpen = null) {
     }
 };
 
+
+
 window.switchSidebarTab = function(tabName) {
     console.log(`[Inspector] switchSidebarTab START: ${tabName}`);
     console.trace(); // Trace who is calling this!
@@ -509,6 +511,136 @@ const ProjectMetadataManager = {
             // Sync Property Controls
             const s = (compStyles && compStyles.currentStyles) || {};
             if (DOM.textColorPicker) DOM.textColorPicker.value = s.text || "#000000";
+
+            // 1. Sync Shape Opacity
+            if (compStyles.isShape && s.bgOpacity !== undefined) {
+                const slider = document.getElementById('shape-bg-opacity');
+                const txt = document.getElementById('txt-shape-bg-opacity');
+                if (slider) slider.value = s.bgOpacity;
+                if (txt) txt.innerText = s.bgOpacity;
+            }
+
+            // 2. Sync Other Inputs (Font Size)
+            const fontSizeInput = document.getElementById(compStyles.isTable ? 'table-font-size' : 'shape-font-size');
+            if (fontSizeInput && s.fontSize !== undefined) {
+                fontSizeInput.value = s.fontSize;
+                const txt = document.getElementById('txt-' + fontSizeInput.id);
+                if (txt) txt.innerText = s.fontSize;
+            }
+
+            // 3. Sync Corner Radius (Shape only)
+            if (compStyles.isShape && s.borderRadius !== undefined) {
+                const radiusVal = s.borderRadius;
+                const slider = document.getElementById('shape-border-radius');
+                const txt = document.getElementById('txt-shape-border-radius');
+                if (slider) slider.value = radiusVal;
+                if (txt) txt.innerText = radiusVal;
+                if (typeof window._syncCornerBtns === 'function') {
+                    window._syncCornerBtns(radiusVal);
+                }
+            }
+
+            // 4. Sync Text Align (Shape only)
+            if (compStyles.isShape && s.textAlign !== undefined) {
+                if (typeof window._syncAlignBtns === 'function') {
+                    window._syncAlignBtns(s.textAlign);
+                }
+            }
+
+            // 5. Sync Textbox / Textarea Properties
+            if (compStyles.isTextbox || compStyles.isTextarea) {
+                const phInput = document.getElementById('prop-input-placeholder');
+                if (phInput && compStyles.placeholderText !== undefined) {
+                    phInput.value = compStyles.placeholderText;
+                }
+            }
+
+            // 6. Sync Search Bar Properties
+            if (compStyles.isSearchBar) {
+                const phInput = document.getElementById('prop-searchbar-placeholder');
+                if (phInput && compStyles.searchbarPlaceholder !== undefined) {
+                    phInput.value = compStyles.searchbarPlaceholder;
+                }
+                const mlInput = document.getElementById('prop-input-maxlength');
+                const mlTxt = document.getElementById('txt-input-maxlength');
+                if (mlInput && compStyles.maxLength !== undefined) {
+                    mlInput.value = compStyles.maxLength;
+                    if (mlTxt) mlTxt.innerText = compStyles.maxLength;
+                }
+                const activeY = document.getElementById('btn-input-counter-y');
+                const activeN = document.getElementById('btn-input-counter-n');
+                if (activeY && activeN && compStyles.showCounter !== undefined && typeof window.highlightActive === 'function') {
+                    window.highlightActive(activeY, compStyles.showCounter === true);
+                    window.highlightActive(activeN, compStyles.showCounter === false);
+                }
+            }
+
+            // 7. Sync Alert Properties
+            if (compStyles.isAlert) {
+                const activeDescY = document.getElementById('btn-alert-desc-y');
+                const activeDescN = document.getElementById('btn-alert-desc-n');
+                const descInput = document.getElementById('prop-alert-desc');
+                if (activeDescY && activeDescN && compStyles.alertShowDesc !== undefined && typeof window.highlightActive === 'function') {
+                    window.highlightActive(activeDescY, compStyles.alertShowDesc === true);
+                    window.highlightActive(activeDescN, compStyles.alertShowDesc === false);
+                }
+                if (descInput && compStyles.alertDesc !== undefined) {
+                    descInput.value = compStyles.alertDesc;
+                }
+                const msgInput = document.getElementById('prop-alert-message');
+                if (msgInput && compStyles.alertMessage !== undefined) {
+                    msgInput.value = compStyles.alertMessage;
+                }
+                const count = compStyles.alertBtnCount || 1;
+                for (let i = 1; i <= 3; i++) {
+                    const btn = document.getElementById('btn-alert-count-' + i);
+                    if (btn) {
+                        const isActive = count === i;
+                        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+                        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+                        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+                        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+                    }
+                }
+                const btn1 = document.getElementById('prop-alert-btn-1');
+                if (btn1 && compStyles.alertBtnText1 !== undefined) btn1.value = compStyles.alertBtnText1;
+                const sel1 = document.getElementById('prop-alert-btn-style-1');
+                if (sel1 && compStyles.alertBtnStyle1 !== undefined) sel1.value = compStyles.alertBtnStyle1;
+                const btn2 = document.getElementById('prop-alert-btn-2');
+                if (btn2 && compStyles.alertBtnText2 !== undefined) btn2.value = compStyles.alertBtnText2;
+                const sel2 = document.getElementById('prop-alert-btn-style-2');
+                if (sel2 && compStyles.alertBtnStyle2 !== undefined) sel2.value = compStyles.alertBtnStyle2;
+                const btn2Container = document.getElementById('prop-alert-btn-2-container');
+                if (btn2Container) btn2Container.style.display = count >= 2 ? 'flex' : 'none';
+                const btn3 = document.getElementById('prop-alert-btn-3');
+                if (btn3 && compStyles.alertBtnText3 !== undefined) btn3.value = compStyles.alertBtnText3;
+                const sel3 = document.getElementById('prop-alert-btn-style-3');
+                if (sel3 && compStyles.alertBtnStyle3 !== undefined) sel3.value = compStyles.alertBtnStyle3;
+                const btn3Container = document.getElementById('prop-alert-btn-3-container');
+                if (btn3Container) btn3Container.style.display = count >= 3 ? 'flex' : 'none';
+            }
+
+            // 8. Sync Button Properties
+            if (compStyles.isButton) {
+                const txtInput = document.getElementById('prop-button-text');
+                if (txtInput && compStyles.buttonText !== undefined) {
+                    txtInput.value = compStyles.buttonText;
+                }
+                const selStyle = document.getElementById('prop-button-style');
+                if (selStyle && compStyles.buttonStyle !== undefined) {
+                    selStyle.value = compStyles.buttonStyle;
+                    const customColorsDiv = document.getElementById('prop-button-custom-colors');
+                    if (customColorsDiv) {
+                        customColorsDiv.style.display = (compStyles.buttonStyle === 'custom') ? 'block' : 'none';
+                    }
+                }
+                const radiusSlider = document.getElementById('prop-button-border-radius');
+                const radiusTxt = document.getElementById('txt-button-border-radius');
+                if (radiusSlider && compStyles.buttonRadius !== undefined) {
+                    radiusSlider.value = compStyles.buttonRadius;
+                    if (radiusTxt) radiusTxt.innerText = compStyles.buttonRadius;
+                }
+            }
         } else {
             // Case: Multi-selection without compStyles
             state.isEditing = true;

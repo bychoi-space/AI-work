@@ -69,8 +69,8 @@ description: Use when editing V4 components, .lf-icon SVG atoms, premium buttons
       - **텍스트 공백 정제**: 텍스트의 실제 가로/세로 픽셀을 측정하기 전, 유니코드 특수 공백(`\u200B`, `\u00A0` 등)과 개행을 정규식으로 완벽히 제거(`trim().replace(/\u200B/g, '')`)하여 과도한 좌우 공백 왜곡을 차단한다.
     - **[assets/vctrl_v4_addon.js](file:///c:/ai-work/assets/vctrl_v4_addon.js) (부모-자식 스타일 중계기)**:
       - 사이드바 조작에 따른 `LF_UPDATE_STYLE` 토스 핸들러를 정의한다. 폰트 크기(`shape-font-size`), 정렬(`_applyTextAlign`), 컬러(`shape-text-color`) 변경 메시지 송신 시, 도형 텍스트 영역을 포섭하도록 셀렉터 타겟에 `.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell` 3중 결합 경로가 정의되어야 한다.
-    - **[viewer.html](file:///c:/ai-work/viewer.html) (버전 캐시 무력화)**:
-      - 위 4개 파일을 수정하여 배포한 후에는, 브라우저가 이전 리액션 코드를 캐싱하여 오작동하는 것을 100% 방지하기 위해 이 파일의 스크립트 로드 태그의 버전 쿼리스트링 파라미터를 즉시 최신 버전 상수로 갱신(Version Bump)해야 한다.
+    - **[assets/vctrl_core.js](file:///c:/ai-work/assets/vctrl_core.js) (자동 캐시 무력화)**:
+      - 모듈 스크립트를 수정한 후 배포 시 브라우저 캐싱 문제를 해결하기 위해, `loadScreen()` 시점 주입되는 인라인 스크립트 블록 최상단에 `Date.now()` 난수가 담긴 캐시 버스터 주석(`// Cache Buster Timestamp: ...`)을 자동으로 결합하도록 빌드 흐름을 설계 및 활용해야 합니다.
 - Use font sizes within the project scale: 18-20px for main titles, 15-16px for section/table headers, 14-15px for body/table cells, 13px for labels/help text, and 12px for tiny markers/tags.
 - Apply `white-space: nowrap;` to dates and short labels that must stay on one line.
 - In polygon/shape text, calculate padding and `line-height` so text remains centered.

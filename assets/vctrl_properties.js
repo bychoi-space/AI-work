@@ -112,7 +112,7 @@
             }
             
             if (val.startsWith('rgb')) {
-                val = rgbToHex(val);
+                val = window.rgbToHex(val) || val;
             }
             
             input.value = val;
@@ -120,17 +120,6 @@
                 wrapper.classList.toggle('transparent-active', isTransparent);
             }
         });
-    }
-
-    function rgbToHex(rgb) {
-        if (!rgb) return '#ffffff';
-        if (rgb.startsWith('#')) return rgb;
-        const matches = rgb.match(/\d+/g);
-        if (!matches || matches.length < 3) return '#ffffff';
-        const r = parseInt(matches[0]);
-        const g = parseInt(matches[1]);
-        const b = parseInt(matches[2]);
-        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
 
     // 2. Event Delegation for Input Fields
@@ -207,8 +196,20 @@
     }
 
     // 3. Event Delegation for Color Inputs
+    const SPECIAL_STYLE_CONFIGS = {
+        'table-font-size': (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'table', subSelector: 'td, th', subStyle: { fontSize: val + 'px' } }),
+        'table-border-color': (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'table', style: { borderColor: val }, subSelector: 'td, th', subStyle: { borderColor: val } }),
+        'shape-font-size': (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell, .v4-text-box .v4-editable-cell, .v4-text-shape .v4-editable-cell, .text-marker .v4-editable-cell', style: { fontSize: val + 'px' } }),
+        'shape-text-color': (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell, .v4-text-box .v4-editable-cell, .v4-text-shape .v4-editable-cell, .text-marker .v4-editable-cell', style: { color: val } }),
+        'shape-border-color': (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape', style: { borderColor: val } }),
+        'shape-border-radius': (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape', style: { borderRadius: val + 'px' } }),
+        'text-color-picker': (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-editable-cell', style: { color: val } }),
+        'icon-color': (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'img, .lf-icon', style: { color: val } })
+    };
+
     document.addEventListener('input', (e) => {
         if (e.target.classList.contains('v4-color-input')) {
+            if (SPECIAL_STYLE_CONFIGS[e.target.id]) return;
             const prop = e.target.dataset.prop;
             const value = e.target.value;
             const wrapper = e.target.closest('.v4-color-wrapper');
@@ -216,6 +217,37 @@
             applyStyle(prop, value);
         }
     });
+
+    document.addEventListener('input', (e) => {
+        const id = e.target.id;
+        if (SPECIAL_STYLE_CONFIGS[id]) {
+            if (!activeCompId || !window.DOM || !window.DOM.iframe || !window.DOM.iframe.contentWindow) return;
+            const msgCreator = SPECIAL_STYLE_CONFIGS[id];
+            const msg = msgCreator(e.target.value);
+            MessageHub.send(window.DOM.iframe.contentWindow, msg.type, msg);
+            
+            const txtEl = document.getElementById('txt-' + id);
+            if (txtEl) {
+                txtEl.innerText = e.target.value;
+            }
+            if (window.markAsDirty) window.markAsDirty();
+        }
+    });
+
+    // Custom Transparency Buttons (V4 Addon Declarative Migration)
+    const TRANSPARENCY_BUTTONS = {
+        'btn-shape-bg-none': { wrapper: 'shape-bg-wrapper', msg: () => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape', style: { background: 'transparent', backgroundColor: 'transparent' } }), extra: () => {
+            const slider = document.getElementById('shape-bg-opacity');
+            const txt = document.getElementById('txt-shape-bg-opacity');
+            if (slider) slider.value = 0;
+            if (txt) txt.innerText = 0;
+        }},
+        'btn-shape-border-none': { wrapper: 'shape-border-wrapper', msg: () => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape', style: { borderColor: 'transparent' } }) },
+        'btn-table-border-none': { wrapper: 'table-border-wrapper', msg: () => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-table', style: { borderColor: 'transparent' } }) },
+        'btn-icon-border-none': { wrapper: 'icon-border-wrapper', msg: () => ({ type: 'LF_UPDATE_STYLE', selector: '.lf-icon', style: { borderColor: 'transparent' } }) },
+        'btn-button-bg-none': { wrapper: 'button-bg-wrapper', msg: () => ({ type: 'LF_UPDATE_STYLE', selector: '', style: { background: 'transparent', backgroundColor: 'transparent' } }) },
+        'btn-button-border-none': { wrapper: 'button-border-wrapper', msg: () => ({ type: 'LF_UPDATE_STYLE', selector: '', style: { borderColor: 'transparent' } }) }
+    };
 
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.v4-color-none-btn');
@@ -227,6 +259,22 @@
                 if (wrapper) wrapper.classList.add('transparent-active');
             }
             applyStyle(prop, 'transparent');
+            return;
+        }
+
+        const tBtn = e.target.closest('[id]');
+        if (tBtn && TRANSPARENCY_BUTTONS[tBtn.id]) {
+            if (!activeCompId || !window.DOM || !window.DOM.iframe || !window.DOM.iframe.contentWindow) return;
+            const conf = TRANSPARENCY_BUTTONS[tBtn.id];
+            
+            const wrapper = document.getElementById(conf.wrapper);
+            if (wrapper) wrapper.classList.add('transparent-active');
+            
+            if (conf.extra) conf.extra();
+            
+            const msg = conf.msg();
+            MessageHub.send(window.DOM.iframe.contentWindow, msg.type, msg);
+            if (window.markAsDirty) window.markAsDirty();
         }
     });
 
@@ -234,6 +282,7 @@
     const PALETTE_COLORS = [
         // Grayscale / Neutral
         '#ffffff', '#f1f5f9', '#cbd5e1', '#94a3b8', '#475569', '#0f172a',
+        '#e6e6e6', '#c8c8c8', '#969696', '#646464', '#323232', '#000000',
         // Red / Orange
         '#ef4444', '#b91c1c', '#f97316', '#c2410c', '#f59e0b', '#d97706',
         // Green / Teal
@@ -321,7 +370,7 @@
 
         // Keep inside viewport bounds
         const popupWidth = 172;
-        const popupHeight = 150; // approximate height
+        const popupHeight = 180; // approximate height
         if (left + popupWidth > window.innerWidth) {
             left = window.innerWidth - popupWidth - 12;
         }
