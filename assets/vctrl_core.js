@@ -505,6 +505,10 @@ window.handleGlobalSave = async function() {
             if (updatedTxt) {
                 updatedTxt.innerText = `최종 업데이트: ${updatedTimeStr}`;
             }
+            
+            if (typeof window.showToast === 'function') {
+                window.showToast("저장이 성공적으로 완료되었습니다.", "success");
+            }
 
             // history.json 이력 저장 처리
             try {
@@ -1211,6 +1215,42 @@ window.init = async function() {
     } catch (err) {
         console.error("Initialization failed:", err);
     }
+};
+
+window.showToast = function(message, type = 'success') {
+    let container = document.getElementById('v4-toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'v4-toast-container';
+        document.body.appendChild(container);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `v4-toast ${type}`;
+    
+    let iconName = 'info';
+    if (type === 'success') iconName = 'check_circle';
+    else if (type === 'error') iconName = 'error';
+    else if (type === 'warning') iconName = 'warning';
+    
+    toast.innerHTML = `
+        <span class="material-icons-outlined v4-toast-icon">${iconName}</span>
+        <span style="flex-grow: 1;">${message}</span>
+    `;
+    
+    container.appendChild(toast);
+    
+    requestAnimationFrame(() => {
+        toast.classList.add('show');
+    });
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+        setTimeout(() => {
+            toast.remove();
+        }, 400);
+    }, 3500);
 };
 
 window.DEBUG_MODE = false;
