@@ -10,8 +10,8 @@
         {
           "text": "기획전 명칭",
           "html": "<p><span style=\"font-size: 14px;\">기획전 명칭</span></p>",
-          "x": 39.823,
-          "y": 14,
+          "x": 347.51251220703125,
+          "y": 74.20000457763672,
           "type": "text",
           "standardized": true
         },
@@ -29,7 +29,7 @@
     "99_Blank_245.html": {
       "title": "99_Blank_245",
       "type": "blank",
-      "updatedAt": "2026-07-20T05:26:39.921Z",
+      "updatedAt": "2026-07-20T05:45:04.772Z",
       "template": "template_blank.html",
       "description": [],
       "connectors": []
@@ -38,7 +38,9 @@
       "title": "99_Blank_658",
       "type": "blank",
       "updatedAt": "2026-07-20T05:28:10.192Z",
-      "template": "template_blank.html"
+      "template": "template_blank.html",
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
@@ -46,5 +48,5 @@
   "period": "2026.07.20(월) ~ 2026.08.27(목)",
   "themeIndex": 5,
   "jira": "",
-  "updated": "2026-07-20 14:26:39"
+  "updated": "2026-07-20 14:45:04"
 }
