@@ -4,7 +4,7 @@
     "06_Mobile_Design_2_718.html": {
       "title": "06_Mobile_Design_2_718",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-20T01:30:32.007Z",
+      "updatedAt": "2026-07-20T01:30:45.565Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -24,5 +24,5 @@
   "period": "2026.07.20(월) ~ 2026.08.27(목)",
   "themeIndex": 5,
   "jira": "",
-  "updated": "2026-07-20 10:30:31"
+  "updated": "2026-07-20 10:30:45"
 }
