@@ -401,8 +401,9 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
 
 
 <div id="v4-comp-1784622631543532" class="lf-component" style="position: absolute; top: 544.4px; left: 358px; z-index: 1000; transform: none; width: 59px; height: 32px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">2*1</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1784622654765887" class="lf-component" style="position: absolute; top: 544.4px; left: 426.9px; z-index: 1000; transform: none; width: 59px; height: 32px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">1*2</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1784622670144855" class="lf-component" style="position: absolute; top: 544.4px; left: 496.3px; z-index: 1000; transform: none; width: 59px; height: 32px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">1*3</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
+
 <script id="v4-inlined-script">
-// Cache Buster Timestamp: 1784622994256
+// Cache Buster Timestamp: 1784623213095
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -4758,12 +4759,27 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             
             const targets = [];
             document.querySelectorAll('.lf-component').forEach(c => {
+                let absL = parseFloat(c.style.left) || 0;
+                let absT = parseFloat(c.style.top) || 0;
+                let isChild = false;
+                
+                let parent = c.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.classList && (parent.classList.contains('lf-component') || parent.classList.contains('lf-group'))) {
+                        absL += parseFloat(parent.style.left) || 0;
+                        absT += parseFloat(parent.style.top) || 0;
+                        isChild = true;
+                    }
+                    parent = parent.parentElement;
+                }
+
                 targets.push({
                     id: c.id,
-                    x: parseFloat(c.style.left) || 0,
-                    y: parseFloat(c.style.top) || 0,
+                    x: absL,
+                    y: absT,
                     w: c.offsetWidth,
-                    h: c.offsetHeight
+                    h: c.offsetHeight,
+                    isGroupChild: isChild
                 });
             });
 
