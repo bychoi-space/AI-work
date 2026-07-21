@@ -152,6 +152,10 @@ window.GroupingManager = (function() {
  
      const checkIntersections = (box) => {
          currentTargets.forEach(comp => {
+             if (comp.isGroupChild) {
+                 // Inner group child components are represented by their top-level parent .lf-group
+                 return;
+             }
              if (isFullyContained(box, comp)) {
                  if (!selectedIds.includes(comp.id)) selectedIds.push(comp.id);
              } else {

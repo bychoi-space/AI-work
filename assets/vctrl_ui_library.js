@@ -99,6 +99,7 @@
         } else {
             // Trigger inspector rebinding after all asynchronous blocks are successfully fetched
             triggerAllV4Bindings();
+            syncWindowDOM();
         }
     }
 
@@ -115,6 +116,23 @@
         if (!res4 && window.VCTRL_UI_FALLBACK_MODALS) {
             injectHTML(window.VCTRL_UI_FALLBACK_MODALS, 'body', true);
         }
+        syncWindowDOM();
+    }
+
+    function syncWindowDOM() {
+        if (!window.DOM) return;
+        const get = id => document.getElementById(id);
+        window.DOM.editScreenModal = get('edit-screen-modal');
+        window.DOM.editScreenTitle = get('edit-screen-title');
+        window.DOM.editScreenType = get('edit-screen-type');
+        window.DOM.editScreenDefaultTab = get('edit-screen-default-tab');
+        window.DOM.editScreenDesc = get('edit-screen-desc');
+        window.DOM.editScreenFilename = get('edit-screen-filename');
+        window.DOM.btnCancelEdit = get('btn-edit-screen-cancel');
+        window.DOM.btnSubmitEdit = get('btn-edit-screen-submit');
+        window.DOM.addScreenModal = get('add-screen-modal');
+        window.DOM.btnCancelAdd = get('btn-add-screen-cancel');
+        window.DOM.btnSubmitAdd = get('btn-add-screen-submit');
     }
 
     // Run initialization

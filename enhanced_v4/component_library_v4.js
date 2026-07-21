@@ -82,11 +82,11 @@ window.V4_COMPONENT_LIBRARY = {
             previewHtml: `<div style="display: flex; align-items: center; justify-content: space-between; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 6px; font-size: 10px; height: 20px; padding: 0 6px; box-sizing: border-box; width: 80px;"><span style="color: var(--v4-text-color, #374151);">선택하세요</span><span style="font-size: 8px; color: var(--v4-placeholder-color, #9ca3af);">▼</span></div>`,
             html: `
             <div class="v4-selectbox-container" data-default-text="선택하세요" data-dropdown-active="false" data-options="Option 1,Option 2,Option 3" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
-                <div class="v4-selectbox-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); height: 30px; padding: 0 12px; box-sizing: border-box; font-size: 12px; color: var(--v4-text-color, #374151); cursor: pointer;">
+                <div class="v4-selectbox-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); height: 100%; padding: 0 12px; box-sizing: border-box; font-size: 12px; color: var(--v4-text-color, #374151); cursor: pointer;">
                     <span class="v4-selectbox-selected-text">선택하세요</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px; transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </div>
-                <div class="v4-selectbox-options" style="display: none; position: absolute; top: 28px; left: 0; width: 100%; background-color: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-top: none; border-radius: 0 0 8px 8px; box-sizing: border-box; z-index: 1000; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <div class="v4-selectbox-options" style="display: none; position: absolute; top: calc(100% - 2px); left: 0; width: 100%; background-color: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-top: none; border-radius: 0 0 8px 8px; box-sizing: border-box; z-index: 1000; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                     <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: var(--v4-text-color, #374151); border-bottom: 1.6px solid var(--v4-disabled-bg, #f3f4f6); box-sizing: border-box;">Option 1</div>
                     <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: var(--v4-text-color, #374151); border-bottom: 1.6px solid var(--v4-disabled-bg, #f3f4f6); box-sizing: border-box;">Option 2</div>
                     <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: var(--v4-text-color, #374151); box-sizing: border-box;">Option 3</div>
@@ -213,12 +213,12 @@ window.V4_COMPONENT_LIBRARY = {
             category: 'Atoms',
             previewHtml: `<div style="display:flex; align-items:center; border:1px solid #ccc; background:#f8fafc; padding:4px; width:80px; height:40px; box-sizing:border-box;"><div style="width:25px; height:100%; background:#e2e8f0; border-right:1px solid #ccc;"></div><div style="flex:1; height:100%; background:#fff;"></div></div>`,
             html: `
-            <div class="v4-admin-settings-container" data-row-count="1" data-row-height="50"
+            <div class="v4-admin-settings-container" data-row-count="1" data-row-height="40"
                  data-row1-label="조회 항목" data-row1-cols="1" data-row1-type="textbox"
                  style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background: #ffffff; border: 1.6px solid rgb(226, 232, 240); border-radius: 8px; font-family: inherit; display: flex; flex-direction: column; overflow: hidden; pointer-events: auto;">
                 <div class="v4-admin-settings-table" style="display: flex; flex-direction: column; width: 100%; height: 100%;">
                     <!-- Row 1 -->
-                    <div class="v4-admin-row" style="display: flex; width: 100%; box-sizing: border-box; height: 50px;">
+                    <div class="v4-admin-row" style="display: flex; width: 100%; box-sizing: border-box; height: 40px;">
                         <div class="v4-admin-label-cell" style="width: 140px; background: #f1f5f9; display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 600; color: #334155; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">조회 항목</div>
                         <div class="v4-admin-content-cell" style="flex: 1; display: flex; align-items: center; padding: 0 16px; box-sizing: border-box;"></div>
                     </div>

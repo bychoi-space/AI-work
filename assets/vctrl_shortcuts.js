@@ -197,6 +197,11 @@ window.v4ShortcutsScript = `
         notifyParent({ type: 'LF_REQUEST_CLIPBOARD' });
     };
 
+    function isInputActive(target) {
+        if (!target) return false;
+        return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+    }
+
     document.addEventListener('keydown', e => {
         if (e.altKey && ['1','2','3','4','5','6'].includes(e.key)) {
             e.preventDefault();
@@ -219,7 +224,7 @@ window.v4ShortcutsScript = `
             e.preventDefault();
             const selected = document.querySelectorAll('.lf-component.selected');
             const activeElement = document.activeElement;
-            const isEditing = activeElement && (activeElement.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName));
+            const isEditing = isInputActive(activeElement);
 
             if (selected.length > 0) {
                 if (isEditing) {
@@ -236,118 +241,102 @@ window.v4ShortcutsScript = `
         const isC = e.key === 'c' || e.key === 'C' || e.code === 'KeyC';
         const isV = e.key === 'v' || e.key === 'V' || e.code === 'KeyV';
         const isG = e.key === 'g' || e.key === 'G' || e.code === 'KeyG';
+        const inInput = isInputActive(e.target);
 
         if ((e.ctrlKey || e.metaKey) && isS) {
             e.preventDefault();
             notifyParent({ type: 'LF_TRIGGER_SAVE' });
             return;
         }
-        if ((e.ctrlKey || e.metaKey) && isC) {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                e.preventDefault();
-                window.copySelectedObjects();
-                return;
-            }
+        if ((e.ctrlKey || e.metaKey) && isC && !inInput) {
+            e.preventDefault();
+            window.copySelectedObjects();
+            return;
         }
-        if ((e.ctrlKey || e.metaKey) && isV) {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                e.preventDefault();
-                window.pasteCopiedObjects();
-                return;
-            }
+        if ((e.ctrlKey || e.metaKey) && isV && !inInput) {
+            e.preventDefault();
+            window.pasteCopiedObjects();
+            return;
         }
 
-        if ((e.ctrlKey || e.metaKey) && isG) {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                e.preventDefault();
-                notifyParent({
-                    type: 'LF_SHORTCUT_TRIGGERED',
-                    shortcut: e.shiftKey ? 'ungroup' : 'group'
-                });
-            }
+        if ((e.ctrlKey || e.metaKey) && isG && !inInput) {
+            e.preventDefault();
+            notifyParent({
+                type: 'LF_SHORTCUT_TRIGGERED',
+                shortcut: e.shiftKey ? 'ungroup' : 'group'
+            });
         }
-        else if (e.code === 'Space') {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
+        else if (e.code === 'Space' && !inInput) {
+            e.preventDefault();
+            notifyParent({ type: 'LF_SPACE_DOWN' });
+        } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code) && !inInput) {
+            const selected = document.querySelectorAll('.lf-component.selected');
+            if (selected.length > 0) {
                 e.preventDefault();
-                notifyParent({ type: 'LF_SPACE_DOWN' });
-            }
-        } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                const selected = document.querySelectorAll('.lf-component.selected');
-                if (selected.length > 0) {
-                    e.preventDefault();
-                    if (window.V4UndoManager && !isArrowMoving) {
-                        window.V4UndoManager.saveState();
-                        isArrowMoving = true;
-                        notifyParent({ type: 'LF_SNAP_START' });
-                    }
-                    const step = e.shiftKey ? 10 : 1;
-                    let dx = 0, dy = 0;
-                    if (e.code === 'ArrowUp') dy = -step;
-                    if (e.code === 'ArrowDown') dy = step;
-                    if (e.code === 'ArrowLeft') dx = -step;
-                    if (e.code === 'ArrowRight') dx = step;
+                if (window.V4UndoManager && !isArrowMoving) {
+                    window.V4UndoManager.saveState();
+                    isArrowMoving = true;
+                    notifyParent({ type: 'LF_SNAP_START' });
+                }
+                const step = e.shiftKey ? 10 : 1;
+                let dx = 0, dy = 0;
+                if (e.code === 'ArrowUp') dy = -step;
+                if (e.code === 'ArrowDown') dy = step;
+                if (e.code === 'ArrowLeft') dx = -step;
+                if (e.code === 'ArrowRight') dx = step;
 
-                    const activeEl = selected[0];
+                const activeEl = selected[0];
 
-                    selected.forEach(c => {
-                        const l = parseFloat(c.style.left) || 0;
-                        const t = parseFloat(c.style.top) || 0;
-                        c.style.left = (l + dx) + 'px';
-                        c.style.top = (t + dy) + 'px';
-                        if (typeof window.updateHandles === 'function') window.updateHandles(c);
-                        
-                        if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
-                            const idx = parseInt(c.id.replace('v4-pin-', ''));
-                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: l + dx, y: t + dy });
-                        }
-                        
-                        if (c.classList.contains('connector-line')) {
-                            notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: c.id, dx: dx, dy: dy });
-                        }
-                        
-                        if (c.classList.contains('lf-group')) {
-                            const connIdsStr = c.getAttribute('data-connectors');
-                            const connIds = connIdsStr ? JSON.parse(connIdsStr) : [];
-                            connIds.forEach(connId => {
-                                notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: connId, dx: dx, dy: dy });
-                            });
-                            c.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
-                                const idx = parseInt(child.id.replace('v4-pin-', ''));
-                                const childRect = child.getBoundingClientRect();
-                                const hostRect = document.body.getBoundingClientRect();
-                                const scale = (window.parent?.state?.transform?.scale) || 1;
-                                const absX = (childRect.left - hostRect.left) / scale;
-                                const absY = (childRect.top - hostRect.top) / scale;
-                                notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: absX, y: absY });
-                            });
-                        }
-                    });
+                selected.forEach(c => {
+                    const l = parseFloat(c.style.left) || 0;
+                    const t = parseFloat(c.style.top) || 0;
+                    c.style.left = (l + dx) + 'px';
+                    c.style.top = (t + dy) + 'px';
+                    if (typeof window.updateHandles === 'function') window.updateHandles(c);
                     
-                    if (activeEl) {
-                        const logicalX = parseFloat(activeEl.style.left) || 0;
-                        const logicalY = parseFloat(activeEl.style.top) || 0;
-                        
-                        notifyParent({ 
-                            type: 'LF_SNAP_REQUEST', 
-                            x: logicalX, 
-                            y: logicalY, 
-                            w: activeEl.offsetWidth, 
-                            h: activeEl.offsetHeight,
-                            isArrowKey: true,
-                            activeId: activeEl.id
+                    if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
+                        const idx = parseInt(c.id.replace('v4-pin-', ''));
+                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: l + dx, y: t + dy });
+                    }
+                    
+                    if (c.classList.contains('connector-line')) {
+                        notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: c.id, dx: dx, dy: dy });
+                    }
+                    
+                    if (c.classList.contains('lf-group')) {
+                        const connIdsStr = c.getAttribute('data-connectors');
+                        const connIds = connIdsStr ? JSON.parse(connIdsStr) : [];
+                        connIds.forEach(connId => {
+                            notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: connId, dx: dx, dy: dy });
+                        });
+                        c.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
+                            const idx = parseInt(child.id.replace('v4-pin-', ''));
+                            const childRect = child.getBoundingClientRect();
+                            const hostRect = document.body.getBoundingClientRect();
+                            const scale = (window.parent?.state?.transform?.scale) || 1;
+                            const absX = (childRect.left - hostRect.left) / scale;
+                            const absY = (childRect.top - hostRect.top) / scale;
+                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: absX, y: absY });
                         });
                     }
+                });
+                
+                if (activeEl) {
+                    const logicalX = parseFloat(activeEl.style.left) || 0;
+                    const logicalY = parseFloat(activeEl.style.top) || 0;
+                    
+                    notifyParent({ 
+                        type: 'LF_SNAP_REQUEST', 
+                        x: logicalX, 
+                        y: logicalY, 
+                        w: activeEl.offsetWidth, 
+                        h: activeEl.offsetHeight,
+                        isArrowKey: true,
+                        activeId: activeEl.id
+                    });
                 }
             }
-        } else if (e.code === 'Delete' || e.code === 'Backspace') {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
+        } else if ((e.code === 'Delete' || e.code === 'Backspace') && !inInput) {
                 const selected = document.querySelectorAll('.lf-component.selected');
                 if (selected.length > 0) {
                     e.preventDefault();
@@ -368,7 +357,6 @@ window.v4ShortcutsScript = `
                     notifyParent({ type: 'LF_DESELECT' });
                     markDirty();
                 }
-            }
         }
     });
     document.addEventListener('keyup', e => {

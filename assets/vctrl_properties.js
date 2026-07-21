@@ -195,7 +195,19 @@
         if (window.markAsDirty) window.markAsDirty();
     }
 
-    // 3. Event Delegation for Color Inputs
+    function hexToRgba(hex, opacity) {
+        if (!hex) return 'transparent';
+        if (hex.startsWith('rgba') || hex.startsWith('rgb')) return hex;
+        let c = hex.replace('#', '');
+        if (c.length === 3) c = c.split('').map(x => x + x).join('');
+        const num = parseInt(c, 16);
+        const r = (num >> 16) & 255;
+        const g = (num >> 8) & 255;
+        const b = num & 255;
+        const a = (opacity !== undefined ? opacity : 100) / 100;
+        return `rgba(${r}, ${g}, ${b}, ${a})`;
+    }
+
     const SPECIAL_STYLE_CONFIGS = {
         'table-font-size': (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'table', subSelector: 'td, th', subStyle: { fontSize: val + 'px' } }),
         'table-border-color': (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'table', style: { borderColor: val }, subSelector: 'td, th', subStyle: { borderColor: val } }),
@@ -205,6 +217,7 @@
         'shape-border-radius': (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-shape', style: { borderRadius: val + 'px' } }),
         'text-color-picker': (val) => ({ type: 'LF_UPDATE_STYLE', selector: '.v4-editable-cell', style: { color: val } }),
         'icon-color': (val) => ({ type: 'LF_UPDATE_STYLE', selector: 'img, .lf-icon', style: { color: val } })
+        // Note: shape-bg-color and shape-bg-opacity are handled by SSOT input handlers in vctrl_v4_addon.js
     };
 
     document.addEventListener('input', (e) => {

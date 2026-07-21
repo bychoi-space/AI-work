@@ -750,12 +750,27 @@ window.v4Script = `
             
             const targets = [];
             document.querySelectorAll('.lf-component').forEach(c => {
+                let absL = parseFloat(c.style.left) || 0;
+                let absT = parseFloat(c.style.top) || 0;
+                let isChild = false;
+                
+                let parent = c.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.classList && (parent.classList.contains('lf-component') || parent.classList.contains('lf-group'))) {
+                        absL += parseFloat(parent.style.left) || 0;
+                        absT += parseFloat(parent.style.top) || 0;
+                        isChild = true;
+                    }
+                    parent = parent.parentElement;
+                }
+
                 targets.push({
                     id: c.id,
-                    x: parseFloat(c.style.left) || 0,
-                    y: parseFloat(c.style.top) || 0,
+                    x: absL,
+                    y: absT,
                     w: c.offsetWidth,
-                    h: c.offsetHeight
+                    h: c.offsetHeight,
+                    isGroupChild: isChild
                 });
             });
 
@@ -1886,7 +1901,7 @@ window.v4Script = `
                 if (d.groupHeaderColor !== undefined) container.setAttribute('data-group-header-color', d.groupHeaderColor);
 
                 const hasGroupHeader = container.getAttribute('data-show-group-header') === 'true';
-                const headerHeight = hasGroupHeader ? 50 : 0;
+                const headerHeight = hasGroupHeader ? 40 : 0;
 
                 // Dynamically render Group Header
                 let headerEl = container.querySelector('.v4-admin-group-header');
@@ -1902,7 +1917,7 @@ window.v4Script = `
                     
                     if (headerEl.innerText !== titleText) headerEl.innerText = titleText;
                     headerEl.contentEditable = 'true';
-                    headerEl.style.cssText = 'height: 50px; display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 700; background: ' + bgCol + '; color: ' + textCol + '; box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;';
+                    headerEl.style.cssText = 'height: 40px; display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 700; background: ' + bgCol + '; color: ' + textCol + '; box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;';
                     
                     if (!headerEl.dataset.inputBound) {
                         headerEl.dataset.inputBound = 'true';
@@ -1916,7 +1931,7 @@ window.v4Script = `
                 }
 
                 const totalRows = parseInt(container.getAttribute('data-row-count')) || 1;
-                const globalRowHeight = parseInt(container.getAttribute('data-row-height')) || 50;
+                const globalRowHeight = parseInt(container.getAttribute('data-row-height')) || 40;
                 
                 // Automatically resize component height: sum of specific row heights + headerHeight
                 let newHeight = headerHeight;

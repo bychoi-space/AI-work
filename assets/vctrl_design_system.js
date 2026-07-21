@@ -111,7 +111,7 @@ window.v4DesignSystemScript = `
                     const bgCol = container.getAttribute('data-group-header-bg') || '#73829c';
                     const textCol = container.getAttribute('data-group-header-color') || '#ffffff';
                     
-                    if (header.style.height !== '50px') header.style.height = '50px';
+                    if (header.style.height !== '40px') header.style.height = '40px';
                     if (header.style.display !== 'flex') header.style.display = 'flex';
                     if (header.style.alignItems !== 'center') header.style.alignItems = 'center';
                     if (header.style.padding !== '0px 16px') header.style.padding = '0 16px';
@@ -151,9 +151,9 @@ window.v4DesignSystemScript = `
                 const comp = container.closest('.lf-component');
                 if (comp) {
                     const hasGroupHeader = container.getAttribute('data-show-group-header') === 'true';
-                    const headerHeight = hasGroupHeader ? 50 : 0;
+                    const headerHeight = hasGroupHeader ? 40 : 0;
                     const totalRows = parseInt(container.getAttribute('data-row-count')) || 1;
-                    const globalRowHeight = parseInt(container.getAttribute('data-row-height')) || 50;
+                    const globalRowHeight = parseInt(container.getAttribute('data-row-height')) || 40;
                     
                     let expectedHeight = headerHeight;
                     for (let i = 1; i <= totalRows; i++) {

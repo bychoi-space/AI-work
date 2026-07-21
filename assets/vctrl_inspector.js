@@ -169,8 +169,16 @@ window.toggleSidebar = function(side, forceOpen = null) {
 
 
 window.switchSidebarTab = function(tabName) {
+    const targetPane = document.getElementById(`tab-${tabName}`);
+    const sidebarRight = document.getElementById('sidebar-right');
+    const isSidebarOpen = sidebarRight && !sidebarRight.classList.contains('collapsed');
+    
+    // If target tab is already active and sidebar is open, exit early to avoid reflow/focus interruption
+    if (targetPane && targetPane.classList.contains('active') && isSidebarOpen) {
+        return;
+    }
+
     console.log(`[Inspector] switchSidebarTab START: ${tabName}`);
-    console.trace(); // Trace who is calling this!
     const btns = document.querySelectorAll('.tab-btn');
     const panes = document.querySelectorAll('.tab-pane');
     
@@ -232,6 +240,7 @@ function restorePropertiesSections() {
         });
     }
 }
+window.restorePropertiesSections = restorePropertiesSections;
 
 // --- 3. UI Rendering Functions ---
 window.updateProperties = function(compStyles) {
@@ -1697,29 +1706,57 @@ if (window.MessageHub) {
 
 window.handleEditScreen = async function(fileName) {
     const state = window.state || {};
-    const DOM = window.DOM || {};
     if (state.isReadOnly) {
         if (typeof window.showAuthModal === 'function') window.showAuthModal();
         return;
     }
+
+    // Live DOM Lookup to guarantee references even if UI block was injected asynchronously
+    const editModal = document.getElementById('edit-screen-modal');
+    const editFilename = document.getElementById('edit-screen-filename');
+    const editTitle = document.getElementById('edit-screen-title');
+    const editType = document.getElementById('edit-screen-type');
+    const editDefaultTab = document.getElementById('edit-screen-default-tab');
+    const editDesc = document.getElementById('edit-screen-desc');
+    const btnSubmit = document.getElementById('btn-edit-screen-submit');
+    const btnCancel = document.getElementById('btn-edit-screen-cancel');
+
+    // Update window.DOM cache references if window.DOM exists
+    if (window.DOM) {
+        if (editModal) window.DOM.editScreenModal = editModal;
+        if (editFilename) window.DOM.editScreenFilename = editFilename;
+        if (editTitle) window.DOM.editScreenTitle = editTitle;
+        if (editType) window.DOM.editScreenType = editType;
+        if (editDefaultTab) window.DOM.editScreenDefaultTab = editDefaultTab;
+        if (editDesc) window.DOM.editScreenDesc = editDesc;
+        if (btnSubmit) window.DOM.btnSubmitEdit = btnSubmit;
+        if (btnCancel) window.DOM.btnCancelEdit = btnCancel;
+    }
+
     const meta = (state.projectMetadata.screens || {})[fileName] || {};
     
-    if (DOM.editScreenFilename) DOM.editScreenFilename.innerText = fileName;
-    if (DOM.editScreenTitle) DOM.editScreenTitle.value = meta.title || "";
-    if (DOM.editScreenType) DOM.editScreenType.value = meta.type || "default";
-    if (DOM.editScreenDefaultTab) DOM.editScreenDefaultTab.value = meta.defaultTab || "editor";
-    if (DOM.editScreenDesc) DOM.editScreenDesc.value = meta.screenDesc || meta.description || "";
-    if (DOM.editScreenModal) DOM.editScreenModal.classList.add('active');
+    if (editFilename) editFilename.innerText = fileName;
+    if (editTitle) editTitle.value = meta.title || "";
+    if (editType) editType.value = meta.type || "default";
+    if (editDefaultTab) editDefaultTab.value = meta.defaultTab || "editor";
+    if (editDesc) editDesc.value = meta.screenDesc || meta.description || "";
+    if (editModal) editModal.classList.add('active');
+
+    if (btnCancel) {
+        btnCancel.onclick = () => {
+            if (editModal) editModal.classList.remove('active');
+        };
+    }
     
-    if (DOM.btnSubmitEdit) {
-        DOM.btnSubmitEdit.onclick = async () => {
-            const newTitle = DOM.editScreenTitle ? DOM.editScreenTitle.value.trim() : "";
-            const newType = DOM.editScreenType ? DOM.editScreenType.value : "default";
-            const newDefaultTab = DOM.editScreenDefaultTab ? DOM.editScreenDefaultTab.value : "editor";
-            const newDesc = DOM.editScreenDesc ? DOM.editScreenDesc.value.trim() : "";
+    if (btnSubmit) {
+        btnSubmit.onclick = async () => {
+            const newTitle = editTitle ? editTitle.value.trim() : "";
+            const newType = editType ? editType.value : "default";
+            const newDefaultTab = editDefaultTab ? editDefaultTab.value : "editor";
+            const newDesc = editDesc ? editDesc.value.trim() : "";
             
-            DOM.btnSubmitEdit.disabled = true;
-            DOM.btnSubmitEdit.innerText = "Saving...";
+            btnSubmit.disabled = true;
+            btnSubmit.innerText = "Saving...";
             
             if (!state.projectMetadata.screens) state.projectMetadata.screens = {};
             state.projectMetadata.screens[fileName] = {
@@ -1734,17 +1771,17 @@ window.handleEditScreen = async function(fileName) {
             if (typeof window.saveProjectMetadata === 'function') {
                 const success = await window.saveProjectMetadata(state.currentProject, state.projectMetadata);
                 if (success) {
-                    if (DOM.editScreenModal) DOM.editScreenModal.classList.remove('active');
+                    if (editModal) editModal.classList.remove('active');
                     location.reload(); 
                 } else {
                     alert("Failed to save project metadata. Please check authentication token.");
-                    DOM.btnSubmitEdit.disabled = false;
-                    DOM.btnSubmitEdit.innerText = "Save Changes";
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerText = "Save Changes";
                 }
             } else {
                 console.error("[Inspector] saveProjectMetadata is not defined on window.");
-                DOM.btnSubmitEdit.disabled = false;
-                DOM.btnSubmitEdit.innerText = "Save Changes";
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = "Save Changes";
             }
         };
     }
@@ -1761,7 +1798,8 @@ if (DOM.btnAddDescription) {
 }
 if (DOM.btnCancelEdit) {
     DOM.btnCancelEdit.onclick = () => {
-        if (DOM.editScreenModal) DOM.editScreenModal.classList.remove('active');
+        const modal = document.getElementById('edit-screen-modal') || DOM.editScreenModal;
+        if (modal) modal.classList.remove('active');
     };
 }
 

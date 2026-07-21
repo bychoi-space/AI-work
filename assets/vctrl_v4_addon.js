@@ -82,7 +82,7 @@
                 style.height = '20px';
             } else if (item.id === 'v4-atom-admin-settings') {
                 style.width = '1180px';
-                style.height = '50px';
+                style.height = '40px';
             } else {
                 style.width = isIcon ? '40px' : '120px';
                 style.height = '40px';
@@ -2358,56 +2358,18 @@
             };
         }
 
-        // 3. Shape Opacity & Background Color
-        const shapeBgColor = document.getElementById('shape-bg-color');
-        const shapeBgOpacity = document.getElementById('shape-bg-opacity');
-        const syncShapeBgColor = () => {
-            if (!shapeBgColor || !shapeBgOpacity) return;
-            const opacityVal = shapeBgOpacity.value;
-            const txt = document.getElementById('txt-shape-bg-opacity');
-            if (txt) txt.innerText = opacityVal;
-            const colorHex = shapeBgColor.value || '#1e293b';
-            const rgbaColor = hexToRgba(colorHex, opacityVal);
-            notifyIframe({
-                type: 'LF_UPDATE_STYLE',
-                selector: '.v4-shape',
-                style: { background: rgbaColor, backgroundColor: rgbaColor }
-            });
-            const wrapper = document.getElementById('shape-bg-wrapper');
-            if (wrapper) {
-                if (parseInt(opacityVal) === 0) wrapper.classList.add('transparent-active');
-                else wrapper.classList.remove('transparent-active');
-            }
-        };
-        if (shapeBgColor) shapeBgColor.oninput = syncShapeBgColor;
-        if (shapeBgOpacity) shapeBgOpacity.oninput = syncShapeBgColor;
-
+        // 3. Shape Opacity & Background Color (Handled by consolidated SSOT handler)
         const btnShapeBgNone = document.getElementById('btn-shape-bg-none');
         if (btnShapeBgNone) {
             btnShapeBgNone.onclick = () => {
-                if (shapeBgOpacity) {
-                    shapeBgOpacity.value = 0;
-                    syncShapeBgColor();
+                const opacitySlider = document.getElementById('shape-bg-opacity');
+                if (opacitySlider) {
+                    opacitySlider.value = 0;
+                    opacitySlider.dispatchEvent(new Event('input'));
                 }
             };
         }
 
-        // 4. Shape Corner Styles
-        const btnSharp = document.getElementById('btn-shape-corner-sharp');
-        if (btnSharp) {
-            btnSharp.onclick = () => _applyCornerRadius(0);
-        }
-        const btnRound = document.getElementById('btn-shape-corner-round');
-        if (btnRound) {
-            btnRound.onclick = () => _applyCornerRadius(8);
-        }
-        const radiusSlider = document.getElementById('shape-border-radius');
-        if (radiusSlider) {
-            radiusSlider.oninput = function() {
-                _syncCornerBtns(this.value);
-                _applyCornerRadius(this.value);
-            };
-        }
 
         // 5. Shape Text Alignments
         const btnLeft = document.getElementById('btn-shape-align-left');

@@ -24,6 +24,10 @@
                 this.clearTimer = null;
             }
             const DOM = window.DOM;
+            // Clean up any residual guide lines immediately when re-warm/discovery happens without drawing
+            if (DOM && DOM.guideLayer) {
+                DOM.guideLayer.innerHTML = '';
+            }
             if (!DOM || !DOM.iframe) return;
 
             const cw = parseInt(DOM.iframe.style.width) || 1440;
@@ -435,19 +439,26 @@
 
         /**
          * Clears all guide lines from the SVG layer.
+         * @param {boolean} [forceImmediate=false] If true, clears DOM instantly without delay timer.
          */
-        clearGuides() {
+        clearGuides(forceImmediate = false) {
             if (this.clearTimer) {
                 clearTimeout(this.clearTimer);
                 this.clearTimer = null;
             }
+            const DOM = window.DOM;
+            if (forceImmediate) {
+                if (DOM && DOM.guideLayer) {
+                    DOM.guideLayer.innerHTML = '';
+                }
+                return;
+            }
             this.clearTimer = setTimeout(() => {
-                const DOM = window.DOM;
                 if (DOM && DOM.guideLayer) {
                     DOM.guideLayer.innerHTML = '';
                 }
                 this.clearTimer = null;
-            }, 700); // 0.7초 동안 가이드라인 유지 후 소멸
+            }, 250); // 250ms 쾌적한 가이드라인 소멸 피드백
         }
     };
 

@@ -21,7 +21,7 @@ window.v4GridScript = `
         if (rowHeight !== undefined) {
             container.setAttribute('data-row-height', rowHeight);
         }
-        var rowHeightVal = container.getAttribute('data-row-height') || '50px';
+        var rowHeightVal = container.getAttribute('data-row-height') || '40px';
         if (/^\d+$/.test(String(rowHeightVal).trim())) {
             rowHeightVal = String(rowHeightVal).trim() + 'px';
         }
