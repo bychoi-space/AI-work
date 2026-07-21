@@ -29,7 +29,7 @@
     "99_Blank_245.html": {
       "title": "99_Blank_245",
       "type": "blank",
-      "updatedAt": "2026-07-21T02:04:09.861Z",
+      "updatedAt": "2026-07-21T02:05:27.104Z",
       "template": "template_blank.html",
       "description": [
         {
@@ -57,5 +57,5 @@
   "period": "2026.07.20(월) ~ 2026.08.27(목)",
   "themeIndex": 5,
   "jira": "",
-  "updated": "2026-07-21 11:04:09"
+  "updated": "2026-07-21 11:05:27"
 }
