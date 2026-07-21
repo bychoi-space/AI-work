@@ -27,9 +27,9 @@
       "connectors": []
     },
     "99_Blank_245.html": {
-      "title": "99_Blank_245",
-      "type": "blank",
-      "updatedAt": "2026-07-21T02:10:59.151Z",
+      "title": "NBOS 카드 설정",
+      "type": "admin-nbos",
+      "updatedAt": "2026-07-21T02:11:38.436Z",
       "template": "template_blank.html",
       "description": [
         {
@@ -41,7 +41,9 @@
           "standardized": true
         }
       ],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": "[object Object]"
     },
     "99_Blank_658.html": {
       "title": "99_Blank_658",
