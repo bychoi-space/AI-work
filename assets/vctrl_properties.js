@@ -196,16 +196,7 @@
     }
 
     function hexToRgba(hex, opacity) {
-        if (!hex) return 'transparent';
-        if (hex.startsWith('rgba') || hex.startsWith('rgb')) return hex;
-        let c = hex.replace('#', '');
-        if (c.length === 3) c = c.split('').map(x => x + x).join('');
-        const num = parseInt(c, 16);
-        const r = (num >> 16) & 255;
-        const g = (num >> 8) & 255;
-        const b = num & 255;
-        const a = (opacity !== undefined ? opacity : 100) / 100;
-        return `rgba(${r}, ${g}, ${b}, ${a})`;
+        return window.hexToRgba(hex, (opacity !== undefined ? opacity / 100 : 1));
     }
 
     const SPECIAL_STYLE_CONFIGS = {
