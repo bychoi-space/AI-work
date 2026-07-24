@@ -127,13 +127,9 @@ window.spawnTextEditor = function(x, y, existingIndex) {
     state.isEditing = true;
     state.editingIndex = existingIndex;
     window.initQuillEditor?.();
-    window.switchSidebarTab?.('editor');
     
     var editorSection = document.getElementById('text-editor-section');
     if (editorSection) editorSection.style.display = 'block';
-    
-    var emptyMsg = document.querySelector('.empty-inspector');
-    if (emptyMsg) emptyMsg.style.display = 'none';
 
     if (window.quillEditor) {
         var item = state.activeFile.meta.description[existingIndex];

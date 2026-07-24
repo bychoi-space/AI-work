@@ -19,7 +19,9 @@ description: Use before risky LF Editor changes, broad refactors, metadata.json 
 - Do not push to GitHub `main` unless local verification is complete and the user requested deployment.
 - Do not revert user changes. If existing changes affect the task, work with them or ask.
 
-## Code Integrity
+## Code Integrity & Safety Rules
+- **Encoding Safety**: Avoid hardcoding raw Korean strings directly inside source code logic to prevent file encoding corruption upon saving. Use ASCII-safe status strings or HTML entities (`&times;` etc.) where applicable, and ensure files are saved in UTF-8.
+- **Bracket Matching & Syntax Integrity**: After extensive edits on conditional branches or nested functions, run `check_syntax.ps1` or perform syntax inspection to ensure no missing brackets or trailing syntax errors exist.
 - Preserve function declarations, class definitions, global initialization, and module-call names such as `window.updateProperties`.
 - In core engine edits, check cross-file function-name consistency before finishing.
 - For SVG shapes such as diamonds and triangles, keep `borderColor`, SVG `stroke`, and 1.6px stroke standards synchronized.
@@ -28,3 +30,4 @@ description: Use before risky LF Editor changes, broad refactors, metadata.json 
 - Define success criteria before editing.
 - Report changed files and verification steps after finishing.
 - If final verification finds a new SyntaxError, TypeError, or 404, stop and report before continuing.
+

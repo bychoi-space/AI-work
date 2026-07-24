@@ -37,21 +37,25 @@
 
     function triggerAllV4Bindings() {
         console.log("[VCTRL UI LIBRARY] Re-triggering all V4 inspector event bindings...");
-        if (typeof window.rebindInspectorDOM === 'function') window.rebindInspectorDOM();
-        if (typeof window.initCheckboxRadioEvents === 'function') window.initCheckboxRadioEvents();
-        if (typeof window.initTextboxTextareaEvents === 'function') window.initTextboxTextareaEvents();
-        if (typeof window.initSearchbarEvents === 'function') window.initSearchbarEvents();
-        if (typeof window.initStepperEvents === 'function') window.initStepperEvents();
-        if (typeof window.initSelectboxEvents === 'function') window.initSelectboxEvents();
-        if (typeof window.initFileuploadEvents === 'function') window.initFileuploadEvents();
-        if (typeof window.initAlertEvents === 'function') window.initAlertEvents();
-        if (typeof window.initButtonEvents === 'function') window.initButtonEvents();
-        if (typeof window.initDatePickerEvents === 'function') window.initDatePickerEvents();
-        if (typeof window.initAccordionEvents === 'function') window.initAccordionEvents();
-        if (typeof window.initGridEvents === 'function') window.initGridEvents();
-        if (typeof window.initAdminSettingsEvents === 'function') window.initAdminSettingsEvents();
-        if (typeof window.initToggleEvents === 'function') window.initToggleEvents();
-        if (typeof window.initV4AddonEventListeners === 'function') window.initV4AddonEventListeners();
+        if (typeof window.initAllInspectorEvents === 'function') {
+            window.initAllInspectorEvents();
+        } else {
+            if (typeof window.rebindInspectorDOM === 'function') window.rebindInspectorDOM();
+            if (typeof window.initCheckboxRadioEvents === 'function') window.initCheckboxRadioEvents();
+            if (typeof window.initTextboxTextareaEvents === 'function') window.initTextboxTextareaEvents();
+            if (typeof window.initSearchbarEvents === 'function') window.initSearchbarEvents();
+            if (typeof window.initStepperEvents === 'function') window.initStepperEvents();
+            if (typeof window.initSelectboxEvents === 'function') window.initSelectboxEvents();
+            if (typeof window.initFileuploadEvents === 'function') window.initFileuploadEvents();
+            if (typeof window.initAlertEvents === 'function') window.initAlertEvents();
+            if (typeof window.initButtonEvents === 'function') window.initButtonEvents();
+            if (typeof window.initDatePickerEvents === 'function') window.initDatePickerEvents();
+            if (typeof window.initAccordionEvents === 'function') window.initAccordionEvents();
+            if (typeof window.initGridEvents === 'function') window.initGridEvents();
+            if (typeof window.initAdminSettingsEvents === 'function') window.initAdminSettingsEvents();
+            if (typeof window.initToggleEvents === 'function') window.initToggleEvents();
+            if (typeof window.initV4AddonEventListeners === 'function') window.initV4AddonEventListeners();
+        }
     }
 
     function loadFallbackAndApply(res1, res2, res3, res4) {
@@ -87,7 +91,7 @@
         }
 
         // Try to load HTML blocks asynchronously
-        const res1 = await loadUIBlock('assets/ui_library/inspector_panels.html', 'v4-shapes-body', true);
+        const res1 = await loadUIBlock('assets/ui_library/inspector_panels.html', 'inspector-panels-storage', false);
         const res2 = await loadUIBlock('assets/ui_library/atomic_cards.html', 'atomic-library-container', false);
         const res3 = await loadUIBlock('assets/ui_library/icon_cards.html', 'icon-library-container', false);
         const res4 = await loadUIBlock('assets/ui_library/modals.html', 'body', true);
@@ -105,7 +109,7 @@
 
     function applyFallbackData(res1, res2, res3, res4) {
         if (!res1 && window.VCTRL_UI_FALLBACK_INSPECTOR) {
-            injectHTML(window.VCTRL_UI_FALLBACK_INSPECTOR, 'v4-shapes-body', true);
+            injectHTML(window.VCTRL_UI_FALLBACK_INSPECTOR, 'inspector-panels-storage', false);
         }
         if (!res2 && window.VCTRL_UI_FALLBACK_ATOMIC) {
             injectHTML(window.VCTRL_UI_FALLBACK_ATOMIC, 'atomic-library-container', false);

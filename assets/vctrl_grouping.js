@@ -244,7 +244,6 @@ window.GroupingManager = (function() {
              if (selectedIds.length === 1 && iframe && iframe.contentWindow) {
                  window.MessageHub.send(iframe.contentWindow, 'LF_SELECT_ID', { id: selectedIds[0] });
              } else if (selectedIds.length > 1) {
-                 if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab('editor');
                  if (typeof window.updateProperties === 'function') window.updateProperties();
              }
          }
@@ -321,10 +320,7 @@ window.GroupingManager = (function() {
                 }
             }
 
-            // Show Selection Bar only if it is moved inside the floating inspector card
-            if (selectionBar.parentElement && selectionBar.parentElement.id === 'tab-editor') {
-                selectionBar.style.setProperty('display', 'none', 'important');
-            } else {
+            if (selectionBar) {
                 selectionBar.style.setProperty('display', 'flex', 'important');
             }
 
@@ -338,7 +334,6 @@ window.GroupingManager = (function() {
 
             // Line Editor Trigger
             if (activeIds.length === 1 && activeIds[0].startsWith('conn_')) {
-                if (window.switchSidebarTab) window.switchSidebarTab('editor');
                 const linePropSection = document.getElementById('line-editor-section');
                 const shapePropSection = document.getElementById('shape-inspector-section');
                 const textPropSection = document.getElementById('text-editor-section');

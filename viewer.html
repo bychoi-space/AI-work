@@ -170,23 +170,107 @@
                             <span class="material-icons-outlined" style="font-size: 16px;">keyboard_arrow_down</span>
                         </button>
                     </div>
+                    <!-- Storage Container for Dynamically Injected Inspector Panels -->
+                    <div id="inspector-panels-storage" style="display: none;"></div>
+
                     <div class="floating-inspector-body" id="floating-inspector-body">
-                        <!-- Inspector sections will be appended here dynamically -->
+                        <!-- Selection Actions (Dynamic Stacked Layout) -->
+                        <div id="selection-actions-bar" style="display: none; flex-direction: column; background: rgba(99, 102, 241, 0.05); border-bottom: 1px solid var(--border); padding: 12px 14px; gap: 10px; box-sizing: border-box; width: 100%;">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span class="material-icons-outlined" style="font-size: 14px; color: var(--accent);">info</span>
+                                <span id="selection-count" style="font-size: 10px; font-weight: 800; color: rgba(255, 255, 255, 0.4); letter-spacing: 0.8px; text-transform: uppercase; white-space: nowrap;">
+                                    <span id="selection-number" style="color: var(--accent);">0</span> <span id="selection-label">OBJECT</span> SELECTED
+                                </span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                                <div style="display: flex; gap: 8px; width: 100%;">
+                                    <button id="btn-group-action" class="v4-inspector-btn btn-accent" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
+                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                                        GROUP
+                                    </button>
+                                    <button id="btn-ungroup-action" class="v4-inspector-btn btn-secondary" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.9); color: #0f172a; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
+                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                                        UNGROUP
+                                    </button>
+                                </div>
+                                <button id="btn-add-molecules-action" class="v4-inspector-btn btn-primary">
+                                    <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M12 5v14M5 12h14"></path></svg>
+                                    ADD TO MOLECULES
+                                </button>
+                                <div style="display: flex; gap: 8px; width: 100%;">
+                                    <button id="btn-bring-front-action" class="v4-inspector-btn btn-secondary" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
+                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><polyline points="17 11 12 6 7 11"></polyline><polyline points="17 18 12 13 7 18"></polyline></svg>
+                                        BRING FRONT
+                                    </button>
+                                    <button id="btn-send-back-action" class="v4-inspector-btn btn-secondary" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
+                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><polyline points="17 13 12 18 7 13"></polyline><polyline points="17 6 12 11 7 6"></polyline></svg>
+                                        SEND BACK
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Alignment Section -->
+                            <div id="selection-align-bar" class="v4-inspector-panel" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1.6px solid rgba(99, 102, 241, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                                    <span style="font-size: 10px; font-weight: 900; color: #818cf8; letter-spacing: 1px;">ALIGNMENT</span>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 6px;">
+                                    <button id="btn-align-left" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Left">
+                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M4 2v20M8 6h12v4H8zM8 14h8v4H8z"/></svg>
+                                    </button>
+                                    <button id="btn-align-center" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Center">
+                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M12 2v2M12 20v2M8 4h8v6H8zM6 14h12v6H6z"/></svg>
+                                    </button>
+                                    <button id="btn-align-right" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Right">
+                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M20 2v20M4 6h12v4H4zM8 14h12v4H8z"/></svg>
+                                    </button>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                                    <button id="btn-align-top" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Top">
+                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M2 4h20M6 8v12h4V8zM14 8v8h4V8z"/></svg>
+                                    </button>
+                                    <button id="btn-align-middle" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Middle">
+                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M2 12h2M20 12h2M4 8h6v8H4zM14 6h6v12h-6z"/></svg>
+                                    </button>
+                                    <button id="btn-align-bottom" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Bottom">
+                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M2 20h20M6 4v12h4V4zM14 8v8h4V8z"/></svg>
+                                    </button>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 6px;">
+                                    <button id="btn-align-distribute-h" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Distribute Horizontally">
+                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;">
+                                            <line x1="4" y1="2" x2="4" y2="22"></line>
+                                            <line x1="20" y1="2" x2="20" y2="22"></line>
+                                            <rect x="9" y="6" width="6" height="12" rx="1"></rect>
+                                        </svg>
+                                    </button>
+                                    <button id="btn-align-distribute-v" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Distribute Vertically">
+                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;">
+                                            <line x1="2" y1="4" x2="22" y2="4"></line>
+                                            <line x1="2" y1="20" x2="22" y2="20"></line>
+                                            <rect x="6" y="9" width="12" height="6" rx="1"></rect>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active Inspector Sections Will Be Dynamically Mounted Here -->
                     </div>
                 </div>
             </main>
         </div>
 
-        <!-- Right Sidebar: Description & Editor -->
+        <!-- Right Sidebar: Description & Asset Library -->
         <aside class="sidebar sidebar-right" id="sidebar-right">
             <div class="sidebar-handle handle-right" id="btn-toggle-right" title="Toggle Sidebar (R)">
                 <span class="material-icons-outlined">chevron_right</span>
             </div>
             
             <div class="sidebar-tabs">
-                <button class="tab-btn active" data-tab="editor" title="에디터 도구 (E)">
-                    <span class="material-icons-outlined">edit_note</span>
-                    Editor
+                <button class="tab-btn active" data-tab="editor" title="라이브러리 도구 (E)">
+                    <span class="material-icons-outlined">widgets</span>
+                    Library
                 </button>
                 <button class="tab-btn" data-tab="description" title="상세 설명 (D)">
                     <span class="material-icons-outlined">description</span>
@@ -209,90 +293,8 @@
                 </div>
             </div>
 
-            <!-- Tab: Editor (V4 + Atomic Library) -->
+            <!-- Tab: Library (V4 Asset & Component Library) -->
             <div id="tab-editor" class="tab-pane active">
-                <!-- Selection Actions (Dynamic Stacked Layout) -->
-                <div id="selection-actions-bar" style="display: none; flex-direction: column; background: rgba(99, 102, 241, 0.05); border-bottom: 1px solid var(--border); padding: 12px 14px; gap: 10px; box-sizing: border-box;">
-                    <div style="display: flex; align-items: center; gap: 6px;">
-                        <span class="material-icons-outlined" style="font-size: 14px; color: var(--accent);">info</span>
-                        <span id="selection-count" style="font-size: 10px; font-weight: 800; color: rgba(255, 255, 255, 0.4); letter-spacing: 0.8px; text-transform: uppercase; white-space: nowrap;">
-                            <span id="selection-number" style="color: var(--accent);">0</span> <span id="selection-label">OBJECT</span> SELECTED
-                        </span>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-                        <div style="display: flex; gap: 8px; width: 100%;">
-                            <button id="btn-group-action" class="v4-inspector-btn btn-accent" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
-                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                                GROUP
-                            </button>
-                            <button id="btn-ungroup-action" class="v4-inspector-btn btn-secondary" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.9); color: #0f172a; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
-                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-                                UNGROUP
-                            </button>
-                        </div>
-                        <button id="btn-add-molecules-action" class="v4-inspector-btn btn-primary">
-                            <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M12 5v14M5 12h14"></path></svg>
-                            ADD TO MOLECULES
-                        </button>
-                        <div style="display: flex; gap: 8px; width: 100%;">
-                            <button id="btn-bring-front-action" class="v4-inspector-btn btn-secondary" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
-                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><polyline points="17 11 12 6 7 11"></polyline><polyline points="17 18 12 13 7 18"></polyline></svg>
-                                BRING FRONT
-                            </button>
-                            <button id="btn-send-back-action" class="v4-inspector-btn btn-secondary" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
-                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><polyline points="17 13 12 18 7 13"></polyline><polyline points="17 6 12 11 7 6"></polyline></svg>
-                                SEND BACK
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Part 0: ALIGNMENT (RESTORED) -->
-                    <div id="selection-align-bar" class="v4-inspector-panel" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1.6px solid rgba(99, 102, 241, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                            <span style="font-size: 10px; font-weight: 900; color: #818cf8; letter-spacing: 1px;">ALIGNMENT</span>
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 6px;">
-                            <button id="btn-align-left" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Left">
-                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M4 2v20M8 6h12v4H8zM8 14h8v4H8z"/></svg>
-                            </button>
-                            <button id="btn-align-center" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Center">
-                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M12 2v2M12 20v2M8 4h8v6H8zM6 14h12v6H6z"/></svg>
-                            </button>
-                            <button id="btn-align-right" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Right">
-                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M20 2v20M4 6h12v4H4zM8 14h12v4H8z"/></svg>
-                            </button>
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
-                            <button id="btn-align-top" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Top">
-                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M2 4h20M6 8v12h4V8zM14 8v8h4V8z"/></svg>
-                            </button>
-                            <button id="btn-align-middle" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Middle">
-                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M2 12h2M20 12h2M4 8h6v8H4zM14 6h6v12h-6z"/></svg>
-                            </button>
-                            <button id="btn-align-bottom" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Bottom">
-                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M2 20h20M6 4v12h4V4zM14 8v8h4V8z"/></svg>
-                            </button>
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 6px;">
-                            <button id="btn-align-distribute-h" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Distribute Horizontally">
-                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;">
-                                    <line x1="4" y1="2" x2="4" y2="22"></line>
-                                    <line x1="20" y1="2" x2="20" y2="22"></line>
-                                    <rect x="9" y="6" width="6" height="12" rx="1"></rect>
-                                </svg>
-                            </button>
-                            <button id="btn-align-distribute-v" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Distribute Vertically">
-                                <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;">
-                                    <line x1="2" y1="4" x2="22" y2="4"></line>
-                                    <line x1="2" y1="20" x2="22" y2="20"></line>
-                                    <rect x="6" y="9" width="12" height="6" rx="1"></rect>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Search Bar -->
                 <div class="sidebar-search-container" style="padding: 14px 14px 8px 14px; background: var(--panel-bg); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 10;">
                     <div class="v4-search-wrapper" style="position: relative; display: flex; align-items: center; width: 100%;">
                         <span class="material-icons-outlined" style="position: absolute; left: 10px; font-size: 16px; color: var(--text-secondary); pointer-events: none;">search</span>
@@ -316,9 +318,6 @@
                     <div id="v4-shapes-container" class="component-grid">
                         <!-- Dynamic shapes will be rendered here -->
                     </div>
-
-                    <!-- V4 Inspectors extracted dynamically -->
-
                 </div>
 
                 <!-- Part 2: ATOMIC LIBRARY -->
@@ -337,7 +336,7 @@
                 </div>
                 <div id="icon-library-body" class="components-body" style="padding: 12px;">
                     <div id="icon-library-container" class="component-grid">
-                        <!-- Dynamic V4 Inspectors container will be handled by core/inspector -->
+                        <!-- Dynamic icons rendered here -->
                     </div>
                 </div>
                 <!-- Part 4: MOLECULES -->
@@ -351,8 +350,6 @@
                     </div>
                 </div>
                 </div> <!-- Close #tab-editor -->
-                
-                <!-- Part 4 removed -->
          </aside>
     </div>
 

@@ -224,7 +224,7 @@ window.insertAtomicComponent = function(type, name) {
 
     if (name === 'LF Logo') {
         contentHtml = `<div class="v4-logo-img lf-icon" style="width:100%; height:100%; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2024/mfront/logo/lf_logo_mo.png'); background-size: contain; background-position: center; background-repeat: no-repeat; pointer-events: none;"></div>`;
-        defaultStyle = { width: '140px', height: '40px' };
+        defaultStyle = { width: '40px', height: '40px' };
     } else if (name === 'Primary Button') {
         contentHtml = `<div style="background:#00e5ff; color:#000; border:none; width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:bold; font-size:14px; box-shadow:0 4px 15px rgba(0,229,255,0.3); pointer-events:none;">BUTTON</div>`;
         defaultStyle = { width: '120px', height: '36px' };
@@ -686,7 +686,6 @@ window.MessageHub = {
                 } else {
                     state.isEditing = true;
                     state.editingIndex = data.id;
-                    if (!isTyping && typeof window.switchSidebarTab === 'function') window.switchSidebarTab('editor');
                     
                     if (window.GroupingManager) {
                         let selectedIds = (typeof window.GroupingManager.getSelectedIds === 'function') ? [...window.GroupingManager.getSelectedIds()] : [];

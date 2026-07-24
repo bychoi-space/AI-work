@@ -398,8 +398,6 @@ window.ConnectorEngine = (function() {
             lineEditor.style.display = 'block';
             const conn = window.state.connectors.find(c => c.id === lastId);
             if (conn) {
-                if (window.switchSidebarTab) window.switchSidebarTab('editor');
-
                 const colorInput = document.getElementById('line-stroke-color');
                 const widthInput = document.getElementById('line-stroke-width');
                 const widthDisplay = document.getElementById('txt-line-stroke-width');

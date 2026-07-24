@@ -83,18 +83,33 @@ th.v4-editable-cell:focus, td.v4-editable-cell:focus { outline-offset: -2px !imp
 .lf-rv-my { background-position: 100% 0% !important; }
 .v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; object-fit: contain; }
-.v4-shape-triangle { clip-path: none !important; border: none !important; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
-.v4-shape-triangle[data-direction="up"] { transform: rotate(0deg) !important; }
-.v4-shape-triangle[data-direction="right"] { transform: rotate(90deg) !important; }
-.v4-shape-triangle[data-direction="down"] { transform: rotate(180deg) !important; }
-.v4-shape-triangle[data-direction="left"] { transform: rotate(270deg) !important; }
+.v4-shape-triangle, .v4-shape-arrow, .v4-directional-shape { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: center center !important; }
+.v4-shape-triangle { clip-path: none !important; border: none !important; }
+.v4-shape-triangle[data-direction="up"], .v4-shape-arrow[data-direction="up"], .v4-shape-arrow[data-arrow-dir="up"], .v4-directional-shape[data-direction="up"] { transform: rotate(0deg) !important; }
+.v4-shape-triangle[data-direction="right"], .v4-shape-arrow[data-direction="right"], .v4-shape-arrow[data-arrow-dir="right"], .v4-directional-shape[data-direction="right"] { transform: rotate(90deg) !important; }
+.v4-shape-triangle[data-direction="down"], .v4-shape-arrow[data-direction="down"], .v4-shape-arrow[data-arrow-dir="down"], .v4-directional-shape[data-direction="down"] { transform: rotate(180deg) !important; }
+.v4-shape-triangle[data-direction="left"], .v4-shape-arrow[data-direction="left"], .v4-shape-arrow[data-arrow-dir="left"], .v4-directional-shape[data-direction="left"] { transform: rotate(270deg) !important; }
 
 /* Counter-rotate text elements to keep them horizontal and clean */
-.v4-shape-triangle .v4-editable-cell, .v4-shape-triangle .v4-shape-text-overlay { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
-.v4-shape-triangle[data-direction="up"] .v4-editable-cell, .v4-shape-triangle[data-direction="up"] .v4-shape-text-overlay { transform: rotate(0deg) !important; }
-.v4-shape-triangle[data-direction="right"] .v4-editable-cell, .v4-shape-triangle[data-direction="right"] .v4-shape-text-overlay { transform: rotate(-90deg) !important; }
-.v4-shape-triangle[data-direction="down"] .v4-editable-cell, .v4-shape-triangle[data-direction="down"] .v4-shape-text-overlay { transform: rotate(-180deg) !important; }
-.v4-shape-triangle[data-direction="left"] .v4-editable-cell, .v4-shape-triangle[data-direction="left"] .v4-shape-text-overlay { transform: rotate(-270deg) !important; }
+.v4-shape-triangle .v4-editable-cell, .v4-shape-triangle .v4-shape-text-overlay,
+.v4-shape-arrow .v4-editable-cell, .v4-shape-arrow .v4-shape-text-overlay,
+.v4-directional-shape .v4-editable-cell, .v4-directional-shape .v4-shape-text-overlay { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: center center !important; }
+
+.v4-shape-triangle[data-direction="up"] .v4-editable-cell, .v4-shape-triangle[data-direction="up"] .v4-shape-text-overlay,
+.v4-shape-arrow[data-direction="up"] .v4-editable-cell, .v4-shape-arrow[data-direction="up"] .v4-shape-text-overlay,
+.v4-directional-shape[data-direction="up"] .v4-editable-cell, .v4-directional-shape[data-direction="up"] .v4-shape-text-overlay { transform: rotate(0deg) !important; }
+
+.v4-shape-triangle[data-direction="right"] .v4-editable-cell, .v4-shape-triangle[data-direction="right"] .v4-shape-text-overlay,
+.v4-shape-arrow[data-direction="right"] .v4-editable-cell, .v4-shape-arrow[data-direction="right"] .v4-shape-text-overlay,
+.v4-directional-shape[data-direction="right"] .v4-editable-cell, .v4-directional-shape[data-direction="right"] .v4-shape-text-overlay { transform: rotate(-90deg) !important; }
+
+.v4-shape-triangle[data-direction="down"] .v4-editable-cell, .v4-shape-triangle[data-direction="down"] .v4-shape-text-overlay,
+.v4-shape-arrow[data-direction="down"] .v4-editable-cell, .v4-shape-arrow[data-direction="down"] .v4-shape-text-overlay,
+.v4-directional-shape[data-direction="down"] .v4-editable-cell, .v4-directional-shape[data-direction="down"] .v4-shape-text-overlay { transform: rotate(-180deg) !important; }
+
+.v4-shape-triangle[data-direction="left"] .v4-editable-cell, .v4-shape-triangle[data-direction="left"] .v4-shape-text-overlay,
+.v4-shape-arrow[data-direction="left"] .v4-editable-cell, .v4-shape-arrow[data-direction="left"] .v4-shape-text-overlay,
+.v4-directional-shape[data-direction="left"] .v4-editable-cell, .v4-directional-shape[data-direction="left"] .v4-shape-text-overlay { transform: rotate(-270deg) !important; }
 .v4-shape-diamond { border: none !important; }
 .v4-shape-wave { border: none !important; }
 .v4-shape-pattern-grid { 
@@ -492,9 +507,13 @@ window.v4Script = `
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
-            if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle') || shape.classList.contains('v4-shape-wave')) {
+            if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle') || shape.classList.contains('v4-shape-wave') || shape.classList.contains('v4-shape-arrow')) {
                 const svg = shape.querySelector('polygon, path, rect, circle');
-                if (svg) return prop === 'backgroundColor' ? svg.style.fill : svg.style.stroke;
+                if (svg) {
+                    const compStyle = window.getComputedStyle(svg);
+                    const val = prop === 'backgroundColor' ? (svg.style.fill || compStyle.fill) : (svg.style.stroke || compStyle.stroke);
+                    if (val && val !== 'none') return val;
+                }
             }
             return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
         };
@@ -504,11 +523,11 @@ window.v4Script = `
             const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
             const dot = icon.querySelector('.v4-radio div, .v4-radio-dot');
             if (poly) {
-                detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || "";
+                detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || _getVal(icon, "color") || "";
             } else if (dot) {
-                detectedIconColor = dot.style.backgroundColor || "";
+                detectedIconColor = dot.style.backgroundColor || _getVal(dot, "backgroundColor") || "";
             } else {
-                detectedIconColor = icon.style.color || icon.getAttribute('stroke') || "";
+                detectedIconColor = icon.style.color || icon.getAttribute('stroke') || _getVal(icon, "color") || "";
             }
         }
  
@@ -558,8 +577,8 @@ window.v4Script = `
             x: parseFloat(c.style.left) || 0,
             y: parseFloat(c.style.top) || 0,
             shapeType: shape ? (shape.classList.contains('v4-shape-pattern-grid') ? 'pattern' : (shape.classList.contains('v4-shape-rect') ? 'rect' : (shape.classList.contains('v4-shape-circle') ? 'circle' : (shape.classList.contains('v4-shape-triangle') ? 'triangle' : (shape.classList.contains('v4-shape-diamond') ? 'diamond' : (shape.classList.contains('v4-shape-arrow') ? 'arrow' : '')))))) : '',
-            arrowDir: shape && shape.classList.contains('v4-shape-arrow') ? (shape.getAttribute('data-arrow-dir') || 'right') : '',
-            direction: shape && shape.classList.contains('v4-shape-triangle') ? (shape.getAttribute('data-direction') || 'up') : '',
+            arrowDir: shape ? (shape.getAttribute('data-arrow-dir') || shape.getAttribute('data-direction') || 'up') : '',
+            direction: shape ? (shape.getAttribute('data-direction') || shape.getAttribute('data-arrow-dir') || 'up') : '',
             patternType: shape && shape.classList.contains('v4-shape-pattern-grid') ? (shape.getAttribute('data-pattern-type') || 'grid') : '',
             isTable: !!table && !isGrid,
             isShape: !!shape,
@@ -1329,16 +1348,21 @@ window.v4Script = `
             const s = document.querySelector('.lf-component.selected'); 
             console.log("[V4 Iframe] Selected component s:", s);
             if (!s) return;
-            const shape = s.querySelector('.v4-shape.v4-shape-arrow, .v4-shape.v4-shape-triangle');
+            const shape = s.querySelector('.v4-shape-arrow, .v4-shape-triangle') || 
+                          (s.classList.contains('v4-shape-arrow') || s.classList.contains('v4-shape-triangle') ? s : null) || 
+                          s.querySelector('.v4-shape') || 
+                          (s.classList.contains('v4-shape') ? s : null);
             console.log("[V4 Iframe] Found shape inside s:", shape);
             if (!shape) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
             const dir = d.direction || 'up';
-            if (shape.classList.contains('v4-shape-arrow')) {
+            shape.setAttribute('data-arrow-dir', dir);
+            shape.setAttribute('data-direction', dir);
+
+            if (shape.classList.contains('v4-shape-arrow') || shape.id === 'v4-shape-arrow') {
                 const path = shape.querySelector('.v4-arrow-path');
                 if (path) {
-                    shape.setAttribute('data-arrow-dir', dir);
                     const PATHS = {
                         right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
                         left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
@@ -1347,10 +1371,10 @@ window.v4Script = `
                     };
                     path.setAttribute('d', PATHS[dir] || PATHS.right);
                 }
-            } else if (shape.classList.contains('v4-shape-triangle')) {
+            } else if (shape.classList.contains('v4-shape-triangle') || shape.id === 'v4-shape-triangle') {
                 shape.setAttribute('data-direction', dir);
             }
-            markDirty();
+            if (typeof markDirty === 'function') markDirty();
         }
         else if (d.type === 'LF_UPDATE_ATOM_STATE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;

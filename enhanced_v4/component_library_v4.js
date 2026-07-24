@@ -33,13 +33,17 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-atom-icon-share',
             name: 'Share Icon (Premium)',
             category: 'Atoms',
-            previewHtml: `<img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width: 24px;">`,
-            html: `<img src="https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;">`
+            width: '40px',
+            height: '40px',
+            previewHtml: `<div class="lf-icon lf-icon-share" style="width: 24px; height: 24px; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-origin: content-box;"></div>`,
+            html: `<div class="lf-icon" style="width: 100%; height: 100%; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-repeat: no-repeat; background-position: center; padding: 8px; box-sizing: border-box; background-origin: content-box; background-clip: content-box; pointer-events: none;"></div>`
         },
         {
             id: 'v4-atom-textbox',
             name: 'Textbox',
             category: 'Atoms',
+            width: '150px',
+            height: '30px',
             previewHtml: `<div style="width: 80px; height: 20px; background: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 4px; display: flex; align-items: center; padding: 0 4px; font-size: 8px; color: var(--v4-placeholder-color, #a3a3a3); font-family: inherit;">Placeholder</div>`,
             html: `
             <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;">
@@ -52,6 +56,8 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-atom-textarea',
             name: 'Textarea',
             category: 'Atoms',
+            width: '150px',
+            height: '60px',
             previewHtml: `<div style="width: 80px; height: 30px; background: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 4px; padding: 2px; font-size: 8px; color: var(--v4-placeholder-color, #a3a3a3); box-sizing: border-box; font-family: inherit;">Placeholder</div>`,
             html: `
             <div class="v4-textarea-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; flex-direction: column; padding: 10px 12px; pointer-events: auto;">
@@ -64,6 +70,8 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-atom-stepper',
             name: 'Quantity Stepper',
             category: 'Atoms',
+            width: '154px',
+            height: '30px',
             previewHtml: `<div style="display: flex; align-items: center; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 6px; font-size: 10px; height: 20px; padding: 0 4px; box-sizing: border-box; width: 80px; justify-content: space-between;"><span style="color: var(--v4-placeholder-color, #9ca3af); font-weight: bold; cursor: default;">—</span><span style="font-weight: bold; color: var(--v4-text-color, #111827);">1</span><span style="color: var(--v4-text-color, #374151); font-weight: bold; cursor: default;">+</span></div>`,
             html: `
             <div class="v4-stepper-container" data-min="1" data-max="99" data-val="1" data-btn-enabled="true" data-btn-text="적용" data-disabled="false" style="position: relative; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; pointer-events: auto; user-select: none;">
@@ -79,6 +87,8 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-atom-selectbox',
             name: 'Select Box',
             category: 'Atoms',
+            width: '150px',
+            height: '30px',
             previewHtml: `<div style="display: flex; align-items: center; justify-content: space-between; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 6px; font-size: 10px; height: 20px; padding: 0 6px; box-sizing: border-box; width: 80px;"><span style="color: var(--v4-text-color, #374151);">선택하세요</span><span style="font-size: 8px; color: var(--v4-placeholder-color, #9ca3af);">▼</span></div>`,
             html: `
             <div class="v4-selectbox-container" data-default-text="선택하세요" data-dropdown-active="false" data-options="Option 1,Option 2,Option 3" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
@@ -97,6 +107,8 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-atom-fileupload',
             name: 'File Upload',
             category: 'Atoms',
+            width: '300px',
+            height: '30px',
             previewHtml: `<div style="display: flex; align-items: center; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 6px; font-size: 10px; height: 20px; padding: 0 4px; box-sizing: border-box; width: 80px; gap: 4px;"><div style="flex: 1; border: 1px solid var(--v4-disabled-bg, #eee); height: 12px; background: var(--v4-input-bg, #fafafa);"></div><div style="background: var(--v4-disabled-bg, #eee); font-size: 8px; padding: 1px 3px; border-radius: 2px;">첨부</div></div>`,
             html: `
             <div class="v4-fileupload-container" data-selected="false" data-file-name="" data-button-text="파일첨부" data-placeholder="선택된 파일 없음" style="position: relative; display: flex; align-items: center; gap: 6px; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
@@ -111,6 +123,8 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-atom-alert',
             name: 'Alert Window',
             category: 'Atoms',
+            width: '250px',
+            height: '120px',
             previewHtml: `<div style="display: flex; flex-direction: column; width: 80px; height: 50px; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); overflow: hidden; font-size: 8px; box-sizing: border-box;"><div style="background: var(--v4-disabled-bg, #e5e7eb); height: 12px; display: flex; align-items: center; padding: 0 4px; border-bottom: 1px solid var(--v4-border-color, #ccc); font-weight: bold;">Alert</div><div style="flex: 1; display: flex; align-items: center; justify-content: center; font-size: 6px; color: var(--v4-placeholder-color, #666); padding: 2px; text-align: center;">Message</div></div>`,
             html: `
             <div class="v4-alert-container" data-message="얼럿 메시지 입력 표시" data-btn-count="1" data-btn-text-1="확인" data-btn-text-2="취소" data-btn-text-3="저장" data-btn-style-1="normal" data-btn-style-2="normal" data-btn-style-3="normal" data-show-desc="true" data-desc="얼럿 노출 케이스" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; background: transparent; justify-content: flex-end;">
@@ -138,6 +152,8 @@ window.V4_COMPONENT_LIBRARY = {
             name: 'Popup Window',
             koName: '팝업 모달 다이얼로그 창',
             category: 'Atoms',
+            width: '300px',
+            height: '200px',
             previewHtml: `<div style="display: flex; flex-direction: column; width: 80px; height: 55px; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 6px; box-shadow: 0 6px 16px rgba(0,0,0,0.15); overflow: hidden; font-size: 8px; box-sizing: border-box;"><div style="background: var(--v4-disabled-bg, #f1f5f9); height: 14px; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; border-bottom: 1px solid var(--v4-border-color, #ccc); font-weight: bold; color: #1e293b;"><span>Popup</span><span>&times;</span></div><div style="flex: 1; padding: 4px; background: transparent;"></div></div>`,
             html: `
             <div class="v4-shape v4-popup-container" style="width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; flex-direction: column; background: var(--v4-component-bg, rgb(255, 255, 255)); border: 1.6px solid var(--v4-border-color, rgb(200, 200, 200)) !important; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 2px 10px rgba(0,0,0,0.06); overflow: hidden;">
@@ -154,6 +170,8 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-atom-button',
             name: 'Button',
             category: 'Atoms',
+            width: '80px',
+            height: '40px',
             previewHtml: `<div style="display: flex; align-items: center; justify-content: center; width: 60px; height: 30px; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-size: 8px; font-weight: bold; color: var(--v4-text-color, #333); box-sizing: border-box;">Button</div>`,
             html: `
             <div class="v4-btn-container" data-text="버튼" data-btn-style="normal" data-btn-radius="6" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
@@ -164,6 +182,8 @@ window.V4_COMPONENT_LIBRARY = {
             id: 'v4-atom-datepicker',
             name: 'Date Picker',
             category: 'Atoms',
+            width: '500px',
+            height: '30px',
             previewHtml: `<div style="display:flex; align-items:center; background:var(--v4-component-bg, #ffffff); border:1.6px solid var(--v4-border-color, #cccccc); border-radius:4px; height:20px; padding:0 5px; font-size:7px; color:var(--v4-text-color, #374151); box-sizing:border-box; gap:3px; white-space:nowrap;"><span>26/05/18</span><span style="color:var(--v4-placeholder-color, #9ca3af);">&#9553;</span><span>-</span><span style="color:var(--v4-placeholder-color, #9ca3af);">&#9553;</span><span>26/06/18</span></div>`,
             html: `
             <div class="v4-datepicker-container" data-show-presets="true" data-show-end-date="true" data-default-preset="1M" data-start-date="" data-end-date="" style="position: relative; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; flex-wrap: nowrap; width: 100%; height: 100%;">
@@ -192,6 +212,8 @@ window.V4_COMPONENT_LIBRARY = {
             name: 'Toggle Button',
             koName: '토글 버튼 스위치 toggle switch',
             category: 'Atoms',
+            width: '40px',
+            height: '20px',
             previewHtml: `<div style="width:30px; height:15px; border-radius:10px; background:#3b82f6; position:relative; display:flex; align-items:center; box-sizing:border-box; padding:2px;"><div style="width:11px; height:11px; border-radius:50%; background:#fff; position:absolute; right:2px;"></div></div>`,
             html: `
             <div class="v4-toggle-container" data-checked="false" data-color="#3b82f6" style="position: relative; width: 100%; height: 100%; border-radius: 9999px; background: rgb(203, 213, 225); border: 1.6px solid rgb(200, 200, 200) !important; box-sizing: border-box; cursor: pointer; transition: all 0.2s; padding: 0;">
@@ -203,6 +225,8 @@ window.V4_COMPONENT_LIBRARY = {
             name: 'Image',
             koName: '이미지 업로드 첨부',
             category: 'Atoms',
+            width: '120px',
+            height: '100px',
             previewHtml: `<span class="material-icons-outlined" style="font-size: 20px; color: var(--v4-placeholder-color, #a3a3a3);">image</span>`,
             html: `<div class="v4-shape v4-shape-image" style="width: 100%; height: 100%; background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23cbd5e1%22 stroke-width=%221.6%22><rect width=%2220%22 height=%2220%22 x=%222%22 y=%222%22 rx=%222%22 ry=%222%22/><circle cx=%228.5%22 cy=%228.5%22 r=%221.5%22/><path d=%22M21 15l-5-5L5 21%22/></svg>'); background-size: contain; background-position: center; background-repeat: no-repeat; box-sizing: border-box; border: 1.6px solid transparent;"></div>`
         },
@@ -211,6 +235,8 @@ window.V4_COMPONENT_LIBRARY = {
             name: 'Query Item',
             koName: '조회 항목',
             category: 'Atoms',
+            width: '1180px',
+            height: '40px',
             previewHtml: `<div style="display:flex; align-items:center; border:1px solid #ccc; background:#f8fafc; padding:4px; width:80px; height:40px; box-sizing:border-box;"><div style="width:25px; height:100%; background:#e2e8f0; border-right:1px solid #ccc;"></div><div style="flex:1; height:100%; background:#fff;"></div></div>`,
             html: `
             <div class="v4-admin-settings-container" data-row-count="1" data-row-height="40"
@@ -226,12 +252,44 @@ window.V4_COMPONENT_LIBRARY = {
             </div>`
         },
         {
-            id: 'v4-atom-image',
-            name: 'Image',
-            koName: '이미지 업로드 첨부',
+            id: 'v4-atom-accordion',
+            name: 'Accordion',
             category: 'Atoms',
-            previewHtml: `<span class="material-icons-outlined" style="font-size: 20px; color: var(--v4-placeholder-color, #a3a3a3);">image</span>`,
-            html: `<div class="v4-shape v4-shape-image" style="width: 100%; height: 100%; background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23cbd5e1%22 stroke-width=%221.6%22><rect width=%2220%22 height=%2220%22 x=%222%22 y=%222%22 rx=%222%22 ry=%222%22/><circle cx=%228.5%22 cy=%228.5%22 r=%221.5%22/><path d=%22M21 15l-5-5L5 21%22/></svg>'); background-size: contain; background-position: center; background-repeat: no-repeat; box-sizing: border-box; border: 1.6px solid transparent;"></div>`
+            width: '180px',
+            height: '36px',
+            legacyName: 'Accordion UI'
+        },
+        {
+            id: 'v4-atom-checkbox',
+            name: 'Check Box',
+            category: 'Atoms',
+            width: '80px',
+            height: '32px',
+            legacyName: 'Check Box'
+        },
+        {
+            id: 'v4-atom-radio',
+            name: 'Radio Button',
+            category: 'Atoms',
+            width: '80px',
+            height: '32px',
+            legacyName: 'Radio Button'
+        },
+        {
+            id: 'v4-atom-grid',
+            name: 'Grid UI',
+            category: 'Atoms',
+            width: '500px',
+            height: '336px',
+            legacyName: 'Grid UI'
+        },
+        {
+            id: 'v4-atom-searchbar',
+            name: 'Search Bar',
+            category: 'Atoms',
+            width: '200px',
+            height: '30px',
+            legacyName: 'Search Bar'
         }
     ],
     molecules: [
@@ -332,11 +390,11 @@ window.V4_COMPONENT_LIBRARY = {
             width: '100px',
             height: '100px',
             cardStyle: 'background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important;',
-            previewHtml: `<div style="width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 30px solid var(--v4-component-bg, rgb(255, 255, 255));"></div>`,
+            previewHtml: `<div style="width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 30px solid rgb(255, 255, 255);"></div>`,
             html: `
             <div class="v4-shape v4-shape-triangle" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: flex-end; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: visible; box-sizing: border-box; position: relative;">
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible;">
-                    <polygon points="50,1 1,99 99,99" style="fill: var(--v4-component-bg, rgb(255, 255, 255)); stroke: var(--v4-border-color, rgb(200, 200, 200)); stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
+                    <polygon points="50,1 1,99 99,99" style="fill: rgb(255, 255, 255); stroke: rgb(200, 200, 200); stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
                 </svg>
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 10px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; z-index: 2; position: relative;"></div>
             </div>`
@@ -352,11 +410,11 @@ window.V4_COMPONENT_LIBRARY = {
             width: '100px',
             height: '100px',
             cardStyle: 'background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important;',
-            previewHtml: `<div style="width: 30px; height: 30px; background: var(--v4-component-bg, rgb(255, 255, 255)); border: 1.6px solid var(--v4-border-color, rgb(200, 200, 200)); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);"></div>`,
+            previewHtml: `<div style="width: 30px; height: 30px; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);"></div>`,
             html: `
             <div class="v4-shape v4-shape-diamond" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: visible; box-sizing: border-box; position: relative;">
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible;">
-                    <polygon points="50,1 99,50 50,99 1,50" style="fill: var(--v4-component-bg, rgb(255, 255, 255)); stroke: var(--v4-border-color, rgb(200, 200, 200)); stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
+                    <polygon points="50,1 99,50 50,99 1,50" style="fill: rgb(255, 255, 255); stroke: rgb(200, 200, 200); stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
                 </svg>
                 <div contenteditable="true" class="v4-editable-cell" style="width: 60%; height: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; outline: none; font-weight: 700; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; font-size: 14px; z-index: 2; position: relative;"></div>
             </div>`
@@ -371,11 +429,11 @@ window.V4_COMPONENT_LIBRARY = {
             width: '100px',
             height: '100px',
             cardStyle: 'background: rgba(0, 229, 255, 0.05); border: 1.6px solid rgba(0, 229, 255, 0.1) !important;',
-            previewHtml: `<svg viewBox="0 0 100 100" style="width: 30px; height: 30px; overflow: visible;"><path d="M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z" style="fill: var(--v4-component-bg, rgb(255, 255, 255)); stroke: var(--v4-border-color, rgb(200, 200, 200)); stroke-width: 1.6; vector-effect: non-scaling-stroke;" /></svg>`,
+            previewHtml: `<svg viewBox="0 0 100 100" style="width: 30px; height: 30px; overflow: visible;"><path d="M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z" style="fill: rgb(255, 255, 255); stroke: rgb(200, 200, 200); stroke-width: 1.6; vector-effect: non-scaling-stroke;" /></svg>`,
             html: `
             <div class="v4-shape v4-shape-arrow" data-arrow-dir="right" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: visible; box-sizing: border-box; position: relative;">
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible;">
-                    <path class="v4-arrow-path" d="M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z" style="fill: var(--v4-component-bg, rgb(255, 255, 255)); stroke: var(--v4-border-color, rgb(200, 200, 200)); stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
+                    <path class="v4-arrow-path" d="M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z" style="fill: rgb(255, 255, 255); stroke: rgb(200, 200, 200); stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
                 </svg>
                 <div contenteditable="true" class="v4-editable-cell" style="width: 50%; height: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; outline: none; font-weight: 700; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; font-size: 14px; z-index: 2; position: relative;"></div>
             </div>`

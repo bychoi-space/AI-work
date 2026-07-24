@@ -5,11 +5,11 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 
 # LF Editor Engine
 
-## Core Boundaries
+## Core Boundaries & Architecture
 - Keep the engine modular. Add a dedicated JS file for a large new feature instead of swelling an existing file.
-- `vctrl_core.js` owns global `state`, `MessageHub`, GitHub API load/save, inline `v4Script`, and SmartGuide calculation flow.
+- `vctrl_core.js` owns global `state`, `MessageHub`, GitHub API load/save, dynamic script compilation for iframe `srcdoc`, and SmartGuide calculation flow.
 - `vctrl_grouping.js` owns marquee selection, `selectedIds`, group move/delete/grouping behavior, and selected class sync.
-- `vctrl_inspector.js` owns sidebar tabs, metadata UI, screen list rendering, Quill initialization, and the central `DOM` registry.
+- `vctrl_inspector.js` owns sidebar tabs, metadata UI, screen list rendering, Quill initialization, floating card routing, and the central `DOM` registry.
 - `vctrl_v3.js` owns annotation pins (legacy render), Canvas Interaction (`adjustZoom`, `centerView`, `updateTransform`), Fullscreen, and Global Space-key Panning logic (integrated with `vctrl_core.js` iframe event propagation).
 
 
@@ -18,17 +18,18 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 - Normalize action names sent through `MessageHub` so case, hyphen, and underscore variants are accepted.
 - **MessageHub Publish Collision**: `MessageHub.publish(type, data)` 호출 시 `data` 객체 내부에 `type` 프로퍼티가 포함되지 않도록 주의하라. `publish` 함수는 `{ type, ...data }` 형태로 객체를 병합하므로, `data.type`이 첫 번째 인자인 `type`을 덮어씌워 구독자가 메시지를 수신하지 못하게 된다.
 - Inline CSS/JS dependencies needed by `srcdoc` iframe flows to avoid security blocking.
-- **Nested Backtick Precaution**: `vctrl_core.js`의 `v4Script`와 같이 백틱(`)으로 감싸진 템플릿 리터럴 내부에서 다시 백틱을 사용하면 구문 에러가 발생한다. 내부에서는 반드시 일반 따옴표(`"` 또는 `'`)를 사용하거나 이스케이프(`\``) 처리를 해야 한다.
-- **Iframe State Initialization**: iframe 컨텍스트에서는 부모 창의 전역 변수(예: `window.state`)가 자동으로 공유되지 않는다. iframe 내부에 주입되는 스크립트(예: `v4UndoScript`)에서 상태를 참조하거나 저장할 때는 반드시 참조 전 초기화 여부(예: `if (!window.state) window.state = {};`)를 확인하여 `TypeError`를 방지하라.
+- **Nested Backtick Precaution**: `vctrl_core.js`의 `v4Script` 또는 인라인 주입 스크립트와 같이 백틱(`)으로 감싸진 템플릿 리터럴 내부에서 다시 백틱이나 변수 보간(`${}`)을 사용하면 구문 에러(SyntaxError)가 발생한다. 내부에서는 반드시 일반 따옴표(`"` 또는 `'`)와 덧셈 연산자(`+`)를 사용하거나 이스케이프(`\``) 처리를 해야 한다.
+- **Iframe State Initialization**: iframe 컨텍스트에서는 부모 창의 전역 변수(예: `window.state`)가 자동으로 공유되지 않는다. iframe 내부에 주입되는 스크립트(예: `vctrl_undo.js`)에서 상태를 참조하거나 저장할 때는 반드시 참조 전 초기화 여부(예: `if (!window.state) window.state = {};`)를 확인하여 `TypeError`를 방지하라.
 - **iframe 하위 스크립트 모듈화 및 동적 컴파일 (Modular Iframe Scripts & Dynamic Compilation)**:
-  - iframe의 `srcdoc`에 주입되는 스크립트는 기존의 비대했던 `v4Script` 대신 `vctrl_undo.js`, `vctrl_table.js`, `vctrl_design_system.js`, `vctrl_shortcuts.js`, `vctrl_iframe_drag.js`, `vctrl_iframe_grid.js`, `vctrl_iframe_accordion.js`, `vctrl_iframe_script.js` 등 기능별 모듈 파일로 완전히 분리되었습니다.
-  - `vctrl_core.js`의 `loadScreen()` 시점에 이 분리된 파일들을 동적으로 결합(Compile)하여 iframe의 `srcdoc` 내부 `<script>` 영역에 순서대로 주입합니다.
-  - **자동 캐시 무효화 (Auto Cache Busting)**: 빌드 시점에 결합되는 스크립트 블록 최상단에 `Date.now()` 타임스탬프 난수가 담긴 버스터 주석(`// Cache Buster Timestamp: ...`)을 함께 인라인 주입하므로, 개발자는 쿼리스트링 버전을 매번 수동 범프할 필요가 없으며 로드 시마다 캐시 무효화가 자동으로 일어납니다.
+  - iframe의 `srcdoc`에 주입되는 스크립트는 기능별 모듈 파일(`vctrl_undo.js`, `vctrl_design_system.js`, `vctrl_shortcuts.js`, `vctrl_iframe_drag.js`, `vctrl_iframe_grid.js`, `vctrl_iframe_accordion.js`, `vctrl_iframe_script.js` 등)로 완전 분리 관리된다.
+  - `vctrl_core.js`의 `loadScreen()` 시점에 이 분리된 파일들을 동적으로 결합(Compile)하여 iframe의 `srcdoc` 내부 `<script>` 영역에 순서대로 주입한다.
+  - **자동 캐시 무효화 (Auto Cache Busting)**: 빌드 시점에 결합되는 스크립트 블록 최상단에 `Date.now()` 타임스탬프 난수가 담긴 버스터 주석(`// Cache Buster Timestamp: ...`)을 함께 인라인 주입하므로, 개발자는 쿼리스트링 버전을 매번 수동 범프할 필요가 없으며 로드 시마다 캐시 무효화가 자동으로 일어난다.
 - **크로스 스크린 복사/붙여넣기 (Cross-Screen Clipboard Sync)**:
-  - 각 스크린 iframe은 고유한 `srcdoc` 컨텍스트(또는 `file://` sandboxed context)에서 로드되므로 격리되어 있어 `localStorage`나 iframe 간의 단순 전역 변수 공유가 불가능합니다.
-  - 이를 극복하고 서로 다른 스크린을 넘나들며 오브젝트 복사/붙여넣기(`Ctrl+C` / `Ctrl+V`)를 지원하기 위해 최상위 윈도우(`window.top`)의 전역 프로퍼티인 `window.top.__lf_global_clipboard__`를 클립보드 데이터의 SSOT로 정의하여 통신합니다.
-  - 복사 시 선택한 오브젝트 데이터(스타일, 속성, 내부 텍스트, HTML 등)를 JSON 형태로 직렬화하여 `window.top.__lf_global_clipboard__`에 저장하며, 붙여넣기 시 이를 역직렬화하여 겹침 방지 오프셋(+15px)을 더한 뒤 캔버스에 붙여넣습니다.
+  - 각 스크린 iframe은 고유한 `srcdoc` 컨텍스트(또는 `file://` sandboxed context)에서 로드되므로 격리되어 있어 `localStorage`나 iframe 간의 단순 전역 변수 공유가 불가능하다.
+  - 이를 극복하고 서로 다른 스크린을 넘나들며 오브젝트 복사/붙여넣기(`Ctrl+C` / `Ctrl+V`)를 지원하기 위해 최상위 윈도우(`window.top`)의 전역 프로퍼티인 `window.top.__lf_global_clipboard__`를 클립보드 데이터의 SSOT로 정의하여 통신한다.
+  - 복사 시 선택한 오브젝트 데이터(스타일, 속성, 내부 텍스트, HTML 등)를 JSON 형태로 직렬화하여 `window.top.__lf_global_clipboard__`에 저장하며, 붙여넣기 시 이를 역직렬화하여 겹침 방지 오프셋(+15px)을 더한 뒤 캔버스에 붙여넣는다.
 - **MutationObserver 무한 재귀 루프 방지 (Preventing Infinite Mutation Loops)**: `enforceDesignSystem()` 등 MutationObserver가 활성화된 루프 내에서 카운터 textContent, placeholder display, 또는 폰트 크기 등의 DOM 쓰기 연산을 수행할 경우 다시 MutationObserver가 발동하여 브라우저가 정지하는 무한 재귀 상태에 빠지기 쉽다. 이를 예방하기 위해, 모든 DOM 쓰기 작업은 반드시 **현재 DOM 값과 대입하려는 신규 값을 엄격히 비교(Value Comparison Guard)**하여, 값이 변경된 경우에만 실행되도록 보호해야 한다.
+
 
 ## Interaction Integrity
 - Keep marker drag and click-to-edit separate.

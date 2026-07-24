@@ -2424,6 +2424,9 @@ body.drag-active #drop-overlay {
 }
 
 /* LFmall Sprite Icons */
+svg.lf-icon {
+    background-image: none !important;
+}
 .lf-icon {
     background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png");
     background-size: 200px 160px;

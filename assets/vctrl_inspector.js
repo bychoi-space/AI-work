@@ -43,6 +43,32 @@ window.rebindInspectorDOM = function() {
     DOM.btnAddToMolecules = get('btn-add-molecules-action');
 };
 
+window.restorePropertiesSections = function() {
+    const storage = document.getElementById('inspector-panels-storage');
+    if (!storage) return;
+
+    const activeEl = document.activeElement;
+
+    const sections = [
+        DOM.shapePropSection, DOM.textPropSection, DOM.tablePropSection,
+        DOM.linePropSection, DOM.iconPropSection, DOM.checkboxRadioPropSection,
+        DOM.textboxTextareaPropSection, DOM.searchbarPropSection, DOM.stepperPropSection, DOM.selectboxPropSection,
+        DOM.fileuploadPropSection, DOM.alertPropSection, DOM.buttonPropSection,
+        DOM.datePickerPropSection, DOM.togglePropSection, DOM.accordionPropSection, DOM.gridPropSection,
+        DOM.adminSettingsPropSection
+    ];
+
+    sections.forEach(sec => {
+        if (sec && sec instanceof Node) {
+            if (activeEl && sec.contains(activeEl)) {
+                return;
+            }
+            sec.style.display = 'none';
+            storage.appendChild(sec);
+        }
+    });
+};
+
 window.DOM = {
     iframe: get('main-iframe'),
     artboardWrapper: get('artboard-wrapper'),
@@ -203,45 +229,6 @@ window.switchSidebarTab = function(tabName) {
     console.log(`[Inspector] switchSidebarTab END: ${tabName}`);
 };
 
-// Helper to restore properties sections to their default DOM containers
-function restorePropertiesSections() {
-    const selectionBar = document.getElementById('selection-actions-bar');
-    const tabEditor = document.getElementById('tab-editor');
-    if (selectionBar && tabEditor && selectionBar.parentElement !== tabEditor) {
-        tabEditor.insertBefore(selectionBar, tabEditor.firstChild);
-    }
-    
-    const shapesBody = document.getElementById('v4-shapes-body');
-    if (shapesBody) {
-        const sections = [
-            document.getElementById('text-editor-section'),
-            document.getElementById('table-inspector-section'),
-            document.getElementById('shape-inspector-section'),
-            document.getElementById('line-editor-section'),
-            document.getElementById('icon-inspector-section'),
-            document.getElementById('checkbox-radio-inspector-section'),
-            document.getElementById('textbox-textarea-inspector-section'),
-            document.getElementById('stepper-inspector-section'),
-            document.getElementById('selectbox-inspector-section'),
-            document.getElementById('fileupload-inspector-section'),
-            document.getElementById('alert-inspector-section'),
-            document.getElementById('button-inspector-section'),
-            document.getElementById('datepicker-inspector-section'),
-            document.getElementById('toggle-inspector-section'),
-            document.getElementById('searchbar-inspector-section'),
-            document.getElementById('accordion-inspector-section'),
-            document.getElementById('grid-inspector-section'),
-            document.getElementById('admin-settings-inspector-section')
-        ];
-        sections.forEach(sec => {
-            if (sec && sec.parentElement !== shapesBody) {
-                shapesBody.appendChild(sec);
-            }
-        });
-    }
-}
-window.restorePropertiesSections = restorePropertiesSections;
-
 // --- 3. UI Rendering Functions ---
 window.updateProperties = function(compStyles) {
     const activeEl = document.activeElement;
@@ -256,7 +243,7 @@ window.updateProperties = function(compStyles) {
     );
     
     if (!isTyping) {
-        restorePropertiesSections();
+        window.restorePropertiesSections();
     }
     const pm = state.projectMetadata || {};
     if (!DOM.metadataPanel) return;
@@ -343,9 +330,18 @@ const ProjectMetadataManager = {
             }
         }
 
-        // Hide all sections first
+        // Hide all sections first & return active sections to storage
+        window.restorePropertiesSections();
         const activeEl = document.activeElement;
         const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title' || activeEl.id === 'prop-admin-label-width-slider' || activeEl.id === 'prop-admin-label-width-number');
+        const isTyping = activeEl && (
+            activeEl.tagName === 'INPUT' || 
+            activeEl.tagName === 'TEXTAREA' || 
+            activeEl.isContentEditable || 
+            isTypingInAdminProps ||
+            activeEl.classList.contains('grid-col-width-input') ||
+            activeEl.classList.contains('grid-col-name-input')
+        );
 
         const arrowGroupInit = document.getElementById('shape-arrow-direction-group');
         if (arrowGroupInit) arrowGroupInit.style.display = 'none';
@@ -424,27 +420,24 @@ const ProjectMetadataManager = {
                     bgOpacityGroup.style.display = isPattern ? 'none' : 'block';
                 }
 
-                // Show/hide Arrow direction config group & Corner style group
+                // Show/hide Arrow/Triangle direction config group & Corner style group (Rect only)
                 const arrowGroup = document.getElementById('shape-arrow-direction-group');
                 const cornerGroup = document.getElementById('shape-corner-style-group');
+                const isRect = (compStyles.shapeType === 'rect' || compStyles.id === 'v4-shape-rect');
                 const isArrow = (compStyles.shapeType === 'arrow' || compStyles.id === 'v4-shape-arrow');
+                const isTriangle = (compStyles.shapeType === 'triangle' || compStyles.id === 'v4-shape-triangle');
+                const isArrowOrTriangle = isArrow || isTriangle;
+
                 if (cornerGroup) {
-                    cornerGroup.style.display = isArrow ? 'none' : 'block';
+                    cornerGroup.style.display = isRect ? 'block' : 'none';
                 }
                 if (arrowGroup) {
-                    if (isArrow) {
+                    if (isArrowOrTriangle) {
                         arrowGroup.style.display = 'block';
-                        const currentDir = compStyles.arrowDir || 'right';
-                        document.querySelectorAll('.v4-arrow-dir-btn').forEach(btn => {
-                            const btnDir = btn.dataset.dir;
-                            if (btnDir === currentDir) {
-                                btn.classList.add('active');
-                                btn.style.cssText = 'height: 28px; background: rgba(0,229,255,0.15); border: 1.6px solid rgba(0,229,255,0.4); border-radius: 6px; color: #00e5ff; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;';
-                            } else {
-                                btn.classList.remove('active');
-                                btn.style.cssText = 'height: 28px; background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(255, 255, 255, 0.15); border-radius: 6px; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;';
-                            }
-                        });
+                        const currentDir = compStyles.direction || compStyles.arrowDir || 'up';
+                        if (typeof window._syncArrowDirBtns === 'function') {
+                            window._syncArrowDirBtns(currentDir);
+                        }
                     } else {
                         arrowGroup.style.display = 'none';
                     }
@@ -520,6 +513,36 @@ const ProjectMetadataManager = {
             // Sync Property Controls
             const s = (compStyles && compStyles.currentStyles) || {};
             if (DOM.textColorPicker) DOM.textColorPicker.value = s.text || "#000000";
+            if (compStyles.isIcon || s.iconColor) {
+                const iconColorInput = document.getElementById('icon-color');
+                if (iconColorInput && s.iconColor) {
+                    iconColorInput.value = s.iconColor;
+                }
+            }
+
+            // Sync Shape BG & Border Color Pickers
+            if (compStyles.isShape) {
+                const shapeBgInput = document.getElementById('shape-bg-color');
+                const shapeBorderInput = document.getElementById('shape-border-color');
+                if (shapeBgInput) {
+                    const validBg = (s.bg && s.bg !== 'transparent') ? s.bg : '#ffffff';
+                    shapeBgInput.value = validBg;
+                    const wrapper = document.getElementById('shape-bg-wrapper');
+                    if (wrapper) {
+                        if (s.bg === 'transparent' || s.bgOpacity === 0) wrapper.classList.add('transparent-active');
+                        else wrapper.classList.remove('transparent-active');
+                    }
+                }
+                if (shapeBorderInput) {
+                    const validBorder = (s.border && s.border !== 'transparent') ? s.border : '#c8c8c8';
+                    shapeBorderInput.value = validBorder;
+                    const wrapper = document.getElementById('shape-border-wrapper');
+                    if (wrapper) {
+                        if (s.border === 'transparent') wrapper.classList.add('transparent-active');
+                        else wrapper.classList.remove('transparent-active');
+                    }
+                }
+            }
 
             // 1. Sync Shape Opacity
             if (compStyles.isShape && s.bgOpacity !== undefined) {
@@ -537,8 +560,9 @@ const ProjectMetadataManager = {
                 if (txt) txt.innerText = s.fontSize;
             }
 
-            // 3. Sync Corner Radius (Shape only)
-            if (compStyles.isShape && s.borderRadius !== undefined) {
+            // 3. Sync Corner Radius (Rect Shape only)
+            const isRectShape = compStyles.isShape && (compStyles.shapeType === 'rect' || compStyles.id === 'v4-shape-rect');
+            if (isRectShape && s.borderRadius !== undefined) {
                 const radiusVal = s.borderRadius;
                 const slider = document.getElementById('shape-border-radius');
                 const txt = document.getElementById('txt-shape-border-radius');
@@ -746,63 +770,44 @@ const ProjectMetadataManager = {
         // Dynamically move active panels into floating inspector card body
         const floatingBody = document.getElementById('floating-inspector-body');
         if (floatingBody) {
-            if (!isTyping) {
-                floatingBody.innerHTML = '';
-                const selectionBar = document.getElementById('selection-actions-bar');
-                if (selectionBar) {
-                    floatingBody.appendChild(selectionBar);
-                    selectionBar.style.setProperty('display', 'flex', 'important');
+            const selectionBar = document.getElementById('selection-actions-bar');
+            if (selectionBar) {
+                if (selectionBar.parentElement !== floatingBody) {
+                    floatingBody.insertBefore(selectionBar, floatingBody.firstChild);
                 }
-                const sections = [
-                    DOM.shapePropSection, DOM.textPropSection, DOM.tablePropSection,
-                    DOM.linePropSection, DOM.iconPropSection, DOM.checkboxRadioPropSection,
-                    DOM.textboxTextareaPropSection, DOM.searchbarPropSection, DOM.stepperPropSection, DOM.selectboxPropSection,
-                    DOM.fileuploadPropSection, DOM.alertPropSection, DOM.buttonPropSection,
-                    DOM.datePickerPropSection, DOM.togglePropSection, DOM.accordionPropSection, DOM.gridPropSection,
-                    DOM.adminSettingsPropSection
-                ];
-                sections.forEach(sec => {
-                    if (sec && sec.style.display === 'block') {
-                        if (sec instanceof Node) {
-                            floatingBody.appendChild(sec);
-                        } else {
-                            console.warn("[VCTRL INSPECTOR] Skipped appendChild: sec is not a valid DOM Node", sec);
-                        }
-                    }
-                });
+                selectionBar.style.setProperty('display', 'flex', 'important');
             }
+            const sections = [
+                DOM.shapePropSection, DOM.textPropSection, DOM.tablePropSection,
+                DOM.linePropSection, DOM.iconPropSection, DOM.checkboxRadioPropSection,
+                DOM.textboxTextareaPropSection, DOM.searchbarPropSection, DOM.stepperPropSection, DOM.selectboxPropSection,
+                DOM.fileuploadPropSection, DOM.alertPropSection, DOM.buttonPropSection,
+                DOM.datePickerPropSection, DOM.togglePropSection, DOM.accordionPropSection, DOM.gridPropSection,
+                DOM.adminSettingsPropSection
+            ];
+            sections.forEach(sec => {
+                if (sec && sec.style.display === 'block') {
+                    if (sec instanceof Node) {
+                        if (sec.parentElement !== floatingBody) {
+                            floatingBody.appendChild(sec);
+                        }
+                    } else {
+                        console.warn("[VCTRL INSPECTOR] Skipped appendChild: sec is not a valid DOM Node", sec);
+                    }
+                }
+            });
         }
     } else {
+        window.restorePropertiesSections();
         const floatingInspector = document.getElementById('floating-inspector-card');
         if (floatingInspector) {
             floatingInspector.style.setProperty('display', 'none', 'important');
             floatingInspector.style.right = '24px';
             floatingInspector.style.left = 'auto';
-            const floatingBody = document.getElementById('floating-inspector-body');
-            if (floatingBody) floatingBody.innerHTML = '';
         }
         state.isEditing = false;
         state.editingIndex = -1;
         if (DOM.selectionBar) DOM.selectionBar.style.display = 'none';
-        // Hide all sections when nothing selected
-        if (DOM.textPropSection) DOM.textPropSection.style.display = 'none';
-        if (DOM.tablePropSection) DOM.tablePropSection.style.display = 'none';
-        if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'none';
-        if (DOM.linePropSection) DOM.linePropSection.style.display = 'none';
-        if (DOM.iconPropSection) DOM.iconPropSection.style.display = 'none';
-        if (DOM.checkboxRadioPropSection) DOM.checkboxRadioPropSection.style.display = 'none';
-        if (DOM.textboxTextareaPropSection) DOM.textboxTextareaPropSection.style.display = 'none';
-        if (DOM.stepperPropSection) DOM.stepperPropSection.style.display = 'none';
-        if (DOM.selectboxPropSection) DOM.selectboxPropSection.style.display = 'none';
-        if (DOM.fileuploadPropSection) DOM.fileuploadPropSection.style.display = 'none';
-        if (DOM.alertPropSection) DOM.alertPropSection.style.display = 'none';
-        if (DOM.buttonPropSection) DOM.buttonPropSection.style.display = 'none';
-        if (DOM.datePickerPropSection) DOM.datePickerPropSection.style.display = 'none';
-        if (DOM.togglePropSection) DOM.togglePropSection.style.display = 'none';
-        if (DOM.accordionPropSection) DOM.accordionPropSection.style.display = 'none';
-        if (DOM.gridPropSection) DOM.gridPropSection.style.display = 'none';
-        if (DOM.searchbarPropSection) DOM.searchbarPropSection.style.display = 'none';
-        if (DOM.adminSettingsPropSection) DOM.adminSettingsPropSection.style.display = 'none';
     }
 };
 
@@ -1926,29 +1931,20 @@ if (btnShowHistory) {
 }
 
 
-// Bind Arrow Direction Button Click Events
-document.querySelectorAll('.v4-arrow-dir-btn').forEach(btn => {
-    btn.onclick = () => {
-        const dir = btn.dataset.dir;
-        document.querySelectorAll('.v4-arrow-dir-btn').forEach(b => {
-            if (b === btn) {
-                b.classList.add('active');
-                b.style.cssText = 'height: 28px; background: rgba(0,229,255,0.15); border: 1.6px solid rgba(0,229,255,0.4); border-radius: 6px; color: #00e5ff; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;';
-            } else {
-                b.classList.remove('active');
-                b.style.cssText = 'height: 28px; background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(255, 255, 255, 0.15); border-radius: 6px; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;';
-            }
-        });
-
-        const iframe = document.getElementById('main-iframe');
-        if (iframe && iframe.contentWindow && window.MessageHub) {
-            MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ARROW_DIRECTION', {
-                direction: dir
-            });
+// Global function to sync Arrow/Triangle Direction Buttons UI
+window._syncArrowDirBtns = (currentDir) => {
+    const targetDir = currentDir || 'right';
+    document.querySelectorAll('.v4-arrow-dir-btn').forEach(b => {
+        const btnDir = b.dataset.dir;
+        if (btnDir === targetDir) {
+            b.classList.add('active');
+            b.style.cssText = 'height: 28px; background: rgba(0,229,255,0.15); border: 1.6px solid rgba(0,229,255,0.4); border-radius: 6px; color: #00e5ff; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;';
+        } else {
+            b.classList.remove('active');
+            b.style.cssText = 'height: 28px; background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(255, 255, 255, 0.15); border-radius: 6px; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;';
         }
-        if (typeof window.markAsDirty === 'function') window.markAsDirty();
-    };
-});
+    });
+};
 
 
 window.showLoading = (text) => { const overlay = get('loading-overlay'); if (overlay) { const txt = overlay.querySelector('.loading-text'); if (txt) txt.innerText = text; overlay.classList.remove('fade-out'); } };

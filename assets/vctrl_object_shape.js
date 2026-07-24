@@ -35,9 +35,11 @@ window.v4ObjectShapeScript = `
                 
                 if (d.style.width !== undefined) {
                     s.style.width = d.style.width;
+                    if (t !== s) t.style.width = '100%';
                 }
                 if (d.style.height !== undefined) {
                     s.style.height = d.style.height;
+                    if (t !== s) t.style.height = '100%';
                 }
 
                 if (d.style.patternType !== undefined && t.classList.contains('v4-shape-pattern-grid')) {
@@ -88,7 +90,10 @@ window.v4ObjectShapeScript = `
                     }
                     if (d.style.borderWidth) {
                         svgShape.style.strokeWidth = d.style.borderWidth;
+                    } else {
+                        svgShape.style.strokeWidth = '1.6';
                     }
+                    svgShape.style.vectorEffect = 'non-scaling-stroke';
                 }
             }
         });

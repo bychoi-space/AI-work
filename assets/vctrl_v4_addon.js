@@ -31,6 +31,18 @@
             triggerImageFileUpload();
             return;
         }
+        const legacyMap = {
+            'v4-atom-accordion': 'Accordion UI',
+            'v4-atom-checkbox': 'Check Box',
+            'v4-atom-radio': 'Radio Button',
+            'v4-atom-grid': 'Grid UI',
+            'v4-atom-searchbar': 'Search Bar'
+        };
+        if (legacyMap[id] && typeof window.insertAtomicComponent === 'function') {
+            window.insertAtomicComponent('atom', legacyMap[id]);
+            return;
+        }
+
         const lib = window.V4_COMPONENT_LIBRARY;
         if (!lib) return console.error("[V4] Component Library not found.");
 
@@ -44,50 +56,11 @@
 
         if (!item) return console.error("[V4] Component not found:", id);
 
+        const isIcon = item.id.includes('icon') || (item.html && (item.html.includes('<img') || item.html.includes('lf-icon')));
         const style = { 
-            width: item.width || '200px', 
-            height: item.height || '200px' 
+            width: item.width || (isIcon ? '40px' : '120px'), 
+            height: item.height || (isIcon ? '40px' : '40px') 
         };
-        if (item.category === 'Atoms' || item.id === 'v4-shape-badge') {
-            const isIcon = item.id.includes('icon') || item.html.includes('<img');
-            if (item.id === 'v4-atom-textbox') {
-                style.width = '150px';
-                style.height = '30px';
-            } else if (item.id === 'v4-atom-textarea') {
-                style.width = '150px';
-                style.height = '60px';
-            } else if (item.id === 'v4-atom-stepper') {
-                style.width = '154px';
-                style.height = '30px';
-            } else if (item.id === 'v4-atom-selectbox') {
-                style.width = '150px';
-                style.height = '30px';
-            } else if (item.id === 'v4-atom-fileupload') {
-                style.width = '300px';
-                style.height = '30px';
-            } else if (item.id === 'v4-atom-alert') {
-                style.width = '250px';
-                style.height = '120px';
-            } else if (item.id === 'v4-atom-popup') {
-                style.width = '300px';
-                style.height = '200px';
-            } else if (item.id === 'v4-atom-button') {
-                style.width = '80px';
-                style.height = '40px';
-            } else if (item.id === 'v4-atom-datepicker') {
-                style.width = '500px';
-                style.height = '30px';
-            } else if (item.id === 'v4-atom-toggle') {
-                style.width = '40px';
-                style.height = '20px';
-            } else if (item.id === 'v4-atom-admin-settings') {
-                style.width = '1180px';
-                style.height = '40px';
-            } else {
-                style.width = isIcon ? '40px' : '120px';
-                style.height = '40px';
-            }
-        }
         if (item.id === 'v4-search-bar' || item.id === 'v4-premium-gnb') {
             style.width = '100%';
             style.height = 'auto';
@@ -394,11 +367,11 @@
     };
     window._syncPatternVisualBtns = _syncPatternVisualBtns;
 
-    // Use event delegation to handle shape visual pattern button clicks reliably
+    // Use event delegation to handle shape visual pattern & arrow direction button clicks reliably
     document.addEventListener('click', function(e) {
-        const btn = e.target.closest('.v4-pattern-type-btn');
-        if (btn) {
-            const pType = btn.dataset.type;
+        const patternBtn = e.target.closest('.v4-pattern-type-btn');
+        if (patternBtn) {
+            const pType = patternBtn.dataset.type;
             console.log("[V4 Addon] Pattern Type button clicked with value:", pType);
             _syncPatternVisualBtns(pType);
             notifyIframe({
@@ -406,6 +379,21 @@
                 selector: '.v4-shape',
                 style: { patternType: pType }
             });
+            return;
+        }
+
+        const arrowBtn = e.target.closest('.v4-arrow-dir-btn');
+        if (arrowBtn) {
+            const dir = arrowBtn.dataset.dir;
+            console.log("[V4 Addon] Arrow/Triangle Direction button clicked with value:", dir);
+            if (typeof window._syncArrowDirBtns === 'function') {
+                window._syncArrowDirBtns(dir);
+            }
+            notifyIframe({
+                type: 'LF_UPDATE_ARROW_DIRECTION',
+                direction: dir
+            });
+            if (typeof window.markAsDirty === 'function') window.markAsDirty();
         }
     });
     // Additional shape text and border properties handled by declarative bindings loop
@@ -437,7 +425,7 @@
         _syncCornerBtns(val);
         notifyIframe({
             type: 'LF_UPDATE_STYLE',
-            selector: '.v4-shape',
+            selector: '.v4-shape-rect',
             style: { borderRadius: val + 'px' }
         });
     };
@@ -2288,6 +2276,28 @@
     window.initGridEvents = initGridEvents;
     window.initAdminSettingsEvents = initAdminSettingsEvents;
     window.initToggleEvents = initToggleEvents;
+
+    window.initAllInspectorEvents = function() {
+        try {
+            if (typeof window.rebindInspectorDOM === 'function') window.rebindInspectorDOM();
+            if (typeof initCheckboxRadioEvents === 'function') initCheckboxRadioEvents();
+            if (typeof initTextboxTextareaEvents === 'function') initTextboxTextareaEvents();
+            if (typeof initSearchBarEvents === 'function') initSearchBarEvents();
+            if (typeof initStepperEvents === 'function') initStepperEvents();
+            if (typeof initSelectboxEvents === 'function') initSelectboxEvents();
+            if (typeof initFileuploadEvents === 'function') initFileuploadEvents();
+            if (typeof initAlertEvents === 'function') initAlertEvents();
+            if (typeof initButtonEvents === 'function') initButtonEvents();
+            if (typeof initDatePickerEvents === 'function') initDatePickerEvents();
+            if (typeof initAccordionEvents === 'function') initAccordionEvents();
+            if (typeof initGridEvents === 'function') initGridEvents();
+            if (typeof initAdminSettingsEvents === 'function') initAdminSettingsEvents();
+            if (typeof initToggleEvents === 'function') initToggleEvents();
+            if (typeof window.initV4AddonEventListeners === 'function') window.initV4AddonEventListeners();
+        } catch (err) {
+            console.warn("[VCTRL INSPECTOR] Error during initAllInspectorEvents:", err);
+        }
+    };
 
     // Parent-side paste event listener for handling pasted image files when parent has focus
     window.addEventListener('paste', function(e) {

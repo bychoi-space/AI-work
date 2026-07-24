@@ -338,9 +338,10 @@ body.fullscreen-mode #btn-fullscreen-exit {
     background: rgba(255, 255, 255, 0.2);
 }
 
-/* Hide selection actions bar when it is in the right sidebar (tab-editor) */
-#tab-editor > #selection-actions-bar {
-    display: none !important;
+/* Selection Actions Bar & Inspector Styling */
+.floating-inspector-body #selection-actions-bar {
+    border-radius: 12px;
+    border: 1.6px solid rgba(99, 102, 241, 0.2);
 }
 
 /* Premium Custom Color Palette Popup */
