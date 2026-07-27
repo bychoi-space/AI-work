@@ -91,18 +91,33 @@ th.v4-editable-cell:focus, td.v4-editable-cell:focus { outline-offset: -2px !imp
 .lf-rv-my { background-position: 100% 0% !important; }
 .v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; object-fit: contain; }
-.v4-shape-triangle { clip-path: none !important; border: none !important; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
-.v4-shape-triangle[data-direction="up"] { transform: rotate(0deg) !important; }
-.v4-shape-triangle[data-direction="right"] { transform: rotate(90deg) !important; }
-.v4-shape-triangle[data-direction="down"] { transform: rotate(180deg) !important; }
-.v4-shape-triangle[data-direction="left"] { transform: rotate(270deg) !important; }
+.v4-shape-triangle, .v4-shape-arrow, .v4-directional-shape { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: center center !important; }
+.v4-shape-triangle { clip-path: none !important; border: none !important; }
+.v4-shape-triangle[data-direction="up"], .v4-shape-arrow[data-direction="up"], .v4-shape-arrow[data-arrow-dir="up"], .v4-directional-shape[data-direction="up"] { transform: rotate(0deg) !important; }
+.v4-shape-triangle[data-direction="right"], .v4-shape-arrow[data-direction="right"], .v4-shape-arrow[data-arrow-dir="right"], .v4-directional-shape[data-direction="right"] { transform: rotate(90deg) !important; }
+.v4-shape-triangle[data-direction="down"], .v4-shape-arrow[data-direction="down"], .v4-shape-arrow[data-arrow-dir="down"], .v4-directional-shape[data-direction="down"] { transform: rotate(180deg) !important; }
+.v4-shape-triangle[data-direction="left"], .v4-shape-arrow[data-direction="left"], .v4-shape-arrow[data-arrow-dir="left"], .v4-directional-shape[data-direction="left"] { transform: rotate(270deg) !important; }
 
 /* Counter-rotate text elements to keep them horizontal and clean */
-.v4-shape-triangle .v4-editable-cell, .v4-shape-triangle .v4-shape-text-overlay { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
-.v4-shape-triangle[data-direction="up"] .v4-editable-cell, .v4-shape-triangle[data-direction="up"] .v4-shape-text-overlay { transform: rotate(0deg) !important; }
-.v4-shape-triangle[data-direction="right"] .v4-editable-cell, .v4-shape-triangle[data-direction="right"] .v4-shape-text-overlay { transform: rotate(-90deg) !important; }
-.v4-shape-triangle[data-direction="down"] .v4-editable-cell, .v4-shape-triangle[data-direction="down"] .v4-shape-text-overlay { transform: rotate(-180deg) !important; }
-.v4-shape-triangle[data-direction="left"] .v4-editable-cell, .v4-shape-triangle[data-direction="left"] .v4-shape-text-overlay { transform: rotate(-270deg) !important; }
+.v4-shape-triangle .v4-editable-cell, .v4-shape-triangle .v4-shape-text-overlay,
+.v4-shape-arrow .v4-editable-cell, .v4-shape-arrow .v4-shape-text-overlay,
+.v4-directional-shape .v4-editable-cell, .v4-directional-shape .v4-shape-text-overlay { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: center center !important; }
+
+.v4-shape-triangle[data-direction="up"] .v4-editable-cell, .v4-shape-triangle[data-direction="up"] .v4-shape-text-overlay,
+.v4-shape-arrow[data-direction="up"] .v4-editable-cell, .v4-shape-arrow[data-direction="up"] .v4-shape-text-overlay,
+.v4-directional-shape[data-direction="up"] .v4-editable-cell, .v4-directional-shape[data-direction="up"] .v4-shape-text-overlay { transform: rotate(0deg) !important; }
+
+.v4-shape-triangle[data-direction="right"] .v4-editable-cell, .v4-shape-triangle[data-direction="right"] .v4-shape-text-overlay,
+.v4-shape-arrow[data-direction="right"] .v4-editable-cell, .v4-shape-arrow[data-direction="right"] .v4-shape-text-overlay,
+.v4-directional-shape[data-direction="right"] .v4-editable-cell, .v4-directional-shape[data-direction="right"] .v4-shape-text-overlay { transform: rotate(-90deg) !important; }
+
+.v4-shape-triangle[data-direction="down"] .v4-editable-cell, .v4-shape-triangle[data-direction="down"] .v4-shape-text-overlay,
+.v4-shape-arrow[data-direction="down"] .v4-editable-cell, .v4-shape-arrow[data-direction="down"] .v4-shape-text-overlay,
+.v4-directional-shape[data-direction="down"] .v4-editable-cell, .v4-directional-shape[data-direction="down"] .v4-shape-text-overlay { transform: rotate(-180deg) !important; }
+
+.v4-shape-triangle[data-direction="left"] .v4-editable-cell, .v4-shape-triangle[data-direction="left"] .v4-shape-text-overlay,
+.v4-shape-arrow[data-direction="left"] .v4-editable-cell, .v4-shape-arrow[data-direction="left"] .v4-shape-text-overlay,
+.v4-directional-shape[data-direction="left"] .v4-editable-cell, .v4-directional-shape[data-direction="left"] .v4-shape-text-overlay { transform: rotate(-270deg) !important; }
 .v4-shape-diamond { border: none !important; }
 .v4-shape-wave { border: none !important; }
 .v4-shape-pattern-grid { 
@@ -406,8 +421,13 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
 <div id="v4-comp-1784624249565" class="lf-component" style="position: absolute; top: 584.4px; left: 151.6px; z-index: 1000; transform: none; width: 59px; height: 32px;"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:24px; height:24px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">4*1</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1784624185923" class="lf-component" style="position: absolute; top: 584.4px; left: 220.1px; z-index: 1000; transform: none; width: 59px; height: 32px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">4*2</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1784623474814" class="lf-component" style="position: absolute; top: 619.8px; left: 20px; z-index: 1000; transform: none; width: 600px; height: 80px;" data-resized="true">
             <div class="v4-admin-settings-container" data-row-count="1" data-row-height="40" data-row1-label="탭 명칭" data-row1-cols="1" data-row1-type="textbox" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background: #ffffff; border: 1.6px solid rgb(226, 232, 240); border-radius: 8px; font-family: inherit; display: flex; flex-direction: column; overflow: hidden; pointer-events: auto;" data-label-width="120" data-show-group-header="true" data-group-header-title="1번 탭" data-group-header-bg="#73829c" data-group-header-color="#ffffff" data-row1-height="40"><div class="v4-admin-group-header" contenteditable="true" style="height: 40px; display: flex; align-items: center; padding: 0px 16px; font-size: 14px; font-weight: 700; background: rgb(115, 130, 156); color: rgb(255, 255, 255); box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;" data-input-bound="true" data-enforced-bg="#73829c" data-enforced-color="#ffffff">1번 탭</div>
                 <div class="v4-admin-settings-table" style="display: flex; flex-direction: column; width: 100%; flex: 1 1 0% !important; height: auto !important;"><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; box-sizing: border-box; height: 40px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">탭 명칭</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div></div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1784623548704" class="lf-component" style="position: absolute; top: 664.4px; left: 151.6px; z-index: 1000; transform: none; width: 150px; height: 30px;">
+            <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;" data-placeholder="" data-maxlength="24">
+                <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;"></div>
+                <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;"></div>
+                <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: block; font-family: inherit;">0/24</div>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><script id="v4-inlined-script">
-// Cache Buster Timestamp: 1784623213095
+// Cache Buster Timestamp: 1785126619545
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -2766,18 +2786,40 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
 
         if (e.key === 'F2' || e.code === 'F2') {
+            if (e.isComposing) return;
             e.preventDefault();
-            const selected = document.querySelectorAll('.lf-component.selected');
             const activeElement = document.activeElement;
             const isEditing = isInputActive(activeElement);
 
-            if (selected.length > 0) {
-                if (isEditing) {
-                    console.log("[VCTRL SHORTCUTS] Blurring iframe text editing.");
-                    activeElement.blur();
+            if (isEditing) {
+                console.log("[VCTRL SHORTCUTS] Exiting inline text editing mode via F2.");
+                if (activeElement && typeof activeElement.blur === 'function') activeElement.blur();
+            } else {
+                const selected = document.querySelectorAll('.lf-component.selected');
+                if (selected.length > 0) {
+                    const targetComp = selected[0];
+                    const editable = targetComp.querySelector('.v4-editable-cell, [contenteditable="true"]') ||
+                                     targetComp.querySelector('.v4-shape-text-content, .v4-shape-text-overlay, .v4-text-shape-content');
+                    if (editable) {
+                        console.log("[VCTRL SHORTCUTS] Entering inline text editing mode via F2.");
+                        if (typeof window.focusEditableCell === 'function') {
+                            window.focusEditableCell(editable);
+                        } else {
+                            try {
+                                window.focus();
+                                if (window.top && window.top !== window) {
+                                    const iframe = window.top.document.getElementById('main-iframe');
+                                    if (iframe && iframe.contentWindow) iframe.contentWindow.focus();
+                                }
+                            } catch(err) {}
+                            editable.setAttribute('contenteditable', 'true');
+                            editable.focus();
+                        }
+                    } else {
+                        console.log("[VCTRL SHORTCUTS] No inline editable element found, focusing parent Quill.");
+                        notifyParent({ type: 'LF_FOCUS_PARENT_QUILL' });
+                    }
                 }
-                console.log("[VCTRL SHORTCUTS] Focusing parent Quill editor.");
-                notifyParent({ type: 'LF_FOCUS_PARENT_QUILL' });
             }
             return;
         }
@@ -3128,9 +3170,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 if (d.style.width !== undefined) {
                     s.style.width = d.style.width;
+                    if (t !== s) t.style.width = '100%';
                 }
                 if (d.style.height !== undefined) {
                     s.style.height = d.style.height;
+                    if (t !== s) t.style.height = '100%';
                 }
 
                 if (d.style.patternType !== undefined && t.classList.contains('v4-shape-pattern-grid')) {
@@ -3181,7 +3225,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     }
                     if (d.style.borderWidth) {
                         svgShape.style.strokeWidth = d.style.borderWidth;
+                    } else {
+                        svgShape.style.strokeWidth = '1.6';
                     }
+                    svgShape.style.vectorEffect = 'non-scaling-stroke';
                 }
             }
         });
@@ -4274,6 +4321,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 })();
 
 
+
+
 (function() {
     // --- Console Log Auto-Clearing Guard inside iframe ---
     (function() {
@@ -4505,9 +4554,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         
         const getShapeColor = (prop) => {
             if (!shape) return "";
-            if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle') || shape.classList.contains('v4-shape-wave')) {
+            if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle') || shape.classList.contains('v4-shape-wave') || shape.classList.contains('v4-shape-arrow')) {
                 const svg = shape.querySelector('polygon, path, rect, circle');
-                if (svg) return prop === 'backgroundColor' ? svg.style.fill : svg.style.stroke;
+                if (svg) {
+                    const compStyle = window.getComputedStyle(svg);
+                    const val = prop === 'backgroundColor' ? (svg.style.fill || compStyle.fill) : (svg.style.stroke || compStyle.stroke);
+                    if (val && val !== 'none') return val;
+                }
             }
             return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
         };
@@ -4517,11 +4570,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
             const dot = icon.querySelector('.v4-radio div, .v4-radio-dot');
             if (poly) {
-                detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || "";
+                detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || _getVal(icon, "color") || "";
             } else if (dot) {
-                detectedIconColor = dot.style.backgroundColor || "";
+                detectedIconColor = dot.style.backgroundColor || _getVal(dot, "backgroundColor") || "";
             } else {
-                detectedIconColor = icon.style.color || icon.getAttribute('stroke') || "";
+                detectedIconColor = icon.style.color || icon.getAttribute('stroke') || _getVal(icon, "color") || "";
             }
         }
  
@@ -4571,8 +4624,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             x: parseFloat(c.style.left) || 0,
             y: parseFloat(c.style.top) || 0,
             shapeType: shape ? (shape.classList.contains('v4-shape-pattern-grid') ? 'pattern' : (shape.classList.contains('v4-shape-rect') ? 'rect' : (shape.classList.contains('v4-shape-circle') ? 'circle' : (shape.classList.contains('v4-shape-triangle') ? 'triangle' : (shape.classList.contains('v4-shape-diamond') ? 'diamond' : (shape.classList.contains('v4-shape-arrow') ? 'arrow' : '')))))) : '',
-            arrowDir: shape && shape.classList.contains('v4-shape-arrow') ? (shape.getAttribute('data-arrow-dir') || 'right') : '',
-            direction: shape && shape.classList.contains('v4-shape-triangle') ? (shape.getAttribute('data-direction') || 'up') : '',
+            arrowDir: shape ? (shape.getAttribute('data-arrow-dir') || shape.getAttribute('data-direction') || 'up') : '',
+            direction: shape ? (shape.getAttribute('data-direction') || shape.getAttribute('data-arrow-dir') || 'up') : '',
             patternType: shape && shape.classList.contains('v4-shape-pattern-grid') ? (shape.getAttribute('data-pattern-type') || 'grid') : '',
             isTable: !!table && !isGrid,
             isShape: !!shape,
@@ -4880,9 +4933,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     });
 
     document.addEventListener('input', e => { 
-        if (e.target.classList.contains('v4-editable-cell')) {
+        const editableCell = e.target.closest('.v4-editable-cell, [contenteditable="true"], .v4-shape-text-content, .v4-shape-text-overlay');
+        if (editableCell) {
             markDirty();
-            const comp = e.target.closest('.lf-component');
+            const comp = editableCell.closest('.lf-component');
             if (comp) {
                 if (comp.querySelector('.v4-checkbox-container') || comp.querySelector('.v4-radio-container')) {
                     if (typeof window.resizeAtomToFitText === 'function') {
@@ -4894,16 +4948,54 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 // Notify parent of text changes to sync the Quill editor in real-time
                 const isPin = comp.classList.contains('text-marker') || comp.classList.contains('pin-marker') || comp.classList.contains('v4-text-box') || comp.classList.contains('v4-text-shape');
                 const isShape = !!comp.querySelector('.v4-shape');
+
+                let targetId = comp.id;
+                const pinIndexAttr = comp.getAttribute('data-pin-index');
+                if (pinIndexAttr !== null) {
+                    targetId = parseInt(pinIndexAttr, 10);
+                } else {
+                    const match = comp.id.match(/^v4-pin-(d+)$/);
+                    if (match) targetId = parseInt(match[1], 10);
+                }
+
                 notifyParent({
                     type: 'LF_PIN_TEXT_CHANGED',
-                    id: comp.id,
-                    html: e.target.innerHTML,
+                    id: targetId,
+                    compId: comp.id,
+                    html: editableCell.innerHTML,
                     isPin: isPin,
                     isShape: isShape
                 });
             }
         } 
     }, { passive: false });
+
+    document.addEventListener('focusout', e => {
+        const editableCell = e.target.closest('.v4-editable-cell, [contenteditable="true"], .v4-shape-text-content, .v4-shape-text-overlay');
+        if (editableCell) {
+            const comp = editableCell.closest('.lf-component');
+            if (comp) {
+                const isPin = comp.classList.contains('text-marker') || comp.classList.contains('pin-marker') || comp.classList.contains('v4-text-box') || comp.classList.contains('v4-text-shape');
+                const isShape = !!comp.querySelector('.v4-shape');
+                let targetId = comp.id;
+                const pinIndexAttr = comp.getAttribute('data-pin-index');
+                if (pinIndexAttr !== null) {
+                    targetId = parseInt(pinIndexAttr, 10);
+                } else {
+                    const match = comp.id.match(/^v4-pin-(d+)$/);
+                    if (match) targetId = parseInt(match[1], 10);
+                }
+                notifyParent({
+                    type: 'LF_PIN_TEXT_CHANGED',
+                    id: targetId,
+                    compId: comp.id,
+                    html: editableCell.innerHTML,
+                    isPin: isPin,
+                    isShape: isShape
+                });
+            }
+        }
+    });
 
 
     window.addEventListener('message', e => {
@@ -5290,6 +5382,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (comp) {
                 const cell = comp.querySelector('.v4-editable-cell') || (comp.classList.contains('v4-editable-cell') ? comp : null);
                 if (cell) {
+                    if (document.activeElement && (cell === document.activeElement || cell.contains(document.activeElement))) {
+                        return; // User is actively typing inside this cell, skip innerHTML overwrite
+                    }
                     if (window.V4UndoManager) window.V4UndoManager.saveState();
                     cell.innerHTML = d.html;
                     markDirty();
@@ -5301,6 +5396,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (!s) return;
             const shape = s.querySelector('.v4-shape');
             if (!shape) return;
+
+            const activeCell = shape.querySelector('.v4-editable-cell') || shape.querySelector('.v4-shape-text-content') || shape.querySelector('.v4-shape-text-overlay');
+            if (activeCell && document.activeElement && (activeCell === document.activeElement || activeCell.contains(document.activeElement))) {
+                return; // User is actively typing inside this shape text, skip innerHTML overwrite
+            }
+
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
             const editableCell = shape.querySelector('.v4-editable-cell');
@@ -5342,16 +5443,21 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const s = document.querySelector('.lf-component.selected'); 
             console.log("[V4 Iframe] Selected component s:", s);
             if (!s) return;
-            const shape = s.querySelector('.v4-shape.v4-shape-arrow, .v4-shape.v4-shape-triangle');
+            const shape = s.querySelector('.v4-shape-arrow, .v4-shape-triangle') || 
+                          (s.classList.contains('v4-shape-arrow') || s.classList.contains('v4-shape-triangle') ? s : null) || 
+                          s.querySelector('.v4-shape') || 
+                          (s.classList.contains('v4-shape') ? s : null);
             console.log("[V4 Iframe] Found shape inside s:", shape);
             if (!shape) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
             const dir = d.direction || 'up';
-            if (shape.classList.contains('v4-shape-arrow')) {
+            shape.setAttribute('data-arrow-dir', dir);
+            shape.setAttribute('data-direction', dir);
+
+            if (shape.classList.contains('v4-shape-arrow') || shape.id === 'v4-shape-arrow') {
                 const path = shape.querySelector('.v4-arrow-path');
                 if (path) {
-                    shape.setAttribute('data-arrow-dir', dir);
                     const PATHS = {
                         right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
                         left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
@@ -5360,10 +5466,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     };
                     path.setAttribute('d', PATHS[dir] || PATHS.right);
                 }
-            } else if (shape.classList.contains('v4-shape-triangle')) {
+            } else if (shape.classList.contains('v4-shape-triangle') || shape.id === 'v4-shape-triangle') {
                 shape.setAttribute('data-direction', dir);
             }
-            markDirty();
+            if (typeof markDirty === 'function') markDirty();
         }
         else if (d.type === 'LF_UPDATE_ATOM_STATE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
@@ -7358,9 +7464,5 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     });
 })();
 
-</script><div id="v4-comp-1784623548704" class="lf-component" style="position: absolute; top: 664.4px; left: 151.6px; z-index: 1000; transform: none; width: 150px; height: 30px;">
-            <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;" data-placeholder="" data-maxlength="24">
-                <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;"></div>
-                <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;" data-events-bound="false"></div>
-                <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: block; font-family: inherit;">0/24</div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></body></html>
+</script>
+</body></html>
