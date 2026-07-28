@@ -483,8 +483,12 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
                 <div contenteditable="true" class="v4-editable-cell" style="width: 50%; height: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; outline: none; font-weight: 700; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; font-size: 14px; z-index: 2; position: relative;"><p><br></p></div>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
-<script id="v4-inlined-script">
-// Cache Buster Timestamp: 1785227321792
+
+<div id="v4-comp-1785227330608" class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 1460px; height: 900px;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgba(255, 255, 255, 0.5); border-color: transparent; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box; border-width: 1.6px !important;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"><p><span style="font-size: 48px; color: rgb(255, 153, 0);">요구사항 제외 (7/28)</span></p></div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><script id="v4-inlined-script">
+// Cache Buster Timestamp: 1785227919779
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -3197,7 +3201,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
     window.v4ObjectShape.handleUpdateStyle = (d) => {
         const s = document.querySelector('.lf-component.selected'); if (!s) return false;
-        const shape = s.querySelector('.v4-shape');
+        const shape = s.querySelector('.v4-shape') || (s.classList.contains('v4-shape') ? s : null);
         if (!shape) {
             // If the selected component is not a shape, let the legacy fallback inside dispatcher handle it!
             return false;
@@ -3205,8 +3209,14 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
         if (window.V4UndoManager) window.V4UndoManager.saveState();
         
-        // Find all matching elements using querySelectorAll since selector can have comma-separated targets
-        const targets = d.selector ? s.querySelectorAll(d.selector) : [shape];
+        // Find all matching elements (both self and querySelectorAll)
+        let targets = [];
+        if (d.selector) {
+            if (s.matches && s.matches(d.selector)) targets.push(s);
+            targets.push(...Array.from(s.querySelectorAll(d.selector)));
+        } else {
+            targets = [shape];
+        }
         if (targets.length === 0) return false;
 
         targets.forEach(t => {
@@ -3239,11 +3249,22 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     t.setAttribute('data-pattern-type', d.style.patternType);
                 }
 
-                // Assign styles with override for text alignment to beat CSS !important
+                const isSvgContainer = t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave') || t.classList.contains('v4-shape-arrow');
+                const svgShape = t.querySelector('path, polygon, rect, circle') || t.closest('.v4-shape')?.querySelector('path, polygon, rect, circle');
+
+                // Assign styles with override for text alignment and background styling
                 for (const [key, val] of Object.entries(d.style)) {
                     if (key === 'width' || key === 'height' || key === 'html' || key === 'patternType') continue;
                     
-                    if (key === 'textAlign' || key === 'alignItems' || key === 'justifyContent' || key === 'borderRadius') {
+                    if (key === 'background' || key === 'backgroundColor') {
+                        if (isSvgContainer) {
+                            // SVG container shapes maintain a transparent container background so bounding box isn't rendered
+                            t.style.background = 'transparent';
+                            t.style.backgroundColor = 'transparent';
+                        } else {
+                            t.style[key] = val;
+                        }
+                    } else if (key === 'textAlign' || key === 'alignItems' || key === 'justifyContent' || key === 'borderRadius') {
                         const cssKey = key === 'textAlign' ? 'text-align' : (key === 'alignItems' ? 'align-items' : (key === 'justifyContent' ? 'justify-content' : 'border-radius'));
                         t.style.setProperty(cssKey, val, 'important');
                         
@@ -3269,13 +3290,14 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     }
                 }
                 
-                const svgShape = t.querySelector('path, polygon, rect, circle') || t.closest('.v4-shape')?.querySelector('path, polygon, rect, circle');
                 if (svgShape) {
-                    if (d.style.backgroundColor || d.style.background) {
-                        svgShape.style.fill = d.style.backgroundColor || d.style.background;
-                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave') || t.classList.contains('v4-shape-arrow')) {
-                            t.style.backgroundColor = 'transparent';
-                        }
+                    const targetFill = d.style.backgroundColor || d.style.background;
+                    if (targetFill !== undefined) {
+                        svgShape.style.fill = targetFill;
+                    }
+                    if (isSvgContainer) {
+                        t.style.background = 'transparent';
+                        t.style.backgroundColor = 'transparent';
                     }
                     if (d.style.borderColor) {
                         svgShape.style.stroke = d.style.borderColor;
@@ -6433,11 +6455,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     }
                 });
                 
+                const isSvgContainer = t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave') || t.classList.contains('v4-shape-arrow');
                 const svgShape = t.classList.contains('v4-shape') ? t.querySelector('path, polygon, rect, circle') : t.querySelector('.v4-shape path, .v4-shape polygon, .v4-shape rect, .v4-shape circle');
                 if (svgShape) {
                     if (d.style.backgroundColor || d.style.background) {
                         svgShape.style.fill = d.style.backgroundColor || d.style.background;
-                        if (t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave') || t.classList.contains('v4-shape-arrow')) {
+                        if (isSvgContainer) {
+                            t.style.background = 'transparent';
                             t.style.backgroundColor = 'transparent';
                         }
                     }
@@ -7557,7 +7581,4 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 })();
 
 </script>
-<div id="v4-comp-1785227330608" class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 1460px; height: 900px;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border-color: transparent; border-top-style: ; border-width: 1.6px !important; border-right-style: ; border-bottom-style: ; border-left-style: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></body></html>
+</body></html>
