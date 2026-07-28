@@ -1324,9 +1324,9 @@
       "screenDesc": "[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
     },
     "06_Mobile_Design_2_941.html": {
-      "title": "06_Mobile_Design_2_941",
+      "title": "랭킹카드 UI 개선 제안",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-14T08:28:37.534Z",
+      "updatedAt": "2026-07-28T08:28:26.314Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1602,7 +1602,9 @@
           "standardized": true
         }
       ],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": "[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
     }
   },
   "assignee": "최범열",
