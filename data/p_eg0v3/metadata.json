@@ -1326,7 +1326,7 @@
     "06_Mobile_Design_2_941.html": {
       "title": "랭킹카드 UI 개선 제안",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-28T08:28:26.314Z",
+      "updatedAt": "2026-07-28T08:34:02.593Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1623,5 +1623,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-14 17:28:37"
+  "updated": "2026-07-28 17:34:02"
 }
