@@ -75,7 +75,9 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .v4-premium-table { table-layout: fixed; border-collapse: collapse; border: 1.6px solid #cbd5e1 !important; font-family: 'Inter', sans-serif; }
 .v4-premium-table th { padding: 14px 16px; text-align: left; border: 1.6px solid #cbd5e1 !important; font-weight: 700; white-space: nowrap; }
 .v4-premium-table td { padding: 14px 16px; border: 1.6px solid #cbd5e1 !important; }
-.v4-grid-container table th, .v4-grid-container table td { border-right: 1.6px solid rgb(226, 232, 240) !important; }
+.v4-grid-container table th, .v4-grid-container table td { border-right: 1.6px solid rgb(226, 232, 240) !important; line-height: 1.2 !important; padding: 0 8px !important; }
+.v4-grid-container table td[data-type="checkbox"], .v4-grid-container table th[data-type="checkbox"], .v4-grid-container table td.v4-grid-check-col, .v4-grid-container table th.v4-grid-check-col { padding: 0 !important; }
+.v4-grid-container table td *, .v4-grid-container table th * { margin: 0 !important; padding: 0 !important; line-height: inherit !important; }
 .v4-grid-container table tr { border-bottom: 1.6px solid rgb(226, 232, 240) !important; }
 .v4-grid-container td.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; }
 .v4-grid-container th.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; position: sticky !important; top: 0 !important; z-index: 10 !important; background: #f8fafc !important; }
@@ -128,18 +130,33 @@ th.v4-editable-cell:focus, td.v4-editable-cell:focus { outline-offset: -2px !imp
 .lf-rv-my { background-position: 100% 0% !important; }
 .v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; object-fit: contain; }
-.v4-shape-triangle { clip-path: none !important; border: none !important; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
-.v4-shape-triangle[data-direction="up"] { transform: rotate(0deg) !important; }
-.v4-shape-triangle[data-direction="right"] { transform: rotate(90deg) !important; }
-.v4-shape-triangle[data-direction="down"] { transform: rotate(180deg) !important; }
-.v4-shape-triangle[data-direction="left"] { transform: rotate(270deg) !important; }
+.v4-shape-triangle, .v4-shape-arrow, .v4-directional-shape { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: center center !important; }
+.v4-shape-triangle { clip-path: none !important; border: none !important; }
+.v4-shape-triangle[data-direction="up"], .v4-shape-arrow[data-direction="up"], .v4-shape-arrow[data-arrow-dir="up"], .v4-directional-shape[data-direction="up"] { transform: rotate(0deg) !important; }
+.v4-shape-triangle[data-direction="right"], .v4-shape-arrow[data-direction="right"], .v4-shape-arrow[data-arrow-dir="right"], .v4-directional-shape[data-direction="right"] { transform: rotate(90deg) !important; }
+.v4-shape-triangle[data-direction="down"], .v4-shape-arrow[data-direction="down"], .v4-shape-arrow[data-arrow-dir="down"], .v4-directional-shape[data-direction="down"] { transform: rotate(180deg) !important; }
+.v4-shape-triangle[data-direction="left"], .v4-shape-arrow[data-direction="left"], .v4-shape-arrow[data-arrow-dir="left"], .v4-directional-shape[data-direction="left"] { transform: rotate(270deg) !important; }
 
 /* Counter-rotate text elements to keep them horizontal and clean */
-.v4-shape-triangle .v4-editable-cell, .v4-shape-triangle .v4-shape-text-overlay { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
-.v4-shape-triangle[data-direction="up"] .v4-editable-cell, .v4-shape-triangle[data-direction="up"] .v4-shape-text-overlay { transform: rotate(0deg) !important; }
-.v4-shape-triangle[data-direction="right"] .v4-editable-cell, .v4-shape-triangle[data-direction="right"] .v4-shape-text-overlay { transform: rotate(-90deg) !important; }
-.v4-shape-triangle[data-direction="down"] .v4-editable-cell, .v4-shape-triangle[data-direction="down"] .v4-shape-text-overlay { transform: rotate(-180deg) !important; }
-.v4-shape-triangle[data-direction="left"] .v4-editable-cell, .v4-shape-triangle[data-direction="left"] .v4-shape-text-overlay { transform: rotate(-270deg) !important; }
+.v4-shape-triangle .v4-editable-cell, .v4-shape-triangle .v4-shape-text-overlay,
+.v4-shape-arrow .v4-editable-cell, .v4-shape-arrow .v4-shape-text-overlay,
+.v4-directional-shape .v4-editable-cell, .v4-directional-shape .v4-shape-text-overlay { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: center center !important; }
+
+.v4-shape-triangle[data-direction="up"] .v4-editable-cell, .v4-shape-triangle[data-direction="up"] .v4-shape-text-overlay,
+.v4-shape-arrow[data-direction="up"] .v4-editable-cell, .v4-shape-arrow[data-direction="up"] .v4-shape-text-overlay,
+.v4-directional-shape[data-direction="up"] .v4-editable-cell, .v4-directional-shape[data-direction="up"] .v4-shape-text-overlay { transform: rotate(0deg) !important; }
+
+.v4-shape-triangle[data-direction="right"] .v4-editable-cell, .v4-shape-triangle[data-direction="right"] .v4-shape-text-overlay,
+.v4-shape-arrow[data-direction="right"] .v4-editable-cell, .v4-shape-arrow[data-direction="right"] .v4-shape-text-overlay,
+.v4-directional-shape[data-direction="right"] .v4-editable-cell, .v4-directional-shape[data-direction="right"] .v4-shape-text-overlay { transform: rotate(-90deg) !important; }
+
+.v4-shape-triangle[data-direction="down"] .v4-editable-cell, .v4-shape-triangle[data-direction="down"] .v4-shape-text-overlay,
+.v4-shape-arrow[data-direction="down"] .v4-editable-cell, .v4-shape-arrow[data-direction="down"] .v4-shape-text-overlay,
+.v4-directional-shape[data-direction="down"] .v4-editable-cell, .v4-directional-shape[data-direction="down"] .v4-shape-text-overlay { transform: rotate(-180deg) !important; }
+
+.v4-shape-triangle[data-direction="left"] .v4-editable-cell, .v4-shape-triangle[data-direction="left"] .v4-shape-text-overlay,
+.v4-shape-arrow[data-direction="left"] .v4-editable-cell, .v4-shape-arrow[data-direction="left"] .v4-shape-text-overlay,
+.v4-directional-shape[data-direction="left"] .v4-editable-cell, .v4-directional-shape[data-direction="left"] .v4-shape-text-overlay { transform: rotate(-270deg) !important; }
 .v4-shape-diamond { border: none !important; }
 .v4-shape-wave { border: none !important; }
 .v4-shape-pattern-grid { 
@@ -227,7 +244,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     right: -14px !important;
 }
 
-body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; }
+html, body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; overflow: hidden !important; }
 /* Force disable transitions during drag for maximum smoothness */
 .lf-component.dragging-now, .lf-component.dragging-now * { 
     transition: none !important; 
@@ -465,16 +482,15 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
                 </svg>
                 <div contenteditable="true" class="v4-editable-cell" style="width: 50%; height: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; outline: none; font-weight: 700; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; font-size: 14px; z-index: 2; position: relative;"><p><br></p></div>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
+
 <script id="v4-inlined-script">
-// Cache Buster Timestamp: 1784017570416
+// Cache Buster Timestamp: 1785227321792
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
     let undoStack = [];
     let currentConnectors = []; // Locally synced connectors for secure undo
     
-    function notifyParent(data) { if (window.parent) window.parent.postMessage(data, '*'); }
-    function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
     
     function getCleanHTML() {
         const host = document.body;
@@ -1260,7 +1276,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 (function() {
     console.log("[V4 Text Measurer] Module initialized.");
     
-    const notifyParent = (data) => { window.parent.postMessage(data, '*'); };
 
     const resizeAtomToFitText = (s) => {
         if (!s) return;
@@ -1278,12 +1293,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         if (textEnabled) {
             const textEl = container.querySelector('.v4-checkbox-text, .v4-radio-text');
             if (textEl) {
-                const boxW = parseFloat(boxEl.style.width) || 24;
-                const boxH = parseFloat(boxEl.style.height) || 24;
+                const boxW = parseFloat(boxEl.style.width) || 20;
+                const boxH = parseFloat(boxEl.style.height) || 20;
                 const textWidth = textEl.scrollWidth || 35;
                 const totalWidth = boxW + 8 + textWidth + 8;
                 s.style.width = totalWidth + 'px';
-                s.style.height = Math.max(32, boxH + 8) + 'px';
+                s.style.height = Math.max(30, boxH + 6) + 'px';
             }
         } else {
             if (s.getAttribute('data-resized') === 'true') {
@@ -1292,8 +1307,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 boxEl.style.width = parentW + 'px';
                 boxEl.style.height = parentH + 'px';
             } else {
-                const boxW = parseFloat(boxEl.style.width) || 24;
-                const boxH = parseFloat(boxEl.style.height) || 24;
+                const boxW = parseFloat(boxEl.style.width) || 20;
+                const boxH = parseFloat(boxEl.style.height) || 20;
                 s.style.width = boxW + 'px';
                 s.style.height = boxH + 'px';
             }
@@ -1487,8 +1502,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 (function() {
     console.log("[V4 UI Atoms] Module initialized.");
     
-    const notifyParent = (data) => { window.parent.postMessage(data, '*'); };
-    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
 
     const bindStepperEvents = () => {
         document.querySelectorAll('.v4-stepper-container').forEach(container => {
@@ -1730,8 +1743,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 
 (function() {
-    const notifyParent = (data) => { window.parent.postMessage(data, '*'); };
-    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
 
     window.enforceDesignSystem = () => {
         if (typeof window.initHandles === 'function') {
@@ -1832,7 +1843,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     const bgCol = container.getAttribute('data-group-header-bg') || '#73829c';
                     const textCol = container.getAttribute('data-group-header-color') || '#ffffff';
                     
-                    if (header.style.height !== '50px') header.style.height = '50px';
+                    if (header.style.height !== '40px') header.style.height = '40px';
                     if (header.style.display !== 'flex') header.style.display = 'flex';
                     if (header.style.alignItems !== 'center') header.style.alignItems = 'center';
                     if (header.style.padding !== '0px 16px') header.style.padding = '0 16px';
@@ -1872,9 +1883,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 const comp = container.closest('.lf-component');
                 if (comp) {
                     const hasGroupHeader = container.getAttribute('data-show-group-header') === 'true';
-                    const headerHeight = hasGroupHeader ? 50 : 0;
+                    const headerHeight = hasGroupHeader ? 40 : 0;
                     const totalRows = parseInt(container.getAttribute('data-row-count')) || 1;
-                    const globalRowHeight = parseInt(container.getAttribute('data-row-height')) || 50;
+                    const globalRowHeight = parseInt(container.getAttribute('data-row-height')) || 40;
                     
                     let expectedHeight = headerHeight;
                     for (let i = 1; i <= totalRows; i++) {
@@ -2278,6 +2289,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             
             if (!input) return;
 
+            if (placeholder) {
+                const phText = container.getAttribute('data-placeholder');
+                if (phText !== null && placeholder.textContent !== phText) {
+                    placeholder.textContent = phText;
+                }
+            }
+
             const restoreFonts = () => {
                 const fs = container.getAttribute('data-fontsize');
                 const ff = container.getAttribute('data-fontfamily');
@@ -2462,6 +2480,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
         document.querySelectorAll('table.v4-premium-table, table.v4-table, .v4-grid-container table').forEach(t => {
             if (t.style.borderWidth !== '1.6px') t.style.setProperty('border-width', '1.6px', 'important');
+            if (t.style.height !== 'auto') t.style.setProperty('height', 'auto', 'important');
             
             t.querySelectorAll('td, th').forEach(cell => {
                 const isCheckbox = cell.classList.contains('v4-grid-check-col') || 
@@ -2532,6 +2551,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
         document.querySelectorAll('.v4-grid-container').forEach(grid => {
             const showPagination = grid.getAttribute('data-pagination') !== 'false';
+            const rowCount = parseInt(grid.getAttribute('data-row-count')) || 5;
+            const rowHeight = parseInt(grid.getAttribute('data-row-height')) || 50;
             const footer = grid.querySelector('.v4-grid-footer');
             if (footer) {
                 const targetDisplay = showPagination ? 'flex' : 'none';
@@ -2614,9 +2635,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 (function() {
     let v4Clipboard = [];
     let isArrowMoving = false;
-
-    const notifyParent = (data) => { window.parent.postMessage(data, '*'); };
-    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
+    
 
     window.reorderAllPins = () => {
         const pins = document.querySelectorAll('.text-marker, .pin-marker');
@@ -2800,6 +2819,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         notifyParent({ type: 'LF_REQUEST_CLIPBOARD' });
     };
 
+    function isInputActive(target) {
+        if (!target) return false;
+        return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+    }
+
     document.addEventListener('keydown', e => {
         if (e.altKey && ['1','2','3','4','5','6'].includes(e.key)) {
             e.preventDefault();
@@ -2819,18 +2843,40 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
 
         if (e.key === 'F2' || e.code === 'F2') {
+            if (e.isComposing) return;
             e.preventDefault();
-            const selected = document.querySelectorAll('.lf-component.selected');
             const activeElement = document.activeElement;
-            const isEditing = activeElement && (activeElement.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(activeElement.tagName));
+            const isEditing = isInputActive(activeElement);
 
-            if (selected.length > 0) {
-                if (isEditing) {
-                    console.log("[VCTRL SHORTCUTS] Blurring iframe text editing.");
-                    activeElement.blur();
+            if (isEditing) {
+                console.log("[VCTRL SHORTCUTS] Exiting inline text editing mode via F2.");
+                if (activeElement && typeof activeElement.blur === 'function') activeElement.blur();
+            } else {
+                const selected = document.querySelectorAll('.lf-component.selected');
+                if (selected.length > 0) {
+                    const targetComp = selected[0];
+                    const editable = targetComp.querySelector('.v4-editable-cell, [contenteditable="true"]') ||
+                                     targetComp.querySelector('.v4-shape-text-content, .v4-shape-text-overlay, .v4-text-shape-content');
+                    if (editable) {
+                        console.log("[VCTRL SHORTCUTS] Entering inline text editing mode via F2.");
+                        if (typeof window.focusEditableCell === 'function') {
+                            window.focusEditableCell(editable);
+                        } else {
+                            try {
+                                window.focus();
+                                if (window.top && window.top !== window) {
+                                    const iframe = window.top.document.getElementById('main-iframe');
+                                    if (iframe && iframe.contentWindow) iframe.contentWindow.focus();
+                                }
+                            } catch(err) {}
+                            editable.setAttribute('contenteditable', 'true');
+                            editable.focus();
+                        }
+                    } else {
+                        console.log("[VCTRL SHORTCUTS] No inline editable element found, focusing parent Quill.");
+                        notifyParent({ type: 'LF_FOCUS_PARENT_QUILL' });
+                    }
                 }
-                console.log("[VCTRL SHORTCUTS] Focusing parent Quill editor.");
-                notifyParent({ type: 'LF_FOCUS_PARENT_QUILL' });
             }
             return;
         }
@@ -2839,118 +2885,102 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const isC = e.key === 'c' || e.key === 'C' || e.code === 'KeyC';
         const isV = e.key === 'v' || e.key === 'V' || e.code === 'KeyV';
         const isG = e.key === 'g' || e.key === 'G' || e.code === 'KeyG';
+        const inInput = isInputActive(e.target);
 
         if ((e.ctrlKey || e.metaKey) && isS) {
             e.preventDefault();
             notifyParent({ type: 'LF_TRIGGER_SAVE' });
             return;
         }
-        if ((e.ctrlKey || e.metaKey) && isC) {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                e.preventDefault();
-                window.copySelectedObjects();
-                return;
-            }
+        if ((e.ctrlKey || e.metaKey) && isC && !inInput) {
+            e.preventDefault();
+            window.copySelectedObjects();
+            return;
         }
-        if ((e.ctrlKey || e.metaKey) && isV) {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                e.preventDefault();
-                window.pasteCopiedObjects();
-                return;
-            }
+        if ((e.ctrlKey || e.metaKey) && isV && !inInput) {
+            e.preventDefault();
+            window.pasteCopiedObjects();
+            return;
         }
 
-        if ((e.ctrlKey || e.metaKey) && isG) {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                e.preventDefault();
-                notifyParent({
-                    type: 'LF_SHORTCUT_TRIGGERED',
-                    shortcut: e.shiftKey ? 'ungroup' : 'group'
-                });
-            }
+        if ((e.ctrlKey || e.metaKey) && isG && !inInput) {
+            e.preventDefault();
+            notifyParent({
+                type: 'LF_SHORTCUT_TRIGGERED',
+                shortcut: e.shiftKey ? 'ungroup' : 'group'
+            });
         }
-        else if (e.code === 'Space') {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
+        else if (e.code === 'Space' && !inInput) {
+            e.preventDefault();
+            notifyParent({ type: 'LF_SPACE_DOWN' });
+        } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code) && !inInput) {
+            const selected = document.querySelectorAll('.lf-component.selected');
+            if (selected.length > 0) {
                 e.preventDefault();
-                notifyParent({ type: 'LF_SPACE_DOWN' });
-            }
-        } else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
-                const selected = document.querySelectorAll('.lf-component.selected');
-                if (selected.length > 0) {
-                    e.preventDefault();
-                    if (window.V4UndoManager && !isArrowMoving) {
-                        window.V4UndoManager.saveState();
-                        isArrowMoving = true;
-                        notifyParent({ type: 'LF_SNAP_START' });
-                    }
-                    const step = e.shiftKey ? 10 : 1;
-                    let dx = 0, dy = 0;
-                    if (e.code === 'ArrowUp') dy = -step;
-                    if (e.code === 'ArrowDown') dy = step;
-                    if (e.code === 'ArrowLeft') dx = -step;
-                    if (e.code === 'ArrowRight') dx = step;
+                if (window.V4UndoManager && !isArrowMoving) {
+                    window.V4UndoManager.saveState();
+                    isArrowMoving = true;
+                    notifyParent({ type: 'LF_SNAP_START' });
+                }
+                const step = e.shiftKey ? 10 : 1;
+                let dx = 0, dy = 0;
+                if (e.code === 'ArrowUp') dy = -step;
+                if (e.code === 'ArrowDown') dy = step;
+                if (e.code === 'ArrowLeft') dx = -step;
+                if (e.code === 'ArrowRight') dx = step;
 
-                    const activeEl = selected[0];
+                const activeEl = selected[0];
 
-                    selected.forEach(c => {
-                        const l = parseFloat(c.style.left) || 0;
-                        const t = parseFloat(c.style.top) || 0;
-                        c.style.left = (l + dx) + 'px';
-                        c.style.top = (t + dy) + 'px';
-                        if (typeof window.updateHandles === 'function') window.updateHandles(c);
-                        
-                        if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
-                            const idx = parseInt(c.id.replace('v4-pin-', ''));
-                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: l + dx, y: t + dy });
-                        }
-                        
-                        if (c.classList.contains('connector-line')) {
-                            notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: c.id, dx: dx, dy: dy });
-                        }
-                        
-                        if (c.classList.contains('lf-group')) {
-                            const connIdsStr = c.getAttribute('data-connectors');
-                            const connIds = connIdsStr ? JSON.parse(connIdsStr) : [];
-                            connIds.forEach(connId => {
-                                notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: connId, dx: dx, dy: dy });
-                            });
-                            c.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
-                                const idx = parseInt(child.id.replace('v4-pin-', ''));
-                                const childRect = child.getBoundingClientRect();
-                                const hostRect = document.body.getBoundingClientRect();
-                                const scale = (window.parent?.state?.transform?.scale) || 1;
-                                const absX = (childRect.left - hostRect.left) / scale;
-                                const absY = (childRect.top - hostRect.top) / scale;
-                                notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: absX, y: absY });
-                            });
-                        }
-                    });
+                selected.forEach(c => {
+                    const l = parseFloat(c.style.left) || 0;
+                    const t = parseFloat(c.style.top) || 0;
+                    c.style.left = (l + dx) + 'px';
+                    c.style.top = (t + dy) + 'px';
+                    if (typeof window.updateHandles === 'function') window.updateHandles(c);
                     
-                    if (activeEl) {
-                        const logicalX = parseFloat(activeEl.style.left) || 0;
-                        const logicalY = parseFloat(activeEl.style.top) || 0;
-                        
-                        notifyParent({ 
-                            type: 'LF_SNAP_REQUEST', 
-                            x: logicalX, 
-                            y: logicalY, 
-                            w: activeEl.offsetWidth, 
-                            h: activeEl.offsetHeight,
-                            isArrowKey: true,
-                            activeId: activeEl.id
+                    if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
+                        const idx = parseInt(c.id.replace('v4-pin-', ''));
+                        notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: l + dx, y: t + dy });
+                    }
+                    
+                    if (c.classList.contains('connector-line')) {
+                        notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: c.id, dx: dx, dy: dy });
+                    }
+                    
+                    if (c.classList.contains('lf-group')) {
+                        const connIdsStr = c.getAttribute('data-connectors');
+                        const connIds = connIdsStr ? JSON.parse(connIdsStr) : [];
+                        connIds.forEach(connId => {
+                            notifyParent({ type: 'LF_SHIFT_CONNECTOR_POS', id: connId, dx: dx, dy: dy });
+                        });
+                        c.querySelectorAll('.text-marker, .pin-marker').forEach(child => {
+                            const idx = parseInt(child.id.replace('v4-pin-', ''));
+                            const childRect = child.getBoundingClientRect();
+                            const hostRect = document.body.getBoundingClientRect();
+                            const scale = (window.parent?.state?.transform?.scale) || 1;
+                            const absX = (childRect.left - hostRect.left) / scale;
+                            const absY = (childRect.top - hostRect.top) / scale;
+                            notifyParent({ type: 'LF_UPDATE_PIN_POS', index: idx, x: absX, y: absY });
                         });
                     }
+                });
+                
+                if (activeEl) {
+                    const logicalX = parseFloat(activeEl.style.left) || 0;
+                    const logicalY = parseFloat(activeEl.style.top) || 0;
+                    
+                    notifyParent({ 
+                        type: 'LF_SNAP_REQUEST', 
+                        x: logicalX, 
+                        y: logicalY, 
+                        w: activeEl.offsetWidth, 
+                        h: activeEl.offsetHeight,
+                        isArrowKey: true,
+                        activeId: activeEl.id
+                    });
                 }
             }
-        } else if (e.code === 'Delete' || e.code === 'Backspace') {
-            const isInput = e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName);
-            if (!isInput) {
+        } else if ((e.code === 'Delete' || e.code === 'Backspace') && !inInput) {
                 const selected = document.querySelectorAll('.lf-component.selected');
                 if (selected.length > 0) {
                     e.preventDefault();
@@ -2971,7 +3001,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     notifyParent({ type: 'LF_DESELECT' });
                     markDirty();
                 }
-            }
         }
     });
     document.addEventListener('keyup', e => {
@@ -3057,6 +3086,64 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 (function() {
     console.log("[V4 Common] Module loaded.");
     window.v4MessageHandlers = window.v4MessageHandlers || {};
+    
+    // Core shared message helpers
+    window.notifyParent = function(data) { if (window.parent) window.parent.postMessage(data, '*'); };
+    window.markDirty = function() { window.notifyParent({ type: 'LF_DIRTY' }); };
+
+    // Universal RGB to HEX Converter
+    window.rgbToHex = function(rgb) {
+        if (!rgb || rgb === "transparent" || rgb === "none" || rgb.includes("rgba(0, 0, 0, 0)")) return null;
+        if (rgb.startsWith('#')) return rgb;
+        const matches = rgb.match(/\d+/g);
+        if (!matches || matches.length < 3) return "#ffffff";
+        const r = Math.min(255, parseInt(matches[0])).toString(16).padStart(2, "0");
+        const g = Math.min(255, parseInt(matches[1])).toString(16).padStart(2, "0");
+        const b = Math.min(255, parseInt(matches[2])).toString(16).padStart(2, "0");
+        return "#" + r + g + b;
+    };
+
+    // Universal Connector Path Data Calculator
+    window.calculatePathData = function(c, s, e) {
+        if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
+        
+        const sSide = c.start.side || 'right';
+        const eSide = c.end.side || 'left';
+        
+        const getDirOffset = (side, amount) => {
+            if (side === 'left') return { dx: -amount, dy: 0 };
+            if (side === 'right') return { dx: amount, dy: 0 };
+            if (side === 'top') return { dx: 0, dy: -amount };
+            if (side === 'bottom') return { dx: 0, dy: amount };
+            return { dx: 0, dy: 0 };
+        };
+        
+        const offset = 20;
+        const oStart = getDirOffset(sSide, offset);
+        const oEnd = getDirOffset(eSide, offset);
+        
+        const ptStart = { x: s.x + oStart.dx, y: s.y + oStart.dy };
+        const ptEnd = { x: e.x + oEnd.dx, y: e.y + oEnd.dy };
+        
+        let path = 'M ' + s.x + ' ' + s.y + ' L ' + ptStart.x + ' ' + ptStart.y;
+        
+        if (sSide === 'left' || sSide === 'right') {
+            if (eSide === 'left' || eSide === 'right') {
+                const midX = (ptStart.x + ptEnd.x) / 2;
+                path += ' H ' + midX + ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
+            } else {
+                path += ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
+            }
+        } else {
+            if (eSide === 'top' || eSide === 'bottom') {
+                const midY = (ptStart.y + ptEnd.y) / 2;
+                path += ' V ' + midY + ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
+            } else {
+                path += ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
+            }
+        }
+        return path;
+    };
 })();
 
 
@@ -3140,9 +3227,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 if (d.style.width !== undefined) {
                     s.style.width = d.style.width;
+                    if (t !== s) t.style.width = '100%';
                 }
                 if (d.style.height !== undefined) {
                     s.style.height = d.style.height;
+                    if (t !== s) t.style.height = '100%';
                 }
 
                 if (d.style.patternType !== undefined && t.classList.contains('v4-shape-pattern-grid')) {
@@ -3193,7 +3282,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     }
                     if (d.style.borderWidth) {
                         svgShape.style.strokeWidth = d.style.borderWidth;
+                    } else {
+                        svgShape.style.strokeWidth = '1.6';
                     }
+                    svgShape.style.vectorEffect = 'non-scaling-stroke';
                 }
             }
         });
@@ -3255,46 +3347,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
     };
 
-    window.calculatePathData = (c, s, e) => {
-        if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
-        
-        const sSide = c.start.side || 'right';
-        const eSide = c.end.side || 'left';
-        
-        const getDirOffset = (side, amount) => {
-            if (side === 'left') return { dx: -amount, dy: 0 };
-            if (side === 'right') return { dx: amount, dy: 0 };
-            if (side === 'top') return { dx: 0, dy: -amount };
-            if (side === 'bottom') return { dx: 0, dy: amount };
-            return { dx: 0, dy: 0 };
-        };
-        
-        const offset = 20;
-        const oStart = getDirOffset(sSide, offset);
-        const oEnd = getDirOffset(eSide, offset);
-        
-        const ptStart = { x: s.x + oStart.dx, y: s.y + oStart.dy };
-        const ptEnd = { x: e.x + oEnd.dx, y: e.y + oEnd.dy };
-        
-        let path = 'M ' + s.x + ' ' + s.y + ' L ' + ptStart.x + ' ' + ptStart.y;
-        
-        if (sSide === 'left' || sSide === 'right') {
-            if (eSide === 'left' || eSide === 'right') {
-                const midX = (ptStart.x + ptEnd.x) / 2;
-                path += ' H ' + midX + ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
-            } else {
-                path += ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
-            }
-        } else {
-            if (eSide === 'top' || eSide === 'bottom') {
-                const midY = (ptStart.y + ptEnd.y) / 2;
-                path += ' V ' + midY + ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
-            } else {
-                path += ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
-            }
-        }
-        return path;
-    };
 
     window.updateAnchoredConnectorsLocal = (movedId) => {
         const movedEl = document.getElementById(movedId);
@@ -3382,113 +3434,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 
 (function() {
-    console.log("[V4 Iframe Connectors] Initializing...");
-    let tempSvg = null;
-    let hoveredPort = null;
-    let isDrawingConnector = false;
-    let startComponentId = null;
-    let startPortSide = null;
-    let connDragStartX = 0, connDragStartY = 0;
-
-    // Direct helper functions from core
-    const notifyParent = (data) => { if (window.parent) window.parent.postMessage(data, '*'); };
-    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
-
-    function drawTempLine(x1, y1, x2, y2) {
-        if (!tempSvg) {
-            tempSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            tempSvg.style.cssText = 'position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:10005; overflow:visible;';
-            tempSvg.innerHTML = '<path stroke="#00e5ff" stroke-width="2" stroke-dasharray="4,4" fill="none" />';
-            document.body.appendChild(tempSvg);
-        }
-        const path = tempSvg.querySelector('path');
-        const midX = (x1 + x2) / 2;
-        const pathData = 'M ' + x1 + ' ' + y1 + ' H ' + midX + ' V ' + y2 + ' H ' + x2;
-        path.setAttribute('d', pathData);
-    }
-
-    function removeTempLine() {
-        if (tempSvg) {
-            tempSvg.remove();
-            tempSvg = null;
-        }
-    }
-
-    window.calculatePathData = (c, s, e) => {
-        if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
-        
-        const sSide = c.start.side || 'right';
-        const eSide = c.end.side || 'left';
-        
-        const getDirOffset = (side, amount) => {
-            if (side === 'left') return { dx: -amount, dy: 0 };
-            if (side === 'right') return { dx: amount, dy: 0 };
-            if (side === 'top') return { dx: 0, dy: -amount };
-            if (side === 'bottom') return { dx: 0, dy: amount };
-            return { dx: 0, dy: 0 };
-        };
-        
-        const offset = 20;
-        const oStart = getDirOffset(sSide, offset);
-        const oEnd = getDirOffset(eSide, offset);
-        
-        const ptStart = { x: s.x + oStart.dx, y: s.y + oStart.dy };
-        const ptEnd = { x: e.x + oEnd.dx, y: e.y + oEnd.dy };
-        
-        let path = 'M ' + s.x + ' ' + s.y + ' L ' + ptStart.x + ' ' + ptStart.y;
-        
-        if (sSide === 'left' || sSide === 'right') {
-            if (eSide === 'left' || eSide === 'right') {
-                const midX = (ptStart.x + ptEnd.x) / 2;
-                path += ' H ' + midX + ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
-            } else {
-                path += ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
-            }
-        } else {
-            if (eSide === 'top' || eSide === 'bottom') {
-                const midY = (ptStart.y + ptEnd.y) / 2;
-                path += ' V ' + midY + ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
-            } else {
-                path += ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
-            }
-        }
-        return path;
-    };
-
-    function startConnectorDragFromPort(comp, side, e) {
-        isDrawingConnector = true;
-        document.body.classList.add('drawing-line-active');
-        startComponentId = comp.id;
-        startPortSide = side;
-        
-        const compLeft = parseFloat(comp.style.left) || 0;
-        const compTop = parseFloat(comp.style.top) || 0;
-        const compWidth = comp.offsetWidth;
-        const compHeight = comp.offsetHeight;
-        
-        if (side === 'top') { connDragStartX = compLeft + compWidth / 2; connDragStartY = compTop; }
-        else if (side === 'bottom') { connDragStartX = compLeft + compWidth / 2; connDragStartY = compTop + compHeight; }
-        else if (side === 'left') { connDragStartX = compLeft; connDragStartY = compTop + compHeight / 2; }
-        else if (side === 'right') { connDragStartX = compLeft + compWidth; connDragStartY = compTop + compHeight / 2; }
-    }
-
-    // Export functions to window for other modules
-    window.drawTempLine = drawTempLine;
-    window.removeTempLine = removeTempLine;
-    window.calculatePathData = calculatePathData;
-    window.startConnectorDragFromPort = startConnectorDragFromPort;
-})();
-
-
-(function() {
     let isDragging = false;
     let isResizing = false;
     let startX = 0, startY = 0, startW = 0, startH = 0, startTop = 0, startLeft = 0;
     let startRect = null;
     let groupChildrenStart = null;
     
-    const notifyParent = (data) => { if (window.parent) window.parent.postMessage(data, '*'); };
-    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
 
     window.V4DragResizeEngine = {
         get isDragging() { return isDragging; },
@@ -3661,30 +3612,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     let startPortSide = null;
     let connDragStartX = 0, connDragStartY = 0;
     let hoveredPort = null;
-    let tempSvg = null;
     
-    const notifyParent = (data) => { if (window.parent) window.parent.postMessage(data, '*'); };
-    const markDirty = () => { notifyParent({ type: 'LF_DIRTY' }); };
-
-    function drawTempLine(x1, y1, x2, y2) {
-        if (!tempSvg) {
-            tempSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            tempSvg.style.cssText = 'position:absolute; left:0; top:0; width:100%; height:100%; pointer-events:none; z-index:10005; overflow:visible;';
-            tempSvg.innerHTML = '<path stroke="#00e5ff" stroke-width="2" stroke-dasharray="4,4" fill="none" />';
-            document.body.appendChild(tempSvg);
-        }
-        const path = tempSvg.querySelector('path');
-        const midX = (x1 + x2) / 2;
-        const pathData = 'M ' + x1 + ' ' + y1 + ' H ' + midX + ' V ' + y2 + ' H ' + x2;
-        path.setAttribute('d', pathData);
-    }
-
-    function removeTempLine() {
-        if (tempSvg) {
-            tempSvg.remove();
-            tempSvg = null;
-        }
-    }
 
     window.V4PortConnectorEngine = {
         get isDrawingConnector() { return isDrawingConnector; },
@@ -3773,705 +3701,20 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 
 (function() {
-    // --- Console Log Auto-Clearing Guard inside iframe ---
-    (function() {
-        let logCount = 0;
-        const originalLog = console.log;
-        console.log = function(...args) {
-            logCount++;
-            if (logCount > 150) {
-                console.clear();
-                originalLog("[LF Editor Iframe] Auto-cleared console logs after reaching threshold.");
-                logCount = 0;
-            }
-            originalLog.apply(console, args);
-        };
-    })();
-
-    let isDraggingLine = false, activeLineId = null, startLineCoords = null;
-
-    window.calculatePathData = (c, s, e) => {
-        if (c.type === 'straight') return 'M ' + s.x + ' ' + s.y + ' L ' + e.x + ' ' + e.y;
-        
-        const sSide = c.start.side || 'right';
-        const eSide = c.end.side || 'left';
-        
-        const getDirOffset = (side, amount) => {
-            if (side === 'left') return { dx: -amount, dy: 0 };
-            if (side === 'right') return { dx: amount, dy: 0 };
-            if (side === 'top') return { dx: 0, dy: -amount };
-            if (side === 'bottom') return { dx: 0, dy: amount };
-            return { dx: 0, dy: 0 };
-        };
-        
-        const offset = 20;
-        const oStart = getDirOffset(sSide, offset);
-        const oEnd = getDirOffset(eSide, offset);
-        
-        const ptStart = { x: s.x + oStart.dx, y: s.y + oStart.dy };
-        const ptEnd = { x: e.x + oEnd.dx, y: e.y + oEnd.dy };
-        
-        let path = 'M ' + s.x + ' ' + s.y + ' L ' + ptStart.x + ' ' + ptStart.y;
-        
-        if (sSide === 'left' || sSide === 'right') {
-            if (eSide === 'left' || eSide === 'right') {
-                const midX = (ptStart.x + ptEnd.x) / 2;
-                path += ' H ' + midX + ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
-            } else {
-                path += ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
-            }
-        } else {
-            if (eSide === 'top' || eSide === 'bottom') {
-                const midY = (ptStart.y + ptEnd.y) / 2;
-                path += ' V ' + midY + ' H ' + ptEnd.x + ' V ' + e.y + ' L ' + e.x + ' ' + e.y;
-            } else {
-                path += ' V ' + ptEnd.y + ' H ' + e.x + ' L ' + e.x + ' ' + e.y;
-            }
-        }
-        return path;
-    };
-
-    function startConnectorDragFromPort(comp, side, e) {
-        isDrawingConnector = true;
-        document.body.classList.add('drawing-line-active');
-        startComponentId = comp.id;
-        startPortSide = side;
-        
-        const compLeft = parseFloat(comp.style.left) || 0;
-        const compTop = parseFloat(comp.style.top) || 0;
-        const compWidth = comp.offsetWidth;
-        const compHeight = comp.offsetHeight;
-        
-        if (side === 'top') { connDragStartX = compLeft + compWidth / 2; connDragStartY = compTop; }
-        else if (side === 'bottom') { connDragStartX = compLeft + compWidth / 2; connDragStartY = compTop + compHeight; }
-        else if (side === 'left') { connDragStartX = compLeft; connDragStartY = compTop + compHeight / 2; }
-        else if (side === 'right') { connDragStartX = compLeft + compWidth; connDragStartY = compTop + compHeight / 2; }
-    }
-
-    let startX, startY, startW, startH, startTop, startLeft, startRect;
-    function notifyParent(data) { window.parent.postMessage(data, '*'); }
-    function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
-
-    // Unified Utility inside v4Script
-    const _rgb2hex = (rgb) => {
-        if (!rgb || rgb === "transparent" || rgb === "none" || rgb.includes("rgba(0, 0, 0, 0)")) return null;
-        const parts = rgb.match(/\d+/g);
-        if (!parts || parts.length < 3) return "#000000";
-        const r = Math.min(255, parseInt(parts[0])).toString(16).padStart(2, "0");
-        const g = Math.min(255, parseInt(parts[1])).toString(16).padStart(2, "0");
-        const b = Math.min(255, parseInt(parts[2])).toString(16).padStart(2, "0");
-        return "#" + r + g + b;
-    };
-
-    const _getVal = (el, prop) => {
-        if (!el) return "";
-        return el.style[prop] || window.getComputedStyle(el)[prop] || "";
-    };
-
-    const _getAlphaPercent = (rgb) => {
-        if (!rgb || rgb === "transparent" || rgb === "none" || rgb.includes("rgba(0, 0, 0, 0)")) return 0;
-        if (rgb.startsWith("rgba")) {
-            const parts = rgb.match(/rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*([\d.]+)\s*\)/);
-            if (parts && parts[1] !== undefined) {
-                return Math.round(parseFloat(parts[1]) * 100);
-            }
-        }
-        return 100;
-    };
-
-    window._getCompStyles = (c) => {
-        const isGroup = c.classList.contains('lf-group');
-        const shape = isGroup ? null : c.querySelector('.v4-shape');
-        const table = isGroup ? null : c.querySelector('table');
-        const icon = isGroup ? null : (c.querySelector('.lf-icon') || c.querySelector('img'));
-        const textCell = isGroup ? null : c.querySelector('.v4-editable-cell');
-        const isPin = isGroup ? false : (c.classList.contains('text-marker') || c.classList.contains('pin-marker') || c.classList.contains('v4-text-box') || c.classList.contains('v4-text-shape'));
-        const isImage = isGroup ? false : (shape ? shape.classList.contains('v4-shape-image') : (c.id === 'v4-atom-image' || c.classList.contains('v4-shape-image')));
-        const isDescriptionPin = isGroup ? false : c.classList.contains('pin-marker');
-        
-        // Checkbox / Radio Atom Detection
-        const isCheckbox = isGroup ? false : (!!c.querySelector('.v4-checkbox') || c.classList.contains('v4-checkbox') || !!c.querySelector('.v4-checkbox-container') || c.classList.contains('v4-checkbox-container'));
-        const isRadio = isGroup ? false : (!!c.querySelector('.v4-radio') || c.classList.contains('v4-radio') || !!c.querySelector('.v4-radio-container') || c.classList.contains('v4-radio-container'));
-        const container = isGroup ? null : (c.querySelector('.v4-checkbox-container, .v4-radio-container') || (c.classList.contains('v4-checkbox-container') || c.classList.contains('v4-radio-container') ? c : null));
-        const checked = container ? container.getAttribute('data-checked') !== 'false' : true;
-        const textEnabled = container ? container.getAttribute('data-text-enabled') !== 'false' : false;
-        
-        // Textbox / Textarea Atom Detection
-        const isTextbox = isGroup ? false : (!!c.querySelector('.v4-textbox-container') || c.classList.contains('v4-textbox-container'));
-        const isTextarea = isGroup ? false : (!!c.querySelector('.v4-textarea-container') || c.classList.contains('v4-textarea-container'));
-        const inputContainer = isGroup ? null : (c.querySelector('.v4-textbox-container, .v4-textarea-container') || (isTextbox || isTextarea ? c : null));
-        const placeholderText = inputContainer ? (inputContainer.getAttribute('data-placeholder') || inputContainer.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder')?.textContent || "Placeholder") : "";
-        const maxLength = inputContainer ? (parseInt(inputContainer.getAttribute('data-maxlength')) || 100) : 100;
-        const showCounter = inputContainer ? (inputContainer.getAttribute('data-show-counter') !== 'false') : false;
-
-        // Search Bar Atom Detection
-        const isSearchBar = isGroup ? false : (!!c.querySelector('.v4-searchbar-container') || c.classList.contains('v4-searchbar-container'));
-        const searchbarContainer = isGroup ? null : (c.querySelector('.v4-searchbar-container') || (isSearchBar ? c : null));
-        const searchbarPlaceholder = searchbarContainer ? (searchbarContainer.querySelector('.v4-searchbar-text')?.getAttribute('data-placeholder') || "원스피어 통합검색") : "원스피어 통합검색";
-
-        // Stepper Atom Detection
-        const isStepper = isGroup ? false : (!!c.querySelector('.v4-stepper-container') || c.classList.contains('v4-stepper-container'));
-        const stepperContainer = isGroup ? null : (c.querySelector('.v4-stepper-container') || (isStepper ? c : null));
-        const minVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-min')) || 1 : 1;
-        const maxVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-max')) || 99 : 99;
-        const stepperVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-val')) || minVal : minVal;
-        const stepperBtnEnabled = stepperContainer ? stepperContainer.getAttribute('data-btn-enabled') !== 'false' : true;
-        const stepperBtnText = stepperContainer ? stepperContainer.getAttribute('data-btn-text') || "적용" : "적용";
-        const stepperDisabled = stepperContainer ? stepperContainer.getAttribute('data-disabled') === 'true' : false;
-        
-        // Selectbox Atom Detection
-        const isSelectbox = isGroup ? false : (!!c.querySelector('.v4-selectbox-container') || c.classList.contains('v4-selectbox-container'));
-        const selectboxContainer = isGroup ? null : (c.querySelector('.v4-selectbox-container') || (isSelectbox ? c : null));
-        const selectboxDefaultText = selectboxContainer ? (selectboxContainer.getAttribute('data-default-text') || "선택하세요") : "선택하세요";
-        const selectboxDropdownActive = selectboxContainer ? selectboxContainer.getAttribute('data-dropdown-active') === 'true' : false;
-        const selectboxOptionsRaw = selectboxContainer ? (selectboxContainer.getAttribute('data-options') || "Option 1,Option 2,Option 3") : "Option 1,Option 2,Option 3";
-        const selectboxOptions = selectboxOptionsRaw.split(',').map(s => s.trim()).filter(Boolean);
-
-        // File Upload Atom Detection
-        const isFileUpload = isGroup ? false : (!!c.querySelector('.v4-fileupload-container') || c.classList.contains('v4-fileupload-container'));
-        const fileuploadContainer = isGroup ? null : (c.querySelector('.v4-fileupload-container') || (isFileUpload ? c : null));
-        const fileSelected = fileuploadContainer ? fileuploadContainer.getAttribute('data-selected') === 'true' : false;
-        const fileName = fileuploadContainer ? (fileuploadContainer.getAttribute('data-file-name') || "") : "";
-        const fileButtonText = fileuploadContainer ? (fileuploadContainer.getAttribute('data-button-text') || "파일첨부") : "파일첨부";
-        const filePlaceholder = fileuploadContainer ? (fileuploadContainer.getAttribute('data-placeholder') || "선택된 파일 없음") : "선택된 파일 없음";
-
-        // Alert Atom Detection
-        const isAlert = isGroup ? false : (!!c.querySelector('.v4-alert-container') || c.classList.contains('v4-alert-container'));
-        const alertContainer = isGroup ? null : (c.querySelector('.v4-alert-container') || (isAlert ? c : null));
-        const alertMessage = alertContainer ? (alertContainer.getAttribute('data-message') || "얼럿 메시지 입력 표시") : "얼럿 메시지 입력 표시";
-        const alertBtnCount = alertContainer ? parseInt(alertContainer.getAttribute('data-btn-count')) || 1 : 1;
-        const alertBtnText1 = alertContainer ? (alertContainer.getAttribute('data-btn-text-1') || "확인") : "확인";
-        const alertBtnText2 = alertContainer ? (alertContainer.getAttribute('data-btn-text-2') || "취소") : "취소";
-        const alertBtnText3 = alertContainer ? (alertContainer.getAttribute('data-btn-text-3') || "저장") : "저장";
-        const alertBtnStyle1 = alertContainer ? (alertContainer.getAttribute('data-btn-style-1') || "normal") : "normal";
-        const alertBtnStyle2 = alertContainer ? (alertContainer.getAttribute('data-btn-style-2') || "normal") : "normal";
-        const alertBtnStyle3 = alertContainer ? (alertContainer.getAttribute('data-btn-style-3') || "normal") : "normal";
-        const alertShowDesc = alertContainer ? alertContainer.getAttribute('data-show-desc') === 'true' : false;
-        const alertDesc = alertContainer ? (alertContainer.getAttribute('data-desc') || "어떤어떤 경우에 얼럿이 표시됨") : "어떤어떤 경우에 얼럿이 표시됨";
-
-        // Button Atom Detection
-        const isButton = isGroup ? false : (!!c.querySelector('.v4-btn-container') || c.classList.contains('v4-btn-container'));
-        const btnContainer = isGroup ? null : (c.querySelector('.v4-btn-container') || (isButton ? c : null));
-        const buttonText = btnContainer ? (btnContainer.getAttribute('data-text') || "버튼") : "버튼";
-        const buttonStyle = btnContainer ? (btnContainer.getAttribute('data-btn-style') || "normal") : "normal";
-        const buttonRadius = btnContainer ? (btnContainer.getAttribute('data-btn-radius') || "6") : "6";
-
-        // Date Picker Atom Detection
-        const isDatePicker = isGroup ? false : (!!c.querySelector('.v4-datepicker-container') || c.classList.contains('v4-datepicker-container'));
-        const dpContainer = isGroup ? null : (c.querySelector('.v4-datepicker-container') || (isDatePicker ? c : null));
-        const dpShowPresets = dpContainer ? dpContainer.getAttribute('data-show-presets') !== 'false' : true;
-        const dpShowEndDate = dpContainer ? dpContainer.getAttribute('data-show-end-date') !== 'false' : true;
-        const dpDefaultPreset = dpContainer ? (dpContainer.getAttribute('data-default-preset') || 'none') : 'none';
-        const dpStartDate = dpContainer ? (dpContainer.getAttribute('data-start-date') || '') : '';
-        const dpEndDate = dpContainer ? (dpContainer.getAttribute('data-end-date') || '') : '';
-
-        // Accordion Atom Detection
-        const isAccordion = isGroup ? false : (!!c.querySelector('.v4-accordion-container') || c.classList.contains('v4-accordion-container'));
-        const accordionContainer = isGroup ? null : (c.querySelector('.v4-accordion-container') || (isAccordion ? c : null));
-        const accordionHeaderText = accordionContainer ? (accordionContainer.querySelector('.v4-accordion-title-text')?.innerText || "Accordion Header") : "Accordion Header";
-        const accordionSubCount = accordionContainer ? (parseInt(accordionContainer.getAttribute('data-sub-count')) || 0) : 0;
-        const accordionSubTexts = accordionContainer ? Array.from(accordionContainer.querySelectorAll('.v4-accordion-item')).map(item => item.innerText) : [];
-        const accordionExpanded = accordionContainer ? accordionContainer.getAttribute('data-expanded') === 'true' : false;
-        const accordionItemHeight = accordionContainer ? parseInt(accordionContainer.getAttribute('data-item-height')) || (accordionContainer.querySelector('.v4-accordion-header') ? parseInt(accordionContainer.querySelector('.v4-accordion-header').style.height) || 36 : 36) : 36;
-        const accordionDepthType = accordionContainer ? (accordionContainer.getAttribute('data-depth-type') || '1depth') : '1depth';
-        const accordionHierarchy = accordionContainer ? (accordionContainer.getAttribute('data-hierarchy') || '') : '';
-
-        // Grid UI Atom Detection
-        const isGrid = isGroup ? false : (!!c.querySelector('.v4-grid-container') || c.classList.contains('v4-grid-container'));
-        const gridContainer = isGroup ? null : (c.querySelector('.v4-grid-container') || (isGrid ? c : null));
-        const gridHeaders = gridContainer ? Array.from(gridContainer.querySelectorAll('.v4-grid-header-row .v4-grid-cell')).slice(1).map(cell => cell.innerText.replace(' ⇅', '')) : [];
-        const gridRowCount = gridContainer ? (parseInt(gridContainer.getAttribute('data-row-count')) || 0) : 0;
-        const gridShowPagination = gridContainer ? gridContainer.getAttribute('data-pagination') !== 'false' : true;
-        
-        let gridColumns = [];
-        if (gridContainer) {
-            const rawCols = gridContainer.getAttribute('data-columns');
-            if (rawCols) {
-                try {
-                    gridColumns = JSON.parse(rawCols);
-                } catch(e) {
-                    console.error("Error parsing data-columns", e);
-                }
-            }
-            if (!gridColumns || gridColumns.length === 0) {
-                var tableCols = Array.from(gridContainer.querySelectorAll('colgroup col'));
-                var tableHeaders = Array.from(gridContainer.querySelectorAll('thead th'));
-                if (tableHeaders.length > 0) {
-                    gridColumns = tableHeaders.map(function(cell, index) {
-                        var name = cell.innerText.replace(' ⇅', '').trim();
-                        var colEl = tableCols[index];
-                        var width = colEl ? (colEl.style.width || colEl.getAttribute('width') || '120px') : '120px';
-                        var type = 'text';
-                        if (cell.classList.contains('v4-grid-check-col') || cell.querySelector('input[type="checkbox"]')) {
-                            type = 'checkbox';
-                        } else if (name === '번호') {
-                            type = 'number';
-                        } else if (name === '방송상태') {
-                            type = 'status';
-                        } else if (name === '등록/수정자' || name === '등록자' || name === '수정자') {
-                            type = 'author';
-                        } else if (name.indexOf('일시') >= 0 || name.indexOf('일자') >= 0) {
-                            type = 'datetime';
-                        }
-                        return { name: name, type: type, width: width };
-                    });
-                } else {
-                    const headerCells = Array.from(gridContainer.querySelectorAll('.v4-grid-header-row .v4-grid-cell'));
-                    const gridTemplateCols = (gridContainer.querySelector('.v4-grid-header-row') && gridContainer.querySelector('.v4-grid-header-row').style.gridTemplateColumns || '').split(/s+/).filter(Boolean);
-                    gridColumns = headerCells.map((cell, index) => {
-                        const name = cell.innerText.replace(' ⇅', '').trim();
-                        const width = gridTemplateCols[index] || '120px';
-                        let type = 'text';
-                        if (cell.classList.contains('v4-grid-check-col') || cell.querySelector('input[type="checkbox"]')) {
-                            type = 'checkbox';
-                        } else if (name === '번호') {
-                            type = 'number';
-                        } else if (name === '방송상태') {
-                            type = 'status';
-                        } else if (name === '등록/수정자' || name === '등록자' || name === '수정자') {
-                            type = 'author';
-                        } else if (name.indexOf('일시') >= 0 || name.indexOf('일자') >= 0) {
-                            type = 'datetime';
-                        }
-                        return { name: name, type: type, width: width };
-                    });
-                }
-            }
-        }
-
-        // Admin Settings Atom Detection
-        const isAdminSettings = isGroup ? false : (!!c.querySelector('.v4-admin-settings-container') || c.classList.contains('v4-admin-settings-container'));
-        const adminSettingsContainer = isGroup ? null : (c.querySelector('.v4-admin-settings-container') || (isAdminSettings ? c : null));
-        const adminRowCount = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-count')) || 3 : 3;
-        
-        const adminShowGroupHeader = adminSettingsContainer ? adminSettingsContainer.getAttribute('data-show-group-header') === 'true' : false;
-        const adminGroupHeaderTitle = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-title') || '그룹명') : '그룹명';
-        const adminGroupHeaderBg = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-bg') || '#73829c') : '#73829c';
-        const adminGroupHeaderColor = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-color') || '#ffffff') : '#ffffff';
-        const firstLabel = adminSettingsContainer ? adminSettingsContainer.querySelector('.v4-admin-label-cell') : null;
-        const adminLabelWidth = firstLabel ? (parseInt(firstLabel.style.width) || parseInt(window.getComputedStyle(firstLabel).width) || 140) : 140;
-
-        const adminRowData = {};
-        for (let i = 1; i <= 10; i++) {
-            adminRowData['adminRow' + i + 'Label'] = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row' + i + '-label') || '') : '';
-            adminRowData['adminRow' + i + 'Cols'] = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row' + i + '-cols')) || 1 : 1;
-            adminRowData['adminRow' + i + 'Type'] = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row' + i + '-type') || 'textbox') : 'textbox';
-            adminRowData['adminRow' + i + 'Height'] = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row' + i + '-height')) || (adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-height')) || 50 : 50) : 50;
-        }
-
-        // Toggle Button Detection
-        const isToggle = isGroup ? false : (!!c.querySelector('.v4-toggle-container') || c.classList.contains('v4-toggle-container'));
-        const toggleContainer = isGroup ? null : (c.querySelector('.v4-toggle-container') || (isToggle ? c : null));
-        const toggleChecked = toggleContainer ? (toggleContainer.getAttribute('data-checked') === 'true') : false;
-        const toggleColor = toggleContainer ? (toggleContainer.getAttribute('data-color') || '#3b82f6') : '#3b82f6';
-
-        const boxEl = isGroup ? null : c.querySelector('.v4-checkbox, .v4-radio');
-        const buttonEl = isGroup ? null : c.querySelector('.v4-custom-btn');
-        
-        const getShapeColor = (prop) => {
-            if (!shape) return "";
-            if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle') || shape.classList.contains('v4-shape-wave')) {
-                const svg = shape.querySelector('polygon, path, rect, circle');
-                if (svg) return prop === 'backgroundColor' ? svg.style.fill : svg.style.stroke;
-            }
-            return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
-        };
- 
-        let detectedIconColor = "";
-        if (icon) {
-            const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
-            const dot = icon.querySelector('.v4-radio div, .v4-radio-dot');
-            if (poly) {
-                detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || "";
-            } else if (dot) {
-                detectedIconColor = dot.style.backgroundColor || "";
-            } else {
-                detectedIconColor = icon.style.color || icon.getAttribute('stroke') || "";
-            }
-        }
- 
-        const getCompBg = () => {
-            if (shape) return getShapeColor("backgroundColor");
-            if (table) return _getVal(table, "backgroundColor");
-            if (isPin) return _getVal(c, "backgroundColor");
-            if (boxEl) return _getVal(boxEl, "backgroundColor");
-            if (buttonEl) return _getVal(buttonEl, "backgroundColor");
-            if (inputContainer) return _getVal(inputContainer, "backgroundColor");
-            if (searchbarContainer) return _getVal(searchbarContainer, "backgroundColor");
-            if (stepperContainer) return _getVal(stepperContainer, "backgroundColor");
-            if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor");
-            if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor");
-            if (accordionContainer) return _getVal(accordionContainer, "backgroundColor");
-            if (gridContainer) return _getVal(gridContainer, "backgroundColor");
-            if (alertContainer) {
-                const dialog = alertContainer.querySelector('.v4-alert-dialog');
-                return dialog ? _getVal(dialog, "backgroundColor") : _getVal(alertContainer, "backgroundColor");
-            }
-            return "";
-        };
-
-        const getCompBorder = () => {
-            if (shape) return getShapeColor("borderColor");
-            if (table) return _getVal(table, "borderColor");
-            if (isPin) return _getVal(c, "borderColor");
-            if (boxEl) return _getVal(boxEl, "borderColor");
-            if (buttonEl) return _getVal(buttonEl, "borderColor");
-            if (inputContainer) return _getVal(inputContainer, "borderColor");
-            if (searchbarContainer) return _getVal(searchbarContainer, "borderColor");
-            if (stepperContainer) return _getVal(stepperContainer, "borderColor");
-            if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor");
-            if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor");
-            if (accordionContainer) return _getVal(accordionContainer, "borderColor");
-            if (gridContainer) return _getVal(gridContainer, "borderColor");
-            if (alertContainer) {
-                const dialog = alertContainer.querySelector('.v4-alert-dialog');
-                return dialog ? _getVal(dialog, "borderColor") : _getVal(alertContainer, "borderColor");
-            }
-            if (icon) return _getVal(icon.parentElement, "borderColor");
-            return "";
-        };
-
-        return {
-            id: c.id,
-            x: parseFloat(c.style.left) || 0,
-            y: parseFloat(c.style.top) || 0,
-            shapeType: shape ? (shape.classList.contains('v4-shape-pattern-grid') ? 'pattern' : (shape.classList.contains('v4-shape-rect') ? 'rect' : (shape.classList.contains('v4-shape-circle') ? 'circle' : (shape.classList.contains('v4-shape-triangle') ? 'triangle' : (shape.classList.contains('v4-shape-diamond') ? 'diamond' : (shape.classList.contains('v4-shape-arrow') ? 'arrow' : '')))))) : '',
-            arrowDir: shape && shape.classList.contains('v4-shape-arrow') ? (shape.getAttribute('data-arrow-dir') || 'right') : '',
-            direction: shape && shape.classList.contains('v4-shape-triangle') ? (shape.getAttribute('data-direction') || 'up') : '',
-            patternType: shape && shape.classList.contains('v4-shape-pattern-grid') ? (shape.getAttribute('data-pattern-type') || 'grid') : '',
-            isTable: !!table && !isGrid,
-            isShape: !!shape,
-            isIcon: !!icon,
-            isImage: isImage,
-            isPin: isPin,
-            isDescriptionPin: isDescriptionPin,
-            isCheckbox: isCheckbox,
-            isRadio: isRadio,
-            checked: checked,
-            textEnabled: textEnabled,
-            checkboxText: container ? (container.querySelector('.v4-checkbox-text, .v4-radio-text')?.innerText || "TEXT") : "TEXT",
-            isTextbox: isTextbox,
-            isTextarea: isTextarea,
-            placeholderText: placeholderText,
-            maxLength: maxLength,
-            showCounter: showCounter,
-            isSearchBar: isSearchBar,
-            searchbarPlaceholder: searchbarPlaceholder,
-            isStepper: isStepper,
-            minVal: minVal,
-            maxVal: maxVal,
-            val: stepperVal,
-            btnEnabled: stepperBtnEnabled,
-            btnText: stepperBtnText,
-            disabled: stepperDisabled,
-            isSelectbox: isSelectbox,
-            selectboxDefaultText: selectboxDefaultText,
-            selectboxDropdownActive: selectboxDropdownActive,
-            selectboxOptions: selectboxOptions,
-            isFileUpload: isFileUpload,
-            fileSelected: fileSelected,
-            fileName: fileName,
-            fileButtonText: fileButtonText,
-            filePlaceholder: filePlaceholder,
-            isAlert: isAlert,
-            alertMessage: alertMessage,
-            alertBtnCount: alertBtnCount,
-            alertBtnText1: alertBtnText1,
-            alertBtnText2: alertBtnText2,
-            alertBtnText3: alertBtnText3,
-            alertBtnStyle1: alertBtnStyle1,
-            alertBtnStyle2: alertBtnStyle2,
-            alertBtnStyle3: alertBtnStyle3,
-            alertShowDesc: alertShowDesc,
-            alertDesc: alertDesc,
-            isButton: isButton,
-            buttonText: buttonText,
-            buttonStyle: buttonStyle,
-            buttonRadius: buttonRadius,
-            isDatePicker: isDatePicker,
-            dpShowPresets: dpShowPresets,
-            dpShowEndDate: dpShowEndDate,
-            dpDefaultPreset: dpDefaultPreset,
-            dpStartDate: dpStartDate,
-            dpEndDate: dpEndDate,
-            isAccordion: isAccordion,
-            accordionHeaderText: accordionHeaderText,
-            accordionSubCount: accordionSubCount,
-            accordionSubTexts: accordionSubTexts,
-            accordionExpanded: accordionExpanded,
-            accordionItemHeight: accordionItemHeight,
-            accordionDepthType: accordionDepthType,
-            accordionHierarchy: accordionHierarchy,
-            isGrid: isGrid,
-            gridHeaders: gridHeaders,
-            gridColumns: gridColumns,
-            gridRowCount: gridRowCount,
-            gridShowPagination: gridShowPagination,
-            isAdminSettings: isAdminSettings,
-            adminRowCount: adminRowCount,
-            adminShowGroupHeader: adminShowGroupHeader,
-            adminGroupHeaderTitle: adminGroupHeaderTitle,
-            adminGroupHeaderBg: adminGroupHeaderBg,
-            adminGroupHeaderColor: adminGroupHeaderColor,
-            adminLabelWidth: adminLabelWidth,
-            ...adminRowData,
-            adminRowHeight: adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-height')) || 50 : 50,
-            isToggle: isToggle,
-            toggleChecked: toggleChecked,
-            toggleColor: toggleColor,
-            pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
-            html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
-            isGroup: c.classList.contains('lf-group'),
-            w: c.offsetWidth,
-            h: c.offsetHeight,
-            currentStyles: {
-                bg: _rgb2hex(getCompBg()),
-                border: _rgb2hex(getCompBorder()),
-                text: _rgb2hex(textCell ? _getVal(textCell, "color") : (buttonEl ? _getVal(buttonEl, "color") : "")),
-                fontSize: parseInt(_getVal(textCell, "fontSize")) || (shape ? parseInt(_getVal(shape.querySelector('.v4-editable-cell, .v4-shape-text-content, .v4-shape-text-overlay'), "fontSize")) || 14 : (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 14 : 14)),
-                fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
-                tableHeader: _rgb2hex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
-                tableHeaderText: _rgb2hex(table ? _getVal(table.querySelector("th"), "color") : ""),
-                iconColor: _rgb2hex(detectedIconColor || "#000000"),
-                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : (buttonEl ? (parseInt(_getVal(buttonEl, "borderRadius")) || 0) : 0)),
-                bgOpacity: _getAlphaPercent(getCompBg()),
-                isBgTransparent: (() => {
-                    const colorVal = getCompBg();
-                    return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
-                })(),
-                isBorderTransparent: (() => {
-                    const colorVal = getCompBorder();
-                    return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
-                })(),
-                textAlign: shape ? (_getVal(shape.querySelector('.v4-editable-cell, .v4-shape-text-content'), 'textAlign') || 'center') : 'center'
-            }
-        };
-    };
-
-    window.updateHandles = (c) => {
-        if (!c) return;
-        const t = parseInt(c.style.top) || 0;
-        const l = parseInt(c.style.left) || 0;
-        const drag = c.querySelector(':scope > .lf-drag-handle');
-        const del = c.querySelector(':scope > .lf-delete-trigger');
-        if (drag) { drag.style.top = t < 16 ? '4px' : '-16px'; drag.style.left = l < 16 ? '4px' : '-16px'; }
-        if (del) { 
-            del.style.top = t < 16 ? '4px' : '-12px'; 
-            const rightDist = window.innerWidth - (l + c.offsetWidth);
-            del.style.right = rightDist < 16 ? '4px' : '-12px'; 
-        }
-    };
-
-    document.addEventListener('mouseover', e => {
-        const c = e.target.closest('.lf-component');
-        if (c) window.updateHandles(c);
-    });
-
-    let isMarquee = false;
-    let groupChildrenStart = null;
-    document.addEventListener('mousedown', e => {
-        if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.header-metadata')) return;
-
-        let h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
-        
-        if (c && !h && !r && !d) {
-            if (!c.classList.contains('text-marker') && !c.classList.contains('pin-marker')) {
-                let parent = c.parentElement.closest('.lf-component');
-                while (parent) {
-                    if (parent.classList.contains('text-marker') || parent.classList.contains('pin-marker')) break;
-                    c = parent;
-                    // If we've reached a group, stop here — do not bubble past the group
-                    if (c.classList.contains('lf-group')) break;
-                    parent = c.parentElement.closest('.lf-component');
-                }
-            }
-        }
-
-        if (d && c) { 
-            if (window.V4UndoManager) window.V4UndoManager.saveState();
-
-            if (c.classList.contains('connector-line')) {
-                notifyParent({ type: 'LF_DELETE_CONNECTOR', id: c.id });
-                c.remove();
-            }
-            else if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
-                const idx = parseInt(c.id.replace('v4-pin-', ''));
-                notifyParent({ type: 'LF_DELETE_PIN', index: idx });
-                c.remove();
-            } else {
-                c.remove();
-            }
-
-            markDirty(); 
-            notifyParent({ type: 'LF_DESELECT' });
-            return; 
-        }
-        if (c) {
-            isMarquee = false;
-            const isMulti = e.shiftKey || e.ctrlKey;
-            if (isMulti) {
-                c.classList.toggle('selected');
-            } else {
-                document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
-                c.classList.add('selected');
-            }
-            window.updateHandles(c);
-            notifyParent({ 
-                type: "LF_COMP_SELECTED", 
-                shiftKey: isMulti,
-                ...window._getCompStyles(c)
-            });
-        } else {
-            isMarquee = true;
-            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
-            
-            const targets = [];
-            document.querySelectorAll('.lf-component').forEach(c => {
-                targets.push({
-                    id: c.id,
-                    x: parseFloat(c.style.left) || 0,
-                    y: parseFloat(c.style.top) || 0,
-                    w: c.offsetWidth,
-                    h: c.offsetHeight
-                });
-            });
-
-            notifyParent({ 
-                type: 'LF_MARQUEE_START', 
-                x: e.clientX, 
-                y: e.clientY,
-                shiftKey: e.shiftKey,
-                targets: targets
-            });
-            notifyParent({ type: 'LF_DESELECT' });
-        }
-        if (r) { 
-            if (window.V4DragResizeEngine) {
-                window.V4DragResizeEngine.startResize(e, r);
-            }
-        }
-        else if (h || (c && !e.target.closest('td, th'))) { 
-            if (window.V4DragResizeEngine) {
-                window.V4DragResizeEngine.handleMouseDown(e, h, r, d, c);
-            }
-        }
-    });
-
-    // Double click to enter text editing mode (PPT-style)
-    document.addEventListener('dblclick', e => {
-        const editable = e.target.closest('.v4-editable-cell');
-        if (editable) {
-            if (window.V4UndoManager) window.V4UndoManager.saveState();
-            editable.focus();
-        }
-    });
-
-    let rafId = null;
-    document.addEventListener('mousemove', e => {
-        if (isDraggingLine && activeLineId) {
-            const scale = (window.parent?.state?.transform?.scale) || 1;
-            const dx = (e.clientX - startX) / scale;
-            const dy = (e.clientY - startY) / scale;
-            const conn = window.parent?.state?.connectors?.find(c => c.id === activeLineId);
-            if (conn && startLineCoords) {
-                conn.start.x = startLineCoords.start.x + dx;
-                conn.start.y = startLineCoords.start.y + dy;
-                conn.end.x = startLineCoords.end.x + dx;
-                conn.end.y = startLineCoords.end.y + dy;
-                conn.start.targetId = null; conn.start.side = null;
-                conn.end.targetId = null; conn.end.side = null;
-                window.updateConnectorPathLocal(activeLineId);
-            }
-            return;
-        }
-
-        if (window.V4PortConnectorEngine && window.V4PortConnectorEngine.isDrawingConnector) {
-            window.V4PortConnectorEngine.handleMouseMove(e);
-            return;
-        }
-
-        if (isMarquee) {
-            notifyParent({ type: 'LF_MARQUEE_MOVE', x: e.clientX, y: e.clientY });
-            window.getSelection()?.removeAllRanges();
-            return;
-        }
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(() => {
-            if (window.V4DragResizeEngine && (window.V4DragResizeEngine.isDragging || window.V4DragResizeEngine.isResizing)) {
-                window.V4DragResizeEngine.handleMouseMove(e);
-            }
-        });
-    });
-
-    document.addEventListener('mouseup', () => { 
-        document.querySelectorAll('.lf-component').forEach(comp => comp.classList.remove('near-connector'));
-        if (isDraggingLine) {
-            isDraggingLine = false;
-            startLineCoords = null;
-            activeLineId = null;
-            notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
-            markDirty();
-            return;
-        }
-
-        if (window.V4PortConnectorEngine && window.V4PortConnectorEngine.isDrawingConnector) {
-            window.V4PortConnectorEngine.handleMouseUp();
-            return;
-        }
-
-        if (isMarquee) {
-            isMarquee = false;
-            notifyParent({ type: 'LF_MARQUEE_END' });
-        }
-        if (window.V4DragResizeEngine && (window.V4DragResizeEngine.isDragging || window.V4DragResizeEngine.isResizing)) {
-            window.V4DragResizeEngine.handleMouseUp();
-        }
-    });
-
-    document.addEventListener('input', e => { 
-        if (e.target.classList.contains('v4-editable-cell')) {
-            markDirty();
-            const comp = e.target.closest('.lf-component');
-            if (comp) {
-                if (comp.querySelector('.v4-checkbox-container') || comp.querySelector('.v4-radio-container')) {
-                    if (typeof window.resizeAtomToFitText === 'function') {
-                        window.resizeAtomToFitText(comp);
-                    } else if (typeof window.enforceDesignSystem === 'function') {
-                        window.enforceDesignSystem();
-                    }
-                }
-                // Notify parent of text changes to sync the Quill editor in real-time
-                const isPin = comp.classList.contains('text-marker') || comp.classList.contains('pin-marker') || comp.classList.contains('v4-text-box') || comp.classList.contains('v4-text-shape');
-                const isShape = !!comp.querySelector('.v4-shape');
-                notifyParent({
-                    type: 'LF_PIN_TEXT_CHANGED',
-                    id: comp.id,
-                    html: e.target.innerHTML,
-                    isPin: isPin,
-                    isShape: isShape
-                });
-            }
-        } 
-    });
-
-    document.addEventListener('wheel', e => {
-        if (e.ctrlKey) {
-            e.preventDefault();
-            notifyParent({
-                type: 'LF_IFRAME_WHEEL_ZOOM',
-                deltaY: e.deltaY,
-                clientX: e.clientX,
-                clientY: e.clientY
-            });
-        }
-    }, { passive: false });
-
-    window.renderGrid = function(container, columns, rowCount, showPagination) {
+    console.log("[V4 Grid] Module loaded.");
+    window.renderGrid = function(container, columns, rowCount, showPagination, rowHeight) {
         if (!container) return;
         
         container.setAttribute('data-columns', JSON.stringify(columns));
         container.setAttribute('data-row-count', rowCount);
         container.setAttribute('data-pagination', showPagination ? 'true' : 'false');
+        if (rowHeight !== undefined) {
+            container.setAttribute('data-row-height', rowHeight);
+        }
+        var rowHeightVal = container.getAttribute('data-row-height') || '40px';
+        if (/^d+$/.test(String(rowHeightVal).trim())) {
+            rowHeightVal = String(rowHeightVal).trim() + 'px';
+        }
         
         var mockList = [
             { no: '1024', name: '[헤지스] 여름 맞이 린넨 셔츠 특가 라이브', status: '방송중', statusColor: '#10b981', statusBg: 'rgba(52,211,153,0.15)', author: '김엘에프', date: '2026-07-01 11:00:00' },
@@ -4512,7 +3755,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
         var table = container.querySelector('table');
         if (table) {
-            // In-place mutative update to preserve inline styling, text edits, background, borders etc!
+            table.style.setProperty('height', 'auto', 'important');
             var colgroup = table.querySelector('colgroup');
             if (colgroup) {
                 colgroup.innerHTML = '';
@@ -4556,6 +3799,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (thead) {
                 var headerRow = thead.querySelector('tr');
                 if (headerRow) {
+                    headerRow.style.setProperty('height', rowHeightVal, 'important');
                     var ths = Array.from(headerRow.querySelectorAll('th'));
                     while (ths.length < columns.length) {
                         var newTh = document.createElement('th');
@@ -4576,19 +3820,18 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     
                     columns.forEach(function(col, idx) {
                         var th = ths[idx];
-                        var isLast = (idx === columns.length - 1);
-                        // Save existing styles
                         var bg = th.style.background || th.style.backgroundColor;
                         var color = th.style.color;
                         var fontSize = th.style.fontSize;
                         var fontFamily = th.style.fontFamily;
 
-                        th.style.borderRight = '1.6px solid rgb(226,232,240)';
+                        th.style.borderRight = '1.6px solid rgb(226, 232, 240)';
                         th.style.textAlign = col.type === 'checkbox' ? 'center' : 'left';
-                        th.style.padding = col.type === 'checkbox' ? '0' : '0 8px';
+                        th.style.setProperty('padding', col.type === 'checkbox' ? '0' : '0 8px', 'important');
                         th.style.fontWeight = '500';
                         th.style.color = '#334155';
-                        
+                        th.style.setProperty('height', rowHeightVal, 'important');
+
                         if (col.type === 'checkbox') {
                             th.className = 'v4-grid-cell v4-grid-check-col';
                             th.contentEditable = 'false';
@@ -4602,19 +3845,24 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                             if (th.innerText !== desiredText && th.innerText !== col.name) {
                                 th.innerText = desiredText;
                             }
-                             if (!th.dataset.eventsBound) {
+                            if (!th.dataset.eventsBound) {
                                 th.dataset.eventsBound = 'true';
                                 
-                                const selectParentComponent = () => {
+                                const selectParentComponent = (e) => {
                                     const comp = th.closest('.lf-component');
-                                    if (comp && !comp.classList.contains('selected')) {
-                                        document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
-                                        comp.classList.add('selected');
+                                    if (comp) {
+                                        const isMulti = e ? (e.shiftKey || e.ctrlKey || e.metaKey) : false;
+                                        if (isMulti) {
+                                            comp.classList.toggle('selected');
+                                        } else {
+                                            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                                            comp.classList.add('selected');
+                                        }
                                         if (window.updateHandles) window.updateHandles(comp);
                                         
                                         notifyParent({
                                             type: "LF_COMP_SELECTED",
-                                            shiftKey: false,
+                                            shiftKey: isMulti,
                                             ...window._getCompStyles(comp)
                                         });
                                     }
@@ -4622,11 +3870,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
                                 th.addEventListener('mousedown', function(e) {
                                     e.stopPropagation();
-                                    selectParentComponent();
+                                    selectParentComponent(e);
                                 });
                                 th.addEventListener('click', function(e) {
                                     e.stopPropagation();
-                                    selectParentComponent();
+                                    selectParentComponent(e);
                                 });
                                 th.addEventListener('input', function() {
                                     markDirty();
@@ -4644,7 +3892,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                             }
                         }
 
-                        // Restore styles
                         if (bg) th.style.setProperty('background', bg, 'important');
                         if (color) th.style.setProperty('color', color, 'important');
                         if (fontSize) th.style.setProperty('font-size', fontSize, 'important');
@@ -4658,7 +3905,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 var rows = Array.from(tbody.querySelectorAll('tr'));
                 while (rows.length < rowCount) {
                     var newRow = document.createElement('tr');
-                    newRow.style.height = '50px';
+                    newRow.style.setProperty('height', rowHeightVal, 'important');
                     newRow.style.background = '#ffffff';
                     newRow.style.boxSizing = 'border-box';
                     tbody.appendChild(newRow);
@@ -4670,6 +3917,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 rows.forEach(function(row, rIdx) {
                     row.style.borderBottom = '1.6px solid rgb(226,232,240)';
+                    row.style.setProperty('height', rowHeightVal, 'important');
                     
                     var tds = Array.from(row.querySelectorAll('td'));
                     while (tds.length < columns.length) {
@@ -4690,29 +3938,34 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     columns.forEach(function(col, cIdx) {
                         var td = tds[cIdx];
                         td.style.borderRight = '1.6px solid rgb(226,232,240)';
-                        
+                        td.style.setProperty('height', rowHeightVal, 'important');
+                        td.style.setProperty('padding', col.type === 'checkbox' ? '0' : '0 8px', 'important');
+
                         var prevType = td.getAttribute('data-type');
-                        // Legacy support: if checkbox td doesn't have data-type, resolve it
                         if (!prevType && (td.classList.contains('v4-grid-check-col') || td.querySelector('input[type="checkbox"]'))) {
                             prevType = 'checkbox';
                             td.setAttribute('data-type', 'checkbox');
                         }
 
-                        // Bind event listeners on non-checkbox cells to allow direct editing
                         if (col.type !== 'checkbox') {
                             if (!td.dataset.eventsBound) {
                                 td.dataset.eventsBound = 'true';
                                 
-                                const selectParentComponent = () => {
+                                const selectParentComponent = (e) => {
                                     const comp = td.closest('.lf-component');
-                                    if (comp && !comp.classList.contains('selected')) {
-                                        document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
-                                        comp.classList.add('selected');
+                                    if (comp) {
+                                        const isMulti = e ? (e.shiftKey || e.ctrlKey || e.metaKey) : false;
+                                        if (isMulti) {
+                                            comp.classList.toggle('selected');
+                                        } else {
+                                            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                                            comp.classList.add('selected');
+                                        }
                                         if (window.updateHandles) window.updateHandles(comp);
                                         
                                         notifyParent({
                                             type: "LF_COMP_SELECTED",
-                                            shiftKey: false,
+                                            shiftKey: isMulti,
                                             ...window._getCompStyles(comp)
                                         });
                                     }
@@ -4720,11 +3973,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
                                 td.addEventListener('mousedown', function(e) {
                                     e.stopPropagation();
-                                    selectParentComponent();
+                                    selectParentComponent(e);
                                 });
                                 td.addEventListener('click', function(e) {
                                     e.stopPropagation();
-                                    selectParentComponent();
+                                    selectParentComponent(e);
                                 });
                                 td.addEventListener('input', function() {
                                     markDirty();
@@ -4736,7 +3989,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         var shouldOverwrite = (prevType !== col.type) || td.innerHTML === '' || isMockValue(currentText, prevType);
 
                         if (shouldOverwrite) {
-                            // Save existing styles
                             var bg = td.style.background || td.style.backgroundColor;
                             var color = td.style.color;
                             var fontSize = td.style.fontSize;
@@ -4755,7 +4007,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                                 td.style.textAlign = 'left';
                                 td.style.padding = '0 8px';
                                 
-                                // Reset inline styles so they inherit unified defaults from viewer.css
                                 td.style.color = '';
                                 td.style.fontWeight = '';
                                 td.style.fontSize = '';
@@ -4774,7 +4025,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                                 }
                             }
 
-                            // Restore styles
                             if (bg) td.style.setProperty('background', bg, 'important');
                             if (col.type === 'status' || col.type === 'checkbox') {
                                 if (color) td.style.setProperty('color', color, 'important');
@@ -4794,10 +4044,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (wrapper) {
                 wrapper.style.height = showPagination ? 'calc(100% - 36px)' : '100%';
             }
+            
             return;
         }
 
-        // Full rebuild if table is completely missing
         var colgroupHtml = '<colgroup>';
         columns.forEach(function(col) {
             var w = col.width;
@@ -4813,13 +4063,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         });
         colgroupHtml += '</colgroup>';
         
-        var headerHtml = '<tr style="height:36px; background:#ffffff; border-bottom:1.6px solid rgb(226,232,240); box-sizing:border-box;">';
+        var headerHtml = '<tr style="height:' + rowHeightVal + ' !important; background:#ffffff; border-bottom:1.6px solid rgb(226,232,240); box-sizing:border-box;">';
         columns.forEach(function(col, index) {
             var borderRight = ' border-right:1.6px solid rgb(226,232,240);';
             if (col.type === 'checkbox') {
-                headerHtml += '<th class="v4-grid-cell v4-grid-check-col" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0; font-weight:normal;"><input type="checkbox"></th>';
+                headerHtml += '<th class="v4-grid-cell v4-grid-check-col" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center; height:' + rowHeightVal + ' !important;' + borderRight + ' box-sizing:border-box; padding:0; font-weight:normal;"><input type="checkbox"></th>';
             } else {
-                headerHtml += '<th class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="' + col.type + '" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; font-weight:500; color:#0f172a; user-select:none;">' + (col.name || '') + ' ⇅</th>';
+                headerHtml += '<th class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="' + col.type + '" style="display:table-cell; vertical-align:middle; text-align:left; height:' + rowHeightVal + ' !important; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; font-weight:500; color:#0f172a; user-select:none;">' + (col.name || '') + ' ⇅</th>';
             }
         });
         headerHtml += '</tr>';
@@ -4827,26 +4077,26 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         var bodyHtml = '';
         for (var i = 0; i < rowCount; i++) {
             var data = mockList[i % mockList.length];
-            var isLastRow = (i === rowCount - 1);
             var borderBottom = '1.6px solid rgb(226,232,240)';
             
-            bodyHtml += '<tr style="height:36px; border-bottom:' + borderBottom + '; box-sizing:border-box; background:#ffffff;">';
+            bodyHtml += '<tr style="height:' + rowHeightVal + ' !important; border-bottom:' + borderBottom + '; box-sizing:border-box; background:#ffffff;">';
             
             columns.forEach(function(col, colIndex) {
                 var borderRight = ' border-right:1.6px solid rgb(226,232,240);';
+                var heightStyle = ' height:' + rowHeightVal + ' !important;';
                 
                 if (col.type === 'checkbox') {
-                    bodyHtml += '<td class="v4-grid-cell" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + borderRight + ' box-sizing:border-box; padding:0;"><input type="checkbox"></td>';
+                    bodyHtml += '<td class="v4-grid-cell" data-type="checkbox" style="display:table-cell; vertical-align:middle; text-align:center;' + heightStyle + borderRight + ' box-sizing:border-box; padding:0;"><input type="checkbox"></td>';
                 } else if (col.type === 'number') {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="number" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + (1024 - i) + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="number" style="display:table-cell; vertical-align:middle; text-align:left;' + heightStyle + ' padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + (1024 - i) + '</td>';
                 } else if (col.type === 'status') {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="status" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box;"><span style="background:' + data.statusBg + '; color:' + data.statusColor + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + data.status + '</span></td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="status" style="display:table-cell; vertical-align:middle; text-align:left;' + heightStyle + ' padding:0 8px;' + borderRight + ' box-sizing:border-box;"><span style="background:' + data.statusBg + '; color:' + data.statusColor + '; padding:2px 6px; border-radius:4px; font-size:11px; font-weight:600;">' + data.status + '</span></td>';
                 } else if (col.type === 'author') {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="author" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.author + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="author" style="display:table-cell; vertical-align:middle; text-align:left;' + heightStyle + ' padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.author + '</td>';
                 } else if (col.type === 'datetime') {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="datetime" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.date + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="datetime" style="display:table-cell; vertical-align:middle; text-align:left;' + heightStyle + ' padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.date + '</td>';
                 } else {
-                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="text" style="display:table-cell; vertical-align:middle; text-align:left; padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.name + '</td>';
+                    bodyHtml += '<td class="v4-grid-cell v4-editable-cell" contenteditable="true" data-type="text" style="display:table-cell; vertical-align:middle; text-align:left;' + heightStyle + ' padding:0 8px;' + borderRight + ' box-sizing:border-box; font-size:12px; color:#0f172a; font-weight:500;">' + data.name + '</td>';
                 }
             });
             bodyHtml += '</tr>';
@@ -4867,7 +4117,11 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         
         container.innerHTML = tableContainerHtml + footerHtml;
     };
+})();
 
+
+(function() {
+    console.log("[V4 Accordion] Module loaded.");
     window.renderAccordionBody = function(container) {
         const body = container.querySelector('.v4-accordion-body');
         if (!body) return;
@@ -5121,6 +4375,687 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             });
         }
     };
+})();
+
+
+
+
+(function() {
+    // --- Console Log Auto-Clearing Guard inside iframe ---
+    (function() {
+        let logCount = 0;
+        const originalLog = console.log;
+        console.log = function(...args) {
+            logCount++;
+            if (logCount > 150) {
+                console.clear();
+                originalLog("[LF Editor Iframe] Auto-cleared console logs after reaching threshold.");
+                logCount = 0;
+            }
+            originalLog.apply(console, args);
+        };
+    })();
+
+    let isDraggingLine = false, activeLineId = null, startLineCoords = null;
+
+
+
+    let startX, startY, startW, startH, startTop, startLeft, startRect;
+
+
+    const _getVal = (el, prop) => {
+        if (!el) return "";
+        return el.style[prop] || window.getComputedStyle(el)[prop] || "";
+    };
+
+    const _getAlphaPercent = (rgb) => {
+        if (!rgb || rgb === "transparent" || rgb === "none" || rgb.includes("rgba(0, 0, 0, 0)")) return 0;
+        if (rgb.startsWith("rgba")) {
+            const parts = rgb.match(/rgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*([\d.]+)\s*\)/);
+            if (parts && parts[1] !== undefined) {
+                return Math.round(parseFloat(parts[1]) * 100);
+            }
+        }
+        return 100;
+    };
+
+    window._getCompStyles = (c) => {
+        const isGroup = c.classList.contains('lf-group');
+        const shape = isGroup ? null : c.querySelector('.v4-shape');
+        const table = isGroup ? null : c.querySelector('table');
+        const icon = isGroup ? null : (c.querySelector('.lf-icon') || c.querySelector('img'));
+        const textCell = isGroup ? null : c.querySelector('.v4-editable-cell');
+        const isPin = isGroup ? false : (c.classList.contains('text-marker') || c.classList.contains('pin-marker') || c.classList.contains('v4-text-box') || c.classList.contains('v4-text-shape'));
+        const isImage = isGroup ? false : (shape ? shape.classList.contains('v4-shape-image') : (c.id === 'v4-atom-image' || c.classList.contains('v4-shape-image')));
+        const isDescriptionPin = isGroup ? false : c.classList.contains('pin-marker');
+        
+        // Checkbox / Radio Atom Detection
+        const isCheckbox = isGroup ? false : (!!c.querySelector('.v4-checkbox') || c.classList.contains('v4-checkbox') || !!c.querySelector('.v4-checkbox-container') || c.classList.contains('v4-checkbox-container'));
+        const isRadio = isGroup ? false : (!!c.querySelector('.v4-radio') || c.classList.contains('v4-radio') || !!c.querySelector('.v4-radio-container') || c.classList.contains('v4-radio-container'));
+        const container = isGroup ? null : (c.querySelector('.v4-checkbox-container, .v4-radio-container') || (c.classList.contains('v4-checkbox-container') || c.classList.contains('v4-radio-container') ? c : null));
+        const checked = container ? container.getAttribute('data-checked') !== 'false' : true;
+        const textEnabled = container ? container.getAttribute('data-text-enabled') !== 'false' : false;
+        
+        // Textbox / Textarea Atom Detection
+        const isTextbox = isGroup ? false : (!!c.querySelector('.v4-textbox-container') || c.classList.contains('v4-textbox-container'));
+        const isTextarea = isGroup ? false : (!!c.querySelector('.v4-textarea-container') || c.classList.contains('v4-textarea-container'));
+        const inputContainer = isGroup ? null : (c.querySelector('.v4-textbox-container, .v4-textarea-container') || (isTextbox || isTextarea ? c : null));
+        const placeholderText = inputContainer ? (inputContainer.getAttribute('data-placeholder') || inputContainer.querySelector('.v4-textbox-placeholder, .v4-textarea-placeholder')?.textContent || "Placeholder") : "";
+        const maxLength = inputContainer ? (parseInt(inputContainer.getAttribute('data-maxlength')) || 100) : 100;
+        const showCounter = inputContainer ? (inputContainer.getAttribute('data-show-counter') !== 'false') : false;
+
+        // Search Bar Atom Detection
+        const isSearchBar = isGroup ? false : (!!c.querySelector('.v4-searchbar-container') || c.classList.contains('v4-searchbar-container'));
+        const searchbarContainer = isGroup ? null : (c.querySelector('.v4-searchbar-container') || (isSearchBar ? c : null));
+        const searchbarPlaceholder = searchbarContainer ? (searchbarContainer.querySelector('.v4-searchbar-text')?.getAttribute('data-placeholder') || "원스피어 통합검색") : "원스피어 통합검색";
+
+        // Stepper Atom Detection
+        const isStepper = isGroup ? false : (!!c.querySelector('.v4-stepper-container') || c.classList.contains('v4-stepper-container'));
+        const stepperContainer = isGroup ? null : (c.querySelector('.v4-stepper-container') || (isStepper ? c : null));
+        const minVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-min')) || 1 : 1;
+        const maxVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-max')) || 99 : 99;
+        const stepperVal = stepperContainer ? parseInt(stepperContainer.getAttribute('data-val')) || minVal : minVal;
+        const stepperBtnEnabled = stepperContainer ? stepperContainer.getAttribute('data-btn-enabled') !== 'false' : true;
+        const stepperBtnText = stepperContainer ? stepperContainer.getAttribute('data-btn-text') || "적용" : "적용";
+        const stepperDisabled = stepperContainer ? stepperContainer.getAttribute('data-disabled') === 'true' : false;
+        
+        // Selectbox Atom Detection
+        const isSelectbox = isGroup ? false : (!!c.querySelector('.v4-selectbox-container') || c.classList.contains('v4-selectbox-container'));
+        const selectboxContainer = isGroup ? null : (c.querySelector('.v4-selectbox-container') || (isSelectbox ? c : null));
+        const selectboxDefaultText = selectboxContainer ? (selectboxContainer.getAttribute('data-default-text') || "선택하세요") : "선택하세요";
+        const selectboxDropdownActive = selectboxContainer ? selectboxContainer.getAttribute('data-dropdown-active') === 'true' : false;
+        const selectboxOptionsRaw = selectboxContainer ? (selectboxContainer.getAttribute('data-options') || "Option 1,Option 2,Option 3") : "Option 1,Option 2,Option 3";
+        const selectboxOptions = selectboxOptionsRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+        // File Upload Atom Detection
+        const isFileUpload = isGroup ? false : (!!c.querySelector('.v4-fileupload-container') || c.classList.contains('v4-fileupload-container'));
+        const fileuploadContainer = isGroup ? null : (c.querySelector('.v4-fileupload-container') || (isFileUpload ? c : null));
+        const fileSelected = fileuploadContainer ? fileuploadContainer.getAttribute('data-selected') === 'true' : false;
+        const fileName = fileuploadContainer ? (fileuploadContainer.getAttribute('data-file-name') || "") : "";
+        const fileButtonText = fileuploadContainer ? (fileuploadContainer.getAttribute('data-button-text') || "파일첨부") : "파일첨부";
+        const filePlaceholder = fileuploadContainer ? (fileuploadContainer.getAttribute('data-placeholder') || "선택된 파일 없음") : "선택된 파일 없음";
+
+        // Alert Atom Detection
+        const isAlert = isGroup ? false : (!!c.querySelector('.v4-alert-container') || c.classList.contains('v4-alert-container'));
+        const alertContainer = isGroup ? null : (c.querySelector('.v4-alert-container') || (isAlert ? c : null));
+        const alertMessage = alertContainer ? (alertContainer.getAttribute('data-message') || "얼럿 메시지 입력 표시") : "얼럿 메시지 입력 표시";
+        const alertBtnCount = alertContainer ? parseInt(alertContainer.getAttribute('data-btn-count')) || 1 : 1;
+        const alertBtnText1 = alertContainer ? (alertContainer.getAttribute('data-btn-text-1') || "확인") : "확인";
+        const alertBtnText2 = alertContainer ? (alertContainer.getAttribute('data-btn-text-2') || "취소") : "취소";
+        const alertBtnText3 = alertContainer ? (alertContainer.getAttribute('data-btn-text-3') || "저장") : "저장";
+        const alertBtnStyle1 = alertContainer ? (alertContainer.getAttribute('data-btn-style-1') || "normal") : "normal";
+        const alertBtnStyle2 = alertContainer ? (alertContainer.getAttribute('data-btn-style-2') || "normal") : "normal";
+        const alertBtnStyle3 = alertContainer ? (alertContainer.getAttribute('data-btn-style-3') || "normal") : "normal";
+        const alertShowDesc = alertContainer ? alertContainer.getAttribute('data-show-desc') === 'true' : false;
+        const alertDesc = alertContainer ? (alertContainer.getAttribute('data-desc') || "어떤어떤 경우에 얼럿이 표시됨") : "어떤어떤 경우에 얼럿이 표시됨";
+
+        // Button Atom Detection
+        const isButton = isGroup ? false : (!!c.querySelector('.v4-btn-container') || c.classList.contains('v4-btn-container'));
+        const btnContainer = isGroup ? null : (c.querySelector('.v4-btn-container') || (isButton ? c : null));
+        const buttonText = btnContainer ? (btnContainer.getAttribute('data-text') || "버튼") : "버튼";
+        const buttonStyle = btnContainer ? (btnContainer.getAttribute('data-btn-style') || "normal") : "normal";
+        const buttonRadius = btnContainer ? (btnContainer.getAttribute('data-btn-radius') || "6") : "6";
+
+        // Date Picker Atom Detection
+        const isDatePicker = isGroup ? false : (!!c.querySelector('.v4-datepicker-container') || c.classList.contains('v4-datepicker-container'));
+        const dpContainer = isGroup ? null : (c.querySelector('.v4-datepicker-container') || (isDatePicker ? c : null));
+        const dpShowPresets = dpContainer ? dpContainer.getAttribute('data-show-presets') !== 'false' : true;
+        const dpShowEndDate = dpContainer ? dpContainer.getAttribute('data-show-end-date') !== 'false' : true;
+        const dpDefaultPreset = dpContainer ? (dpContainer.getAttribute('data-default-preset') || 'none') : 'none';
+        const dpStartDate = dpContainer ? (dpContainer.getAttribute('data-start-date') || '') : '';
+        const dpEndDate = dpContainer ? (dpContainer.getAttribute('data-end-date') || '') : '';
+
+        // Accordion Atom Detection
+        const isAccordion = isGroup ? false : (!!c.querySelector('.v4-accordion-container') || c.classList.contains('v4-accordion-container'));
+        const accordionContainer = isGroup ? null : (c.querySelector('.v4-accordion-container') || (isAccordion ? c : null));
+        const accordionHeaderText = accordionContainer ? (accordionContainer.querySelector('.v4-accordion-title-text')?.innerText || "Accordion Header") : "Accordion Header";
+        const accordionSubCount = accordionContainer ? (parseInt(accordionContainer.getAttribute('data-sub-count')) || 0) : 0;
+        const accordionSubTexts = accordionContainer ? Array.from(accordionContainer.querySelectorAll('.v4-accordion-item')).map(item => item.innerText) : [];
+        const accordionExpanded = accordionContainer ? accordionContainer.getAttribute('data-expanded') === 'true' : false;
+        const accordionItemHeight = accordionContainer ? parseInt(accordionContainer.getAttribute('data-item-height')) || (accordionContainer.querySelector('.v4-accordion-header') ? parseInt(accordionContainer.querySelector('.v4-accordion-header').style.height) || 36 : 36) : 36;
+        const accordionDepthType = accordionContainer ? (accordionContainer.getAttribute('data-depth-type') || '1depth') : '1depth';
+        const accordionHierarchy = accordionContainer ? (accordionContainer.getAttribute('data-hierarchy') || '') : '';
+
+        // Grid UI Atom Detection
+        const isGrid = isGroup ? false : (!!c.querySelector('.v4-grid-container') || c.classList.contains('v4-grid-container'));
+        const gridContainer = isGroup ? null : (c.querySelector('.v4-grid-container') || (isGrid ? c : null));
+        const gridHeaders = gridContainer ? Array.from(gridContainer.querySelectorAll('.v4-grid-header-row .v4-grid-cell')).slice(1).map(cell => cell.innerText.replace(' ⇅', '')) : [];
+        const gridRowCount = gridContainer ? (parseInt(gridContainer.getAttribute('data-row-count')) || 0) : 0;
+        const gridShowPagination = gridContainer ? gridContainer.getAttribute('data-pagination') !== 'false' : true;
+        const gridRowHeight = gridContainer ? (parseInt(gridContainer.getAttribute('data-row-height')) || 50) : 50;
+        
+        let gridColumns = [];
+        if (gridContainer) {
+            const rawCols = gridContainer.getAttribute('data-columns');
+            if (rawCols) {
+                try {
+                    gridColumns = JSON.parse(rawCols);
+                } catch(e) {
+                    console.error("Error parsing data-columns", e);
+                }
+            }
+            if (!gridColumns || gridColumns.length === 0) {
+                var tableCols = Array.from(gridContainer.querySelectorAll('colgroup col'));
+                var tableHeaders = Array.from(gridContainer.querySelectorAll('thead th'));
+                if (tableHeaders.length > 0) {
+                    gridColumns = tableHeaders.map(function(cell, index) {
+                        var name = cell.innerText.replace(' ⇅', '').trim();
+                        var colEl = tableCols[index];
+                        var width = colEl ? (colEl.style.width || colEl.getAttribute('width') || '120px') : '120px';
+                        var type = 'text';
+                        if (cell.classList.contains('v4-grid-check-col') || cell.querySelector('input[type="checkbox"]')) {
+                            type = 'checkbox';
+                        } else if (name === '번호') {
+                            type = 'number';
+                        } else if (name === '방송상태') {
+                            type = 'status';
+                        } else if (name === '등록/수정자' || name === '등록자' || name === '수정자') {
+                            type = 'author';
+                        } else if (name.indexOf('일시') >= 0 || name.indexOf('일자') >= 0) {
+                            type = 'datetime';
+                        }
+                        return { name: name, type: type, width: width };
+                    });
+                } else {
+                    const headerCells = Array.from(gridContainer.querySelectorAll('.v4-grid-header-row .v4-grid-cell'));
+                    const gridTemplateCols = (gridContainer.querySelector('.v4-grid-header-row') && gridContainer.querySelector('.v4-grid-header-row').style.gridTemplateColumns || '').split(/s+/).filter(Boolean);
+                    gridColumns = headerCells.map((cell, index) => {
+                        const name = cell.innerText.replace(' ⇅', '').trim();
+                        const width = gridTemplateCols[index] || '120px';
+                        let type = 'text';
+                        if (cell.classList.contains('v4-grid-check-col') || cell.querySelector('input[type="checkbox"]')) {
+                            type = 'checkbox';
+                        } else if (name === '번호') {
+                            type = 'number';
+                        } else if (name === '방송상태') {
+                            type = 'status';
+                        } else if (name === '등록/수정자' || name === '등록자' || name === '수정자') {
+                            type = 'author';
+                        } else if (name.indexOf('일시') >= 0 || name.indexOf('일자') >= 0) {
+                            type = 'datetime';
+                        }
+                        return { name: name, type: type, width: width };
+                    });
+                }
+            }
+        }
+
+        // Admin Settings Atom Detection
+        const isAdminSettings = isGroup ? false : (!!c.querySelector('.v4-admin-settings-container') || c.classList.contains('v4-admin-settings-container'));
+        const adminSettingsContainer = isGroup ? null : (c.querySelector('.v4-admin-settings-container') || (isAdminSettings ? c : null));
+        const adminRowCount = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-count')) || 3 : 3;
+        
+        const adminShowGroupHeader = adminSettingsContainer ? adminSettingsContainer.getAttribute('data-show-group-header') === 'true' : false;
+        const adminGroupHeaderTitle = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-title') || '그룹명') : '그룹명';
+        const adminGroupHeaderBg = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-bg') || '#73829c') : '#73829c';
+        const adminGroupHeaderColor = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-group-header-color') || '#ffffff') : '#ffffff';
+        const firstLabel = adminSettingsContainer ? adminSettingsContainer.querySelector('.v4-admin-label-cell') : null;
+        const adminLabelWidth = firstLabel ? (parseInt(firstLabel.style.width) || parseInt(window.getComputedStyle(firstLabel).width) || 140) : 140;
+
+        const adminRowData = {};
+        for (let i = 1; i <= 10; i++) {
+            adminRowData['adminRow' + i + 'Label'] = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row' + i + '-label') || '') : '';
+            adminRowData['adminRow' + i + 'Cols'] = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row' + i + '-cols')) || 1 : 1;
+            adminRowData['adminRow' + i + 'Type'] = adminSettingsContainer ? (adminSettingsContainer.getAttribute('data-row' + i + '-type') || 'textbox') : 'textbox';
+            adminRowData['adminRow' + i + 'Height'] = adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row' + i + '-height')) || (adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-height')) || 50 : 50) : 50;
+        }
+
+        // Toggle Button Detection
+        const isToggle = isGroup ? false : (!!c.querySelector('.v4-toggle-container') || c.classList.contains('v4-toggle-container'));
+        const toggleContainer = isGroup ? null : (c.querySelector('.v4-toggle-container') || (isToggle ? c : null));
+        const toggleChecked = toggleContainer ? (toggleContainer.getAttribute('data-checked') === 'true') : false;
+        const toggleColor = toggleContainer ? (toggleContainer.getAttribute('data-color') || '#3b82f6') : '#3b82f6';
+
+        const boxEl = isGroup ? null : c.querySelector('.v4-checkbox, .v4-radio');
+        const buttonEl = isGroup ? null : c.querySelector('.v4-custom-btn');
+        
+        const getShapeColor = (prop) => {
+            if (!shape) return "";
+            if (shape.classList.contains('v4-shape-diamond') || shape.classList.contains('v4-shape-triangle') || shape.classList.contains('v4-shape-wave') || shape.classList.contains('v4-shape-arrow')) {
+                const svg = shape.querySelector('polygon, path, rect, circle');
+                if (svg) {
+                    const compStyle = window.getComputedStyle(svg);
+                    const val = prop === 'backgroundColor' ? (svg.style.fill || compStyle.fill) : (svg.style.stroke || compStyle.stroke);
+                    if (val && val !== 'none') return val;
+                }
+            }
+            return _getVal(shape, prop === 'backgroundColor' ? 'backgroundColor' : 'borderColor');
+        };
+ 
+        let detectedIconColor = "";
+        if (icon) {
+            const poly = icon.querySelector('polyline, path, line, polygon, rect, circle');
+            const dot = icon.querySelector('.v4-radio div, .v4-radio-dot');
+            if (poly) {
+                detectedIconColor = poly.style.stroke || poly.getAttribute('stroke') || icon.style.color || _getVal(icon, "color") || "";
+            } else if (dot) {
+                detectedIconColor = dot.style.backgroundColor || _getVal(dot, "backgroundColor") || "";
+            } else {
+                detectedIconColor = icon.style.color || icon.getAttribute('stroke') || _getVal(icon, "color") || "";
+            }
+        }
+ 
+        const getCompBg = () => {
+            if (shape) return getShapeColor("backgroundColor");
+            if (table) return _getVal(table, "backgroundColor");
+            if (isPin) return _getVal(c, "backgroundColor");
+            if (boxEl) return _getVal(boxEl, "backgroundColor");
+            if (buttonEl) return _getVal(buttonEl, "backgroundColor");
+            if (inputContainer) return _getVal(inputContainer, "backgroundColor");
+            if (searchbarContainer) return _getVal(searchbarContainer, "backgroundColor");
+            if (stepperContainer) return _getVal(stepperContainer, "backgroundColor");
+            if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "backgroundColor");
+            if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "backgroundColor");
+            if (accordionContainer) return _getVal(accordionContainer, "backgroundColor");
+            if (gridContainer) return _getVal(gridContainer, "backgroundColor");
+            if (alertContainer) {
+                const dialog = alertContainer.querySelector('.v4-alert-dialog');
+                return dialog ? _getVal(dialog, "backgroundColor") : _getVal(alertContainer, "backgroundColor");
+            }
+            return "";
+        };
+
+        const getCompBorder = () => {
+            if (shape) return getShapeColor("borderColor");
+            if (table) return _getVal(table, "borderColor");
+            if (isPin) return _getVal(c, "borderColor");
+            if (boxEl) return _getVal(boxEl, "borderColor");
+            if (buttonEl) return _getVal(buttonEl, "borderColor");
+            if (inputContainer) return _getVal(inputContainer, "borderColor");
+            if (searchbarContainer) return _getVal(searchbarContainer, "borderColor");
+            if (stepperContainer) return _getVal(stepperContainer, "borderColor");
+            if (selectboxContainer) return _getVal(selectboxContainer.querySelector('.v4-selectbox-header'), "borderColor");
+            if (fileuploadContainer) return _getVal(fileuploadContainer.querySelector('.v4-fileupload-textbox-wrapper'), "borderColor");
+            if (accordionContainer) return _getVal(accordionContainer, "borderColor");
+            if (gridContainer) return _getVal(gridContainer, "borderColor");
+            if (alertContainer) {
+                const dialog = alertContainer.querySelector('.v4-alert-dialog');
+                return dialog ? _getVal(dialog, "borderColor") : _getVal(alertContainer, "borderColor");
+            }
+            if (icon) return _getVal(icon.parentElement, "borderColor");
+            return "";
+        };
+
+        return {
+            id: c.id,
+            x: parseFloat(c.style.left) || 0,
+            y: parseFloat(c.style.top) || 0,
+            shapeType: shape ? (shape.classList.contains('v4-shape-pattern-grid') ? 'pattern' : (shape.classList.contains('v4-shape-rect') ? 'rect' : (shape.classList.contains('v4-shape-circle') ? 'circle' : (shape.classList.contains('v4-shape-triangle') ? 'triangle' : (shape.classList.contains('v4-shape-diamond') ? 'diamond' : (shape.classList.contains('v4-shape-arrow') ? 'arrow' : '')))))) : '',
+            arrowDir: shape ? (shape.getAttribute('data-arrow-dir') || shape.getAttribute('data-direction') || 'up') : '',
+            direction: shape ? (shape.getAttribute('data-direction') || shape.getAttribute('data-arrow-dir') || 'up') : '',
+            patternType: shape && shape.classList.contains('v4-shape-pattern-grid') ? (shape.getAttribute('data-pattern-type') || 'grid') : '',
+            isTable: !!table && !isGrid,
+            isShape: !!shape,
+            isIcon: !!icon,
+            isImage: isImage,
+            isPin: isPin,
+            isDescriptionPin: isDescriptionPin,
+            isCheckbox: isCheckbox,
+            isRadio: isRadio,
+            checked: checked,
+            textEnabled: textEnabled,
+            checkboxText: container ? (container.querySelector('.v4-checkbox-text, .v4-radio-text')?.innerText || "TEXT") : "TEXT",
+            isTextbox: isTextbox,
+            isTextarea: isTextarea,
+            placeholderText: placeholderText,
+            maxLength: maxLength,
+            showCounter: showCounter,
+            isSearchBar: isSearchBar,
+            searchbarPlaceholder: searchbarPlaceholder,
+            isStepper: isStepper,
+            minVal: minVal,
+            maxVal: maxVal,
+            val: stepperVal,
+            btnEnabled: stepperBtnEnabled,
+            btnText: stepperBtnText,
+            disabled: stepperDisabled,
+            isSelectbox: isSelectbox,
+            selectboxDefaultText: selectboxDefaultText,
+            selectboxDropdownActive: selectboxDropdownActive,
+            selectboxOptions: selectboxOptions,
+            isFileUpload: isFileUpload,
+            fileSelected: fileSelected,
+            fileName: fileName,
+            fileButtonText: fileButtonText,
+            filePlaceholder: filePlaceholder,
+            isAlert: isAlert,
+            alertMessage: alertMessage,
+            alertBtnCount: alertBtnCount,
+            alertBtnText1: alertBtnText1,
+            alertBtnText2: alertBtnText2,
+            alertBtnText3: alertBtnText3,
+            alertBtnStyle1: alertBtnStyle1,
+            alertBtnStyle2: alertBtnStyle2,
+            alertBtnStyle3: alertBtnStyle3,
+            alertShowDesc: alertShowDesc,
+            alertDesc: alertDesc,
+            isButton: isButton,
+            buttonText: buttonText,
+            buttonStyle: buttonStyle,
+            buttonRadius: buttonRadius,
+            isDatePicker: isDatePicker,
+            dpShowPresets: dpShowPresets,
+            dpShowEndDate: dpShowEndDate,
+            dpDefaultPreset: dpDefaultPreset,
+            dpStartDate: dpStartDate,
+            dpEndDate: dpEndDate,
+            isAccordion: isAccordion,
+            accordionHeaderText: accordionHeaderText,
+            accordionSubCount: accordionSubCount,
+            accordionSubTexts: accordionSubTexts,
+            accordionExpanded: accordionExpanded,
+            accordionItemHeight: accordionItemHeight,
+            accordionDepthType: accordionDepthType,
+            accordionHierarchy: accordionHierarchy,
+            isGrid: isGrid,
+            gridHeaders: gridHeaders,
+            gridColumns: gridColumns,
+            gridRowCount: gridRowCount,
+            gridShowPagination: gridShowPagination,
+            gridRowHeight: gridRowHeight,
+            isAdminSettings: isAdminSettings,
+            adminRowCount: adminRowCount,
+            adminShowGroupHeader: adminShowGroupHeader,
+            adminGroupHeaderTitle: adminGroupHeaderTitle,
+            adminGroupHeaderBg: adminGroupHeaderBg,
+            adminGroupHeaderColor: adminGroupHeaderColor,
+            adminLabelWidth: adminLabelWidth,
+            ...adminRowData,
+            adminRowHeight: adminSettingsContainer ? parseInt(adminSettingsContainer.getAttribute('data-row-height')) || 50 : 50,
+            isToggle: isToggle,
+            toggleChecked: toggleChecked,
+            toggleColor: toggleColor,
+            pinIndex: isPin ? parseInt(c.id.replace('v4-pin-', '')) : -1,
+            html: textCell ? textCell.innerHTML : (shape ? (shape.querySelector('.v4-shape-text-content')?.innerHTML ?? shape.querySelector('.v4-shape-text-overlay')?.innerHTML ?? shape.innerHTML) : (table ? table.innerHTML : "")),
+            isGroup: c.classList.contains('lf-group'),
+            w: c.offsetWidth,
+            h: c.offsetHeight,
+            boxW: boxEl ? (parseInt(boxEl.style.width) || boxEl.offsetWidth || 20) : (c.offsetWidth || 20),
+            boxH: boxEl ? (parseInt(boxEl.style.height) || boxEl.offsetHeight || 20) : (c.offsetHeight || 20),
+            currentStyles: {
+                bg: window.rgbToHex(getCompBg()),
+                border: window.rgbToHex(getCompBorder()),
+                text: window.rgbToHex(textCell ? _getVal(textCell, "color") : (buttonEl ? _getVal(buttonEl, "color") : "")),
+                fontSize: parseInt(_getVal(textCell, "fontSize")) || (shape ? parseInt(_getVal(shape.querySelector('.v4-editable-cell, .v4-shape-text-content, .v4-shape-text-overlay'), "fontSize")) || 14 : (inputContainer ? parseInt(_getVal(inputContainer, "fontSize")) || 14 : 14)),
+                fontFamily: textCell ? _getVal(textCell, "fontFamily") : (inputContainer ? _getVal(inputContainer, "fontFamily") : "inherit"),
+                tableHeader: window.rgbToHex(table ? _getVal(table.querySelector("th"), "backgroundColor") : ""),
+                tableHeaderText: window.rgbToHex(table ? _getVal(table.querySelector("th"), "color") : ""),
+                iconColor: window.rgbToHex(detectedIconColor || "#000000"),
+                borderRadius: shape ? (parseInt(_getVal(shape, "borderRadius")) || 0) : (boxEl ? (parseInt(_getVal(boxEl, "borderRadius")) || 0) : (buttonEl ? (parseInt(_getVal(buttonEl, "borderRadius")) || 0) : 0)),
+                bgOpacity: _getAlphaPercent(getCompBg()),
+                isBgTransparent: (() => {
+                    const colorVal = getCompBg();
+                    return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
+                })(),
+                isBorderTransparent: (() => {
+                    const colorVal = getCompBorder();
+                    return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
+                })(),
+                textAlign: shape ? (_getVal(shape.querySelector('.v4-editable-cell, .v4-shape-text-content'), 'textAlign') || 'center') : 'center'
+            }
+        };
+    };
+
+    window.updateHandles = (c) => {
+        if (!c) return;
+        const t = parseInt(c.style.top) || 0;
+        const l = parseInt(c.style.left) || 0;
+        const drag = c.querySelector(':scope > .lf-drag-handle');
+        const del = c.querySelector(':scope > .lf-delete-trigger');
+        if (drag) { drag.style.top = t < 16 ? '4px' : '-16px'; drag.style.left = l < 16 ? '4px' : '-16px'; }
+        if (del) { 
+            del.style.top = t < 16 ? '4px' : '-12px'; 
+            const rightDist = window.innerWidth - (l + c.offsetWidth);
+            del.style.right = rightDist < 16 ? '4px' : '-12px'; 
+        }
+    };
+
+    document.addEventListener('mouseover', e => {
+        const c = e.target.closest('.lf-component');
+        if (c) window.updateHandles(c);
+    });
+
+    let isMarquee = false;
+    let groupChildrenStart = null;
+    document.addEventListener('mousedown', e => {
+        if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.header-metadata')) return;
+
+        let h = e.target.closest('.lf-drag-handle'), r = e.target.closest('.lf-resizer'), d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
+        
+        if (c && !h && !r && !d) {
+            if (!c.classList.contains('text-marker') && !c.classList.contains('pin-marker')) {
+                let parent = c.parentElement.closest('.lf-component');
+                while (parent) {
+                    if (parent.classList.contains('text-marker') || parent.classList.contains('pin-marker')) break;
+                    c = parent;
+                    // If we've reached a group, stop here — do not bubble past the group
+                    if (c.classList.contains('lf-group')) break;
+                    parent = c.parentElement.closest('.lf-component');
+                }
+            }
+        }
+
+        if (d && c) { 
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+
+            if (c.classList.contains('connector-line')) {
+                notifyParent({ type: 'LF_DELETE_CONNECTOR', id: c.id });
+                c.remove();
+            }
+            else if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
+                const idx = parseInt(c.id.replace('v4-pin-', ''));
+                notifyParent({ type: 'LF_DELETE_PIN', index: idx });
+                c.remove();
+            } else {
+                c.remove();
+            }
+
+            markDirty(); 
+            notifyParent({ type: 'LF_DESELECT' });
+            return; 
+        }
+        if (c) {
+            isMarquee = false;
+            const isMulti = e.shiftKey || e.ctrlKey || e.metaKey;
+            if (isMulti) {
+                c.classList.toggle('selected');
+            } else {
+                document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+                c.classList.add('selected');
+            }
+            window.updateHandles(c);
+            notifyParent({ 
+                type: "LF_COMP_SELECTED", 
+                shiftKey: isMulti,
+                ...window._getCompStyles(c)
+            });
+        } else {
+            isMarquee = true;
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            
+            const targets = [];
+            document.querySelectorAll('.lf-component').forEach(c => {
+                let absL = parseFloat(c.style.left) || 0;
+                let absT = parseFloat(c.style.top) || 0;
+                let isChild = false;
+                
+                let parent = c.parentElement;
+                while (parent && parent !== document.body) {
+                    if (parent.classList && (parent.classList.contains('lf-component') || parent.classList.contains('lf-group'))) {
+                        absL += parseFloat(parent.style.left) || 0;
+                        absT += parseFloat(parent.style.top) || 0;
+                        isChild = true;
+                    }
+                    parent = parent.parentElement;
+                }
+
+                targets.push({
+                    id: c.id,
+                    x: absL,
+                    y: absT,
+                    w: c.offsetWidth,
+                    h: c.offsetHeight,
+                    isGroupChild: isChild
+                });
+            });
+
+            notifyParent({ 
+                type: 'LF_MARQUEE_START', 
+                x: e.clientX, 
+                y: e.clientY,
+                shiftKey: e.shiftKey,
+                targets: targets
+            });
+            notifyParent({ type: 'LF_DESELECT' });
+        }
+        if (r) { 
+            if (window.V4DragResizeEngine) {
+                window.V4DragResizeEngine.startResize(e, r);
+            }
+        }
+        else if (h || (c && !e.target.closest('td, th'))) { 
+            if (window.V4DragResizeEngine) {
+                window.V4DragResizeEngine.handleMouseDown(e, h, r, d, c);
+            }
+        }
+    });
+
+    // Double click to enter text editing mode (PPT-style)
+    document.addEventListener('dblclick', e => {
+        const editable = e.target.closest('.v4-editable-cell');
+        if (editable) {
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            editable.focus();
+        }
+    });
+
+    let rafId = null;
+    document.addEventListener('mousemove', e => {
+        if (isDraggingLine && activeLineId) {
+            const scale = (window.parent?.state?.transform?.scale) || 1;
+            const dx = (e.clientX - startX) / scale;
+            const dy = (e.clientY - startY) / scale;
+            const conn = window.parent?.state?.connectors?.find(c => c.id === activeLineId);
+            if (conn && startLineCoords) {
+                conn.start.x = startLineCoords.start.x + dx;
+                conn.start.y = startLineCoords.start.y + dy;
+                conn.end.x = startLineCoords.end.x + dx;
+                conn.end.y = startLineCoords.end.y + dy;
+                conn.start.targetId = null; conn.start.side = null;
+                conn.end.targetId = null; conn.end.side = null;
+                window.updateConnectorPathLocal(activeLineId);
+            }
+            return;
+        }
+
+        if (window.V4PortConnectorEngine && window.V4PortConnectorEngine.isDrawingConnector) {
+            window.V4PortConnectorEngine.handleMouseMove(e);
+            return;
+        }
+
+        if (isMarquee) {
+            notifyParent({ type: 'LF_MARQUEE_MOVE', x: e.clientX, y: e.clientY });
+            window.getSelection()?.removeAllRanges();
+            return;
+        }
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+            if (window.V4DragResizeEngine && (window.V4DragResizeEngine.isDragging || window.V4DragResizeEngine.isResizing)) {
+                window.V4DragResizeEngine.handleMouseMove(e);
+            }
+        });
+    });
+
+    document.addEventListener('mouseup', () => { 
+        document.querySelectorAll('.lf-component').forEach(comp => comp.classList.remove('near-connector'));
+        if (isDraggingLine) {
+            isDraggingLine = false;
+            startLineCoords = null;
+            activeLineId = null;
+            notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
+            markDirty();
+            return;
+        }
+
+        if (window.V4PortConnectorEngine && window.V4PortConnectorEngine.isDrawingConnector) {
+            window.V4PortConnectorEngine.handleMouseUp();
+            return;
+        }
+
+        if (isMarquee) {
+            isMarquee = false;
+            notifyParent({ type: 'LF_MARQUEE_END' });
+        }
+        if (window.V4DragResizeEngine && (window.V4DragResizeEngine.isDragging || window.V4DragResizeEngine.isResizing)) {
+            window.V4DragResizeEngine.handleMouseUp();
+        }
+    });
+
+    document.addEventListener('input', e => { 
+        const editableCell = e.target.closest('.v4-editable-cell, [contenteditable="true"], .v4-shape-text-content, .v4-shape-text-overlay');
+        if (editableCell) {
+            markDirty();
+            const comp = editableCell.closest('.lf-component');
+            if (comp) {
+                if (comp.querySelector('.v4-checkbox-container') || comp.querySelector('.v4-radio-container')) {
+                    if (typeof window.resizeAtomToFitText === 'function') {
+                        window.resizeAtomToFitText(comp);
+                    } else if (typeof window.enforceDesignSystem === 'function') {
+                        window.enforceDesignSystem();
+                    }
+                }
+                // Notify parent of text changes to sync the Quill editor in real-time
+                const isPin = comp.classList.contains('text-marker') || comp.classList.contains('pin-marker') || comp.classList.contains('v4-text-box') || comp.classList.contains('v4-text-shape');
+                const isShape = !!comp.querySelector('.v4-shape');
+
+                let targetId = comp.id;
+                const pinIndexAttr = comp.getAttribute('data-pin-index');
+                if (pinIndexAttr !== null) {
+                    targetId = parseInt(pinIndexAttr, 10);
+                } else {
+                    const match = comp.id.match(/^v4-pin-(d+)$/);
+                    if (match) targetId = parseInt(match[1], 10);
+                }
+
+                notifyParent({
+                    type: 'LF_PIN_TEXT_CHANGED',
+                    id: targetId,
+                    compId: comp.id,
+                    html: editableCell.innerHTML,
+                    isPin: isPin,
+                    isShape: isShape
+                });
+            }
+        } 
+    }, { passive: false });
+
+    document.addEventListener('focusout', e => {
+        const editableCell = e.target.closest('.v4-editable-cell, [contenteditable="true"], .v4-shape-text-content, .v4-shape-text-overlay');
+        if (editableCell) {
+            const comp = editableCell.closest('.lf-component');
+            if (comp) {
+                const isPin = comp.classList.contains('text-marker') || comp.classList.contains('pin-marker') || comp.classList.contains('v4-text-box') || comp.classList.contains('v4-text-shape');
+                const isShape = !!comp.querySelector('.v4-shape');
+                let targetId = comp.id;
+                const pinIndexAttr = comp.getAttribute('data-pin-index');
+                if (pinIndexAttr !== null) {
+                    targetId = parseInt(pinIndexAttr, 10);
+                } else {
+                    const match = comp.id.match(/^v4-pin-(d+)$/);
+                    if (match) targetId = parseInt(match[1], 10);
+                }
+                notifyParent({
+                    type: 'LF_PIN_TEXT_CHANGED',
+                    id: targetId,
+                    compId: comp.id,
+                    html: editableCell.innerHTML,
+                    isPin: isPin,
+                    isShape: isShape
+                });
+            }
+        }
+    });
+
 
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
@@ -5139,7 +5074,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         }
 
-        if (d.type === 'LF_SNAP_RESPONSE' && activeEl && isDragging) {
+        if (d.type === 'LF_SNAP_RESPONSE' && window.activeEl && window.V4DragResizeEngine && window.V4DragResizeEngine.isDragging) {
+            const activeEl = window.activeEl;
             const curLeft = parseInt(activeEl.style.left) || 0;
             const curTop = parseInt(activeEl.style.top) || 0;
             const snapDx = d.x - curLeft;
@@ -5505,6 +5441,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (comp) {
                 const cell = comp.querySelector('.v4-editable-cell') || (comp.classList.contains('v4-editable-cell') ? comp : null);
                 if (cell) {
+                    if (document.activeElement && (cell === document.activeElement || cell.contains(document.activeElement))) {
+                        return; // User is actively typing inside this cell, skip innerHTML overwrite
+                    }
                     if (window.V4UndoManager) window.V4UndoManager.saveState();
                     cell.innerHTML = d.html;
                     markDirty();
@@ -5516,6 +5455,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (!s) return;
             const shape = s.querySelector('.v4-shape');
             if (!shape) return;
+
+            const activeCell = shape.querySelector('.v4-editable-cell') || shape.querySelector('.v4-shape-text-content') || shape.querySelector('.v4-shape-text-overlay');
+            if (activeCell && document.activeElement && (activeCell === document.activeElement || activeCell.contains(document.activeElement))) {
+                return; // User is actively typing inside this shape text, skip innerHTML overwrite
+            }
+
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
             const editableCell = shape.querySelector('.v4-editable-cell');
@@ -5557,16 +5502,21 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const s = document.querySelector('.lf-component.selected'); 
             console.log("[V4 Iframe] Selected component s:", s);
             if (!s) return;
-            const shape = s.querySelector('.v4-shape.v4-shape-arrow, .v4-shape.v4-shape-triangle');
+            const shape = s.querySelector('.v4-shape-arrow, .v4-shape-triangle') || 
+                          (s.classList.contains('v4-shape-arrow') || s.classList.contains('v4-shape-triangle') ? s : null) || 
+                          s.querySelector('.v4-shape') || 
+                          (s.classList.contains('v4-shape') ? s : null);
             console.log("[V4 Iframe] Found shape inside s:", shape);
             if (!shape) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
             const dir = d.direction || 'up';
-            if (shape.classList.contains('v4-shape-arrow')) {
+            shape.setAttribute('data-arrow-dir', dir);
+            shape.setAttribute('data-direction', dir);
+
+            if (shape.classList.contains('v4-shape-arrow') || shape.id === 'v4-shape-arrow') {
                 const path = shape.querySelector('.v4-arrow-path');
                 if (path) {
-                    shape.setAttribute('data-arrow-dir', dir);
                     const PATHS = {
                         right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
                         left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
@@ -5575,10 +5525,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     };
                     path.setAttribute('d', PATHS[dir] || PATHS.right);
                 }
-            } else if (shape.classList.contains('v4-shape-triangle')) {
+            } else if (shape.classList.contains('v4-shape-triangle') || shape.id === 'v4-shape-triangle') {
                 shape.setAttribute('data-direction', dir);
             }
-            markDirty();
+            if (typeof markDirty === 'function') markDirty();
         }
         else if (d.type === 'LF_UPDATE_ATOM_STATE') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
@@ -5597,6 +5547,46 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     }
                 }
                 markDirty();
+                
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
+            }
+        }
+        else if (d.type === 'LF_UPDATE_ATOM_ICON_SIZE') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
+            const boxEl = container ? container.querySelector('.v4-checkbox, .v4-radio') : s.querySelector('.v4-checkbox, .v4-radio');
+            if (boxEl) {
+                if (window.V4UndoManager) window.V4UndoManager.saveState();
+                if (d.width !== undefined && d.width !== null) {
+                    const wPx = typeof d.width === 'number' ? d.width + 'px' : d.width;
+                    boxEl.style.width = wPx;
+                }
+                if (d.height !== undefined && d.height !== null) {
+                    const hPx = typeof d.height === 'number' ? d.height + 'px' : d.height;
+                    boxEl.style.height = hPx;
+                }
+                if (typeof window.resizeAtomToFitText === 'function') {
+                    window.resizeAtomToFitText(s);
+                }
+                if (typeof window.updateHandles === 'function') {
+                    window.updateHandles(s);
+                }
+                markDirty();
+                if (typeof window._getCompStyles === 'function' && window.parent) {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_RESIZED',
+                        id: s.id,
+                        w: s.offsetWidth,
+                        h: s.offsetHeight,
+                        boxW: boxEl.offsetWidth,
+                        boxH: boxEl.offsetHeight
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_ACCORDION_PROPERTIES') {
@@ -5660,6 +5650,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
+                
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_GRID_PROPERTIES') {
@@ -5712,12 +5709,22 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     container.style.borderColor = d.border;
                 }
                 
+                if (d.rowHeight !== undefined) {
+                    container.setAttribute('data-row-height', d.rowHeight);
+                }
                 if (window.renderGrid) {
-                    window.renderGrid(container, currentCols, rowCount, showPagination);
+                    window.renderGrid(container, currentCols, rowCount, showPagination, d.rowHeight);
                 }
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
+                
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_ATOM_TEXT_ENABLED') {
@@ -5730,6 +5737,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 if (typeof resizeAtomToFitText === 'function') resizeAtomToFitText(s);
                 markDirty();
+                
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_ATOM_LABEL_TEXT') {
@@ -5742,6 +5756,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     textEl.innerText = d.text;
                     if (typeof resizeAtomToFitText === 'function') resizeAtomToFitText(s);
                     markDirty();
+                    
+                    if (typeof window._getCompStyles === 'function') {
+                        window.parent.postMessage({
+                            type: 'LF_COMP_SELECTED',
+                            ...window._getCompStyles(s)
+                        }, '*');
+                    }
                 }
             }
         }
@@ -5780,6 +5801,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
+                
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_SELECTBOX_PROPERTIES') {
@@ -5817,6 +5845,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
+                
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_FILEUPLOAD_PROPERTIES') {
@@ -5845,6 +5880,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
+                
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_ALERT_PROPERTIES') {
@@ -5907,6 +5949,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
+                
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_BUTTON_PROPERTIES') {
@@ -5933,6 +5982,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
+                
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_DATEPICKER') {
@@ -6056,7 +6112,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 if (d.groupHeaderColor !== undefined) container.setAttribute('data-group-header-color', d.groupHeaderColor);
 
                 const hasGroupHeader = container.getAttribute('data-show-group-header') === 'true';
-                const headerHeight = hasGroupHeader ? 50 : 0;
+                const headerHeight = hasGroupHeader ? 40 : 0;
 
                 // Dynamically render Group Header
                 let headerEl = container.querySelector('.v4-admin-group-header');
@@ -6072,7 +6128,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     
                     if (headerEl.innerText !== titleText) headerEl.innerText = titleText;
                     headerEl.contentEditable = 'true';
-                    headerEl.style.cssText = 'height: 50px; display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 700; background: ' + bgCol + '; color: ' + textCol + '; box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;';
+                    headerEl.style.cssText = 'height: 40px; display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 700; background: ' + bgCol + '; color: ' + textCol + '; box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;';
                     
                     if (!headerEl.dataset.inputBound) {
                         headerEl.dataset.inputBound = 'true';
@@ -6086,7 +6142,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 }
 
                 const totalRows = parseInt(container.getAttribute('data-row-count')) || 1;
-                const globalRowHeight = parseInt(container.getAttribute('data-row-height')) || 50;
+                const globalRowHeight = parseInt(container.getAttribute('data-row-height')) || 40;
                 
                 // Automatically resize component height: sum of specific row heights + headerHeight
                 let newHeight = headerHeight;
@@ -6200,6 +6256,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
+
+                if (typeof window._getCompStyles === 'function') {
+                    window.parent.postMessage({
+                        type: 'LF_COMP_SELECTED',
+                        ...window._getCompStyles(s)
+                    }, '*');
+                }
             }
         }
         else if (d.type === 'LF_UPDATE_TOGGLE_PROPERTIES') {
@@ -6289,6 +6352,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const buttonContainer = s.querySelector('.v4-btn-container');
             const customBtn = s.querySelector('.v4-custom-btn');
             if (buttonContainer && customBtn && !d.selector) t = customBtn;
+
+            const gridContainer = s.querySelector('.v4-grid-container');
+            if (gridContainer && !d.selector) t = gridContainer;
+
             if (!t) return;
             
             let targets = d.selector ? Array.from(s.querySelectorAll(d.selector)) : [];
@@ -7151,6 +7218,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 const gridContainer = s.classList.contains('v4-grid-container') ? s : s.querySelector('.v4-grid-container');
                 const rowCount = parseInt(gridContainer.getAttribute('data-row-count')) || 5;
                 const pagination = gridContainer.getAttribute('data-pagination') !== 'false';
+                const rowHeight = parseInt(gridContainer.getAttribute('data-row-height')) || 50;
                 
                 var currentCols = [];
                 var rawCols = gridContainer.getAttribute('data-columns');
@@ -7169,20 +7237,20 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 
                 const act = (d.action || "").toLowerCase();
                 if (act === 'add-row' || act === 'add_row') {
-                    window.renderGrid(gridContainer, currentCols, rowCount + 1, pagination);
+                    window.renderGrid(gridContainer, currentCols, rowCount + 1, pagination, rowHeight);
                 } else if (act === 'del-row' || act === 'del_row') {
                     if (rowCount > 1) {
-                        window.renderGrid(gridContainer, currentCols, rowCount - 1, pagination);
+                        window.renderGrid(gridContainer, currentCols, rowCount - 1, pagination, rowHeight);
                     }
                 } else if (act === 'add-col' || act === 'add_col') {
                     if (currentCols.length < 10) {
                         currentCols.push({ name: '새 항목', type: 'text', width: '150px' });
-                        window.renderGrid(gridContainer, currentCols, rowCount, pagination);
+                        window.renderGrid(gridContainer, currentCols, rowCount, pagination, rowHeight);
                     }
                 } else if (act === 'del-col' || act === 'del_col') {
                     if (currentCols.length > 1) {
                         currentCols.pop();
-                        window.renderGrid(gridContainer, currentCols, rowCount, pagination);
+                        window.renderGrid(gridContainer, currentCols, rowCount, pagination, rowHeight);
                     }
                 }
                 
@@ -7407,78 +7475,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
     };
 
-    window.updateAnchoredConnectorsLocal = (movedId) => {
-        const scale = (window.parent?.state?.transform?.scale) || 1;
-        const host = document.querySelector('.page') || document.querySelector('.artboard') || document.body;
-        const hostRect = host.getBoundingClientRect();
-        
-        const connectors = window.parent?.state?.connectors || [];
-        connectors.forEach(conn => {
-            if (conn.start.targetId === movedId || conn.end.targetId === movedId) {
-                const svg = document.getElementById(conn.id);
-                if (svg) {
-                    let sX = conn.start.x, sY = conn.start.y;
-                    let eX = conn.end.x, eY = conn.end.y;
-                    
-                    if (conn.start.targetId) {
-                        const tEl = document.getElementById(conn.start.targetId);
-                        if (tEl) {
-                            const r = tEl.getBoundingClientRect();
-                            if (conn.start.side === 'left') { sX = (r.left - hostRect.left) / scale; sY = (r.top + r.height/2 - hostRect.top) / scale; }
-                            else if (conn.start.side === 'right') { sX = (r.right - hostRect.left) / scale; sY = (r.top + r.height/2 - hostRect.top) / scale; }
-                            else if (conn.start.side === 'top') { sX = (r.left + r.width/2 - hostRect.left) / scale; sY = (r.top - hostRect.top) / scale; }
-                            else if (conn.start.side === 'bottom') { sX = (r.left + r.width/2 - hostRect.left) / scale; sY = (r.bottom - hostRect.top) / scale; }
-                        }
-                    }
-                    
-                    if (conn.end.targetId) {
-                        const tEl = document.getElementById(conn.end.targetId);
-                        if (tEl) {
-                            const r = tEl.getBoundingClientRect();
-                            if (conn.end.side === 'left') { eX = (r.left - hostRect.left) / scale; eY = (r.top + r.height/2 - hostRect.top) / scale; }
-                            else if (conn.end.side === 'right') { eX = (r.right - hostRect.left) / scale; eY = (r.top + r.height/2 - hostRect.top) / scale; }
-                            else if (conn.end.side === 'top') { eX = (r.left + r.width/2 - hostRect.left) / scale; eY = (r.top - hostRect.top) / scale; }
-                            else if (conn.end.side === 'bottom') { eX = (r.left + r.width/2 - hostRect.left) / scale; eY = (r.bottom - hostRect.top) / scale; }
-                        }
-                    }
-                    
-                    conn.start.x = sX; conn.start.y = sY;
-                    conn.end.x = eX; conn.end.y = eY;
-                    
-                    const headLength = Math.max(12, parseFloat(conn.style.strokeWidth || 1.6) * 4.5);
-                    const padding = headLength + 10;
-                    const minX = Math.min(sX, eX) - padding;
-                    const minY = Math.min(sY, eY) - padding;
-                    const w = Math.max(conn.start.x, conn.end.x) + padding - minX;
-                    const h = Math.max(conn.start.y, conn.end.y) + padding - minY;
-                    
-                    svg.style.left = minX + 'px';
-                    svg.style.top = minY + 'px';
-                    svg.style.width = w + 'px';
-                    svg.style.height = h + 'px';
-                    
-                    const rel = (pt) => ({ x: pt.x - minX, y: pt.y - minY });
-                    const rStart = rel(conn.start);
-                    const rEnd = rel(conn.end);
-                    
-                    const paths = svg.querySelectorAll('path');
-                    if (paths.length >= 2) {
-                        const pathData = window.calculatePathData(conn, rStart, rEnd);
-                        paths[0].setAttribute('d', pathData);
-                        paths[1].setAttribute('d', pathData);
-                    }
-                    
-                    const circles = svg.querySelectorAll('circle');
-                    if (circles.length === 2) {
-                        circles[0].setAttribute('cx', rStart.x);
-                        circles[0].setAttribute('cy', rStart.y);
-                        circles[1].setAttribute('cx', rEnd.x);
-                        circles[1].setAttribute('cy', rEnd.y);
-                    }
-                }
-            }
-        });
-    };
 
     window.initHandles = () => {
         document.querySelectorAll('.lf-component').forEach(c => {
@@ -7517,6 +7513,20 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 });
             }
         });
+        
+        // Initialize existing grid height and rendering details on load
+        document.querySelectorAll('.v4-grid-container').forEach(function(container) {
+            var currentCols = [];
+            try {
+                currentCols = JSON.parse(container.getAttribute('data-columns') || '[]');
+            } catch(e) {}
+            var rowCount = parseInt(container.getAttribute('data-row-count')) || 5;
+            var showPagination = container.getAttribute('data-pagination') === 'true';
+            var rowHeight = parseInt(container.getAttribute('data-row-height')) || 50;
+            if (window.renderGrid) {
+                window.renderGrid(container, currentCols, rowCount, showPagination, rowHeight);
+            }
+        });
     };
     window.initHandles();
 
@@ -7547,4 +7557,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 })();
 
 </script>
-</body></html>
+<div id="v4-comp-1785227330608" class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 1460px; height: 900px;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border-color: transparent; border-top-style: ; border-width: 1.6px !important; border-right-style: ; border-bottom-style: ; border-left-style: ; border-image-source: ; border-image-slice: ; border-image-width: ; border-image-outset: ; border-image-repeat: ; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></body></html>
