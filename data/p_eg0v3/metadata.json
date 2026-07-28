@@ -1326,7 +1326,7 @@
     "06_Mobile_Design_2_941.html": {
       "title": "랭킹카드 UI 개선 제안",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-28T08:40:57.706Z",
+      "updatedAt": "2026-07-28T08:51:34.543Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -1492,7 +1492,7 @@
         {
           "text": "Product Name\n\n2줄까지 표현...",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현...</span></p>",
-          "x": 1110.703,
+          "x": 1110.7,
           "y": 496.052,
           "type": "text",
           "standardized": true
@@ -1500,7 +1500,7 @@
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"font-size: 12px; color: rgb(230, 0, 0);\">20%</strong><strong style=\"font-size: 12px;\"> 123,000 </strong></p>",
-          "x": 1111.703,
+          "x": 1111.7,
           "y": 532.052,
           "type": "text",
           "standardized": true
@@ -1508,48 +1508,48 @@
         {
           "text": "Product Name\n\n2줄까지 표현...",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현...</span></p>",
-          "x": 999.7000122070312,
-          "y": 496.0500183105469,
+          "x": 0,
+          "y": 0,
           "type": "text",
           "standardized": true
         },
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"font-size: 12px; color: rgb(230, 0, 0);\">20%</strong><strong style=\"font-size: 12px;\"> 123,000 </strong></p>",
-          "x": 1000.7000122070312,
-          "y": 532.0499877929688,
+          "x": 1,
+          "y": 36,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Product Name\n\n2줄까지 표현...",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현...</span></p>",
-          "x": 894.2000122070312,
-          "y": 496.0500183105469,
+          "x": 0,
+          "y": -4,
           "type": "text",
           "standardized": true
         },
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"font-size: 12px; color: rgb(230, 0, 0);\">20%</strong><strong style=\"font-size: 12px;\"> 123,000 </strong></p>",
-          "x": 895.2000122070312,
-          "y": 532.0499877929688,
+          "x": 1,
+          "y": 32,
           "type": "text",
           "standardized": true
         },
         {
           "text": "Product Name\n\n2줄까지 표현...",
           "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현...</span></p>",
-          "x": 780.2250366210938,
-          "y": 496.0500183105469,
+          "x": 0,
+          "y": 0,
           "type": "text",
           "standardized": true
         },
         {
           "text": "20% 123,000",
           "html": "<p><strong style=\"font-size: 12px; color: rgb(230, 0, 0);\">20%</strong><strong style=\"font-size: 12px;\"> 123,000 </strong></p>",
-          "x": 781.2250366210938,
-          "y": 532.0499877929688,
+          "x": 1,
+          "y": 36,
           "type": "text",
           "standardized": true
         },
@@ -1564,7 +1564,7 @@
         {
           "text": "슈즈",
           "html": "<p>슈즈</p>",
-          "x": 1043.703,
+          "x": 1043.7,
           "y": 634.252,
           "type": "text",
           "standardized": true
@@ -1572,7 +1572,7 @@
         {
           "text": "골프",
           "html": "<p>골프</p>",
-          "x": 1083.203,
+          "x": 1083.2,
           "y": 634.252,
           "type": "text",
           "standardized": true
@@ -1623,5 +1623,5 @@
     "카드 설정2.html",
     "얼럿 정리.html"
   ],
-  "updated": "2026-07-28 17:40:57"
+  "updated": "2026-07-28 17:51:34"
 }
