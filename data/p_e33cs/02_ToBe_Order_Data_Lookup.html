@@ -16,102 +16,23 @@
         }
         body { margin:0; padding:0; background:#1e293b; font-family:'Inter','Noto Sans KR',sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; overflow:hidden; }
         .artboard { width:1440px; height:900px; background:#f8fafc; position:relative; box-shadow:0 30px 60px rgba(0,0,0,0.4); overflow:hidden; }
-        .lf-component { position:absolute; transition:all 0.2s cubic-bezier(0.4,0,0.2,1); box-sizing:border-box; }
-        .lf-component:hover { outline:2px dashed var(--v4-accent); outline-offset:-2px; }
-        .lf-component.selected { outline:2px solid var(--v4-accent); outline-offset:-2px; z-index:100; }
-        .v4-editable-cell { outline:none; padding:4px; transition:background 0.2s; word-break:break-word; }
-        .v4-editable-cell:focus { background:rgba(16,185,129,0.08); box-shadow:inset 0 0 0 1px var(--v4-accent); border-radius:4px; }
-        .v4-shape-container { width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:700; box-sizing:border-box; }
         
-        .tobe-step-box {
-            background:#ffffff;
-            border:1.6px solid #cbd5e1 !important;
-            border-radius:14px;
-            padding:22px 18px;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            text-align:center;
-            box-shadow:0 6px 16px rgba(0,0,0,0.03);
-            box-sizing:border-box;
-            width:100%; height:100%;
-        }
-        .step-tag {
-            font-size:12px;
-            font-weight:800;
-            padding:4px 12px;
-            border-radius:12px;
-            color:#ffffff;
-            margin-bottom:14px;
-            letter-spacing:0.5px;
-        }
-        .step-heading {
-            font-size:18px;
-            font-weight:800;
-            color:#0f172a;
-            margin-bottom:14px;
-        }
-        .step-icon {
-            width:76px; height:76px;
-            border-radius:50%;
-            display:flex; align-items:center; justify-content:center;
-            margin-bottom:18px;
-        }
-        .step-text {
-            font-size:13.5px;
-            color:#475569;
-            line-height:1.55;
-        }
-
-        /* Flow Arrow Connector */
-        .arrow-connector {
-            display:flex; align-items:center; justify-content:center;
-            color:#10b981; font-size:36px; font-weight:900;
-            width:100%; height:100%;
-        }
-
-        /* Compact Bottom Details Cards */
-        .bottom-card {
-            background:#ffffff;
-            border:1.6px solid #a7f3d0 !important;
-            border-radius:12px;
-            padding:18px 22px;
-            box-shadow:0 2px 8px rgba(16,185,129,0.03);
-            box-sizing:border-box;
-            width:100%; height:100%;
-            display:flex; flex-direction:column; justify-content:flex-start;
-        }
-        .bottom-card-header {
-            display:flex; align-items:center;
-            font-size:15px; font-weight:800; color:#065f46;
-            padding-bottom:10px;
-            border-bottom:1.6px solid #ecfdf5;
-            margin-bottom:12px;
-        }
-        .card-bullet {
-            font-size:13.5px; line-height:1.5; color:#334155;
-            margin-bottom:8px;
-        }
-        .card-num-badge {
-            width:22px; height:22px; background:#10b981; color:#ffffff;
-            border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
-            font-size:12px; font-weight:800; margin-right:10px; flex-shrink:0;
-        }
-    </style>
-    <style id="v4-inlined-style">
-        :root { --v4-primary: #10b981; --v4-accent: #00e5ff; --v4-bg-dark: #0f172a; --v4-panel-bg: rgba(30, 41, 59, 0.7); --v4-border: rgba(255, 255, 255, 0.15); --v4-text-main: #ffffff; --v4-text-dim: #94a3b8; }
-        .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; transform: none !important; }
-        .lf-component.selected { outline: 2px solid #10b981; outline-offset: -2px; z-index: 10001 !important; }
-        .lf-drag-handle { position: absolute; top: -10px; left: -10px; width: 20px; height: 20px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 1.6px solid #fff; z-index: 10002; }
-        .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -10px; left: -10px; }
-        .lf-resizer { position: absolute; bottom: -2px; right: -2px; width: 10px; height: 10px; background: #10b981; cursor: nwse-resize; border-radius: 50%; border: 1.6px solid #fff; opacity: 0; transition: 0.2s; z-index: 10002; }
-        .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
-        .lf-delete-trigger { position: absolute; top: -10px; right: -10px; width: 20px; height: 20px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 1.6px solid #fff; z-index: 10002; font-size: 12px; font-weight: bold; }
-        .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
-        .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: #cbd5e1; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #ffffff; color: #0f172a; box-sizing: border-box; }
-        .v4-shape-rect { border-radius: 8px; }
-        svg.lf-icon { background-image: none !important; }
-        body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; }
+        /* LF Editor Studio Native Component Core Styles */
+        .lf-component { position:absolute; cursor:pointer; transition:outline 0.2s; box-sizing:border-box; z-index:100; transform:none !important; }
+        .lf-component:hover { outline:2px dashed #10b981; }
+        .lf-component.selected { outline:2px solid #10b981; z-index:10001 !important; }
+        .lf-drag-handle { position:absolute; top:-9px; left:-9px; width:18px; height:18px; background:#10b981; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:move; opacity:0; transition:all 0.2s; border:1.6px solid #fff; z-index:10002; }
+        .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity:1; top:-12px; left:-12px; }
+        .lf-resizer { position:absolute; bottom:-5px; right:-5px; width:12px; height:12px; background:#10b981; cursor:nwse-resize; border-radius:50%; border:2px solid #fff; opacity:0; transition:0.2s; z-index:10002; }
+        .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity:1; }
+        .lf-delete-trigger { position:absolute; top:-12px; right:-12px; width:24px; height:24px; background:#ef4444; color:#fff; border-radius:50%; display:none !important; align-items:center; justify-content:center; cursor:pointer; border:2px solid #fff; z-index:10002; font-size:14px; font-weight:bold; }
+        
+        .v4-shape { position:relative; border-width:1.6px !important; border-style:solid !important; border-color:#cbd5e1; transition:all 0.2s cubic-bezier(0.4,0,0.2,1); width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#ffffff; color:#0f172a; box-sizing:border-box; }
+        .v4-shape-rect { border-radius:8px; }
+        .v4-shape-text-content { width:100%; height:100%; display:flex; align-items:center; justify-content:center; text-align:center; padding:8px; box-sizing:border-box; overflow:hidden; }
+        .v4-shape-text-content p { margin:0; padding:0; line-height:1.2; text-align:center; }
+        svg.lf-icon { background-image:none !important; }
+        .v4-editable-cell { outline:none; }
     </style>
 </head>
 <body>
@@ -119,29 +40,37 @@
 
         <!-- Header Category Badge -->
         <div class="lf-component" id="comp-header-badge" style="top: 25px; left: 30px; width: 170px; height: 46px;">
-            <div class="v4-shape v4-shape-rect" style="background:#1e293b; border-color:#334155; border-radius:10px !important; color:#ffffff; font-size:13px; font-weight:800; letter-spacing:0.5px;">
-                <div class="v4-editable-cell" contenteditable="true">LFmall Architecture</div>
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#1e293b; border:1.6px solid #334155 !important; border-radius:10px !important; color:#ffffff; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:4px;">
+                    <p><span style="font-size:13px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">LFmall Architecture</span></p>
+                </div>
             </div>
         </div>
 
         <!-- Main Title Box -->
         <div class="lf-component" id="comp-main-title" style="top: 25px; left: 215px; width: 855px; height: 46px;">
-            <div class="v4-shape v4-shape-rect" style="background:#0f172a; border-color:#334155; border-radius:10px !important; color:#ffffff; font-size:20px; font-weight:800; justify-content:flex-start; padding-left:24px; box-shadow:0 4px 14px rgba(0,0,0,0.12);">
-                <div class="v4-editable-cell" contenteditable="true">To-Be 주문 데이터 조회 개편안</div>
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#0f172a; border:1.6px solid #334155 !important; border-radius:10px !important; color:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.12); box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:4px;">
+                    <p><span style="font-size:20px; font-weight:800; color:#ffffff;">To-Be 주문 데이터 조회 개편안</span></p>
+                </div>
             </div>
         </div>
 
         <!-- Status Success Tag -->
         <div class="lf-component" id="comp-status-tag" style="top: 25px; left: 1085px; width: 325px; height: 46px;">
-            <div class="v4-shape v4-shape-rect" style="background:#1e293b; border-color:#10b981; border-radius:10px !important; color:#6ee7b7; font-size:13px; font-weight:800; box-shadow:0 4px 10px rgba(16,185,129,0.15);">
-                <div class="v4-editable-cell" contenteditable="true">Redis In-Memory &amp; Dual Batch Sync</div>
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#1e293b; border:1.6px solid #10b981 !important; border-radius:10px !important; color:#6ee7b7; box-shadow:0 4px 10px rgba(16,185,129,0.15); box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:4px;">
+                    <p><span style="font-size:13px; font-weight:800; color:#6ee7b7;">Redis In-Memory &amp; Dual Batch Sync</span></p>
+                </div>
             </div>
         </div>
 
         <!-- Subtitle Summary Bar -->
         <div class="lf-component" id="comp-sub-summary" style="top: 79px; left: 30px; width: 1380px; height: 36px;">
-            <div class="v4-shape v4-shape-rect" style="background:#e2e8f0; border-color:#cbd5e1; color:#334155; font-size:13px; font-weight:600; justify-content:flex-start; padding-left:18px;">
-                <div class="v4-editable-cell" contenteditable="true"><strong>To-Be 개편 흐름도</strong> : 주문 DB의 '회원별 구매 브랜드'를 Redis에 1일 벌크 + 5분 증분 동기화 ➔ 쿠폰 다운로드 시 Redis 직결 조회로 DB 부하 분산</div>
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#e2e8f0; border:1.6px solid #cbd5e1 !important; border-radius:8px; color:#334155; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:4px;">
+                    <p><strong style="font-size:13px; color:#0f172a;">To-Be 개편 흐름도</strong><span style="font-size:13px; color:#334155;"> : 주문 DB의 '회원별 구매 브랜드'를 Redis에 1일 벌크 + 5분 증분 동기화 ➔ 쿠폰 다운로드 시 Redis 직결 조회로 DB 부하 분산</span></p>
+                </div>
             </div>
         </div>
 
@@ -149,8 +78,8 @@
 
         <!-- Container Box for Diagram Section -->
         <div class="lf-component" id="comp-diagram-container-tobe" style="top: 133px; left: 30px; width: 1380px; height: 495px;">
-            <div style="width:100%; height:100%; border:1.6px dashed #6ee7b7; border-radius:14px; background:rgba(240,253,244,0.65); position:relative; box-sizing:border-box; padding:24px;">
-                <div style="position:absolute; top:-14px; left:24px; background:#059669; color:#ffffff; font-size:12.5px; font-weight:800; padding:4px 16px; border-radius:10px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:rgba(240,253,244,0.65); border:1.6px dashed #6ee7b7 !important; border-radius:14px; display:flex; align-items:flex-start; justify-content:flex-start; padding:20px; box-sizing:border-box;">
+                <div style="background:#059669; color:#ffffff; font-size:12.5px; font-weight:800; padding:4px 16px; border-radius:10px;">
                     To-Be 배치 동기화 &amp; Redis 직결 조회 아키텍처 다이어그램
                 </div>
             </div>
@@ -158,17 +87,17 @@
 
         <!-- Node A1: Order RDBMS -->
         <div class="lf-component" id="comp-tb-rdbms" style="top: 165px; left: 55px; width: 275px; height: 435px;">
-            <div class="tobe-step-box">
-                <div class="step-tag" style="background:#475569;">SOURCE RDBMS</div>
-                <div class="step-heading">주문 RDBMS</div>
-                <div class="step-icon" style="background:#f1f5f9; border:2px solid #cbd5e1;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 18px; box-sizing:border-box; text-align:center; box-shadow:0 6px 16px rgba(0,0,0,0.03);">
+                <div style="font-size:12px; font-weight:800; padding:4px 12px; border-radius:12px; color:#ffffff; background:#475569; margin-bottom:14px; letter-spacing:0.5px;">SOURCE RDBMS</div>
+                <div style="font-size:18px; font-weight:800; color:#0f172a; margin-bottom:14px;">주문 RDBMS</div>
+                <div style="width:76px; height:76px; border-radius:50%; background:#f1f5f9; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center; margin-bottom:18px;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.8" class="lf-icon" style="width:50px; height:50px;">
                         <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                         <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
                         <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
                     </svg>
                 </div>
-                <div class="step-text" style="text-align:left;">
+                <div style="font-size:13.5px; color:#475569; line-height:1.55; text-align:left; width:100%;">
                     • <strong>원천 데이터 저장소</strong><br>
                     • `ORDER_HIST` 원본<br>
                     • 회원별 구매 브랜드 이력
@@ -178,21 +107,23 @@
 
         <!-- Arrow A1 -> A2 -->
         <div class="lf-component" id="comp-arrow-tb1" style="top: 165px; left: 335px; width: 45px; height: 435px;">
-            <div class="arrow-connector">➔</div>
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#10b981; font-size:36px; font-weight:900;">
+                ➔
+            </div>
         </div>
 
         <!-- Node A2: Batch Sync Engine -->
         <div class="lf-component" id="comp-tb-batch" style="top: 165px; left: 385px; width: 275px; height: 435px;">
-            <div class="tobe-step-box" style="border-color:#a7f3d0 !important; background:#f0fdf4;">
-                <div class="step-tag" style="background:#059669;">SYNC BATCH ENGINE</div>
-                <div class="step-heading" style="color:#065f46;">배치 동기화 엔진</div>
-                <div class="step-icon" style="background:#d1fae5; border:2px solid #a7f3d0;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#f0fdf4; border:1.6px solid #a7f3d0 !important; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 18px; box-sizing:border-box; text-align:center; box-shadow:0 6px 16px rgba(0,0,0,0.03);">
+                <div style="font-size:12px; font-weight:800; padding:4px 12px; border-radius:12px; color:#ffffff; background:#059669; margin-bottom:14px; letter-spacing:0.5px;">SYNC BATCH ENGINE</div>
+                <div style="font-size:18px; font-weight:800; color:#065f46; margin-bottom:14px;">배치 동기화 엔진</div>
+                <div style="width:76px; height:76px; border-radius:50%; background:#d1fae5; border:2px solid #a7f3d0; display:flex; align-items:center; justify-content:center; margin-bottom:18px;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8" class="lf-icon" style="width:50px; height:50px;">
                         <path d="M21.5 2v6h-6"></path>
                         <path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
                     </svg>
                 </div>
-                <div class="step-text" style="text-align:left; color:#065f46;">
+                <div style="font-size:13.5px; color:#065f46; line-height:1.55; text-align:left; width:100%;">
                     • <strong>1일 벌크 배치</strong>:<br>&nbsp;&nbsp;자정 전체 구매 브랜드 적재<br><br>
                     • <strong>5분 증분 배치</strong>:<br>&nbsp;&nbsp;최신 주문 증분 준실시간 동기화
                 </div>
@@ -201,21 +132,23 @@
 
         <!-- Arrow A2 -> A3 -->
         <div class="lf-component" id="comp-arrow-tb2" style="top: 165px; left: 665px; width: 45px; height: 435px;">
-            <div class="arrow-connector">➔</div>
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#10b981; font-size:36px; font-weight:900;">
+                ➔
+            </div>
         </div>
 
         <!-- Node A3: Redis In-Memory Cache Store -->
         <div class="lf-component" id="comp-tb-redis" style="top: 165px; left: 715px; width: 295px; height: 435px;">
-            <div class="tobe-step-box" style="border-color:#10b981 !important; background:#ecfdf5; box-shadow:0 6px 16px rgba(16,185,129,0.15);">
-                <div class="step-tag" style="background:#10b981;">IN-MEMORY CACHE</div>
-                <div class="step-heading" style="color:#047857;">Redis 캐시 저장소</div>
-                <div class="step-icon" style="background:#a7f3d0; border:2px solid #6ee7b7;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ecfdf5; border:1.6px solid #10b981 !important; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 18px; box-sizing:border-box; text-align:center; box-shadow:0 6px 16px rgba(16,185,129,0.15);">
+                <div style="font-size:12px; font-weight:800; padding:4px 12px; border-radius:12px; color:#ffffff; background:#10b981; margin-bottom:14px; letter-spacing:0.5px;">IN-MEMORY CACHE</div>
+                <div style="font-size:18px; font-weight:800; color:#047857; margin-bottom:14px;">Redis 캐시 저장소</div>
+                <div style="width:76px; height:76px; border-radius:50%; background:#a7f3d0; border:2px solid #6ee7b7; display:flex; align-items:center; justify-content:center; margin-bottom:18px;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="1.8" class="lf-icon" style="width:50px; height:50px;">
                         <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
                         <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
                     </svg>
                 </div>
-                <div class="step-text" style="text-align:left; color:#065f46;">
+                <div style="font-size:13.5px; color:#065f46; line-height:1.55; text-align:left; width:100%;">
                     • `Key: USER_ID`<br>
                     • `Value: BRAND_SET`<br><br>
                     • <strong>In-Memory 초고속 캐시 참조</strong><br>&nbsp;&nbsp;(주문 DB direct query 차단)
@@ -225,20 +158,22 @@
 
         <!-- Arrow Redis -> Coupon API -->
         <div class="lf-component" id="comp-arrow-tb3" style="top: 165px; left: 1015px; width: 45px; height: 435px;">
-            <div class="arrow-connector" style="color:#0284c7;">➔</div>
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#0284c7; font-size:36px; font-weight:900;">
+                ➔
+            </div>
         </div>
 
         <!-- Node B2: Direct Coupon Lookup API -->
         <div class="lf-component" id="comp-tb-api" style="top: 165px; left: 1060px; width: 295px; height: 435px;">
-            <div class="tobe-step-box" style="border-color:#38bdf8 !important; background:#f0f9ff;">
-                <div class="step-tag" style="background:#0284c7;">COUPON API ENGINE</div>
-                <div class="step-heading" style="color:#0369a1;">쿠폰 발급 API Engine</div>
-                <div class="step-icon" style="background:#bae6fd; border:2px solid #7dd3fc;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#f0f9ff; border:1.6px solid #38bdf8 !important; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 18px; box-sizing:border-box; text-align:center; box-shadow:0 6px 16px rgba(0,0,0,0.03);">
+                <div style="font-size:12px; font-weight:800; padding:4px 12px; border-radius:12px; color:#ffffff; background:#0284c7; margin-bottom:14px; letter-spacing:0.5px;">COUPON API ENGINE</div>
+                <div style="font-size:18px; font-weight:800; color:#0369a1; margin-bottom:14px;">쿠폰 발급 API Engine</div>
+                <div style="width:76px; height:76px; border-radius:50%; background:#bae6fd; border:2px solid #7dd3fc; display:flex; align-items:center; justify-content:center; margin-bottom:18px;">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.8" class="lf-icon" style="width:50px; height:50px;">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                 </div>
-                <div class="step-text" style="text-align:left; color:#0369a1;">
+                <div style="font-size:13.5px; color:#0369a1; line-height:1.55; text-align:left; width:100%;">
                     • <strong>쿠폰 다운로드 요청 시</strong><br>
                     • RDBMS 직접 조회 미실행!<br>
                     • <strong>Redis 직결 조회 검증</strong>으로<br>&nbsp;&nbsp;<strong style="color:#059669;">주문 DB 부하 0건 달성</strong>
@@ -250,14 +185,14 @@
 
         <!-- Card 1: Zero DB Load -->
         <div class="lf-component" id="comp-detail-noload" style="top: 650px; left: 30px; width: 675px; height: 195px;">
-            <div class="bottom-card">
-                <div class="bottom-card-header">
-                    <span class="card-num-badge">1</span> 1. RDBMS 부하 분산 &amp; 시스템 안정성
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #a7f3d0 !important; border-radius:12px; padding:18px 22px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; text-align:left; box-shadow:0 2px 8px rgba(16,185,129,0.03);">
+                <div style="display:flex; align-items:center; font-size:15px; font-weight:800; color:#065f46; padding-bottom:10px; border-bottom:1.6px solid #ecfdf5; margin-bottom:12px; width:100%;">
+                    <span style="width:22px; height:22px; background:#10b981; color:#ffffff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-right:10px; flex-shrink:0;">1</span> 1. RDBMS 부하 분산 &amp; 시스템 안정성
                 </div>
-                <div class="card-bullet">
+                <div style="font-size:13.5px; line-height:1.5; color:#334155; margin-bottom:8px;">
                     • <strong>주문 DB 직접 조회 차단</strong> : 쿠폰 발급 검증 시 Redis 캐시를 직결 참조하여 DB 부하 완전 분산
                 </div>
-                <div class="card-bullet" style="margin-bottom:0;">
+                <div style="font-size:13.5px; line-height:1.5; color:#334155;">
                     • <strong>핵심 서비스 안정성</strong> : 이벤트 유입 시에도 회원 DB 쿼리가 0건이므로 전사 서비스 정상 작동
                 </div>
             </div>
@@ -265,14 +200,14 @@
 
         <!-- Card 2: Speed & Dual Sync -->
         <div class="lf-component" id="comp-detail-sync" style="top: 650px; left: 725px; width: 685px; height: 195px;">
-            <div class="bottom-card">
-                <div class="bottom-card-header">
-                    <span class="card-num-badge">2</span> 2. 빠른 응답 &amp; 이중 배치(Dual Batch) 동기화
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #a7f3d0 !important; border-radius:12px; padding:18px 22px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; text-align:left; box-shadow:0 2px 8px rgba(16,185,129,0.03);">
+                <div style="display:flex; align-items:center; font-size:15px; font-weight:800; color:#065f46; padding-bottom:10px; border-bottom:1.6px solid #ecfdf5; margin-bottom:12px; width:100%;">
+                    <span style="width:22px; height:22px; background:#10b981; color:#ffffff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-right:10px; flex-shrink:0;">2</span> 2. 빠른 응답 &amp; 이중 배치(Dual Batch) 동기화
                 </div>
-                <div class="card-bullet">
+                <div style="font-size:13.5px; line-height:1.5; color:#334155; margin-bottom:8px;">
                     • <strong>In-Memory 초고속 응답</strong> : RDBMS SQL JOIN 대신 In-Memory 캐시 데이터 직접 참조
                 </div>
-                <div class="card-bullet" style="margin-bottom:0;">
+                <div style="font-size:13.5px; line-height:1.5; color:#334155;">
                     • <strong>이중 배치 동기화</strong> : 자정 1일 벌크 + 5분 증분 배치로 최신 주문 내역 준실시간 정합성 유지
                 </div>
             </div>
