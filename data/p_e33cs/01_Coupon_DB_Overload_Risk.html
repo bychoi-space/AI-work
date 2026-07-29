@@ -23,81 +23,48 @@
         .v4-editable-cell:focus { background:rgba(99,102,241,0.08); box-shadow:inset 0 0 0 1px var(--v4-accent); border-radius:4px; }
         .v4-shape-container { width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:700; box-sizing:border-box; }
         
-        .step-card {
-            background:#ffffff;
-            border:1.6px solid #cbd5e1 !important;
+        /* Swimlane Zones */
+        .swimlane-box {
+            position:absolute;
+            border:1.6px dashed #cbd5e1 !important;
             border-radius:12px;
-            padding:20px;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            text-align:center;
-            box-shadow:0 4px 12px rgba(0,0,0,0.03);
+            background:rgba(255,255,255,0.6);
             box-sizing:border-box;
-            width:100%; height:100%;
         }
-        .step-badge {
-            font-size:11px;
-            font-weight:800;
-            padding:3px 10px;
-            border-radius:10px;
-            color:#ffffff;
-            margin-bottom:12px;
+        .swimlane-label {
+            position:absolute; top:-13px; left:16px;
+            background:#334155; color:#ffffff;
+            font-size:11.5px; font-weight:800;
+            padding:3px 12px; border-radius:10px;
             letter-spacing:0.5px;
-        }
-        .step-title {
-            font-size:16px;
-            font-weight:800;
-            color:#0f172a;
-            margin-bottom:12px;
-        }
-        .step-icon-wrap {
-            width:52px; height:52px;
-            border-radius:50%;
-            display:flex; align-items:center; justify-content:center;
-            margin-bottom:12px;
-        }
-        .step-desc {
-            font-size:13px;
-            color:#64748b;
-            line-height:1.45;
+            box-shadow:0 2px 6px rgba(0,0,0,0.1);
         }
 
-        /* Arrow Connector Line between steps */
-        .flow-arrow {
-            display:flex; align-items:center; justify-content:center;
-            color:#94a3b8; font-size:22px; font-weight:700;
-            width:100%; height:100%;
-        }
+        /* Diamond Node */
+        .v4-shape-diamond { transform: rotate(45deg); border-radius: 4px; }
+        .v4-shape-diamond-inner { transform: rotate(-45deg); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; }
 
-        /* Detail Section Cards */
-        .detail-card {
+        /* Compact Detail Cards */
+        .compact-card {
             background:#ffffff;
             border:1.6px solid #cbd5e1 !important;
-            border-radius:12px;
-            padding:24px;
-            box-shadow:0 4px 14px rgba(0,0,0,0.03);
+            border-radius:10px;
+            padding:14px 18px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.02);
             box-sizing:border-box;
             width:100%; height:100%;
             display:flex; flex-direction:column; justify-content:flex-start;
         }
-        .detail-card-header {
+        .compact-card-header {
             display:flex; align-items:center;
-            font-size:17px; font-weight:800;
-            padding-bottom:14px;
+            font-size:15px; font-weight:800;
+            padding-bottom:8px;
             border-bottom:1.6px solid #f1f5f9;
-            margin-bottom:16px;
+            margin-bottom:10px;
         }
-        .detail-item {
-            margin-bottom:16px;
-            line-height:1.6;
-        }
-        .detail-item-title {
-            font-size:14px; font-weight:800; color:#1e293b;
-            margin-bottom:4px; display:flex; align-items:center;
-        }
-        .detail-item-desc {
-            font-size:13px; color:#475569; padding-left:18px;
+        .compact-item {
+            font-size:12.5px; line-height:1.5; color:#334155;
+            margin-bottom:6px;
         }
     </style>
     <style id="v4-inlined-style">
@@ -122,165 +89,192 @@
     <div class="artboard" id="canvas">
 
         <!-- Header Pill Tag -->
-        <div class="lf-component" id="comp-header-badge" style="top: 40px; left: 50px; width: 140px; height: 34px;">
+        <div class="lf-component" id="comp-header-badge" style="top: 35px; left: 50px; width: 140px; height: 34px;">
             <div class="v4-shape v4-shape-rect" style="background:#4338ca; border-color:#3730a3; border-radius:17px !important; color:#ffffff; font-size:12px; font-weight:800; letter-spacing:0.5px;">
                 <div class="v4-editable-cell" contenteditable="true">[LFmall 기획전]</div>
             </div>
         </div>
 
         <!-- Main Title Box -->
-        <div class="lf-component" id="comp-main-title" style="top: 40px; left: 200px; width: 880px; height: 50px;">
+        <div class="lf-component" id="comp-main-title" style="top: 35px; left: 200px; width: 880px; height: 48px;">
             <div class="v4-shape v4-shape-rect" style="background:#0f172a; border-color:#1e293b; color:#ffffff; font-size:22px; font-weight:800; justify-content:flex-start; padding-left:24px; box-shadow:0 4px 14px rgba(0,0,0,0.12);">
                 <div class="v4-editable-cell" contenteditable="true">As-Is 기획전 구조 이슈</div>
             </div>
         </div>
 
         <!-- Status Warning Tag -->
-        <div class="lf-component" id="comp-status-tag" style="top: 40px; left: 1090px; width: 300px; height: 50px;">
+        <div class="lf-component" id="comp-status-tag" style="top: 35px; left: 1090px; width: 300px; height: 48px;">
             <div class="v4-shape v4-shape-rect" style="background:#fef2f2; border-color:#fca5a5; color:#991b1b; font-size:13px; font-weight:800; box-shadow:0 4px 10px rgba(239,68,68,0.1);">
                 <div class="v4-editable-cell" contenteditable="true">⚠️ DB 부하 집중 구조</div>
             </div>
         </div>
 
         <!-- Subtitle Summary Bar -->
-        <div class="lf-component" id="comp-sub-summary" style="top: 104px; left: 50px; width: 1340px; height: 36px;">
-            <div class="v4-shape v4-shape-rect" style="background:#e2e8f0; border-color:#cbd5e1; color:#334155; font-size:13px; font-weight:600; justify-content:flex-start; padding-left:20px;">
-                <div class="v4-editable-cell" contenteditable="true">📌 <strong>현행(As-Is) 구조 요약</strong> : 고객 쿠폰 다운로드 시 회원 DB(구매내역) 실시간 Direct Query 실행에 따른 DB 부하 및 서비스 응답 지연 위험</div>
+        <div class="lf-component" id="comp-sub-summary" style="top: 95px; left: 50px; width: 1340px; height: 34px;">
+            <div class="v4-shape v4-shape-rect" style="background:#e2e8f0; border-color:#cbd5e1; color:#334155; font-size:12.5px; font-weight:600; justify-content:flex-start; padding-left:18px;">
+                <div class="v4-editable-cell" contenteditable="true">📌 <strong>As-Is 구조 흐름도</strong> : 고객 쿠폰 다운로드 시 회원 DB(구매내역) 실시간 Direct Query 실행 ➔ RDBMS 부하 발생 및 서비스 응답 지연</div>
             </div>
         </div>
 
-        <!-- ==================== 4-STEP PROCESS FLOW ==================== -->
+        <!-- ==================== DETAILED MIDDLE FLOWCHART DIAGRAM ==================== -->
 
-        <!-- Step 1: Customer Access -->
-        <div class="lf-component" id="comp-step-1" style="top: 165px; left: 50px; width: 280px; height: 235px;">
-            <div class="step-card">
-                <div class="step-badge" style="background:#3b82f6;">STEP 1</div>
-                <div class="step-title">고객 기획전 접속</div>
-                <div class="step-icon-wrap" style="background:#eff6ff;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.6" class="lf-icon" style="width:26px; height:26px;">
+        <!-- Zone 1: Client Swimlane -->
+        <div class="swimlane-box" style="top: 145px; left: 50px; width: 380px; height: 470px;">
+            <div class="swimlane-label">1. Client / Presentation Layer</div>
+        </div>
+
+        <!-- Zone 2: Server API Swimlane -->
+        <div class="swimlane-box" style="top: 145px; left: 455px; width: 440px; height: 470px;">
+            <div class="swimlane-label" style="background:#0284c7;">2. Application Layer (Coupon Engine)</div>
+        </div>
+
+        <!-- Zone 3: Database Swimlane -->
+        <div class="swimlane-box" style="top: 145px; left: 915px; width: 475px; height: 470px; border-color:#fca5a5 !important; background:rgba(254,242,242,0.4);">
+            <div class="swimlane-label" style="background:#991b1b;">3. Database Layer (회원 DB)</div>
+        </div>
+
+        <!-- Nodes in Zone 1 (Client) -->
+        <div class="lf-component" id="comp-c-user" style="top: 180px; left: 75px; width: 330px; height: 110px;">
+            <div class="v4-shape v4-shape-rect" style="background:#ffffff; border-color:#cbd5e1; padding:12px; display:flex; align-items:center;">
+                <div style="width:44px; height:44px; background:#eff6ff; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:14px; flex-shrink:0;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.6" class="lf-icon" style="width:24px; height:24px;">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                 </div>
-                <div class="step-desc">LFmall 기획전 메인 프로모션 페이지에 고객 진입</div>
+                <div style="text-align:left;">
+                    <div style="font-size:11px; font-weight:800; color:#3b82f6;">[STEP 1 / USER]</div>
+                    <div style="font-size:14px; font-weight:800; color:#0f172a;">고객 기획전 접속</div>
+                    <div style="font-size:11.5px; color:#64748b;">LFmall 기획전 메인 프로모션 페이지 진입</div>
+                </div>
             </div>
         </div>
 
-        <!-- Arrow 1 -> 2 -->
-        <div class="lf-component" id="comp-arrow-1" style="top: 165px; left: 330px; width: 60px; height: 235px;">
-            <div class="flow-arrow">➔</div>
-        </div>
-
-        <!-- Step 2: Coupon Click -->
-        <div class="lf-component" id="comp-step-2" style="top: 165px; left: 390px; width: 280px; height: 235px;">
-            <div class="step-card">
-                <div class="step-badge" style="background:#6366f1;">STEP 2</div>
-                <div class="step-title">'쿠폰 다운로드' 클릭</div>
-                <div class="step-icon-wrap" style="background:#eef2ff;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#4945ff" stroke-width="1.6" class="lf-icon" style="width:26px; height:26px;">
+        <div class="lf-component" id="comp-c-btn" style="top: 330px; left: 75px; width: 330px; height: 110px;">
+            <div class="v4-shape v4-shape-rect" style="background:#4945ff; border-color:#3730a3; color:#ffffff; padding:12px; display:flex; align-items:center;">
+                <div style="width:44px; height:44px; background:rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:14px; flex-shrink:0;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.6" class="lf-icon" style="width:24px; height:24px;">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="7 10 12 15 17 10"></polyline>
                         <line x1="12" y1="15" x2="12" y2="3"></line>
                     </svg>
                 </div>
-                <div class="step-desc">선착순 쿠폰 다운로드 버튼 클릭<br><span style="color:#dc2626; font-size:12px; font-weight:700;">(트래픽 집중 시)</span></div>
+                <div style="text-align:left;">
+                    <div style="font-size:11px; font-weight:800; color:#c7d2fe;">[STEP 2 / ACTION]</div>
+                    <div style="font-size:14px; font-weight:800; color:#ffffff;">'쿠폰 다운로드' 클릭</div>
+                    <div style="font-size:11.5px; color:#e0e7ff;">이벤트 오픈 순간 동시 클릭 유입</div>
+                </div>
             </div>
         </div>
 
-        <!-- Arrow 2 -> 3 -->
-        <div class="lf-component" id="comp-arrow-2" style="top: 165px; left: 670px; width: 60px; height: 235px;">
-            <div class="flow-arrow">➔</div>
+        <!-- Nodes in Zone 2 (Server API) -->
+        <div class="lf-component" id="comp-s-api" style="top: 180px; left: 480px; width: 390px; height: 100px;">
+            <div class="v4-shape v4-shape-rect" style="background:#ffffff; border-color:#0284c7; padding:12px; display:flex; align-items:center;">
+                <div style="width:42px; height:42px; background:#e0f2fe; border-radius:8px; display:flex; align-items:center; justify-content:center; margin-right:14px; flex-shrink:0;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.6" class="lf-icon" style="width:24px; height:24px;">
+                        <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                        <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                    </svg>
+                </div>
+                <div style="text-align:left;">
+                    <div style="font-size:11px; font-weight:800; color:#0284c7;">[COUPON API ENGINE]</div>
+                    <div style="font-size:14px; font-weight:800; color:#0f172a;">쿠폰 발급 요청 수신</div>
+                    <div style="font-size:11.5px; color:#64748b;">POST /api/v1/coupons/issue</div>
+                </div>
+            </div>
         </div>
 
-        <!-- Step 3: Realtime DB Query -->
-        <div class="lf-component" id="comp-step-3" style="top: 165px; left: 730px; width: 280px; height: 235px;">
-            <div class="step-card" style="border-color:#fcd34d !important; background:#fffbeb;">
-                <div class="step-badge" style="background:#d97706;">STEP 3</div>
-                <div class="step-title" style="color:#92400e;">회원 DB 실시간 조회</div>
-                <div class="step-icon-wrap" style="background:#fef3c7;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="1.6" class="lf-icon" style="width:26px; height:26px;">
+        <!-- Decision Diamond in Server -->
+        <div class="lf-component" id="comp-s-diamond" style="top: 310px; left: 615px; width: 120px; height: 100px;">
+            <div class="v4-shape v4-shape-diamond" style="background:#fef3c7; border-color:#f59e0b;">
+                <div class="v4-shape-diamond-inner">
+                    <div style="font-size:11px; font-weight:800; color:#92400e;">쿠폰 발급<br>자격 검증</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lf-component" id="comp-s-query" style="top: 450px; left: 480px; width: 390px; height: 110px;">
+            <div class="v4-shape v4-shape-rect" style="background:#fffbeb; border-color:#f59e0b; border-width:1.6px !important; padding:12px; display:flex; align-items:center;">
+                <div style="width:42px; height:42px; background:#fef3c7; border-radius:8px; display:flex; align-items:center; justify-content:center; margin-right:14px; flex-shrink:0;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="1.6" class="lf-icon" style="width:24px; height:24px;">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+                <div style="text-align:left;">
+                    <div style="font-size:11px; font-weight:800; color:#d97706;">[STEP 3 / REALTIME QUERY]</div>
+                    <div style="font-size:14px; font-weight:800; color:#92400e;">회원 DB 구매내역 실시간 Direct Query</div>
+                    <div style="font-size:11px; color:#b45309; margin-top:2px;"><code>SELECT * FROM order_hist WHERE user_id = ?</code></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nodes in Zone 3 (Database) -->
+        <div class="lf-component" id="comp-db-rdbms" style="top: 180px; left: 940px; width: 420px; height: 110px;">
+            <div class="v4-shape v4-shape-rect" style="background:#1e293b; border-color:#475569; color:#ffffff; padding:14px; display:flex; align-items:center;">
+                <div style="width:44px; height:44px; background:#334155; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-right:14px; flex-shrink:0;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="1.6" class="lf-icon" style="width:26px; height:26px;">
                         <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                         <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
                         <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
                     </svg>
                 </div>
-                <div class="step-desc" style="color:#78350f;">쿠폰 자격 검증을 위해 <strong>회원 구매내역(`ORDER_HIST`) Direct 쿼리</strong></div>
-            </div>
-        </div>
-
-        <!-- Arrow 3 -> 4 -->
-        <div class="lf-component" id="comp-arrow-3" style="top: 165px; left: 1010px; width: 60px; height: 235px;">
-            <div class="flow-arrow" style="color:#ef4444;">➔</div>
-        </div>
-
-        <!-- Step 4: DB Overload Issue -->
-        <div class="lf-component" id="comp-step-4" style="top: 165px; left: 1070px; width: 320px; height: 235px;">
-            <div class="step-card" style="border-color:#fca5a5 !important; background:#fef2f2;">
-                <div class="step-badge" style="background:#dc2626;">STEP 4 (ISSUE)</div>
-                <div class="step-title" style="color:#991b1b;">⚠️ 회원 DB 부하 발생</div>
-                <div class="step-icon-wrap" style="background:#fee2e2;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.6" class="lf-icon" style="width:26px; height:26px;">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
+                <div style="text-align:left;">
+                    <div style="font-size:11px; font-weight:800; color:#38bdf8;">[MEMBER RDBMS]</div>
+                    <div style="font-size:15px; font-weight:800; color:#ffffff;">회원 Master DB (Member &amp; Order DB)</div>
+                    <div style="font-size:11.5px; color:#94a3b8;">회원 기본 정보 및 전체 주문 결제 이력 원천 DB</div>
                 </div>
-                <div class="step-desc" style="color:#991b1b; font-weight:600;">DB 커넥션 풀 부담 &amp; 쿼리 응답 지연 ➔ <strong>타 회원 서비스 영향 우려</strong></div>
             </div>
         </div>
 
-        <!-- ==================== PROBLEM & IMPACT DETAILS ==================== -->
+        <div class="lf-component" id="comp-db-issue" style="top: 320px; left: 940px; width: 420px; height: 240px;">
+            <div class="v4-shape v4-shape-rect" style="background:#fef2f2; border-color:#ef4444; border-width:1.6px !important; color:#991b1b; padding:18px; display:flex; flex-direction:column; justify-content:flex-start; text-align:left;">
+                <div style="display:flex; align-items:center; margin-bottom:10px;">
+                    <span style="font-size:18px; margin-right:8px;">🚨</span>
+                    <span style="font-size:15px; font-weight:900; color:#991b1b;">[STEP 4 / ISSUE] 회원 DB 부하 집중</span>
+                </div>
+                <div style="font-size:12.5px; line-height:1.6; color:#7f1d1d;">
+                    • <strong>실시간 JOIN 쿼리 부하</strong> : 쿠폰 다운로드 시마다 `ORDER_HIST` 테이블 실시간 집계 쿼리 실행<br>
+                    • <strong>DB Connection Pool 병목</strong> : 트래픽 유입 시 회원 DB 커넥션 풀에 부하 집중<br>
+                    • <strong>타 서비스 연쇄 영향</strong> : 회원 DB를 공유하는 로그인, 마이페이지, 주문/결제 서비스 응답 지연 우려
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== COMPACT BOTTOM DETAILS (200px Height) ==================== -->
 
         <!-- Card 1: Key Issues -->
-        <div class="lf-component" id="comp-detail-issues" style="top: 425px; left: 50px; width: 650px; height: 410px;">
-            <div class="detail-card">
-                <div class="detail-card-header" style="color:#92400e;">
-                    <span style="font-size:20px; margin-right:8px;">💥</span> 1. As-Is 프로세스 주요 문제점
+        <div class="lf-component" id="comp-detail-issues" style="top: 635px; left: 50px; width: 650px; height: 200px;">
+            <div class="compact-card">
+                <div class="compact-card-header" style="color:#92400e;">
+                    <span style="font-size:18px; margin-right:8px;">💥</span> 1. As-Is 프로세스 주요 문제점
                 </div>
-                <div class="detail-item">
-                    <div class="detail-item-title">① 실시간 복합 쿼리 실행 (JOIN Query)</div>
-                    <div class="detail-item-desc">
-                        고객이 '쿠폰 다운로드' 버튼을 누를 때마다 `MEMBER_MST`와 `ORDER_HIST` 테이블을 실시간으로 JOIN 및 집계하여 DB 응답 시간이 지연될 수 있습니다.
-                    </div>
+                <div class="compact-item">
+                    • <strong>실시간 복합 쿼리 실행</strong> : 고객 쿠폰 다운로드 시마다 `MEMBER_MST`와 `ORDER_HIST` 테이블을 실시간으로 JOIN 및 집계하여 DB 응답 시간이 지연될 수 있습니다.
                 </div>
-                <div class="detail-item">
-                    <div class="detail-item-title">② DB Connection Pool 부하 집중</div>
-                    <div class="detail-item-desc">
-                        대형 기획전 오픈 시 순간적으로 많은 동시 요청이 유입되어, 회원 DB 커넥션 풀에 부하가 집중됩니다.
-                    </div>
+                <div class="compact-item">
+                    • <strong>DB Connection Pool 부하 집중</strong> : 기획전 오픈 시 순간적으로 많은 동시 요청이 유입되어, 회원 DB 커넥션 풀에 부하가 집중됩니다.
                 </div>
-                <div class="detail-item" style="margin-bottom:0;">
-                    <div class="detail-item-title">③ 데이터 누적에 따른 조회 부하</div>
-                    <div class="detail-item-desc">
-                        회원 수 및 과거 주문 데이터가 누적됨에 따라 쿼리 조회 범위가 증가하고 DB 자원 소모가 커집니다.
-                    </div>
+                <div class="compact-item" style="margin-bottom:0;">
+                    • <strong>데이터 누적에 따른 조회 부하</strong> : 회원 수 및 과거 주문 데이터가 누적됨에 따라 쿼리 조회 범위가 증가하고 DB 자원 소모가 커집니다.
                 </div>
             </div>
         </div>
 
         <!-- Card 2: System Impact -->
-        <div class="lf-component" id="comp-detail-impact" style="top: 425px; left: 740px; width: 650px; height: 410px;">
-            <div class="detail-card" style="border-color:#fca5a5 !important;">
-                <div class="detail-card-header" style="color:#991b1b;">
-                    <span style="font-size:20px; margin-right:8px;">🚨</span> 2. 시스템 영향도 및 리스크
+        <div class="lf-component" id="comp-detail-impact" style="top: 635px; left: 740px; width: 650px; height: 200px;">
+            <div class="compact-card" style="border-color:#fca5a5 !important;">
+                <div class="compact-card-header" style="color:#991b1b;">
+                    <span style="font-size:18px; margin-right:8px;">🚨</span> 2. 시스템 영향도 및 리스크
                 </div>
-                <div class="detail-item">
-                    <div class="detail-item-title" style="color:#991b1b;">① 쿠폰 발급 지연 및 요청 타임아웃</div>
-                    <div class="detail-item-desc">
-                        DB 응답 지연으로 인해 쿠폰 다운로드 처리가 늦어지거나 요청 타임아웃이 발생할 수 있습니다.
-                    </div>
+                <div class="compact-item">
+                    • <strong style="color:#991b1b;">쿠폰 발급 지연 및 요청 타임아웃</strong> : DB 응답 지연으로 인해 쿠폰 다운로드 처리가 늦어지거나 요청 타임아웃이 발생할 수 있습니다.
                 </div>
-                <div class="detail-item">
-                    <div class="detail-item-title" style="color:#991b1b;">② 회원 DB 공유 서비스 영향 확산</div>
-                    <div class="detail-item-desc">
-                        동일한 회원 DB를 참조하는 로그인, 마이페이지, 주문/결제 등 다른 서비스까지 응답 지연 영향이 확산될 수 있습니다.
-                    </div>
+                <div class="compact-item">
+                    • <strong style="color:#991b1b;">회원 DB 공유 서비스 영향 확산</strong> : 동일한 회원 DB를 참조하는 로그인, 마이페이지, 주문/결제 등 다른 서비스까지 응답 지연 영향이 확산될 수 있습니다.
                 </div>
-                <div class="detail-item" style="margin-bottom:0;">
-                    <div class="detail-item-title" style="color:#991b1b;">③ 서비스 안정성 리스크</div>
-                    <div class="detail-item-desc">
-                        단일 기획전 이벤트의 DB 부하가 플랫폼 전반의 성능 저하로 이어질 수 있는 구조적 위험이 존재합니다.
-                    </div>
+                <div class="compact-item" style="margin-bottom:0;">
+                    • <strong style="color:#991b1b;">서비스 안정성 리스크</strong> : 단일 기획전 이벤트의 DB 부하가 플랫폼 전반의 성능 저하로 이어질 수 있는 구조적 위험이 존재합니다.
                 </div>
             </div>
         </div>
@@ -288,13 +282,13 @@
         <!-- ==================== PIN MARKERS ==================== -->
 
         <!-- Pin 1 -->
-        <div class="lf-component pin-marker" id="v4-pin-0" style="top: 415px; left: 680px;">1</div>
+        <div class="lf-component pin-marker" id="v4-pin-0" style="top: 625px; left: 680px;">1</div>
         
         <!-- Pin 2 -->
-        <div class="lf-component pin-marker" id="v4-pin-1" style="top: 415px; left: 1370px;">2</div>
+        <div class="lf-component pin-marker" id="v4-pin-1" style="top: 625px; left: 1370px;">2</div>
 
         <!-- Footer -->
-        <div class="lf-component" style="bottom:20px; left:50px; color:#94a3b8; font-size:12px; display:flex; align-items:center; gap:20px; pointer-events:none;">
+        <div class="lf-component" style="bottom:18px; left:50px; color:#94a3b8; font-size:12px; display:flex; align-items:center; gap:20px; pointer-events:none;">
             <div style="font-weight:900; color:#475569; font-size:14px;">LFmall Architecture Studio</div>
             <span>© LF Corp. All Rights Reserved. - As-Is Issue Review</span>
         </div>
