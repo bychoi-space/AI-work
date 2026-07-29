@@ -27,12 +27,12 @@
             background:#ffffff;
             border:1.6px solid #cbd5e1 !important;
             border-radius:14px;
-            padding:24px 20px;
+            padding:22px 18px;
             display:flex;
             flex-direction:column;
             align-items:center;
             text-align:center;
-            box-shadow:0 6px 16px rgba(0,0,0,0.04);
+            box-shadow:0 6px 16px rgba(0,0,0,0.03);
             box-sizing:border-box;
             width:100%; height:100%;
         }
@@ -42,25 +42,25 @@
             padding:4px 12px;
             border-radius:12px;
             color:#ffffff;
-            margin-bottom:16px;
+            margin-bottom:14px;
             letter-spacing:0.5px;
         }
         .step-heading {
             font-size:18px;
             font-weight:800;
             color:#0f172a;
-            margin-bottom:16px;
+            margin-bottom:14px;
         }
         .step-icon {
-            width:80px; height:80px;
+            width:76px; height:76px;
             border-radius:50%;
             display:flex; align-items:center; justify-content:center;
-            margin-bottom:20px;
+            margin-bottom:18px;
         }
         .step-text {
-            font-size:14px;
+            font-size:13.5px;
             color:#475569;
-            line-height:1.6;
+            line-height:1.55;
         }
 
         /* Flow Arrow Connector */
@@ -75,7 +75,7 @@
             background:#ffffff;
             border:1.6px solid #a7f3d0 !important;
             border-radius:12px;
-            padding:16px 20px;
+            padding:18px 22px;
             box-shadow:0 2px 8px rgba(16,185,129,0.03);
             box-sizing:border-box;
             width:100%; height:100%;
@@ -84,13 +84,13 @@
         .bottom-card-header {
             display:flex; align-items:center;
             font-size:15px; font-weight:800; color:#065f46;
-            padding-bottom:8px;
+            padding-bottom:10px;
             border-bottom:1.6px solid #ecfdf5;
-            margin-bottom:10px;
+            margin-bottom:12px;
         }
         .card-bullet {
             font-size:13.5px; line-height:1.5; color:#334155;
-            margin-bottom:6px;
+            margin-bottom:8px;
         }
         .card-num-badge {
             width:22px; height:22px; background:#10b981; color:#ffffff;
@@ -117,29 +117,29 @@
 <body>
     <div class="artboard" id="canvas">
 
-        <!-- Header Pill Tag -->
-        <div class="lf-component" id="comp-header-badge" style="top: 25px; left: 30px; width: 215px; height: 36px;">
-            <div class="v4-shape v4-shape-rect" style="background:#059669; border-color:#047857; border-radius:18px !important; color:#ffffff; font-size:12px; font-weight:800; letter-spacing:0.5px;">
-                <div class="v4-editable-cell" contenteditable="true">[LFmall Architecture To-Be]</div>
+        <!-- Header Category Badge -->
+        <div class="lf-component" id="comp-header-badge" style="top: 25px; left: 30px; width: 170px; height: 46px;">
+            <div class="v4-shape v4-shape-rect" style="background:#1e293b; border-color:#334155; border-radius:10px !important; color:#ffffff; font-size:13px; font-weight:800; letter-spacing:0.5px;">
+                <div class="v4-editable-cell" contenteditable="true">LFmall Architecture</div>
             </div>
         </div>
 
         <!-- Main Title Box -->
-        <div class="lf-component" id="comp-main-title" style="top: 25px; left: 255px; width: 845px; height: 48px;">
-            <div class="v4-shape v4-shape-rect" style="background:#0f172a; border-color:#1e293b; color:#ffffff; font-size:22px; font-weight:800; justify-content:flex-start; padding-left:24px; box-shadow:0 4px 14px rgba(0,0,0,0.12);">
+        <div class="lf-component" id="comp-main-title" style="top: 25px; left: 215px; width: 855px; height: 46px;">
+            <div class="v4-shape v4-shape-rect" style="background:#0f172a; border-color:#334155; border-radius:10px !important; color:#ffffff; font-size:20px; font-weight:800; justify-content:flex-start; padding-left:24px; box-shadow:0 4px 14px rgba(0,0,0,0.12);">
                 <div class="v4-editable-cell" contenteditable="true">To-Be 주문 데이터 조회 개편안</div>
             </div>
         </div>
 
         <!-- Status Success Tag -->
-        <div class="lf-component" id="comp-status-tag" style="top: 25px; left: 1110px; width: 300px; height: 48px;">
-            <div class="v4-shape v4-shape-rect" style="background:#ecfdf5; border-color:#6ee7b7; color:#047857; font-size:13px; font-weight:800; box-shadow:0 4px 10px rgba(16,185,129,0.1);">
+        <div class="lf-component" id="comp-status-tag" style="top: 25px; left: 1085px; width: 325px; height: 46px;">
+            <div class="v4-shape v4-shape-rect" style="background:#1e293b; border-color:#10b981; border-radius:10px !important; color:#6ee7b7; font-size:13px; font-weight:800; box-shadow:0 4px 10px rgba(16,185,129,0.15);">
                 <div class="v4-editable-cell" contenteditable="true">Redis In-Memory &amp; Dual Batch Sync</div>
             </div>
         </div>
 
         <!-- Subtitle Summary Bar -->
-        <div class="lf-component" id="comp-sub-summary" style="top: 83px; left: 30px; width: 1380px; height: 36px;">
+        <div class="lf-component" id="comp-sub-summary" style="top: 79px; left: 30px; width: 1380px; height: 36px;">
             <div class="v4-shape v4-shape-rect" style="background:#e2e8f0; border-color:#cbd5e1; color:#334155; font-size:13px; font-weight:600; justify-content:flex-start; padding-left:18px;">
                 <div class="v4-editable-cell" contenteditable="true"><strong>To-Be 개편 흐름도</strong> : 주문 DB의 '회원별 구매 브랜드'를 Redis에 1일 벌크 + 5분 증분 동기화 ➔ 쿠폰 다운로드 시 Redis 직결 조회로 DB 부하 분산</div>
             </div>
@@ -148,7 +148,7 @@
         <!-- ==================== HERO TO-BE ARCHITECTURE DIAGRAM ==================== -->
 
         <!-- Container Box for Diagram Section -->
-        <div class="lf-component" id="comp-diagram-container-tobe" style="top: 130px; left: 30px; width: 1380px; height: 515px;">
+        <div class="lf-component" id="comp-diagram-container-tobe" style="top: 133px; left: 30px; width: 1380px; height: 495px;">
             <div style="width:100%; height:100%; border:1.6px dashed #6ee7b7; border-radius:14px; background:rgba(240,253,244,0.65); position:relative; box-sizing:border-box; padding:24px;">
                 <div style="position:absolute; top:-14px; left:24px; background:#059669; color:#ffffff; font-size:12.5px; font-weight:800; padding:4px 16px; border-radius:10px;">
                     To-Be 배치 동기화 &amp; Redis 직결 조회 아키텍처 다이어그램
@@ -157,12 +157,12 @@
         </div>
 
         <!-- Node A1: Order RDBMS -->
-        <div class="lf-component" id="comp-tb-rdbms" style="top: 165px; left: 60px; width: 265px; height: 445px;">
+        <div class="lf-component" id="comp-tb-rdbms" style="top: 165px; left: 55px; width: 275px; height: 435px;">
             <div class="tobe-step-box">
                 <div class="step-tag" style="background:#475569;">SOURCE RDBMS</div>
                 <div class="step-heading">주문 RDBMS</div>
                 <div class="step-icon" style="background:#f1f5f9; border:2px solid #cbd5e1;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.8" class="lf-icon" style="width:52px; height:52px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.8" class="lf-icon" style="width:50px; height:50px;">
                         <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
                         <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
                         <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
@@ -177,17 +177,17 @@
         </div>
 
         <!-- Arrow A1 -> A2 -->
-        <div class="lf-component" id="comp-arrow-tb1" style="top: 165px; left: 330px; width: 45px; height: 445px;">
+        <div class="lf-component" id="comp-arrow-tb1" style="top: 165px; left: 335px; width: 45px; height: 435px;">
             <div class="arrow-connector">➔</div>
         </div>
 
         <!-- Node A2: Batch Sync Engine -->
-        <div class="lf-component" id="comp-tb-batch" style="top: 165px; left: 380px; width: 295px; height: 445px;">
+        <div class="lf-component" id="comp-tb-batch" style="top: 165px; left: 385px; width: 275px; height: 435px;">
             <div class="tobe-step-box" style="border-color:#a7f3d0 !important; background:#f0fdf4;">
                 <div class="step-tag" style="background:#059669;">SYNC BATCH ENGINE</div>
                 <div class="step-heading" style="color:#065f46;">배치 동기화 엔진</div>
                 <div class="step-icon" style="background:#d1fae5; border:2px solid #a7f3d0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8" class="lf-icon" style="width:52px; height:52px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8" class="lf-icon" style="width:50px; height:50px;">
                         <path d="M21.5 2v6h-6"></path>
                         <path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
                     </svg>
@@ -200,17 +200,17 @@
         </div>
 
         <!-- Arrow A2 -> A3 -->
-        <div class="lf-component" id="comp-arrow-tb2" style="top: 165px; left: 680px; width: 45px; height: 445px;">
+        <div class="lf-component" id="comp-arrow-tb2" style="top: 165px; left: 665px; width: 45px; height: 435px;">
             <div class="arrow-connector">➔</div>
         </div>
 
         <!-- Node A3: Redis In-Memory Cache Store -->
-        <div class="lf-component" id="comp-tb-redis" style="top: 165px; left: 730px; width: 280px; height: 445px;">
+        <div class="lf-component" id="comp-tb-redis" style="top: 165px; left: 715px; width: 295px; height: 435px;">
             <div class="tobe-step-box" style="border-color:#10b981 !important; background:#ecfdf5; box-shadow:0 6px 16px rgba(16,185,129,0.15);">
                 <div class="step-tag" style="background:#10b981;">IN-MEMORY CACHE</div>
                 <div class="step-heading" style="color:#047857;">Redis 캐시 저장소</div>
                 <div class="step-icon" style="background:#a7f3d0; border:2px solid #6ee7b7;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="1.8" class="lf-icon" style="width:52px; height:52px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="1.8" class="lf-icon" style="width:50px; height:50px;">
                         <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
                         <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
                     </svg>
@@ -224,17 +224,17 @@
         </div>
 
         <!-- Arrow Redis -> Coupon API -->
-        <div class="lf-component" id="comp-arrow-tb3" style="top: 165px; left: 1015px; width: 45px; height: 445px;">
+        <div class="lf-component" id="comp-arrow-tb3" style="top: 165px; left: 1015px; width: 45px; height: 435px;">
             <div class="arrow-connector" style="color:#0284c7;">➔</div>
         </div>
 
         <!-- Node B2: Direct Coupon Lookup API -->
-        <div class="lf-component" id="comp-tb-api" style="top: 165px; left: 1065px; width: 315px; height: 445px;">
+        <div class="lf-component" id="comp-tb-api" style="top: 165px; left: 1060px; width: 295px; height: 435px;">
             <div class="tobe-step-box" style="border-color:#38bdf8 !important; background:#f0f9ff;">
                 <div class="step-tag" style="background:#0284c7;">COUPON API ENGINE</div>
                 <div class="step-heading" style="color:#0369a1;">쿠폰 발급 API Engine</div>
                 <div class="step-icon" style="background:#bae6fd; border:2px solid #7dd3fc;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.8" class="lf-icon" style="width:52px; height:52px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.8" class="lf-icon" style="width:50px; height:50px;">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                 </div>
@@ -249,7 +249,7 @@
         <!-- ==================== HIGHLY COMPACT PUNCHY BOTTOM DETAILS ==================== -->
 
         <!-- Card 1: Zero DB Load -->
-        <div class="lf-component" id="comp-detail-noload" style="top: 660px; left: 30px; width: 675px; height: 185px;">
+        <div class="lf-component" id="comp-detail-noload" style="top: 650px; left: 30px; width: 675px; height: 195px;">
             <div class="bottom-card">
                 <div class="bottom-card-header">
                     <span class="card-num-badge">1</span> 1. RDBMS 부하 분산 &amp; 시스템 안정성
@@ -264,7 +264,7 @@
         </div>
 
         <!-- Card 2: Speed & Dual Sync -->
-        <div class="lf-component" id="comp-detail-sync" style="top: 660px; left: 735px; width: 670px; height: 185px;">
+        <div class="lf-component" id="comp-detail-sync" style="top: 650px; left: 725px; width: 685px; height: 195px;">
             <div class="bottom-card">
                 <div class="bottom-card-header">
                     <span class="card-num-badge">2</span> 2. 빠른 응답 &amp; 이중 배치(Dual Batch) 동기화
@@ -279,7 +279,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="lf-component" style="bottom:14px; left:30px; color:#94a3b8; font-size:12px; display:flex; align-items:center; gap:20px; pointer-events:none;">
+        <div class="lf-component" style="bottom:16px; left:30px; color:#94a3b8; font-size:12px; display:flex; align-items:center; gap:20px; pointer-events:none;">
             <div style="font-weight:900; color:#475569; font-size:14px;">LFmall Architecture Studio</div>
             <span>© LF Corp. All Rights Reserved. - To-Be Architecture Review</span>
         </div>
