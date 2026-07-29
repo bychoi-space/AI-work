@@ -42,6 +42,15 @@
             syncAllColors(data.currentStyles || {});
             hidePalettePopup();
 
+            if (data.boxW !== undefined) {
+                const wIconInp = document.getElementById('prop-width-icon');
+                if (wIconInp && document.activeElement !== wIconInp) wIconInp.value = Math.round(data.boxW);
+            }
+            if (data.boxH !== undefined) {
+                const hIconInp = document.getElementById('prop-height-icon');
+                if (hIconInp && document.activeElement !== hIconInp) hIconInp.value = Math.round(data.boxH);
+            }
+
             // Show/hide Preserve Aspect Ratio row depending on whether this is an image
             const ratioRow = document.getElementById('shape-aspect-ratio-row');
             const chk = document.getElementById('chk-preserve-aspect-ratio');
@@ -58,6 +67,14 @@
 
         MessageHub.subscribe('LF_COMP_RESIZED', (data) => {
             updateAllInputs(data.w, data.h);
+            if (data.boxW !== undefined) {
+                const wIconInp = document.getElementById('prop-width-icon');
+                if (wIconInp && document.activeElement !== wIconInp) wIconInp.value = Math.round(data.boxW);
+            }
+            if (data.boxH !== undefined) {
+                const hIconInp = document.getElementById('prop-height-icon');
+                if (hIconInp && document.activeElement !== hIconInp) hIconInp.value = Math.round(data.boxH);
+            }
             // Update ratio when component is resized externally
             if (activeImageRatio !== null && data.w && data.h && data.h > 0) {
                 activeImageRatio = data.w / data.h;
@@ -71,6 +88,11 @@
             syncAllColors({});
             hidePalettePopup();
 
+            const wIconInp = document.getElementById('prop-width-icon');
+            const hIconInp = document.getElementById('prop-height-icon');
+            if (wIconInp) wIconInp.value = 0;
+            if (hIconInp) hIconInp.value = 0;
+
             // Hide ratio row on deselect
             const ratioRow = document.getElementById('shape-aspect-ratio-row');
             const chk = document.getElementById('chk-preserve-aspect-ratio');
@@ -82,6 +104,7 @@
     function updateAllInputs(w, h) {
         const inputs = document.querySelectorAll('.v4-prop-input');
         inputs.forEach(input => {
+            if (input.id === 'prop-width-icon' || input.id === 'prop-height-icon') return;
             const prop = input.dataset.prop;
             if (prop === 'width') input.value = Math.round(w);
             if (prop === 'height') input.value = Math.round(h);

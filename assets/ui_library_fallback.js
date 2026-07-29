@@ -710,7 +710,7 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                     <label style="font-size: 9px; color: #94a3b8;">HIERARCHY ITEMS (계층구조 설정)</label>
                     <button id="btn-accordion-add-tier1" class="v4-inspector-btn primary" style="height: 20px; padding: 0 8px; font-size: 10px; border-radius: 10px;">+ 1티어 추가</button>
                 </div>
-                <div id="accordion-hierarchy-container" style="display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto; padding-right: 4px;">
+                <div id="accordion-hierarchy-container" style="display: flex; flex-direction: column; gap: 10px; padding-right: 4px;">
                     <!-- Hierarchy tree inputs will be rendered dynamically -->
                 </div>
             </div>
@@ -780,7 +780,7 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                     <label style="font-size: 9px; color: #94a3b8;">열 정보 설정 (Columns Config)</label>
                     <button id="btn-grid-add-col" class="v4-inspector-btn primary" style="height: 20px; padding: 0 8px; font-size: 10px; border-radius: 10px;">+ 열 추가</button>
                 </div>
-                <div id="grid-columns-container" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; padding-right: 4px;">
+                <div id="grid-columns-container" style="display: flex; flex-direction: column; gap: 8px; padding-right: 4px;">
                     <!-- Column configurations will be loaded dynamically -->
                 </div>
             </div>

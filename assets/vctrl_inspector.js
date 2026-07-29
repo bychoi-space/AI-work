@@ -545,11 +545,17 @@ const ProjectMetadataManager = {
             }
 
             // 1. Sync Shape Opacity
-            if (compStyles.isShape && s.bgOpacity !== undefined) {
+            if (compStyles.isShape) {
+                const opacityVal = (s.bgOpacity !== undefined) ? s.bgOpacity : 100;
                 const slider = document.getElementById('shape-bg-opacity');
                 const txt = document.getElementById('txt-shape-bg-opacity');
-                if (slider) slider.value = s.bgOpacity;
-                if (txt) txt.innerText = s.bgOpacity;
+                if (slider) slider.value = opacityVal;
+                if (txt) txt.innerText = opacityVal;
+                const wrapper = document.getElementById('shape-bg-wrapper');
+                if (wrapper) {
+                    if (s.bg === 'transparent' || opacityVal === 0) wrapper.classList.add('transparent-active');
+                    else wrapper.classList.remove('transparent-active');
+                }
             }
 
             // 2. Sync Other Inputs (Font Size)
@@ -788,9 +794,7 @@ const ProjectMetadataManager = {
             sections.forEach(sec => {
                 if (sec && sec.style.display === 'block') {
                     if (sec instanceof Node) {
-                        if (sec.parentElement !== floatingBody) {
-                            floatingBody.appendChild(sec);
-                        }
+                        floatingBody.appendChild(sec);
                     } else {
                         console.warn("[VCTRL INSPECTOR] Skipped appendChild: sec is not a valid DOM Node", sec);
                     }
@@ -1251,6 +1255,15 @@ function _syncCheckboxRadioProps(comp) {
             textInp.value = comp.checkboxText;
         }
     }
+
+    const wIconInp = document.getElementById('prop-width-icon');
+    const hIconInp = document.getElementById('prop-height-icon');
+    if (wIconInp && document.activeElement !== wIconInp) {
+        wIconInp.value = Math.round(comp.boxW !== undefined ? comp.boxW : 20);
+    }
+    if (hIconInp && document.activeElement !== hIconInp) {
+        hIconInp.value = Math.round(comp.boxH !== undefined ? comp.boxH : 20);
+    }
 }
 
 function _syncDatePickerProps(comp) {
@@ -1632,7 +1645,7 @@ window.initQuillEditor = function() {
     });
 
     window.quillEditor.on('text-change', () => {
-        if (!state.isEditing || state.editingIndex === -1) return;
+        if (!state.isEditing || state.editingIndex === -1 || state._isLoadingShapeContent) return;
         const html = window.quillEditor.root.innerHTML;
         if (state.editingType === 'pin') {
             // Update description array (legacy compat)
@@ -1652,8 +1665,6 @@ window.initQuillEditor = function() {
             }
             markAsDirty();
         } else if (state.editingType === 'shape') {
-            // 초기 로드 중 발사된 text-change는 무시 (루프 방지)
-            if (state._isLoadingShapeContent) return;
             // Shape 텍스트 업데이트: 선택된 shape 내부 innerHTML 교체
             const iframe = document.getElementById('main-iframe');
             if (iframe && iframe.contentWindow) {
@@ -1676,9 +1687,13 @@ window.initQuillEditor = function() {
 // Subscribe to direct iframe text changes to sync Quill editor in real-time
 if (window.MessageHub) {
     MessageHub.subscribe('LF_PIN_TEXT_CHANGED', (data) => {
-        if (!state.isEditing || state.editingIndex === -1 || !window.quillEditor) return;
-        // Verify this update is for the currently active editing component
-        if (state.editingIndex === data.id) {
+        if (!window.quillEditor || !data) return;
+        
+        const isMatch = (state.editingIndex === data.id) ||
+                        (state.editingIndex === data.compId) ||
+                        (state.selectedIds && (state.selectedIds.includes(data.id) || state.selectedIds.includes(data.compId)));
+
+        if (isMatch) {
             // Prevent feedback loop: tell the Quill change listener that we are programmatically updating the text
             state._isLoadingShapeContent = true;
             
@@ -1691,20 +1706,28 @@ if (window.MessageHub) {
                 cleanHtml = textContent ? textContent.innerHTML : rawHtml;
             }
             
+            // Sync to description list metadata if it's a description pin
+            if (state.editingType === 'pin' && typeof state.editingIndex === 'number') {
+                const list = state.activeFile?.meta?.description;
+                if (list && list[state.editingIndex]) {
+                    list[state.editingIndex].html = cleanHtml;
+                    const tmp = document.createElement('div');
+                    tmp.innerHTML = cleanHtml;
+                    list[state.editingIndex].text = tmp.innerText.trim();
+                }
+            }
+
             const wasQuillFocused = document.activeElement === window.quillEditor.root;
             
             window.quillEditor.clipboard.dangerouslyPasteHTML(cleanHtml, 'silent');
             
             if (wasQuillFocused) {
                 window.quillEditor.setSelection(0, 0);
-            } else {
-                window.quillEditor.setSelection(null);
             }
             
-            // Release the lock on the next animation frame
-            requestAnimationFrame(() => {
+            setTimeout(() => {
                 state._isLoadingShapeContent = false;
-            });
+            }, 100);
         }
     });
 }

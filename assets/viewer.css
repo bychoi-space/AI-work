@@ -338,6 +338,13 @@ body.fullscreen-mode #btn-fullscreen-exit {
     background: rgba(255, 255, 255, 0.2);
 }
 
+/* Prevent Sub-Container Double Scrollbars in Inspector Floating Card (Single Scroll Standard) */
+.floating-inspector-body #grid-columns-container,
+.floating-inspector-body #accordion-hierarchy-container {
+    max-height: none !important;
+    overflow-y: visible !important;
+}
+
 /* Selection Actions Bar & Inspector Styling */
 .floating-inspector-body #selection-actions-bar {
     border-radius: 12px;
@@ -509,17 +516,32 @@ body.fullscreen-mode #btn-fullscreen-exit {
     background: var(--panel-bg);
     display: flex;
     flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 #sidebar-right {
     width: 310px;
     background: var(--panel-bg);
     display: flex;
     flex-direction: column;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
 }
 .panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 14px 16px;
+    transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.panel-header:first-child {
+    border-top: none;
+}
+.panel-header-subtitle {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 #screens-list {
     flex: 1;
@@ -602,3 +624,254 @@ body.fullscreen-mode .canvas,
 body.fullscreen-mode .stage {
     cursor: none !important;
 }
+
+/* ==========================================================================
+   Viewer Shell UI Renewal & Inline Style Migration (Header, Left & Right Sidebars)
+   ========================================================================== */
+
+/* 1. Header Toolbar Renewal */
+.toolbar {
+    height: 52px;
+    background: rgba(22, 26, 34, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    z-index: 100;
+}
+.toolbar-divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.12);
+    margin: 0 8px;
+    border: none;
+}
+.toolbar-divider.action-divider {
+    margin: 0 6px;
+}
+.toolbar-file-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #f8fafc;
+    letter-spacing: 0.3px;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.toolbar-meta-loading {
+    padding: 0;
+    margin: 0;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+.btn-global-save {
+    height: 32px;
+    padding: 0 18px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 16px;
+    margin-left: 6px;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.35);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-global-save:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 4px 18px rgba(99, 102, 241, 0.55);
+}
+
+/* 2. Left Sidebar Footer & Metadata Renewal */
+.v4-meta-updated {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.meta-txt-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.meta-history-icon {
+    font-size: 14px;
+    opacity: 0.5;
+    color: var(--text-secondary);
+}
+.meta-updated-txt {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+.btn-show-history {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+.btn-show-history:hover {
+    background: rgba(99, 102, 241, 0.3);
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: scale(1.1);
+}
+.meta-visibility-icon {
+    font-size: 14px;
+    color: var(--accent-nav);
+}
+
+/* 3. Right Sidebar Search & Library Categories Renewal */
+.sidebar-search-container {
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+.v4-search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.search-icon {
+    position: absolute;
+    left: 12px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.4);
+    pointer-events: none;
+    transition: color 0.2s;
+}
+#sidebar-search-input {
+    width: 100%;
+    height: 34px;
+    padding: 0 32px 0 34px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1.6px solid rgba(255, 255, 255, 0.1);
+    border-radius: 17px;
+    color: #fff;
+    font-size: 11px;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    outline: none;
+}
+#sidebar-search-input:focus {
+    border-color: var(--accent) !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.15);
+}
+#sidebar-search-clear {
+    position: absolute;
+    right: 12px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    display: none;
+    transition: color 0.2s;
+}
+#sidebar-search-clear:hover {
+    color: #fff !important;
+}
+
+#sidebar-search-empty {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+.search-empty-icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.15);
+}
+.search-empty-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+}
+.search-empty-desc {
+    font-size: 11px;
+    margin-top: 4px;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+/* Category Headers (SHAPE, ATOMIC, ICON, COMPONENTS) */
+.panel-header-title {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+.header-shapes {
+    background: rgba(99, 102, 241, 0.04);
+    border-left: 3px solid #818cf8;
+}
+.title-shapes {
+    color: #818cf8;
+}
+
+.header-atomic {
+    background: rgba(52, 211, 153, 0.04);
+    border-left: 3px solid #34d399;
+}
+.title-atomic {
+    color: #34d399;
+}
+
+.header-icon {
+    background: rgba(56, 189, 248, 0.04);
+    border-left: 3px solid #38bdf8;
+}
+.title-icon {
+    color: #38bdf8;
+}
+
+.header-molecules {
+    background: rgba(244, 63, 94, 0.04);
+    border-left: 3px solid #f43f5e;
+}
+.title-molecules {
+    color: #f43f5e;
+}
+
+.components-body {
+    padding: 12px;
+}
+
+.molecule-btn {
+    height: 38px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+.molecule-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+

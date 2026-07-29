@@ -25,123 +25,12 @@
     };
     const highlightActive = window.highlightActive;
 
-    // 1. Component Insertion
-    window.insertV4ComponentById = function(id, customIdx) {
-        if (id === 'v4-atom-image') {
-            triggerImageFileUpload();
-            return;
-        }
-        const legacyMap = {
-            'v4-atom-accordion': 'Accordion UI',
-            'v4-atom-checkbox': 'Check Box',
-            'v4-atom-radio': 'Radio Button',
-            'v4-atom-grid': 'Grid UI',
-            'v4-atom-searchbar': 'Search Bar'
+    // 1. Component Insertion (Delegated to vctrl_component_inserter.js)
+    if (!window.insertV4ComponentById) {
+        window.insertV4ComponentById = function(id, customIdx) {
+            console.log("[V4 Addon] Delegating insertion for:", id);
         };
-        if (legacyMap[id] && typeof window.insertAtomicComponent === 'function') {
-            window.insertAtomicComponent('atom', legacyMap[id]);
-            return;
-        }
-
-        const lib = window.V4_COMPONENT_LIBRARY;
-        if (!lib) return console.error("[V4] Component Library not found.");
-
-        const curState = window.state || window.parent.state || {};
-        const customMols = curState.globalComponents || ((curState.projectMetadata && curState.projectMetadata.molecules) ? curState.projectMetadata.molecules : []);
-        
-        const item = (lib.atoms || []).find(i => i.id === id) || 
-                     (lib.molecules || []).find(i => i.id === id) || 
-                     (lib.organisms || []).find(i => i.id === id) ||
-                     customMols.find(i => i.id === id);
-
-        if (!item) return console.error("[V4] Component not found:", id);
-
-        const isIcon = item.id.includes('icon') || (item.html && (item.html.includes('<img') || item.html.includes('lf-icon')));
-        const style = { 
-            width: item.width || (isIcon ? '40px' : '120px'), 
-            height: item.height || (isIcon ? '40px' : '40px') 
-        };
-        if (item.id === 'v4-search-bar' || item.id === 'v4-premium-gnb') {
-            style.width = '100%';
-            style.height = 'auto';
-        }
-        if (item.id === 'v4-tool-text') {
-            style.width = '120px';
-            style.height = '30px';
-        }
-
-        const isTextTool = item.id === 'v4-tool-text';
-        
-        // Separate description pins (customIdx present) from pure textboxes (no customIdx)
-        const isDescriptionPin = isTextTool && (customIdx !== undefined);
-        const targetId = isTextTool 
-            ? (isDescriptionPin ? ('v4-pin-' + customIdx) : ('v4-text-' + Date.now()))
-            : ('v4-comp-' + Date.now());
-
-
-        notifyIframe({
-            type: 'LF_INSERT_COMPONENT',
-            id: targetId,
-            html: item.html,
-            style: style,
-            className: isDescriptionPin ? 'pin-marker' : (isTextTool ? 'v4-text-shape' : ''),
-            isGroup: !!item.isGroup
-        });
-    };
-
-    function triggerImageFileUpload() {
-        let input = document.getElementById('v4-image-file-input');
-        if (!input) {
-            input = document.createElement('input');
-            input.id = 'v4-image-file-input';
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.style.display = 'none';
-            document.body.appendChild(input);
-            input.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    const base64 = evt.target.result;
-                    const img = new Image();
-                    img.onload = function() {
-                        let w = img.naturalWidth || 200;
-                        let h = img.naturalHeight || 200;
-                        const maxBound = 300;
-                        if (w > maxBound || h > maxBound) {
-                            const ratio = Math.min(maxBound / w, maxBound / h);
-                            w = Math.round(w * ratio);
-                            h = Math.round(h * ratio);
-                        }
-                        window.insertImageComponent(base64, w + 'px', h + 'px');
-                    };
-                    img.src = base64;
-                };
-                reader.readAsDataURL(file);
-                input.value = '';
-            });
-        }
-        input.click();
     }
-
-    window.insertImageComponent = function(base64, width, height) {
-        const targetId = 'v4-img-' + Date.now();
-        const html = '<div class="v4-shape v4-shape-image" style="width: 100%; height: 100%; background-image: url(\'' + base64 + '\'); background-size: contain; background-position: center; background-repeat: no-repeat; box-sizing: border-box; border: 1.6px solid transparent; background-color: transparent !important;"></div>';
-        const finalW = width || '200px';
-        const finalH = height || '200px';
-        const style = {
-            width: finalW,
-            height: finalH
-        };
-        notifyIframe({
-            type: 'LF_INSERT_COMPONENT',
-            id: targetId,
-            html: html,
-            style: style,
-            className: ''
-        });
-    };
 
     // Dependencies are now pre-injected via vctrl_v3.js loadScreen() for security compliance.
 
@@ -292,10 +181,11 @@
 
     // Shape Style inputs synced dynamically via styleUpdateConfig config loop
 
-    const shapeBgColorEl = document.getElementById('shape-bg-color');
-    if (shapeBgColorEl) {
-        shapeBgColorEl.addEventListener('input', function() {
-            const colorHex = this.value;
+    // Event delegation for shape-bg-color and shape-bg-opacity to ensure handlers work even when inspector DOM is dynamically rendered or moved
+    document.addEventListener('input', function(e) {
+        if (!e.target) return;
+        if (e.target.id === 'shape-bg-color') {
+            const colorHex = e.target.value;
             const opacitySlider = document.getElementById('shape-bg-opacity');
             let opacityVal = opacitySlider ? parseInt(opacitySlider.value) : 100;
             
@@ -317,18 +207,13 @@
             
             const wrapper = document.getElementById('shape-bg-wrapper');
             if (wrapper) wrapper.classList.remove('transparent-active');
-        });
-    }
-
-    const shapeBgOpacityEl = document.getElementById('shape-bg-opacity');
-    if (shapeBgOpacityEl) {
-        shapeBgOpacityEl.addEventListener('input', function() {
-            const opacityVal = this.value;
+        } else if (e.target.id === 'shape-bg-opacity') {
+            const opacityVal = e.target.value;
             const txt = document.getElementById('txt-shape-bg-opacity');
             if (txt) txt.innerText = opacityVal;
             
             const colorPicker = document.getElementById('shape-bg-color');
-            const colorHex = colorPicker ? colorPicker.value : '#1e293b';
+            const colorHex = (colorPicker && colorPicker.value) ? colorPicker.value : '#ffffff';
             const rgbaColor = hexToRgba(colorHex, opacityVal);
             
             notifyIframe({
@@ -345,8 +230,8 @@
                     wrapper.classList.remove('transparent-active');
                 }
             }
-        });
-    }
+        }
+    });
 
     const _syncPatternVisualBtns = (selectedType) => {
         document.querySelectorAll('.v4-pattern-type-btn').forEach(btn => {
@@ -651,14 +536,24 @@
             img.src = base64;
         }
         else if (data.type === 'LF_SAVE_CLIPBOARD') {
-            console.log("[Clipboard Debug] Parent saved clipboard data from iframe:", data.clipboard);
-            window.__lf_global_clipboard__ = data.clipboard;
+            console.log("[Clipboard Debug] Parent saved clipboard data from iframe to window.top SSOT:", data.clipboard);
+            try {
+                (window.top || window).__lf_global_clipboard__ = data.clipboard;
+            } catch(err) {
+                window.__lf_global_clipboard__ = data.clipboard;
+            }
         }
         else if (data.type === 'LF_REQUEST_CLIPBOARD') {
-            console.log("[Clipboard Debug] Parent received request for clipboard. Stored data:", window.__lf_global_clipboard__);
+            let storedData = [];
+            try {
+                storedData = (window.top || window).__lf_global_clipboard__ || [];
+            } catch(err) {
+                storedData = window.__lf_global_clipboard__ || [];
+            }
+            console.log("[Clipboard Debug] Parent received request for clipboard. Stored data count:", storedData.length);
             notifyIframe({
                 type: 'LF_RESPONSE_CLIPBOARD',
-                clipboard: window.__lf_global_clipboard__ || []
+                clipboard: storedData
             });
         }
     });
@@ -715,6 +610,34 @@
                     type: 'LF_UPDATE_ATOM_LABEL_TEXT',
                     text: this.value
                 });
+            };
+        }
+
+        const widthIconInp = document.getElementById('prop-width-icon');
+        const heightIconInp = document.getElementById('prop-height-icon');
+
+        if (widthIconInp) {
+            widthIconInp.oninput = function() {
+                const val = parseInt(this.value);
+                if (!isNaN(val) && val > 0) {
+                    notifyIframe({
+                        type: 'LF_UPDATE_ATOM_ICON_SIZE',
+                        width: val,
+                        height: heightIconInp ? (parseInt(heightIconInp.value) || val) : val
+                    });
+                }
+            };
+        }
+        if (heightIconInp) {
+            heightIconInp.oninput = function() {
+                const val = parseInt(this.value);
+                if (!isNaN(val) && val > 0) {
+                    notifyIframe({
+                        type: 'LF_UPDATE_ATOM_ICON_SIZE',
+                        width: widthIconInp ? (parseInt(widthIconInp.value) || val) : val,
+                        height: val
+                    });
+                }
             };
         }
     };

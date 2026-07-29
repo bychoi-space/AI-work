@@ -71,14 +71,14 @@
             <a href="index.html" class="tool-btn" id="btn-back" title="목록으로 돌아가기 (Esc)">
                 <span class="material-icons-outlined">arrow_back</span>
             </a>
-            <div style="width: 1px; background: var(--border-color); margin: 6px 4px;"></div>
+            <div class="toolbar-divider"></div>
             <img src="assets/logo.svg" class="brand-logo" alt="Logo" loading="lazy">
-            <span style="font-weight: 600; letter-spacing: 0.5px;" id="file-name-display">Loading...</span>
+            <span class="toolbar-file-name" id="file-name-display">Loading...</span>
         </div>
         
         <!-- Center: Project Metadata (Horizontal & Compact) -->
         <div class="header-metadata" id="top-metadata-panel">
-            <div class="empty-text" style="padding: 0; margin: 0; font-size: 11px;">Loading metadata...</div>
+            <div class="empty-text toolbar-meta-loading">Loading metadata...</div>
         </div>
 
         <div class="actions">
@@ -94,7 +94,7 @@
                     </button>
                 </div>
 
-                <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.1); margin: 0 4px;"></div>
+                <div class="toolbar-divider action-divider"></div>
 
                 <button class="tool-btn" onclick="centerView()" title="가운데 맞춤 (Home)">
                     <span class="material-icons-outlined">filter_center_focus</span>
@@ -104,7 +104,7 @@
                 </button>
             </div>
 
-            <button id="btn-global-save" class="btn-accent" style="height: 32px; padding: 0 16px; font-size: 13px; border-radius: 16px; margin-left: 4px;">전체 저장</button>
+            <button id="btn-global-save" class="btn-accent btn-global-save">전체 저장</button>
         </div>
     </header>
 
@@ -129,13 +129,13 @@
             
             <!-- Sidebar Footer for Metadata Info -->
             <div class="sidebar-footer" id="sidebar-footer">
-                <div class="v4-meta-updated" id="meta-bar-updated" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                    <div style="display: flex; align-items: center; gap: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                        <span class="material-icons-outlined" style="font-size: 14px; opacity: 0.5;">history</span>
-                        <span id="meta-updated-txt" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">최종 업데이트: -</span>
+                <div class="v4-meta-updated" id="meta-bar-updated">
+                    <div class="meta-txt-wrapper">
+                        <span class="material-icons-outlined meta-history-icon">history</span>
+                        <span id="meta-updated-txt" class="meta-updated-txt">최종 업데이트: -</span>
                     </div>
-                    <button id="btn-show-history" class="btn-secondary" title="재개정 이력 보기" style="width: 24px; height: 24px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0, 0, 0, 0.2); cursor: pointer; flex-shrink: 0;">
-                        <span class="material-icons-outlined" style="font-size: 14px; color: var(--accent-nav);">visibility</span>
+                    <button id="btn-show-history" class="btn-secondary btn-show-history" title="재개정 이력 보기">
+                        <span class="material-icons-outlined meta-visibility-icon">visibility</span>
                     </button>
                 </div>
             </div>
@@ -281,7 +281,7 @@
             <!-- Tab: Description -->
             <div id="tab-description" class="tab-pane">
                 <div class="panel-header">
-                    <span style="font-size: 10px; opacity: 0.6;">SCENE ANNOTATIONS</span>
+                    <span class="panel-header-subtitle">SCENE ANNOTATIONS</span>
                     <button class="btn-add-action" id="btn-add-description" title="새 행 추가 (화면 클릭)">
                         <span class="material-icons-outlined">add_circle</span>
                     </button>
@@ -295,58 +295,58 @@
 
             <!-- Tab: Library (V4 Asset & Component Library) -->
             <div id="tab-editor" class="tab-pane active">
-                <div class="sidebar-search-container" style="padding: 14px 14px 8px 14px; background: var(--panel-bg); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 10;">
-                    <div class="v4-search-wrapper" style="position: relative; display: flex; align-items: center; width: 100%;">
-                        <span class="material-icons-outlined" style="position: absolute; left: 10px; font-size: 16px; color: var(--text-secondary); pointer-events: none;">search</span>
-                        <input type="text" id="sidebar-search-input" placeholder="검색어를 입력하세요..." style="width: 100%; height: 32px; padding: 0 32px 0 32px; background: rgba(0, 0, 0, 0.2); border: 1.6px solid var(--border-color); border-radius: 16px; color: #fff; font-size: 11px; font-family: inherit; transition: all 0.2s; box-sizing: border-box; outline: none;">
-                        <span id="sidebar-search-clear" class="material-icons-outlined" style="position: absolute; right: 10px; font-size: 16px; color: var(--text-secondary); cursor: pointer; display: none; transition: color 0.2s;">close</span>
+                <div class="sidebar-search-container">
+                    <div class="v4-search-wrapper">
+                        <span class="material-icons-outlined search-icon">search</span>
+                        <input type="text" id="sidebar-search-input" placeholder="검색어를 입력하세요...">
+                        <span id="sidebar-search-clear" class="material-icons-outlined">close</span>
                     </div>
                 </div>
 
                 <!-- Empty Search State -->
-                <div id="sidebar-search-empty" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; color: var(--text-secondary);">
-                    <span class="material-icons-outlined" style="font-size: 40px; margin-bottom: 8px; color: rgba(255,255,255,0.15);">search_off</span>
-                    <div style="font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.6);">검색 결과가 없습니다.</div>
-                    <div style="font-size: 11px; margin-top: 4px; color: rgba(255,255,255,0.35);">다른 검색어를 입력해 보세요.</div>
+                <div id="sidebar-search-empty">
+                    <span class="material-icons-outlined search-empty-icon">search_off</span>
+                    <div class="search-empty-title">검색 결과가 없습니다.</div>
+                    <div class="search-empty-desc">다른 검색어를 입력해 보세요.</div>
                 </div>
 
                 <!-- Part 1: COMPONENTS -->
-                <div id="v4-shapes-header" class="panel-header" style="background: rgba(99, 102, 241, 0.03); padding: 18px 20px;">
-                    <span style="font-size: 10px; font-weight: 800; color: #818cf8; letter-spacing: 1.5px;">SHAPE</span>
+                <div id="v4-shapes-header" class="panel-header header-shapes">
+                    <span class="panel-header-title title-shapes">SHAPE</span>
                 </div>
-                <div id="v4-shapes-body" class="components-body" style="padding: 12px;">
+                <div id="v4-shapes-body" class="components-body">
                     <div id="v4-shapes-container" class="component-grid">
                         <!-- Dynamic shapes will be rendered here -->
                     </div>
                 </div>
 
                 <!-- Part 2: ATOMIC LIBRARY -->
-                <div id="atomic-library-header" class="panel-header" style="border-top: 1px solid rgba(255, 255, 255, 0.08); background: rgba(52, 211, 153, 0.03); padding: 18px 20px;">
-                    <span style="font-size: 10px; font-weight: 800; color: #34d399; letter-spacing: 1.5px;">ATOMIC LIBRARY</span>
+                <div id="atomic-library-header" class="panel-header header-atomic">
+                    <span class="panel-header-title title-atomic">ATOMIC LIBRARY</span>
                 </div>
-                <div id="atomic-library-body" class="components-body" style="padding: 12px;">
+                <div id="atomic-library-body" class="components-body">
                     <div id="atomic-library-container" class="component-grid">
                         <!-- Extracted dynamically -->
                     </div>
                 </div>
 
                 <!-- Part 3: ICON LIBRARY -->
-                <div id="icon-library-header" class="panel-header" style="border-top: 1px solid rgba(255, 255, 255, 0.08); background: rgba(56, 189, 248, 0.03); padding: 18px 20px;">
-                    <span style="font-size: 10px; font-weight: 800; color: #38bdf8; letter-spacing: 1.5px;">ICON LIBRARY</span>
+                <div id="icon-library-header" class="panel-header header-icon">
+                    <span class="panel-header-title title-icon">ICON LIBRARY</span>
                 </div>
-                <div id="icon-library-body" class="components-body" style="padding: 12px;">
+                <div id="icon-library-body" class="components-body">
                     <div id="icon-library-container" class="component-grid">
                         <!-- Dynamic icons rendered here -->
                     </div>
                 </div>
                 <!-- Part 4: MOLECULES -->
-                <div id="molecules-header" class="panel-header" style="border-top: 1px solid rgba(255, 255, 255, 0.08); background: rgba(244, 63, 94, 0.03); padding: 18px 20px;">
-                    <span id="molecules-header-text" style="font-size: 10px; font-weight: 800; color: #f43f5e; letter-spacing: 1.5px; text-transform: uppercase;">COMPONENTS</span>
+                <div id="molecules-header" class="panel-header header-molecules">
+                    <span id="molecules-header-text" class="panel-header-title title-molecules">COMPONENTS</span>
                 </div>
-                <div id="molecules-body" class="components-body" style="padding: 12px;">
+                <div id="molecules-body" class="components-body">
                     <div id="custom-molecules-container" class="v4-tool-grid">
-                        <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LFmall Header')" style="height: 40px; font-weight: 700;">LFmall Header</button>
-                        <button class="v4-inspector-btn" onclick="insertAtomicComponent('component', 'LFmall MO Header (Detail)')" style="height: 40px; font-weight: 700; margin-top: 8px;">LFmall MO Header (Detail)</button>
+                        <button class="v4-inspector-btn molecule-btn" onclick="insertAtomicComponent('component', 'LFmall Header')">LFmall Header</button>
+                        <button class="v4-inspector-btn molecule-btn" onclick="insertAtomicComponent('component', 'LFmall MO Header (Detail)')">LFmall MO Header (Detail)</button>
                     </div>
                 </div>
                 </div> <!-- Close #tab-editor -->
@@ -391,6 +391,7 @@
     <script src="assets/app.js?v=V186_DYNAMIC_TEMPLATES"></script>
     
     <!-- Modularized Engine -->
+    <script src="assets/ui_library_data.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_undo.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_text_measurer.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_ui_atoms.js?v=V300_REFATCORED"></script>
@@ -401,15 +402,21 @@
     <script src="assets/vctrl_object_shape.js?v=V107_PATTERN_DEBUG"></script>
     <script src="assets/vctrl_object_table.js?v=V101_POPULATED"></script>
     <script src="assets/vctrl_object_connector.js?v=V101_POPULATED"></script>
+    <script src="assets/vctrl_iframe_styles.js?v=V300_REFATCORED"></script>
+    <script src="assets/vctrl_iframe_text_editor.js?v=V300_REFATCORED"></script>
+    <script src="assets/vctrl_iframe_style_handlers.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_iframe_script.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_iframe_grid.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_iframe_accordion.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_iframe_drag.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_iframe_ports.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_presentation_pen.js?v=V103_TOOLTIP_GUIDE"></script>
+    <script src="assets/vctrl_github_api.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_core.js?v=V240_ROW_HEIGHT_HOTFIX"></script>
     <script src="assets/vctrl_smartguide.js?v=V196_DEBUG_TOGGLE"></script>
     <script src="assets/vctrl_grouping.js?v=V182_MARQUEE_CLEANUP_FIX"></script>
+    <script src="assets/vctrl_screen_manager.js?v=V300_REFATCORED"></script>
+    <script src="assets/vctrl_library_search.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_inspector.js?v=V247_LIVE_LOOKUP"></script>
     <script src="assets/vctrl_v3.js?v=V157_PIN_SYNC"></script>
     <script src="assets/vctrl_properties.js?v=V207_ALL_DIMENSIONS"></script>
@@ -418,6 +425,8 @@
     <!-- V4 Premium Addons -->
     <script src="enhanced_v4/component_library_v4.js?v=V233_POPUP"></script>
     <script src="assets/vctrl_table.js?v=V144_CELL_MERGE"></script>
+    <script src="assets/vctrl_component_inserter.js?v=V300_REFATCORED"></script>
+    <script src="assets/vctrl_floating_inspector.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_v4_addon.js?v=V300_REFATCORED"></script>
 </body>
 </html>

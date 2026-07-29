@@ -19,12 +19,12 @@ window.v4TextMeasurerScript = `
         if (textEnabled) {
             const textEl = container.querySelector('.v4-checkbox-text, .v4-radio-text');
             if (textEl) {
-                const boxW = parseFloat(boxEl.style.width) || 24;
-                const boxH = parseFloat(boxEl.style.height) || 24;
+                const boxW = parseFloat(boxEl.style.width) || 20;
+                const boxH = parseFloat(boxEl.style.height) || 20;
                 const textWidth = textEl.scrollWidth || 35;
                 const totalWidth = boxW + 8 + textWidth + 8;
                 s.style.width = totalWidth + 'px';
-                s.style.height = Math.max(32, boxH + 8) + 'px';
+                s.style.height = Math.max(30, boxH + 6) + 'px';
             }
         } else {
             if (s.getAttribute('data-resized') === 'true') {
@@ -33,8 +33,8 @@ window.v4TextMeasurerScript = `
                 boxEl.style.width = parentW + 'px';
                 boxEl.style.height = parentH + 'px';
             } else {
-                const boxW = parseFloat(boxEl.style.width) || 24;
-                const boxH = parseFloat(boxEl.style.height) || 24;
+                const boxW = parseFloat(boxEl.style.width) || 20;
+                const boxH = parseFloat(boxEl.style.height) || 20;
                 s.style.width = boxW + 'px';
                 s.style.height = boxH + 'px';
             }

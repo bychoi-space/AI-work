@@ -221,18 +221,40 @@ window.v4ShortcutsScript = `
         }
 
         if (e.key === 'F2' || e.code === 'F2') {
+            if (e.isComposing) return;
             e.preventDefault();
-            const selected = document.querySelectorAll('.lf-component.selected');
             const activeElement = document.activeElement;
             const isEditing = isInputActive(activeElement);
 
-            if (selected.length > 0) {
-                if (isEditing) {
-                    console.log("[VCTRL SHORTCUTS] Blurring iframe text editing.");
-                    activeElement.blur();
+            if (isEditing) {
+                console.log("[VCTRL SHORTCUTS] Exiting inline text editing mode via F2.");
+                if (activeElement && typeof activeElement.blur === 'function') activeElement.blur();
+            } else {
+                const selected = document.querySelectorAll('.lf-component.selected');
+                if (selected.length > 0) {
+                    const targetComp = selected[0];
+                    const editable = targetComp.querySelector('.v4-editable-cell, [contenteditable="true"]') ||
+                                     targetComp.querySelector('.v4-shape-text-content, .v4-shape-text-overlay, .v4-text-shape-content');
+                    if (editable) {
+                        console.log("[VCTRL SHORTCUTS] Entering inline text editing mode via F2.");
+                        if (typeof window.focusEditableCell === 'function') {
+                            window.focusEditableCell(editable);
+                        } else {
+                            try {
+                                window.focus();
+                                if (window.top && window.top !== window) {
+                                    const iframe = window.top.document.getElementById('main-iframe');
+                                    if (iframe && iframe.contentWindow) iframe.contentWindow.focus();
+                                }
+                            } catch(err) {}
+                            editable.setAttribute('contenteditable', 'true');
+                            editable.focus();
+                        }
+                    } else {
+                        console.log("[VCTRL SHORTCUTS] No inline editable element found, focusing parent Quill.");
+                        notifyParent({ type: 'LF_FOCUS_PARENT_QUILL' });
+                    }
                 }
-                console.log("[VCTRL SHORTCUTS] Focusing parent Quill editor.");
-                notifyParent({ type: 'LF_FOCUS_PARENT_QUILL' });
             }
             return;
         }

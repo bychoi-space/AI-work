@@ -1,9 +1,46 @@
 {
   "title": "[기획전] 브랜드 첫구매 - 제반 설계",
-  "screens": {},
+  "screens": {
+    "01_Coupon_DB_Overload_Risk.html": {
+      "title": "01_기획전 쿠폰 다운로드 회원DB 과부하 우려 분석",
+      "type": "plan",
+      "updatedAt": "2026-07-29T10:05:00.000Z",
+      "template": "template_plan.html",
+      "description": [
+        {
+          "text": "[이슈 1] 동시 다운로드 요청 시 DB 커넥션 풀 직격타",
+          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[이슈 1]</strong> 동시 다운로드 요청 시 DB 커넥션 풀 직격타</div>",
+          "x": 860,
+          "y": 370,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "[이슈 2] 실시간 구매내역 JOIN 쿼리 실행 비용 과다",
+          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[이슈 2]</strong> 실시간 구매내역 JOIN 쿼리 실행 비용 과다</div>",
+          "x": 1050,
+          "y": 480,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "[개선] 사전 집계 데이터 또는 캐시 참조 필수",
+          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[개선]</strong> 사전 집계 데이터 또는 캐시 참조 필수</div>",
+          "x": 1020,
+          "y": 780,
+          "type": "text",
+          "standardized": true
+        }
+      ],
+      "connectors": [],
+      "defaultTab": "description",
+      "screenDesc": "LFmall 기획전 페이지에서 고객이 쿠폰 다운로드 시 회원 DB(구매내역) 실시간 조회에 따른 과부하 우려 및 시스템 영향도/개선방안 분석 도식화"
+    }
+  },
   "assignee": "최범열",
-  "developer": "",
+  "developer": "플랫폼개발팀",
   "period": "2026.07.29(수) ~ 2026.08.28(금)",
   "jira": "LFML-145373",
-  "themeIndex": 2
+  "themeIndex": 2,
+  "updated": "2026-07-29 10:05:00"
 }
