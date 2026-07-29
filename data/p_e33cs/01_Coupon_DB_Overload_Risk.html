@@ -500,38 +500,52 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
             <div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#991b1b; padding:4px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center; width:100%; height:100%;"><p><span style="font-size: 14px; color: rgb(153, 27, 27);">• DB 자원 부하 집중</span></p><p><span style="font-size: 14px; color: rgb(153, 27, 27);">• 타 서비스(로그인, 결제 등) </span></p><p><span style="font-size: 14px; color: rgb(153, 27, 27);">응답 지연 확산 위험﻿</span></p></div>
         <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></div>
 
-        <!-- ==================== BOTTOM COMMENT CARD 1 (PERFECT FIT) ==================== -->
+        <!-- ==================== BOTTOM COMMENT CARD 1 (100% FULLY ATOMIC UNBUNDLED) ==================== -->
         <!-- Card 1 Background Shape -->
         <div class="lf-component" id="comp-detail-issues-bg" style="top: 650px; left: 19.5px; width: 680px; height: 180px; z-index: 10;" data-resized="true">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.02); box-sizing:border-box;"></div>
         <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
-        <!-- Card 1 Header Text Box -->
-        <div class="lf-component v4-text-box" id="comp-detail-issues-header" style="top: 665px; left: 50px; width: 171px; height: 20px; z-index: 30; --v4-text-adjust-y: 0px; min-width: unset !important; min-height: unset !important;">
-            <div class="v4-editable-cell" contenteditable="true" style="outline: none; padding: 4px !important; display: flex; align-items: center; justify-content: flex-start; text-align: left; width: 100%; height: 100%; border-bottom: 1.6px solid rgb(241, 245, 249);">
+        <!-- Card 1 Header Text Box (Independent) -->
+        <div class="lf-component v4-text-box" id="comp-detail-issues-header" style="top: 665px; left: 45px; width: 630px; height: 32px; z-index: 30; --v4-text-adjust-y: 0px;">
+            <div class="v4-editable-cell" contenteditable="true" style="outline: none; padding: 2px !important; display: flex; align-items: center; justify-content: flex-start; text-align: left; width: 100%; height: 100%; border-bottom: 1.6px solid #f1f5f9;">
                 <p style="text-align:left;"><span style="width:22px; height:22px; background:#ef4444; color:#ffffff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-right:10px;">1</span> <strong style="font-size:15px; font-weight:800; color:#92400e;">1. As-Is 프로세스 주요 문제점</strong></p>
             </div>
         <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
-        <!-- Card 1 Bullet Content Text Box -->
-        <div class="lf-component v4-text-box" id="comp-detail-issues-content" style="top: 722.5px; left: 48px; width: 705px; height: 56.3px; z-index: 30; --v4-text-adjust-y: 0px; min-width: unset !important; min-height: unset !important;">
-            <div class="v4-editable-cell" contenteditable="true" style="outline: none; padding: 4px !important; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; text-align: left; width: 100%; height: 100%;"><p><span style="color: rgb(51, 65, 85);">• </span><strong style="color: rgb(51, 65, 85);">실시간 DB JOIN 부하</strong><span style="color: rgb(51, 65, 85);"> : 쿠폰 다운로드 시마다 `MEMBER_MST` &amp; `ORDER_HIST` 실시간 복합 쿼리로 DB 응답 지연</span></p><p><span style="color: rgb(51, 65, 85);">• </span><strong style="color: rgb(51, 65, 85);">커넥션 풀 병목</strong></p><p><span style="color: rgb(51, 65, 85);"> : 기획전 트래픽 집중 시 회원 DB Connection Pool 자원 고갈 및 처리 지연<span class="ql-cursor">﻿</span>우려</span></p></div>
+        <!-- Card 1 Bullet 1 Text Box (Independent) -->
+        <div class="lf-component v4-text-box" id="comp-detail-issues-item1" style="top: 708px; left: 45px; width: 630px; height: 32px; z-index: 30; --v4-text-adjust-y: 0px;">
+            <div class="v4-editable-cell" contenteditable="true" style="outline: none; padding: 2px !important; display: flex; align-items: center; justify-content: flex-start; text-align: left; width: 100%; height: 100%;">
+                <p style="text-align:left;"><span style="color: #334155; font-size: 13.5px;">• </span><strong style="color: #334155; font-size: 13.5px;">실시간 DB JOIN 부하</strong><span style="color: #334155; font-size: 13.5px;"> : 쿠폰 다운로드 시마다 `MEMBER_MST` &amp; `ORDER_HIST` 실시간 복합 쿼리로 DB 응답 지연</span></p>
+            </div>
+        <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
+        <!-- Card 1 Bullet 2 Text Box (Independent) -->
+        <div class="lf-component v4-text-box" id="comp-detail-issues-item2" style="top: 746px; left: 45px; width: 630px; height: 44px; z-index: 30; --v4-text-adjust-y: 0px;">
+            <div class="v4-editable-cell" contenteditable="true" style="outline: none; padding: 2px !important; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; text-align: left; width: 100%; height: 100%;">
+                <p style="text-align:left;"><span style="color: #334155; font-size: 13.5px;">• </span><strong style="color: #334155; font-size: 13.5px;">커넥션 풀 병목</strong></p>
+                <p style="text-align:left; margin-top: 2px; padding-left: 12px;"><span style="color: #64748b; font-size: 12.5px;">: 기획전 트래픽 집중 시 회원 DB Connection Pool 자원 고갈 및 처리 지연 우려</span></p>
+            </div>
         <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
-        <!-- ==================== BOTTOM COMMENT CARD 2 (PERFECT FIT) ==================== -->
+        <!-- ==================== BOTTOM COMMENT CARD 2 (100% FULLY ATOMIC UNBUNDLED) ==================== -->
         <!-- Card 2 Background Shape -->
         <div class="lf-component" id="comp-detail-impact-bg" style="top: 650px; left: 739.5px; width: 680px; height: 180px; z-index: 10;" data-resized="true">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #fca5a5 !important; border-radius:12px; box-shadow:0 2px 8px rgba(239,68,68,0.03); box-sizing:border-box;"></div>
         <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
-        <!-- Card 2 Header Text Box -->
-        <div class="lf-component v4-text-box" id="comp-detail-impact-header" style="top: 675px; left: 753px; width: 155px; height: 20px; z-index: 30; --v4-text-adjust-y: 0px; min-width: unset !important; min-height: unset !important;">
-            <div class="v4-editable-cell" contenteditable="true" style="outline: none; padding: 4px !important; display: flex; align-items: center; justify-content: flex-start; text-align: left; width: 100%; height: 100%; border-bottom: 1.6px solid rgb(254, 226, 226);">
+        <!-- Card 2 Header Text Box (Independent) -->
+        <div class="lf-component v4-text-box" id="comp-detail-impact-header" style="top: 665px; left: 765px; width: 630px; height: 32px; z-index: 30; --v4-text-adjust-y: 0px;">
+            <div class="v4-editable-cell" contenteditable="true" style="outline: none; padding: 2px !important; display: flex; align-items: center; justify-content: flex-start; text-align: left; width: 100%; height: 100%; border-bottom: 1.6px solid #fee2e2;">
                 <p style="text-align:left;"><span style="width:22px; height:22px; background:#dc2626; color:#ffffff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-right:10px;">2</span> <strong style="font-size:15px; font-weight:800; color:#991b1b;">2. 시스템 영향도 및 리스크</strong></p>
             </div>
         <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
-        <!-- Card 2 Bullet Content Text Box -->
-        <div class="lf-component v4-text-box" id="comp-detail-impact-content" style="top: 731.5px; left: 757px; width: 542px; height: 37.9px; z-index: 30; --v4-text-adjust-y: 0px; min-width: unset !important; min-height: unset !important;">
-            <div class="v4-editable-cell" contenteditable="true" style="outline: none; padding: 4px !important; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; text-align: left; width: 100%; height: 100%;">
-                <p style="text-align:left;"><span style="font-size:13px; color:#334155; line-height:1.6;">• <strong style="color:#991b1b;">발급 지연 및 타임아웃</strong> : DB 처리 지연으로 쿠폰 다운로드 요청 타임아웃 발생 위험</span></p>
-                <p style="text-align:left; margin-top:6px;"><span style="font-size:13px; color:#334155; line-height:1.6;">• <strong style="color:#991b1b;">전사 서비스 영향 확산</strong> : 동일 DB를 공유하는 로그인, 마이페이지, 주문/결제 서비스 응답 지연 전이</span></p>
+        <!-- Card 2 Bullet 1 Text Box (Independent) -->
+        <div class="lf-component v4-text-box" id="comp-detail-impact-item1" style="top: 708px; left: 765px; width: 630px; height: 32px; z-index: 30; --v4-text-adjust-y: 0px;">
+            <div class="v4-editable-cell" contenteditable="true" style="outline: none; padding: 2px !important; display: flex; align-items: center; justify-content: flex-start; text-align: left; width: 100%; height: 100%;">
+                <p style="text-align:left;"><span style="font-size:13.5px; color:#334155;">• <strong style="color:#991b1b;">발급 지연 및 타임아웃</strong> : DB 처리 지연으로 쿠폰 다운로드 요청 타임아웃 발생 위험</span></p>
+            </div>
+        <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
+        <!-- Card 2 Bullet 2 Text Box (Independent) -->
+        <div class="lf-component v4-text-box" id="comp-detail-impact-item2" style="top: 746px; left: 765px; width: 630px; height: 32px; z-index: 30; --v4-text-adjust-y: 0px;">
+            <div class="v4-editable-cell" contenteditable="true" style="outline: none; padding: 2px !important; display: flex; align-items: center; justify-content: flex-start; text-align: left; width: 100%; height: 100%;">
+                <p style="text-align:left;"><span style="font-size:13.5px; color:#334155;">• <strong style="color:#991b1b;">전사 서비스 영향 확산</strong> : 동일 DB를 공유하는 로그인, 마이페이지, 주문/결제 서비스 응답 지연 전이</span></p>
             </div>
         <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
