@@ -4,26 +4,9 @@
     "01_Coupon_DB_Overload_Risk.html": {
       "title": "As-Is 기획전 구조 이슈",
       "type": "plan",
-      "updatedAt": "2026-07-29T05:20:22.732Z",
+      "updatedAt": "2026-07-29T14:22:00.000Z",
       "template": "template_plan.html",
-      "description": [
-        {
-          "text": "[문제점] 실시간 회원 구매내역 직접 조회로 DB 부하 발생",
-          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[문제점]</strong> 실시간 회원 구매내역 직접 조회로 DB 부하 발생</div>",
-          "x": 680,
-          "y": 320,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "[영향도] LFmall 타 서비스 응답 지연 확산 우려",
-          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[영향도]</strong> LFmall 타 서비스 응답 지연 확산 우려</div>",
-          "x": 1050,
-          "y": 320,
-          "type": "text",
-          "standardized": true
-        }
-      ],
+      "description": [],
       "connectors": [],
       "defaultTab": "description",
       "screenDesc": "LFmall 기획전 쿠폰 다운로드 시 회원 DB 실시간 조회에 따른 As-Is 구조 이슈 및 부하 위험 요약"
@@ -31,26 +14,9 @@
     "02_ToBe_Order_Data_Lookup.html": {
       "title": "To-Be 주문 데이터 조회 개편안",
       "type": "plan",
-      "updatedAt": "2026-07-29T14:05:00.000Z",
+      "updatedAt": "2026-07-29T14:22:00.000Z",
       "template": "template_plan.html",
-      "description": [
-        {
-          "text": "[개편 핵심] Redis 캐시 참조로 주문 DB 직접 조회 차단",
-          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[개편 핵심]</strong> Redis 캐시 참조로 주문 DB 직접 조회 차단</div>",
-          "x": 680,
-          "y": 320,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "[동기화] 일 단위 벌크 배치 + 5분 증분 배치 준실시간 동기화",
-          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[동기화]</strong> 일 단위 벌크 배치 + 5분 증분 배치 준실시간 동기화</div>",
-          "x": 1050,
-          "y": 320,
-          "type": "text",
-          "standardized": true
-        }
-      ],
+      "description": [],
       "connectors": [],
       "defaultTab": "description",
       "screenDesc": "Redis 인메모리 분산 캐시 및 일단위/5분증분 배치 동기화를 통한 To-Be 주문 데이터 조회 개편 구조 설계"
@@ -58,26 +24,9 @@
     "03_Brand_Coupon_Policy.html": {
       "title": "브랜드 첫구매 쿠폰 데이터 & 운영 정책",
       "type": "plan",
-      "updatedAt": "2026-07-29T13:51:00.000Z",
+      "updatedAt": "2026-07-29T14:22:00.000Z",
       "template": "template_plan.html",
-      "description": [
-        {
-          "text": "[데이터 구조] 회원ID 키-구매 브랜드코드 벨류 적재",
-          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[데이터 구조]</strong> 회원ID 키-구매 브랜드코드 벨류 적재</div>",
-          "x": 480,
-          "y": 320,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "[반품/취소 정책] 반품 시 구매 제외 & 주문취소 시 쿠폰 자동 복원",
-          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[반품/취소 정책]</strong> 반품 시 구매 제외 & 주문취소 시 쿠폰 자동 복원</div>",
-          "x": 1050,
-          "y": 320,
-          "type": "text",
-          "standardized": true
-        }
-      ],
+      "description": [],
       "connectors": [],
       "defaultTab": "description",
       "screenDesc": "Redis Key-Value 데이터 스키마 정의, 반품 시 브랜드 구매 제외 기준, 주문 취소 시 쿠폰 자동 복구 정책 상세"
@@ -88,5 +37,5 @@
   "period": "2026.07.29(수) ~ 2026.08.28(금)",
   "jira": "LFML-145373",
   "themeIndex": 2,
-  "updated": "2026-07-29 14:20:22"
+  "updated": "2026-07-29 14:22:00"
 }
