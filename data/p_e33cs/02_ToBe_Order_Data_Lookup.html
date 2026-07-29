@@ -30,7 +30,7 @@
         .v4-shape { position:relative; border-width:1.6px !important; border-style:solid !important; border-color:#cbd5e1; transition:all 0.2s cubic-bezier(0.4,0,0.2,1); width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#ffffff; color:#0f172a; box-sizing:border-box; }
         .v4-shape-rect { border-radius:8px; }
         .v4-shape-text-content { width:100%; height:100%; display:flex; align-items:center; justify-content:center; text-align:center; padding:8px; box-sizing:border-box; overflow:hidden; }
-        .v4-shape-text-content p { margin:0; padding:0; line-height:1.2; text-align:center; }
+        .v4-shape-text-content p { margin:0; padding:0; line-height:1.4; text-align:center; }
         svg.lf-icon { background-image:none !important; }
         .v4-editable-cell { outline:none; }
     </style>
@@ -78,30 +78,49 @@
 
         <!-- Container Box for Diagram Section -->
         <div class="lf-component" id="comp-diagram-container-tobe" style="top: 132px; left: 30px; width: 1380px; height: 495px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:rgba(240,253,244,0.65); border:1.6px dashed #6ee7b7 !important; border-radius:14px; display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-start; padding:16px 20px; box-sizing:border-box;">
-                <div style="background:#059669; color:#ffffff; font-size:12.5px; font-weight:800; padding:5px 16px; border-radius:8px; margin-bottom:12px;">
-                    To-Be 배치 동기화 &amp; Redis 직결 조회 아키텍처 다이어그램
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:rgba(240,253,244,0.65); border:1.6px dashed #6ee7b7 !important; border-radius:14px; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:16px 20px; display:flex; align-items:flex-start; justify-content:flex-start;">
+                    <p style="text-align:left;"><span style="background:#059669; color:#ffffff; font-size:12.5px; font-weight:800; padding:5px 16px; border-radius:8px;">To-Be 배치 동기화 &amp; Redis 직결 조회 아키텍처 다이어그램</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- Node A1: Order RDBMS -->
-        <div class="lf-component" id="comp-tb-rdbms" style="top: 180px; left: 55px; width: 275px; height: 425px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 18px; box-sizing:border-box; text-align:center; box-shadow:0 6px 16px rgba(0,0,0,0.03);">
-                <div style="font-size:11.5px; font-weight:800; padding:4px 12px; border-radius:12px; color:#ffffff; background:#475569; margin-bottom:12px; letter-spacing:0.5px;">SOURCE RDBMS</div>
-                <div style="font-size:17px; font-weight:800; color:#0f172a; margin-bottom:12px; text-align:center;">주문 RDBMS</div>
-                <div style="width:72px; height:72px; border-radius:50%; background:#f1f5f9; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center; margin-bottom:18px; flex-shrink:0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
-                        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-                    </svg>
+        <!-- ==================== NODE A1 ATOMIC COMPONENTS ==================== -->
+        <!-- Node A1: Background -->
+        <div class="lf-component" id="comp-tb-rdbms-bg" style="top: 180px; left: 55px; width: 275px; height: 425px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:14px; box-shadow:0 6px 16px rgba(0,0,0,0.03); box-sizing:border-box;"></div>
+        </div>
+        <!-- Node A1: Badge -->
+        <div class="lf-component" id="comp-tb-rdbms-badge" style="top: 202px; left: 112px; width: 160px; height: 26px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#475569; border:1.6px solid #334155 !important; border-radius:13px !important; color:#ffffff; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:11.5px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">SOURCE RDBMS</span></p>
                 </div>
-                <!-- Unified CENTER Alignment for Middle Diagram Text -->
-                <div style="font-size:13px; color:#475569; line-height:1.6; text-align:center; width:100%;">
-                    • 원천 데이터 저장소<br>
-                    • `ORDER_HIST` 원본<br>
-                    • 회원별 구매 브랜드 이력
+            </div>
+        </div>
+        <!-- Node A1: Title -->
+        <div class="lf-component" id="comp-tb-rdbms-title" style="top: 236px; left: 70px; width: 245px; height: 32px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#0f172a; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:17px; font-weight:800; color:#0f172a;">주문 RDBMS</span></p>
+                </div>
+            </div>
+        </div>
+        <!-- Node A1: Icon Atom -->
+        <div class="lf-component" id="comp-tb-rdbms-icon" style="top: 278px; left: 156px; width: 72px; height: 72px;">
+            <div style="width:72px; height:72px; border-radius:50%; background:#f1f5f9; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                </svg>
+            </div>
+        </div>
+        <!-- Node A1: Description Text Box -->
+        <div class="lf-component" id="comp-tb-rdbms-desc" style="top: 365px; left: 70px; width: 245px; height: 220px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#475569; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:4px;">
+                    <p style="text-align:center; line-height:1.6;"><span style="font-size:13px; color:#475569;">• 원천 데이터 저장소<br>• `ORDER_HIST` 원본<br>• 회원별 구매 브랜드 이력</span></p>
                 </div>
             </div>
         </div>
@@ -113,21 +132,41 @@
             </div>
         </div>
 
-        <!-- Node A2: Batch Sync Engine -->
-        <div class="lf-component" id="comp-tb-batch" style="top: 180px; left: 385px; width: 275px; height: 425px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#f0fdf4; border:1.6px solid #a7f3d0 !important; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 18px; box-sizing:border-box; text-align:center; box-shadow:0 6px 16px rgba(0,0,0,0.03);">
-                <div style="font-size:11.5px; font-weight:800; padding:4px 12px; border-radius:12px; color:#ffffff; background:#059669; margin-bottom:12px; letter-spacing:0.5px;">SYNC BATCH ENGINE</div>
-                <div style="font-size:17px; font-weight:800; color:#065f46; margin-bottom:12px; text-align:center;">배치 동기화 엔진</div>
-                <div style="width:72px; height:72px; border-radius:50%; background:#d1fae5; border:2px solid #a7f3d0; display:flex; align-items:center; justify-content:center; margin-bottom:18px; flex-shrink:0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
-                        <path d="M21.5 2v6h-6"></path>
-                        <path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
-                    </svg>
+        <!-- ==================== NODE A2 ATOMIC COMPONENTS ==================== -->
+        <!-- Node A2: Background -->
+        <div class="lf-component" id="comp-tb-batch-bg" style="top: 180px; left: 385px; width: 275px; height: 425px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#f0fdf4; border:1.6px solid #a7f3d0 !important; border-radius:14px; box-shadow:0 6px 16px rgba(0,0,0,0.03); box-sizing:border-box;"></div>
+        </div>
+        <!-- Node A2: Badge -->
+        <div class="lf-component" id="comp-tb-batch-badge" style="top: 202px; left: 432px; width: 180px; height: 26px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#059669; border:1.6px solid #047857 !important; border-radius:13px !important; color:#ffffff; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:11.5px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">SYNC BATCH ENGINE</span></p>
                 </div>
-                <!-- Unified CENTER Alignment for Middle Diagram Text -->
-                <div style="font-size:13px; color:#065f46; line-height:1.6; text-align:center; width:100%;">
-                    • 1일 벌크 배치:<br>자정 전체 구매 브랜드 적재<br><br>
-                    • 5분 증분 배치:<br>최신 주문 증분 준실시간 동기화
+            </div>
+        </div>
+        <!-- Node A2: Title -->
+        <div class="lf-component" id="comp-tb-batch-title" style="top: 236px; left: 400px; width: 245px; height: 32px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#065f46; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:17px; font-weight:800; color:#065f46;">배치 동기화 엔진</span></p>
+                </div>
+            </div>
+        </div>
+        <!-- Node A2: Icon Atom -->
+        <div class="lf-component" id="comp-tb-batch-icon" style="top: 278px; left: 486px; width: 72px; height: 72px;">
+            <div style="width:72px; height:72px; border-radius:50%; background:#d1fae5; border:2px solid #a7f3d0; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
+                    <path d="M21.5 2v6h-6"></path>
+                    <path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                </svg>
+            </div>
+        </div>
+        <!-- Node A2: Description Text Box -->
+        <div class="lf-component" id="comp-tb-batch-desc" style="top: 365px; left: 400px; width: 245px; height: 220px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#065f46; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:4px;">
+                    <p style="text-align:center; line-height:1.6;"><span style="font-size:13px; color:#065f46;">• 1일 벌크 배치:<br>자정 전체 구매 브랜드 적재<br><br>• 5분 증분 배치:<br>최신 주문 증분 준실시간 동기화</span></p>
                 </div>
             </div>
         </div>
@@ -139,22 +178,41 @@
             </div>
         </div>
 
-        <!-- Node A3: Redis In-Memory Cache Store -->
-        <div class="lf-component" id="comp-tb-redis" style="top: 180px; left: 715px; width: 295px; height: 425px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ecfdf5; border:1.6px solid #10b981 !important; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 18px; box-sizing:border-box; text-align:center; box-shadow:0 6px 16px rgba(16,185,129,0.15);">
-                <div style="font-size:11.5px; font-weight:800; padding:4px 12px; border-radius:12px; color:#ffffff; background:#10b981; margin-bottom:12px; letter-spacing:0.5px;">IN-MEMORY CACHE</div>
-                <div style="font-size:17px; font-weight:800; color:#047857; margin-bottom:12px; text-align:center;">Redis 캐시 저장소</div>
-                <div style="width:72px; height:72px; border-radius:50%; background:#a7f3d0; border:2px solid #6ee7b7; display:flex; align-items:center; justify-content:center; margin-bottom:18px; flex-shrink:0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
-                        <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-                        <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-                    </svg>
+        <!-- ==================== NODE A3 ATOMIC COMPONENTS ==================== -->
+        <!-- Node A3: Background -->
+        <div class="lf-component" id="comp-tb-redis-bg" style="top: 180px; left: 715px; width: 295px; height: 425px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ecfdf5; border:1.6px solid #10b981 !important; border-radius:14px; box-shadow:0 6px 16px rgba(16,185,129,0.15); box-sizing:border-box;"></div>
+        </div>
+        <!-- Node A3: Badge -->
+        <div class="lf-component" id="comp-tb-redis-badge" style="top: 202px; left: 777px; width: 170px; height: 26px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#10b981; border:1.6px solid #059669 !important; border-radius:13px !important; color:#ffffff; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:11.5px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">IN-MEMORY CACHE</span></p>
                 </div>
-                <!-- Unified CENTER Alignment for Middle Diagram Text -->
-                <div style="font-size:13px; color:#065f46; line-height:1.6; text-align:center; width:100%;">
-                    • `Key: USER_ID`<br>
-                    • `Value: BRAND_SET`<br><br>
-                    • In-Memory 초고속 캐시 참조<br>(주문 DB direct query 차단)
+            </div>
+        </div>
+        <!-- Node A3: Title -->
+        <div class="lf-component" id="comp-tb-redis-title" style="top: 236px; left: 730px; width: 265px; height: 32px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#047857; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:17px; font-weight:800; color:#047857;">Redis 캐시 저장소</span></p>
+                </div>
+            </div>
+        </div>
+        <!-- Node A3: Icon Atom -->
+        <div class="lf-component" id="comp-tb-redis-icon" style="top: 278px; left: 826px; width: 72px; height: 72px;">
+            <div style="width:72px; height:72px; border-radius:50%; background:#a7f3d0; border:2px solid #6ee7b7; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
+                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                </svg>
+            </div>
+        </div>
+        <!-- Node A3: Description Text Box -->
+        <div class="lf-component" id="comp-tb-redis-desc" style="top: 365px; left: 730px; width: 265px; height: 220px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#065f46; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:4px;">
+                    <p style="text-align:center; line-height:1.6;"><span style="font-size:13px; color:#065f46;">• `Key: USER_ID`<br>• `Value: BRAND_SET`<br><br>• In-Memory 초고속 캐시 참조<br>(주문 DB direct query 차단)</span></p>
                 </div>
             </div>
         </div>
@@ -166,21 +224,40 @@
             </div>
         </div>
 
-        <!-- Node B2: Direct Coupon Lookup API -->
-        <div class="lf-component" id="comp-tb-api" style="top: 180px; left: 1060px; width: 295px; height: 425px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#f0f9ff; border:1.6px solid #38bdf8 !important; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 18px; box-sizing:border-box; text-align:center; box-shadow:0 6px 16px rgba(0,0,0,0.03);">
-                <div style="font-size:11.5px; font-weight:800; padding:4px 12px; border-radius:12px; color:#ffffff; background:#0284c7; margin-bottom:12px; letter-spacing:0.5px;">COUPON API ENGINE</div>
-                <div style="font-size:17px; font-weight:800; color:#0369a1; margin-bottom:12px; text-align:center;">쿠폰 발급 API Engine</div>
-                <div style="width:72px; height:72px; border-radius:50%; background:#bae6fd; border:2px solid #7dd3fc; display:flex; align-items:center; justify-content:center; margin-bottom:18px; flex-shrink:0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
+        <!-- ==================== NODE B2 ATOMIC COMPONENTS ==================== -->
+        <!-- Node B2: Background -->
+        <div class="lf-component" id="comp-tb-api-bg" style="top: 180px; left: 1060px; width: 295px; height: 425px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#f0f9ff; border:1.6px solid #38bdf8 !important; border-radius:14px; box-shadow:0 6px 16px rgba(0,0,0,0.03); box-sizing:border-box;"></div>
+        </div>
+        <!-- Node B2: Badge -->
+        <div class="lf-component" id="comp-tb-api-badge" style="top: 202px; left: 1117px; width: 180px; height: 26px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#0284c7; border:1.6px solid #0369a1 !important; border-radius:13px !important; color:#ffffff; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:11.5px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">COUPON API ENGINE</span></p>
                 </div>
-                <!-- Unified CENTER Alignment for Middle Diagram Text -->
-                <div style="font-size:13px; color:#0369a1; line-height:1.6; text-align:center; width:100%;">
-                    • 쿠폰 다운로드 요청 시<br>
-                    • RDBMS 직접 조회 미실행!<br>
-                    • Redis 직결 조회 검증으로<br><strong style="color:#059669;">주문 DB 부하 0건 달성</strong>
+            </div>
+        </div>
+        <!-- Node B2: Title -->
+        <div class="lf-component" id="comp-tb-api-title" style="top: 236px; left: 1075px; width: 265px; height: 32px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#0369a1; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:17px; font-weight:800; color:#0369a1;">쿠폰 발급 API Engine</span></p>
+                </div>
+            </div>
+        </div>
+        <!-- Node B2: Icon Atom -->
+        <div class="lf-component" id="comp-tb-api-icon" style="top: 278px; left: 1171px; width: 72px; height: 72px;">
+            <div style="width:72px; height:72px; border-radius:50%; background:#bae6fd; border:2px solid #7dd3fc; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+        </div>
+        <!-- Node B2: Description Text Box -->
+        <div class="lf-component" id="comp-tb-api-desc" style="top: 365px; left: 1075px; width: 265px; height: 220px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#0369a1; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:4px;">
+                    <p style="text-align:center; line-height:1.6;"><span style="font-size:13px; color:#0369a1;">• 쿠폰 다운로드 요청 시<br>• RDBMS 직접 조회 미실행!<br>• Redis 직결 조회 검증으로<br><strong style="color:#059669;">주문 DB 부하 0건 달성</strong></span></p>
                 </div>
             </div>
         </div>
@@ -190,7 +267,6 @@
         <!-- Card 1: Zero DB Load -->
         <div class="lf-component" id="comp-detail-noload" style="top: 645px; left: 30px; width: 675px; height: 195px;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #a7f3d0 !important; border-radius:12px; padding:20px 24px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; text-align:left; box-shadow:0 2px 8px rgba(16,185,129,0.03);">
-                <!-- Unified LEFT Alignment for Bottom Comments -->
                 <div style="display:flex; align-items:center; justify-content:flex-start; font-size:15px; font-weight:800; color:#065f46; padding-bottom:10px; border-bottom:1.6px solid #ecfdf5; margin-bottom:12px; width:100%; text-align:left;">
                     <span style="width:22px; height:22px; background:#10b981; color:#ffffff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-right:10px; flex-shrink:0;">1</span> 1. RDBMS 부하 분산 &amp; 시스템 안정성
                 </div>
@@ -206,7 +282,6 @@
         <!-- Card 2: Speed & Dual Sync -->
         <div class="lf-component" id="comp-detail-sync" style="top: 645px; left: 725px; width: 685px; height: 195px;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #a7f3d0 !important; border-radius:12px; padding:20px 24px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; text-align:left; box-shadow:0 2px 8px rgba(16,185,129,0.03);">
-                <!-- Unified LEFT Alignment for Bottom Comments -->
                 <div style="display:flex; align-items:center; justify-content:flex-start; font-size:15px; font-weight:800; color:#065f46; padding-bottom:10px; border-bottom:1.6px solid #ecfdf5; margin-bottom:12px; width:100%; text-align:left;">
                     <span style="width:22px; height:22px; background:#10b981; color:#ffffff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-right:10px; flex-shrink:0;">2</span> 2. 빠른 응답 &amp; 이중 배치(Dual Batch) 동기화
                 </div>

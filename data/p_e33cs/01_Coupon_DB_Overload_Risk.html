@@ -30,7 +30,7 @@
         .v4-shape { position:relative; border-width:1.6px !important; border-style:solid !important; border-color:#cbd5e1; transition:all 0.2s cubic-bezier(0.4,0,0.2,1); width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#ffffff; color:#0f172a; box-sizing:border-box; }
         .v4-shape-rect { border-radius:8px; }
         .v4-shape-text-content { width:100%; height:100%; display:flex; align-items:center; justify-content:center; text-align:center; padding:8px; box-sizing:border-box; overflow:hidden; }
-        .v4-shape-text-content p { margin:0; padding:0; line-height:1.2; text-align:center; }
+        .v4-shape-text-content p { margin:0; padding:0; line-height:1.4; text-align:center; }
         svg.lf-icon { background-image:none !important; }
         .v4-editable-cell { outline:none; }
     </style>
@@ -78,29 +78,48 @@
 
         <!-- Container Box for Diagram Section -->
         <div class="lf-component" id="comp-diagram-container" style="top: 132px; left: 30px; width: 1380px; height: 495px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:rgba(255,255,255,0.75); border:1.6px dashed #cbd5e1 !important; border-radius:14px; display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-start; padding:16px 20px; box-sizing:border-box;">
-                <div style="background:#334155; color:#ffffff; font-size:12.5px; font-weight:800; padding:5px 16px; border-radius:8px; margin-bottom:12px;">
-                    As-Is 데이터 처리 프로세스 다이어그램 (Client ➔ API ➔ RDBMS)
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:rgba(255,255,255,0.75); border:1.6px dashed #cbd5e1 !important; border-radius:14px; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:16px 20px; display:flex; align-items:flex-start; justify-content:flex-start;">
+                    <p style="text-align:left;"><span style="background:#334155; color:#ffffff; font-size:12.5px; font-weight:800; padding:5px 16px; border-radius:8px;">As-Is 데이터 처리 프로세스 다이어그램 (Client ➔ API ➔ RDBMS)</span></p>
                 </div>
             </div>
         </div>
 
-        <!-- Flow Step 1: Customer Access -->
-        <div class="lf-component" id="comp-flow-1" style="top: 180px; left: 55px; width: 275px; height: 425px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 18px; box-sizing:border-box; text-align:center; box-shadow:0 6px 16px rgba(0,0,0,0.03);">
-                <div style="font-size:11.5px; font-weight:800; padding:4px 12px; border-radius:12px; color:#ffffff; background:#3b82f6; margin-bottom:12px; letter-spacing:0.5px;">STEP 1 / CLIENT</div>
-                <div style="font-size:17px; font-weight:800; color:#0f172a; margin-bottom:12px; text-align:center;">고객 기획전 접속</div>
-                <div style="width:72px; height:72px; border-radius:50%; background:#eff6ff; border:2px solid #bfdbfe; display:flex; align-items:center; justify-content:center; margin-bottom:18px; flex-shrink:0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
+        <!-- ==================== STEP 1 ATOMIC COMPONENTS ==================== -->
+        <!-- Step 1: Card Background -->
+        <div class="lf-component" id="comp-flow-1-bg" style="top: 180px; left: 55px; width: 275px; height: 425px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:14px; box-shadow:0 6px 16px rgba(0,0,0,0.03); box-sizing:border-box;"></div>
+        </div>
+        <!-- Step 1: Badge -->
+        <div class="lf-component" id="comp-flow-1-badge" style="top: 202px; left: 117px; width: 150px; height: 26px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#3b82f6; border:1.6px solid #2563eb !important; border-radius:13px !important; color:#ffffff; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:11.5px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">STEP 1 / CLIENT</span></p>
                 </div>
-                <!-- Unified CENTER Alignment for Middle Diagram Text -->
-                <div style="font-size:13px; color:#475569; line-height:1.6; text-align:center; width:100%;">
-                    • LFmall 기획전 진입<br>
-                    • 프로모션 메인 페이지 접속<br>
-                    • 브랜드 할인 쿠폰 정보 확인
+            </div>
+        </div>
+        <!-- Step 1: Title -->
+        <div class="lf-component" id="comp-flow-1-title" style="top: 236px; left: 70px; width: 245px; height: 32px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#0f172a; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:17px; font-weight:800; color:#0f172a;">고객 기획전 접속</span></p>
+                </div>
+            </div>
+        </div>
+        <!-- Step 1: Icon Atom -->
+        <div class="lf-component" id="comp-flow-1-icon" style="top: 278px; left: 156px; width: 72px; height: 72px;">
+            <div style="width:72px; height:72px; border-radius:50%; background:#eff6ff; border:2px solid #bfdbfe; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+        </div>
+        <!-- Step 1: Description Text Box -->
+        <div class="lf-component" id="comp-flow-1-desc" style="top: 365px; left: 70px; width: 245px; height: 220px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#475569; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:4px;">
+                    <p style="text-align:center; line-height:1.6;"><span style="font-size:13px; color:#475569;">• LFmall 기획전 진입<br>• 프로모션 메인 페이지 접속<br>• 브랜드 할인 쿠폰 정보 확인</span></p>
                 </div>
             </div>
         </div>
@@ -112,23 +131,42 @@
             </div>
         </div>
 
-        <!-- Flow Step 2: Action Trigger -->
-        <div class="lf-component" id="comp-flow-2" style="top: 180px; left: 385px; width: 275px; height: 425px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 18px; box-sizing:border-box; text-align:center; box-shadow:0 6px 16px rgba(0,0,0,0.03);">
-                <div style="font-size:11.5px; font-weight:800; padding:4px 12px; border-radius:12px; color:#ffffff; background:#6366f1; margin-bottom:12px; letter-spacing:0.5px;">STEP 2 / ACTION</div>
-                <div style="font-size:17px; font-weight:800; color:#0f172a; margin-bottom:12px; text-align:center;">'쿠폰 다운로드' 클릭</div>
-                <div style="width:72px; height:72px; border-radius:50%; background:#eef2ff; border:2px solid #c7d2fe; display:flex; align-items:center; justify-content:center; margin-bottom:18px; flex-shrink:0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#4945ff" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
+        <!-- ==================== STEP 2 ATOMIC COMPONENTS ==================== -->
+        <!-- Step 2: Card Background -->
+        <div class="lf-component" id="comp-flow-2-bg" style="top: 180px; left: 385px; width: 275px; height: 425px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:14px; box-shadow:0 6px 16px rgba(0,0,0,0.03); box-sizing:border-box;"></div>
+        </div>
+        <!-- Step 2: Badge -->
+        <div class="lf-component" id="comp-flow-2-badge" style="top: 202px; left: 447px; width: 150px; height: 26px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#6366f1; border:1.6px solid #4945ff !important; border-radius:13px !important; color:#ffffff; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:11.5px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">STEP 2 / ACTION</span></p>
                 </div>
-                <!-- Unified CENTER Alignment for Middle Diagram Text -->
-                <div style="font-size:13px; color:#475569; line-height:1.6; text-align:center; width:100%;">
-                    • 다운로드 클릭 요청<br>
-                    • 쿠폰 발급 요청 트래픽 유입<br>
-                    • 이벤트 오픈 시 동시 접속 증가
+            </div>
+        </div>
+        <!-- Step 2: Title -->
+        <div class="lf-component" id="comp-flow-2-title" style="top: 236px; left: 400px; width: 245px; height: 32px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#0f172a; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:17px; font-weight:800; color:#0f172a;">'쿠폰 다운로드' 클릭</span></p>
+                </div>
+            </div>
+        </div>
+        <!-- Step 2: Icon Atom -->
+        <div class="lf-component" id="comp-flow-2-icon" style="top: 278px; left: 486px; width: 72px; height: 72px;">
+            <div style="width:72px; height:72px; border-radius:50%; background:#eef2ff; border:2px solid #c7d2fe; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#4945ff" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            </div>
+        </div>
+        <!-- Step 2: Description Text Box -->
+        <div class="lf-component" id="comp-flow-2-desc" style="top: 365px; left: 400px; width: 245px; height: 220px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#475569; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:4px;">
+                    <p style="text-align:center; line-height:1.6;"><span style="font-size:13px; color:#475569;">• 다운로드 클릭 요청<br>• 쿠폰 발급 요청 트래픽 유입<br>• 이벤트 오픈 시 동시 접속 증가</span></p>
                 </div>
             </div>
         </div>
@@ -140,23 +178,42 @@
             </div>
         </div>
 
-        <!-- Flow Step 3: Realtime RDBMS Query -->
-        <div class="lf-component" id="comp-flow-3" style="top: 180px; left: 715px; width: 295px; height: 425px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#fffbeb; border:1.6px solid #fcd34d !important; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 18px; box-sizing:border-box; text-align:center; box-shadow:0 6px 16px rgba(0,0,0,0.03);">
-                <div style="font-size:11.5px; font-weight:800; padding:4px 12px; border-radius:12px; color:#ffffff; background:#d97706; margin-bottom:12px; letter-spacing:0.5px;">STEP 3 / SERVER API</div>
-                <div style="font-size:17px; font-weight:800; color:#92400e; margin-bottom:12px; text-align:center;">회원 DB 실시간 조회</div>
-                <div style="width:72px; height:72px; border-radius:50%; background:#fef3c7; border:2px solid #fde68a; display:flex; align-items:center; justify-content:center; margin-bottom:18px; flex-shrink:0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
-                        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-                    </svg>
+        <!-- ==================== STEP 3 ATOMIC COMPONENTS ==================== -->
+        <!-- Step 3: Card Background -->
+        <div class="lf-component" id="comp-flow-3-bg" style="top: 180px; left: 715px; width: 295px; height: 425px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#fffbeb; border:1.6px solid #fcd34d !important; border-radius:14px; box-shadow:0 6px 16px rgba(0,0,0,0.03); box-sizing:border-box;"></div>
+        </div>
+        <!-- Step 3: Badge -->
+        <div class="lf-component" id="comp-flow-3-badge" style="top: 202px; left: 777px; width: 170px; height: 26px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#d97706; border:1.6px solid #b45309 !important; border-radius:13px !important; color:#ffffff; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:11.5px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">STEP 3 / SERVER API</span></p>
                 </div>
-                <!-- Unified CENTER Alignment for Middle Diagram Text -->
-                <div style="font-size:13px; color:#78350f; line-height:1.6; text-align:center; width:100%;">
-                    • Direct RDBMS Query<br>
-                    • `MEMBER_MST` &amp; `ORDER_HIST`<br>실시간 복합 JOIN 쿼리 실행<br>
-                    • 쿠폰 발급 대상 자격 검증
+            </div>
+        </div>
+        <!-- Step 3: Title -->
+        <div class="lf-component" id="comp-flow-3-title" style="top: 236px; left: 730px; width: 265px; height: 32px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#92400e; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:17px; font-weight:800; color:#92400e;">회원 DB 실시간 조회</span></p>
+                </div>
+            </div>
+        </div>
+        <!-- Step 3: Icon Atom -->
+        <div class="lf-component" id="comp-flow-3-icon" style="top: 278px; left: 826px; width: 72px; height: 72px;">
+            <div style="width:72px; height:72px; border-radius:50%; background:#fef3c7; border:2px solid #fde68a; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                </svg>
+            </div>
+        </div>
+        <!-- Step 3: Description Text Box -->
+        <div class="lf-component" id="comp-flow-3-desc" style="top: 365px; left: 730px; width: 265px; height: 220px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#78350f; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:4px;">
+                    <p style="text-align:center; line-height:1.6;"><span style="font-size:13px; color:#78350f;">• Direct RDBMS Query<br>• `MEMBER_MST` &amp; `ORDER_HIST`<br>실시간 복합 JOIN 쿼리 실행<br>• 쿠폰 발급 대상 자격 검증</span></p>
                 </div>
             </div>
         </div>
@@ -168,23 +225,42 @@
             </div>
         </div>
 
-        <!-- Flow Step 4: Overload Issue -->
-        <div class="lf-component" id="comp-flow-4" style="top: 180px; left: 1060px; width: 295px; height: 425px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#fef2f2; border:1.6px solid #fca5a5 !important; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 18px; box-sizing:border-box; text-align:center; box-shadow:0 6px 16px rgba(0,0,0,0.03);">
-                <div style="font-size:11.5px; font-weight:800; padding:4px 12px; border-radius:12px; color:#ffffff; background:#dc2626; margin-bottom:12px; letter-spacing:0.5px;">STEP 4 / RDBMS ISSUE</div>
-                <div style="font-size:17px; font-weight:800; color:#991b1b; margin-bottom:12px; text-align:center;">회원 DB 부하 발생</div>
-                <div style="width:72px; height:72px; border-radius:50%; background:#fee2e2; border:2px solid #fecaca; display:flex; align-items:center; justify-content:center; margin-bottom:18px; flex-shrink:0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="8" x2="12" y2="12"></line>
-                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
+        <!-- ==================== STEP 4 ATOMIC COMPONENTS ==================== -->
+        <!-- Step 4: Card Background -->
+        <div class="lf-component" id="comp-flow-4-bg" style="top: 180px; left: 1060px; width: 295px; height: 425px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#fef2f2; border:1.6px solid #fca5a5 !important; border-radius:14px; box-shadow:0 6px 16px rgba(0,0,0,0.03); box-sizing:border-box;"></div>
+        </div>
+        <!-- Step 4: Badge -->
+        <div class="lf-component" id="comp-flow-4-badge" style="top: 202px; left: 1117px; width: 180px; height: 26px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#dc2626; border:1.6px solid #b91c1c !important; border-radius:13px !important; color:#ffffff; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:11.5px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">STEP 4 / RDBMS ISSUE</span></p>
                 </div>
-                <!-- Unified CENTER Alignment for Middle Diagram Text -->
-                <div style="font-size:13px; color:#991b1b; line-height:1.6; text-align:center; width:100%;">
-                    • DB 자원 부하 집중<br>
-                    • 커넥션 풀 자원 부담 증가<br>
-                    • 타 서비스(로그인, 결제 등)<br>응답 지연 확산 위험
+            </div>
+        </div>
+        <!-- Step 4: Title -->
+        <div class="lf-component" id="comp-flow-4-title" style="top: 236px; left: 1075px; width: 265px; height: 32px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#991b1b; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:2px;">
+                    <p><span style="font-size:17px; font-weight:800; color:#991b1b;">회원 DB 부하 발생</span></p>
+                </div>
+            </div>
+        </div>
+        <!-- Step 4: Icon Atom -->
+        <div class="lf-component" id="comp-flow-4-icon" style="top: 278px; left: 1171px; width: 72px; height: 72px;">
+            <div style="width:72px; height:72px; border-radius:50%; background:#fee2e2; border:2px solid #fecaca; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+        </div>
+        <!-- Step 4: Description Text Box -->
+        <div class="lf-component" id="comp-flow-4-desc" style="top: 365px; left: 1075px; width: 265px; height: 220px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#991b1b; box-sizing:border-box;">
+                <div class="v4-shape-text-content" style="padding:4px;">
+                    <p style="text-align:center; line-height:1.6;"><span style="font-size:13px; color:#991b1b;">• DB 자원 부하 집중<br>• 커넥션 풀 자원 부담 증가<br>• 타 서비스(로그인, 결제 등)<br>응답 지연 확산 위험</span></p>
                 </div>
             </div>
         </div>
@@ -194,7 +270,6 @@
         <!-- Card 1: Key Issues -->
         <div class="lf-component" id="comp-detail-issues" style="top: 645px; left: 30px; width: 675px; height: 195px;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:12px; padding:20px 24px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; text-align:left; box-shadow:0 2px 8px rgba(0,0,0,0.02);">
-                <!-- Unified LEFT Alignment for Bottom Comments -->
                 <div style="display:flex; align-items:center; justify-content:flex-start; font-size:15px; font-weight:800; color:#92400e; padding-bottom:10px; border-bottom:1.6px solid #f1f5f9; margin-bottom:12px; width:100%; text-align:left;">
                     <span style="width:22px; height:22px; background:#ef4444; color:#ffffff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-right:10px; flex-shrink:0;">1</span> 1. As-Is 프로세스 주요 문제점
                 </div>
@@ -210,7 +285,6 @@
         <!-- Card 2: System Impact -->
         <div class="lf-component" id="comp-detail-impact" style="top: 645px; left: 725px; width: 685px; height: 195px;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #fca5a5 !important; border-radius:12px; padding:20px 24px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; text-align:left; box-shadow:0 2px 8px rgba(239,68,68,0.03);">
-                <!-- Unified LEFT Alignment for Bottom Comments -->
                 <div style="display:flex; align-items:center; justify-content:flex-start; font-size:15px; font-weight:800; color:#991b1b; padding-bottom:10px; border-bottom:1.6px solid #fee2e2; margin-bottom:12px; width:100%; text-align:left;">
                     <span style="width:22px; height:22px; background:#dc2626; color:#ffffff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-right:10px; flex-shrink:0;">2</span> 2. 시스템 영향도 및 리스크
                 </div>
