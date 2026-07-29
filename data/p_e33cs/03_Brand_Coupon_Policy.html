@@ -34,14 +34,14 @@
         .v4-editable-cell { outline:none; }
 
         /* Custom Table Styling */
-        .v4-table { width:100%; border-collapse:collapse; font-size:12px; table-layout:fixed; border:1.6px solid #7c3aed !important; border-radius:8px; overflow:hidden; }
-        .v4-table th, .v4-table td { box-sizing:border-box !important; border:1.6px solid #e9d5ff !important; padding:10px 8px; text-align:center; vertical-align:middle; line-height:1.4; }
-        .v4-table th { background:#6d28d9; color:#fff; font-weight:800; font-size:12px; }
+        .v4-table { width:100%; border-collapse:collapse; font-size:11.5px; table-layout:fixed; border:1.6px solid #7c3aed !important; border-radius:8px; overflow:hidden; }
+        .v4-table th, .v4-table td { box-sizing:border-box !important; border:1.6px solid #e9d5ff !important; padding:7px 8px; text-align:center; vertical-align:middle; line-height:1.35; }
+        .v4-table th { background:#6d28d9; color:#fff; font-weight:800; font-size:11.5px; padding:8px 6px; }
 
-        .tag-brand { display:inline-block; background:#f3e8ff; color:#6b21a8; padding:2px 6px; border-radius:4px; font-weight:700; font-size:11px; margin:2px; }
-        .tag-success { display:inline-block; background:#ecfdf5; color:#047857; padding:2px 6px; border-radius:4px; font-weight:700; font-size:11px; }
-        .tag-warning { display:inline-block; background:#fffbeb; color:#b45309; padding:2px 6px; border-radius:4px; font-weight:700; font-size:11px; }
-        .tag-danger { display:inline-block; background:#fef2f2; color:#b91c1c; padding:2px 6px; border-radius:4px; font-weight:700; font-size:11px; }
+        .tag-brand { display:inline-block; background:#f3e8ff; color:#6b21a8; padding:2px 6px; border-radius:4px; font-weight:700; font-size:10.5px; margin:1px 2px; }
+        .tag-success { display:inline-block; background:#ecfdf5; color:#047857; padding:2px 6px; border-radius:4px; font-weight:700; font-size:10.5px; }
+        .tag-warning { display:inline-block; background:#fffbeb; color:#b45309; padding:2px 6px; border-radius:4px; font-weight:700; font-size:10.5px; }
+        .tag-danger { display:inline-block; background:#fef2f2; color:#b91c1c; padding:2px 6px; border-radius:4px; font-weight:700; font-size:10.5px; }
     </style>
 </head>
 <body>
@@ -86,11 +86,11 @@
         <!-- ==================== 3 MAJOR POLICY PILLARS ==================== -->
 
         <!-- Pillar 1: Data Schema -->
-        <div class="lf-component" id="comp-pillar-1" style="top: 133px; left: 30px; width: 440px; height: 235px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#faf5ff; border:1.6px solid #ddd6fe !important; border-radius:12px; padding:20px; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
-                <div style="font-size:11px; font-weight:800; padding:3px 10px; border-radius:10px; color:#ffffff; background:#7c3aed; margin-bottom:10px; letter-spacing:0.5px;">POLICY 01</div>
-                <div style="font-size:16px; font-weight:800; color:#0f172a; margin-bottom:10px;">1. Redis 데이터 구조 (Data Schema)</div>
-                <div style="font-size:12.5px; color:#475569; line-height:1.55;">
+        <div class="lf-component" id="comp-pillar-1" style="top: 132px; left: 30px; width: 440px; height: 245px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#faf5ff; border:1.6px solid #ddd6fe !important; border-radius:12px; padding:18px 20px; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
+                <div style="font-size:11px; font-weight:800; padding:3px 10px; border-radius:10px; color:#ffffff; background:#7c3aed; margin-bottom:8px; letter-spacing:0.5px;">POLICY 01</div>
+                <div style="font-size:15px; font-weight:800; color:#0f172a; margin-bottom:8px;">1. Redis 데이터 구조 (Data Schema)</div>
+                <div style="font-size:12.5px; color:#475569; line-height:1.5;">
                     • <strong>KEY (키값)</strong> : <code>USER_ID</code> (회원 아이디)<br>
                     • <strong>VALUE (벨류값)</strong> : <code>Set&lt;BRAND_CODE&gt;</code> (구매이력 존재 브랜드)<br>
                     • <strong>적재 예시</strong> :<br>
@@ -101,12 +101,12 @@
         </div>
 
         <!-- Pillar 2: Purchase & Return Criteria -->
-        <div class="lf-component" id="comp-pillar-2" style="top: 133px; left: 490px; width: 440px; height: 235px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:12px; padding:20px; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
-                <div style="font-size:11px; font-weight:800; padding:3px 10px; border-radius:10px; color:#ffffff; background:#2563eb; margin-bottom:10px; letter-spacing:0.5px;">POLICY 02</div>
-                <div style="font-size:16px; font-weight:800; color:#0f172a; margin-bottom:10px;">2. 데이터 연동 및 반품 처리 기준</div>
-                <div style="font-size:12.5px; color:#475569; line-height:1.55;">
-                    • <strong>정상 연동 기준</strong> : <strong>'정상 주문완료 (Order Completed)'</strong> 상태 주문건만 브랜드 구매 실적으로 인정하여 Redis에 반영<br>
+        <div class="lf-component" id="comp-pillar-2" style="top: 132px; left: 490px; width: 440px; height: 245px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:12px; padding:18px 20px; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
+                <div style="font-size:11px; font-weight:800; padding:3px 10px; border-radius:10px; color:#ffffff; background:#2563eb; margin-bottom:8px; letter-spacing:0.5px;">POLICY 02</div>
+                <div style="font-size:15px; font-weight:800; color:#0f172a; margin-bottom:8px;">2. 데이터 연동 및 반품 처리 기준</div>
+                <div style="font-size:12.5px; color:#475569; line-height:1.5;">
+                    • <strong>정상 연동 기준</strong> : <strong>'정상 주문완료'</strong> 상태 주문건만 브랜드 구매 실적으로 인정하여 Redis에 반영<br>
                     • <strong>반품 처리 예외 정책</strong> :<br>
                     &nbsp;&nbsp;- <strong>'반품 접수'</strong> 및 <strong>'반품 완료'</strong> 발생 시 해당 브랜드 구매여부에서 <strong>즉시 제외/차감</strong><br>
                     &nbsp;&nbsp;- 반품 완료 시 해당 브랜드의 '첫구매 쿠폰' 발급 자격 자동 회복
@@ -115,14 +115,14 @@
         </div>
 
         <!-- Pillar 3: Order Cancel & Coupon Reissuance -->
-        <div class="lf-component" id="comp-pillar-3" style="top: 133px; left: 950px; width: 460px; height: 235px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#f0fdf4; border:1.6px solid #a7f3d0 !important; border-radius:12px; padding:20px; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
-                <div style="font-size:11px; font-weight:800; padding:3px 10px; border-radius:10px; color:#ffffff; background:#059669; margin-bottom:10px; letter-spacing:0.5px;">POLICY 03</div>
-                <div style="font-size:16px; font-weight:800; color:#065f46; margin-bottom:10px;">3. 주문 취소 시 쿠폰 자동 복원 정책</div>
-                <div style="font-size:12.5px; color:#065f46; line-height:1.55;">
+        <div class="lf-component" id="comp-pillar-3" style="top: 132px; left: 950px; width: 460px; height: 245px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#f0fdf4; border:1.6px solid #a7f3d0 !important; border-radius:12px; padding:18px 20px; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
+                <div style="font-size:11px; font-weight:800; padding:3px 10px; border-radius:10px; color:#ffffff; background:#059669; margin-bottom:8px; letter-spacing:0.5px;">POLICY 03</div>
+                <div style="font-size:15px; font-weight:800; color:#065f46; margin-bottom:8px;">3. 주문 취소 시 쿠폰 자동 복원 정책</div>
+                <div style="font-size:12.5px; color:#065f46; line-height:1.5;">
                     • <strong>쿠폰 사용 주문</strong> : 브랜드 첫구매 쿠폰을 다운로드받아 상품 결제 시 적용<br>
                     • <strong>주문 취소 시 쿠폰 복구</strong> :<br>
-                    &nbsp;&nbsp;- 고객이 첫구매 쿠폰을 사용하여 주문 후 <strong>'주문 취소 (Order Canceled)'</strong> 진행 시<br>
+                    &nbsp;&nbsp;- 고객이 첫구매 쿠폰을 사용하여 주문 후 <strong>'주문 취소'</strong> 진행 시<br>
                     &nbsp;&nbsp;- <strong>사용한 브랜드 첫구매 쿠폰 즉시 자동 복원 (Auto Reissue)</strong><br>
                     &nbsp;&nbsp;- 고객 쿠폰함으로 복구되어 해당 브랜드 상품에 재사용 가능
                 </div>
@@ -132,24 +132,24 @@
         <!-- ==================== DETAILED TABLES & WORKFLOW MATRIX ==================== -->
 
         <!-- Card A: Redis Data Structure Example Table -->
-        <div class="lf-component" id="comp-table-schema" style="top: 388px; left: 30px; width: 665px; height: 455px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #ddd6fe !important; border-radius:12px; padding:22px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; text-align:left; box-shadow:0 4px 14px rgba(124,58,237,0.04);">
-                <div style="display:flex; align-items:center; font-size:16px; font-weight:800; color:#5b21b6; padding-bottom:12px; border-bottom:1.6px solid #f3e8ff; margin-bottom:14px; width:100%;">
+        <div class="lf-component" id="comp-table-schema" style="top: 390px; left: 30px; width: 665px; height: 450px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #ddd6fe !important; border-radius:12px; padding:18px 20px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; text-align:left; box-shadow:0 4px 14px rgba(124,58,237,0.04);">
+                <div style="display:flex; align-items:center; font-size:15px; font-weight:800; color:#5b21b6; padding-bottom:10px; border-bottom:1.6px solid #f3e8ff; margin-bottom:12px; width:100%;">
                     Redis 데이터 적재 예시 (Key-Value Schema)
                 </div>
-                <div class="table-scroll-wrap" style="margin-top:6px; width:100%;">
+                <div class="table-scroll-wrap" style="width:100%;">
                     <table class="v4-table">
                         <thead>
                             <tr>
-                                <th style="width:120px;">KEY (회원 ID)</th>
+                                <th style="width:110px;">KEY (회원 ID)</th>
                                 <th>VALUE (구매이력 브랜드 코드 Set)</th>
-                                <th style="width:130px;">첫구매 쿠폰 대상 여부</th>
+                                <th style="width:145px;">첫구매 쿠폰 대상 여부</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td style="font-weight:800; background:#faf5ff;">USER_001<br>(홍길동)</td>
-                                <td style="text-align:left; padding-left:12px;">
+                                <td style="text-align:left; padding-left:8px;">
                                     <span class="tag-brand">닥스 여성</span>
                                     <span class="tag-brand">헤지스 남성</span><br>
                                     <span class="tag-brand">질스튜어트 ACC</span>
@@ -159,14 +159,14 @@
                             </tr>
                             <tr>
                                 <td style="font-weight:800; background:#faf5ff;">USER_002<br>(이순신)</td>
-                                <td style="text-align:left; padding-left:12px;">
+                                <td style="text-align:left; padding-left:8px;">
                                     <span class="tag-brand">헤지스 남성</span>
                                 </td>
                                 <td><span class="tag-warning">헤지스 남성 외 가능</span></td>
                             </tr>
                             <tr>
                                 <td style="font-weight:800; background:#faf5ff;">USER_003<br>(강감찬)</td>
-                                <td style="text-align:left; padding-left:12px;">
+                                <td style="text-align:left; padding-left:8px;">
                                     <em style="color:#94a3b8;">Set { Empty } (구매이력 없음)</em>
                                 </td>
                                 <td><span class="tag-success">전 브랜드 첫구매 가능</span></td>
@@ -174,32 +174,32 @@
                         </tbody>
                     </table>
                 </div>
-                <div style="font-size:12px; color:#6b21a8; margin-top:14px; line-height:1.5; background:#f3e8ff; padding:10px 14px; border-radius:6px; width:100%; box-sizing:border-box;">
+                <div style="font-size:11.5px; color:#6b21a8; margin-top:12px; line-height:1.45; background:#f3e8ff; padding:8px 12px; border-radius:6px; width:100%; box-sizing:border-box;">
                     <strong>Redis 조회 방식</strong> : 쿠폰 다운로드 시 <code>SISMEMBER user:brand:USER_001 DAKS_W</code> 쿼리를 수행하여 빠른 발급 가능 여부 판단
                 </div>
             </div>
         </div>
 
         <!-- Card B: Status Workflow Matrix Table -->
-        <div class="lf-component" id="comp-table-workflow" style="top: 388px; left: 710px; width: 700px; height: 455px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #ddd6fe !important; border-radius:12px; padding:22px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; text-align:left; box-shadow:0 4px 14px rgba(124,58,237,0.04);">
-                <div style="display:flex; align-items:center; font-size:16px; font-weight:800; color:#5b21b6; padding-bottom:12px; border-bottom:1.6px solid #f3e8ff; margin-bottom:14px; width:100%;">
+        <div class="lf-component" id="comp-table-workflow" style="top: 390px; left: 710px; width: 700px; height: 450px;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #ddd6fe !important; border-radius:12px; padding:18px 20px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; text-align:left; box-shadow:0 4px 14px rgba(124,58,237,0.04);">
+                <div style="display:flex; align-items:center; font-size:15px; font-weight:800; color:#5b21b6; padding-bottom:10px; border-bottom:1.6px solid #f3e8ff; margin-bottom:12px; width:100%;">
                     주문/반품/취소 상태별 쿠폰 처리 매트릭스
                 </div>
-                <div class="table-scroll-wrap" style="margin-top:6px; width:100%;">
+                <div class="table-scroll-wrap" style="width:100%;">
                     <table class="v4-table">
                         <thead>
                             <tr>
-                                <th style="width:140px;">이벤트 / 주문 상태</th>
+                                <th style="width:145px;">이벤트 / 주문 상태</th>
                                 <th>구매 브랜드 실적 반영</th>
-                                <th style="width:170px;">첫구매 쿠폰 상태</th>
+                                <th style="width:160px;">첫구매 쿠폰 상태</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td style="font-weight:700;">① 정상 주문 완료</td>
                                 <td style="text-align:left;">Redis Set에 구매 브랜드 추가 연동</td>
-                                <td><span class="tag-danger">해당 브랜드 첫구매 대상 제외</span></td>
+                                <td><span class="tag-danger">해당 브랜드 첫구매 제외</span></td>
                             </tr>
                             <tr style="background:#fffbeb;">
                                 <td style="font-weight:700; color:#b45309;">② 반품 접수 / 완료</td>
@@ -214,12 +214,12 @@
                             <tr style="background:#ecfdf5;">
                                 <td style="font-weight:800; color:#047857;">④ 쿠폰 적용 주문 취소</td>
                                 <td style="text-align:left; color:#047857;">구매 실적 미반영 (주문 취소건 제외)</td>
-                                <td><span class="tag-success" style="font-size:12px; font-weight:800;">쿠폰 자동 복원 (Reissued)</span></td>
+                                <td><span class="tag-success" style="font-size:11px; font-weight:800;">쿠폰 자동 복원 (Reissued)</span></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div style="font-size:12px; color:#047857; margin-top:14px; line-height:1.5; background:#ecfdf5; padding:10px 14px; border-radius:6px; width:100%; box-sizing:border-box;">
+                <div style="font-size:11.5px; color:#047857; margin-top:12px; line-height:1.45; background:#ecfdf5; padding:8px 12px; border-radius:6px; width:100%; box-sizing:border-box;">
                     <strong>고객 혜택 보호</strong> : 주문 취소 시 사용되었던 브랜드 첫구매 쿠폰이 즉시 복구되므로, 고객 불만 없이 재다운로드/재사용 가능하도록 예외 처리 보장
                 </div>
             </div>
