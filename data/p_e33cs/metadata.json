@@ -4,11 +4,11 @@
     "01_Coupon_DB_Overload_Risk.html": {
       "title": "As-Is 기획전 구조 이슈",
       "type": "plan",
-      "updatedAt": "2026-07-29T08:04:57.994Z",
+      "updatedAt": "2026-07-29T08:05:07.087Z",
       "template": "template_plan.html",
       "description": [],
       "connectors": [],
-      "defaultTab": "description",
+      "defaultTab": "editor",
       "screenDesc": "LFmall 기획전 쿠폰 다운로드 시 회원 DB 실시간 조회에 따른 As-Is 구조 이슈 및 부하 위험 요약"
     },
     "02_ToBe_Order_Data_Lookup.html": {
