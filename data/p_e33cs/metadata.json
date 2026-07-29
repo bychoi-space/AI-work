@@ -2,39 +2,31 @@
   "title": "[기획전] 브랜드 첫구매 - 제반 설계",
   "screens": {
     "01_Coupon_DB_Overload_Risk.html": {
-      "title": "01_기획전 쿠폰 다운로드 회원DB 과부하 우려 분석",
+      "title": "As-Is 기획전 구조 이슈",
       "type": "plan",
-      "updatedAt": "2026-07-29T10:05:00.000Z",
+      "updatedAt": "2026-07-29T10:12:00.000Z",
       "template": "template_plan.html",
       "description": [
         {
-          "text": "[이슈 1] 동시 다운로드 요청 시 DB 커넥션 풀 직격타",
-          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[이슈 1]</strong> 동시 다운로드 요청 시 DB 커넥션 풀 직격타</div>",
-          "x": 860,
-          "y": 370,
+          "text": "[문제점] 실시간 회원 구매내역 Heavy Query로 DB 과부하",
+          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[문제점]</strong> 실시간 회원 구매내역 Heavy Query로 DB 과부하</div>",
+          "x": 680,
+          "y": 320,
           "type": "text",
           "standardized": true
         },
         {
-          "text": "[이슈 2] 실시간 구매내역 JOIN 쿼리 실행 비용 과다",
-          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[이슈 2]</strong> 실시간 구매내역 JOIN 쿼리 실행 비용 과다</div>",
+          "text": "[영향도] LFmall 전체 서비스 연쇄 장애 발생 위험",
+          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[영향도]</strong> LFmall 전체 서비스 연쇄 장애 발생 위험</div>",
           "x": 1050,
-          "y": 480,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "[개선] 사전 집계 데이터 또는 캐시 참조 필수",
-          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[개선]</strong> 사전 집계 데이터 또는 캐시 참조 필수</div>",
-          "x": 1020,
-          "y": 780,
+          "y": 320,
           "type": "text",
           "standardized": true
         }
       ],
       "connectors": [],
       "defaultTab": "description",
-      "screenDesc": "LFmall 기획전 페이지에서 고객이 쿠폰 다운로드 시 회원 DB(구매내역) 실시간 조회에 따른 과부하 우려 및 시스템 영향도/개선방안 분석 도식화"
+      "screenDesc": "LFmall 기획전 쿠폰 다운로드 시 회원 DB 실시간 조회에 따른 As-Is 구조 이슈 및 과부하 위험 요약"
     }
   },
   "assignee": "최범열",
@@ -42,5 +34,5 @@
   "period": "2026.07.29(수) ~ 2026.08.28(금)",
   "jira": "LFML-145373",
   "themeIndex": 2,
-  "updated": "2026-07-29 10:05:00"
+  "updated": "2026-07-29 10:12:00"
 }
