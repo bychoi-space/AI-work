@@ -80,22 +80,25 @@
 
         <!-- ==================== HERO TO-BE ARCHITECTURE DIAGRAM ==================== -->
 
-        <!-- Container Box for Diagram Section -->
-        <div class="lf-component" id="comp-diagram-container-tobe" style="top: 132px; left: 30px; width: 1380px; height: 495px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:rgba(240,253,244,0.65); border:1.6px dashed #6ee7b7 !important; border-radius:14px; box-sizing:border-box;">
-                <div class="v4-shape-text-content" style="padding:16px 20px; display:flex; align-items:flex-start; justify-content:flex-start;">
-                    <p style="text-align:left;"><span style="background:#059669; color:#ffffff; font-size:12.5px; font-weight:800; padding:5px 16px; border-radius:8px;">To-Be 배치 동기화 &amp; Redis 직결 조회 아키텍처 다이어그램</span></p>
-                </div>
+        <!-- Container Box for Diagram Section (Pure Container, z-index: 10) -->
+        <div class="lf-component" id="comp-diagram-container-tobe" style="top: 132px; left: 30px; width: 1380px; height: 495px; z-index: 10;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:rgba(240,253,244,0.65); border:1.6px dashed #6ee7b7 !important; border-radius:14px; box-sizing:border-box;"></div>
+        </div>
+
+        <!-- Independent Diagram Title Badge (High z-index: 105, Never Covered!) -->
+        <div class="lf-component v4-text-box" id="comp-diagram-title-tobe" style="top: 145px; left: 55px; width: 440px; height: 32px; z-index: 105;">
+            <div class="v4-editable-cell" contenteditable="true" style="outline:none; padding:2px; display:flex; align-items:center; justify-content:flex-start; text-align:left; width:100%; height:100%;">
+                <p style="text-align:left;"><span style="background:#059669; color:#ffffff; font-size:12.5px; font-weight:800; padding:5px 16px; border-radius:8px;">To-Be 배치 동기화 &amp; Redis 직결 조회 아키텍처 다이어그램</span></p>
             </div>
         </div>
 
         <!-- ==================== NODE A1 NATIVE ATOMIC COMPONENTS ==================== -->
         <!-- Node A1: Card Background Shape -->
-        <div class="lf-component" id="comp-tb-rdbms-bg" style="top: 180px; left: 55px; width: 275px; height: 425px;">
+        <div class="lf-component" id="comp-tb-rdbms-bg" style="top: 185px; left: 55px; width: 275px; height: 420px; z-index: 20;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:14px; box-shadow:0 6px 16px rgba(0,0,0,0.03); box-sizing:border-box;"></div>
         </div>
         <!-- Node A1: Badge Shape -->
-        <div class="lf-component" id="comp-tb-rdbms-badge" style="top: 202px; left: 112px; width: 160px; height: 26px;">
+        <div class="lf-component" id="comp-tb-rdbms-badge" style="top: 207px; left: 112px; width: 160px; height: 26px; z-index: 30;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#475569; border:1.6px solid #334155 !important; border-radius:13px !important; color:#ffffff; box-sizing:border-box;">
                 <div class="v4-shape-text-content" style="padding:2px;">
                     <p><span style="font-size:11.5px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">SOURCE RDBMS</span></p>
@@ -103,13 +106,13 @@
             </div>
         </div>
         <!-- Node A1: Native Text Box Title -->
-        <div class="lf-component v4-text-box" id="comp-tb-rdbms-title" style="top: 236px; left: 70px; width: 245px; height: 32px;">
+        <div class="lf-component v4-text-box" id="comp-tb-rdbms-title" style="top: 241px; left: 70px; width: 245px; height: 32px; z-index: 30;">
             <div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#0f172a; padding:2px; display:flex; align-items:center; justify-content:center; text-align:center; width:100%; height:100%;">
                 <p><span style="font-size:17px; font-weight:800; color:#0f172a;">주문 RDBMS</span></p>
             </div>
         </div>
         <!-- Node A1: SVG Icon Atom -->
-        <div class="lf-component" id="comp-tb-rdbms-icon" style="top: 278px; left: 156px; width: 72px; height: 72px;">
+        <div class="lf-component" id="comp-tb-rdbms-icon" style="top: 283px; left: 156px; width: 72px; height: 72px; z-index: 30;">
             <div style="width:72px; height:72px; border-radius:50%; background:#f1f5f9; border:1.6px solid #cbd5e1; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
                     <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
@@ -119,14 +122,14 @@
             </div>
         </div>
         <!-- Node A1: Native Text Box Description -->
-        <div class="lf-component v4-text-box" id="comp-tb-rdbms-desc" style="top: 365px; left: 70px; width: 245px; height: 220px;">
+        <div class="lf-component v4-text-box" id="comp-tb-rdbms-desc" style="top: 370px; left: 70px; width: 245px; height: 215px; z-index: 30;">
             <div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#475569; padding:4px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center; width:100%; height:100%;">
                 <p><span style="font-size:13px; color:#475569; line-height:1.6;">• 원천 데이터 저장소<br>• `ORDER_HIST` 원본<br>• 회원별 구매 브랜드 이력</span></p>
             </div>
         </div>
 
         <!-- Arrow A1 -> A2 -->
-        <div class="lf-component" id="comp-arrow-tb1" style="top: 180px; left: 335px; width: 45px; height: 425px;">
+        <div class="lf-component" id="comp-arrow-tb1" style="top: 185px; left: 335px; width: 45px; height: 420px; z-index: 25;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#10b981; font-size:36px; font-weight:900;">
                 ➔
             </div>
@@ -134,11 +137,11 @@
 
         <!-- ==================== NODE A2 NATIVE ATOMIC COMPONENTS ==================== -->
         <!-- Node A2: Card Background Shape -->
-        <div class="lf-component" id="comp-tb-batch-bg" style="top: 180px; left: 385px; width: 275px; height: 425px;">
+        <div class="lf-component" id="comp-tb-batch-bg" style="top: 185px; left: 385px; width: 275px; height: 420px; z-index: 20;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#f0fdf4; border:1.6px solid #a7f3d0 !important; border-radius:14px; box-shadow:0 6px 16px rgba(0,0,0,0.03); box-sizing:border-box;"></div>
         </div>
         <!-- Node A2: Badge Shape -->
-        <div class="lf-component" id="comp-tb-batch-badge" style="top: 202px; left: 432px; width: 180px; height: 26px;">
+        <div class="lf-component" id="comp-tb-batch-badge" style="top: 207px; left: 432px; width: 180px; height: 26px; z-index: 30;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#059669; border:1.6px solid #047857 !important; border-radius:13px !important; color:#ffffff; box-sizing:border-box;">
                 <div class="v4-shape-text-content" style="padding:2px;">
                     <p><span style="font-size:11.5px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">SYNC BATCH ENGINE</span></p>
@@ -146,13 +149,13 @@
             </div>
         </div>
         <!-- Node A2: Native Text Box Title -->
-        <div class="lf-component v4-text-box" id="comp-tb-batch-title" style="top: 236px; left: 400px; width: 245px; height: 32px;">
+        <div class="lf-component v4-text-box" id="comp-tb-batch-title" style="top: 241px; left: 400px; width: 245px; height: 32px; z-index: 30;">
             <div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#065f46; padding:2px; display:flex; align-items:center; justify-content:center; text-align:center; width:100%; height:100%;">
                 <p><span style="font-size:17px; font-weight:800; color:#065f46;">배치 동기화 엔진</span></p>
             </div>
         </div>
         <!-- Node A2: SVG Icon Atom -->
-        <div class="lf-component" id="comp-tb-batch-icon" style="top: 278px; left: 486px; width: 72px; height: 72px;">
+        <div class="lf-component" id="comp-tb-batch-icon" style="top: 283px; left: 486px; width: 72px; height: 72px; z-index: 30;">
             <div style="width:72px; height:72px; border-radius:50%; background:#d1fae5; border:1.6px solid #a7f3d0; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
                     <path d="M21.5 2v6h-6"></path>
@@ -161,14 +164,14 @@
             </div>
         </div>
         <!-- Node A2: Native Text Box Description -->
-        <div class="lf-component v4-text-box" id="comp-tb-batch-desc" style="top: 365px; left: 400px; width: 245px; height: 220px;">
+        <div class="lf-component v4-text-box" id="comp-tb-batch-desc" style="top: 370px; left: 400px; width: 245px; height: 215px; z-index: 30;">
             <div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#065f46; padding:4px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center; width:100%; height:100%;">
                 <p><span style="font-size:13px; color:#065f46; line-height:1.6;">• 1일 벌크 배치:<br>자정 전체 구매 브랜드 적재<br><br>• 5분 증분 배치:<br>최신 주문 증분 준실시간 동기화</span></p>
             </div>
         </div>
 
         <!-- Arrow A2 -> A3 -->
-        <div class="lf-component" id="comp-arrow-tb2" style="top: 180px; left: 665px; width: 45px; height: 425px;">
+        <div class="lf-component" id="comp-arrow-tb2" style="top: 185px; left: 665px; width: 45px; height: 420px; z-index: 25;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#10b981; font-size:36px; font-weight:900;">
                 ➔
             </div>
@@ -176,11 +179,11 @@
 
         <!-- ==================== NODE A3 NATIVE ATOMIC COMPONENTS ==================== -->
         <!-- Node A3: Card Background Shape -->
-        <div class="lf-component" id="comp-tb-redis-bg" style="top: 180px; left: 715px; width: 295px; height: 425px;">
+        <div class="lf-component" id="comp-tb-redis-bg" style="top: 185px; left: 715px; width: 295px; height: 420px; z-index: 20;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ecfdf5; border:1.6px solid #10b981 !important; border-radius:14px; box-shadow:0 6px 16px rgba(16,185,129,0.15); box-sizing:border-box;"></div>
         </div>
         <!-- Node A3: Badge Shape -->
-        <div class="lf-component" id="comp-tb-redis-badge" style="top: 202px; left: 777px; width: 170px; height: 26px;">
+        <div class="lf-component" id="comp-tb-redis-badge" style="top: 207px; left: 777px; width: 170px; height: 26px; z-index: 30;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#10b981; border:1.6px solid #059669 !important; border-radius:13px !important; color:#ffffff; box-sizing:border-box;">
                 <div class="v4-shape-text-content" style="padding:2px;">
                     <p><span style="font-size:11.5px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">IN-MEMORY CACHE</span></p>
@@ -188,13 +191,13 @@
             </div>
         </div>
         <!-- Node A3: Native Text Box Title -->
-        <div class="lf-component v4-text-box" id="comp-tb-redis-title" style="top: 236px; left: 730px; width: 265px; height: 32px;">
+        <div class="lf-component v4-text-box" id="comp-tb-redis-title" style="top: 241px; left: 730px; width: 265px; height: 32px; z-index: 30;">
             <div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#047857; padding:2px; display:flex; align-items:center; justify-content:center; text-align:center; width:100%; height:100%;">
                 <p><span style="font-size:17px; font-weight:800; color:#047857;">Redis 캐시 저장소</span></p>
             </div>
         </div>
         <!-- Node A3: SVG Icon Atom -->
-        <div class="lf-component" id="comp-tb-redis-icon" style="top: 278px; left: 826px; width: 72px; height: 72px;">
+        <div class="lf-component" id="comp-tb-redis-icon" style="top: 283px; left: 826px; width: 72px; height: 72px; z-index: 30;">
             <div style="width:72px; height:72px; border-radius:50%; background:#a7f3d0; border:1.6px solid #6ee7b7; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
                     <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
@@ -203,14 +206,14 @@
             </div>
         </div>
         <!-- Node A3: Native Text Box Description -->
-        <div class="lf-component v4-text-box" id="comp-tb-redis-desc" style="top: 365px; left: 730px; width: 265px; height: 220px;">
+        <div class="lf-component v4-text-box" id="comp-tb-redis-desc" style="top: 370px; left: 730px; width: 265px; height: 215px; z-index: 30;">
             <div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#065f46; padding:4px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center; width:100%; height:100%;">
                 <p><span style="font-size:13px; color:#065f46; line-height:1.6;">• `Key: USER_ID`<br>• `Value: BRAND_SET`<br><br>• In-Memory 초고속 캐시 참조<br>(주문 DB direct query 차단)</span></p>
             </div>
         </div>
 
         <!-- Arrow Redis -> Coupon API -->
-        <div class="lf-component" id="comp-arrow-tb3" style="top: 180px; left: 1015px; width: 45px; height: 425px;">
+        <div class="lf-component" id="comp-arrow-tb3" style="top: 185px; left: 1015px; width: 45px; height: 420px; z-index: 25;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:transparent; border:none !important; color:#0284c7; font-size:36px; font-weight:900;">
                 ➔
             </div>
@@ -218,11 +221,11 @@
 
         <!-- ==================== NODE B2 NATIVE ATOMIC COMPONENTS ==================== -->
         <!-- Node B2: Card Background Shape -->
-        <div class="lf-component" id="comp-tb-api-bg" style="top: 180px; left: 1060px; width: 295px; height: 425px;">
+        <div class="lf-component" id="comp-tb-api-bg" style="top: 185px; left: 1060px; width: 295px; height: 420px; z-index: 20;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#f0f9ff; border:1.6px solid #38bdf8 !important; border-radius:14px; box-shadow:0 6px 16px rgba(0,0,0,0.03); box-sizing:border-box;"></div>
         </div>
         <!-- Node B2: Badge Shape -->
-        <div class="lf-component" id="comp-tb-api-badge" style="top: 202px; left: 1117px; width: 180px; height: 26px;">
+        <div class="lf-component" id="comp-tb-api-badge" style="top: 207px; left: 1117px; width: 180px; height: 26px; z-index: 30;">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#0284c7; border:1.6px solid #0369a1 !important; border-radius:13px !important; color:#ffffff; box-sizing:border-box;">
                 <div class="v4-shape-text-content" style="padding:2px;">
                     <p><span style="font-size:11.5px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">COUPON API ENGINE</span></p>
@@ -230,13 +233,13 @@
             </div>
         </div>
         <!-- Node B2: Native Text Box Title -->
-        <div class="lf-component v4-text-box" id="comp-tb-api-title" style="top: 236px; left: 1075px; width: 265px; height: 32px;">
+        <div class="lf-component v4-text-box" id="comp-tb-api-title" style="top: 241px; left: 1075px; width: 265px; height: 32px; z-index: 30;">
             <div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#0369a1; padding:2px; display:flex; align-items:center; justify-content:center; text-align:center; width:100%; height:100%;">
                 <p><span style="font-size:17px; font-weight:800; color:#0369a1;">쿠폰 발급 API Engine</span></p>
             </div>
         </div>
         <!-- Node B2: SVG Icon Atom -->
-        <div class="lf-component" id="comp-tb-api-icon" style="top: 278px; left: 1171px; width: 72px; height: 72px;">
+        <div class="lf-component" id="comp-tb-api-icon" style="top: 283px; left: 1171px; width: 72px; height: 72px; z-index: 30;">
             <div style="width:72px; height:72px; border-radius:50%; background:#bae6fd; border:1.6px solid #7dd3fc; display:flex; align-items:center; justify-content:center; box-sizing:border-box;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.8" class="lf-icon" style="width:46px; height:46px;">
                     <polyline points="20 6 9 17 4 12"></polyline>
@@ -244,41 +247,47 @@
             </div>
         </div>
         <!-- Node B2: Native Text Box Description -->
-        <div class="lf-component v4-text-box" id="comp-tb-api-desc" style="top: 365px; left: 1075px; width: 265px; height: 220px;">
+        <div class="lf-component v4-text-box" id="comp-tb-api-desc" style="top: 370px; left: 1075px; width: 265px; height: 215px; z-index: 30;">
             <div class="v4-editable-cell" contenteditable="true" style="outline:none; color:#0369a1; padding:4px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center; width:100%; height:100%;">
                 <p><span style="font-size:13px; color:#0369a1; line-height:1.6;">• 쿠폰 다운로드 요청 시<br>• RDBMS 직접 조회 미실행!<br>• Redis 직결 조회 검증으로<br><strong style="color:#059669;">주문 DB 부하 0건 달성</strong></span></p>
             </div>
         </div>
 
-        <!-- ==================== HIGHLY UNIFORM LEFT ALIGNED BOTTOM COMMENTS ==================== -->
-
-        <!-- Card 1: Zero DB Load -->
-        <div class="lf-component" id="comp-detail-noload" style="top: 645px; left: 30px; width: 675px; height: 195px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #a7f3d0 !important; border-radius:12px; padding:20px 24px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; text-align:left; box-shadow:0 2px 8px rgba(16,185,129,0.03);">
-                <div style="display:flex; align-items:center; justify-content:flex-start; font-size:15px; font-weight:800; color:#065f46; padding-bottom:10px; border-bottom:1.6px solid #ecfdf5; margin-bottom:12px; width:100%; text-align:left;">
-                    <span style="width:22px; height:22px; background:#10b981; color:#ffffff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-right:10px; flex-shrink:0;">1</span> 1. RDBMS 부하 분산 &amp; 시스템 안정성
-                </div>
-                <div style="font-size:13.5px; line-height:1.6; color:#334155; margin-bottom:8px; text-align:left;">
-                    • <strong>주문 DB 직접 조회 차단</strong> : 쿠폰 발급 검증 시 Redis 캐시를 직결 참조하여 DB 부하 완전 분산
-                </div>
-                <div style="font-size:13.5px; line-height:1.6; color:#334155; text-align:left;">
-                    • <strong>핵심 서비스 안정성</strong> : 이벤트 유입 시에도 회원 DB 쿼리가 0건이므로 전사 서비스 정상 작동
-                </div>
+        <!-- ==================== BOTTOM COMMENT CARD 1 (FULLY ATOMIC REFACTORED) ==================== -->
+        <!-- Card 1 Background Shape -->
+        <div class="lf-component" id="comp-detail-noload-bg" style="top: 645px; left: 30px; width: 675px; height: 195px; z-index: 10;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #a7f3d0 !important; border-radius:12px; box-shadow:0 2px 8px rgba(16,185,129,0.03); box-sizing:border-box;"></div>
+        </div>
+        <!-- Card 1 Header Text Box (Independent) -->
+        <div class="lf-component v4-text-box" id="comp-detail-noload-header" style="top: 658px; left: 48px; width: 638px; height: 36px; z-index: 30;">
+            <div class="v4-editable-cell" contenteditable="true" style="outline:none; padding:2px; display:flex; align-items:center; justify-content:flex-start; text-align:left; width:100%; height:100%; border-bottom:1.6px solid #ecfdf5;">
+                <p style="text-align:left;"><span style="width:22px; height:22px; background:#10b981; color:#ffffff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-right:10px;">1</span> <strong style="font-size:15px; font-weight:800; color:#065f46;">1. RDBMS 부하 분산 &amp; 시스템 안정성</strong></p>
+            </div>
+        </div>
+        <!-- Card 1 Bullet Content Text Box (Independent) -->
+        <div class="lf-component v4-text-box" id="comp-detail-noload-content" style="top: 704px; left: 50px; width: 635px; height: 120px; z-index: 30;">
+            <div class="v4-editable-cell" contenteditable="true" style="outline:none; padding:2px; display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-start; text-align:left; width:100%; height:100%;">
+                <p style="text-align:left;"><span style="font-size:13.5px; color:#334155; line-height:1.6;">• <strong>주문 DB 직접 조회 차단</strong> : 쿠폰 발급 검증 시 Redis 캐시를 직결 참조하여 DB 부하 완전 분산</span></p>
+                <p style="text-align:left; margin-top:8px;"><span style="font-size:13.5px; color:#334155; line-height:1.6;">• <strong>핵심 서비스 안정성</strong> : 이벤트 유입 시에도 회원 DB 쿼리가 0건이므로 전사 서비스 정상 작동</span></p>
             </div>
         </div>
 
-        <!-- Card 2: Speed & Dual Sync -->
-        <div class="lf-component" id="comp-detail-sync" style="top: 645px; left: 725px; width: 685px; height: 195px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #a7f3d0 !important; border-radius:12px; padding:20px 24px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:flex-start; text-align:left; box-shadow:0 2px 8px rgba(16,185,129,0.03);">
-                <div style="display:flex; align-items:center; justify-content:flex-start; font-size:15px; font-weight:800; color:#065f46; padding-bottom:10px; border-bottom:1.6px solid #ecfdf5; margin-bottom:12px; width:100%; text-align:left;">
-                    <span style="width:22px; height:22px; background:#10b981; color:#ffffff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-right:10px; flex-shrink:0;">2</span> 2. 빠른 응답 &amp; 이중 배치(Dual Batch) 동기화
-                </div>
-                <div style="font-size:13.5px; line-height:1.6; color:#334155; margin-bottom:8px; text-align:left;">
-                    • <strong>In-Memory 초고속 응답</strong> : RDBMS SQL JOIN 대신 In-Memory 캐시 데이터 직접 참조
-                </div>
-                <div style="font-size:13.5px; line-height:1.6; color:#334155; text-align:left;">
-                    • <strong>이중 배치 동기화</strong> : 자정 1일 벌크 + 5분 증분 배치로 최신 주문 내역 준실시간 정합성 유지
-                </div>
+        <!-- ==================== BOTTOM COMMENT CARD 2 (FULLY ATOMIC REFACTORED) ==================== -->
+        <!-- Card 2 Background Shape -->
+        <div class="lf-component" id="comp-detail-sync-bg" style="top: 645px; left: 725px; width: 685px; height: 195px; z-index: 10;">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #a7f3d0 !important; border-radius:12px; box-shadow:0 2px 8px rgba(16,185,129,0.03); box-sizing:border-box;"></div>
+        </div>
+        <!-- Card 2 Header Text Box (Independent) -->
+        <div class="lf-component v4-text-box" id="comp-detail-sync-header" style="top: 658px; left: 743px; width: 648px; height: 36px; z-index: 30;">
+            <div class="v4-editable-cell" contenteditable="true" style="outline:none; padding:2px; display:flex; align-items:center; justify-content:flex-start; text-align:left; width:100%; height:100%; border-bottom:1.6px solid #ecfdf5;">
+                <p style="text-align:left;"><span style="width:22px; height:22px; background:#10b981; color:#ffffff; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; margin-right:10px;">2</span> <strong style="font-size:15px; font-weight:800; color:#065f46;">2. 빠른 응답 &amp; 이중 배치(Dual Batch) 동기화</strong></p>
+            </div>
+        </div>
+        <!-- Card 2 Bullet Content Text Box (Independent) -->
+        <div class="lf-component v4-text-box" id="comp-detail-sync-content" style="top: 704px; left: 745px; width: 645px; height: 120px; z-index: 30;">
+            <div class="v4-editable-cell" contenteditable="true" style="outline:none; padding:2px; display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-start; text-align:left; width:100%; height:100%;">
+                <p style="text-align:left;"><span style="font-size:13.5px; color:#334155; line-height:1.6;">• <strong>In-Memory 초고속 응답</strong> : RDBMS SQL JOIN 대신 In-Memory 캐시 데이터 직접 참조</span></p>
+                <p style="text-align:left; margin-top:8px;"><span style="font-size:13.5px; color:#334155; line-height:1.6;">• <strong>이중 배치 동기화</strong> : 자정 1일 벌크 + 5분 증분 배치로 최신 주문 내역 준실시간 정합성 유지</span></p>
             </div>
         </div>
 
