@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Be 주문 데이터 조회 개편안 - [기획전] 브랜드 첫구매 - 제반 설계</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&amp;family=Noto+Sans+KR:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --v4-bg: #f8fafc;
+            --v4-panel: #ffffff;
+            --v4-accent: #10b981;
+            --v4-text: #0f172a;
+            --v4-border: #cbd5e1;
+            --v4-success: #059669;
+            --v4-info: #0284c7;
+        }
+        body { margin:0; padding:0; background:#1e293b; font-family:'Inter','Noto Sans KR',sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; overflow:hidden; }
+        .artboard { width:1440px; height:900px; background:#f8fafc; position:relative; box-shadow:0 30px 60px rgba(0,0,0,0.4); overflow:hidden; }
+        .lf-component { position:absolute; transition:all 0.2s cubic-bezier(0.4,0,0.2,1); box-sizing:border-box; }
+        .lf-component:hover { outline:2px dashed var(--v4-accent); outline-offset:2px; }
+        .lf-component.selected { outline:2px solid var(--v4-accent); z-index:100; }
+        .v4-editable-cell { outline:none; padding:4px; transition:background 0.2s; word-break:break-word; }
+        .v4-editable-cell:focus { background:rgba(16,185,129,0.08); box-shadow:inset 0 0 0 1px var(--v4-accent); border-radius:4px; }
+        .v4-shape-container { width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:700; box-sizing:border-box; }
+        
+        .tobe-card {
+            background:#ffffff;
+            border:1.6px solid #cbd5e1 !important;
+            border-radius:12px;
+            padding:18px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            text-align:center;
+            box-shadow:0 4px 12px rgba(0,0,0,0.03);
+            box-sizing:border-box;
+            width:100%; height:100%;
+        }
+        .tobe-badge {
+            font-size:11px;
+            font-weight:800;
+            padding:3px 10px;
+            border-radius:10px;
+            color:#ffffff;
+            margin-bottom:10px;
+            letter-spacing:0.5px;
+        }
+        .tobe-title {
+            font-size:15px;
+            font-weight:800;
+            color:#0f172a;
+            margin-bottom:10px;
+        }
+        .tobe-icon-wrap {
+            width:48px; height:48px;
+            border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            margin-bottom:10px;
+        }
+        .tobe-desc {
+            font-size:12px;
+            color:#475569;
+            line-height:1.45;
+        }
+
+        /* Detail Section Cards */
+        .detail-card {
+            background:#ffffff;
+            border:1.6px solid #a7f3d0 !important;
+            border-radius:12px;
+            padding:24px;
+            box-shadow:0 4px 14px rgba(16,185,129,0.05);
+            box-sizing:border-box;
+            width:100%; height:100%;
+            display:flex; flex-direction:column; justify-content:flex-start;
+        }
+        .detail-card-header {
+            display:flex; align-items:center;
+            font-size:17px; font-weight:800;
+            color:#065f46;
+            padding-bottom:14px;
+            border-bottom:1.6px solid #ecfdf5;
+            margin-bottom:16px;
+        }
+        .detail-item {
+            margin-bottom:16px;
+            line-height:1.6;
+        }
+        .detail-item-title {
+            font-size:14px; font-weight:800; color:#047857;
+            margin-bottom:4px; display:flex; align-items:center;
+        }
+        .detail-item-desc {
+            font-size:13px; color:#334155; padding-left:18px;
+        }
+    </style>
+    <style id="v4-inlined-style">
+        :root { --v4-primary: #10b981; --v4-accent: #00e5ff; --v4-bg-dark: #0f172a; --v4-panel-bg: rgba(30, 41, 59, 0.7); --v4-border: rgba(255, 255, 255, 0.15); --v4-text-main: #ffffff; --v4-text-dim: #94a3b8; }
+        .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; transform: none !important; }
+        .lf-component.selected { outline: 2px solid #10b981; z-index: 10001 !important; }
+        .lf-drag-handle { position: absolute; top: -12px; left: -12px; width: 24px; height: 24px; background: #10b981; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 2px solid #fff; z-index: 10002; }
+        .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -16px; left: -16px; }
+        .lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #10b981; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10002; }
+        .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
+        .lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10002; font-size: 14px; font-weight: bold; }
+        .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: flex; }
+        .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: #cbd5e1; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #ffffff; color: #0f172a; box-sizing: border-box; }
+        .v4-shape-rect { border-radius: 8px; }
+        svg.lf-icon { background-image: none !important; }
+        .text-marker { position: absolute; padding: 4px 8px; border-radius: 6px; border: 1.6px solid #10b981; font-size: 13px; line-height: 1.3; cursor: grab; background: #ffffff; box-shadow: 0 4px 12px rgba(16,185,129,0.15); color: #1e293b; z-index: 1000; box-sizing: border-box; }
+        .pin-marker { position: absolute !important; width: 28px !important; height: 28px !important; background: #10b981 !important; color: #ffffff !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; border: 2px solid #ffffff !important; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important; font-weight: 800 !important; font-size: 13px !important; z-index: 1000 !important; cursor: grab !important; box-sizing: border-box !important; }
+        body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; }
+    </style>
+</head>
+<body>
+    <div class="artboard" id="canvas">
+
+        <!-- Header Pill Tag -->
+        <div class="lf-component" id="comp-header-badge" style="top: 40px; left: 50px; width: 210px; height: 34px;">
+            <div class="v4-shape v4-shape-rect" style="background:#059669; border-color:#047857; border-radius:17px !important; color:#ffffff; font-size:12px; font-weight:800; letter-spacing:0.5px;">
+                <div class="v4-editable-cell" contenteditable="true">[LFmall Architecture To-Be]</div>
+            </div>
+        </div>
+
+        <!-- Main Title Box -->
+        <div class="lf-component" id="comp-main-title" style="top: 40px; left: 270px; width: 800px; height: 50px;">
+            <div class="v4-shape v4-shape-rect" style="background:#0f172a; border-color:#1e293b; color:#ffffff; font-size:22px; font-weight:800; justify-content:flex-start; padding-left:24px; box-shadow:0 4px 14px rgba(0,0,0,0.12);">
+                <div class="v4-editable-cell" contenteditable="true">To-Be 주문 데이터 조회 개편안</div>
+            </div>
+        </div>
+
+        <!-- Status Success Tag -->
+        <div class="lf-component" id="comp-status-tag" style="top: 40px; left: 1090px; width: 300px; height: 50px;">
+            <div class="v4-shape v4-shape-rect" style="background:#ecfdf5; border-color:#6ee7b7; color:#047857; font-size:13px; font-weight:800; box-shadow:0 4px 10px rgba(16,185,129,0.1);">
+                <div class="v4-editable-cell" contenteditable="true">⚡ Redis In-Memory &amp; Dual Batch Sync</div>
+            </div>
+        </div>
+
+        <!-- Subtitle Summary Bar -->
+        <div class="lf-component" id="comp-sub-summary" style="top: 104px; left: 50px; width: 1340px; height: 36px;">
+            <div class="v4-shape v4-shape-rect" style="background:#e2e8f0; border-color:#cbd5e1; color:#334155; font-size:13px; font-weight:600; justify-content:flex-start; padding-left:20px;">
+                <div class="v4-editable-cell" contenteditable="true">📌 <strong>개편 핵심(To-Be)</strong> : 주문 DB의 '회원별 구매 브랜드'를 <strong>Redis에 1일 벌크 + 5분 증분 배치 동기화</strong> ➔ 쿠폰 다운로드 시 <strong>Redis 직결 조회로 DB 과부하 0% 실현</strong></div>
+            </div>
+        </div>
+
+        <!-- ==================== TO-BE ARCHITECTURE FLOW ==================== -->
+
+        <!-- Node A1: Order DB (RDBMS Source) -->
+        <div class="lf-component" id="comp-node-db" style="top: 165px; left: 50px; width: 230px; height: 235px;">
+            <div class="tobe-card">
+                <div class="tobe-badge" style="background:#475569;">SOURCE DB</div>
+                <div class="tobe-title">주문 RDBMS</div>
+                <div class="tobe-icon-wrap" style="background:#f1f5f9;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.6" class="lf-icon" style="width:26px; height:26px;">
+                        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                    </svg>
+                </div>
+                <div class="tobe-desc">
+                    원천 데이터 저장소<br>
+                    <strong>회원별 구매 브랜드 목록</strong><br>
+                    (`ORDER_HIST` 원본)
+                </div>
+            </div>
+        </div>
+
+        <!-- Arrow A1 -> A2 -->
+        <div class="lf-component" id="comp-arrow-a1" style="top: 165px; left: 280px; width: 45px; height: 235px;">
+            <div style="display:flex; align-items:center; justify-content:center; color:#10b981; font-size:20px; font-weight:700; width:100%; height:100%;">➔</div>
+        </div>
+
+        <!-- Node A2: Batch Engine (Dual Batch Sync) -->
+        <div class="lf-component" id="comp-node-batch" style="top: 165px; left: 325px; width: 275px; height: 235px;">
+            <div class="tobe-card" style="border-color:#a7f3d0 !important; background:#f0fdf4;">
+                <div class="tobe-badge" style="background:#059669;">SYNC BATCH</div>
+                <div class="tobe-title" style="color:#065f46;">배치 동기화 엔진</div>
+                <div class="tobe-icon-wrap" style="background:#d1fae5;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.6" class="lf-icon" style="width:26px; height:26px;">
+                        <path d="M21.5 2v6h-6"></path>
+                        <path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+                    </svg>
+                </div>
+                <div class="tobe-desc" style="color:#065f46; text-align:left; font-size:11.5px; line-height:1.5;">
+                    • <strong>1일 단위 벌크 배치</strong>: 자정 마다 전체 회원 구매 브랜드 Redis 초고속 적재<br>
+                    • <strong>5분 단위 증분 배치</strong>: 5분 주기 신규 주문내역 반영 (준실시간 맞춤)
+                </div>
+            </div>
+        </div>
+
+        <!-- Arrow A2 -> A3 -->
+        <div class="lf-component" id="comp-arrow-a2" style="top: 165px; left: 600px; width: 45px; height: 235px;">
+            <div style="display:flex; align-items:center; justify-content:center; color:#10b981; font-size:20px; font-weight:700; width:100%; height:100%;">➔</div>
+        </div>
+
+        <!-- Node A3: Redis In-Memory Cache Store -->
+        <div class="lf-component" id="comp-node-redis" style="top: 165px; left: 645px; width: 260px; height: 235px;">
+            <div class="tobe-card" style="border-color:#10b981 !important; background:#ecfdf5; box-shadow:0 6px 16px rgba(16,185,129,0.15);">
+                <div class="tobe-badge" style="background:#10b981;">IN-MEMORY CACHE</div>
+                <div class="tobe-title" style="color:#047857;">⚡ Redis 캐시 저장소</div>
+                <div class="tobe-icon-wrap" style="background:#a7f3d0;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="1.6" class="lf-icon" style="width:26px; height:26px;">
+                        <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                        <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                        <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                        <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                    </svg>
+                </div>
+                <div class="tobe-desc" style="color:#065f46;">
+                    `Key: User_ID`<br>
+                    `Value: Brand_Set`<br>
+                    <strong style="color:#047857; text-decoration:underline;">응답속도 &lt; 1ms (Sub-millisecond)</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Connector (Sync to Lookup) -->
+        <div class="lf-component" id="comp-arrow-lookup" style="top: 165px; left: 905px; width: 45px; height: 235px;">
+            <div style="display:flex; align-items:center; justify-content:center; color:#0284c7; font-size:20px; font-weight:700; width:100%; height:100%;">⚡</div>
+        </div>
+
+        <!-- Node B1: Coupon Download Event -->
+        <div class="lf-component" id="comp-node-client" style="top: 165px; left: 950px; width: 200px; height: 235px;">
+            <div class="tobe-card">
+                <div class="tobe-badge" style="background:#0284c7;">COUPON ACTION</div>
+                <div class="tobe-title">쿠폰 다운로드</div>
+                <div class="tobe-icon-wrap" style="background:#e0f2fe;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.6" class="lf-icon" style="width:26px; height:26px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </div>
+                <div class="tobe-desc">
+                    고객이 기획전에서<br>
+                    <strong>쿠폰 다운로드 버튼 클릭</strong><br>
+                    (TPS 10,000+ 유입)
+                </div>
+            </div>
+        </div>
+
+        <!-- Arrow B1 -> B2 -->
+        <div class="lf-component" id="comp-arrow-b1" style="top: 165px; left: 1150px; width: 40px; height: 235px;">
+            <div style="display:flex; align-items:center; justify-content:center; color:#0284c7; font-size:20px; font-weight:700; width:100%; height:100%;">➔</div>
+        </div>
+
+        <!-- Node B2: Direct Redis Lookup API -->
+        <div class="lf-component" id="comp-node-api" style="top: 165px; left: 1190px; width: 200px; height: 235px;">
+            <div class="tobe-card" style="border-color:#38bdf8 !important; background:#f0f9ff;">
+                <div class="tobe-badge" style="background:#0284c7;">NO DB LOAD API</div>
+                <div class="tobe-title" style="color:#0369a1;">쿠폰 발급 API</div>
+                <div class="tobe-icon-wrap" style="background:#bae6fd;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.6" class="lf-icon" style="width:26px; height:26px;">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <div class="tobe-desc" style="color:#0369a1;">
+                    주문 DB 미조회!<br>
+                    <strong>Redis 직결 조회</strong><br>
+                    <span style="color:#059669; font-weight:800;">(DB 부하 0%)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== KEY BENEFITS & DETAILS ==================== -->
+
+        <!-- Card 1: Zero DB Load -->
+        <div class="lf-component" id="comp-detail-noload" style="top: 425px; left: 50px; width: 650px; height: 410px;">
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <span style="font-size:20px; margin-right:8px;">🚀</span> 1. RDBMS 무부하(Zero DB Load) &amp; 시스템 안정성
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-title">① 주문 DB Direct Access 100% 차단</div>
+                    <div class="detail-item-desc">
+                        쿠폰 다운로드 자격 검증 시 주문 DB로 SQL Query를 전혀 날리지 않고 <strong>In-Memory Redis 캐시에서만 조회</strong>하므로 DB CPU usage 0% 수준 유지.
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-title">② LFmall 타 서비스 연쇄 장애 완벽 방어</div>
+                    <div class="detail-item-desc">
+                        기획전 선착순 이벤트 시 초당 10,000건 이상의 클릭 폭주가 발생해도 DB 커넥션 풀이 영향을 받지 않아 <strong>로그인, 마이페이지, 주문/결제 서비스 100% 정상 작동</strong>.
+                    </div>
+                </div>
+                <div class="detail-item" style="margin-bottom:0;">
+                    <div class="detail-item-title">③ 무제한 수평 확장성 (Horizontal Scalability)</div>
+                    <div class="detail-item-desc">
+                        Redis Cluster 구조를 활용하여 향후 대형 프로모션 트래픽(TPS 100k+) 유입 시에도 <strong>Redis 노드만 유연하게 확장하여 즉시 대응 가능</strong>.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Speed & Dual Sync -->
+        <div class="lf-component" id="comp-detail-sync" style="top: 425px; left: 740px; width: 650px; height: 410px;">
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <span style="font-size:20px; margin-right:8px;">⚡</span> 2. 초고속 처리 &amp; 이중 배치(Dual Batch) 동기화
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-title">① 1ms 미만 초고속 응답 (Sub-millisecond Latency)</div>
+                    <div class="detail-item-desc">
+                        RDBMS 대용량 `ORDER_HIST` JOIN 쿼리 대신 Redis 메모리 Key-Value 직접 접근으로 <strong>조회 속도를 3,000ms ➔ 1ms 미만으로 약 3,000배 개선</strong>.
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-item-title">② 일단위 Bulk + 5분 Incremental 배치 정합성</div>
+                    <div class="detail-item-desc">
+                        매일 자정 **일 단위 전체 벌크 적재**로 전체 회원 데이터 정합성을 보장하고, **5분 주기 증분 배치**로 방금 구매한 고객 내역도 준실시간 반영.
+                    </div>
+                </div>
+                <div class="detail-item" style="margin-bottom:0;">
+                    <div class="detail-item-title">③ 장애 격리 (Fault Isolation)</div>
+                    <div class="detail-item-desc">
+                        주문 DB에 순간적인 슬로우 쿼리나 장애가 발생하더라도, 쿠폰 다운로드 서비스는 Redis 독립 저장소를 참조하므로 <strong>이벤트 서비스가 중단 없이 유지</strong>.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PIN MARKERS ==================== -->
+
+        <!-- Pin 1 -->
+        <div class="lf-component pin-marker" id="v4-pin-0" style="top: 415px; left: 605px;">1</div>
+        
+        <!-- Pin 2 -->
+        <div class="lf-component pin-marker" id="v4-pin-1" style="top: 415px; left: 1370px;">2</div>
+
+        <!-- Footer -->
+        <div class="lf-component" style="bottom:20px; left:50px; color:#94a3b8; font-size:12px; display:flex; align-items:center; gap:20px; pointer-events:none;">
+            <div style="font-weight:900; color:#475569; font-size:14px;">LFmall Architecture Studio</div>
+            <span>© LF Corp. All Rights Reserved. - To-Be Architecture Review</span>
+        </div>
+
+    </div>
+
+<script id="v4-inlined-script">
+window.V4UndoManager = (function() {
+    const MAX_HISTORY = 10;
+    let undoStack = [];
+    function notifyParent(data) { if (window.parent) window.parent.postMessage(data, '*'); }
+    function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
+    function getCleanHTML() {
+        const host = document.body;
+        const clone = host.cloneNode(true);
+        clone.querySelectorAll('script').forEach(el => el.remove());
+        clone.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
+        clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+        return clone.innerHTML;
+    }
+    return {
+        saveState: function() {
+            try {
+                const html = getCleanHTML();
+                const currentState = JSON.stringify({ html });
+                if (undoStack.length > 0 && undoStack[undoStack.length - 1] === currentState) return;
+                undoStack.push(currentState);
+                if (undoStack.length > MAX_HISTORY) undoStack.shift();
+            } catch (e) { console.warn("[V4 Undo] Save failed:", e); }
+        },
+        undo: function() {
+            try {
+                if (undoStack.length === 0) return;
+                const prevState = JSON.parse(undoStack.pop());
+                const currentScripts = Array.from(document.body.querySelectorAll('script'));
+                const temp = document.createElement('div');
+                temp.innerHTML = prevState.html;
+                temp.querySelectorAll('script').forEach(el => el.remove());
+                document.body.innerHTML = '';
+                while (temp.firstChild) document.body.appendChild(temp.firstChild);
+                currentScripts.forEach(script => document.body.appendChild(script));
+                markDirty();
+            } catch (e) { console.warn("[V4 Undo] Undo failed:", e); }
+        },
+        init: function() {
+            document.addEventListener('keydown', (e) => {
+                if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                    e.preventDefault();
+                    window.V4UndoManager.undo();
+                }
+            });
+        }
+    };
+})();
+if (window.V4UndoManager) window.V4UndoManager.init();
+
+(function() {
+    function notifyParent(data) { if (window.parent) window.parent.postMessage(data, '*'); }
+    function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
+
+    document.addEventListener('mousedown', e => {
+        if (e.target.closest('.sidebar') || e.target.closest('.modal')) return;
+        let d = e.target.closest('.lf-delete-trigger'), c = e.target.closest('.lf-component');
+        if (d && c) { c.remove(); markDirty(); notifyParent({ type: 'LF_DESELECT' }); return; }
+        if (c) {
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            c.classList.add('selected');
+            notifyParent({ type: "LF_COMP_SELECTED", id: c.id });
+        } else {
+            document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
+            notifyParent({ type: 'LF_DESELECT' });
+        }
+    });
+
+    document.addEventListener('input', e => { if (e.target.classList.contains('v4-editable-cell')) markDirty(); });
+})();
+</script>
+</body>
+</html>
