@@ -54,6 +54,33 @@
       "connectors": [],
       "defaultTab": "description",
       "screenDesc": "Redis 인메모리 분산 캐시 및 일단위/5분증분 배치 동기화를 통한 To-Be 주문 데이터 조회 개편 구조 설계"
+    },
+    "03_Brand_Coupon_Policy.html": {
+      "title": "브랜드 첫구매 쿠폰 데이터 & 운영 정책",
+      "type": "plan",
+      "updatedAt": "2026-07-29T13:51:00.000Z",
+      "template": "template_plan.html",
+      "description": [
+        {
+          "text": "[데이터 구조] 회원ID 키-구매 브랜드코드 벨류 적재",
+          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[데이터 구조]</strong> 회원ID 키-구매 브랜드코드 벨류 적재</div>",
+          "x": 480,
+          "y": 320,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "[반품/취소 정책] 반품 시 구매 제외 & 주문취소 시 쿠폰 자동 복원",
+          "html": "<div class=\"v4-editable-cell\" contenteditable=\"true\" style=\"outline:none; color:#000000; padding:2px 4px; display:block; text-align:left;\"><strong>[반품/취소 정책]</strong> 반품 시 구매 제외 & 주문취소 시 쿠폰 자동 복원</div>",
+          "x": 1050,
+          "y": 320,
+          "type": "text",
+          "standardized": true
+        }
+      ],
+      "connectors": [],
+      "defaultTab": "description",
+      "screenDesc": "Redis Key-Value 데이터 스키마 정의, 반품 시 브랜드 구매 제외 기준, 주문 취소 시 쿠폰 자동 복구 정책 상세"
     }
   },
   "assignee": "최범열",
@@ -61,5 +88,5 @@
   "period": "2026.07.29(수) ~ 2026.08.28(금)",
   "jira": "LFML-145373",
   "themeIndex": 2,
-  "updated": "2026-07-29 11:16:25"
+  "updated": "2026-07-29 13:51:00"
 }
