@@ -35,6 +35,7 @@
   - **권장**: UI에 노출되는 특수문자는 반드시 HTML 엔티티(`&times;` 등)를 사용하고, 경고 문구 등은 ASCII 안전 문자열로 작성하거나, 수정 시 파일 인코딩이 `UTF-8`로 유지되는지 엄격히 확인하세요.
 - **아톰 컴포넌트 표준 (Atomic Component Standard & Definitive Masking Unification)**:
   - 모든 아이콘 및 아톰 컴포넌트(SVG 포함)는 인스펙터와의 호환성을 위해 반드시 **`.lf-icon`** 클래스를 포함해야 합니다.
+  - **AI 직접 생성 시 표준 오브젝트 규격 준수 강제 (Native Standard Component Enforcement)**: AI가 스크린 HTML을 생성/수정할 때 임의의 변형 오브젝트 구조(아형 CSS 및 비표준 래퍼)를 사용하는 것은 엄격히 금지됩니다. 모든 도형/텍스트/컨테이너 오브젝트는 사이드바 `LIBRARY`에서 생성되는 정식 3계층 구조 **`.lf-component` ➔ `.v4-shape.v4-shape-rect` (또는 해당 쉐입 클래스) ➔ `.v4-shape-text-content` ➔ `<p><span>`** 표준 DOM 스펙을 100% 엄격하게 준수해야 합니다. 이를 위반하면 인스펙터 수치(`width`/`height`)와 캔버스 파란 선택선의 오프셋 왜곡 버그가 발생합니다.
   - SVG 아톰의 경우, 선명한 프리미엄 UI 유지를 위해 기본 `stroke-width`를 **`1.6`**으로 설정하는 것을 원칙으로 합니다.
   - **스프라이트 아톰 반응형 크기 조절 규칙 (Responsive Sprite Sizing)**: 스프라이트 이미지 기반 아톰의 경우, 고정 픽셀(px) 단위 대신 백분율(%) 기반의 `background-size` 및 `background-position`을 사용하여 객체 크기를 조절할 때 스프라이트 내 다른 영역이 노출(bleeding)되지 않고 단일 객체의 크기만 반응형으로 완벽하게 조절되도록 구현해야 합니다. (예: 3열 2행 구조 스프라이트의 경우 `background-size: 300% 200% !important;`와 백분율 좌표 활용)
   - **Replaced Element (<img>) 금지 및 <div> 대체**: 브라우저 그래픽 최적화 특성상 `<img>` 태그에 `-webkit-mask-image`를 입히는 동적 채색 기법은 엘리먼트 증발을 초래하므로 신규 이미지 기반 아톰은 절대 `<img>` 태그로 작성해서는 안 되며, **`<div>` 엘리먼트와 `background-image` 스타일 조합**으로 설계해야 합니다. (레거시 스크린의 `<img>`는 `enforceDesignSystem()` 내의 `img-to-div` 동적 마이그레이션 모듈에 의해 로딩 시 자동으로 `<div>`로 치환됩니다.)
