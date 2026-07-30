@@ -1,5 +1,5 @@
 /**
- * LFmall Design Studio - Embedded Templates
+ * LFmall Design Studio - Embedded Templates (COMPLETE BUNDLE)
  * This file contains the HTML structure of all templates to ensure 
  * they can be loaded reliably under file:// protocol without fetch/CORS restrictions.
  */
@@ -268,7 +268,7 @@ window.LF_TEMPLATES['template_pc_ui.html'] = `<!DOCTYPE html>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <style>
         :root { --v4-primary: #6366f1; --v4-bg: #1e293b; --v4-text: #f8fafc; }
-        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--v4-bg); overflow: hidden; }
+        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         .page { width: 1440px; height: 900px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .chrome-browser { width: 1440px; height: 900px; background: #ffffff; display: flex; flex-direction: column; border: 1.6px solid rgba(0, 0, 0, 0.12) !important; position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; }
         .chrome-header { background: #dee1e6; padding: 8px 8px 0 8px; display: flex; flex-direction: column; gap: 6px; border-bottom: 1.6px solid #cbcbd0 !important; pointer-events: auto; }
@@ -338,7 +338,98 @@ window.LF_TEMPLATES['template_mobile_ui_1.html'] = `<!DOCTYPE html>
 </body>
 </html>`;
 
-// 6. Blank Template
+// 6. Mobile UI 2 Template
+window.LF_TEMPLATES['template_mobile_ui_2.html'] = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Mobile UI (2) - {{PROJECT_NAME}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --v4-primary: #6366f1; --v4-bg: #1e293b; --v4-frame-bg: #ffffff; }
+        body { margin: 0; padding: 0; background: var(--v4-bg); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        .page { width: 1440px; height: 900px; position: relative; display: flex; justify-content: center; align-items: center; gap: 80px; }
+        .mobile-frame { width: 375px; height: 838px; background: var(--v4-frame-bg); border-radius: 40px; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111; overflow: hidden; border: 4px solid #334155; }
+        .mobile-header-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 150px; height: 30px; background: #111; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; z-index: 1000; }
+        .mobile-content { width: 360px; height: 800px; position: absolute; top: 30px; left: 7.5px; overflow-y: auto; box-sizing: border-box; }
+        .mobile-statusbar { position: absolute; top: 10px; left: 24px; right: 24px; height: 20px; display: flex; align-items: center; justify-content: space-between; color: #111827; font-size: 12px; font-weight: 800; z-index: 1001; pointer-events: none; }
+        .lf-component { position: absolute !important; box-sizing: border-box !important; z-index: 500; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="mobile-frame">
+            <div class="mobile-statusbar"><span>9:41</span><span>5G 100%</span></div>
+            <div class="mobile-header-notch"></div>
+            <div class="mobile-content"></div>
+        </div>
+        <div class="mobile-frame">
+            <div class="mobile-statusbar"><span>9:41</span><span>5G 100%</span></div>
+            <div class="mobile-header-notch"></div>
+            <div class="mobile-content"></div>
+        </div>
+    </div>
+</body>
+</html>`;
+
+// 7. Mobile UI 3 Template
+window.LF_TEMPLATES['template_mobile_ui_3.html'] = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Mobile UI (3) - {{PROJECT_NAME}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --v4-primary: #6366f1; --v4-bg: #1e293b; --v4-frame-bg: #ffffff; }
+        body { margin: 0; padding: 0; background: var(--v4-bg); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        .page { width: 1440px; height: 900px; position: relative; display: flex; justify-content: center; align-items: center; gap: 40px; }
+        .mobile-frame { width: 375px; height: 838px; background: var(--v4-frame-bg); border-radius: 40px; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 8px #111; overflow: hidden; border: 4px solid #334155; }
+        .mobile-header-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 150px; height: 30px; background: #111; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; z-index: 1000; }
+        .mobile-content { width: 360px; height: 800px; position: absolute; top: 30px; left: 7.5px; overflow-y: auto; box-sizing: border-box; }
+        .mobile-statusbar { position: absolute; top: 10px; left: 24px; right: 24px; height: 20px; display: flex; align-items: center; justify-content: space-between; color: #111827; font-size: 12px; font-weight: 800; z-index: 1001; pointer-events: none; }
+        .lf-component { position: absolute !important; box-sizing: border-box !important; z-index: 500; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="mobile-frame">
+            <div class="mobile-statusbar"><span>9:41</span><span>5G</span></div>
+            <div class="mobile-header-notch"></div>
+            <div class="mobile-content"></div>
+        </div>
+        <div class="mobile-frame">
+            <div class="mobile-statusbar"><span>9:41</span><span>5G</span></div>
+            <div class="mobile-header-notch"></div>
+            <div class="mobile-content"></div>
+        </div>
+        <div class="mobile-frame">
+            <div class="mobile-statusbar"><span>9:41</span><span>5G</span></div>
+            <div class="mobile-header-notch"></div>
+            <div class="mobile-content"></div>
+        </div>
+    </div>
+</body>
+</html>`;
+
+// 8. Admin Onesphere Template
+window.LF_TEMPLATES['template_onesphere.html'] = `<!DOCTYPE html>
+<html lang="ko"><head>
+    <meta charset="UTF-8">
+    <title>Admin Onesphere - {{PROJECT_NAME}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --v4-primary: #6366f1; --v4-bg: #1e293b; --v4-surface: #f8f9fa; --v4-text: #1a1c1e; }
+        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--v4-bg); overflow: hidden; color: var(--v4-text); }
+        .page { width: 1440px; height: 900px; position: relative; background: #ffffff; box-shadow: 0 40px 100px rgba(0,0,0,0.05); overflow: hidden; }
+        .lf-component { position: absolute; cursor: pointer; transition: outline 0.2s; box-sizing: border-box; z-index: 100; }
+    </style>
+</head>
+<body>
+    <div class="page" id="canvas"></div>
+</body>
+</html>`;
+
+// 9. Blank Template
 window.LF_TEMPLATES['template_blank.html'] = `<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -355,7 +446,7 @@ window.LF_TEMPLATES['template_blank.html'] = `<!DOCTYPE html>
 </body>
 </html>`;
 
-// Alias key mappings for instant synchronous resolution
+// Alias key mappings for instant synchronous resolution across all template options
 window.LF_TEMPLATES['cover'] = window.LF_TEMPLATES['template_cover.html'];
 window.LF_TEMPLATES['plan'] = window.LF_TEMPLATES['template_plan.html'];
 window.LF_TEMPLATES['plan_delivery'] = window.LF_TEMPLATES['template_plan_delivery.html'];
@@ -363,5 +454,9 @@ window.LF_TEMPLATES['pc_ui'] = window.LF_TEMPLATES['template_pc_ui.html'];
 window.LF_TEMPLATES['ui'] = window.LF_TEMPLATES['template_pc_ui.html'];
 window.LF_TEMPLATES['front_ui'] = window.LF_TEMPLATES['template_pc_ui.html'];
 window.LF_TEMPLATES['mobile_ui_1'] = window.LF_TEMPLATES['template_mobile_ui_1.html'];
+window.LF_TEMPLATES['mobile_ui_2'] = window.LF_TEMPLATES['template_mobile_ui_2.html'];
+window.LF_TEMPLATES['mobile_ui_3'] = window.LF_TEMPLATES['template_mobile_ui_3.html'];
 window.LF_TEMPLATES['mobile_ui'] = window.LF_TEMPLATES['template_mobile_ui_1.html'];
+window.LF_TEMPLATES['onesphere'] = window.LF_TEMPLATES['template_onesphere.html'];
+window.LF_TEMPLATES['admin_onesphere'] = window.LF_TEMPLATES['template_onesphere.html'];
 window.LF_TEMPLATES['blank'] = window.LF_TEMPLATES['template_blank.html'];
