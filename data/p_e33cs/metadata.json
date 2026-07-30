@@ -30,6 +30,12 @@
       "connectors": [],
       "defaultTab": "description",
       "screenDesc": "Redis Key-Value 데이터 스키마 정의, 반품 시 브랜드 구매 제외 기준, 주문 취소 시 쿠폰 자동 복구 정책 상세"
+    },
+    "99_Blank_362.html": {
+      "title": "99_Blank_362",
+      "type": "blank",
+      "updatedAt": "2026-07-30T00:30:20.933Z",
+      "template": "template_blank.html"
     }
   },
   "assignee": "최범열",
