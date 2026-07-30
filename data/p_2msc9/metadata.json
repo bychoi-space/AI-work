@@ -1,6 +1,14 @@
 {
   "title": "[기획전] 선착순쿠폰 - 상품카드 / 탭쿠폰",
-  "screens": {},
+  "screens": {
+    "00_Cover_786.html": {
+      "title": "00_Cover_786",
+      "type": "cover",
+      "updatedAt": "2026-07-30T04:56:34.877Z",
+      "template": "template_cover.html",
+      "version": 0.1
+    }
+  },
   "assignee": "최범열",
   "developer": "",
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
