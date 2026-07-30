@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_792.html": {
       "title": "06_Mobile_Design_2_792",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-30T08:30:11.740Z",
+      "updatedAt": "2026-07-30T08:41:03.299Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -21,54 +21,6 @@
           "html": "<p>기획전 명칭</p>",
           "x": 52.823,
           "y": 11.6493,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
-          "x": 487.7,
-          "y": 757,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 487.7,
-          "y": 778,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 487.7,
-          "y": 817,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Brand Name",
-          "html": "<p><strong>Brand Name</strong></p>",
-          "x": 317.7,
-          "y": 757,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "Product Name\n\n2줄까지 표현",
-          "html": "<p><span style=\"font-size: 12px;\">Product Name</span></p><p><span style=\"font-size: 12px;\">2줄까지 표현</span></p>",
-          "x": 317.7,
-          "y": 778,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "20% 123,000",
-          "html": "<p><strong style=\"color: rgb(230, 0, 0); font-size: 14px;\">20%</strong><strong style=\"font-size: 14px;\"> 123,000<span class=\"ql-cursor\">﻿﻿﻿﻿</span></strong></p>",
-          "x": 317.7,
-          "y": 817,
           "type": "text",
           "standardized": true
         }
@@ -79,13 +31,13 @@
           "type": "straight",
           "start": {
             "x": 322.2,
-            "y": 228,
+            "y": 227,
             "targetId": null,
             "side": null
           },
           "end": {
             "x": 362.2,
-            "y": 228,
+            "y": 227,
             "targetId": null,
             "side": null
           },
@@ -102,5 +54,5 @@
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
   "jira": "LFML-145305",
   "themeIndex": 5,
-  "updated": "2026-07-30 17:30:11"
+  "updated": "2026-07-30 17:41:03"
 }
