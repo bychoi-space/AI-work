@@ -415,7 +415,8 @@ window.v4Script = `
                     const colorVal = getCompBorder();
                     return !colorVal || colorVal === "transparent" || colorVal === "none" || colorVal.includes("rgba(0, 0, 0, 0)");
                 })(),
-                textAlign: shape ? (_getVal(shape.querySelector('.v4-editable-cell, .v4-shape-text-content'), 'textAlign') || 'center') : 'center'
+                textAlign: shape ? (_getVal(shape.querySelector('.v4-editable-cell, .v4-shape-text-content'), 'textAlign') || 'center') : (_getVal(c.querySelector('.v4-editable-cell'), 'textAlign') || 'center'),
+                justifyContent: shape ? (_getVal(shape.querySelector('.v4-editable-cell, .v4-shape-text-content'), 'justifyContent') || 'center') : (_getVal(c.querySelector('.v4-editable-cell'), 'justifyContent') || 'center')
             }
         };
     };
@@ -584,7 +585,7 @@ window.v4Script = `
         }
         if (rafId) cancelAnimationFrame(rafId);
         rafId = requestAnimationFrame(() => {
-            if (window.V4DragResizeEngine && (window.V4DragResizeEngine.isDragging || window.V4DragResizeEngine.isResizing)) {
+            if (window.V4DragResizeEngine && (window.V4DragResizeEngine.isDragging || window.V4DragResizeEngine.isResizing || window.V4DragResizeEngine.isPendingDrag)) {
                 window.V4DragResizeEngine.handleMouseMove(e);
             }
         });
@@ -610,7 +611,7 @@ window.v4Script = `
             isMarquee = false;
             notifyParent({ type: 'LF_MARQUEE_END' });
         }
-        if (window.V4DragResizeEngine && (window.V4DragResizeEngine.isDragging || window.V4DragResizeEngine.isResizing)) {
+        if (window.V4DragResizeEngine && (window.V4DragResizeEngine.isDragging || window.V4DragResizeEngine.isResizing || window.V4DragResizeEngine.isPendingDrag)) {
             window.V4DragResizeEngine.handleMouseUp();
         }
     });
@@ -1120,6 +1121,9 @@ window.v4Script = `
                 }
             }
             markDirty();
+            if (typeof window.resizeToFitText === 'function') {
+                window.resizeToFitText(s);
+            }
         }
         else if (d.type === 'LF_UPDATE_ARROW_DIRECTION') {
             console.log("[V4 Iframe] Received LF_UPDATE_ARROW_DIRECTION msg:", d);

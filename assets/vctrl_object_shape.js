@@ -84,9 +84,10 @@ window.v4ObjectShapeScript = `
                                 child.style.setProperty(cssKey, val, 'important');
                                 child.style.setProperty('padding-left', padLeft, 'important');
                                 child.style.setProperty('padding-right', padRight, 'important');
-                                const flexAlign = val === 'left' ? 'flex-start' : (val === 'right' ? 'flex-end' : 'center');
-                                child.style.setProperty('align-items', flexAlign, 'important');
-                                child.style.setProperty('justify-content', flexAlign, 'important');
+                            });
+                        } else if (key === 'justifyContent' || key === 'alignItems') {
+                            t.querySelectorAll('p, span, .ql-editor, .ql-editor p, .v4-shape-text-content, .v4-editable-cell').forEach(child => {
+                                child.style.setProperty(cssKey, val, 'important');
                             });
                         }
                     } else {

@@ -367,10 +367,10 @@ const ProjectMetadataManager = {
             state.editingIndex = (compStyles.pinIndex !== undefined && compStyles.pinIndex !== -1) ? compStyles.pinIndex : compStyles.id;
             let type = 'comp';
             if (compStyles.isGroup) type = 'group';
-            else if (compStyles.isPin) type = 'pin';
+            else if (compStyles.isPin && compStyles.pinIndex !== -1) type = 'pin';
             else if (compStyles.isGrid) type = 'grid';
             else if (compStyles.isTable) type = 'table';
-            else if (compStyles.isShape) type = 'shape';
+            else if (compStyles.isShape || compStyles.isPin) type = 'shape';
             else if (compStyles.isConnector) type = 'line';
             else if (compStyles.isTextbox) type = 'textbox';
             else if (compStyles.isTextarea) type = 'textarea';
@@ -388,13 +388,9 @@ const ProjectMetadataManager = {
             state.editingType = type;
 
             // Show relevant section
-            if (state.editingType === 'pin') {
-                if (DOM.textPropSection) DOM.textPropSection.style.display = 'block';
-            }
-
-            if (state.editingType === 'shape') {
+            if (state.editingType === 'pin' || state.editingType === 'shape') {
                 if (DOM.shapePropSection) DOM.shapePropSection.style.display = 'block';
-                // Shape도 CONTENT EDITOR 공유 사용 (단, 이미지 도형인 경우 텍스트 편집기 표시 제외)
+                // Shape 및 Pin (텍스트 마커) 모두 CONTENT EDITOR 공유 사용 (단, 이미지 도형인 경우 텍스트 편집기 표시 제외)
                 if (DOM.textPropSection && !compStyles.isImage) {
                     DOM.textPropSection.style.display = 'block';
                 }
@@ -521,7 +517,7 @@ const ProjectMetadataManager = {
             }
 
             // Sync Shape BG & Border Color Pickers
-            if (compStyles.isShape) {
+            if (compStyles.isShape || state.editingType === 'shape') {
                 const shapeBgInput = document.getElementById('shape-bg-color');
                 const shapeBorderInput = document.getElementById('shape-border-color');
                 if (shapeBgInput) {
@@ -545,7 +541,7 @@ const ProjectMetadataManager = {
             }
 
             // 1. Sync Shape Opacity
-            if (compStyles.isShape) {
+            if (compStyles.isShape || state.editingType === 'shape') {
                 const opacityVal = (s.bgOpacity !== undefined) ? s.bgOpacity : 100;
                 const slider = document.getElementById('shape-bg-opacity');
                 const txt = document.getElementById('txt-shape-bg-opacity');
@@ -567,7 +563,7 @@ const ProjectMetadataManager = {
             }
 
             // 3. Sync Corner Radius (Rect Shape only)
-            const isRectShape = compStyles.isShape && (compStyles.shapeType === 'rect' || compStyles.id === 'v4-shape-rect');
+            const isRectShape = (compStyles.isShape || state.editingType === 'shape') && (compStyles.shapeType === 'rect' || compStyles.id === 'v4-shape-rect' || !compStyles.shapeType);
             if (isRectShape && s.borderRadius !== undefined) {
                 const radiusVal = s.borderRadius;
                 const slider = document.getElementById('shape-border-radius');
@@ -579,11 +575,12 @@ const ProjectMetadataManager = {
                 }
             }
 
-            // 4. Sync Text Align (Shape only)
-            if (compStyles.isShape && s.textAlign !== undefined) {
-                if (typeof window._syncAlignBtns === 'function') {
-                    window._syncAlignBtns(s.textAlign);
-                }
+            // 4. Sync Text Align & Vertical Align
+            if (s.textAlign !== undefined && typeof window._syncAlignBtns === 'function') {
+                window._syncAlignBtns(s.textAlign);
+            }
+            if (s.justifyContent !== undefined && typeof window._syncVAlignBtns === 'function') {
+                window._syncVAlignBtns(s.justifyContent);
             }
 
             // 5. Sync Textbox / Textarea Properties

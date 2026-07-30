@@ -104,73 +104,74 @@ window.v4TextMeasurerScript = `
             }
         }
 
-        const measureSpan = document.createElement('span');
-        measureSpan.style.visibility = 'hidden';
-        measureSpan.style.position = 'absolute';
-        measureSpan.style.whiteSpace = 'pre-wrap';
-        measureSpan.style.fontFamily = compStyle.fontFamily;
-        measureSpan.style.fontSize = compStyle.fontSize;
-        measureSpan.style.fontWeight = hasBold ? 'bold' : compStyle.fontWeight;
-        measureSpan.style.lineHeight = '1';
-        measureSpan.style.letterSpacing = compStyle.letterSpacing;
-        
+        // Create an invisible measurement container that retains full HTML innerHTML formatting (strong, b, span, etc.)
+        const measureContainer = document.createElement('div');
+        measureContainer.style.visibility = 'hidden';
+        measureContainer.style.position = 'absolute';
+        measureContainer.style.top = '-9999px';
+        measureContainer.style.left = '-9999px';
+        measureContainer.style.whiteSpace = 'nowrap';
+        measureContainer.style.width = 'max-content';
+        measureContainer.style.fontFamily = compStyle.fontFamily;
+        measureContainer.style.fontSize = compStyle.fontSize;
+        measureContainer.style.lineHeight = '1';
+        measureContainer.style.letterSpacing = compStyle.letterSpacing;
+        measureContainer.style.padding = '0';
+        measureContainer.style.margin = '0';
+        document.body.appendChild(measureContainer);
+
         // Extract text containing only user-typed hard newlines
         let rawText = '';
         const paragraphs = cell.querySelectorAll('p');
+        let maxLineW = 0;
+        
         if (paragraphs.length > 0) {
+            paragraphs.forEach(p => {
+                measureContainer.innerHTML = p.innerHTML || p.textContent || '&nbsp;';
+                const w = Math.ceil(measureContainer.scrollWidth || measureContainer.offsetWidth);
+                if (w > maxLineW) maxLineW = w;
+            });
             rawText = Array.from(paragraphs).map(p => p.textContent).join('\\n');
         } else {
             const temp = document.createElement('div');
-            temp.innerHTML = cell.innerHTML;
-            temp.querySelectorAll('br').forEach(br => br.replaceWith('\\n'));
+            temp.innerHTML = (cell.innerHTML || '').replace(/<br\\s*\\/?>/gi, '\\n');
             rawText = temp.textContent || '';
+
+            const linesHtml = (cell.innerHTML || '').split(/<br\\s*\\/?>/gi);
+            linesHtml.forEach(lineHtml => {
+                measureContainer.innerHTML = lineHtml || '&nbsp;';
+                const w = Math.ceil(measureContainer.scrollWidth || measureContainer.offsetWidth);
+                if (w > maxLineW) maxLineW = w;
+            });
         }
 
-        const lf = String.fromCharCode(10);
-        const cleanText = rawText
-            .split(lf)
-            .map(line => line.replace(/^[\\s\\u200B\\u00A0\\uFEFF]+|[\\s\\u200B\\u00A0\\uFEFF]+$/g, '').replace(/\\u200B/g, ''))
-            .join(lf);
-        const firstLine = cleanText.split(lf)[0] || 'T';
-        
-        measureSpan.style.whiteSpace = 'nowrap';
-        document.body.appendChild(measureSpan);
-        
-        measureSpan.innerText = firstLine;
-        const singleLineH = measureSpan.offsetHeight;
-        
-        const lines = cleanText.split(lf);
-        let maxLineW = 0;
-        lines.forEach(line => {
-            measureSpan.innerText = line || ' ';
-            const w = measureSpan.offsetWidth;
-            if (w > maxLineW) maxLineW = w;
-        });
+        measureContainer.innerText = 'T';
+        const singleLineH = Math.ceil(measureContainer.offsetHeight || (parseFloat(compStyle.fontSize) * 1.2));
         
         const textW = maxLineW;
-        const textH = singleLineH * lines.length;
+        const normalizedText = rawText.replace(/\\r\\n/g, '\\n').replace(/\\r/g, '\\n');
+        const lineCount = Math.max(1, normalizedText.split('\\n').length);
+        const textH = singleLineH * lineCount;
         
-        document.body.removeChild(measureSpan);
+        document.body.removeChild(measureContainer);
         
         const isRealTextComp = c.classList.contains('v4-text-box') || c.classList.contains('v4-text-shape') || c.classList.contains('text-marker') || c.classList.contains('pin-marker');
 
-        let paddingW = isShapeText ? 16 : 8;
-        let paddingH = isShapeText ? 16 : 8;
+        // Expanded safe padding buffer (22px~26px) to eliminate last-character wrapping when BOLD is applied
+        let paddingW = isShapeText ? 24 : 22;
+        let paddingH = isShapeText ? 16 : 10;
 
         let targetW = textW + paddingW;
         let targetH = textH + paddingH;
 
         if (isRealTextComp || isShapeText) {
-            const normalizedText = rawText.replace(/\\r\\n/g, '\\n').replace(/\\r/g, '\\n');
-            const lineCount = normalizedText.split('\\n').length;
-            
             if (lineCount === 1) {
-                targetW = textW + (isRealTextComp && !isShapeText ? 12 : paddingW);
+                targetW = textW + (isRealTextComp && !isShapeText ? 22 : paddingW);
                 targetH = textH + (isRealTextComp && !isShapeText ? 8 : paddingH);
             } else {
                 const fsPx = parseFloat(compStyle.fontSize) || 14;
-                targetW = textW + (isRealTextComp && !isShapeText ? 12 : paddingW);
-                targetH = fsPx * 1.15 * lineCount + (isRealTextComp && !isShapeText ? 8 : paddingH);
+                targetW = textW + (isRealTextComp && !isShapeText ? 22 : paddingW);
+                targetH = fsPx * 1.2 * lineCount + (isRealTextComp && !isShapeText ? 8 : paddingH);
             }
         }
 

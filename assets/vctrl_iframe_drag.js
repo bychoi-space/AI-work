@@ -7,6 +7,8 @@ window.v4DragResizeScript = `
 (function() {
     let isDragging = false;
     let isResizing = false;
+    let isPendingDrag = false;
+    const DRAG_THRESHOLD = 4;
     let startX = 0, startY = 0, startW = 0, startH = 0, startTop = 0, startLeft = 0;
     let startRect = null;
     let groupChildrenStart = null;
@@ -17,22 +19,34 @@ window.v4DragResizeScript = `
         set isDragging(v) { isDragging = v; },
         get isResizing() { return isResizing; },
         set isResizing(v) { isResizing = v; },
+        get isPendingDrag() { return isPendingDrag; },
+        set isPendingDrag(v) { isPendingDrag = v; },
         
         handleMouseDown: function(e, h, r, d, c) {
-            if (window.V4UndoManager) window.V4UndoManager.saveState();
-            isDragging = true;
+            if (!c) return;
+            isPendingDrag = true;
+            isDragging = false;
             window.activeEl = c;
             startX = e.clientX;
             startY = e.clientY;
             startTop = parseInt(window.activeEl.style.top) || 0;
             startLeft = parseInt(window.activeEl.style.left) || 0;
             startRect = window.activeEl.getBoundingClientRect();
-            notifyParent({ type: 'LF_SNAP_START' });
             if (h || e.target.closest('.v4-editable-cell')) e.preventDefault();
-            document.querySelectorAll('.lf-component.selected').forEach(s => s.classList.add('dragging-now'));
         },
         
         handleMouseMove: function(e) {
+            if (isPendingDrag && window.activeEl) {
+                const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
+                if (dist >= DRAG_THRESHOLD) {
+                    isPendingDrag = false;
+                    isDragging = true;
+                    if (window.V4UndoManager) window.V4UndoManager.saveState();
+                    notifyParent({ type: 'LF_SNAP_START' });
+                    document.querySelectorAll('.lf-component.selected').forEach(s => s.classList.add('dragging-now'));
+                }
+            }
+
             if (isDragging && window.activeEl) {
                 let dx = e.clientX - startX;
                 let dy = e.clientY - startY;
@@ -144,6 +158,7 @@ window.v4DragResizeScript = `
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
             }
             document.querySelectorAll('.lf-component').forEach(s => s.classList.remove('dragging-now'));
+            isPendingDrag = false;
             isDragging = false;
             isResizing = false;
             window.activeEl = null;

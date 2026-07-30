@@ -354,6 +354,31 @@
     };
     const _syncAlignBtns = window._syncAlignBtns;
 
+    window._syncVAlignBtns = (valignVal) => {
+        const btnTop = document.getElementById('btn-shape-valign-top');
+        const btnMiddle = document.getElementById('btn-shape-valign-middle');
+        const btnBottom = document.getElementById('btn-shape-valign-bottom');
+        
+        const valign = (valignVal === 'flex-start' ? 'top' : (valignVal === 'flex-end' ? 'bottom' : (valignVal || 'middle'))).toLowerCase();
+        
+        if (btnTop) {
+            btnTop.style.background = (valign === 'top' || valign === 'flex-start') ? 'rgba(0,229,255,0.25)' : 'rgba(255,255,255,0.05)';
+            btnTop.style.borderColor = (valign === 'top' || valign === 'flex-start') ? 'rgba(0,229,255,0.6)' : 'rgba(255,255,255,0.15)';
+            btnTop.style.color = (valign === 'top' || valign === 'flex-start') ? '#00e5ff' : '#94a3b8';
+        }
+        if (btnMiddle) {
+            btnMiddle.style.background = (valign === 'middle' || valign === 'center') ? 'rgba(0,229,255,0.25)' : 'rgba(255,255,255,0.05)';
+            btnMiddle.style.borderColor = (valign === 'middle' || valign === 'center') ? 'rgba(0,229,255,0.6)' : 'rgba(255,255,255,0.15)';
+            btnMiddle.style.color = (valign === 'middle' || valign === 'center') ? '#00e5ff' : '#94a3b8';
+        }
+        if (btnBottom) {
+            btnBottom.style.background = (valign === 'bottom' || valign === 'flex-end') ? 'rgba(0,229,255,0.25)' : 'rgba(255,255,255,0.05)';
+            btnBottom.style.borderColor = (valign === 'bottom' || valign === 'flex-end') ? 'rgba(0,229,255,0.6)' : 'rgba(255,255,255,0.15)';
+            btnBottom.style.color = (valign === 'bottom' || valign === 'flex-end') ? '#00e5ff' : '#94a3b8';
+        }
+    };
+    const _syncVAlignBtns = window._syncVAlignBtns;
+
     const _applyTextAlign = (align) => {
         _syncAlignBtns(align);
         const horizontalAlign = align === 'left' ? 'flex-start' : (align === 'right' ? 'flex-end' : 'center');
@@ -369,6 +394,20 @@
         });
     };
 
+    const _applyVerticalAlign = (vAlign) => {
+        _syncVAlignBtns(vAlign);
+        const verticalJustify = vAlign === 'top' ? 'flex-start' : (vAlign === 'bottom' ? 'flex-end' : 'center');
+        
+        notifyIframe({
+            type: 'LF_UPDATE_STYLE',
+            selector: '.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell, .v4-text-box .v4-editable-cell, .v4-text-shape .v4-editable-cell, .text-marker .v4-editable-cell',
+            style: {
+                justifyContent: verticalJustify,
+                boxSizing: 'border-box'
+            }
+        });
+    };
+
     const btnAlignLeft = document.getElementById('btn-shape-align-left');
     if (btnAlignLeft) btnAlignLeft.onclick = () => _applyTextAlign('left');
 
@@ -377,6 +416,15 @@
 
     const btnAlignRight = document.getElementById('btn-shape-align-right');
     if (btnAlignRight) btnAlignRight.onclick = () => _applyTextAlign('right');
+
+    const btnVAlignTop = document.getElementById('btn-shape-valign-top');
+    if (btnVAlignTop) btnVAlignTop.onclick = () => _applyVerticalAlign('top');
+
+    const btnVAlignMiddle = document.getElementById('btn-shape-valign-middle');
+    if (btnVAlignMiddle) btnVAlignMiddle.onclick = () => _applyVerticalAlign('middle');
+
+    const btnVAlignBottom = document.getElementById('btn-shape-valign-bottom');
+    if (btnVAlignBottom) btnVAlignBottom.onclick = () => _applyVerticalAlign('bottom');
 
     // Text and Icon style properties are mapped dynamically via loop
 
@@ -2311,6 +2359,19 @@
         const btnRight = document.getElementById('btn-shape-align-right');
         if (btnRight) {
             btnRight.onclick = () => _applyTextAlign('right');
+        }
+
+        const btnVTop = document.getElementById('btn-shape-valign-top');
+        if (btnVTop) {
+            btnVTop.onclick = () => _applyVerticalAlign('top');
+        }
+        const btnVMiddle = document.getElementById('btn-shape-valign-middle');
+        if (btnVMiddle) {
+            btnVMiddle.onclick = () => _applyVerticalAlign('middle');
+        }
+        const btnVBottom = document.getElementById('btn-shape-valign-bottom');
+        if (btnVBottom) {
+            btnVBottom.onclick = () => _applyVerticalAlign('bottom');
         }
 
         // 6. Table Actions

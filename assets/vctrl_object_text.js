@@ -32,11 +32,25 @@ window.v4ObjectTextScript = `
             const styleToAssign = { ...d.style };
             delete styleToAssign.width;
             delete styleToAssign.height;
-            Object.assign(t.style, styleToAssign);
+            
+            for (const [key, val] of Object.entries(styleToAssign)) {
+                if (key === 'textAlign' || key === 'alignItems' || key === 'justifyContent') {
+                    const cssKey = key === 'textAlign' ? 'text-align' : (key === 'alignItems' ? 'align-items' : 'justify-content');
+                    t.style.setProperty(cssKey, val, 'important');
+                    t.querySelectorAll('p, span').forEach(child => {
+                        child.style.setProperty(cssKey, val, 'important');
+                    });
+                } else {
+                    t.style[key] = val;
+                }
+            }
         }
         
         if (typeof window.enforceDesignSystem === 'function') {
             window.enforceDesignSystem();
+        }
+        if (typeof window.resizeToFitText === 'function') {
+            window.resizeToFitText(s);
         }
         return true;
     };

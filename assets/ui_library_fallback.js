@@ -443,8 +443,8 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
             </div>
 
             <div class="prop-group" style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
-                <label style="font-size: 9px; color: #00e5ff; font-weight: 800; letter-spacing: 0.8px; display: block; margin-bottom: 8px;">TEXT ALIGN</label>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px;">
+                <label style="font-size: 9px; color: #00e5ff; font-weight: 800; letter-spacing: 0.8px; display: block; margin-bottom: 6px;">HORIZONTAL ALIGN</label>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px;">
                     <button id="btn-shape-align-left" title="Align Left" style="height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.15); border-radius: 6px; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;">
                         <span class="material-icons-outlined" style="font-size: 14px;">format_align_left</span>
                         좌측
@@ -456,6 +456,22 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                     <button id="btn-shape-align-right" title="Align Right" style="height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.15); border-radius: 6px; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;">
                         <span class="material-icons-outlined" style="font-size: 14px;">format_align_right</span>
                         우측
+                    </button>
+                </div>
+
+                <label style="font-size: 9px; color: #00e5ff; font-weight: 800; letter-spacing: 0.8px; display: block; margin-bottom: 6px;">VERTICAL ALIGN</label>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px;">
+                    <button id="btn-shape-valign-top" title="Align Top" style="height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.15); border-radius: 6px; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;">
+                        <span class="material-icons-outlined" style="font-size: 14px;">vertical_align_top</span>
+                        상단
+                    </button>
+                    <button id="btn-shape-valign-middle" title="Align Middle" style="height: 28px; background: rgba(0,229,255,0.15); border: 1.6px solid rgba(0,229,255,0.4); border-radius: 6px; color: #00e5ff; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;">
+                        <span class="material-icons-outlined" style="font-size: 14px;">vertical_align_center</span>
+                        센터
+                    </button>
+                    <button id="btn-shape-valign-bottom" title="Align Bottom" style="height: 28px; background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.15); border-radius: 6px; color: #94a3b8; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;">
+                        <span class="material-icons-outlined" style="font-size: 14px;">vertical_align_bottom</span>
+                        하단
                     </button>
                 </div>
             </div>
