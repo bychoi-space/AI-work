@@ -4,7 +4,7 @@
     "01_Coupon_DB_Overload_Risk.html": {
       "title": "As-Is 기획전 구조 이슈",
       "type": "plan",
-      "updatedAt": "2026-07-30T01:33:21.729Z",
+      "updatedAt": "2026-07-30T00:09:44.166Z",
       "template": "template_plan.html",
       "description": [],
       "connectors": [],
@@ -34,8 +34,10 @@
     "99_Blank_362.html": {
       "title": "99_Blank_362",
       "type": "blank",
-      "updatedAt": "2026-07-30T00:30:20.933Z",
-      "template": "template_blank.html"
+      "updatedAt": "2026-07-30T01:34:28.510Z",
+      "template": "template_blank.html",
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
@@ -43,5 +45,5 @@
   "period": "2026.07.29(수) ~ 2026.08.28(금)",
   "jira": "LFML-145373",
   "themeIndex": 2,
-  "updated": "2026-07-30 10:33:21"
+  "updated": "2026-07-30 10:34:28"
 }
