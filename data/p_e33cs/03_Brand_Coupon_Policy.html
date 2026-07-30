@@ -29,11 +29,15 @@
         .v4-shape { position:relative; border-width:1.6px !important; border-style:solid !important; border-color:#cbd5e1; transition:all 0.2s cubic-bezier(0.4,0,0.2,1); width:100%; height:100%; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#ffffff; color:#0f172a; box-sizing:border-box; }
         .v4-shape-rect { border-radius:8px; }
         .v4-shape-text-content { width:100%; height:100%; display:flex; align-items:center; justify-content:center; text-align:center; padding:8px; box-sizing:border-box; overflow:hidden; }
-        .v4-shape-text-content p { margin:0; padding:0; line-height:1.2; text-align:center; }
+        .v4-shape-text-content p { margin:0; padding:0; line-height:1.4; text-align:center; }
+        
+        /* Native Text Box Engine Standards */
+        .v4-text-box { background:transparent; border:none; }
+        .v4-text-box .v4-editable-cell { outline:none; padding:4px !important; margin:0 !important; display:flex !important; flex-direction:column !important; align-items:center !important; justify-content:center !important; text-align:center; box-sizing:border-box !important; width:100% !important; height:100% !important; }
+        .v4-text-box .v4-editable-cell p { margin:0 !important; padding:0 !important; line-height:1.4 !important; }
         svg.lf-icon { background-image:none !important; }
-        .v4-editable-cell { outline:none; }
 
-        /* Table Card Container Box (Not a shape, so flex rule does not interfere) */
+        /* Table Card Container Box */
         .v4-table-card-box {
             width:100%; height:100%;
             background:#ffffff;
@@ -46,63 +50,119 @@
         }
 
         /* Custom Table Styling */
-        table.v4-table { width:100%; border-collapse:collapse; font-size:12px; table-layout:fixed; border:1.6px solid #7c3aed !important; border-radius:8px; overflow:hidden; }
-        table.v4-table th, table.v4-table td { display:table-cell !important; box-sizing:border-box !important; border:1.6px solid #e9d5ff !important; padding:8px 6px; text-align:center; vertical-align:middle; line-height:1.35; width:auto; height:auto; }
-        table.v4-table th { background:#6d28d9; color:#fff; font-weight:800; font-size:12px; }
+        table.v4-table { width:100%; border-collapse:collapse; font-size:12.5px; table-layout:fixed; border:1.6px solid #7c3aed !important; border-radius:8px; overflow:hidden; }
+        table.v4-table th, table.v4-table td { display:table-cell !important; box-sizing:border-box !important; border:1.6px solid #e9d5ff !important; padding:10px 8px; text-align:center; vertical-align:middle; line-height:1.4; width:auto; height:auto; }
+        table.v4-table th { background:#6d28d9; color:#fff; font-weight:800; font-size:13px; }
 
-        .tag-brand { display:inline-block; background:#f3e8ff; color:#6b21a8; padding:2px 6px; border-radius:4px; font-weight:700; font-size:11px; margin:1px 2px; }
-        .tag-success { display:inline-block; background:#ecfdf5; color:#047857; padding:2px 6px; border-radius:4px; font-weight:700; font-size:11px; }
-        .tag-warning { display:inline-block; background:#fffbeb; color:#b45309; padding:2px 6px; border-radius:4px; font-weight:700; font-size:11px; }
-        .tag-danger { display:inline-block; background:#fef2f2; color:#b91c1c; padding:2px 6px; border-radius:4px; font-weight:700; font-size:11px; }
+        .tag-brand { display:inline-block; background:#f3e8ff; color:#6b21a8; padding:3px 8px; border-radius:4px; font-weight:700; font-size:11.5px; margin:2px 3px; }
+        .tag-success { display:inline-block; background:#ecfdf5; color:#047857; padding:3px 8px; border-radius:4px; font-weight:700; font-size:11.5px; }
+        .tag-warning { display:inline-block; background:#fffbeb; color:#b45309; padding:3px 8px; border-radius:4px; font-weight:700; font-size:11.5px; }
+        .tag-danger { display:inline-block; background:#fef2f2; color:#b91c1c; padding:3px 8px; border-radius:4px; font-weight:700; font-size:11.5px; }
     </style>
+<style id="v4-inlined-style">
+
+:root { --v4-primary: #8b5cf6; --v4-accent: #00e5ff; --v4-bg-dark: #0f172a; --v4-panel-bg: rgba(30, 41, 59, 0.7); --v4-border: rgba(255, 255, 255, 0.15); --v4-text-main: #ffffff; --v4-text-dim: #94a3b8; }
+body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+.v4-editable-cell, [contenteditable="true"] { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+.lf-component { 
+    position: absolute; cursor: pointer; transition: outline 0.2s; 
+    box-sizing: border-box; z-index: 100;
+    transform: none !important;
+}
+.lf-component.selected { outline: 2px solid #8b5cf6; }
+.lf-component.lf-group.selected { outline: 2px solid #8b5cf6 !important; }
+.lf-component.lf-group.selected > .lf-drag-handle { background: #8b5cf6 !important; }
+.lf-component.lf-group.selected > .lf-resizer { background: #8b5cf6 !important; }
+.lf-drag-handle { position: absolute; top: -9px; left: -9px; width: 18px; height: 18px; background: #8b5cf6; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 1.6px solid #fff; z-index: 10002; }
+.lf-drag-handle svg { width: 10px !important; height: 10px !important; }
+.lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -12px; left: -12px; }
+.lf-resizer { position: absolute; bottom: -5px; right: -5px; width: 12px; height: 12px; background: #8b5cf6; cursor: nwse-resize; border-radius: 50%; border: 2px solid #fff; opacity: 0; transition: 0.2s; z-index: 10002; }
+.lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
+.lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none !important; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10002; font-size: 14px; font-weight: bold; }
+.lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: none !important; }
+.v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; }
+.v4-shape-text-content, .v4-shape-text-overlay, .v4-shape .v4-editable-cell { padding: 4px !important; margin: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; text-align: center !important; box-sizing: border-box !important; width: 100% !important; height: 100% !important; flex-direction: column !important; }
+.v4-shape-text-content p, .v4-shape-text-overlay p, .v4-shape .v4-editable-cell p { margin: 0 !important; padding: 0 !important; line-height: 1 !important; text-align: center !important; display: block !important; transform: translateY(var(--v4-text-adjust-y, 0px)) !important; }
+.v4-shape-text-content span, .v4-shape-text-overlay span, .v4-shape .v4-editable-cell span { line-height: 1 !important; display: inline-block !important; }
+.lf-component .v4-editable-cell { line-height: 1 !important; }
+.v4-editable-cell:focus { outline: 2px solid #8b5cf6; }
+
+.text-marker, .v4-text-box, .v4-text-shape { 
+    position: absolute; padding: 0 !important; border-radius: 4px; 
+    border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
+    white-space: normal; cursor: grab; pointer-events: auto; z-index: 100; 
+    transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, outline 0.2s;
+    min-width: unset; min-height: unset; background: transparent; 
+    box-shadow: none; box-sizing: border-box;
+    color: #1e293b; text-align: left;
+    width: auto;
+}
+.text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell, .v4-text-shape .v4-editable-cell { padding: 4px !important; margin: 0 !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: inherit; box-sizing: border-box !important; line-height: 1 !important; width: 100% !important; height: 100% !important; }
+.text-marker .v4-editable-cell p, .v4-text-box .v4-editable-cell p, .v4-text-shape .v4-editable-cell p { margin: 0 !important; padding: 0 !important; line-height: 1.2 !important; display: block !important; transform: translateY(var(--v4-text-adjust-y, 0px)) !important; }
+.text-marker:hover, .v4-text-box:hover, .v4-text-shape:hover { border-color: var(--v4-primary); background: transparent; box-shadow: none; }
+.text-marker.selected, .v4-text-box.selected, .v4-text-shape.selected { border-color: var(--v4-primary); outline: 2px solid var(--v4-primary); box-shadow: none; z-index: 10001; }
+
+html, body { position: relative !important; min-height: 100vh; margin: 0; padding: 0; overflow: hidden !important; }
+.lf-component.dragging-now, .lf-component.dragging-now * { 
+    transition: none !important; 
+    pointer-events: none !important;
+}
+
+.lf-connector-port {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #00e5ff;
+    border: 1.5px solid #ffffff;
+    border-radius: 50%;
+    z-index: 10003;
+    display: none;
+    cursor: crosshair;
+    box-shadow: 0 0 4px rgba(0,229,255,0.6);
+}
+body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
+    display: block;
+}
+.lf-component.lf-group > .lf-connector-port,
+.lf-component.connector-line > .lf-connector-port {
+    display: none !important;
+}
+.lf-connector-port.port-top { top: -4px; left: 50%; transform: translateX(-50%); }
+.lf-connector-port.port-bottom { bottom: -4px; left: 50%; transform: translateX(-50%); }
+.lf-connector-port.port-left { left: -4px; top: 50%; transform: translateY(-50%); }
+.lf-connector-port.port-right { right: -4px; top: 50%; transform: translateY(-50%); }
+.v4-shape-text-content p, .v4-shape-text-overlay p {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+</style>
 </head>
 <body>
     <div class="artboard" id="canvas">
 
-        <!-- Header Category Badge -->
-        <div class="lf-component" id="comp-header-badge" style="top: 25px; left: 30px; width: 170px; height: 46px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#1e293b; border:1.6px solid #334155 !important; border-radius:10px !important; color:#ffffff; box-sizing:border-box;">
-                <div class="v4-shape-text-content" style="padding:4px;">
-                    <p><span style="font-size:13px; font-weight:800; color:#ffffff; letter-spacing:0.5px;">LFmall Policy</span></p>
-                </div>
+        <!-- Main Title Box (Identical 1400px Centered Header Bar to Screen 1 & 2) -->
+        <div class="lf-component" id="comp-main-title" style="top: 20px; left: 19.5px; width: 1400px; height: 40px;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(15, 23, 42); color: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.12) 0px 4px 14px; box-sizing: border-box; border: 1.6px solid rgb(51, 65, 85) !important; border-radius: 20px !important;">
+                <div class="v4-shape-text-content" style="padding:4px;"><p><strong style="font-size: 16px; color: rgb(255, 255, 255);">브랜드 첫구매 쿠폰 데이터 &amp; 운영 정책</strong></p></div>
             </div>
-        </div>
+        <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
-        <!-- Main Title Box -->
-        <div class="lf-component" id="comp-main-title" style="top: 25px; left: 215px; width: 855px; height: 46px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#0f172a; border:1.6px solid #334155 !important; border-radius:10px !important; color:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.12); box-sizing:border-box;">
-                <div class="v4-shape-text-content" style="padding:4px;">
-                    <p><span style="font-size:20px; font-weight:800; color:#ffffff;">브랜드 첫구매 쿠폰 데이터 &amp; 운영 정책</span></p>
-                </div>
+        <!-- Subtitle Summary Bar (Identical 1400px Subtitle Bar with Purple Policy Accent) -->
+        <div class="lf-component" id="comp-sub-summary" style="top: 80px; left: 19.5px; width: 1400px; height: 40px;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: rgb(250, 245, 255); border-radius: 8px; color: rgb(109, 40, 217); box-sizing: border-box; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(139, 92, 246); border-image: none !important;">
+                <div class="v4-shape-text-content" style="padding:4px;"><p><span style="color: rgb(109, 40, 217); font-size: 14px; font-weight: 600;">운영 정책 요약 : Redis Key(회원ID)-Value(구매 브랜드코드 Set) 데이터 구조, 정상 주문완료 시 반영 &amp; 반품 시 구매 제외, 주문 취소 시 쿠폰 자동 복원</span></p></div>
             </div>
-        </div>
+        <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
-        <!-- Status Standard Tag -->
-        <div class="lf-component" id="comp-status-tag" style="top: 25px; left: 1085px; width: 325px; height: 46px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#1e293b; border:1.6px solid #8b5cf6 !important; border-radius:10px !important; color:#c4b5fd; box-shadow:0 4px 10px rgba(139,92,246,0.15); box-sizing:border-box;">
-                <div class="v4-shape-text-content" style="padding:4px;">
-                    <p><span style="font-size:13px; font-weight:800; color:#c4b5fd;">Data Schema &amp; Policy Standard</span></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Subtitle Summary Bar -->
-        <div class="lf-component" id="comp-sub-summary" style="top: 79px; left: 30px; width: 1380px; height: 36px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#e2e8f0; border:1.6px solid #cbd5e1 !important; border-radius:8px; color:#334155; box-sizing:border-box;">
-                <div class="v4-shape-text-content" style="padding:4px;">
-                    <p><strong style="font-size:13px; color:#0f172a;">운영 정책 요약</strong><span style="font-size:13px; color:#334155;"> : Redis Key(회원ID)-Value(구매 브랜드코드 Set) 데이터 구조, 정상 주문완료 시 반영 &amp; 반품 시 구매 제외, 주문 취소 시 쿠폰 자동 복원</span></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== 3 MAJOR POLICY PILLARS ==================== -->
+        <!-- ==================== 3 MAJOR POLICY PILLARS (PERFECT 1400px SYMMETRY) ==================== -->
 
         <!-- Pillar 1: Data Schema -->
-        <div class="lf-component" id="comp-pillar-1" style="top: 132px; left: 30px; width: 440px; height: 245px;">
+        <div class="lf-component" id="comp-pillar-1" style="top: 140px; left: 19.5px; width: 450px; height: 220px;" data-resized="true">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#faf5ff; border:1.6px solid #ddd6fe !important; border-radius:12px; padding:18px 20px; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
                 <div style="font-size:11px; font-weight:800; padding:3px 10px; border-radius:10px; color:#ffffff; background:#7c3aed; margin-bottom:8px; letter-spacing:0.5px;">POLICY 01</div>
                 <div style="font-size:15px; font-weight:800; color:#0f172a; margin-bottom:8px;">1. Redis 데이터 구조 (Data Schema)</div>
-                <div style="font-size:12.5px; color:#475569; line-height:1.5;">
+                <div style="font-size:13px; color:#475569; line-height:1.5;">
                     • <strong>KEY (키값)</strong> : <code>USER_ID</code> (회원 아이디)<br>
                     • <strong>VALUE (벨류값)</strong> : <code>Set&lt;BRAND_CODE&gt;</code> (구매이력 존재 브랜드)<br>
                     • <strong>적재 예시</strong> :<br>
@@ -110,28 +170,28 @@
                     • <strong>특징</strong> : In-Memory Set 구조로 빠른 O(1) 브랜드 보유 여부 체크
                 </div>
             </div>
-        </div>
+        <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
         <!-- Pillar 2: Purchase & Return Criteria -->
-        <div class="lf-component" id="comp-pillar-2" style="top: 132px; left: 490px; width: 440px; height: 245px;">
-            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#ffffff; border:1.6px solid #cbd5e1 !important; border-radius:12px; padding:18px 20px; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
+        <div class="lf-component" id="comp-pillar-2" style="top: 140px; left: 494.5px; width: 450px; height: 220px;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#eff6ff; border:1.6px solid #bfdbfe !important; border-radius:12px; padding:18px 20px; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
                 <div style="font-size:11px; font-weight:800; padding:3px 10px; border-radius:10px; color:#ffffff; background:#2563eb; margin-bottom:8px; letter-spacing:0.5px;">POLICY 02</div>
                 <div style="font-size:15px; font-weight:800; color:#0f172a; margin-bottom:8px;">2. 데이터 연동 및 반품 처리 기준</div>
-                <div style="font-size:12.5px; color:#475569; line-height:1.5;">
+                <div style="font-size:13px; color:#475569; line-height:1.5;">
                     • <strong>정상 연동 기준</strong> : <strong>'정상 주문완료'</strong> 상태 주문건만 브랜드 구매 실적으로 인정하여 Redis에 반영<br>
                     • <strong>반품 처리 예외 정책</strong> :<br>
                     &nbsp;&nbsp;- <strong>'반품 접수'</strong> 및 <strong>'반품 완료'</strong> 발생 시 해당 브랜드 구매여부에서 <strong>즉시 제외/차감</strong><br>
                     &nbsp;&nbsp;- 반품 완료 시 해당 브랜드의 '첫구매 쿠폰' 발급 자격 자동 회복
                 </div>
             </div>
-        </div>
+        <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
         <!-- Pillar 3: Order Cancel & Coupon Reissuance -->
-        <div class="lf-component" id="comp-pillar-3" style="top: 132px; left: 950px; width: 460px; height: 245px;">
+        <div class="lf-component" id="comp-pillar-3" style="top: 140px; left: 969.5px; width: 450px; height: 220px;" data-resized="true">
             <div class="v4-shape v4-shape-rect" style="width:100%; height:100%; background:#f0fdf4; border:1.6px solid #a7f3d0 !important; border-radius:12px; padding:18px 20px; box-sizing:border-box; display:flex; flex-direction:column; align-items:flex-start; text-align:left;">
                 <div style="font-size:11px; font-weight:800; padding:3px 10px; border-radius:10px; color:#ffffff; background:#059669; margin-bottom:8px; letter-spacing:0.5px;">POLICY 03</div>
                 <div style="font-size:15px; font-weight:800; color:#065f46; margin-bottom:8px;">3. 주문 취소 시 쿠폰 자동 복원 정책</div>
-                <div style="font-size:12.5px; color:#065f46; line-height:1.5;">
+                <div style="font-size:13px; color:#065f46; line-height:1.5;">
                     • <strong>쿠폰 사용 주문</strong> : 브랜드 첫구매 쿠폰을 다운로드받아 상품 결제 시 적용<br>
                     • <strong>주문 취소 시 쿠폰 복구</strong> :<br>
                     &nbsp;&nbsp;- 고객이 첫구매 쿠폰을 사용하여 주문 후 <strong>'주문 취소'</strong> 진행 시<br>
@@ -139,12 +199,12 @@
                     &nbsp;&nbsp;- 고객 쿠폰함으로 복구되어 해당 브랜드 상품에 재사용 가능
                 </div>
             </div>
-        </div>
+        <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
-        <!-- ==================== DETAILED TABLES & WORKFLOW MATRIX ==================== -->
+        <!-- ==================== DETAILED TABLES & WORKFLOW MATRIX (EXACT 1400px ALIGNMENT) ==================== -->
 
         <!-- Card A: Redis Data Structure Example Table -->
-        <div class="lf-component" id="comp-table-schema" style="top: 390px; left: 30px; width: 665px; height: 450px;">
+        <div class="lf-component" id="comp-table-schema" style="top: 380px; left: 19.5px; width: 680px; height: 450px;" data-resized="true">
             <div class="v4-table-card-box">
                 <div style="display:flex; align-items:center; font-size:15px; font-weight:800; color:#5b21b6; padding-bottom:10px; border-bottom:1.6px solid #f3e8ff; margin-bottom:12px; width:100%;">
                     Redis 데이터 적재 예시 (Key-Value Schema)
@@ -153,9 +213,9 @@
                     <table class="v4-table">
                         <thead>
                             <tr>
-                                <th style="width:125px;">KEY (회원 ID)</th>
+                                <th style="width:130px;">KEY (회원 ID)</th>
                                 <th>VALUE (구매이력 브랜드 코드 Set)</th>
-                                <th style="width:145px;">첫구매 쿠폰 대상 여부</th>
+                                <th style="width:150px;">첫구매 쿠폰 대상 여부</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -186,14 +246,14 @@
                         </tbody>
                     </table>
                 </div>
-                <div style="font-size:11.5px; color:#6b21a8; margin-top:12px; line-height:1.45; background:#f3e8ff; padding:8px 12px; border-radius:6px; width:100%; box-sizing:border-box;">
+                <div style="font-size:12px; color:#6b21a8; margin-top:14px; line-height:1.5; background:#f3e8ff; padding:10px 14px; border-radius:6px; width:100%; box-sizing:border-box;">
                     <strong>Redis 조회 방식</strong> : 쿠폰 다운로드 시 <code>SISMEMBER user:brand:USER_001 DAKS_W</code> 쿼리를 수행하여 빠른 발급 가능 여부 판단
                 </div>
             </div>
-        </div>
+        <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
         <!-- Card B: Status Workflow Matrix Table -->
-        <div class="lf-component" id="comp-table-workflow" style="top: 390px; left: 710px; width: 700px; height: 450px;">
+        <div class="lf-component" id="comp-table-workflow" style="top: 380px; left: 739.5px; width: 680px; height: 450px;" data-resized="true">
             <div class="v4-table-card-box">
                 <div style="display:flex; align-items:center; font-size:15px; font-weight:800; color:#5b21b6; padding-bottom:10px; border-bottom:1.6px solid #f3e8ff; margin-bottom:12px; width:100%;">
                     주문/반품/취소 상태별 쿠폰 처리 매트릭스
@@ -202,7 +262,7 @@
                     <table class="v4-table">
                         <thead>
                             <tr>
-                                <th style="width:145px;">이벤트 / 주문 상태</th>
+                                <th style="width:150px;">이벤트 / 주문 상태</th>
                                 <th>구매 브랜드 실적 반영</th>
                                 <th style="width:160px;">첫구매 쿠폰 상태</th>
                             </tr>
@@ -226,22 +286,22 @@
                             <tr style="background:#ecfdf5;">
                                 <td style="font-weight:800; color:#047857;">④ 쿠폰 적용 주문 취소</td>
                                 <td style="text-align:left; color:#047857;">구매 실적 미반영 (주문 취소건 제외)</td>
-                                <td><span class="tag-success" style="font-size:11px; font-weight:800;">쿠폰 자동 복원 (Reissued)</span></td>
+                                <td><span class="tag-success" style="font-size:11.5px; font-weight:800;">쿠폰 자동 복원 (Reissued)</span></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <div style="font-size:11.5px; color:#047857; margin-top:12px; line-height:1.45; background:#ecfdf5; padding:8px 12px; border-radius:6px; width:100%; box-sizing:border-box;">
+                <div style="font-size:12px; color:#047857; margin-top:14px; line-height:1.5; background:#ecfdf5; padding:10px 14px; border-radius:6px; width:100%; box-sizing:border-box;">
                     <strong>고객 혜택 보호</strong> : 주문 취소 시 사용되었던 브랜드 첫구매 쿠폰이 즉시 복구되므로, 고객 불만 없이 재다운로드/재사용 가능하도록 예외 처리 보장
                 </div>
             </div>
-        </div>
+        <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
         <!-- Footer -->
-        <div class="lf-component" style="bottom:16px; left:30px; color:#94a3b8; font-size:12px; display:flex; align-items:center; gap:20px; pointer-events:none;">
+        <div class="lf-component" style="bottom:16px; left:30px; color:#94a3b8; font-size:12px; display:flex; align-items:center; gap:20px; pointer-events:none;" id="v4-comp-footer">
             <div style="font-weight:900; color:#475569; font-size:14px;">LFmall Architecture Studio</div>
             <span>© LF Corp. All Rights Reserved. - Operation Policy Review</span>
-        </div>
+        <div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
 
     </div>
 
@@ -249,8 +309,8 @@
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
     let undoStack = [];
-    function notifyParent(data) { if (window.parent) window.parent.postMessage(data, '*'); }
-    function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
+    let currentConnectors = [];
+    
     function getCleanHTML() {
         const host = document.body;
         const clone = host.cloneNode(true);
@@ -259,11 +319,13 @@ window.V4UndoManager = (function() {
         clone.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
         return clone.innerHTML;
     }
+
     return {
         saveState: function() {
             try {
                 const html = getCleanHTML();
-                const currentState = JSON.stringify({ html });
+                const connectors = JSON.parse(JSON.stringify(currentConnectors));
+                const currentState = JSON.stringify({ html, connectors });
                 if (undoStack.length > 0 && undoStack[undoStack.length - 1] === currentState) return;
                 undoStack.push(currentState);
                 if (undoStack.length > MAX_HISTORY) undoStack.shift();
@@ -280,6 +342,10 @@ window.V4UndoManager = (function() {
                 document.body.innerHTML = '';
                 while (temp.firstChild) document.body.appendChild(temp.firstChild);
                 currentScripts.forEach(script => document.body.appendChild(script));
+                if (prevState.connectors) {
+                    currentConnectors = prevState.connectors;
+                    notifyParent({ type: 'LF_RESTORE_CONNECTORS', connectors: prevState.connectors });
+                }
                 markDirty();
             } catch (e) { console.warn("[V4 Undo] Undo failed:", e); }
         },
@@ -291,13 +357,28 @@ window.V4UndoManager = (function() {
                     window.V4UndoManager.undo();
                 }
             });
+            window.addEventListener('message', (e) => {
+                if (e.data && e.data.type === 'LF_SYNC_CONNECTORS') {
+                    currentConnectors = e.data.connectors || [];
+                } else if (e.data && e.data.type === 'LF_SAVE_UNDO') {
+                    window.V4UndoManager.saveState();
+                } else if (e.data && e.data.type === 'LF_TRIGGER_UNDO') {
+                    window.V4UndoManager.undo();
+                }
+            });
         }
     };
 })();
 if (window.V4UndoManager) window.V4UndoManager.init();
 
 (function() {
-    function notifyParent(data) { if (window.parent) window.parent.postMessage(data, '*'); }
+    if (!window.notifyParent) {
+        window.notifyParent = function(data) {
+            if (window.parent) {
+                window.parent.postMessage(data, '*');
+            }
+        };
+    }
     function markDirty() { notifyParent({ type: 'LF_DIRTY' }); }
 
     document.addEventListener('mousedown', e => {
