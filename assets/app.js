@@ -542,20 +542,30 @@ async function updateScreenMetadata(project, screenFilename, data, statusCallbac
 
 async function createScreenFromTemplate(project, screenName, templateName, injectData = {}, statusCallback) {
     try {
-        let content = (window.LF_TEMPLATES && window.LF_TEMPLATES[templateName]);
+        let content = null;
+        if (window.LF_TEMPLATES) {
+            content = window.LF_TEMPLATES[templateName] || 
+                      window.LF_TEMPLATES[templateName.toLowerCase()] || 
+                      window.LF_TEMPLATES[`template_${templateName}.html`] || 
+                      window.LF_TEMPLATES[`template_${templateName}`] || 
+                      window.LF_TEMPLATES[templateName.replace(/^template_/, '').replace(/\.html$/, '')] ||
+                      window.LF_TEMPLATES[templateName.replace(/\.html$/, '')];
+        }
         if (!content) {
             try {
-                const response = await fetch(`assets/templates/${templateName}`);
+                const fetchName = templateName.endsWith('.html') ? templateName : `${templateName}.html`;
+                const response = await fetch(`assets/templates/${fetchName}`);
                 if (response.ok) {
                     content = await response.text();
                     window.LF_TEMPLATES = window.LF_TEMPLATES || {};
                     window.LF_TEMPLATES[templateName] = content;
+                    window.LF_TEMPLATES[fetchName] = content;
                 }
             } catch (e) {
                 console.warn("[Templates] Dynamic fetch failed, falling back to window.LF_TEMPLATES:", e);
             }
         }
-        if (!content) throw new Error("Template not found");
+        if (!content) throw new Error("Template not found: " + templateName);
         
         // Inject metadata
         if (injectData) {
