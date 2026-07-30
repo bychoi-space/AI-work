@@ -14,7 +14,7 @@
     "02_ToBe_Order_Data_Lookup.html": {
       "title": "To-Be 주문 데이터 조회 개편안",
       "type": "plan",
-      "updatedAt": "2026-07-30T02:29:12.055Z",
+      "updatedAt": "2026-07-30T02:12:58.250Z",
       "template": "template_plan.html",
       "description": [],
       "connectors": [],
@@ -30,14 +30,6 @@
       "connectors": [],
       "defaultTab": "description",
       "screenDesc": "Redis Key-Value 데이터 스키마 정의, 반품 시 브랜드 구매 제외 기준, 주문 취소 시 쿠폰 자동 복구 정책 상세"
-    },
-    "99_Blank_362.html": {
-      "title": "99_Blank_362",
-      "type": "blank",
-      "updatedAt": "2026-07-30T01:35:00.312Z",
-      "template": "template_blank.html",
-      "description": [],
-      "connectors": []
     }
   },
   "assignee": "최범열",
