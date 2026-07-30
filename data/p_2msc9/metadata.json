@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_792.html": {
       "title": "06_Mobile_Design_2_792",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-30T05:29:02.379Z",
+      "updatedAt": "2026-07-30T05:36:58.324Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -73,7 +73,28 @@
           "standardized": true
         }
       ],
-      "connectors": []
+      "connectors": [
+        {
+          "id": "conn_1785389784000",
+          "type": "straight",
+          "start": {
+            "x": 327.2,
+            "y": 225,
+            "targetId": null,
+            "side": null
+          },
+          "end": {
+            "x": 367.2,
+            "y": 225,
+            "targetId": null,
+            "side": null
+          },
+          "style": {
+            "stroke": "#323232",
+            "strokeWidth": 2
+          }
+        }
+      ]
     }
   },
   "assignee": "최범열",
@@ -81,5 +102,5 @@
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
   "jira": "LFML-145305",
   "themeIndex": 5,
-  "updated": "2026-07-30 14:29:02"
+  "updated": "2026-07-30 14:36:58"
 }
