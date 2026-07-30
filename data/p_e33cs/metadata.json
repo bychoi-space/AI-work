@@ -14,7 +14,7 @@
     "02_ToBe_Order_Data_Lookup.html": {
       "title": "To-Be 주문 데이터 조회 개편안",
       "type": "plan",
-      "updatedAt": "2026-07-30T02:06:13.251Z",
+      "updatedAt": "2026-07-30T02:08:24.056Z",
       "template": "template_plan.html",
       "description": [],
       "connectors": [],
@@ -45,5 +45,5 @@
   "period": "2026.07.29(수) ~ 2026.08.28(금)",
   "jira": "LFML-145373",
   "themeIndex": 2,
-  "updated": "2026-07-30 11:06:13"
+  "updated": "2026-07-30 11:08:24"
 }
