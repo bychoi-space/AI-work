@@ -13,7 +13,7 @@
     "06_Mobile_Design_2_792.html": {
       "title": "06_Mobile_Design_2_792",
       "type": "mobile-ui",
-      "updatedAt": "2026-07-30T07:57:37.865Z",
+      "updatedAt": "2026-07-30T08:28:55.807Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -78,14 +78,14 @@
           "id": "conn_1785389784000",
           "type": "straight",
           "start": {
-            "x": 327.2,
-            "y": 225,
+            "x": 322.2,
+            "y": 228,
             "targetId": null,
             "side": null
           },
           "end": {
-            "x": 367.2,
-            "y": 225,
+            "x": 362.2,
+            "y": 228,
             "targetId": null,
             "side": null
           },
@@ -102,5 +102,5 @@
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
   "jira": "LFML-145305",
   "themeIndex": 5,
-  "updated": "2026-07-30 16:57:37"
+  "updated": "2026-07-30 17:28:55"
 }
