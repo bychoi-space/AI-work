@@ -14,11 +14,11 @@
     "02_ToBe_Order_Data_Lookup.html": {
       "title": "To-Be 주문 데이터 조회 개편안",
       "type": "plan",
-      "updatedAt": "2026-07-30T02:10:03.789Z",
+      "updatedAt": "2026-07-30T02:12:58.250Z",
       "template": "template_plan.html",
       "description": [],
       "connectors": [],
-      "defaultTab": "description",
+      "defaultTab": "editor",
       "screenDesc": "Redis 인메모리 분산 캐시 및 일단위/5분증분 배치 동기화를 통한 To-Be 주문 데이터 조회 개편 구조 설계"
     },
     "03_Brand_Coupon_Policy.html": {
