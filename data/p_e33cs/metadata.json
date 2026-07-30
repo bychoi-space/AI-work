@@ -24,11 +24,11 @@
     "03_Brand_Coupon_Policy.html": {
       "title": "브랜드 첫구매 쿠폰 데이터 & 운영 정책",
       "type": "plan",
-      "updatedAt": "2026-07-30T13:26:00.000Z",
+      "updatedAt": "2026-07-30T04:29:12.044Z",
       "template": "template_plan.html",
       "description": [],
       "connectors": [],
-      "defaultTab": "description",
+      "defaultTab": "editor",
       "screenDesc": "Redis Key-Value 데이터 스키마 정의, 반품 시 브랜드 구매 제외 기준, 주문 취소 시 쿠폰 자동 복구 정책 상세"
     }
   },
