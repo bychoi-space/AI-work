@@ -4,7 +4,7 @@
     "01_Coupon_DB_Overload_Risk.html": {
       "title": "As-Is 기획전 구조 이슈",
       "type": "plan",
-      "updatedAt": "2026-07-30T01:51:46.240Z",
+      "updatedAt": "2026-07-30T01:52:47.028Z",
       "template": "template_plan.html",
       "description": [],
       "connectors": [],
@@ -45,5 +45,5 @@
   "period": "2026.07.29(수) ~ 2026.08.28(금)",
   "jira": "LFML-145373",
   "themeIndex": 2,
-  "updated": "2026-07-30 10:51:46"
+  "updated": "2026-07-30 10:52:47"
 }
