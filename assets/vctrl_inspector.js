@@ -232,19 +232,26 @@ window.switchSidebarTab = function(tabName) {
 // --- 3. UI Rendering Functions ---
 window.updateProperties = function(compStyles) {
     const activeEl = document.activeElement;
-    const isTyping = activeEl && (
+    const isTypingInInspector = activeEl && (
         activeEl.tagName === 'INPUT' ||
         activeEl.tagName === 'TEXTAREA' ||
         activeEl.tagName === 'SELECT' ||
-        activeEl.contentEditable === 'true' ||
+        activeEl.isContentEditable ||
         activeEl.closest('#floating-inspector-card') !== null ||
+        activeEl.closest('#sidebar-right') !== null ||
         activeEl.closest('#tab-editor') !== null ||
-        activeEl.closest('#v4-shapes-body') !== null
+        activeEl.closest('#v4-shapes-body') !== null ||
+        activeEl.classList.contains('v4-prop-input') ||
+        activeEl.classList.contains('admin-col-label-input') ||
+        activeEl.classList.contains('grid-col-name-input') ||
+        activeEl.classList.contains('accordion-sub-input')
     );
     
-    if (!isTyping) {
-        window.restorePropertiesSections();
+    if (isTypingInInspector) {
+        return;
     }
+    
+    window.restorePropertiesSections();
     const pm = state.projectMetadata || {};
     if (!DOM.metadataPanel) return;
 

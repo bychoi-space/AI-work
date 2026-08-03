@@ -736,13 +736,15 @@ window.MessageHub = {
                             MessageHub.send(DOM.iframe.contentWindow, 'LF_UPDATE_MARQUEE_SELECTION', { ids: selectedIds });
                         }
                         
-                        if (selectedIds.length === 1) {
-                            if (typeof window.updateProperties === 'function') window.updateProperties(data);
-                        } else {
-                            if (typeof window.updateProperties === 'function') window.updateProperties();
+                        if (!isTyping) {
+                            if (selectedIds.length === 1) {
+                                if (typeof window.updateProperties === 'function') window.updateProperties(data);
+                            } else {
+                                if (typeof window.updateProperties === 'function') window.updateProperties();
+                            }
                         }
                     } else {
-                        if (typeof window.updateProperties === 'function') window.updateProperties(data);
+                        if (!isTyping && typeof window.updateProperties === 'function') window.updateProperties(data);
                     }
                 }
             } else if (data.type === 'LF_SPACE_DOWN') {
