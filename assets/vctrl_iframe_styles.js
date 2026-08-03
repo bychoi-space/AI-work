@@ -142,7 +142,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 .v4-selectbox-header { height: 30px !important; min-height: 30px !important; max-height: 30px !important; flex-shrink: 0 !important; display: flex !important; align-items: center !important; justify-content: space-between !important; box-sizing: border-box !important; }
 .v4-selectbox-container[data-dropdown-active="true"] .v4-selectbox-header { border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; }
 .v4-selectbox-container[data-dropdown-active="true"] svg { transform: rotate(180deg); }
-.v4-selectbox-options { background: #ffffff !important; box-sizing: border-box !important; width: 100% !important; flex: 1 !important; }
+.v4-selectbox-options { position: relative !important; top: 0 !important; left: 0 !important; right: 0 !important; background: #ffffff !important; box-sizing: border-box !important; width: 100% !important; flex: 1 !important; margin-top: 0 !important; z-index: 10 !important; border-top: none !important; }
 .v4-selectbox-option { height: 30px !important; min-height: 30px !important; max-height: 30px !important; flex-shrink: 0 !important; padding: 0 12px !important; display: flex !important; align-items: center !important; font-size: 12px !important; color: #374151 !important; box-sizing: border-box !important; }
 .v4-selectbox-option:hover { background-color: #f3f4f6 !important; cursor: pointer; }
 .v4-selectbox-option:last-child { border-bottom: none !important; }

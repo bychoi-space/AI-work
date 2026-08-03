@@ -312,6 +312,13 @@ window.v4DesignSystemScript = `
                     if (header.style.height !== '30px') header.style.height = '30px';
                     if (header.style.flexShrink !== '0') header.style.flexShrink = '0';
                 }
+
+                const optionsList = selectbox.querySelector('.v4-selectbox-options');
+                if (optionsList) {
+                    if (optionsList.style.position !== 'relative') optionsList.style.position = 'relative';
+                    if (optionsList.style.top !== '0px' && optionsList.style.top !== '0') optionsList.style.top = '0';
+                    if (optionsList.style.flex !== '1 1 0%' && optionsList.style.flex !== '1') optionsList.style.flex = '1';
+                }
                 
                 if (typeof window.updateHandles === 'function') window.updateHandles(c);
             }
