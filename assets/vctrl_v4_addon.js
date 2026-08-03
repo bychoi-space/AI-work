@@ -1354,6 +1354,9 @@
     window.syncAccordionSubItemInputs = (texts) => {
         const container = document.getElementById('accordion-sub-items-container');
         if (!container) return;
+        const activeEl = document.activeElement;
+        const isTypingInSubItems = activeEl && (container.contains(activeEl) || activeEl.classList.contains('accordion-sub-input'));
+        if (isTypingInSubItems) return;
         container.innerHTML = '';
         
         // Find which one is active in the iframe
@@ -1422,6 +1425,9 @@
     window.syncAccordionHierarchyInputs = (hierarchy) => {
         const container = document.getElementById('accordion-hierarchy-container');
         if (!container) return;
+        const activeEl = document.activeElement;
+        const isTypingInHierarchy = activeEl && (container.contains(activeEl) || activeEl.classList.contains('tier1-input') || activeEl.classList.contains('tier2-input'));
+        if (isTypingInHierarchy) return;
         container.innerHTML = '';
         
         const notifyAccordion = (data) => {
@@ -1723,6 +1729,9 @@
     window.syncGridHeaderInputs = (columns, headers) => {
         const container = document.getElementById('grid-columns-container');
         if (!container) return;
+        const activeEl = document.activeElement;
+        const isTypingInGridCols = activeEl && (container.contains(activeEl) || activeEl.classList.contains('grid-col-name-input') || activeEl.classList.contains('grid-col-width-input') || activeEl.classList.contains('grid-col-options-input'));
+        if (isTypingInGridCols) return;
         container.innerHTML = '';
         
         let colsList = [];

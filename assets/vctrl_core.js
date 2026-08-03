@@ -676,7 +676,14 @@ window.MessageHub = {
                     window.SmartGuide.findSnapTargets();
                 }
                 const activeEl = document.activeElement;
-                const isTyping = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title' || activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA');
+                const isTyping = activeEl && (
+                    activeEl.tagName === 'INPUT' || 
+                    activeEl.tagName === 'TEXTAREA' || 
+                    activeEl.tagName === 'SELECT' || 
+                    activeEl.isContentEditable || 
+                    activeEl.closest('#floating-inspector-card') !== null || 
+                    activeEl.closest('#sidebar-right') !== null
+                );
 
                 if (data.isDescriptionPin) {
                     state.isEditing = false;

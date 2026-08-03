@@ -489,7 +489,7 @@ const ProjectMetadataManager = {
                 if (DOM.adminSettingsPropSection) DOM.adminSettingsPropSection.style.display = 'block';
                 // Focus guard: Do not rebuild the inputs if the user is actively typing in one of them
                 const activeEl = document.activeElement;
-                const isTypingInAdminProps = activeEl && (activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title' || activeEl.id === 'prop-admin-label-width-slider' || activeEl.id === 'prop-admin-label-width-number');
+                const isTypingInAdminProps = activeEl && (activeEl.closest('#admin-settings-inspector-section') || activeEl.classList.contains('admin-col-label-input') || activeEl.classList.contains('admin-row-height-input') || activeEl.id === 'prop-admin-group-header-title' || activeEl.id === 'prop-admin-label-width-slider' || activeEl.id === 'prop-admin-label-width-number');
                 if (!isTypingInAdminProps) {
                     _syncAdminSettingsProps(compStyles);
                 }
@@ -888,13 +888,17 @@ function _syncSelectboxProps(comp) {
 
     const inputsContainer = document.getElementById('selectbox-options-inputs-container');
     if (inputsContainer) {
-        inputsContainer.innerHTML = options.map((optText, idx) => {
-            return `
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 10px; color: #94a3b8; width: 45px; flex-shrink: 0;">Item ${idx + 1}</span>
-                <input type="text" class="selectbox-option-input" data-index="${idx}" value="${optText}" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; outline: none; font-family: inherit;">
-            </div>`;
-        }).join('');
+        const activeEl = document.activeElement;
+        const isTypingSelectboxOption = activeEl && inputsContainer.contains(activeEl);
+        if (!isTypingSelectboxOption) {
+            inputsContainer.innerHTML = options.map((optText, idx) => {
+                return `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 10px; color: #94a3b8; width: 45px; flex-shrink: 0;">Item ${idx + 1}</span>
+                    <input type="text" class="selectbox-option-input" data-index="${idx}" value="${optText}" style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; outline: none; font-family: inherit;">
+                </div>`;
+            }).join('');
+        }
     }
 }
 
@@ -2080,6 +2084,9 @@ function _syncAdminSettingsProps(comp) {
 
     const container = document.getElementById('admin-rows-configuration-container');
     if (!container) return;
+    const activeEl = document.activeElement;
+    const isTypingInAdminContainer = activeEl && (container.contains(activeEl) || activeEl.closest('#admin-settings-inspector-section'));
+    if (isTypingInAdminContainer) return;
     container.innerHTML = '';
 
     const rowCount = comp.adminRowCount || 1;
