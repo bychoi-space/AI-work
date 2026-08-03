@@ -755,6 +755,17 @@ window.v4DesignSystemScript = `
         document.querySelectorAll('.v4-shape').forEach(s => {
             if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle') || s.classList.contains('v4-shape-arrow')) {
                 s.style.setProperty('border-width', '0px', 'important');
+                if (s.classList.contains('v4-shape-arrow')) {
+                    const path = s.querySelector('.v4-arrow-path');
+                    const stdPath = 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z';
+                    if (path && path.getAttribute('d') !== stdPath) {
+                        path.setAttribute('d', stdPath);
+                    }
+                    if (!s.getAttribute('data-direction') && !s.getAttribute('data-arrow-dir')) {
+                        s.setAttribute('data-direction', 'right');
+                        s.setAttribute('data-arrow-dir', 'right');
+                    }
+                }
                 return;
             }
             if (s.style.borderWidth !== '1.6px') s.style.setProperty('border-width', '1.6px', 'important');

@@ -305,8 +305,8 @@ window.v4Script = `
             x: parseFloat(c.style.left) || 0,
             y: parseFloat(c.style.top) || 0,
             shapeType: shape ? (shape.classList.contains('v4-shape-pattern-grid') ? 'pattern' : (shape.classList.contains('v4-shape-rect') ? 'rect' : (shape.classList.contains('v4-shape-circle') ? 'circle' : (shape.classList.contains('v4-shape-triangle') ? 'triangle' : (shape.classList.contains('v4-shape-diamond') ? 'diamond' : (shape.classList.contains('v4-shape-arrow') ? 'arrow' : '')))))) : '',
-            arrowDir: shape ? (shape.getAttribute('data-arrow-dir') || shape.getAttribute('data-direction') || 'up') : '',
-            direction: shape ? (shape.getAttribute('data-direction') || shape.getAttribute('data-arrow-dir') || 'up') : '',
+            arrowDir: shape ? (shape.getAttribute('data-arrow-dir') || shape.getAttribute('data-direction') || 'right') : '',
+            direction: shape ? (shape.getAttribute('data-direction') || shape.getAttribute('data-arrow-dir') || 'right') : '',
             patternType: shape && shape.classList.contains('v4-shape-pattern-grid') ? (shape.getAttribute('data-pattern-type') || 'grid') : '',
             isTable: !!table && !isGrid,
             isShape: !!shape,
@@ -1138,20 +1138,15 @@ window.v4Script = `
             if (!shape) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
-            const dir = d.direction || 'up';
+            const dir = d.direction || 'right';
             shape.setAttribute('data-arrow-dir', dir);
             shape.setAttribute('data-direction', dir);
 
             if (shape.classList.contains('v4-shape-arrow') || shape.id === 'v4-shape-arrow') {
                 const path = shape.querySelector('.v4-arrow-path');
                 if (path) {
-                    const PATHS = {
-                        right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
-                        left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
-                        up: 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z',
-                        down: 'M 30,0 L 30,60 L 10,60 L 50,100 L 90,60 L 70,60 L 70,0 Z'
-                    };
-                    path.setAttribute('d', PATHS[dir] || PATHS.right);
+                    // Standard Up path for uniform CSS transform rotation without double-rotation conflict
+                    path.setAttribute('d', 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z');
                 }
             } else if (shape.classList.contains('v4-shape-triangle') || shape.id === 'v4-shape-triangle') {
                 shape.setAttribute('data-direction', dir);

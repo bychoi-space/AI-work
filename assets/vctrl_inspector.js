@@ -437,7 +437,7 @@ const ProjectMetadataManager = {
                 if (arrowGroup) {
                     if (isArrowOrTriangle) {
                         arrowGroup.style.display = 'block';
-                        const currentDir = compStyles.direction || compStyles.arrowDir || 'up';
+                        const currentDir = compStyles.direction || compStyles.arrowDir || 'right';
                         if (typeof window._syncArrowDirBtns === 'function') {
                             window._syncArrowDirBtns(currentDir);
                         }
