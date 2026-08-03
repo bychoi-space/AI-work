@@ -112,8 +112,10 @@
     "06_Mobile_Design_3_982.html": {
       "title": "06_Mobile_Design_3_982",
       "type": "mobile-ui",
-      "updatedAt": "2026-08-03T09:02:04.074Z",
-      "template": "template_mobile_ui_3.html"
+      "updatedAt": "2026-08-03T09:03:25.031Z",
+      "template": "template_mobile_ui_3.html",
+      "description": [],
+      "connectors": []
     }
   },
   "assignee": "최범열",
@@ -121,5 +123,5 @@
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
   "jira": "LFML-145305",
   "themeIndex": 5,
-  "updated": "2026-08-03 17:57:26"
+  "updated": "2026-08-03 18:03:24"
 }
