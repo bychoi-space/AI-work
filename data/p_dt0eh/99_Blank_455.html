@@ -118,32 +118,29 @@ th.v4-editable-cell:focus, td.v4-editable-cell:focus { outline-offset: -2px !imp
 .lf-rv-my { background-position: 100% 0% !important; }
 .v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; object-fit: contain; }
-.v4-shape-triangle, .v4-shape-arrow, .v4-directional-shape { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: center center !important; }
+.v4-shape-triangle, .v4-directional-shape { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: center center !important; }
 .v4-shape-triangle { clip-path: none !important; border: none !important; }
-.v4-shape-triangle[data-direction="up"], .v4-shape-arrow[data-direction="up"], .v4-shape-arrow[data-arrow-dir="up"], .v4-directional-shape[data-direction="up"] { transform: rotate(0deg) !important; }
-.v4-shape-triangle[data-direction="right"], .v4-shape-arrow[data-direction="right"], .v4-shape-arrow[data-arrow-dir="right"], .v4-directional-shape[data-direction="right"] { transform: rotate(90deg) !important; }
-.v4-shape-triangle[data-direction="down"], .v4-shape-arrow[data-direction="down"], .v4-shape-arrow[data-arrow-dir="down"], .v4-directional-shape[data-direction="down"] { transform: rotate(180deg) !important; }
-.v4-shape-triangle[data-direction="left"], .v4-shape-arrow[data-direction="left"], .v4-shape-arrow[data-arrow-dir="left"], .v4-directional-shape[data-direction="left"] { transform: rotate(270deg) !important; }
+.v4-shape-arrow { transform: none !important; border: none !important; width: 100% !important; height: 100% !important; }
+.v4-shape-arrow svg { width: 100% !important; height: 100% !important; display: block !important; }
+.v4-shape-triangle[data-direction="up"], .v4-directional-shape[data-direction="up"] { transform: rotate(0deg) !important; }
+.v4-shape-triangle[data-direction="right"], .v4-directional-shape[data-direction="right"] { transform: rotate(90deg) !important; }
+.v4-shape-triangle[data-direction="down"], .v4-directional-shape[data-direction="down"] { transform: rotate(180deg) !important; }
+.v4-shape-triangle[data-direction="left"], .v4-directional-shape[data-direction="left"] { transform: rotate(270deg) !important; }
 
 /* Counter-rotate text elements to keep them horizontal and clean */
 .v4-shape-triangle .v4-editable-cell, .v4-shape-triangle .v4-shape-text-overlay,
-.v4-shape-arrow .v4-editable-cell, .v4-shape-arrow .v4-shape-text-overlay,
 .v4-directional-shape .v4-editable-cell, .v4-directional-shape .v4-shape-text-overlay { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: center center !important; }
 
 .v4-shape-triangle[data-direction="up"] .v4-editable-cell, .v4-shape-triangle[data-direction="up"] .v4-shape-text-overlay,
-.v4-shape-arrow[data-direction="up"] .v4-editable-cell, .v4-shape-arrow[data-direction="up"] .v4-shape-text-overlay,
 .v4-directional-shape[data-direction="up"] .v4-editable-cell, .v4-directional-shape[data-direction="up"] .v4-shape-text-overlay { transform: rotate(0deg) !important; }
 
 .v4-shape-triangle[data-direction="right"] .v4-editable-cell, .v4-shape-triangle[data-direction="right"] .v4-shape-text-overlay,
-.v4-shape-arrow[data-direction="right"] .v4-editable-cell, .v4-shape-arrow[data-direction="right"] .v4-shape-text-overlay,
 .v4-directional-shape[data-direction="right"] .v4-editable-cell, .v4-directional-shape[data-direction="right"] .v4-shape-text-overlay { transform: rotate(-90deg) !important; }
 
 .v4-shape-triangle[data-direction="down"] .v4-editable-cell, .v4-shape-triangle[data-direction="down"] .v4-shape-text-overlay,
-.v4-shape-arrow[data-direction="down"] .v4-editable-cell, .v4-shape-arrow[data-direction="down"] .v4-shape-text-overlay,
 .v4-directional-shape[data-direction="down"] .v4-editable-cell, .v4-directional-shape[data-direction="down"] .v4-shape-text-overlay { transform: rotate(-180deg) !important; }
 
 .v4-shape-triangle[data-direction="left"] .v4-editable-cell, .v4-shape-triangle[data-direction="left"] .v4-shape-text-overlay,
-.v4-shape-arrow[data-direction="left"] .v4-editable-cell, .v4-shape-arrow[data-direction="left"] .v4-shape-text-overlay,
 .v4-directional-shape[data-direction="left"] .v4-editable-cell, .v4-directional-shape[data-direction="left"] .v4-shape-text-overlay { transform: rotate(-270deg) !important; }
 .v4-shape-diamond { border: none !important; }
 .v4-shape-wave { border: none !important; }
@@ -439,8 +436,16 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
                     <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: var(--v4-text-color, #374151); box-sizing: border-box;">Option 3</div>
                 </div>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
-<script id="v4-inlined-script">
-// Cache Buster Timestamp: 1785720276074
+
+<div id="v4-comp-1785720280422799" class="lf-component" style="position: absolute; top: 482px; left: 1052px; z-index: 1000; transform: none; width: 150px; height: 390px;">
+            <div class="v4-selectbox-container" data-default-text="선택하세요" data-dropdown-active="true" data-options="KB국민카드,신한카드,롯데카드,현대카드,하나카드,삼성카드,NH농협카드,우리카드,네이버페이,토스페이,카카오페이,토스페이먼츠" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
+                <div class="v4-selectbox-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); height: 30px; padding: 0px 12px; box-sizing: border-box; font-size: 12px; color: var(--v4-text-color, #374151); cursor: pointer; flex-shrink: 0;">
+                    <span class="v4-selectbox-selected-text">선택하세요</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px; transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+                <div class="v4-selectbox-options" style="display: block; position: relative; top: 0px; left: 0px; width: 100%; background-color: var(--v4-component-bg, #ffffff); border-top-width: medium; border-top-style: none; border-top-color: currentcolor; border-radius: 0px 0px 8px 8px; box-sizing: border-box; z-index: 1000; overflow: hidden; box-shadow: rgba(0, 0, 0, 0.05) 0px 4px 6px; flex: 1 1 0%;"><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">KB국민카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">신한카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">롯데카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">현대카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">하나카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">삼성카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">NH농협카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">우리카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">네이버페이</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">토스페이</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">카카오페이</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; box-sizing: border-box;">토스페이먼츠</div></div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><script id="v4-inlined-script">
+// Cache Buster Timestamp: 1785724011408
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -2558,9 +2563,72 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 
 
+        window.buildArrowPath = function(width, height, dir) {
+            const w = Math.max(20, parseFloat(width) || 100);
+            const h = Math.max(20, parseFloat(height) || 100);
+            const direction = dir || 'right';
+
+            if (direction === 'right') {
+                const stemTop = h * 0.3;
+                const stemBot = h * 0.7;
+                const headLen = Math.min(w * 0.45, Math.max(h * 0.75, 20));
+                const headX = w - headLen;
+                return 'M 0,' + stemTop + ' L ' + headX + ',' + stemTop + ' L ' + headX + ',0 L ' + w + ',' + (h / 2) + ' L ' + headX + ',' + h + ' L ' + headX + ',' + stemBot + ' L 0,' + stemBot + ' Z';
+            } 
+            else if (direction === 'left') {
+                const stemTop = h * 0.3;
+                const stemBot = h * 0.7;
+                const headLen = Math.min(w * 0.45, Math.max(h * 0.75, 20));
+                const headX = headLen;
+                return 'M ' + w + ',' + stemTop + ' L ' + headX + ',' + stemTop + ' L ' + headX + ',0 L 0,' + (h / 2) + ' L ' + headX + ',' + h + ' L ' + headX + ',' + stemBot + ' L ' + w + ',' + stemBot + ' Z';
+            } 
+            else if (direction === 'up') {
+                const stemLeft = w * 0.3;
+                const stemRight = w * 0.7;
+                const headLen = Math.min(h * 0.45, Math.max(w * 0.75, 20));
+                const headY = headLen;
+                return 'M ' + stemLeft + ',' + h + ' L ' + stemLeft + ',' + headY + ' L 0,' + headY + ' L ' + (w / 2) + ',0 L ' + w + ',' + headY + ' L ' + stemRight + ',' + headY + ' L ' + stemRight + ',' + h + ' Z';
+            } 
+            else if (direction === 'down') {
+                const stemLeft = w * 0.3;
+                const stemRight = w * 0.7;
+                const headLen = Math.min(h * 0.45, Math.max(w * 0.75, 20));
+                const headY = h - headLen;
+                return 'M ' + stemLeft + ',0 L ' + stemLeft + ',' + headY + ' L 0,' + headY + ' L ' + (w / 2) + ',' + h + ' L ' + w + ',' + headY + ' L ' + stemRight + ',' + headY + ' L ' + stemRight + ',0 Z';
+            }
+            return '';
+        };
+
         document.querySelectorAll('.v4-shape').forEach(s => {
             if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle') || s.classList.contains('v4-shape-arrow')) {
                 s.style.setProperty('border-width', '0px', 'important');
+                if (s.classList.contains('v4-shape-arrow')) {
+                    const svg = s.querySelector('svg');
+                    const comp = s.closest('.lf-component') || s;
+                    const w = parseFloat(comp.style.width) || comp.offsetWidth || 100;
+                    const h = parseFloat(comp.style.height) || comp.offsetHeight || 100;
+
+                    if (svg) {
+                        const targetViewBox = '0 0 ' + w + ' ' + h;
+                        if (svg.getAttribute('viewBox') !== targetViewBox) {
+                            svg.setAttribute('viewBox', targetViewBox);
+                        }
+                        if (svg.getAttribute('preserveAspectRatio') !== 'none') {
+                            svg.setAttribute('preserveAspectRatio', 'none');
+                        }
+                    }
+
+                    const dir = s.getAttribute('data-direction') || s.getAttribute('data-arrow-dir') || 'right';
+                    const targetD = window.buildArrowPath(w, h, dir);
+                    const path = s.querySelector('.v4-arrow-path');
+                    if (path && targetD && path.getAttribute('d') !== targetD) {
+                        path.setAttribute('d', targetD);
+                    }
+                    if (!s.getAttribute('data-direction') && !s.getAttribute('data-arrow-dir')) {
+                        s.setAttribute('data-direction', 'right');
+                        s.setAttribute('data-arrow-dir', 'right');
+                    }
+                }
                 return;
             }
             if (s.style.borderWidth !== '1.6px') s.style.setProperty('border-width', '1.6px', 'important');
@@ -4816,8 +4884,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             x: parseFloat(c.style.left) || 0,
             y: parseFloat(c.style.top) || 0,
             shapeType: shape ? (shape.classList.contains('v4-shape-pattern-grid') ? 'pattern' : (shape.classList.contains('v4-shape-rect') ? 'rect' : (shape.classList.contains('v4-shape-circle') ? 'circle' : (shape.classList.contains('v4-shape-triangle') ? 'triangle' : (shape.classList.contains('v4-shape-diamond') ? 'diamond' : (shape.classList.contains('v4-shape-arrow') ? 'arrow' : '')))))) : '',
-            arrowDir: shape ? (shape.getAttribute('data-arrow-dir') || shape.getAttribute('data-direction') || 'up') : '',
-            direction: shape ? (shape.getAttribute('data-direction') || shape.getAttribute('data-arrow-dir') || 'up') : '',
+            arrowDir: shape ? (shape.getAttribute('data-arrow-dir') || shape.getAttribute('data-direction') || 'right') : '',
+            direction: shape ? (shape.getAttribute('data-direction') || shape.getAttribute('data-arrow-dir') || 'right') : '',
             patternType: shape && shape.classList.contains('v4-shape-pattern-grid') ? (shape.getAttribute('data-pattern-type') || 'grid') : '',
             isTable: !!table && !isGrid,
             isShape: !!shape,
@@ -5649,20 +5717,22 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (!shape) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
-            const dir = d.direction || 'up';
+            const dir = d.direction || 'right';
             shape.setAttribute('data-arrow-dir', dir);
             shape.setAttribute('data-direction', dir);
 
             if (shape.classList.contains('v4-shape-arrow') || shape.id === 'v4-shape-arrow') {
+                const comp = shape.closest('.lf-component') || shape;
+                const w = parseFloat(comp.style.width) || comp.offsetWidth || 100;
+                const h = parseFloat(comp.style.height) || comp.offsetHeight || 100;
+                const svg = shape.querySelector('svg');
+                if (svg) {
+                    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+                    svg.setAttribute('preserveAspectRatio', 'none');
+                }
                 const path = shape.querySelector('.v4-arrow-path');
-                if (path) {
-                    const PATHS = {
-                        right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
-                        left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
-                        up: 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z',
-                        down: 'M 30,0 L 30,60 L 10,60 L 50,100 L 90,60 L 70,60 L 70,0 Z'
-                    };
-                    path.setAttribute('d', PATHS[dir] || PATHS.right);
+                if (path && typeof window.buildArrowPath === 'function') {
+                    path.setAttribute('d', window.buildArrowPath(w, h, dir));
                 }
             } else if (shape.classList.contains('v4-shape-triangle') || shape.id === 'v4-shape-triangle') {
                 shape.setAttribute('data-direction', dir);
@@ -7698,11 +7768,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 })();
 
 </script>
-<div id="v4-comp-1785720280422799" class="lf-component" style="position: absolute; top: 482px; left: 1062px; z-index: 1000; transform: none; width: 150px; height: 390px;">
-            <div class="v4-selectbox-container" data-default-text="선택하세요" data-dropdown-active="true" data-options="KB국민카드,신한카드,롯데카드,현대카드,하나카드,삼성카드,NH농협카드,우리카드,네이버페이,토스페이,카카오페이,토스페이먼츠" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
-                <div class="v4-selectbox-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); height: 30px; padding: 0px 12px; box-sizing: border-box; font-size: 12px; color: var(--v4-text-color, #374151); cursor: pointer; flex-shrink: 0;">
-                    <span class="v4-selectbox-selected-text">선택하세요</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px; transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </div>
-                <div class="v4-selectbox-options" style="display: block; position: relative; top: 0px; left: 0px; width: 100%; background-color: var(--v4-component-bg, #ffffff); border-top-width: medium; border-top-style: none; border-top-color: currentcolor; border-radius: 0px 0px 8px 8px; box-sizing: border-box; z-index: 1000; overflow: hidden; box-shadow: rgba(0, 0, 0, 0.05) 0px 4px 6px; flex: 1 1 0%;"><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">KB국민카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">신한카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">롯데카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">현대카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">하나카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">삼성카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">NH농협카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">우리카드</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">네이버페이</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">토스페이</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; border-bottom: 1.6px solid #f3f4f6; box-sizing: border-box;">카카오페이</div><div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: #374151; box-sizing: border-box;">토스페이먼츠</div></div>
+<div id="v4-comp-1785724014322" class="lf-component" style="position: absolute; top: 487.35px; left: 542px; z-index: 1000; transform: none; width: 500px; height: 20px;" data-resized="true">
+            <div class="v4-shape v4-shape-arrow" data-arrow-dir="right" style="width: 100%; height: 100%; background: transparent; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: visible; box-sizing: border-box; position: relative; border-width: 0px !important; border-style: none !important; border-color: transparent; border-image: none !important;">
+                <svg viewBox="0 0 500 20" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible;">
+                    <path class="v4-arrow-path" d="M 0,6 L 480,6 L 480,0 L 500,10 L 480,20 L 480,14 L 0,14 Z" style="fill: rgb(255, 223, 168); stroke: transparent; stroke-width: 1.6; vector-effect: non-scaling-stroke;" stroke-width="1.6"></path>
+                </svg>
+                <div contenteditable="true" class="v4-editable-cell" style="width: 50%; height: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; outline: none; font-weight: 700; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; font-size: 14px; z-index: 2; position: relative;"></div>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></body></html>
