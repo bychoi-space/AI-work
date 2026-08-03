@@ -79,7 +79,7 @@
     "06_Mobile_Design_3_848.html": {
       "title": "06_Mobile_Design_3_848",
       "type": "mobile-ui",
-      "updatedAt": "2026-08-03T08:42:53.483Z",
+      "updatedAt": "2026-08-03T08:48:01.653Z",
       "template": "template_mobile_ui_3.html",
       "description": [
         {
@@ -115,5 +115,5 @@
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
   "jira": "LFML-145305",
   "themeIndex": 5,
-  "updated": "2026-08-03 17:42:53"
+  "updated": "2026-08-03 17:48:01"
 }
