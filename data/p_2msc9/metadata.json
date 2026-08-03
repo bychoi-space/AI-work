@@ -75,6 +75,12 @@
           }
         }
       ]
+    },
+    "06_Mobile_Design_3_848.html": {
+      "title": "06_Mobile_Design_3_848",
+      "type": "mobile-ui",
+      "updatedAt": "2026-08-03T02:32:30.554Z",
+      "template": "template_mobile_ui_3.html"
     }
   },
   "assignee": "최범열",
