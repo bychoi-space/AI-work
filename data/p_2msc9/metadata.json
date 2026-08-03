@@ -112,9 +112,18 @@
     "06_Mobile_Design_3_982.html": {
       "title": "06_Mobile_Design_3_982",
       "type": "mobile-ui",
-      "updatedAt": "2026-08-03T09:03:25.031Z",
+      "updatedAt": "2026-08-03T09:04:21.522Z",
       "template": "template_mobile_ui_3.html",
-      "description": [],
+      "description": [
+        {
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
+          "x": 158.8,
+          "y": 72.3,
+          "type": "text",
+          "standardized": true
+        }
+      ],
       "connectors": []
     }
   },
@@ -123,5 +132,5 @@
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
   "jira": "LFML-145305",
   "themeIndex": 5,
-  "updated": "2026-08-03 18:03:24"
+  "updated": "2026-08-03 18:04:21"
 }
