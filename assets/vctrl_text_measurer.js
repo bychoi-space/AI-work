@@ -1,8 +1,5 @@
 window.v4TextMeasurerScript = `
 (function() {
-    console.log("[V4 Text Measurer] Module initialized.");
-    
-
     const resizeAtomToFitText = (s) => {
         if (!s) return;
         // Skip resizing if the atom component is already grouped inside an 'lf-group' to prevent layout breakages.
@@ -42,12 +39,224 @@ window.v4TextMeasurerScript = `
         if (typeof window.updateHandles === 'function') window.updateHandles(s);
     };
 
+    // Component Type Constants
+    const COMP_TYPES = {
+        STANDALONE_TEXT_SHAPE: 'STANDALONE_TEXT_SHAPE',
+        TEXT_BOX: 'TEXT_BOX',
+        SHAPE_TEXT: 'SHAPE_TEXT',
+        DEFAULT_CELL: 'DEFAULT_CELL'
+    };
+
+    // 1. Pure Component Type Classifier
+    const getComponentType = (c, isShapeText) => {
+        const isRealTextComp = c.classList.contains('v4-text-box') || c.classList.contains('v4-text-shape') || c.classList.contains('text-marker') || c.classList.contains('pin-marker');
+        const isStandaloneTextShape = c.classList.contains('v4-text-shape') && !c.classList.contains('text-marker') && !c.classList.contains('pin-marker') && !c.id.startsWith('v4-pin-');
+
+        if (isStandaloneTextShape) {
+            return COMP_TYPES.STANDALONE_TEXT_SHAPE;
+        }
+        if (isRealTextComp && !isShapeText) {
+            return COMP_TYPES.TEXT_BOX;
+        }
+        if (isShapeText || c.querySelector('.v4-shape')) {
+            return COMP_TYPES.SHAPE_TEXT;
+        }
+        return COMP_TYPES.DEFAULT_CELL;
+    };
+
+    // 2. Pure Off-Screen Measurement Core
+    const measureCellTextDimensions = (cell, targetDoc) => {
+        let fontTarget = cell;
+        let maxFs = parseFloat(window.getComputedStyle(cell).fontSize) || 14;
+        const subEls = cell.querySelectorAll('span, font, strong, b, em, i, p');
+        subEls.forEach(el => {
+            const fs = parseFloat(window.getComputedStyle(el).fontSize) || 0;
+            if (fs > maxFs) {
+                maxFs = fs;
+                fontTarget = el;
+            }
+        });
+        const compStyle = window.getComputedStyle(fontTarget);
+        
+        let hasBold = cell.querySelector('strong, b') || false;
+        if (!hasBold) {
+            const allEls = cell.querySelectorAll('*');
+            for (let i = 0; i < allEls.length; i++) {
+                const fw = window.getComputedStyle(allEls[i]).fontWeight;
+                if (fw === 'bold' || fw === '700' || parseInt(fw) >= 700) {
+                    hasBold = true;
+                    break;
+                }
+            }
+        }
+        if (!hasBold) {
+            const cellFw = window.getComputedStyle(cell).fontWeight;
+            if (cellFw === 'bold' || cellFw === '700' || parseInt(cellFw) >= 700) {
+                hasBold = true;
+            }
+        }
+
+        const measureContainer = targetDoc.createElement('div');
+        measureContainer.className = 'ql-editor v4-editable-cell';
+        measureContainer.style.visibility = 'hidden';
+        measureContainer.style.position = 'absolute';
+        measureContainer.style.top = '-9999px';
+        measureContainer.style.left = '-9999px';
+        measureContainer.style.whiteSpace = 'nowrap';
+        measureContainer.style.width = 'max-content';
+        measureContainer.style.fontFamily = compStyle.fontFamily;
+        measureContainer.style.fontSize = compStyle.fontSize;
+        measureContainer.style.fontWeight = compStyle.fontWeight || (hasBold ? '700' : '400');
+        measureContainer.style.lineHeight = '1';
+        measureContainer.style.letterSpacing = compStyle.letterSpacing;
+        measureContainer.style.padding = '0';
+        measureContainer.style.margin = '0';
+        (targetDoc.body || document.body).appendChild(measureContainer);
+
+        let rawText = '';
+        const paragraphs = cell.querySelectorAll('p');
+        let maxLineW = 0;
+        let maxLineH = 0;
+        
+        const sanitizeHtml = (html) => {
+            return (html || '')
+                .replace(/<span class="ql-cursor">.*?<\\/span>/gi, '')
+                .replace(/[\\u200B\\u00A0]/g, '');
+        };
+
+        if (paragraphs.length > 0) {
+            paragraphs.forEach(p => {
+                const cleanedHtml = sanitizeHtml(p.innerHTML || p.textContent || '&nbsp;');
+                measureContainer.innerHTML = cleanedHtml;
+                measureContainer.querySelectorAll('*').forEach(child => {
+                    child.style.setProperty('white-space', 'nowrap', 'important');
+                    child.style.setProperty('display', 'inline', 'important');
+                });
+                const w = Math.ceil(measureContainer.scrollWidth || measureContainer.offsetWidth);
+                const h = Math.ceil(measureContainer.offsetHeight || measureContainer.scrollHeight);
+                if (w > maxLineW) maxLineW = w;
+                if (h > maxLineH) maxLineH = h;
+            });
+            rawText = Array.from(paragraphs).map(p => (p.textContent || '').replace(/[\\u200B\\u00A0]/g, '')).join('\\n');
+        } else {
+            const cleanCellHtml = sanitizeHtml(cell.innerHTML || '');
+            const temp = document.createElement('div');
+            temp.innerHTML = cleanCellHtml.replace(/<br\\s*\\/?>/gi, '\\n');
+            rawText = temp.textContent || '';
+
+            const linesHtml = cleanCellHtml.split(/<br\\s*\\/?>/gi);
+            linesHtml.forEach(lineHtml => {
+                measureContainer.innerHTML = lineHtml || '&nbsp;';
+                measureContainer.querySelectorAll('*').forEach(child => {
+                    child.style.setProperty('white-space', 'nowrap', 'important');
+                    child.style.setProperty('display', 'inline', 'important');
+                });
+                const w = Math.ceil(measureContainer.scrollWidth || measureContainer.offsetWidth);
+                const h = Math.ceil(measureContainer.offsetHeight || measureContainer.scrollHeight);
+                if (w > maxLineW) maxLineW = w;
+                if (h > maxLineH) maxLineH = h;
+            });
+        }
+
+        const fsPxFallback = parseFloat(compStyle.fontSize) || 14;
+        const singleLineH = Math.max(maxLineH, Math.ceil(fsPxFallback * 1.2));
+        
+        const textW = maxLineW;
+        const normalizedText = rawText.replace(/\\r\\n/g, '\\n').replace(/\\r/g, '\\n');
+        const lineCount = Math.max(1, normalizedText.split('\\n').length);
+        
+        (targetDoc.body || document.body).removeChild(measureContainer);
+
+        return {
+            textW,
+            textH: singleLineH * lineCount,
+            lineCount,
+            compStyle,
+            fsPx: fsPxFallback
+        };
+    };
+
+    // 3. Dedicated Component Fitters (Strategy Implementation)
+
+    // Strategy 3-A: Standalone Text Shape (.v4-text-shape)
+    const fitStandaloneTextShape = (c, measured, origW, origH) => {
+        const addedW = 12; // 6px left + 6px right
+        const addedH = 8;  // 4px top + 4px bottom
+        const targetW = measured.textW + addedW;
+        const targetH = measured.lineCount > 1 
+            ? (measured.fsPx * 1.2 * measured.lineCount) + addedH 
+            : measured.textH + addedH;
+
+        const finalW = targetW + 'px';
+        const finalH = targetH + 'px';
+        if (origW !== finalW) c.style.width = finalW;
+        if (origH !== finalH) c.style.height = finalH;
+
+        return { hideResizer: true };
+    };
+
+    // Strategy 3-B: Real Text Box / Marker (.v4-text-box, .pin-marker, .text-marker)
+    const fitTextBox = (c, measured, origW, origH) => {
+        const addedW = 22; // 11px left + 11px right
+        const addedH = 8;  // 4px top + 4px bottom
+        const targetW = measured.textW + addedW;
+        const targetH = measured.lineCount > 1 
+            ? (measured.fsPx * 1.2 * measured.lineCount) + addedH 
+            : measured.textH + addedH;
+
+        const finalW = targetW + 'px';
+        const finalH = targetH + 'px';
+        if (origW !== finalW) c.style.width = finalW;
+        if (origH !== finalH) c.style.height = finalH;
+
+        return { hideResizer: true };
+    };
+
+    // Strategy 3-C: Shape-Embedded Text (.v4-shape with text)
+    const fitShapeText = (c, measured, origW, origH) => {
+        const addedW = 24;
+        const addedH = 16;
+        const targetW = measured.textW + addedW;
+        const targetH = measured.lineCount > 1 
+            ? (measured.fsPx * 1.2 * measured.lineCount) + addedH 
+            : measured.textH + addedH;
+
+        const currentW = parseFloat(origW) || c.offsetWidth || 120;
+        const currentH = parseFloat(origH) || c.offsetHeight || 36;
+        
+        // Prevent shrinking below text requirements while maintaining shape bounds
+        const newW = Math.max(currentW, targetW) + 'px';
+        const newH = Math.max(currentH, targetH, 36) + 'px';
+        if (origW !== newW) c.style.width = newW;
+        if (origH !== newH) c.style.height = newH;
+
+        return { hideResizer: false };
+    };
+
+    // Strategy 3-D: Default Editable Cell (Table cells etc.)
+    const fitDefaultCell = (c, measured, origW, origH) => {
+        const addedW = 24;
+        const addedH = 16;
+        const targetW = measured.textW + addedW;
+        const targetH = measured.lineCount > 1 
+            ? (measured.fsPx * 1.2 * measured.lineCount) + addedH 
+            : measured.textH + addedH;
+
+        const finalW = targetW + 'px';
+        const finalH = targetH + 'px';
+        if (origW !== finalW) c.style.width = finalW;
+        if (origH !== finalH) c.style.height = finalH;
+
+        return { hideResizer: false };
+    };
+
+    // 4. Main Dispatcher Orchestrator
     const resizeToFitText = (c, isShapeText) => {
         if (!c) return;
         const cell = c.querySelector('.v4-editable-cell') || c.querySelector('.v4-shape-text-content') || c.querySelector('.v4-shape-text-overlay');
         if (!cell) return;
 
-        // Zero-Drift Measurement: Temporarily hide active UI handles before offsetWidth/height query
+        // Zero-Drift Guard: Temporarily hide UI handles before querying bounding dimensions
         const handle = c.querySelector(':scope > .lf-drag-handle');
         const resizer = c.querySelector(':scope > .lf-resizer');
         const delTrigger = c.querySelector(':scope > .lf-delete-trigger');
@@ -71,135 +280,34 @@ window.v4TextMeasurerScript = `
         if (c.style.minWidth !== 'unset') c.style.setProperty('min-width', 'unset', 'important');
         if (c.style.minHeight !== 'unset') c.style.setProperty('min-height', 'unset', 'important');
 
-        let fontTarget = cell;
-        const cellFontSize = window.getComputedStyle(cell).fontSize;
-        const subEls = cell.querySelectorAll('span, font, strong, p');
-        for (let i = 0; i < subEls.length; i++) {
-            const subFs = window.getComputedStyle(subEls[i]).fontSize;
-            if (subFs && subFs !== cellFontSize) {
-                fontTarget = subEls[i];
-                break;
-            }
-        }
-        if (fontTarget === cell && subEls.length > 0) {
-            fontTarget = subEls[0];
-        }
-        const compStyle = window.getComputedStyle(fontTarget);
-        
-        let hasBold = cell.querySelector('strong, b') || false;
-        if (!hasBold) {
-            const allEls = cell.querySelectorAll('*');
-            for (let i = 0; i < allEls.length; i++) {
-                const fw = window.getComputedStyle(allEls[i]).fontWeight;
-                if (fw === 'bold' || fw === '700' || parseInt(fw) >= 700) {
-                    hasBold = true;
-                    break;
-                }
-            }
-        }
-        if (!hasBold) {
-            const cellFw = window.getComputedStyle(cell).fontWeight;
-            if (cellFw === 'bold' || cellFw === '700' || parseInt(cellFw) >= 700) {
-                hasBold = true;
-            }
-        }
+        // Pure Measurement
+        const targetDoc = c.ownerDocument || document;
+        const measured = measureCellTextDimensions(cell, targetDoc);
 
-        // Create an invisible measurement container that retains full HTML innerHTML formatting (strong, b, span, etc.)
-        const measureContainer = document.createElement('div');
-        measureContainer.style.visibility = 'hidden';
-        measureContainer.style.position = 'absolute';
-        measureContainer.style.top = '-9999px';
-        measureContainer.style.left = '-9999px';
-        measureContainer.style.whiteSpace = 'nowrap';
-        measureContainer.style.width = 'max-content';
-        measureContainer.style.fontFamily = compStyle.fontFamily;
-        measureContainer.style.fontSize = compStyle.fontSize;
-        measureContainer.style.lineHeight = '1';
-        measureContainer.style.letterSpacing = compStyle.letterSpacing;
-        measureContainer.style.padding = '0';
-        measureContainer.style.margin = '0';
-        document.body.appendChild(measureContainer);
-
-        // Extract text containing only user-typed hard newlines
-        let rawText = '';
-        const paragraphs = cell.querySelectorAll('p');
-        let maxLineW = 0;
-        
-        if (paragraphs.length > 0) {
-            paragraphs.forEach(p => {
-                measureContainer.innerHTML = p.innerHTML || p.textContent || '&nbsp;';
-                const w = Math.ceil(measureContainer.scrollWidth || measureContainer.offsetWidth);
-                if (w > maxLineW) maxLineW = w;
-            });
-            rawText = Array.from(paragraphs).map(p => p.textContent).join('\\n');
-        } else {
-            const temp = document.createElement('div');
-            temp.innerHTML = (cell.innerHTML || '').replace(/<br\\s*\\/?>/gi, '\\n');
-            rawText = temp.textContent || '';
-
-            const linesHtml = (cell.innerHTML || '').split(/<br\\s*\\/?>/gi);
-            linesHtml.forEach(lineHtml => {
-                measureContainer.innerHTML = lineHtml || '&nbsp;';
-                const w = Math.ceil(measureContainer.scrollWidth || measureContainer.offsetWidth);
-                if (w > maxLineW) maxLineW = w;
-            });
-        }
-
-        measureContainer.innerText = 'T';
-        const singleLineH = Math.ceil(measureContainer.offsetHeight || (parseFloat(compStyle.fontSize) * 1.2));
-        
-        const textW = maxLineW;
-        const normalizedText = rawText.replace(/\\r\\n/g, '\\n').replace(/\\r/g, '\\n');
-        const lineCount = Math.max(1, normalizedText.split('\\n').length);
-        const textH = singleLineH * lineCount;
-        
-        document.body.removeChild(measureContainer);
-        
-        const isRealTextComp = c.classList.contains('v4-text-box') || c.classList.contains('v4-text-shape') || c.classList.contains('text-marker') || c.classList.contains('pin-marker');
-
-        // Expanded safe padding buffer (22px~26px) to eliminate last-character wrapping when BOLD is applied
-        let paddingW = isShapeText ? 24 : 22;
-        let paddingH = isShapeText ? 16 : 10;
-
-        let targetW = textW + paddingW;
-        let targetH = textH + paddingH;
-
-        if (isRealTextComp || isShapeText) {
-            if (lineCount === 1) {
-                targetW = textW + (isRealTextComp && !isShapeText ? 22 : paddingW);
-                targetH = textH + (isRealTextComp && !isShapeText ? 8 : paddingH);
-            } else {
-                const fsPx = parseFloat(compStyle.fontSize) || 14;
-                targetW = textW + (isRealTextComp && !isShapeText ? 22 : paddingW);
-                targetH = fsPx * 1.2 * lineCount + (isRealTextComp && !isShapeText ? 8 : paddingH);
-            }
-        }
-
-        // Zero-Offset Calibration: Micro-adjust small text rendering to bypass subpixel dropping.
-        const fsPx = parseFloat(compStyle.fontSize) || 14;
-        let adjustY = '0px';
-        if (fsPx <= 11) {
-            adjustY = '-0.6px';
-        }
+        // Zero-Offset Calibration: Micro-adjust small text rendering
+        const adjustY = measured.fsPx <= 11 ? '-0.6px' : '0px';
         c.style.setProperty('--v4-text-adjust-y', adjustY);
 
-        if (isRealTextComp || isShapeText) {
-            if (isShapeText && !isRealTextComp) {
-                const currentW = parseFloat(origW) || c.offsetWidth || 120;
-                const currentH = parseFloat(origH) || c.offsetHeight || 36;
-                
-                const newW = Math.max(currentW, targetW) + 'px';
-                const newH = Math.max(currentH, targetH, 36) + 'px';
-                if (origW !== newW) c.style.width = newW;
-                if (origH !== newH) c.style.height = newH;
-            } else {
-                const finalW = targetW + 'px';
-                const finalH = targetH + 'px';
-                if (origW !== finalW) c.style.width = finalW;
-                if (origH !== finalH) c.style.height = finalH;
-            }
+        // Component Dispatching
+        const compType = getComponentType(c, isShapeText);
+        let fitResult = { hideResizer: false };
+
+        switch (compType) {
+            case COMP_TYPES.STANDALONE_TEXT_SHAPE:
+                fitResult = fitStandaloneTextShape(c, measured, origW, origH);
+                break;
+            case COMP_TYPES.TEXT_BOX:
+                fitResult = fitTextBox(c, measured, origW, origH);
+                break;
+            case COMP_TYPES.SHAPE_TEXT:
+                fitResult = fitShapeText(c, measured, origW, origH);
+                break;
+            default:
+                fitResult = fitDefaultCell(c, measured, origW, origH);
+                break;
         }
 
+        // Sub-container Dimension Enforcement
         const shape = c.querySelector('.v4-shape');
         if (shape) {
             if (shape.style.width !== '100%') shape.style.width = '100%';
@@ -208,14 +316,23 @@ window.v4TextMeasurerScript = `
         if (cell.style.width !== '100%') cell.style.width = '100%';
         if (cell.style.height !== '100%') cell.style.height = '100%';
 
-        // Restore UI handle styles to correct layout visibility
-        if (handle) handle.style.display = origHandleDisplay;
-        if (delTrigger) delTrigger.style.display = origDelDisplay;
+        // Restore UI Handles
+        if (handle) {
+            handle.style.removeProperty('display');
+            if (origHandleDisplay) handle.style.display = origHandleDisplay;
+        }
+        if (delTrigger) {
+            delTrigger.style.removeProperty('display');
+            if (origDelDisplay) delTrigger.style.display = origDelDisplay;
+        }
         
         if (resizer) {
-            const targetDisplay = isRealTextComp ? (isShapeText ? 'block' : 'none') : (origResizerDisplay || 'block');
-            if (resizer.style.display !== targetDisplay) {
+            resizer.style.removeProperty('display');
+            const targetDisplay = fitResult.hideResizer ? 'none' : (origResizerDisplay || 'block');
+            if (targetDisplay !== 'none') {
                 resizer.style.setProperty('display', targetDisplay, 'important');
+            } else {
+                resizer.style.setProperty('display', 'none', 'important');
             }
         }
     };

@@ -17,7 +17,10 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .lf-component .lf-component .lf-delete-trigger,
 .lf-in-group .lf-drag-handle,
 .lf-in-group .lf-resizer,
-.lf-in-group .lf-delete-trigger { display: none !important; }
+.lf-in-group .lf-delete-trigger,
+.v4-text-shape > .lf-resizer,
+.v4-text-box > .lf-resizer,
+.text-marker > .lf-resizer { display: none !important; }
 .lf-drag-handle { position: absolute; top: -9px; left: -9px; width: 18px; height: 18px; background: #6366f1; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: move; opacity: 0; transition: all 0.2s; border: 1.6px solid #fff; z-index: 10002; }
 .lf-drag-handle svg { width: 10px !important; height: 10px !important; }
 .lf-component:hover .lf-drag-handle, .lf-component.selected .lf-drag-handle { opacity: 1; top: -12px; left: -12px; }

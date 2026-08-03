@@ -58,24 +58,26 @@ description: Use when editing V4 components, .lf-icon SVG atoms, premium buttons
   - **4. 인라인 brightness 필터 금지**: 생성 템플릿에 `filter: brightness(0)`와 같은 하드코딩 필터 주입을 배제해야 하며, 스타일 업데이트 시 `t.style.filter = 'none'`을 우선 처리하여 채색 렌더러가 온전한 원색을 왜곡 없이 표현할 수 있게 보장합니다.
 
 ## Text And Layout
-- **도형 텍스트(SHAPE Text) 명칭 및 렌더링 아키텍처 규칙**:
-  - **1. 명칭 및 기획 정의 (SSOT)**:
-    - 우측 사이드바 `SHAPE` 카테고리의 첫 번째 항목인 **`T (Text)` (도형 텍스트)**를 가리키며, `ATOMIC LIBRARY`의 첫 번째 항목인 **`Textbox` (텍스트박스 아톰)**와 엄격하게 구분한다. 내부 클래스명인 `.v4-text-box`와 상관없이 UI 상의 명칭은 반드시 **'도형 텍스트'**로 통일한다.
-  - **2. 파일별 역할 분담 및 수정 가이드**:
-    - **[assets/templates.js](file:///c:/ai-work/assets/templates.js) (뼈대 및 기본 스타일)**:
-      - 도형 텍스트 최초 생성 시 삽입되는 HTML 구조 조각과 기본 CSS 정의부(예: `.v4-text-box` 및 `.text-marker` 클래스의 기본 렌더링 스타일, 마우스 selected/hover 효과)가 들어있다. 컴포넌트의 디폴트 여백 및 모양 변경 시 이 파일의 스타일 선언부를 수정해야 한다. (부모에 `display: flex`가 들어가서 하위 텍스트와 이동 핸들의 밀림을 유발하지 않도록 absolute 래퍼 형태로 유지해야 한다.)
-    - **[assets/vctrl_iframe_script.js](file:///c:/ai-work/assets/vctrl_iframe_script.js) (렌더링 엔진 스타일 쉘)**:
-      - iframe 캔버스 내부에 주입되는 스타일시트(`window.v4Styles`)를 통해 실시간 기하학적 정렬을 지배한다. 상하좌우 대칭 정렬을 위한 셀 패딩(`padding: 4px !important;`), 수직/수평 FLEX 정렬(`display: flex !important; align-items: center !important; justify-content: center !important;`), 줄높이 초기화(`line-height: 1 !important;`), 텍스트 치우침 보정을 위한 트랜스폼(`transform: translateY(var(--v4-text-adjust-y, 0px));`) 등의 CSS 규칙은 이 파일에서 관리한다.
-    - **[assets/vctrl_design_system.js](file:///c:/ai-work/assets/vctrl_design_system.js) (크기 계산 및 영점 보정 알고리즘)**:
-      - 폰트 크기 변경에 따른 동적 크기 보정 함수 `resizeToFitText()`를 소유한다. 
-      - **Zero-Drift Measurement**: 크기 측정 직전 `.lf-drag-handle`, `.lf-resizer`, `.lf-delete-trigger`를 일시적으로 감춰서 측정 왜곡을 방어한다.
-      - **Computed Style Lookup**: 자식 노드 중 폰트 크기 스타일이 지정된 첫 번째 요소의 computed style(`window.getComputedStyle(el).fontSize`)을 안전하게 낚아채어 오차 없이 측정한다.
-      - **Zero-Offset Calibration**: `10px` 등 11px 이하의 초소형 폰트 크기에서 발생하는 브라우저 고유의 아래 처짐 현상을 소멸시키기 위해 Y축 영점 보정 변수 `--v4-text-adjust-y: -0.6px`를 동적으로 부여한다.
-      - **텍스트 공백 정제**: 텍스트의 실제 가로/세로 픽셀을 측정하기 전, 유니코드 특수 공백(`\u200B`, `\u00A0` 등)과 개행을 정규식으로 완벽히 제거(`trim().replace(/\u200B/g, '')`)하여 과도한 좌우 공백 왜곡을 차단한다.
-    - **[assets/vctrl_v4_addon.js](file:///c:/ai-work/assets/vctrl_v4_addon.js) (부모-자식 스타일 중계기)**:
-      - 사이드바 조작에 따른 `LF_UPDATE_STYLE` 토스 핸들러를 정의한다. 폰트 크기(`shape-font-size`), 정렬(`_applyTextAlign`), 컬러(`shape-text-color`) 변경 메시지 송신 시, 도형 텍스트 영역을 포섭하도록 셀렉터 타겟에 `.v4-shape .v4-shape-text-content, .v4-shape .v4-shape-text-overlay, .v4-shape .v4-editable-cell` 3중 결합 경로가 정의되어야 한다.
-    - **[assets/vctrl_core.js](file:///c:/ai-work/assets/vctrl_core.js) (자동 캐시 무력화)**:
-      - 모듈 스크립트를 수정한 후 배포 시 브라우저 캐싱 문제를 해결하기 위해, `loadScreen()` 시점 주입되는 인라인 스크립트 블록 최상단에 `Date.now()` 난수가 담긴 캐시 버스터 주석(`// Cache Buster Timestamp: ...`)을 자동으로 결합하도록 빌드 흐름을 설계 및 활용해야 합니다.
+- **도형 텍스트(SHAPE Text) 여백 핏(Fit) & 렌더링 아키텍처 정밀 규격 수칙 (SSOT)**:
+  - **1. 명칭 및 기획 정의**: 우측 사이드바 `SHAPE` 카테고리의 첫 번째 항목인 **`T (Text)` (도형 텍스트)**를 가리키며, `ATOMIC LIBRARY`의 첫 번째 항목인 **`Textbox` (텍스트박스 아톰)**와 엄격하게 구분한다. 내부 클래스명인 `.v4-text-box`와 상관없이 UI 상의 명칭은 반드시 **'도형 텍스트'**로 통일한다.
+  - **2. 핵심 소스코드 수정 위치 (File Map)**:
+    - **[assets/vctrl_text_measurer.js](file:///c:/ai-work/assets/vctrl_text_measurer.js)**: 전략/디스패처(Strategy/Dispatcher) 패턴 기반 컴포넌트 타입 분류기(`getComponentType`), 순수 오프스크린 측정 코어(`measureCellTextDimensions`), 그리고 타입별 100% 독립 전용 처리 엔진(`fitStandaloneTextShape`, `fitTextBox`, `fitShapeText`, `fitDefaultCell`)으로 텍스트 동적 테두리 피팅을 수행하는 핵심 로직 소유 파일.
+    - **[assets/vctrl_iframe_styles.js](file:///c:/ai-work/assets/vctrl_iframe_styles.js)**: 셀 기본 패딩(`padding: 4px !important;`) 및 FLEX 대칭 정렬 CSS 규칙 소유 파일.
+  - **3. 정밀 박스-모델 수치 및 산술 공식 (Exact Math Spec)**:
+    - **기본 차감 픽셀**: `box-sizing: border-box` 스펙 상 `1.6px` 보더(양쪽 3.2px) + `4px` 셀 패딩(양쪽 8.0px) = **`11.2px` 기본 차감**.
+    - **순수 도형 텍스트(`isStandaloneTextShape`) 버퍼 할당**:
+      - `addedW = 12` (가로 좌 6px + 우 6px) / `addedH = 8` (세로 상 4px + 하 4px)
+      - **유효 공간 산식**: `(textW + 12px) - 11.2px = textW + 0.8px` (0.8px 서브픽셀 안전지대 확보 ➔ **텍스트 1줄 유지, 절대 2줄 분리 잘림 없음**).
+      - **시각적 여백**: 상(4.0px), 하(4.0px), 좌(4.4px), 우(4.4px) ➔ **글자에 딱 밀착된 사방 ~4px 1:1 완벽 정대칭 핏 완성**.
+  - **4. 재발 방지를 위한 5대 절대 금기 수칙 (Strict Anti-Patterns)**:
+    - **[금기 1] 템플릿 리터럴 정규식 이중 백슬래시(`\\`) 필수**: `assets/vctrl_text_measurer.js`는 전체가 `window.v4TextMeasurerScript = \`...\``로 감싸져 있으므로 내부 정규식 작성 시 반드시 `\\u200B\\u00A0`, `<\\/span>`, `<br\\s*\\/?>`처럼 이중 백슬래시를 사용해야 한다. 단일 백슬래시 사용 시 iframe script 컴파일 오류(SyntaxError)로 이벤트 핸들러가 증발하여 **오브젝트 선택 불가(클릭 불능)** 버그가 일어난다.
+    - **[금기 2] `!important` 속성의 `removeProperty()` 해제 필수**: `.lf-drag-handle` 등에 `setProperty('display', 'none', 'important')` 조치 후 복원 시 반드시 `removeProperty('display')`를 호출해야 한다. 단순 `style.display = ""`는 `!important`를 지우지 못해 이동 핸들이 영구 증발(선택 불가)하는 치명적 버그가 유발된다.
+    - **[금기 3] `measureContainer` Quill CSS 클래스 상속 및 `display: inline` 필수**: 측정용 `div` 생성 시 `className = 'ql-editor v4-editable-cell'`을 부여하고 `targetDoc.body`에 주입해야 하며, 내부 하위 엘리먼트는 반드시 `display: inline !important`를 유지해야 부분 텍스트 컬러/서식 변경(`span`) 시 공백 폭(Space Width) 소실로 인한 의도치 않은 자동 줄바꿈 오측정 버그를 방지할 수 있다.
+    - **[금기 4] 유니코드 특수 공백 정제 (`Line 123`)**: Quill 에디터가 주입하는 `.ql-cursor` 및 `\u200B`, `\u00A0` 특수 공백은 측정 전 `sanitizeHtml` 정규식으로 100% 정제하여 무효 공백 픽셀로 인한 좌우 여백 비대화 왜곡을 차단한다.
+    - **[금기 5] 거대 단일 if-else 오버라이드 금지 및 전략 패턴(Strategy Pattern) 준수**: 컴포넌트별 피팅 로직 수정 시 하나의 거대 함수에 패치식 `if-else`를 누적하지 말고, `COMP_TYPES` 디스패처를 통해 전용 피터(`fitStandaloneTextShape`, `fitTextBox`, `fitShapeText`, `fitDefaultCell`)로 100% 독립 분리하여 타 컴포넌트 사이드이펙트를 원천 차단한다.
+  - **5. 도형 텍스트 우측 하단 크기 조절 버튼(.lf-resizer) 완전 미노출 규격**:
+    - 도형 텍스트(`.v4-text-shape`, `.v4-text-box`, `.text-marker`)는 폰트 크기 변경에 따른 동적 자동 핏(Fit)을 따르므로 우측 하단의 수동 크기 조절 버튼(`.lf-resizer`)은 완전히 불필요하다.
+    - 이를 위해 `assets/vctrl_iframe_styles.js`에 `.v4-text-shape > .lf-resizer, .v4-text-box > .lf-resizer, .text-marker > .lf-resizer { display: none !important; }` CSS 선언부 및 `vctrl_text_measurer.js` 내의 `fitResult.hideResizer` 핸들러 제어 로직을 통해 리사이저 버튼을 완전히 숨겨야 한다.
 - Use font sizes within the project scale: 18-20px for main titles, 15-16px for section/table headers, 14-15px for body/table cells, 13px for labels/help text, and 12px for tiny markers/tags.
 - Apply `white-space: nowrap;` to dates and short labels that must stay on one line.
 - In polygon/shape text, calculate padding and `line-height` so text remains centered.
