@@ -307,6 +307,12 @@ window.v4DesignSystemScript = `
                 if (selectbox.style.width !== '100%') selectbox.style.width = '100%';
                 if (selectbox.style.height !== '100%') selectbox.style.height = '100%';
                 
+                const header = selectbox.querySelector('.v4-selectbox-header');
+                if (header) {
+                    if (header.style.height !== '30px') header.style.height = '30px';
+                    if (header.style.flexShrink !== '0') header.style.flexShrink = '0';
+                }
+                
                 if (typeof window.updateHandles === 'function') window.updateHandles(c);
             }
         });
