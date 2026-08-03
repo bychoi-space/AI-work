@@ -79,22 +79,47 @@
     "06_Mobile_Design_3_848.html": {
       "title": "06_Mobile_Design_3_848",
       "type": "mobile-ui",
-      "updatedAt": "2026-08-03T02:35:27.712Z",
+      "updatedAt": "2026-08-03T02:43:02.491Z",
       "template": "template_mobile_ui_3.html",
-      "description": [],
+      "description": [
+        {
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
+          "x": 158.8,
+          "y": 72.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
+          "x": 579.8,
+          "y": 72.5,
+          "type": "text",
+          "standardized": true
+        },
+        {
+          "text": "기획전 명칭",
+          "html": "<p>기획전 명칭</p>",
+          "x": 1004.5,
+          "y": 82.7,
+          "type": "text",
+          "standardized": true
+        }
+      ],
       "connectors": [
         {
           "id": "conn_1785724510416",
           "type": "straight",
           "start": {
-            "x": 131,
-            "y": 229.8,
+            "x": 126.5,
+            "y": 182.60005264282245,
             "targetId": null,
             "side": null
           },
           "end": {
-            "x": 171,
-            "y": 229.8,
+            "x": 166.5,
+            "y": 182.60005264282245,
             "targetId": null,
             "side": null
           },
@@ -111,5 +136,5 @@
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
   "jira": "LFML-145305",
   "themeIndex": 5,
-  "updated": "2026-08-03 11:35:27"
+  "updated": "2026-08-03 11:43:02"
 }
