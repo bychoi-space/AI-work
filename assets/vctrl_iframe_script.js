@@ -1143,10 +1143,19 @@ window.v4Script = `
             shape.setAttribute('data-direction', dir);
 
             if (shape.classList.contains('v4-shape-arrow') || shape.id === 'v4-shape-arrow') {
+                const svg = shape.querySelector('svg');
+                if (svg && svg.getAttribute('preserveAspectRatio') !== 'none') {
+                    svg.setAttribute('preserveAspectRatio', 'none');
+                }
                 const path = shape.querySelector('.v4-arrow-path');
                 if (path) {
-                    // Standard Up path for uniform CSS transform rotation without double-rotation conflict
-                    path.setAttribute('d', 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z');
+                    const PATHS = {
+                        right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
+                        left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
+                        up: 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z',
+                        down: 'M 30,0 L 30,60 L 10,60 L 50,100 L 90,60 L 70,60 L 70,0 Z'
+                    };
+                    path.setAttribute('d', PATHS[dir] || PATHS.right);
                 }
             } else if (shape.classList.contains('v4-shape-triangle') || shape.id === 'v4-shape-triangle') {
                 shape.setAttribute('data-direction', dir);

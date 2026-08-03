@@ -756,10 +756,21 @@ window.v4DesignSystemScript = `
             if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle') || s.classList.contains('v4-shape-arrow')) {
                 s.style.setProperty('border-width', '0px', 'important');
                 if (s.classList.contains('v4-shape-arrow')) {
+                    const svg = s.querySelector('svg');
+                    if (svg && svg.getAttribute('preserveAspectRatio') !== 'none') {
+                        svg.setAttribute('preserveAspectRatio', 'none');
+                    }
+                    const dir = s.getAttribute('data-direction') || s.getAttribute('data-arrow-dir') || 'right';
+                    const PATHS = {
+                        right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
+                        left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
+                        up: 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z',
+                        down: 'M 30,0 L 30,60 L 10,60 L 50,100 L 90,60 L 70,60 L 70,0 Z'
+                    };
+                    const targetD = PATHS[dir] || PATHS.right;
                     const path = s.querySelector('.v4-arrow-path');
-                    const stdPath = 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z';
-                    if (path && path.getAttribute('d') !== stdPath) {
-                        path.setAttribute('d', stdPath);
+                    if (path && path.getAttribute('d') !== targetD) {
+                        path.setAttribute('d', targetD);
                     }
                     if (!s.getAttribute('data-direction') && !s.getAttribute('data-arrow-dir')) {
                         s.setAttribute('data-direction', 'right');
