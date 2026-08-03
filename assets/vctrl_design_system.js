@@ -752,24 +752,65 @@ window.v4DesignSystemScript = `
 
 
 
+        window.buildArrowPath = function(width, height, dir) {
+            const w = Math.max(20, parseFloat(width) || 100);
+            const h = Math.max(20, parseFloat(height) || 100);
+            const direction = dir || 'right';
+
+            if (direction === 'right') {
+                const stemTop = h * 0.3;
+                const stemBot = h * 0.7;
+                const headLen = Math.min(w * 0.45, Math.max(h * 0.75, 20));
+                const headX = w - headLen;
+                return 'M 0,' + stemTop + ' L ' + headX + ',' + stemTop + ' L ' + headX + ',0 L ' + w + ',' + (h / 2) + ' L ' + headX + ',' + h + ' L ' + headX + ',' + stemBot + ' L 0,' + stemBot + ' Z';
+            } 
+            else if (direction === 'left') {
+                const stemTop = h * 0.3;
+                const stemBot = h * 0.7;
+                const headLen = Math.min(w * 0.45, Math.max(h * 0.75, 20));
+                const headX = headLen;
+                return 'M ' + w + ',' + stemTop + ' L ' + headX + ',' + stemTop + ' L ' + headX + ',0 L 0,' + (h / 2) + ' L ' + headX + ',' + h + ' L ' + headX + ',' + stemBot + ' L ' + w + ',' + stemBot + ' Z';
+            } 
+            else if (direction === 'up') {
+                const stemLeft = w * 0.3;
+                const stemRight = w * 0.7;
+                const headLen = Math.min(h * 0.45, Math.max(w * 0.75, 20));
+                const headY = headLen;
+                return 'M ' + stemLeft + ',' + h + ' L ' + stemLeft + ',' + headY + ' L 0,' + headY + ' L ' + (w / 2) + ',0 L ' + w + ',' + headY + ' L ' + stemRight + ',' + headY + ' L ' + stemRight + ',' + h + ' Z';
+            } 
+            else if (direction === 'down') {
+                const stemLeft = w * 0.3;
+                const stemRight = w * 0.7;
+                const headLen = Math.min(h * 0.45, Math.max(w * 0.75, 20));
+                const headY = h - headLen;
+                return 'M ' + stemLeft + ',0 L ' + stemLeft + ',' + headY + ' L 0,' + headY + ' L ' + (w / 2) + ',' + h + ' L ' + w + ',' + headY + ' L ' + stemRight + ',' + headY + ' L ' + stemRight + ',0 Z';
+            }
+            return '';
+        };
+
         document.querySelectorAll('.v4-shape').forEach(s => {
             if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle') || s.classList.contains('v4-shape-arrow')) {
                 s.style.setProperty('border-width', '0px', 'important');
                 if (s.classList.contains('v4-shape-arrow')) {
                     const svg = s.querySelector('svg');
-                    if (svg && svg.getAttribute('preserveAspectRatio') !== 'none') {
-                        svg.setAttribute('preserveAspectRatio', 'none');
+                    const comp = s.closest('.lf-component') || s;
+                    const w = parseFloat(comp.style.width) || comp.offsetWidth || 100;
+                    const h = parseFloat(comp.style.height) || comp.offsetHeight || 100;
+
+                    if (svg) {
+                        const targetViewBox = '0 0 ' + w + ' ' + h;
+                        if (svg.getAttribute('viewBox') !== targetViewBox) {
+                            svg.setAttribute('viewBox', targetViewBox);
+                        }
+                        if (svg.getAttribute('preserveAspectRatio') !== 'none') {
+                            svg.setAttribute('preserveAspectRatio', 'none');
+                        }
                     }
+
                     const dir = s.getAttribute('data-direction') || s.getAttribute('data-arrow-dir') || 'right';
-                    const PATHS = {
-                        right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
-                        left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
-                        up: 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z',
-                        down: 'M 30,0 L 30,60 L 10,60 L 50,100 L 90,60 L 70,60 L 70,0 Z'
-                    };
-                    const targetD = PATHS[dir] || PATHS.right;
+                    const targetD = window.buildArrowPath(w, h, dir);
                     const path = s.querySelector('.v4-arrow-path');
-                    if (path && path.getAttribute('d') !== targetD) {
+                    if (path && targetD && path.getAttribute('d') !== targetD) {
                         path.setAttribute('d', targetD);
                     }
                     if (!s.getAttribute('data-direction') && !s.getAttribute('data-arrow-dir')) {
