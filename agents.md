@@ -1,4 +1,4 @@
-# LF Editor Studio를 위한 Antigravity / Gemini 에이전트 제약 조건
+# bychoi workspace를 위한 Antigravity / Gemini 에이전트 제약 조건
 
 ## 🤖 Gemini 3.6 Flash / Antigravity 에이전트 가이드라인
 - **엄격한 규칙 이행**: 사용자가 지정한 아키텍처 규칙, SSOT(Single Source of Truth), 인코딩 및 마스킹 표준을 예외 없이 100% 준수해야 합니다.
