@@ -108,6 +108,12 @@
         }
       ],
       "connectors": []
+    },
+    "06_Mobile_Design_3_982.html": {
+      "title": "06_Mobile_Design_3_982",
+      "type": "mobile-ui",
+      "updatedAt": "2026-08-03T09:02:04.074Z",
+      "template": "template_mobile_ui_3.html"
     }
   },
   "assignee": "최범열",
