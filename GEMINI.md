@@ -1,6 +1,6 @@
-# LF Editor Studio Antigravity/Gemini 지침 어댑터
+# bychoi workspace Antigravity/Gemini 지침 어댑터
 
-이 파일은 Antigravity 및 Gemini 3.6 Flash 모델 환경에서 LF Editor Studio용 지침 체계를 일관된 기준으로 참조하기 위한 어댑터입니다. 공통 원칙과 세부 규칙은 아래 지정된 파일에서 통합 관리됩니다.
+이 파일은 Antigravity 및 Gemini 3.6 Flash 모델 환경에서 bychoi workspace용 지침 체계를 일관된 기준으로 참조하기 위한 어댑터입니다. 공통 원칙과 세부 규칙은 아래 지정된 파일에서 통합 관리됩니다.
 
 ## 📌 해석 및 적용 규칙 (Precedence Protocol)
 1. **단일 진실 공급원 (SSOT)**: 공통 시스템 룰은 `@./AGENTS.md`에서만 정의하며, 각 기능별 세부 지침은 각 스킬의 `SKILL.md`에서 관리합니다.
