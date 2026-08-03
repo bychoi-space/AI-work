@@ -904,7 +904,7 @@
             countInput.oninput = () => {
                 let count = parseInt(countInput.value);
                 if (isNaN(count) || count < 1) count = 1;
-                if (count > 10) count = 10;
+                if (count > 20) count = 20;
                 
                 const currentInputs = document.querySelectorAll('.selectbox-option-input');
                 let currentOptions = Array.from(currentInputs).map(inp => inp.value);
