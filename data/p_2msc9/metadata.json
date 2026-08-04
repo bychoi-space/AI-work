@@ -149,6 +149,12 @@
       "connectors": [],
       "defaultTab": "editor",
       "screenDesc": "[object Object],[object Object],[object Object]"
+    },
+    "07_PC_Design_250.html": {
+      "title": "07_PC_Design_250",
+      "type": "default",
+      "updatedAt": "2026-08-04T08:42:02.703Z",
+      "template": "template_pc_ui.html"
     }
   },
   "assignee": "최범열",
