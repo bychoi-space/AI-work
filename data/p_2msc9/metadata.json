@@ -13,9 +13,9 @@
       "screenDesc": ""
     },
     "06_Mobile_Design_2_792.html": {
-      "title": "06_Mobile_Design_2_792",
+      "title": "화면설계 기본",
       "type": "mobile-ui",
-      "updatedAt": "2026-08-04T08:06:01.553Z",
+      "updatedAt": "2026-08-04T08:26:41.671Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -76,7 +76,9 @@
             "strokeWidth": 2
           }
         }
-      ]
+      ],
+      "defaultTab": "editor",
+      "screenDesc": "[object Object],[object Object]"
     },
     "06_Mobile_Design_3_848.html": {
       "title": "06_Mobile_Design_3_848",
