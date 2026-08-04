@@ -101,32 +101,29 @@ th.v4-editable-cell:focus, td.v4-editable-cell:focus { outline-offset: -2px !imp
 .lf-rv-my { background-position: 100% 0% !important; }
 .v4-logo-img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; display: block; }
 img.lf-icon { width: 100%; height: 100%; padding: 8px; box-sizing: border-box; object-fit: contain; }
-.v4-shape-triangle, .v4-shape-arrow, .v4-directional-shape { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: center center !important; }
+.v4-shape-triangle, .v4-directional-shape { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: center center !important; }
 .v4-shape-triangle { clip-path: none !important; border: none !important; }
-.v4-shape-triangle[data-direction="up"], .v4-shape-arrow[data-direction="up"], .v4-shape-arrow[data-arrow-dir="up"], .v4-directional-shape[data-direction="up"] { transform: rotate(0deg) !important; }
-.v4-shape-triangle[data-direction="right"], .v4-shape-arrow[data-direction="right"], .v4-shape-arrow[data-arrow-dir="right"], .v4-directional-shape[data-direction="right"] { transform: rotate(90deg) !important; }
-.v4-shape-triangle[data-direction="down"], .v4-shape-arrow[data-direction="down"], .v4-shape-arrow[data-arrow-dir="down"], .v4-directional-shape[data-direction="down"] { transform: rotate(180deg) !important; }
-.v4-shape-triangle[data-direction="left"], .v4-shape-arrow[data-direction="left"], .v4-shape-arrow[data-arrow-dir="left"], .v4-directional-shape[data-direction="left"] { transform: rotate(270deg) !important; }
+.v4-shape-arrow { transform: none !important; border: none !important; width: 100% !important; height: 100% !important; }
+.v4-shape-arrow svg { width: 100% !important; height: 100% !important; display: block !important; }
+.v4-shape-triangle[data-direction="up"], .v4-directional-shape[data-direction="up"] { transform: rotate(0deg) !important; }
+.v4-shape-triangle[data-direction="right"], .v4-directional-shape[data-direction="right"] { transform: rotate(90deg) !important; }
+.v4-shape-triangle[data-direction="down"], .v4-directional-shape[data-direction="down"] { transform: rotate(180deg) !important; }
+.v4-shape-triangle[data-direction="left"], .v4-directional-shape[data-direction="left"] { transform: rotate(270deg) !important; }
 
 /* Counter-rotate text elements to keep them horizontal and clean */
 .v4-shape-triangle .v4-editable-cell, .v4-shape-triangle .v4-shape-text-overlay,
-.v4-shape-arrow .v4-editable-cell, .v4-shape-arrow .v4-shape-text-overlay,
 .v4-directional-shape .v4-editable-cell, .v4-directional-shape .v4-shape-text-overlay { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: center center !important; }
 
 .v4-shape-triangle[data-direction="up"] .v4-editable-cell, .v4-shape-triangle[data-direction="up"] .v4-shape-text-overlay,
-.v4-shape-arrow[data-direction="up"] .v4-editable-cell, .v4-shape-arrow[data-direction="up"] .v4-shape-text-overlay,
 .v4-directional-shape[data-direction="up"] .v4-editable-cell, .v4-directional-shape[data-direction="up"] .v4-shape-text-overlay { transform: rotate(0deg) !important; }
 
 .v4-shape-triangle[data-direction="right"] .v4-editable-cell, .v4-shape-triangle[data-direction="right"] .v4-shape-text-overlay,
-.v4-shape-arrow[data-direction="right"] .v4-editable-cell, .v4-shape-arrow[data-direction="right"] .v4-shape-text-overlay,
 .v4-directional-shape[data-direction="right"] .v4-editable-cell, .v4-directional-shape[data-direction="right"] .v4-shape-text-overlay { transform: rotate(-90deg) !important; }
 
 .v4-shape-triangle[data-direction="down"] .v4-editable-cell, .v4-shape-triangle[data-direction="down"] .v4-shape-text-overlay,
-.v4-shape-arrow[data-direction="down"] .v4-editable-cell, .v4-shape-arrow[data-direction="down"] .v4-shape-text-overlay,
 .v4-directional-shape[data-direction="down"] .v4-editable-cell, .v4-directional-shape[data-direction="down"] .v4-shape-text-overlay { transform: rotate(-180deg) !important; }
 
 .v4-shape-triangle[data-direction="left"] .v4-editable-cell, .v4-shape-triangle[data-direction="left"] .v4-shape-text-overlay,
-.v4-shape-arrow[data-direction="left"] .v4-editable-cell, .v4-shape-arrow[data-direction="left"] .v4-shape-text-overlay,
 .v4-directional-shape[data-direction="left"] .v4-editable-cell, .v4-directional-shape[data-direction="left"] .v4-shape-text-overlay { transform: rotate(-270deg) !important; }
 .v4-shape-diamond { border: none !important; }
 .v4-shape-wave { border: none !important; }
@@ -433,8 +430,14 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
                     <polygon points="0,6 45,2 90,6 135,2 180,6 225,2 270,6 315,2 360,6 360,16 315,12 270,16 225,12 180,16 135,12 90,16 45,12 0,16" style="fill: #ffedd5; stroke: #fb923c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" stroke-width="1.6"></polygon>
                 </svg>
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2px 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; z-index: 2; position: relative; color: #0f172a;"></div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><script id="v4-inlined-script">
-// Cache Buster Timestamp: 1785719061616
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 577px; left: 955.7px; z-index: 1000; transform: none; width: 165px; height: 180px;" id="v4-comp-1785725146766" data-resized="true">
+            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid rgb(150, 150, 150); display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box; background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)), linear-gradient(-45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)) !important; background-size: 12px 12px !important; background-color: rgb(255, 255, 255) !important;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 577px; left: 780.7px; z-index: 1000; transform: none; width: 165px; height: 180px;" id="v4-comp-1785724873933" data-resized="true">
+            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid rgb(150, 150, 150); display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box; background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)), linear-gradient(-45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)) !important; background-size: 12px 12px !important; background-color: rgb(255, 255, 255) !important;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785724286814" class="lf-component v4-text-shape" style="position: absolute; top: 757px; left: 780.7px; z-index: 1000; transform: none; width: 96px; height: 25px; --v4-text-adjust-y: 0px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 4px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><strong style="font-size: 14px;">Brand Name</strong></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785724365236" class="lf-component v4-text-shape" style="position: absolute; top: 757px; left: 955.7px; z-index: 1000; transform: none; width: 96px; height: 25px; --v4-text-adjust-y: 0px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 4px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><strong style="font-size: 14px;">Brand Name</strong></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><script id="v4-inlined-script">
+// Cache Buster Timestamp: 1785828623705
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -1438,21 +1441,9 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
     // Strategy 3-C: Shape-Embedded Text (.v4-shape with text)
     const fitShapeText = (c, measured, origW, origH) => {
-        const addedW = 24;
-        const addedH = 16;
-        const targetW = measured.textW + addedW;
-        const targetH = measured.lineCount > 1 
-            ? (measured.fsPx * 1.2 * measured.lineCount) + addedH 
-            : measured.textH + addedH;
-
-        const currentW = parseFloat(origW) || c.offsetWidth || 120;
-        const currentH = parseFloat(origH) || c.offsetHeight || 36;
-        
-        // Prevent shrinking below text requirements while maintaining shape bounds
-        const newW = Math.max(currentW, targetW) + 'px';
-        const newH = Math.max(currentH, targetH, 36) + 'px';
-        if (origW !== newW) c.style.width = newW;
-        if (origH !== newH) c.style.height = newH;
+        // Preserve user-defined shape dimensions; do NOT auto-expand/shrink shape size on text edit
+        if (origW && c.style.width !== origW) c.style.width = origW;
+        if (origH && c.style.height !== origH) c.style.height = origH;
 
         return { hideResizer: false };
     };
@@ -2552,9 +2543,72 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
 
 
+        window.buildArrowPath = function(width, height, dir) {
+            const w = Math.max(20, parseFloat(width) || 100);
+            const h = Math.max(20, parseFloat(height) || 100);
+            const direction = dir || 'right';
+
+            if (direction === 'right') {
+                const stemTop = h * 0.3;
+                const stemBot = h * 0.7;
+                const headLen = Math.min(w * 0.45, Math.max(h * 0.75, 20));
+                const headX = w - headLen;
+                return 'M 0,' + stemTop + ' L ' + headX + ',' + stemTop + ' L ' + headX + ',0 L ' + w + ',' + (h / 2) + ' L ' + headX + ',' + h + ' L ' + headX + ',' + stemBot + ' L 0,' + stemBot + ' Z';
+            } 
+            else if (direction === 'left') {
+                const stemTop = h * 0.3;
+                const stemBot = h * 0.7;
+                const headLen = Math.min(w * 0.45, Math.max(h * 0.75, 20));
+                const headX = headLen;
+                return 'M ' + w + ',' + stemTop + ' L ' + headX + ',' + stemTop + ' L ' + headX + ',0 L 0,' + (h / 2) + ' L ' + headX + ',' + h + ' L ' + headX + ',' + stemBot + ' L ' + w + ',' + stemBot + ' Z';
+            } 
+            else if (direction === 'up') {
+                const stemLeft = w * 0.3;
+                const stemRight = w * 0.7;
+                const headLen = Math.min(h * 0.45, Math.max(w * 0.75, 20));
+                const headY = headLen;
+                return 'M ' + stemLeft + ',' + h + ' L ' + stemLeft + ',' + headY + ' L 0,' + headY + ' L ' + (w / 2) + ',0 L ' + w + ',' + headY + ' L ' + stemRight + ',' + headY + ' L ' + stemRight + ',' + h + ' Z';
+            } 
+            else if (direction === 'down') {
+                const stemLeft = w * 0.3;
+                const stemRight = w * 0.7;
+                const headLen = Math.min(h * 0.45, Math.max(w * 0.75, 20));
+                const headY = h - headLen;
+                return 'M ' + stemLeft + ',0 L ' + stemLeft + ',' + headY + ' L 0,' + headY + ' L ' + (w / 2) + ',' + h + ' L ' + w + ',' + headY + ' L ' + stemRight + ',' + headY + ' L ' + stemRight + ',0 Z';
+            }
+            return '';
+        };
+
         document.querySelectorAll('.v4-shape').forEach(s => {
             if (s.classList.contains('v4-shape-diamond') || s.classList.contains('v4-shape-triangle') || s.classList.contains('v4-shape-arrow')) {
                 s.style.setProperty('border-width', '0px', 'important');
+                if (s.classList.contains('v4-shape-arrow')) {
+                    const svg = s.querySelector('svg');
+                    const comp = s.closest('.lf-component') || s;
+                    const w = parseFloat(comp.style.width) || comp.offsetWidth || 100;
+                    const h = parseFloat(comp.style.height) || comp.offsetHeight || 100;
+
+                    if (svg) {
+                        const targetViewBox = '0 0 ' + w + ' ' + h;
+                        if (svg.getAttribute('viewBox') !== targetViewBox) {
+                            svg.setAttribute('viewBox', targetViewBox);
+                        }
+                        if (svg.getAttribute('preserveAspectRatio') !== 'none') {
+                            svg.setAttribute('preserveAspectRatio', 'none');
+                        }
+                    }
+
+                    const dir = s.getAttribute('data-direction') || s.getAttribute('data-arrow-dir') || 'right';
+                    const targetD = window.buildArrowPath(w, h, dir);
+                    const path = s.querySelector('.v4-arrow-path');
+                    if (path && targetD && path.getAttribute('d') !== targetD) {
+                        path.setAttribute('d', targetD);
+                    }
+                    if (!s.getAttribute('data-direction') && !s.getAttribute('data-arrow-dir')) {
+                        s.setAttribute('data-direction', 'right');
+                        s.setAttribute('data-arrow-dir', 'right');
+                    }
+                }
                 return;
             }
             if (s.style.borderWidth !== '1.6px') s.style.setProperty('border-width', '1.6px', 'important');
@@ -2716,7 +2770,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 (function() {
     let v4Clipboard = [];
     let isArrowMoving = false;
-    
+    let isPastingLocked = false;
 
     window.reorderAllPins = () => {
         const pins = document.querySelectorAll('.text-marker, .pin-marker');
@@ -2819,16 +2873,24 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         document.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
         const host = document.body;
         const newSelectedIds = [];
+        const selectedIdsIsGroupMap = {};
         const offset = 15;
-        clipboardData.forEach(item => {
+        const nowStamp = Date.now();
+
+        clipboardData.forEach((item, idx) => {
             const v = document.createElement('div');
-            const newId = item.isPinMarker ? ('v4-pin-' + Date.now() + Math.floor(Math.random() * 1000)) : ('v4-comp-' + Date.now() + Math.floor(Math.random() * 1000));
+            const randSuffix = Math.floor(Math.random() * 1000000) + '_' + idx;
+            const newId = item.isPinMarker ? ('v4-pin-' + nowStamp + '_' + randSuffix) : ('v4-comp-' + nowStamp + '_' + randSuffix);
             v.id = newId;
             v.className = item.className + ' selected';
             v.style.cssText = item.styleCssText;
             v.style.left = (item.left + offset) + 'px';
             v.style.top = (item.top + offset) + 'px';
             v.innerHTML = item.html;
+
+            if (item.isGroup) {
+                selectedIdsIsGroupMap[newId] = true;
+            }
 
             // Restore all cloned data attributes to the new container
             if (item.attributes) {
@@ -2842,13 +2904,13 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             // Regenerate IDs of all nested child components to prevent duplicate ID issues
             const idMap = {};
             const childrenWithId = v.querySelectorAll('[id]');
-            childrenWithId.forEach(child => {
+            childrenWithId.forEach((child, cIdx) => {
                 const oldId = child.id;
                 let prefix = 'v4-comp-';
                 if (child.classList.contains('pin-marker') || oldId.startsWith('v4-pin-')) {
                     prefix = 'v4-pin-';
                 }
-                const uniqueSuffix = Date.now() + Math.floor(Math.random() * 1000000) + Math.floor(Math.random() * 1000);
+                const uniqueSuffix = nowStamp + '_' + Math.floor(Math.random() * 1000000) + '_' + cIdx;
                 const newChildId = prefix + uniqueSuffix;
                 child.id = newChildId;
                 idMap[oldId] = newChildId;
@@ -2884,18 +2946,25 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
         if (newSelectedIds.length > 0) {
             const firstNewEl = document.getElementById(newSelectedIds[0]);
-            if (firstNewEl && typeof window._getCompStyles === 'function') {
-                notifyParent({
-                    type: "LF_COMP_SELECTED",
-                    ...window._getCompStyles(firstNewEl)
-                });
-            }
+            const firstStyles = (firstNewEl && typeof window._getCompStyles === 'function') ? window._getCompStyles(firstNewEl) : {};
+            notifyParent({
+                type: "LF_PASTE_COMPLETED",
+                ids: newSelectedIds,
+                selectedIdsIsGroupMap: selectedIdsIsGroupMap,
+                firstCompStyles: firstStyles
+            });
         }
         markDirty();
         console.log("[Clipboard Debug] Pasted " + clipboardData.length + " object(s) successfully.");
     };
 
     window.pasteCopiedObjects = () => {
+        if (isPastingLocked) {
+            console.log("[Clipboard Debug] Paste call throttled to prevent duplicate execution.");
+            return;
+        }
+        isPastingLocked = true;
+        setTimeout(() => { isPastingLocked = false; }, 250);
         console.log("[Clipboard Debug] pasteCopiedObjects calling LF_REQUEST_CLIPBOARD to parent.");
         notifyParent({ type: 'LF_REQUEST_CLIPBOARD' });
     };
@@ -4810,8 +4879,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             x: parseFloat(c.style.left) || 0,
             y: parseFloat(c.style.top) || 0,
             shapeType: shape ? (shape.classList.contains('v4-shape-pattern-grid') ? 'pattern' : (shape.classList.contains('v4-shape-rect') ? 'rect' : (shape.classList.contains('v4-shape-circle') ? 'circle' : (shape.classList.contains('v4-shape-triangle') ? 'triangle' : (shape.classList.contains('v4-shape-diamond') ? 'diamond' : (shape.classList.contains('v4-shape-arrow') ? 'arrow' : '')))))) : '',
-            arrowDir: shape ? (shape.getAttribute('data-arrow-dir') || shape.getAttribute('data-direction') || 'up') : '',
-            direction: shape ? (shape.getAttribute('data-direction') || shape.getAttribute('data-arrow-dir') || 'up') : '',
+            arrowDir: shape ? (shape.getAttribute('data-arrow-dir') || shape.getAttribute('data-direction') || 'right') : '',
+            direction: shape ? (shape.getAttribute('data-direction') || shape.getAttribute('data-arrow-dir') || 'right') : '',
             patternType: shape && shape.classList.contains('v4-shape-pattern-grid') ? (shape.getAttribute('data-pattern-type') || 'grid') : '',
             isTable: !!table && !isGrid,
             isShape: !!shape,
@@ -4946,6 +5015,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     });
 
     let isMarquee = false;
+    let isConnectorDragging = false;
     let groupChildrenStart = null;
     document.addEventListener('mousedown', e => {
         if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.header-metadata')) return;
@@ -5061,6 +5131,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
     let rafId = null;
     document.addEventListener('mousemove', e => {
+        if (isConnectorDragging) {
+            notifyParent({ type: 'LF_CONNECTOR_HANDLE_MOVE', clientX: e.clientX, clientY: e.clientY });
+            return;
+        }
         if (isDraggingLine && activeLineId) {
             const scale = (window.parent?.state?.transform?.scale) || 1;
             const dx = (e.clientX - startX) / scale;
@@ -5098,18 +5172,21 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
     document.addEventListener('mouseup', () => { 
         document.querySelectorAll('.lf-component').forEach(comp => comp.classList.remove('near-connector'));
+        if (isConnectorDragging) {
+            isConnectorDragging = false;
+            document.body.classList.remove('drawing-line-active');
+            notifyParent({ type: 'LF_CONNECTOR_HANDLE_UP' });
+        }
         if (isDraggingLine) {
             isDraggingLine = false;
             startLineCoords = null;
             activeLineId = null;
             notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
             markDirty();
-            return;
         }
 
         if (window.V4PortConnectorEngine && window.V4PortConnectorEngine.isDrawingConnector) {
             window.V4PortConnectorEngine.handleMouseUp();
-            return;
         }
 
         if (isMarquee) {
@@ -5643,20 +5720,22 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             if (!shape) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
 
-            const dir = d.direction || 'up';
+            const dir = d.direction || 'right';
             shape.setAttribute('data-arrow-dir', dir);
             shape.setAttribute('data-direction', dir);
 
             if (shape.classList.contains('v4-shape-arrow') || shape.id === 'v4-shape-arrow') {
+                const comp = shape.closest('.lf-component') || shape;
+                const w = parseFloat(comp.style.width) || comp.offsetWidth || 100;
+                const h = parseFloat(comp.style.height) || comp.offsetHeight || 100;
+                const svg = shape.querySelector('svg');
+                if (svg) {
+                    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+                    svg.setAttribute('preserveAspectRatio', 'none');
+                }
                 const path = shape.querySelector('.v4-arrow-path');
-                if (path) {
-                    const PATHS = {
-                        right: 'M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z',
-                        left: 'M 100,30 L 40,30 L 40,10 L 0,50 L 40,90 L 40,70 L 100,70 Z',
-                        up: 'M 30,100 L 30,40 L 10,40 L 50,0 L 90,40 L 70,40 L 70,100 Z',
-                        down: 'M 30,0 L 30,60 L 10,60 L 50,100 L 90,60 L 70,60 L 70,0 Z'
-                    };
-                    path.setAttribute('d', PATHS[dir] || PATHS.right);
+                if (path && typeof window.buildArrowPath === 'function') {
+                    path.setAttribute('d', window.buildArrowPath(w, h, dir));
                 }
             } else if (shape.classList.contains('v4-shape-triangle') || shape.id === 'v4-shape-triangle') {
                 shape.setAttribute('data-direction', dir);
@@ -7691,10 +7770,5 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     });
 })();
 
-</script><div class="lf-component" style="position: absolute; top: 577px; left: 955.7px; z-index: 1000; transform: none; width: 165px; height: 180px;" id="v4-comp-1785725146766" data-resized="true">
-            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid rgb(150, 150, 150); display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box; background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)), linear-gradient(-45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)) !important; background-size: 12px 12px !important; background-color: rgb(255, 255, 255) !important;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 577px; left: 780.7px; z-index: 1000; transform: none; width: 165px; height: 180px;" id="v4-comp-1785724873933" data-resized="true">
-            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; border: 1.6px solid rgb(150, 150, 150); display: flex; align-items: center; justify-content: center; color: rgb(15, 23, 42); overflow: hidden; box-sizing: border-box; background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)), linear-gradient(-45deg, rgba(0, 0, 0, 0.08) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.08) 75%, rgba(0, 0, 0, 0.08)) !important; background-size: 12px 12px !important; background-color: rgb(255, 255, 255) !important;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785724286814" class="lf-component v4-text-shape" style="position: absolute; top: 757px; left: 780.7px; z-index: 1000; transform: none; width: 96px; height: 25px; --v4-text-adjust-y: 0px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 4px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><strong style="font-size: 14px;">Brand Name</strong></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785724365236" class="lf-component v4-text-shape" style="position: absolute; top: 757px; left: 955.7px; z-index: 1000; transform: none; width: 96px; height: 25px; --v4-text-adjust-y: 0px; min-width: unset !important; min-height: unset !important;"><div class="v4-editable-cell" contenteditable="true" style="outline: none; color: var(--v4-text-color, #000000); padding: 4px !important; display: block; text-align: left; width: 100%; height: 100%;"><p><strong style="font-size: 14px;">Brand Name</strong></p></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></body></html>
+</script>
+<div id="v4-comp-1785828624760_197936_0" class="lf-component" style="position: absolute; top: 366.8px; left: 369.5px; z-index: 1000; transform: none; width: 30px; height: 30px; color: rgb(0, 0, 0);" data-resized="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 100%; height: 100%; padding: 8px; box-sizing: border-box; background-image: none !important; color: rgb(255, 255, 255); stroke: rgb(255, 255, 255);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke-width="1.6" style="stroke-width: 1.6; vector-effect: non-scaling-stroke;"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></body></html>
