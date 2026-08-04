@@ -81,9 +81,9 @@
       "screenDesc": "[object Object],[object Object]"
     },
     "06_Mobile_Design_3_848.html": {
-      "title": "06_Mobile_Design_3_848",
+      "title": "화면설계 쿠폰UI",
       "type": "mobile-ui",
-      "updatedAt": "2026-08-03T09:14:38.121Z",
+      "updatedAt": "2026-08-04T08:27:01.249Z",
       "template": "template_mobile_ui_3.html",
       "description": [
         {
@@ -111,7 +111,9 @@
           "standardized": true
         }
       ],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": "[object Object],[object Object],[object Object]"
     },
     "06_Mobile_Design_3_982.html": {
       "title": "06_Mobile_Design_3_982",
