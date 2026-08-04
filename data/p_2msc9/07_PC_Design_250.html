@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>PC UI Chrome - [기획전] 선착순쿠폰 - 상품카드 / 탭쿠폰</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        :root { --v4-primary: #6366f1; --v4-bg: #1e293b; --v4-text: #f8fafc; }
+        body { margin: 0; padding: 0; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        .page { width: 1440px; height: 900px; position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .chrome-browser { width: 1440px; height: 900px; background: #ffffff; display: flex; flex-direction: column; border: 1.6px solid rgba(0, 0, 0, 0.12) !important; position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        .chrome-header { background: #dee1e6; padding: 8px 8px 0 8px; display: flex; flex-direction: column; gap: 6px; border-bottom: 1.6px solid #cbcbd0 !important; pointer-events: auto; }
+        .chrome-top-bar { display: flex; align-items: center; gap: 12px; }
+        .chrome-dots { display: flex; gap: 8px; margin-left: 8px; }
+        .chrome-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .chrome-dot.red { background: #ff5f56; }
+        .chrome-dot.yellow { background: #ffbd2e; }
+        .chrome-dot.green { background: #27c93f; }
+        .chrome-tabs { display: flex; align-items: flex-end; margin-left: 16px; }
+        .chrome-tab { background: #ffffff; border-radius: 8px 8px 0 0; padding: 6px 16px; font-size: 11px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 8px; height: 28px; box-sizing: border-box; }
+        .chrome-nav-bar { background: #ffffff; padding: 6px 12px; display: flex; align-items: center; gap: 12px; border-bottom: 1.6px solid #e5e7eb !important; pointer-events: auto; }
+        .chrome-url-bar { flex: 1; background: #f1f3f4; border-radius: 14px; height: 28px; display: flex; align-items: center; padding: 0 12px; font-size: 12px; color: #5f6368; gap: 8px; }
+        .chrome-content-area { flex: 1; background: #ffffff; position: relative; }
+        .lf-component { position: absolute !important; box-sizing: border-box !important; z-index: 500; }
+    </style>
+</head>
+<body>
+    <div class="page" id="canvas">
+        <div class="chrome-browser">
+            <div class="chrome-header">
+                <div class="chrome-top-bar">
+                    <div class="chrome-dots"><div class="chrome-dot red"></div><div class="chrome-dot yellow"></div><div class="chrome-dot green"></div></div>
+                    <div class="chrome-tabs">
+                        <div class="chrome-tab"><span class="material-icons-outlined" style="font-size: 14px; color: #6366f1;">shopping_bag</span><span>LFmall | Premium Design</span></div>
+                    </div>
+                </div>
+                <div class="chrome-nav-bar">
+                    <span class="material-icons-outlined" style="font-size: 18px; color: #5f6368;">arrow_back</span>
+                    <span class="material-icons-outlined" style="font-size: 18px; color: #5f6368;">arrow_forward</span>
+                    <span class="material-icons-outlined" style="font-size: 18px; color: #5f6368;">refresh</span>
+                    <div class="chrome-url-bar"><span class="material-icons-outlined" style="font-size: 14px; color: #10b981;">lock</span><span>https://www.lfmall.co.kr</span></div>
+                </div>
+            </div>
+            <div class="chrome-content-area"></div>
+        </div>
+    </div>
+</body>
+</html>
