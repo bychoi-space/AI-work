@@ -116,9 +116,9 @@
       "screenDesc": "[object Object],[object Object],[object Object]"
     },
     "06_Mobile_Design_3_982.html": {
-      "title": "06_Mobile_Design_3_982",
+      "title": "화면설계 상품UI",
       "type": "mobile-ui",
-      "updatedAt": "2026-08-04T08:01:53.466Z",
+      "updatedAt": "2026-08-04T08:41:36.381Z",
       "template": "template_mobile_ui_3.html",
       "description": [
         {
@@ -146,7 +146,9 @@
           "standardized": true
         }
       ],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": "[object Object],[object Object],[object Object]"
     }
   },
   "assignee": "최범열",
