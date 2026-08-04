@@ -1,5 +1,14 @@
 [
   {
+    "date": "2026-08-04 16:39:15",
+    "file": "06_Mobile_Design_3_848.html",
+    "version": "0.1",
+    "assignee": "최범열",
+    "developer": "장성우",
+    "jira": "LFML-145305",
+    "message": "Front 화면 초안 완료"
+  },
+  {
     "version": "0.1",
     "date": "2026-08-04 16:36:52",
     "message": "프로젝트 최초 생성",
