@@ -15,7 +15,7 @@
     "06_Mobile_Design_2_792.html": {
       "title": "화면설계 기본",
       "type": "mobile-ui",
-      "updatedAt": "2026-08-05T08:56:58.706Z",
+      "updatedAt": "2026-08-04T08:41:08.439Z",
       "template": "template_mobile_ui_2.html",
       "description": [
         {
@@ -83,7 +83,7 @@
     "06_Mobile_Design_3_848.html": {
       "title": "화면설계 쿠폰UI",
       "type": "mobile-ui",
-      "updatedAt": "2026-08-04T08:41:22.174Z",
+      "updatedAt": "2026-08-05T08:57:55.739Z",
       "template": "template_mobile_ui_3.html",
       "description": [
         {
@@ -176,5 +176,5 @@
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
   "jira": "LFML-145305",
   "themeIndex": 5,
-  "updated": "2026-08-05 17:56:58"
+  "updated": "2026-08-05 17:57:55"
 }
