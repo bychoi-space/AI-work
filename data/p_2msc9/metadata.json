@@ -153,10 +153,31 @@
     "07_PC_Design_250.html": {
       "title": "화면설계 PC",
       "type": "ui",
-      "updatedAt": "2026-08-05T02:12:49.959Z",
+      "updatedAt": "2026-08-05T02:32:07.022Z",
       "template": "template_pc_ui.html",
       "description": [],
-      "connectors": [],
+      "connectors": [
+        {
+          "id": "conn_1785897108377",
+          "type": "straight",
+          "start": {
+            "x": 643.3999999999999,
+            "y": 754,
+            "targetId": null,
+            "side": null
+          },
+          "end": {
+            "x": 743.3999999999999,
+            "y": 754,
+            "targetId": null,
+            "side": null
+          },
+          "style": {
+            "stroke": "#475569",
+            "strokeWidth": 1.6
+          }
+        }
+      ],
       "defaultTab": "editor",
       "screenDesc": ""
     }
@@ -166,5 +187,5 @@
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
   "jira": "LFML-145305",
   "themeIndex": 5,
-  "updated": "2026-08-05 11:12:49"
+  "updated": "2026-08-05 11:32:06"
 }
