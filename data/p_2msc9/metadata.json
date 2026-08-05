@@ -153,122 +153,9 @@
     "07_PC_Design_250.html": {
       "title": "화면설계 PC",
       "type": "ui",
-      "updatedAt": "2026-08-05T00:43:03.178Z",
+      "updatedAt": "2026-08-05T00:51:49.165Z",
       "template": "template_pc_ui.html",
-      "description": [
-        {
-          "text": "브랜드",
-          "html": "<p><span style=\"font-size: 14px;\">브랜드</span></p>",
-          "x": 267,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "가변탭1",
-          "html": "<p>가변탭1</p>",
-          "x": 337.5,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "가변탭2",
-          "html": "<p>가변탭2</p>",
-          "x": 417.5,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "베스트",
-          "html": "<p>베스트</p>",
-          "x": 499,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "베스트",
-          "html": "<p>베스트</p>",
-          "x": 573,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "남성",
-          "html": "<p>남성</p>",
-          "x": 630.5,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "아울렛",
-          "html": "<p>아울렛</p>",
-          "x": 688,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "잡화/슈즈",
-          "html": "<p>잡화/슈즈</p>",
-          "x": 761,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "수입/명품",
-          "html": "<p><span style=\"font-size: 14px;\">수입/명품</span></p>",
-          "x": 850,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "골프",
-          "html": "<p>골프</p>",
-          "x": 942.5,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "스포츠",
-          "html": "<p>스포츠</p>",
-          "x": 1000.5,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "기획전/혜택",
-          "html": "<p>기획전/혜택</p>",
-          "x": 1071,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "선물관",
-          "html": "<p>선물관</p>",
-          "x": 1171.5,
-          "y": 471.5,
-          "type": "text",
-          "standardized": true
-        },
-        {
-          "text": "mall",
-          "html": "<p><strong style=\"font-size: 30px;\">mall</strong></p>",
-          "x": 181,
-          "y": 471,
-          "type": "text",
-          "standardized": true
-        }
-      ],
+      "description": [],
       "connectors": [],
       "defaultTab": "editor",
       "screenDesc": ""
@@ -279,5 +166,5 @@
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
   "jira": "LFML-145305",
   "themeIndex": 5,
-  "updated": "2026-08-05 09:43:03"
+  "updated": "2026-08-05 09:51:49"
 }
