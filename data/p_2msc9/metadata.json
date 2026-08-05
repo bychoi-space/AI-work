@@ -161,12 +161,14 @@
       "screenDesc": ""
     },
     "99_Blank_440.html": {
-      "title": "99_Blank_440",
-      "type": "blank",
-      "updatedAt": "2026-08-05T04:36:06.339Z",
+      "title": "카드 설정",
+      "type": "admin-nbos",
+      "updatedAt": "2026-08-05T04:50:53.816Z",
       "template": "template_blank.html",
       "description": [],
-      "connectors": []
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": ""
     }
   },
   "assignee": "최범열",
