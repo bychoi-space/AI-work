@@ -139,11 +139,85 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     display: block;
 }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
-.v4-stepper-container[data-disabled="true"] { pointer-events: none !important; }
-.v4-stepper-container[data-disabled="true"] .v4-stepper-control { background-color: #e5e7eb !important; border-color: #9ca3af !important; }
-.v4-stepper-container[data-disabled="true"] .v4-stepper-value { color: #9ca3af !important; }
-.v4-stepper-container[data-disabled="true"] .v4-stepper-dec, .v4-stepper-container[data-disabled="true"] .v4-stepper-inc { background-color: #e5e7eb !important; color: #9ca3af !important; }
-.v4-stepper-container[data-disabled="true"] .v4-stepper-action { background-color: #e5e7eb !important; border-color: #9ca3af !important; color: #9ca3af !important; box-shadow: none !important; }
+/* Unified Disabled State for 11 Target Atoms (Shape BG: #c8c8c8, Text/Control: #969696, Border: #969696 / #b0b0b0) */
+
+/* 1. Reset outer containers so background does not fill outer bounding boxes */
+.v4-checkbox-container[data-disabled="true"],
+.v4-radio-container[data-disabled="true"],
+.v4-stepper-container[data-disabled="true"],
+.lf-component[data-disabled="true"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
+
+/* 2. Target specific atom input/shape elements for gray fill #c8c8c8 */
+.v4-textbox-container[data-disabled="true"],
+.v4-textarea-container[data-disabled="true"],
+.v4-stepper-container[data-disabled="true"] .v4-stepper-control,
+.v4-stepper-container[data-disabled="true"] .v4-stepper-dec,
+.v4-stepper-container[data-disabled="true"] .v4-stepper-inc,
+.v4-stepper-container[data-disabled="true"] .v4-stepper-value,
+.v4-stepper-container[data-disabled="true"] .v4-stepper-action,
+.v4-selectbox-header[data-disabled="true"],
+.v4-selectbox-container[data-disabled="true"] .v4-selectbox-header,
+.v4-fileupload-button[data-disabled="true"],
+.v4-fileupload-container[data-disabled="true"] .v4-fileupload-button,
+.v4-datepicker-container[data-disabled="true"],
+.v4-toggle-track[data-disabled="true"],
+.v4-toggle-container[data-disabled="true"] .v4-toggle-track,
+.v4-accordion-container[data-disabled="true"],
+.v4-checkbox[data-disabled="true"],
+.v4-checkbox-container[data-disabled="true"] .v4-checkbox,
+.v4-radio[data-disabled="true"],
+.v4-radio-container[data-disabled="true"] .v4-radio,
+.v4-searchbar-container[data-disabled="true"] {
+    background-color: #c8c8c8 !important;
+    background: #c8c8c8 !important;
+    border-color: #969696 !important;
+}
+
+/* 3. Target text, controls, icons, dots, chevrons for dark gray #969696 */
+[data-disabled="true"] .v4-checkbox-text,
+[data-disabled="true"] .v4-radio-text,
+[data-disabled="true"] .v4-textbox-text,
+[data-disabled="true"] .v4-textarea-text,
+[data-disabled="true"] .v4-searchbar-text,
+[data-disabled="true"] .v4-stepper-value,
+[data-disabled="true"] .v4-stepper-dec,
+[data-disabled="true"] .v4-stepper-inc,
+[data-disabled="true"] .v4-stepper-action,
+[data-disabled="true"] .v4-accordion-title-text,
+[data-disabled="true"] .v4-accordion-chevron,
+[data-disabled="true"] .v4-accordion-item,
+[data-disabled="true"] .v4-radio-dot,
+[data-disabled="true"] .v4-checkbox-check,
+[data-disabled="true"] .v4-toggle-knob,
+[data-disabled="true"] .v4-toggle-thumb {
+    color: #969696 !important;
+    border-color: #969696 !important;
+}
+
+[data-disabled="true"] .v4-radio-dot,
+[data-disabled="true"] .v4-toggle-knob,
+[data-disabled="true"] .v4-toggle-thumb {
+    background-color: #969696 !important;
+    background: #969696 !important;
+}
+
+[data-disabled="true"] svg,
+[data-disabled="true"] svg path,
+[data-disabled="true"] svg polyline,
+[data-disabled="true"] svg line,
+[data-disabled="true"] svg circle {
+    stroke: #969696 !important;
+}
+
+[data-disabled="true"] .v4-searchbar-text:empty::before,
+[data-disabled="true"] .v4-textbox-text:empty::before,
+[data-disabled="true"] .v4-textarea-text:empty::before {
+    color: #969696 !important;
+}
 .v4-selectbox-container { display: flex !important; flex-direction: column !important; box-sizing: border-box !important; position: relative !important; width: 100% !important; height: 100% !important; }
 .v4-selectbox-header { height: 30px !important; min-height: 30px !important; max-height: 30px !important; flex-shrink: 0 !important; display: flex !important; align-items: center !important; justify-content: space-between !important; box-sizing: border-box !important; }
 .v4-selectbox-container[data-dropdown-active="true"] .v4-selectbox-header { border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; }
@@ -336,12 +410,12 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
                     <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: var(--v4-text-color, #374151); border-bottom: 1.6px solid var(--v4-disabled-bg, #f3f4f6); box-sizing: border-box;">Option 2</div>
                     <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: var(--v4-text-color, #374151); box-sizing: border-box;">Option 3</div>
                 </div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 585.4px; left: 150.889px; z-index: 1000; transform: none; width: 84px; height: 30px;" id="v4-comp-1785904555517-14"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:24px; height:24px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용안함</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 585.4px; left: 245.289px; z-index: 1000; transform: none; width: 62px; height: 30px;" id="v4-comp-1785904555517-15"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 585.4px; left: 450.089px; z-index: 1000; transform: none; width: 84px; height: 30px;" id="v4-comp-1785904555517-16"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용안함</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 585.4px; left: 544.489px; z-index: 1000; transform: none; width: 62px; height: 30px;" id="v4-comp-1785904555517-17"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 532.5px; left: 709px; z-index: 1000; transform: none; width: 154px; height: 30px;" id="v4-comp-1785904555517-18">
-            <div class="v4-stepper-container" data-min="2" data-max="99" data-val="2" data-btn-enabled="true" data-btn-text="적용" data-disabled="false" style="position: relative; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; pointer-events: auto; user-select: none; width: 100%; height: 100%;">
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 585.4px; left: 150.889px; z-index: 1000; transform: none; width: 84px; height: 30px;" id="v4-comp-1785904555517-14"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:24px; height:24px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용안함</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 585.4px; left: 245.289px; z-index: 1000; transform: none; width: 62px; height: 30px;" id="v4-comp-1785904555517-15"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 585.4px; left: 450.089px; z-index: 1000; transform: none; width: 84px; height: 30px;" id="v4-comp-1785904555517-16"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용안함</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 585.4px; left: 544.489px; z-index: 1000; transform: none; width: 62px; height: 30px;" id="v4-comp-1785904555517-17"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 625.4px; left: 151.6px; z-index: 1000; transform: none; width: 154px; height: 30px;" id="v4-comp-1785904555517-18" data-disabled="true">
+            <div class="v4-stepper-container" data-min="2" data-max="99" data-val="2" data-btn-enabled="true" data-btn-text="적용" data-disabled="true" style="position: relative; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; pointer-events: auto; user-select: none; width: 100%; height: 100%;">
                 <div class="v4-stepper-control" style="display: inline-flex; align-items: center; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); overflow: hidden; height: 30px; box-sizing: border-box;">
-                    <button class="v4-stepper-dec" style="width: 30px; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; background-image: ; background-position-x: ; background-position-y: ; background-size: ; background-repeat: ; background-attachment: ; background-origin: ; background-clip: ; background-color: rgb(243, 244, 246); color: rgb(156, 163, 175); font-size: 14px; font-weight: bold; cursor: not-allowed; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">—</button>
+                    <button class="v4-stepper-dec" style="width: 30px; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; font-size: 14px; font-weight: bold; cursor: not-allowed; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">—</button>
                     <div class="v4-stepper-value" style="width: 40px; text-align: center; font-size: 14px; font-weight: 600; color: var(--v4-text-color, #111827); user-select: none; font-family: inherit;">2</div>
-                    <button class="v4-stepper-inc" style="width: 30px; height: 100%; border-top-width: medium; border-right-width: medium; border-bottom-width: medium; border-top-style: none; border-right-style: none; border-bottom-style: none; border-top-color: currentcolor; border-right-color: currentcolor; border-bottom-color: currentcolor; border-image: none; background-image: ; background-position-x: ; background-position-y: ; background-size: ; background-repeat: ; background-attachment: ; background-origin: ; background-clip: ; background-color: rgb(255, 255, 255); border-left: 1.6px solid var(--v4-border-color, #e5e7eb); color: rgb(55, 65, 81); font-size: 14px; font-weight: bold; cursor: pointer; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">+</button>
+                    <button class="v4-stepper-inc" style="width: 30px; height: 100%; border-top-width: medium; border-right-width: medium; border-bottom-width: medium; border-top-style: none; border-right-style: none; border-bottom-style: none; border-top-color: currentcolor; border-right-color: currentcolor; border-bottom-color: currentcolor; border-image: none; border-left: 1.6px solid var(--v4-border-color, #e5e7eb); font-size: 14px; font-weight: bold; cursor: not-allowed; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">+</button>
                 </div>
                 <button class="v4-stepper-action" style="height: 30px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); font-size: 12px; font-weight: 600; color: var(--v4-text-color, #374151); cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">적용</button>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component lf-group" style="position: absolute; left: 709px; top: 571.5px; width: 128px; height: 32px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; z-index: 1000;" id="v4-comp-1785904555517-19"><div class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 59px; height: 32px;" id="v4-comp-1785904555517-20"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:24px; height:24px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">3*2</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 0px; left: 68.5px; z-index: 1000; transform: none; width: 59px; height: 32px;" id="v4-comp-1785904555517-21"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">3*1</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></div><div class="lf-component" style="position: absolute; top: 571.5px; left: 846.9px; z-index: 1000; transform: none; width: 59px; height: 30px;" id="v4-comp-1785904555518-22"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">2*2</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 571.5px; left: 915.4px; z-index: 1000; transform: none; width: 59px; height: 30px;" id="v4-comp-1785904555518-25"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">2*1</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 571.5px; left: 984.3px; z-index: 1000; transform: none; width: 59px; height: 30px;" id="v4-comp-1785904555518-26"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">1*2</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 571.5px; left: 1053.7px; z-index: 1000; transform: none; width: 59px; height: 30px;" id="v4-comp-1785904555518-27"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">1*3</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 611.5px; left: 709px; z-index: 1000; transform: none; width: 59px; height: 30px;" id="v4-comp-1785904555518-28"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:24px; height:24px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">4*1</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 611.5px; left: 777.5px; z-index: 1000; transform: none; width: 59px; height: 30px;" id="v4-comp-1785904555518-29"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 24px; height: 24px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">4*2</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div class="lf-component" style="position: absolute; top: 691.5px; left: 709px; z-index: 1000; transform: none; width: 150px; height: 30px;" id="v4-comp-1785904555518-31">
@@ -355,8 +429,9 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
                 <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;"></div>
                 <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; outline: none; background: transparent; color: rgb(163, 163, 163); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 48px 8px 0px; box-sizing: border-box; font-family: inherit;"></div>
                 <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: block; font-family: inherit;">0/20</div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785906637761_926627_0" class="lf-component" style="position: absolute; top: 545.4px; left: 150.889px; z-index: 1000; transform: none; width: 84px; height: 30px;"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:24px; height:24px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용안함</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><script id="v4-inlined-script">
-// Cache Buster Timestamp: 1785906696455
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785906637761_926627_0" class="lf-component" style="position: absolute; top: 545.4px; left: 150.889px; z-index: 1000; transform: none; width: 84px; height: 30px;"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:24px; height:24px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용안함</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
+<script id="v4-inlined-script">
+// Cache Buster Timestamp: 1785912924409
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -416,46 +491,48 @@ window.V4UndoManager = (function() {
                     notifyParent({ type: 'LF_RESTORE_CONNECTORS', connectors: prevState.connectors });
                 }
                 
-                if (window.parent && window.parent.state && window.parent.state.activeFile) {
-                    const descList = window.parent.state.activeFile.meta.description || [];
-                    const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
-                    
-                    if (descList.length > remainingPins.length) {
-                        descList.splice(remainingPins.length);
-                    }
-                    
-                    remainingPins.forEach((pin, idx) => {
-                        pin.id = 'v4-pin-' + idx;
-                        const isPinType = pin.classList.contains('pin-marker');
+                try {
+                    if (window.parent && window.parent.state && window.parent.state.activeFile) {
+                        const descList = window.parent.state.activeFile.meta.description || [];
+                        const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
                         
-                        if (!descList[idx]) {
-                            descList[idx] = {};
+                        if (descList.length > remainingPins.length) {
+                            descList.splice(remainingPins.length);
                         }
                         
-                        if (isPinType) {
-                            // Circular Pin: Only sync coordinates, preserve type and text from parent state
-                            descList[idx].x = parseFloat(pin.style.left) || 0;
-                            descList[idx].y = parseFloat(pin.style.top) || 0;
-                            descList[idx].type = 'pin';
-                            descList[idx].standardized = true;
-                        } else {
-                            // Inline Text Component: Sync full content and style
-                            const editable = pin.querySelector('.v4-editable-cell');
-                            const textContent = editable ? editable.innerText.trim() : "Edit Text";
-                            const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                        remainingPins.forEach((pin, idx) => {
+                            pin.id = 'v4-pin-' + idx;
+                            const isPinType = pin.classList.contains('pin-marker');
                             
-                            descList[idx].text = textContent;
-                            descList[idx].html = htmlContent;
-                            descList[idx].x = parseFloat(pin.style.left) || 0;
-                            descList[idx].y = parseFloat(pin.style.top) || 0;
-                            descList[idx].type = 'text';
-                            descList[idx].standardized = true;
+                            if (!descList[idx]) {
+                                descList[idx] = {};
+                            }
+                            
+                            if (isPinType) {
+                                descList[idx].x = parseFloat(pin.style.left) || 0;
+                                descList[idx].y = parseFloat(pin.style.top) || 0;
+                                descList[idx].type = 'pin';
+                                descList[idx].standardized = true;
+                            } else {
+                                const editable = pin.querySelector('.v4-editable-cell');
+                                const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                                const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                                
+                                descList[idx].text = textContent;
+                                descList[idx].html = htmlContent;
+                                descList[idx].x = parseFloat(pin.style.left) || 0;
+                                descList[idx].y = parseFloat(pin.style.top) || 0;
+                                descList[idx].type = 'text';
+                                descList[idx].standardized = true;
+                            }
+                        });
+                        
+                        if (typeof window.parent.renderDescriptionList === 'function') {
+                            window.parent.renderDescriptionList();
                         }
-                    });
-                    
-                    if (typeof window.parent.renderDescriptionList === 'function') {
-                        window.parent.renderDescriptionList();
                     }
+                } catch (e) {
+                    console.warn("[V4 Undo] Parent window access guarded under file:// protocol:", e);
                 }
 
                 if (typeof window.initHandles === 'function') window.initHandles();
@@ -2700,34 +2777,38 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 badge.innerText = idx + 1;
             }
         });
-        if (window.parent && window.parent.state && window.parent.state.activeFile) {
-            const descList = window.parent.state.activeFile.meta.description || [];
-            const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
-            if (descList.length > remainingPins.length) {
-                descList.splice(remainingPins.length);
-            }
-            remainingPins.forEach((pin, idx) => {
-                const isPinType = pin.classList.contains('pin-marker');
-                if (!descList[idx]) {
-                    descList[idx] = {};
+        try {
+            if (window.parent && window.parent.state && window.parent.state.activeFile) {
+                const descList = window.parent.state.activeFile.meta.description || [];
+                const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
+                if (descList.length > remainingPins.length) {
+                    descList.splice(remainingPins.length);
                 }
-                descList[idx].x = parseFloat(pin.style.left) || 0;
-                descList[idx].y = parseFloat(pin.style.top) || 0;
-                descList[idx].standardized = true;
-                if (isPinType) {
-                    descList[idx].type = 'pin';
-                } else {
-                    const editable = pin.querySelector('.v4-editable-cell');
-                    const textContent = editable ? editable.innerText.trim() : "Edit Text";
-                    const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
-                    descList[idx].type = 'text';
-                    descList[idx].text = textContent;
-                    descList[idx].html = htmlContent;
+                remainingPins.forEach((pin, idx) => {
+                    const isPinType = pin.classList.contains('pin-marker');
+                    if (!descList[idx]) {
+                        descList[idx] = {};
+                    }
+                    descList[idx].x = parseFloat(pin.style.left) || 0;
+                    descList[idx].y = parseFloat(pin.style.top) || 0;
+                    descList[idx].standardized = true;
+                    if (isPinType) {
+                        descList[idx].type = 'pin';
+                    } else {
+                        const editable = pin.querySelector('.v4-editable-cell');
+                        const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                        const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                        descList[idx].type = 'text';
+                        descList[idx].text = textContent;
+                        descList[idx].html = htmlContent;
+                    }
+                });
+                if (typeof window.parent.renderDescriptionList === 'function') {
+                    window.parent.renderDescriptionList();
                 }
-            });
-            if (typeof window.parent.renderDescriptionList === 'function') {
-                window.parent.renderDescriptionList();
             }
+        } catch (e) {
+            console.warn("[V4 Shortcuts] Parent window access guarded under file:// protocol:", e);
         }
     };
 
@@ -5995,6 +6076,14 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     }
                 }
             }
+        }
+        else if (d.type === 'LF_UPDATE_ATOM_DISABLED') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-textbox-container, .v4-textarea-container, .v4-stepper-container, .v4-selectbox-container, .v4-fileupload-container, .v4-datepicker-container, .v4-toggle-container, .v4-accordion-container, .v4-checkbox-container, .v4-radio-container, .v4-searchbar-container') || s;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const disabledStr = d.disabled ? 'true' : 'false';
+            s.setAttribute('data-disabled', disabledStr);
+            if (container && container !== s) container.setAttribute('data-disabled', disabledStr);
         }
         else if (d.type === 'LF_UPDATE_STEPPER_PROPERTIES') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
