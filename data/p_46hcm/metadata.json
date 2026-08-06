@@ -4,7 +4,7 @@
     "03_Delivery_Notice_690.html": {
       "title": "03_Delivery_Notice_690",
       "type": "plan-delivery",
-      "updatedAt": "2026-08-06T08:41:38.497Z",
+      "updatedAt": "2026-08-06T08:46:13.471Z",
       "template": "template_plan_delivery.html",
       "description": [],
       "connectors": []
@@ -15,5 +15,5 @@
   "period": "2026.08.06 ~ 2026.08.12",
   "themeIndex": 6,
   "jira": "",
-  "updated": "2026-08-06 17:41:38"
+  "updated": "2026-08-06 17:46:13"
 }
