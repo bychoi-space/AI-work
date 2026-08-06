@@ -1,6 +1,13 @@
 {
   "title": "[배송] 26년 8월 배송예정일 이슈",
-  "screens": {},
+  "screens": {
+    "03_Delivery_Notice_690.html": {
+      "title": "03_Delivery_Notice_690",
+      "type": "plan-delivery",
+      "updatedAt": "2026-08-06T07:12:03.303Z",
+      "template": "template_plan_delivery.html"
+    }
+  },
   "assignee": "최범열",
   "developer": "",
   "period": "2026.08.06 ~ 2026.08.12",
