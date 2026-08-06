@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+    <meta charset="UTF-8">
+    <title>배송예정일 설정 - [배송] 26년 8월 배송예정일 이슈</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --v4-bg: #f3f4f6; --v4-panel: #ffffff; --v4-accent: #6366f1;
+            --v4-text: #111827; --v4-border: #d1d5db;
+            --header-dark: #374151; --header-blue: #1e3a8a; --header-red: #b91c1c;
+        }
+        body { margin:0; padding:0; background:#2d2d2d; font-family:'Inter','Noto Sans KR',sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; overflow:hidden; }
+        .artboard { width:1440px; height:900px; background:#fff; position:relative; box-shadow:0 30px 60px rgba(0,0,0,0.4); overflow:hidden; }
+        .lf-component { position:absolute; transition:all 0.2s cubic-bezier(0.4,0,0.2,1); box-sizing:border-box; }
+        .v4-editable-cell { outline:none; padding:4px; }
+        .v4-shape-container { width:100%; height:100%; display:flex; align-items:center; justify-content:center; border-radius:8px; font-weight:700; }
+        .v4-premium-table { width:100%; border-collapse:collapse; font-size:13px; table-layout:fixed; border:1.6px solid #475569 !important; }
+        .v4-premium-table th,.v4-premium-table td { border:1.6px solid #cbd5e1 !important; padding:12px 6px; text-align:center; vertical-align:middle; line-height:1.4; }
+        .v4-premium-table th { background:var(--header-dark); color:#fff; font-weight:800; }
+        .h-blue { background:var(--header-blue) !important; }
+        .table-scroll-wrap { overflow:visible; width:100%; }
+    </style>
+</head>
+<body>
+    <div class="artboard" id="canvas">
+        <div class="lf-component" id="comp-title-shape" style="top:40px; left:40px; width:320px; height:56px;">
+            <div class="v4-shape-container" style="background:#4b5563; color:#fff; font-size:18px;">
+                <div class="v4-editable-cell" contenteditable="true">03_Delivery_Notice_690</div>
+            </div>
+        </div>
+        <div class="lf-component" id="comp-main-table" style="top:130px; left:40px; width:1360px; height:auto;">
+            <div class="table-scroll-wrap">
+                <table class="v4-premium-table">
+                    <thead>
+                        <tr>
+                            <th style="width:180px;">YMD</th>
+                            <th style="width:180px;">일자</th>
+                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">D-Day</div></th>
+                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">D+1</div></th>
+                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">D+2</div></th>
+                            <th class="h-blue"><div class="v4-editable-cell" contenteditable="true">D+3</div></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="background:#f9fafb;">WRHS_GI_YN</td>
+                            <td>안산 출고 여부</td>
+                            <td><div class="v4-editable-cell" contenteditable="true">Y</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
+                            <td><div class="v4-editable-cell" contenteditable="true">-</div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
