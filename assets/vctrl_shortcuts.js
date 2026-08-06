@@ -370,7 +370,9 @@ window.v4ShortcutsScript = `
 
     function isInputActive(target) {
         if (!target) return false;
-        return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+        return target.isContentEditable || 
+               ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) ||
+               !!(target.closest && target.closest('.v4-editable-cell, .ql-editor, [contenteditable="true"]'));
     }
 
     document.addEventListener('keydown', e => {

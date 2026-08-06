@@ -930,6 +930,15 @@ function _syncSelectboxProps(comp) {
         }
     }
     _syncAtomDisabledProps(comp);
+    if (comp.w !== undefined && comp.h !== undefined) {
+        const sec = DOM.selectboxPropSection || document.getElementById('selectbox-inspector-section');
+        if (sec) {
+            const wInp = sec.querySelector('.v4-prop-input[data-prop="width"]');
+            const hInp = sec.querySelector('.v4-prop-input[data-prop="height"]');
+            if (wInp && document.activeElement !== wInp) wInp.value = Math.round(comp.w);
+            if (hInp && document.activeElement !== hInp) hInp.value = Math.round(comp.h);
+        }
+    }
 }
 
 function _syncFileuploadProps(comp) {
@@ -1018,6 +1027,11 @@ function _syncButtonProps(comp) {
     const txtInput = document.getElementById('prop-button-text');
     if (txtInput && document.activeElement !== txtInput && comp.buttonText !== undefined) {
         txtInput.value = comp.buttonText;
+    }
+    
+    const fontInput = document.getElementById('prop-button-font-size');
+    if (fontInput && document.activeElement !== fontInput && comp.buttonFontSize !== undefined) {
+        fontInput.value = comp.buttonFontSize;
     }
     
     const selStyle = document.getElementById('prop-button-style');

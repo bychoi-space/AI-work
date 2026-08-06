@@ -6391,7 +6391,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         }
         else if (d.type === 'LF_UPDATE_STYLE') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (typeof window.v4GlobalStyleHandler === 'function') {
+                window.v4GlobalStyleHandler(d);
+                return;
+            }
             
             // Route to modular helpers first
             if (window.v4ObjectText && typeof window.v4ObjectText.handleUpdateStyle === 'function') {

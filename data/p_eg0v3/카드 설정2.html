@@ -4949,7 +4949,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         }
         else if (d.type === 'LF_UPDATE_STYLE') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            if (typeof window.v4GlobalStyleHandler === 'function') {
+                window.v4GlobalStyleHandler(d);
+                return;
+            }
+            const s = (d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected');
+            if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             
             let t = d.selector ? s.querySelector(d.selector) : s;

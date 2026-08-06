@@ -461,6 +461,9 @@ window.ConnectorEngine = (function() {
                         else if (pt.side === 'right') { pt.x = left + width; pt.y = top + height/2; }
                         else if (pt.side === 'top') { pt.x = left + width/2; pt.y = top; }
                         else if (pt.side === 'bottom') { pt.x = left + width/2; pt.y = top + height; }
+                    } else {
+                        pt.targetId = null;
+                        pt.side = null;
                     }
                 }
             });

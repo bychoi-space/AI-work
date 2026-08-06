@@ -4,7 +4,7 @@ window.v4ObjectTextScript = `
     window.v4ObjectText = window.v4ObjectText || {};
 
     window.v4ObjectText.handleUpdateStyle = (d) => {
-        const s = document.querySelector('.lf-component.selected'); if (!s) return false;
+        const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return false;
         const isText = s.classList.contains('text-marker') || s.classList.contains('v4-text-box') || s.classList.contains('v4-text-shape');
         if (!isText) {
             // Let dispatcher fallback handle non-text components

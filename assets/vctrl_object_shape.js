@@ -4,7 +4,7 @@ window.v4ObjectShapeScript = `
     window.v4ObjectShape = window.v4ObjectShape || {};
 
     window.v4ObjectShape.handleUpdateStyle = (d) => {
-        const s = document.querySelector('.lf-component.selected'); if (!s) return false;
+        const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return false;
         const shape = s.querySelector('.v4-shape') || (s.classList.contains('v4-shape') ? s : null);
         if (!shape) {
             // If the selected component is not a shape, let the legacy fallback inside dispatcher handle it!

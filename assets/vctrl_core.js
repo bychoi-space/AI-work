@@ -1124,8 +1124,11 @@ window.init = async function() {
 
         document.addEventListener('keydown', (e) => {
             if (state.isReadOnly) return;
-            // Ignore if typing in editable areas, input, select, textarea
-            if (e.target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+            // Ignore if typing in editable areas, input, select, textarea, ql-editor
+            const isInput = e.target.isContentEditable || 
+                            ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) ||
+                            !!(e.target.closest && e.target.closest('.ql-editor, .v4-editable-cell, [contenteditable="true"]'));
+            if (isInput) return;
             
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
                 e.preventDefault();
@@ -1190,7 +1193,28 @@ window.init = async function() {
             };
         }
         
-        // Note: Template card click selection and btnSubmitAdd submit logic have been refactored into global document-level click delegation at the top of INIT block for structural stability and zero race conditions.
+        window.addEventListener('keydown', (e) => {
+            const isF2 = e.key === 'F2' || e.code === 'F2';
+            const isInput = e.target.isContentEditable || 
+                            ['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) ||
+                            !!(e.target.closest && e.target.closest('.ql-editor, .v4-editable-cell, [contenteditable="true"]'));
+            
+            if (isInput && !isF2) return;
+
+            if (isF2) {
+                if (e.isComposing) return;
+                e.preventDefault();
+                console.log("[VCTRL CORE] F2 key down detected in parent window. isInput:", isInput);
+                if (isInput && typeof e.target.blur === 'function') {
+                    e.target.blur();
+                }
+                const activeIframe = (window.DOM && window.DOM.iframe) || document.getElementById('main-iframe') || document.getElementById('screen-iframe');
+                if (activeIframe && activeIframe.contentWindow) {
+                    try { activeIframe.contentWindow.focus(); } catch(err) {}
+                    activeIframe.contentWindow.postMessage({ type: 'LF_TRIGGER_F2' }, '*');
+                }
+            }
+        });
 
         // Shortcuts & Key Event Proxying to Canvas Iframe
         window.addEventListener('keydown', (e) => {

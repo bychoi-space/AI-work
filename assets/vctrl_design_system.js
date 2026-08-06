@@ -298,11 +298,14 @@ window.v4DesignSystemScript = `
                 const optionsRaw = selectbox.getAttribute('data-options') || "";
                 const optionsArr = optionsRaw.split(',').map(s => s.trim()).filter(Boolean);
                 
-                const targetW = '150px';
+                if (!c.getAttribute('data-resized')) {
+                    const targetW = '150px';
+                    if (c.style.width !== targetW) c.style.width = targetW;
+                }
                 const targetH = dropdownActive ? (30 + (optionsArr.length * 30)) + 'px' : '30px';
-                
-                if (c.style.width !== targetW) c.style.width = targetW;
-                if (c.style.height !== targetH) c.style.height = targetH;
+                if (!c.getAttribute('data-resized')) {
+                    if (c.style.height !== targetH) c.style.height = targetH;
+                }
                 
                 if (selectbox.style.width !== '100%') selectbox.style.width = '100%';
                 if (selectbox.style.height !== '100%') selectbox.style.height = '100%';
@@ -328,11 +331,12 @@ window.v4DesignSystemScript = `
             if (c.classList.contains('lf-group') || (c.closest && c.closest('.lf-group'))) return;
             const fileupload = c.querySelector('.v4-fileupload-container');
             if (fileupload) {
-                const targetW = '300px';
-                const targetH = '30px';
-                
-                if (c.style.width !== targetW) c.style.width = targetW;
-                if (c.style.height !== targetH) c.style.height = targetH;
+                if (c.getAttribute('data-resized') !== 'true') {
+                    const targetW = '300px';
+                    const targetH = '30px';
+                    if (c.style.width !== targetW) c.style.width = targetW;
+                    if (c.style.height !== targetH) c.style.height = targetH;
+                }
                 
                 if (fileupload.style.width !== '100%') fileupload.style.width = '100%';
                 if (fileupload.style.height !== '100%') fileupload.style.height = '100%';

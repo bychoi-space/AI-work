@@ -551,7 +551,7 @@ window.v4Script = `
             document.querySelectorAll('.lf-component').forEach(x => x.classList.remove('selected'));
             
             const targets = [];
-            document.querySelectorAll('.lf-component').forEach(c => {
+            document.querySelectorAll('.lf-component:not(.connector-line)').forEach(c => {
                 let absL = parseFloat(c.style.left) || 0;
                 let absT = parseFloat(c.style.top) || 0;
                 let isChild = false;
@@ -741,6 +741,132 @@ window.v4Script = `
     });
 
 
+    window.v4GlobalStyleHandler = function(d) {
+        if (!d) return;
+        const s = (d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); 
+        if (!s) return;
+        
+        // Route to modular helpers first
+        if (window.v4ObjectText && typeof window.v4ObjectText.handleUpdateStyle === 'function') {
+            if (window.v4ObjectText.handleUpdateStyle(d)) return;
+        }
+        if (window.v4ObjectShape && typeof window.v4ObjectShape.handleUpdateStyle === 'function') {
+            if (window.v4ObjectShape.handleUpdateStyle(d)) return;
+        }
+
+        if (window.V4UndoManager) window.V4UndoManager.saveState();
+        
+        let t = d.selector ? s.querySelector(d.selector) : s;
+        if (!t && s.classList.contains('text-marker')) {
+            t = s.querySelector('.v4-editable-cell') || s;
+        }
+        const shape = s.querySelector('.v4-shape');
+        if (shape && !d.selector) t = shape;
+        const boxEl = s.querySelector('.v4-checkbox, .v4-radio');
+        if (boxEl && !d.selector) t = boxEl;
+        
+        const inputContainer = s.querySelector('.v4-textbox-container, .v4-textarea-container');
+        if (inputContainer && !d.selector) t = inputContainer;
+        
+        const searchbarContainer = s.querySelector('.v4-searchbar-container');
+        if (searchbarContainer && !d.selector) t = searchbarContainer;
+        
+        const selectboxContainer = s.querySelector('.v4-selectbox-container');
+        
+        const alertContainer = s.querySelector('.v4-alert-container');
+        const alertDialog = alertContainer ? alertContainer.querySelector('.v4-alert-dialog') : null;
+        if (alertDialog && !d.selector) t = alertDialog;
+        else if (alertContainer && !d.selector) t = alertContainer;
+        
+        const buttonContainer = s.querySelector('.v4-btn-container');
+        const customBtn = s.querySelector('.v4-custom-btn');
+        if (buttonContainer && customBtn && !d.selector) t = customBtn;
+        if (!t) return;
+        
+        if (d.style) {
+            if (d.style.width !== undefined || d.style.height !== undefined) {
+                s.setAttribute('data-resized', 'true');
+            }
+            if (d.style.html !== undefined) t.innerHTML = d.style.html;
+            
+            const isInnerBox = t.classList.contains('v4-checkbox') || t.classList.contains('v4-radio');
+            
+            if (d.style.width !== undefined) {
+                const wVal = typeof d.style.width === 'number' ? d.style.width + 'px' : d.style.width;
+                if (isInnerBox) {
+                    t.style.width = wVal;
+                } else {
+                    s.style.setProperty('width', wVal, 'important');
+                    if (inputContainer) inputContainer.style.width = '100%';
+                    if (alertContainer) alertContainer.style.width = '100%';
+                    if (buttonContainer) buttonContainer.style.width = '100%';
+                    if (selectboxContainer) {
+                        s.setAttribute('data-resized', 'true');
+                        selectboxContainer.style.setProperty('width', '100%', 'important');
+                        const header = selectboxContainer.querySelector('.v4-selectbox-header');
+                        const optionsList = selectboxContainer.querySelector('.v4-selectbox-options');
+                        if (header) header.style.setProperty('width', '100%', 'important');
+                        if (optionsList) optionsList.style.setProperty('width', '100%', 'important');
+                    }
+                }
+            }
+            if (d.style.height !== undefined) {
+                const hVal = typeof d.style.height === 'number' ? d.style.height + 'px' : d.style.height;
+                if (isInnerBox) {
+                    t.style.height = hVal;
+                } else {
+                    s.style.height = hVal;
+                    if (inputContainer) inputContainer.style.height = '100%';
+                    if (alertContainer) alertContainer.style.height = '100%';
+                    if (buttonContainer) buttonContainer.style.height = '100%';
+                    if (selectboxContainer) {
+                        selectboxContainer.style.height = '100%';
+                        const header = selectboxContainer.querySelector('.v4-selectbox-header');
+                        if (header) header.style.height = '100%';
+                    }
+                }
+            }
+
+            const styleToAssign = { ...d.style };
+            if (!isInnerBox) {
+                delete styleToAssign.width;
+                delete styleToAssign.height;
+            }
+            
+            const targets = d.selector ? [t] : [t, s.querySelector('.v4-shape-text-content'), s.querySelector('.v4-shape-text-overlay')].filter(Boolean);
+            targets.forEach(target => {
+                Object.assign(target.style, styleToAssign);
+                for (const [key, val] of Object.entries(styleToAssign)) {
+                    if (key === 'textAlign' || key === 'alignItems' || key === 'justifyContent' || key === 'borderRadius') {
+                        const cssKey = key === 'textAlign' ? 'text-align' : (key === 'alignItems' ? 'align-items' : (key === 'justifyContent' ? 'justify-content' : 'border-radius'));
+                        target.style.setProperty(cssKey, val, 'important');
+                    }
+                }
+            });
+        }
+        
+        if (d.subSelector && d.subStyle) {
+            t.querySelectorAll(d.subSelector).forEach(sub => {
+                Object.keys(d.subStyle).forEach(key => {
+                    const cssKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
+                    sub.style.setProperty(cssKey, d.subStyle[key], 'important');
+                });
+            });
+        }
+        if (typeof window.syncTableComponentSize === 'function') {
+            window.syncTableComponentSize();
+        }
+        window.updateHandles(s);
+        markDirty();
+
+        if (typeof window._getCompStyles === 'function') {
+            notifyParent({
+                type: 'LF_COMP_RESIZED',
+                ...window._getCompStyles(s)
+            });
+        }
+    };
+
     window.addEventListener('message', e => {
         const d = e.data; if (!d) return;
 
@@ -925,7 +1051,7 @@ window.v4Script = `
                 const color = conn.style.stroke || '#475569';
                 
                 const headLength = Math.max(12, baseWidth * 4.5);
-                const padding = headLength + 10;
+                const padding = Math.max(headLength + 10, 30);
                 const minX = Math.min(conn.start.x, conn.end.x) - padding;
                 const minY = Math.min(conn.start.y, conn.end.y) - padding;
                 const maxX = Math.max(conn.start.x, conn.end.x) + padding;
@@ -1225,7 +1351,7 @@ window.v4Script = `
             if (typeof markDirty === 'function') markDirty();
         }
         else if (d.type === 'LF_UPDATE_ATOM_STATE') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
             if (container) {
@@ -1251,7 +1377,7 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_ATOM_ICON_SIZE') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
             const boxEl = container ? container.querySelector('.v4-checkbox, .v4-radio') : s.querySelector('.v4-checkbox, .v4-radio');
             if (boxEl) {
@@ -1284,7 +1410,7 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_ACCORDION_PROPERTIES') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-accordion-container') || (s.classList.contains('v4-accordion-container') ? s : null);
             if (container) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -1354,8 +1480,7 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_GRID_PROPERTIES') {
-            console.log("[DEBUG Grid] LF_UPDATE_GRID_PROPERTIES received:", JSON.stringify(d));
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-grid-container') || (s.classList.contains('v4-grid-container') ? s : null);
             if (container) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -1422,7 +1547,7 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_ATOM_TEXT_ENABLED') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
             if (container) {
@@ -1441,7 +1566,7 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_ATOM_LABEL_TEXT') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             const container = s.querySelector('.v4-checkbox-container, .v4-radio-container') || (s.classList.contains('v4-checkbox-container') || s.classList.contains('v4-radio-container') ? s : null);
             if (container) {
@@ -1461,7 +1586,7 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_ATOM_DISABLED') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-textbox-container, .v4-textarea-container, .v4-stepper-container, .v4-selectbox-container, .v4-fileupload-container, .v4-datepicker-container, .v4-toggle-container, .v4-accordion-container, .v4-checkbox-container, .v4-radio-container, .v4-searchbar-container') || s;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             const disabledStr = d.disabled ? 'true' : 'false';
@@ -1469,7 +1594,7 @@ window.v4Script = `
             if (container && container !== s) container.setAttribute('data-disabled', disabledStr);
         }
         else if (d.type === 'LF_UPDATE_STEPPER_PROPERTIES') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-stepper-container') || (s.classList.contains('v4-stepper-container') ? s : null);
             if (container) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -1513,11 +1638,28 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_SELECTBOX_PROPERTIES') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-selectbox-container') || (s.classList.contains('v4-selectbox-container') ? s : null);
             if (container) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
                 
+                if (d.width !== undefined) {
+                    const wVal = typeof d.width === 'number' ? d.width + 'px' : d.width;
+                    s.style.width = wVal;
+                    container.style.width = '100%';
+                    const header = container.querySelector('.v4-selectbox-header');
+                    const optionsList = container.querySelector('.v4-selectbox-options');
+                    if (header) header.style.width = '100%';
+                    if (optionsList) optionsList.style.width = '100%';
+                }
+                if (d.height !== undefined) {
+                    const hVal = typeof d.height === 'number' ? d.height + 'px' : d.height;
+                    s.style.height = hVal;
+                    container.style.height = '100%';
+                    const header = container.querySelector('.v4-selectbox-header');
+                    if (header) header.style.height = '100%';
+                }
+
                 if (d.defaultText !== undefined) {
                     container.setAttribute('data-default-text', d.defaultText);
                     const selectedText = container.querySelector('.v4-selectbox-selected-text');
@@ -1557,7 +1699,7 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_FILEUPLOAD_PROPERTIES') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-fileupload-container') || (s.classList.contains('v4-fileupload-container') ? s : null);
             if (container) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -1592,7 +1734,7 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_ALERT_PROPERTIES') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const s = (d && d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-alert-container') || (s.classList.contains('v4-alert-container') ? s : null);
             if (container) {
                 if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -1680,6 +1822,12 @@ window.v4Script = `
                     container.setAttribute('data-btn-radius', d.buttonRadius);
                     const btn = container.querySelector('.v4-custom-btn');
                     if (btn) btn.style.borderRadius = d.buttonRadius + 'px';
+                }
+                if (d.buttonFontSize !== undefined) {
+                    const fontVal = parseInt(d.buttonFontSize) || 12;
+                    container.setAttribute('data-font-size', fontVal);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) btn.style.fontSize = fontVal + 'px';
                 }
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
@@ -2037,242 +2185,9 @@ window.v4Script = `
             }
         }
         else if (d.type === 'LF_UPDATE_STYLE') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
-            
-            // Route to modular helpers first
-            if (window.v4ObjectText && typeof window.v4ObjectText.handleUpdateStyle === 'function') {
-                if (window.v4ObjectText.handleUpdateStyle(d)) return;
+            if (typeof window.v4GlobalStyleHandler === 'function') {
+                window.v4GlobalStyleHandler(d);
             }
-            if (window.v4ObjectShape && typeof window.v4ObjectShape.handleUpdateStyle === 'function') {
-                if (window.v4ObjectShape.handleUpdateStyle(d)) return;
-            }
-
-            if (window.V4UndoManager) window.V4UndoManager.saveState();
-            
-            let t = d.selector ? s.querySelector(d.selector) : s;
-            if (!t && s.classList.contains('text-marker')) {
-                t = s.querySelector('.v4-editable-cell') || s;
-            }
-            const shape = s.querySelector('.v4-shape');
-            if (shape && !d.selector) t = shape;
-            const boxEl = s.querySelector('.v4-checkbox, .v4-radio');
-            if (boxEl && !d.selector) t = boxEl;
-            
-            const inputContainer = s.querySelector('.v4-textbox-container, .v4-textarea-container');
-            if (inputContainer && !d.selector) t = inputContainer;
-            
-            const searchbarContainer = s.querySelector('.v4-searchbar-container');
-            if (searchbarContainer && !d.selector) t = searchbarContainer;
-            
-            const alertContainer = s.querySelector('.v4-alert-container');
-            const alertDialog = alertContainer ? alertContainer.querySelector('.v4-alert-dialog') : null;
-            if (alertDialog && !d.selector) t = alertDialog;
-            else if (alertContainer && !d.selector) t = alertContainer;
-            
-            const buttonContainer = s.querySelector('.v4-btn-container');
-            const customBtn = s.querySelector('.v4-custom-btn');
-            if (buttonContainer && customBtn && !d.selector) t = customBtn;
-
-            const gridContainer = s.querySelector('.v4-grid-container');
-            if (gridContainer && !d.selector) t = gridContainer;
-
-            if (!t) return;
-            
-            let targets = d.selector ? Array.from(s.querySelectorAll(d.selector)) : [];
-            if (targets.length === 0) targets = [t];
-
-            if (d.style) {
-                if (d.style.width !== undefined || d.style.height !== undefined) {
-                    s.setAttribute('data-resized', 'true');
-                }
-                if (d.style.html !== undefined) {
-                    if (t.classList.contains('v4-shape')) {
-                        const targetCell = t.querySelector('.v4-shape-text-content') || t.querySelector('.v4-editable-cell');
-                        if (targetCell) {
-                            targetCell.innerHTML = d.style.html;
-                        } else {
-                            t.innerHTML = '<div class="v4-shape-text-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0px; box-sizing: border-box; overflow: hidden;">' + d.style.html + '</div>';
-                        }
-                    } else {
-                        t.innerHTML = d.style.html;
-                    }
-                }
-                
-                const isInnerBox = t.classList.contains('v4-checkbox') || t.classList.contains('v4-radio');
-                
-                if (d.style.width !== undefined) {
-                    if (isInnerBox) {
-                        t.style.width = d.style.width;
-                    } else {
-                        s.style.width = d.style.width;
-                        if (inputContainer) inputContainer.style.width = '100%';
-                        if (alertContainer) alertContainer.style.width = '100%';
-                        if (buttonContainer) buttonContainer.style.width = '100%';
-                    }
-                }
-                if (d.style.height !== undefined) {
-                    if (isInnerBox) {
-                        t.style.height = d.style.height;
-                    } else {
-                        s.style.height = d.style.height;
-                        if (inputContainer) inputContainer.style.height = '100%';
-                        if (alertContainer) alertContainer.style.height = '100%';
-                        if (buttonContainer) buttonContainer.style.height = '100%';
-                    }
-                }
-
-                const styleToAssign = { ...d.style };
-                if (!isInnerBox) {
-                    delete styleToAssign.width;
-                    delete styleToAssign.height;
-                }
-                
-                targets.forEach(target => {
-                    Object.assign(target.style, styleToAssign);
-                    for (const [key, val] of Object.entries(styleToAssign)) {
-                        if (key === 'textAlign' || key === 'alignItems' || key === 'justifyContent' || key === 'borderRadius') {
-                            const cssKey = key === 'textAlign' ? 'text-align' : (key === 'alignItems' ? 'align-items' : (key === 'justifyContent' ? 'justify-content' : 'border-radius'));
-                            target.style.setProperty(cssKey, val, 'important');
-                            
-                            if (key === 'textAlign') {
-                                const padLeft = val === 'left' ? '10px' : '0px';
-                                const padRight = val === 'right' ? '10px' : '0px';
-                                target.style.setProperty('padding-left', padLeft, 'important');
-                                target.style.setProperty('padding-right', padRight, 'important');
-                                
-                                target.querySelectorAll('p, span, .ql-editor, .ql-editor p').forEach(child => {
-                                    child.style.setProperty(cssKey, val, 'important');
-                                    child.style.setProperty('padding-left', padLeft, 'important');
-                                    child.style.setProperty('padding-right', padRight, 'important');
-                                    const flexAlign = val === 'left' ? 'flex-start' : (val === 'right' ? 'flex-end' : 'center');
-                                    child.style.setProperty('align-items', flexAlign, 'important');
-                                    child.style.setProperty('justify-content', flexAlign, 'important');
-                                });
-                            }
-                        }
-                    }
-                });
-                
-                const isSvgContainer = t.classList.contains('v4-shape-diamond') || t.classList.contains('v4-shape-triangle') || t.classList.contains('v4-shape-wave') || t.classList.contains('v4-shape-arrow');
-                const svgShape = t.classList.contains('v4-shape') ? t.querySelector('path, polygon, rect, circle') : t.querySelector('.v4-shape path, .v4-shape polygon, .v4-shape rect, .v4-shape circle');
-                if (svgShape) {
-                    if (d.style.backgroundColor || d.style.background) {
-                        svgShape.style.fill = d.style.backgroundColor || d.style.background;
-                        if (isSvgContainer) {
-                            t.style.background = 'transparent';
-                            t.style.backgroundColor = 'transparent';
-                        }
-                    }
-                    if (d.style.borderColor) {
-                        svgShape.style.stroke = d.style.borderColor;
-                        svgShape.style.strokeWidth = "1.6";
-                    }
-                }
-
-                const isIconComp = s.querySelector('.lf-icon') || s.querySelector('img');
-                if (isIconComp && d.style.color) {
-                    const iconColor = d.style.color;
-                    const innerSvg = t.querySelector('svg') || (t.tagName.toLowerCase() === 'svg' ? t : null);
-                    if (innerSvg) {
-                        innerSvg.style.color = iconColor;
-                        if (innerSvg.getAttribute('stroke') && innerSvg.getAttribute('stroke') !== 'none') {
-                            innerSvg.style.stroke = iconColor;
-                        }
-                        if (innerSvg.getAttribute('fill') && innerSvg.getAttribute('fill') !== 'none') {
-                            innerSvg.style.fill = iconColor;
-                        }
-                        
-                        if (t.classList.contains('v4-checkbox')) {
-                            const checkmark = innerSvg.querySelector('polyline, path');
-                            if (checkmark) checkmark.style.stroke = iconColor;
-                        } else {
-                            const paths = innerSvg.querySelectorAll('path, line, polyline, polygon, rect, circle');
-                            paths.forEach(p => {
-                                if (p.getAttribute('stroke') && p.getAttribute('stroke') !== 'none') p.style.stroke = iconColor;
-                                if (p.getAttribute('fill') && p.getAttribute('fill') !== 'none') p.style.fill = iconColor;
-                            });
-                        }
-                    }
-                    
-                    const innerDot = t.querySelector('.v4-radio div') || (t.classList.contains('v4-radio') ? t.querySelector('div') : null);
-                    if (innerDot) {
-                        innerDot.style.backgroundColor = iconColor;
-                    }
-                    
-                    if (!innerSvg && !innerDot) {
-                        t.style.filter = 'none';
-                        if (t.tagName.toLowerCase() === 'img') {
-                            let origSrc = t.getAttribute('data-original-src');
-                            if (!origSrc) {
-                                origSrc = t.src;
-                                t.setAttribute('data-original-src', origSrc);
-                            }
-                            t.style.webkitMaskImage = 'url("' + origSrc + '")';
-                            t.style.webkitMaskSize = 'contain';
-                            t.style.webkitMaskPosition = 'center';
-                            t.style.webkitMaskRepeat = 'no-repeat';
-                            
-                            t.style.maskImage = 'url("' + origSrc + '")';
-                            t.style.maskSize = 'contain';
-                            t.style.maskPosition = 'center';
-                            t.style.maskRepeat = 'no-repeat';
-                            
-                            t.style.backgroundColor = iconColor;
-                            t.src = "data:image/svg+xml;utf8,\x3csvg xmlns='http://www.w3.org/2000/svg'/\x3e";
-                        } else {
-                            const origBg = t.getAttribute('data-original-bg') || window.getComputedStyle(t).backgroundImage;
-                            const origPos = t.getAttribute('data-original-pos') || window.getComputedStyle(t).backgroundPosition;
-                            const origSize = t.getAttribute('data-original-size') || window.getComputedStyle(t).backgroundSize;
-                            
-                            if (origBg && origBg !== 'none') {
-                                if (!t.getAttribute('data-original-bg')) {
-                                    t.setAttribute('data-original-bg', origBg);
-                                    t.setAttribute('data-original-pos', origPos);
-                                    t.setAttribute('data-original-size', origSize);
-                                }
-                                
-                                t.style.setProperty('webkit-mask-image', origBg, 'important');
-                                t.style.setProperty('webkit-mask-position', origPos, 'important');
-                                t.style.setProperty('webkit-mask-size', origSize, 'important');
-                                t.style.setProperty('webkit-mask-repeat', 'no-repeat', 'important');
-                                
-                                t.style.setProperty('mask-image', origBg, 'important');
-                                t.style.setProperty('mask-position', origPos, 'important');
-                                t.style.setProperty('mask-size', origSize, 'important');
-                                t.style.setProperty('mask-repeat', 'no-repeat', 'important');
-                                
-                                t.style.setProperty('background-color', iconColor, 'important');
-                                t.style.setProperty('background-image', 'none', 'important');
-                                
-                                const computedPadding = window.getComputedStyle(t).paddingTop;
-                                const hasPadding = (t.style.padding && t.style.padding !== '0px') || (computedPadding && computedPadding !== '0px' && computedPadding !== '0');
-                                if (hasPadding) {
-                                    t.style.setProperty('webkit-mask-origin', 'content-box', 'important');
-                                    t.style.setProperty('webkit-mask-clip', 'content-box', 'important');
-                                    t.style.setProperty('mask-origin', 'content-box', 'important');
-                                    t.style.setProperty('mask-clip', 'content-box', 'important');
-                                    t.style.setProperty('background-origin', 'content-box', 'important');
-                                    t.style.setProperty('background-clip', 'content-box', 'important');
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            if (d.subSelector && d.subStyle) {
-                t.querySelectorAll(d.subSelector).forEach(sub => {
-                    Object.keys(d.subStyle).forEach(key => {
-                        const cssKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
-                        sub.style.setProperty(cssKey, d.subStyle[key], 'important');
-                    });
-                });
-            }
-            if (typeof window.syncTableComponentSize === 'function') {
-                window.syncTableComponentSize();
-            }
-            window.updateHandles(s);
-            markDirty();
         } else if (d.type === 'LF_DELETE_SELECTED') {
             const s = document.querySelector('.lf-component.selected'); 
             if (s) { 

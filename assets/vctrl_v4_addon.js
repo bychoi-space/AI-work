@@ -21,9 +21,13 @@
     }
 
     function notifyIframe(data) {
-        const activeIframe = document.getElementById('main-iframe');
+        const activeIframe = document.getElementById('main-iframe') || document.getElementById('screen-iframe');
         if (activeIframe && activeIframe.contentWindow) {
-            activeIframe.contentWindow.postMessage(data, '*');
+            const payload = { ...data };
+            if (!payload.id && window.activeCompId) {
+                payload.id = window.activeCompId;
+            }
+            activeIframe.contentWindow.postMessage(payload, '*');
         } else {
             console.warn("[V4 Addon] notifyIframe failed: activeIframe or contentWindow not found.");
         }
@@ -1190,6 +1194,13 @@
         if (textInput) {
             textInput.oninput = () => {
                 notifyIframe({ type: 'LF_UPDATE_BUTTON_PROPERTIES', buttonText: textInput.value });
+            };
+        }
+
+        const fontSizeInput = document.getElementById('prop-button-font-size');
+        if (fontSizeInput) {
+            fontSizeInput.oninput = () => {
+                notifyIframe({ type: 'LF_UPDATE_BUTTON_PROPERTIES', buttonFontSize: fontSizeInput.value });
             };
         }
 

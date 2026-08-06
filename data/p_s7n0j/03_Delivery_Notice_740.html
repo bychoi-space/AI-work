@@ -2944,6 +2944,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         const buttonText = btnContainer ? (btnContainer.getAttribute('data-text') || "버튼") : "버튼";
         const buttonStyle = btnContainer ? (btnContainer.getAttribute('data-btn-style') || "normal") : "normal";
         const buttonRadius = btnContainer ? (btnContainer.getAttribute('data-btn-radius') || "6") : "6";
+        const buttonFontSize = btnContainer ? (parseInt(btnContainer.getAttribute('data-font-size')) || (btnContainer.querySelector('.v4-custom-btn') ? parseInt(btnContainer.querySelector('.v4-custom-btn').style.fontSize) : 12) || 12) : 12;
 
         // Date Picker Atom Detection
         const isDatePicker = isGroup ? false : (!!c.querySelector('.v4-datepicker-container') || c.classList.contains('v4-datepicker-container'));
@@ -3175,6 +3176,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             buttonText: buttonText,
             buttonStyle: buttonStyle,
             buttonRadius: buttonRadius,
+            buttonFontSize: buttonFontSize,
             isDatePicker: isDatePicker,
             dpShowPresets: dpShowPresets,
             dpShowEndDate: dpShowEndDate,
@@ -5095,6 +5097,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     const btn = container.querySelector('.v4-custom-btn');
                     if (btn) btn.style.borderRadius = d.buttonRadius + 'px';
                 }
+                if (d.buttonFontSize !== undefined) {
+                    const fontVal = parseInt(d.buttonFontSize) || 12;
+                    container.setAttribute('data-font-size', fontVal);
+                    const btn = container.querySelector('.v4-custom-btn');
+                    if (btn) btn.style.fontSize = fontVal + 'px';
+                }
                 
                 if (typeof window.enforceDesignSystem === 'function') window.enforceDesignSystem();
                 markDirty();
@@ -5419,8 +5427,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
         }
         else if (d.type === 'LF_UPDATE_STYLE') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
-            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            if (typeof window.v4GlobalStyleHandler === 'function') {
+                window.v4GlobalStyleHandler(d);
+                return;
+            }
+            const s = (d.id ? document.getElementById(d.id) : null) || document.querySelector('.lf-component.selected');
+            if (!s) return;
             
             let t = d.selector ? s.querySelector(d.selector) : s;
             if (!t && s.classList.contains('text-marker')) {
@@ -5436,6 +5448,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             
             const searchbarContainer = s.querySelector('.v4-searchbar-container');
             if (searchbarContainer && !d.selector) t = searchbarContainer;
+            
+            const selectboxContainer = s.querySelector('.v4-selectbox-container');
             
             const alertContainer = s.querySelector('.v4-alert-container');
             const alertDialog = alertContainer ? alertContainer.querySelector('.v4-alert-dialog') : null;
@@ -5456,23 +5470,37 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 const isInnerBox = t.classList.contains('v4-checkbox') || t.classList.contains('v4-radio');
                 
                 if (d.style.width !== undefined) {
+                    const wVal = typeof d.style.width === 'number' ? d.style.width + 'px' : d.style.width;
                     if (isInnerBox) {
-                        t.style.width = d.style.width;
+                        t.style.width = wVal;
                     } else {
-                        s.style.width = d.style.width;
+                        s.style.setProperty('width', wVal, 'important');
                         if (inputContainer) inputContainer.style.width = '100%';
                         if (alertContainer) alertContainer.style.width = '100%';
                         if (buttonContainer) buttonContainer.style.width = '100%';
+                        if (selectboxContainer) {
+                            selectboxContainer.style.setProperty('width', '100%', 'important');
+                            const header = selectboxContainer.querySelector('.v4-selectbox-header');
+                            const optionsList = selectboxContainer.querySelector('.v4-selectbox-options');
+                            if (header) header.style.setProperty('width', '100%', 'important');
+                            if (optionsList) optionsList.style.setProperty('width', '100%', 'important');
+                        }
                     }
                 }
                 if (d.style.height !== undefined) {
+                    const hVal = typeof d.style.height === 'number' ? d.style.height + 'px' : d.style.height;
                     if (isInnerBox) {
-                        t.style.height = d.style.height;
+                        t.style.height = hVal;
                     } else {
-                        s.style.height = d.style.height;
+                        s.style.height = hVal;
                         if (inputContainer) inputContainer.style.height = '100%';
                         if (alertContainer) alertContainer.style.height = '100%';
                         if (buttonContainer) buttonContainer.style.height = '100%';
+                        if (selectboxContainer) {
+                            selectboxContainer.style.height = '100%';
+                            const header = selectboxContainer.querySelector('.v4-selectbox-header');
+                            if (header) header.style.height = '100%';
+                        }
                     }
                 }
 

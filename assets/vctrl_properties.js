@@ -37,7 +37,21 @@
     // 1. Message Listeners
     if (window.MessageHub) {
         MessageHub.subscribe('LF_COMP_SELECTED', (data) => {
-            activeCompId = data.id;
+            const iframeWin = (window.DOM && window.DOM.iframe && window.DOM.iframe.contentWindow) || (document.getElementById('main-iframe') || document.getElementById('screen-iframe'))?.contentWindow;
+            const targetId = data.id || (iframeWin && iframeWin.document.querySelector('.lf-component.selected')?.id);
+            if (targetId) {
+                activeCompId = targetId;
+                window.activeCompId = targetId;
+                if (window.GroupingManager && typeof window.GroupingManager.setSelectedIds === 'function') {
+                    const selIds = window.GroupingManager.getSelectedIds() || [];
+                    if (selIds.length === 0 || !selIds.includes(targetId)) {
+                        window.GroupingManager.setSelectedIds([targetId]);
+                        if (typeof window.GroupingManager.updateSelectionUI === 'function') {
+                            window.GroupingManager.updateSelectionUI();
+                        }
+                    }
+                }
+            }
             updateAllInputs(data.w, data.h);
             syncAllColors(data.currentStyles || {});
             hidePalettePopup();
@@ -105,6 +119,7 @@
         const inputs = document.querySelectorAll('.v4-prop-input');
         inputs.forEach(input => {
             if (input.id === 'prop-width-icon' || input.id === 'prop-height-icon') return;
+            if (input === document.activeElement) return;
             const prop = input.dataset.prop;
             if (prop === 'width') input.value = Math.round(w);
             if (prop === 'height') input.value = Math.round(h);
@@ -177,7 +192,17 @@
         const val = parseInt(value) || 0;
         if (val < 1) return;
 
-        if (!activeCompId || !window.DOM || !window.DOM.iframe || !window.DOM.iframe.contentWindow) return;
+        const iframeEl = (window.DOM && window.DOM.iframe && window.DOM.iframe.contentWindow) 
+            ? window.DOM.iframe 
+            : (document.getElementById('main-iframe') || document.getElementById('screen-iframe'));
+
+        if (!iframeEl || !iframeEl.contentWindow) return;
+
+        const targetId = activeCompId || window.activeCompId || (iframeEl.contentWindow.document?.querySelector('.lf-component.selected')?.id);
+        if (!targetId) return;
+
+        activeCompId = targetId;
+        window.activeCompId = targetId;
 
         const chk = document.getElementById('chk-preserve-aspect-ratio');
         const shouldLock = chk && chk.checked && activeImageRatio !== null;
@@ -204,7 +229,8 @@
             }
         }
 
-        MessageHub.send(window.DOM.iframe.contentWindow, 'LF_UPDATE_STYLE', {
+        MessageHub.send(iframeEl.contentWindow, 'LF_UPDATE_STYLE', {
+            id: targetId,
             style: style
         });
 
@@ -234,8 +260,32 @@
     };
 
     document.addEventListener('input', (e) => {
+        const id = e.target.id;
+        if (SPECIAL_STYLE_CONFIGS[id]) {
+            const iframeWin = (window.DOM && window.DOM.iframe && window.DOM.iframe.contentWindow) || (document.getElementById('main-iframe') || document.getElementById('screen-iframe'))?.contentWindow;
+            const targetId = activeCompId || window.activeCompId;
+            if (!targetId || !iframeWin) return;
+            const msgCreator = SPECIAL_STYLE_CONFIGS[id];
+            const msg = msgCreator(e.target.value);
+            MessageHub.send(iframeWin, msg.type, { ...msg, id: targetId });
+            
+            const txtEl = document.getElementById('txt-' + id);
+            if (txtEl) {
+                txtEl.innerText = e.target.value;
+            }
+            if (window.markAsDirty) window.markAsDirty();
+            return;
+        }
+
+        if (e.target.classList.contains('v4-prop-input')) {
+            const prop = e.target.dataset.prop;
+            const value = e.target.value;
+            if (prop && value !== '') {
+                applyDimension(prop, value);
+            }
+            return;
+        }
         if (e.target.classList.contains('v4-color-input')) {
-            if (SPECIAL_STYLE_CONFIGS[e.target.id]) return;
             const prop = e.target.dataset.prop;
             const value = e.target.value;
             const wrapper = e.target.closest('.v4-color-wrapper');
@@ -244,19 +294,13 @@
         }
     });
 
-    document.addEventListener('input', (e) => {
-        const id = e.target.id;
-        if (SPECIAL_STYLE_CONFIGS[id]) {
-            if (!activeCompId || !window.DOM || !window.DOM.iframe || !window.DOM.iframe.contentWindow) return;
-            const msgCreator = SPECIAL_STYLE_CONFIGS[id];
-            const msg = msgCreator(e.target.value);
-            MessageHub.send(window.DOM.iframe.contentWindow, msg.type, msg);
-            
-            const txtEl = document.getElementById('txt-' + id);
-            if (txtEl) {
-                txtEl.innerText = e.target.value;
+    document.addEventListener('change', (e) => {
+        if (e.target.classList.contains('v4-prop-input')) {
+            const prop = e.target.dataset.prop;
+            const value = e.target.value;
+            if (prop && value !== '') {
+                applyDimension(prop, value);
             }
-            if (window.markAsDirty) window.markAsDirty();
         }
     });
 
@@ -290,7 +334,8 @@
 
         const tBtn = e.target.closest('[id]');
         if (tBtn && TRANSPARENCY_BUTTONS[tBtn.id]) {
-            if (!activeCompId || !window.DOM || !window.DOM.iframe || !window.DOM.iframe.contentWindow) return;
+            const iframeWin = (window.DOM && window.DOM.iframe && window.DOM.iframe.contentWindow) || (document.getElementById('main-iframe') || document.getElementById('screen-iframe'))?.contentWindow;
+            if (!activeCompId || !iframeWin) return;
             const conf = TRANSPARENCY_BUTTONS[tBtn.id];
             
             const wrapper = document.getElementById(conf.wrapper);
@@ -299,7 +344,7 @@
             if (conf.extra) conf.extra();
             
             const msg = conf.msg();
-            MessageHub.send(window.DOM.iframe.contentWindow, msg.type, msg);
+            MessageHub.send(iframeWin, msg.type, { ...msg, id: activeCompId });
             if (window.markAsDirty) window.markAsDirty();
         }
     });
@@ -433,7 +478,11 @@
     }, true); // Use capture phase to intercept early
 
     function applyStyle(prop, value) {
-        if (!activeCompId || !window.DOM || !window.DOM.iframe || !window.DOM.iframe.contentWindow) return;
+        const iframeEl = (window.DOM && window.DOM.iframe && window.DOM.iframe.contentWindow) 
+            ? window.DOM.iframe 
+            : (document.getElementById('main-iframe') || document.getElementById('screen-iframe'));
+
+        if (!activeCompId || !iframeEl || !iframeEl.contentWindow) return;
         
         const style = {};
         if (prop === 'background') {
@@ -443,7 +492,8 @@
             style[prop] = value;
         }
         
-        MessageHub.send(window.DOM.iframe.contentWindow, 'LF_UPDATE_STYLE', {
+        MessageHub.send(iframeEl.contentWindow, 'LF_UPDATE_STYLE', {
+            id: activeCompId,
             style: style
         });
         
