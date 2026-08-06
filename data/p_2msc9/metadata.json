@@ -83,7 +83,7 @@
     "06_Mobile_Design_3_848.html": {
       "title": "화면설계 쿠폰UI",
       "type": "mobile-ui",
-      "updatedAt": "2026-08-06T02:37:58.140Z",
+      "updatedAt": "2026-08-06T02:38:32.073Z",
       "template": "template_mobile_ui_3.html",
       "description": [
         {
@@ -218,5 +218,5 @@
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
   "jira": "LFML-145305",
   "themeIndex": 5,
-  "updated": "2026-08-06 11:37:58"
+  "updated": "2026-08-06 11:38:32"
 }
