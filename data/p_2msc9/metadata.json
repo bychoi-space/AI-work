@@ -201,6 +201,12 @@
       ],
       "defaultTab": "editor",
       "screenDesc": ""
+    },
+    "99_Blank_562.html": {
+      "title": "99_Blank_562",
+      "type": "blank",
+      "updatedAt": "2026-08-06T02:23:35.557Z",
+      "template": "template_blank.html"
     }
   },
   "assignee": "최범열",
