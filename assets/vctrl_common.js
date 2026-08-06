@@ -9,6 +9,17 @@
  * 3. If you must use a backtick, it MUST be escaped as \` to avoid syntax errors.
  */
 
+window.rgbToHex = function(rgb) {
+    if (!rgb || rgb === "transparent" || rgb === "none" || rgb.includes("rgba(0, 0, 0, 0)")) return null;
+    if (rgb.startsWith('#')) return rgb;
+    const matches = rgb.match(/\d+/g);
+    if (!matches || matches.length < 3) return "#ffffff";
+    const r = Math.min(255, parseInt(matches[0])).toString(16).padStart(2, "0");
+    const g = Math.min(255, parseInt(matches[1])).toString(16).padStart(2, "0");
+    const b = Math.min(255, parseInt(matches[2])).toString(16).padStart(2, "0");
+    return "#" + r + g + b;
+};
+
 window.hexToRgba = function(hex, opacity) {
     if (!hex || hex === 'transparent') return 'rgba(0, 0, 0, 0)';
     if (hex.startsWith('rgba')) {

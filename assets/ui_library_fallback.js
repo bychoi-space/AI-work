@@ -147,6 +147,16 @@ window.VCTRL_UI_FALLBACK_ICON = `
             </div>
             <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary); text-align: center; display: block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">New Window</span>
         </div>
+        <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Download')" data-ko="다운로드 저장 받기 받기버튼 download" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 10px 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box; height: 76px; text-align: center;">
+            <div style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; overflow: visible;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 24px; height: 24px; color: rgb(255, 255, 255); flex-shrink: 0; padding: 2px; box-sizing: border-box; background-image: none !important;">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            </div>
+            <span style="font-size: 10px; font-weight: 600; color: var(--text-secondary); text-align: center; display: block; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Download</span>
+        </div>
 
         <!-- Group 2: Customer Support & Review -->
         <div class="component-item v4-card" onclick="insertAtomicComponent('icon', 'Cust Gift')" data-ko="선물/혜택 선물 혜택 기프트 쿠폰" style="background: rgba(56, 189, 248, 0.05); border: 1.6px solid rgba(56, 189, 248, 0.1) !important; border-radius: 8px; padding: 10px 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box; height: 76px; text-align: center;">
@@ -637,6 +647,14 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                     </div>
                 </div>
             </div>
+            <!-- Atom Disabled Toggle -->
+            <div class="prop-group" style="margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">DISABLE (비활성화)</label>
+                <div style="display: flex; gap: 4px;">
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="true" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="false" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                </div>
+            </div>
             <!-- Dimensions -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 12px;">
                 <div class="prop-group">
@@ -698,6 +716,14 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                 <div class="prop-group">
                     <label class="v4-unified-label" data-prop="height" style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">HEIGHT (개별 세로폭)</label>
                     <input type="number" id="prop-accordion-height" min="10" max="500" class="v4-prop-input" data-prop="height" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 6px 8px; border-radius: 4px; font-size: 11px;">
+                </div>
+            </div>
+            <!-- Atom Disabled Toggle -->
+            <div class="prop-group" style="margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">DISABLE (비활성화)</label>
+                <div style="display: flex; gap: 4px;">
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="true" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="false" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
                 </div>
             </div>
             <!-- Depth Type -->
@@ -826,6 +852,14 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                     <input type="number" id="prop-input-maxlength" value="100" min="1" max="1000" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
                 </div>
             </div>
+            <!-- Atom Disabled Toggle -->
+            <div class="prop-group" style="margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">DISABLE (비활성화)</label>
+                <div style="display: flex; gap: 4px;">
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="true" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="false" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                </div>
+            </div>
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
                 <!-- Background Color -->
                 <div class="prop-group">
@@ -912,6 +946,14 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                     </div>
                 </div>
             </div>
+            <!-- Atom Disabled Toggle -->
+            <div class="prop-group" style="margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">DISABLE (비활성화)</label>
+                <div style="display: flex; gap: 4px;">
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="true" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="false" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                </div>
+            </div>
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 12px;">
                 <!-- Width -->
                 <div class="prop-group">
@@ -970,8 +1012,8 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                 <div class="prop-group">
                     <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">DISABLE (비활성화)</label>
                     <div style="display: flex; gap: 4px;">
-                        <button id="btn-stepper-disabled-y" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
-                        <button id="btn-stepper-disabled-n" class="v4-inspector-btn" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                        <button id="btn-stepper-disabled-y" class="v4-inspector-btn btn-atom-disabled" data-disabled="true" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                        <button id="btn-stepper-disabled-n" class="v4-inspector-btn btn-atom-disabled" data-disabled="false" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
                     </div>
                 </div>
             </div>
@@ -1025,6 +1067,14 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                     </div>
                 </div>
             </div>
+            <!-- Atom Disabled Toggle -->
+            <div class="prop-group" style="margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">DISABLE (비활성화)</label>
+                <div style="display: flex; gap: 4px;">
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="true" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="false" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                </div>
+            </div>
             <!-- Dimensions -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 12px;">
                 <div class="prop-group">
@@ -1072,6 +1122,14 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                 <div class="prop-group">
                     <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">PLACEHOLDER (선택 전 텍스트)</label>
                     <input type="text" id="prop-fileupload-placeholder" value="선택된 파일 없음" style="width:100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 11px; box-sizing: border-box; outline: none; font-family: inherit;">
+                </div>
+            </div>
+            <!-- Atom Disabled Toggle -->
+            <div class="prop-group" style="margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">DISABLE (비활성화)</label>
+                <div style="display: flex; gap: 4px;">
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="true" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="false" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
                 </div>
             </div>
             <!-- Dimensions -->
@@ -1320,6 +1378,14 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                     </div>
                 </div>
             </div>
+            <!-- Atom Disabled Toggle -->
+            <div class="prop-group" style="margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">DISABLE (비활성화)</label>
+                <div style="display: flex; gap: 4px;">
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="true" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="false" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                </div>
+            </div>
             <!-- Dimensions -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 12px;">
                 <div class="prop-group">
@@ -1357,6 +1423,14 @@ window.VCTRL_UI_FALLBACK_INSPECTOR = `
                 </div>
             </div>
 
+            <!-- Atom Disabled Toggle -->
+            <div class="prop-group" style="margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px;">
+                <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 6px;">DISABLE (비활성화)</label>
+                <div style="display: flex; gap: 4px;">
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="true" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">Y</button>
+                    <button class="v4-inspector-btn btn-atom-disabled" data-disabled="false" style="flex: 1; height: 26px; border-radius: 13px; font-size: 11px;">N</button>
+                </div>
+            </div>
             <!-- Dimensions -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; margin-top: 12px;">
                 <div class="prop-group">

@@ -12,12 +12,16 @@
   - **`vctrl_core.js` (Core Orchestrator - Parent Side)**:
     - **역할**: 시스템의 '심장'. 전역 상태(`state`) 관리, GitHub API 연동(저장/로드), `MessageHub`를 통한 모듈 간 조율, 스크린 로딩 및 내비게이션 보호 로직 담당.
     - **참고**: 스크린 로드 시점에 분리된 여러 iframe 하위 스크립트 모듈들(`vctrl_undo.js`, `vctrl_design_system.js`, `vctrl_shortcuts.js`, `vctrl_iframe_drag.js`, `vctrl_iframe_grid.js`, `vctrl_iframe_accordion.js`, `vctrl_iframe_script.js` 등)을 동적으로 결합/컴파일하여 iframe `srcdoc`에 주입합니다.
+  - **`vctrl_connectors.js` (Connector Engine - Parent Side)**:
+    - **역할**: 선/커넥터(`Line (Straight)`, `Line (Elbow)`) 전용 엔진. 캔버스 중앙 생성(`spawnLine`), 30px 자석 스냅(`collectSnapTargets`), 포트 하이라이트, 컴포넌트 이동 시 실시간 앵커 추종(`syncAnchoredPositions`) 및 인스펙터 패널 연동 전담.
+  - **`vctrl_iframe_ports.js` (Port Engine - Iframe Side)**:
+    - **역할**: iframe 내부 요소의 edge/port 영역 감지 및 포트 드래그 커넥터 시작 연동 전담.
   - **`vctrl_iframe_script.js` (Rendering Engine Shell - Iframe Side)**:
-    - **역할**: 시스템의 '근육'. iframe 내부의 DOM 직접 조작, 기본 이벤트 리스너 바인딩, 메시지 디스패칭 등을 전담합니다.
+    - **역할**: 시스템의 '근육'. iframe 내부의 DOM 직접 조작, 기본 이벤트 리스너 바인딩, 커넥터 조작 핸들 이벤트 디스패칭(`LF_CONNECTOR_HANDLE_MOVE`) 등을 전담합니다.
   - **`vctrl_iframe_drag.js` (Drag/Resize Engine - Iframe Side)**:
     - **역할**: iframe 내부 요소의 마우스 드래그 이동 및 리사이즈 조작 인터랙션을 전담합니다.
-  - **`vctrl_iframe_grid.js` / `vctrl_iframe_accordion.js` (Component Renders - Iframe Side)**:
-    - **역할**: iframe 내부의 고가변 Grid UI 테이블 및 Accordion 계층 구조 컴포넌트의 전용 동적 렌더링을 전담합니다.
+  - **`vctrl_iframe_grid.js` / `vctrl_iframe_accordion.js` / `vctrl_v4_addon.js` / `vctrl_object_shape.js` / `vctrl_object_connector.js`**:
+    - **역할**: 특수 쉐입, 커넥터 객체, 그리드 테이블 및 아코디언 계층 구조 컴포넌트의 전용 동적 렌더링 및 스타일 핸들링을 분리 전담합니다.
   - **`vctrl_undo.js` (Undo Layer - Iframe Side)**:
     - **역할**: iframe 내부의 V4UndoManager 및 Undo/Redo 로컬 상태 관리를 전담합니다.
   - **`vctrl_design_system.js` (Design Observer - Iframe Side)**:
@@ -171,6 +175,7 @@
 - **중첩 삼항 연산자(Nested Ternaries) 지양 및 분기문 최적화**: 가독성을 해치고 브래킷 매칭 오류(SyntaxError)를 유발하기 쉬운 다중 중첩 삼항 연산자 대신 명확한 `if - else if` 분기 또는 매핑 객체(Dictionary)를 사용하세요. 특정 모듈(예: `vctrl_inspector.js`)의 SyntaxError로 인해 객체(예: `DOM`)가 생성되지 못하면, 이를 의존하는 다른 모듈들까지 `ReferenceError`로 작동을 멈추는 연쇄 장애가 발생하므로 구문 오류 예방에 최우선적으로 집중해야 합니다.
 - **템플릿 리터럴 내 문자열 이스케이프 및 결합 표준**: `vctrl_iframe_script.js`와 같이 파일 전체가 큰 백틱(`` ` ``) 템플릿 문자열로 감싸진 채 부모 측 브라우저에서 동적으로 평가(eval)되는 파일의 경우, 내부 코드에서 또다시 백틱(`` ` ``)이나 변수 보간(`${}`) 구문을 사용하면 문법 충돌(SyntaxError)이 일어나 작동이 중단됩니다. 이를 방지하기 위해 내부 문자열 표현은 반드시 표준적인 따옴표(싱글/더블)와 덧셈 연산자(`"Sub Item " + (i + 1)`)를 활용해 문자열을 결합해야 합니다.
 - **신규 아톰 추가 시 옵션 프로퍼티 플로팅 카드 통합 규칙**: 신규 아톰의 설정 패널을 디자인할 때는 우측 사이드바가 아닌 옵션 프로퍼티 플로팅 카드(`Object Properties Floating Card`)에 노출되도록 `vctrl_inspector.js` 내의 `DOM` 매핑 등록, `restorePropertiesSections` 복원 대상 등록, `updateProperties`의 보이기/숨기기 처리 및 선택 해제(Deselect) 시 숨김 처리를 빠짐없이 세트로 적용하여 사이드바에 옵션 패널이 잔존하는 버그를 원천 차단해야 합니다.
+- **이벤트 핸들러 연쇄 차단 방지 (Non-Blocking Event Listener Flow)**: `mouseup` 또는 `mousemove`와 같은 전역 통합 이벤트 리스너를 수정할 때, 개별 조건문(예: `isConnectorDragging`) 처리 후 `return;`으로 조기 종료를 남용하지 마세요. 조기 종료가 남용되면 하위의 `isMarquee` 상태 해제(`LF_MARQUEE_END`) 및 선택 박스(`.v4-marquee-box`) 제거 로직이 차단되어 클릭 시 캔버스에 파란색 점 잔상이 생성되거나 다중선택 드래그가 마비되는 사이드 이펙트가 발생합니다. 모든 상태 해제 연산은 상호 간섭이 없도록 독립 순차 구문으로 전개해야 합니다.
 
 ## 🚀 작업 프로세스 및 안정성 대원칙 (CRITICAL)
 1. **고민 (Pondering)** -> 2. **분석 (Analysis)** -> 3. **설계 (Design)** -> 4. **실행 (Execution)** -> 5. **확인 (Verification)** 단계를 엄격히 준수합니다.

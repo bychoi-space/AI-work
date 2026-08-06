@@ -214,21 +214,9 @@ window.v4TextMeasurerScript = `
 
     // Strategy 3-C: Shape-Embedded Text (.v4-shape with text)
     const fitShapeText = (c, measured, origW, origH) => {
-        const addedW = 24;
-        const addedH = 16;
-        const targetW = measured.textW + addedW;
-        const targetH = measured.lineCount > 1 
-            ? (measured.fsPx * 1.2 * measured.lineCount) + addedH 
-            : measured.textH + addedH;
-
-        const currentW = parseFloat(origW) || c.offsetWidth || 120;
-        const currentH = parseFloat(origH) || c.offsetHeight || 36;
-        
-        // Prevent shrinking below text requirements while maintaining shape bounds
-        const newW = Math.max(currentW, targetW) + 'px';
-        const newH = Math.max(currentH, targetH, 36) + 'px';
-        if (origW !== newW) c.style.width = newW;
-        if (origH !== newH) c.style.height = newH;
+        // Preserve user-defined shape dimensions; do NOT auto-expand/shrink shape size on text edit
+        if (origW && c.style.width !== origW) c.style.width = origW;
+        if (origH && c.style.height !== origH) c.style.height = origH;
 
         return { hideResizer: false };
     };

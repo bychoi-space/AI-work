@@ -716,6 +716,19 @@ DOM.btnModalSave.onclick = async () => {
             DOM.btnModalSave.innerText = msg;
             DOM.btnModalSave.style.background = color;
             if (color === '#4ade80') {
+                if (context.isCreateMode && typeof saveProjectHistory === 'function') {
+                    const initialHistory = [{
+                        version: '0.1',
+                        date: (typeof getFormattedKST === 'function') ? getFormattedKST() : new Date().toISOString().slice(0,19).replace('T',' '),
+                        message: '프로젝트 최초 생성',
+                        assignee: DOM.metaAssignee.value.trim() || '',
+                        developer: '',
+                        jira: DOM.metaJira.value.trim() || '',
+                        file: 'metadata.json'
+                    }];
+                    saveProjectHistory(projectName, initialHistory, null).catch(e => console.warn("Failed to save initial history:", e));
+                }
+
                 setTimeout(() => {
                     DOM.modal.classList.remove('active');
                     DOM.btnModalSave.innerText = originalText;

@@ -135,7 +135,7 @@
             }
             
             if (val.startsWith('rgb')) {
-                val = window.rgbToHex(val) || val;
+                val = (typeof window.rgbToHex === 'function' ? window.rgbToHex(val) : val) || val;
             }
             
             input.value = val;
@@ -152,15 +152,14 @@
         }
     });
 
+    // Disable mouse scroll value adjustments on object properties (keep mouse wheel for modal/panel scrolling only)
     document.addEventListener('wheel', (e) => {
-        if (e.target.classList.contains('v4-prop-input')) {
-            e.preventDefault();
-            const step = e.shiftKey ? 10 : 1;
-            const delta = e.deltaY < 0 ? step : -step;
-            e.target.value = Math.max(1, parseInt(e.target.value || 0) + delta);
-            applyDimension(e.target.dataset.prop, e.target.value);
+        if (e.target.matches('input[type="number"], .v4-prop-input')) {
+            if (document.activeElement === e.target) {
+                e.target.blur();
+            }
         }
-    }, { passive: false });
+    }, { passive: true });
 
     document.addEventListener('keydown', (e) => {
         if (e.target.classList.contains('v4-prop-input')) {

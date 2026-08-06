@@ -46,8 +46,10 @@ window.ConnectorEngine = (function() {
         }
 
         if (window.MessageHub) {
+            window.MessageHub.subscribe('LF_SNAP_REQUEST', syncAnchoredPositions);
             window.MessageHub.subscribe('LF_SNAP_RESPONSE', syncAnchoredPositions);
             window.MessageHub.subscribe('LF_SNAP_END', syncAnchoredPositions);
+            window.MessageHub.subscribe('LF_COMP_RESIZED', syncAnchoredPositions);
             window.MessageHub.subscribe('LF_DESELECT', clearSelection); 
             
             // Forward selection from iframe
@@ -179,7 +181,7 @@ window.ConnectorEngine = (function() {
     }
 
     function redrawAll() {
-        const iframe = window.DOM?.iframe;
+        const iframe = window.DOM?.iframe || document.getElementById('screen-iframe');
         if (window.MessageHub && iframe?.contentWindow) {
             MessageHub.send(iframe.contentWindow, 'LF_RENDER_CONNECTORS', {
                 connectors: window.state.connectors || [],
@@ -190,7 +192,7 @@ window.ConnectorEngine = (function() {
 
     function onIframeMouseMove(data) {
         if (!isDragging || !dragPoint) return;
-        const iframe = window.DOM.iframe;
+        const iframe = window.DOM?.iframe || document.getElementById('screen-iframe');
         if (!iframe) return;
         const rect = iframe.getBoundingClientRect();
         const syntheticEvent = {
@@ -206,7 +208,8 @@ window.ConnectorEngine = (function() {
 
         rafId = requestAnimationFrame(() => {
             if (!isDragging || !dragPoint) return;
-            const iframe = window.DOM.iframe;
+            const iframe = window.DOM?.iframe || document.getElementById('screen-iframe');
+            if (!iframe) return;
             const rect = iframe.getBoundingClientRect();
             const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
             
@@ -319,7 +322,7 @@ window.ConnectorEngine = (function() {
     }
 
     function collectSnapTargets() {
-        const iframe = window.DOM.iframe;
+        const iframe = window.DOM?.iframe || document.getElementById('screen-iframe');
         if (!iframe) return;
         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
         const iframeRect = iframe.getBoundingClientRect();
@@ -350,7 +353,8 @@ window.ConnectorEngine = (function() {
     function spawnLine(type = 'straight') {
         if (window.V4UndoManager) window.V4UndoManager.saveState();
         const id = 'conn_' + Date.now();
-        const iframe = window.DOM.iframe;
+        const iframe = window.DOM?.iframe || document.getElementById('screen-iframe');
+        if (!iframe) return;
         const rect = iframe.getBoundingClientRect();
         const scale = (window.state && window.state.transform && window.state.transform.scale) || 1;
         const cx = (window.innerWidth / 2 - rect.left) / scale;
@@ -437,14 +441,15 @@ window.ConnectorEngine = (function() {
     }
 
     function syncAnchoredPositions() {
-        const iframe = window.DOM.iframe;
+        const iframe = window.DOM?.iframe || document.getElementById('screen-iframe');
         if (!iframe) return;
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (!iframeDoc || !window.state?.connectors) return;
 
         window.state.connectors.forEach(conn => {
             ['start', 'end'].forEach(type => {
                 const pt = conn[type];
-                if (pt.targetId) {
+                if (pt && pt.targetId) {
                     const targetEl = iframeDoc.getElementById(pt.targetId);
                     if (targetEl) {
                         const left = parseFloat(targetEl.style.left) || 0;
@@ -494,12 +499,37 @@ window.ConnectorEngine = (function() {
         }
     }
 
+    function shiftConnectors(connIds, dx, dy) {
+        if (!Array.isArray(connIds) || connIds.length === 0 || (!dx && !dy)) return;
+        if (!window.state || !Array.isArray(window.state.connectors)) return;
+        let changed = false;
+        connIds.forEach(id => {
+            const conn = window.state.connectors.find(c => c && c.id === id);
+            if (conn && conn.start && conn.end) {
+                conn.start.x += dx;
+                conn.start.y += dy;
+                conn.end.x += dx;
+                conn.end.y += dy;
+                conn.start.targetId = null; conn.start.side = null;
+                conn.end.targetId = null; conn.end.side = null;
+                changed = true;
+            }
+        });
+        if (changed) {
+            if (window.state.activeFile && window.state.activeFile.meta) {
+                window.state.activeFile.meta.connectors = window.state.connectors;
+            }
+            redrawAll();
+            if (window.markAsDirty) window.markAsDirty();
+        }
+    }
+
     if (document.readyState === 'complete') init();
     else window.addEventListener('load', init);
 
     return {
         init, redrawAll, spawnLine, clearSelection, syncAnchoredPositions,
-        selectConnector, setSelectedIds,
+        selectConnector, setSelectedIds, shiftConnectors,
         getSelectedIds: () => selectedConnectorIds,
         deleteSelected: deleteSelectedLine,
         updateSelectedStyle: window.updateSelectedStyle

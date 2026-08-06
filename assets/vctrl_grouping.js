@@ -251,16 +251,34 @@ window.GroupingManager = (function() {
      };
 
     const getEffectiveSelectedIds = () => {
-        if (window.state && window.state.selectedIds) {
-            return window.state.selectedIds;
+        let coreSelected = (window.state && window.state.selectedIds) ? window.state.selectedIds : selectedIds;
+        const connSelected = (window.ConnectorEngine && typeof window.ConnectorEngine.getSelectedIds === 'function')
+            ? window.ConnectorEngine.getSelectedIds()
+            : [];
+        if (connSelected && connSelected.length > 0) {
+            const merged = new Set([...coreSelected, ...connSelected]);
+            return Array.from(merged);
         }
-        return selectedIds;
+        return coreSelected;
+    };
+
+    const setSelectedIds = (ids) => {
+        selectedIds = Array.isArray(ids) ? [...ids] : [];
+        if (window.state) window.state.selectedIds = [...selectedIds];
+        const connIds = selectedIds.filter(id => typeof id === 'string' && id.startsWith('conn_'));
+        if (window.ConnectorEngine && typeof window.ConnectorEngine.setSelectedIds === 'function') {
+            window.ConnectorEngine.setSelectedIds(connIds);
+        }
+        updateSelectionUI();
     };
 
     const clearSelection = () => {
         selectedIds = [];
         if (window.state) window.state.selectedIds = [];
         selectedIdsIsGroupMap = {};
+        if (window.ConnectorEngine && typeof window.ConnectorEngine.clearSelection === 'function') {
+            window.ConnectorEngine.clearSelection();
+        }
         const iframe = document.getElementById('main-iframe');
         if (iframe && iframe.contentWindow && window.MessageHub) {
             window.MessageHub.send(iframe.contentWindow, 'LF_DESELECT_ALL');
@@ -433,6 +451,7 @@ window.GroupingManager = (function() {
         init,
         getSelectedIds: () => selectedIds,
         getSelectedIdsIsGroupMap: () => selectedIdsIsGroupMap,
+        setSelectedIds,
         clearSelection,
         groupSelected,
         ungroupSelected,

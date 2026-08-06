@@ -804,6 +804,9 @@ const ProjectMetadataManager = {
                     }
                 }
             });
+            if (typeof _syncAtomDisabledProps === 'function' && state.selectedComponent) {
+                _syncAtomDisabledProps(state.selectedComponent);
+            }
         }
     } else {
         window.restorePropertiesSections();
@@ -838,8 +841,8 @@ function _syncStepperProps(comp) {
         highlightActive(activeN, comp.btnEnabled === false);
     }
     if (disabledY && disabledN) {
-        highlightActive(disabledY, comp.disabled === true);
-        highlightActive(disabledN, comp.disabled === false);
+        highlightActive(disabledY, comp.disabled === true || comp.disabled === 'true');
+        highlightActive(disabledN, comp.disabled === false || comp.disabled === 'false');
     }
     
     const minInput = document.getElementById('prop-stepper-min');
@@ -856,6 +859,25 @@ function _syncStepperProps(comp) {
     if (btnTextInput && comp.btnText !== undefined) {
         btnTextInput.value = comp.btnText;
     }
+
+    _syncAtomDisabledProps(comp);
+}
+
+function _syncAtomDisabledProps(comp) {
+    if (!comp) return;
+    const isDis = (comp.disabled === true || comp.disabled === 'true');
+    const highlightActive = (btn, isActive) => {
+        if (!btn) return;
+        btn.style.background = isActive ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+        btn.style.borderColor = isActive ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+        btn.style.color = isActive ? '#00e5ff' : '#94a3b8';
+        btn.style.fontWeight = isActive ? 'bold' : 'normal';
+    };
+
+    document.querySelectorAll('.btn-atom-disabled').forEach(btn => {
+        const btnIsDis = btn.dataset.disabled === 'true';
+        highlightActive(btn, isDis === btnIsDis);
+    });
 }
 
 function _syncSelectboxProps(comp) {
@@ -907,6 +929,7 @@ function _syncSelectboxProps(comp) {
             }).join('');
         }
     }
+    _syncAtomDisabledProps(comp);
 }
 
 function _syncFileuploadProps(comp) {
@@ -947,6 +970,7 @@ function _syncFileuploadProps(comp) {
     if (btnTextInput && document.activeElement !== btnTextInput && comp.fileButtonText !== undefined) {
         btnTextInput.value = comp.fileButtonText;
     }
+    _syncAtomDisabledProps(comp);
 }
 
 function _syncAlertProps(comp) {
@@ -1087,6 +1111,7 @@ function _syncTextboxTextareaProps(comp) {
             ffInput.value = 'inherit';
         }
     }
+    _syncAtomDisabledProps(comp);
 }
 
 function _syncSearchBarProps(comp) {
@@ -1100,6 +1125,7 @@ function _syncSearchBarProps(comp) {
     if (fsInput && document.activeElement !== fsInput && s.fontSize !== undefined) {
         fsInput.value = s.fontSize;
     }
+    _syncAtomDisabledProps(comp);
 }
 
 function _syncAccordionProps(comp) {
@@ -1180,6 +1206,7 @@ function _syncAccordionProps(comp) {
     };
     syncColor('accordion-bg-color', 'accordion-bg-wrapper', s.bg, s.isBgTransparent);
     syncColor('accordion-border-color', 'accordion-border-wrapper', s.border, s.isBorderTransparent);
+    _syncAtomDisabledProps(comp);
 }
 
 function _syncGridProps(comp) {
@@ -1272,6 +1299,7 @@ function _syncCheckboxRadioProps(comp) {
     if (hIconInp && document.activeElement !== hIconInp) {
         hIconInp.value = Math.round(comp.boxH !== undefined ? comp.boxH : 20);
     }
+    _syncAtomDisabledProps(comp);
 }
 
 function _syncDatePickerProps(comp) {
@@ -1341,6 +1369,7 @@ function _syncDatePickerProps(comp) {
     if (endTimeInput && comp.dpEndTime !== undefined) {
         if (document.activeElement !== endTimeInput) endTimeInput.value = comp.dpEndTime || '';
     }
+    _syncAtomDisabledProps(comp);
 }
 
 window.renderScreenList = function(screens, activeName) {
@@ -1623,7 +1652,7 @@ window.renderAtomicLibrary = function() {
 
     const iconsPane = document.getElementById('pane-icons');
     if (iconsPane) {
-        const icons = ['Home', 'Category', 'My', 'Heart', 'Search', 'Cart', 'Brand', 'Back', 'Bell', 'Share', 'Party', 'New Window'];
+        const icons = ['Home', 'Category', 'My', 'Heart', 'Search', 'Cart', 'Brand', 'Back', 'Bell', 'Share', 'Party', 'New Window', 'Download'];
         iconsPane.innerHTML = icons.map(i => `
             <div class="library-item" onclick="insertAtomicComponent('icon', '${i}')" style="flex: 0 0 calc(25% - 8px); height:60px;">
                 <div class="item-preview"><div class="lf-icon lf-icon-${i.toLowerCase().replace(' ', '-')}" style="background-image:none !important; transform: scale(0.6);"></div></div>
@@ -1644,6 +1673,24 @@ window.initQuillEditor = function() {
     const Align = Quill.import('attributors/style/align');
     Quill.register(Align, true);
 
+    // Register distinct intuitive icons for Text Color (Letter A) and Background Color (Paint Bucket / Fill)
+    const icons = Quill.import('ui/icons');
+    if (icons) {
+        // Text Color icon: 'A' letter with color underline bar
+        icons['color'] = `<svg viewBox="0 0 18 18">
+            <path class="ql-stroke" d="M5,12.5 L9,3.5 L13,12.5"></path>
+            <path class="ql-stroke" d="M6.5,9 L11.5,9"></path>
+            <line class="ql-stroke ql-color-label" x1="2.5" y1="15.5" x2="15.5" y2="15.5" stroke-width="2.5"></line>
+        </svg>`;
+        
+        // Background Color icon: Paint Bucket / Fill Bucket with color bar
+        icons['background'] = `<svg viewBox="0 0 18 18">
+            <path class="ql-stroke" d="M12.5,3 L15,5.5 L7.5,13 L4,13 L4,9.5 L11.5,2 L12.5,3 Z"></path>
+            <path class="ql-fill" d="M4,9.5 L7.5,13 L4,13 Z"></path>
+            <line class="ql-stroke ql-bg-label" x1="2.5" y1="15.5" x2="15.5" y2="15.5" stroke-width="2.5"></line>
+        </svg>`;
+    }
+
     window.quillEditor = new Quill('#editor-container', {
         theme: 'snow',
         placeholder: '내용을 입력하세요...',
@@ -1651,6 +1698,33 @@ window.initQuillEditor = function() {
             toolbar: [[{ 'size': Size.whitelist }], ['bold', 'italic', 'underline'], [{ 'color': [] }, { 'background': [] }], ['clean']]
         }
     });
+
+    // Add tooltips to Quill toolbar controls for explicit Korean label guidance
+    setTimeout(() => {
+        const toolbarEl = container.previousElementSibling || document.querySelector('.ql-toolbar');
+        if (toolbarEl) {
+            const btnSize = toolbarEl.querySelector('.ql-size .ql-picker-label');
+            if (btnSize) btnSize.setAttribute('title', '글자 크기 (Font Size)');
+
+            const btnColor = toolbarEl.querySelector('.ql-color .ql-picker-label');
+            if (btnColor) btnColor.setAttribute('title', '글자 색상 (Text Color)');
+
+            const btnBg = toolbarEl.querySelector('.ql-background .ql-picker-label');
+            if (btnBg) btnBg.setAttribute('title', '배경 색상 / 형광펜 (Background Color)');
+
+            const btnBold = toolbarEl.querySelector('.ql-bold');
+            if (btnBold) btnBold.setAttribute('title', '굵게 (Bold)');
+
+            const btnItalic = toolbarEl.querySelector('.ql-italic');
+            if (btnItalic) btnItalic.setAttribute('title', '기울임 (Italic)');
+
+            const btnUnderline = toolbarEl.querySelector('.ql-underline');
+            if (btnUnderline) btnUnderline.setAttribute('title', '밑줄 (Underline)');
+
+            const btnClean = toolbarEl.querySelector('.ql-clean');
+            if (btnClean) btnClean.setAttribute('title', '서식 지우기 (Clear Formatting)');
+        }
+    }, 0);
 
     window.quillEditor.on('text-change', () => {
         if (!state.isEditing || state.editingIndex === -1 || state._isLoadingShapeContent) return;
@@ -1861,24 +1935,23 @@ window.renderHistoryPopup = function(history) {
     
     if (!history || history.length === 0) {
         listContainer.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; color: var(--text-secondary);">
-                <span class="material-icons-outlined" style="font-size: 32px; margin-bottom: 8px; opacity: 0.3;">history</span>
-                <div style="font-size: 12px;">기록된 재개정 이력이 없습니다.</div>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 50px 20px; text-align: center; color: var(--text-secondary);">
+                <span class="material-icons-outlined" style="font-size: 36px; margin-bottom: 10px; opacity: 0.3;">history</span>
+                <div style="font-size: 14px;">기록된 재개정 이력이 없습니다.</div>
             </div>
         `;
     } else {
         listContainer.innerHTML = history.map(item => `
-            <div class="history-item-card" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 12px; font-size: 12px; display: flex; flex-direction: column; gap: 6px; transition: all 0.2s;">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 6px; margin-bottom: 2px;">
-                    <span style="font-weight: 700; color: var(--accent-nav); font-size: 11px; background: rgba(34, 211, 238, 0.1); padding: 1px 6px; border-radius: 4px;">v${item.version || '0.1'}</span>
-                    <span style="color: var(--text-secondary); font-size: 10px; font-family: monospace;">${item.date}</span>
+            <div class="history-item-card" style="background: rgba(255, 255, 255, 0.04); border: 1.6px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 14px 16px; font-size: 13px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 8px; margin-bottom: 2px;">
+                    <span style="font-weight: 700; color: #22d3ee; font-size: 12px; background: rgba(34, 211, 238, 0.15); padding: 2px 8px; border-radius: 6px; letter-spacing: 0.3px;">v${item.version || '0.1'}</span>
+                    <span style="color: #94a3b8; font-size: 12px; font-family: monospace;">${item.date}</span>
                 </div>
-                <div style="color: #fff; font-weight: 500; word-break: break-all; line-height: 1.4;">${item.message || '-'}</div>
-                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; font-size: 10px; color: var(--text-secondary); opacity: 0.85;">
-                    ${item.jira ? `<span style="background: rgba(99, 102, 241, 0.15); color: #818cf8; padding: 1px 5px; border-radius: 3px; font-weight: 500;">${item.jira}</span>` : ''}
-                    ${item.assignee ? `<span>담당: ${item.assignee}</span>` : ''}
-                    ${item.developer ? `<span>개발: ${item.developer}</span>` : ''}
-                    ${item.file ? `<span>파일: ${item.file.replace('.html', '')}</span>` : ''}
+                <div style="color: #f8fafc; font-size: 15px; font-weight: 600; word-break: break-all; line-height: 1.5; margin: 2px 0;">${item.message || '-'}</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; font-size: 13px; color: #94a3b8; align-items: center;">
+                    ${item.jira ? `<span style="background: rgba(99, 102, 241, 0.2); color: #818cf8; padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 12px;">${item.jira}</span>` : ''}
+                    ${item.assignee ? `<span style="font-weight: 500;">담당: ${item.assignee}</span>` : ''}
+                    ${item.developer ? `<span style="font-weight: 500;">개발: ${item.developer}</span>` : ''}
                 </div>
             </div>
         `).join('');
@@ -1911,33 +1984,59 @@ window.closeHistoryPopup = function() {
 };
 
 async function ensureHistoryModal() {
-    if (document.getElementById('history-modal')) return true;
-    try {
-        const response = await fetch('assets/templates/history_modal.html');
-        if (!response.ok) throw new Error("Template load failed");
-        const html = await response.text();
-        document.body.insertAdjacentHTML('beforeend', html);
+    let historyModal = document.getElementById('history-modal');
+    if (!historyModal) {
+        try {
+            let html = '';
+            try {
+                const response = await fetch('assets/templates/history_modal.html');
+                if (response.ok) {
+                    html = await response.text();
+                }
+            } catch (fetchErr) {
+                console.warn("fetch history_modal.html failed, using inline template fallback:", fetchErr);
+            }
 
+            if (!html) {
+                html = `
+                <div id="history-modal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 17, 21, 0.7); backdrop-filter: blur(8px); z-index: 10005; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
+                    <div class="dialog-card" style="max-width: 560px; width: 92%; max-height: 80vh; display: flex; flex-direction: column; background: rgba(30, 41, 59, 0.95); border: 1.6px solid rgba(255, 255, 255, 0.12); border-radius: 16px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); padding: 24px; box-sizing: border-box; backdrop-filter: blur(20px);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 14px; margin-bottom: 18px; flex-shrink: 0;">
+                            <div style="display: flex; align-items: center; gap: 10px; color: var(--accent-nav, #22d3ee);">
+                                <span class="material-icons-outlined" style="font-size: 22px;">history</span>
+                                <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.2px;">프로젝트 재개정 이력</h3>
+                            </div>
+                            <button id="btn-close-history" class="btn-secondary" style="width: 32px; height: 32px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); cursor: pointer; color: #cbd5e1; transition: all 0.2s; margin-left: auto;"><span class="material-icons-outlined" style="font-size: 18px;">close</span></button>
+                        </div>
+                        <div id="history-popup-list" style="flex: 1; overflow-y: auto; padding-right: 4px; display: flex; flex-direction: column; gap: 12px; min-height: 140px;">
+                            <!-- Dynamic history entries here -->
+                        </div>
+                    </div>
+                </div>`;
+            }
+            document.body.insertAdjacentHTML('beforeend', html);
+            historyModal = document.getElementById('history-modal');
+        } catch (e) {
+            console.error("Failed to load history modal dynamically:", e);
+            return false;
+        }
+    }
+
+    if (historyModal) {
         const btnCloseHistory = document.getElementById('btn-close-history');
         if (btnCloseHistory) {
             btnCloseHistory.onclick = () => {
                 window.closeHistoryPopup();
             };
         }
-
-        const historyModal = document.getElementById('history-modal');
-        if (historyModal) {
-            historyModal.onclick = (e) => {
-                if (e.target === historyModal) {
-                    window.closeHistoryPopup();
-                }
-            };
-        }
+        historyModal.onclick = (e) => {
+            if (e.target === historyModal) {
+                window.closeHistoryPopup();
+            }
+        };
         return true;
-    } catch (e) {
-        console.error("Failed to load history modal dynamically:", e);
-        return false;
     }
+    return false;
 }
 
 const btnShowHistory = document.getElementById('btn-show-history');
@@ -1948,15 +2047,22 @@ if (btnShowHistory) {
             const loaded = await ensureHistoryModal();
             if (!loaded) throw new Error("Failed to initialize history modal");
 
-            const historyList = (typeof window.fetchProjectHistory === 'function')
-                ? await window.fetchProjectHistory(state.currentProject)
+            const currentProj = (typeof state !== 'undefined' && state && state.currentProject) ? state.currentProject : null;
+            const historyList = (typeof window.fetchProjectHistory === 'function' && currentProj)
+                ? await window.fetchProjectHistory(currentProj)
                 : [];
             if (typeof window.hideLoading === 'function') window.hideLoading();
             window.renderHistoryPopup(historyList);
         } catch (e) {
             if (typeof window.hideLoading === 'function') window.hideLoading();
             console.error("Failed to load history:", e);
-            if (window.Notification) window.Notification.alert("이력을 불러오는 중 오류가 발생했습니다.", "오류", "error");
+            if (window.Notification && typeof window.Notification.alert === 'function') {
+                window.Notification.alert("이력을 불러오는 중 오류가 발생했습니다.", "오류", "error");
+            } else if (typeof window.showToast === 'function') {
+                window.showToast("이력을 불러오는 중 오류가 발생했습니다.", "error");
+            } else {
+                alert("이력을 불러오는 중 오류가 발생했습니다.");
+            }
         }
     };
 }
@@ -2097,6 +2203,114 @@ function _syncAdminSettingsProps(comp) {
     container.innerHTML = '';
 
     const rowCount = comp.adminRowCount || 1;
+
+    const getCurrentRowsData = () => {
+        const activeId = window.state?.editingIndex;
+        const iframe = document.getElementById('main-iframe');
+        let containerEl = null;
+        if (iframe && iframe.contentWindow && activeId) {
+            const activeEl = iframe.contentWindow.document.getElementById(activeId);
+            if (activeEl) {
+                containerEl = activeEl.querySelector('.v4-admin-settings-container') || activeEl;
+            }
+        }
+        const currentRows = [];
+        const blocks = container.querySelectorAll('.admin-row-config-block');
+        for (let r = 1; r <= rowCount; r++) {
+            const rowBlock = blocks[r - 1];
+            let lbl = comp[`adminRow${r}Label`] || '';
+            let cCount = comp[`adminRow${r}Cols`] || 1;
+            let rType = comp[`adminRow${r}Type`] || 'textbox';
+            let rH = comp[`adminRow${r}Height`] || 50;
+
+            if (containerEl) {
+                lbl = containerEl.getAttribute(`data-row${r}-label`) || lbl;
+                cCount = parseInt(containerEl.getAttribute(`data-row${r}-cols`)) || cCount;
+                rType = containerEl.getAttribute(`data-row${r}-type`) || rType;
+                rH = parseInt(containerEl.getAttribute(`data-row${r}-height`)) || rH;
+            }
+
+            if (rowBlock) {
+                const labelInputs = rowBlock.querySelectorAll('.admin-col-label-input');
+                if (labelInputs.length > 0) {
+                    lbl = Array.from(labelInputs).map(inp => inp.value.trim()).join(', ');
+                }
+                const colsSel = rowBlock.querySelector('.admin-row-cols');
+                if (colsSel) cCount = parseInt(colsSel.value) || 1;
+                const hInp = rowBlock.querySelector('.admin-row-height-input');
+                if (hInp) rH = parseInt(hInp.value) || 50;
+            }
+
+            currentRows.push({
+                label: lbl || `조회 항목 ${r}`,
+                cols: cCount,
+                type: rType,
+                height: rH
+            });
+        }
+        return currentRows;
+    };
+
+    const applyUpdatedRows = (rowsArray) => {
+        const iframe = document.getElementById('main-iframe');
+        const activeId = window.state?.editingIndex;
+        if (!iframe || !iframe.contentWindow || !window.MessageHub) return;
+
+        const newRowCount = rowsArray.length;
+
+        // 1. Update iframe container attributes directly
+        if (activeId) {
+            const activeEl = iframe.contentWindow.document.getElementById(activeId);
+            if (activeEl) {
+                const containerEl = activeEl.querySelector('.v4-admin-settings-container') || activeEl;
+                containerEl.setAttribute('data-row-count', newRowCount);
+                for (let r = 1; r <= 10; r++) {
+                    if (r <= newRowCount) {
+                        const rowData = rowsArray[r - 1];
+                        containerEl.setAttribute(`data-row${r}-label`, rowData.label);
+                        containerEl.setAttribute(`data-row${r}-cols`, rowData.cols);
+                        containerEl.setAttribute(`data-row${r}-type`, rowData.type || 'textbox');
+                        containerEl.setAttribute(`data-row${r}-height`, rowData.height || 50);
+                    } else {
+                        containerEl.removeAttribute(`data-row${r}-label`);
+                        containerEl.removeAttribute(`data-row${r}-cols`);
+                        containerEl.removeAttribute(`data-row${r}-type`);
+                        containerEl.removeAttribute(`data-row${r}-height`);
+                    }
+                }
+            }
+        }
+
+        // 2. Notify iframe via MessageHub
+        window.MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ADMIN_SETTINGS_PROPERTIES', {
+            rowCount: newRowCount,
+            rows: rowsArray
+        });
+
+        // 3. Prepare syncData for inspector refresh
+        const syncData = {
+            id: activeId,
+            editingType: 'admin-settings',
+            adminRowCount: newRowCount,
+            adminLabelWidth: comp.adminLabelWidth,
+            adminShowGroupHeader: comp.adminShowGroupHeader,
+            adminGroupHeaderTitle: comp.adminGroupHeaderTitle,
+            adminGroupHeaderBg: comp.adminGroupHeaderBg,
+            adminGroupHeaderColor: comp.adminGroupHeaderColor
+        };
+        for (let r = 1; r <= 10; r++) {
+            if (r <= newRowCount) {
+                syncData[`adminRow${r}Label`] = rowsArray[r - 1].label;
+                syncData[`adminRow${r}Cols`] = rowsArray[r - 1].cols;
+                syncData[`adminRow${r}Type`] = rowsArray[r - 1].type || 'textbox';
+                syncData[`adminRow${r}Height`] = rowsArray[r - 1].height || 50;
+            }
+        }
+
+        // 4. Re-sync inspector UI
+        _syncAdminSettingsProps(syncData);
+    };
+
     for (let i = 1; i <= rowCount; i++) {
         const labelsVal = comp[`adminRow${i}Label`] || '';
         const colsVal = comp[`adminRow${i}Cols`] || 1;
@@ -2111,7 +2325,14 @@ function _syncAdminSettingsProps(comp) {
         
         // Start building HTML
         let htmlContent = `
-            <div style="font-size: 10px; font-weight: bold; color: #00e5ff;">ROW ${i} CONFIG</div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 10px; font-weight: bold; color: #00e5ff;">ROW ${i} CONFIG</div>
+                <div style="display: flex; gap: 4px;">
+                    <button class="v4-inspector-btn btn-move-row-up" data-row="${i}" style="height: 18px; width: 18px; display: flex; align-items: center; justify-content: center; font-size: 8px; border-radius: 4px; padding: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer;" title="위로 이동" ${i === 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>▲</button>
+                    <button class="v4-inspector-btn btn-move-row-down" data-row="${i}" style="height: 18px; width: 18px; display: flex; align-items: center; justify-content: center; font-size: 8px; border-radius: 4px; padding: 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; cursor: pointer;" title="아래로 이동" ${i === rowCount ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>▼</button>
+                    <button class="v4-inspector-btn btn-delete-row" data-row="${i}" style="height: 18px; width: 18px; display: flex; align-items: center; justify-content: center; font-size: 8px; border-radius: 4px; padding: 0; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; cursor: pointer;" title="삭제" ${rowCount <= 1 ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>&times;</button>
+                </div>
+            </div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                 <div class="prop-group">
                     <label style="font-size: 9px; color: #94a3b8; display: block; margin-bottom: 4px;">조회 컬럼 개수</label>
@@ -2147,6 +2368,40 @@ function _syncAdminSettingsProps(comp) {
         const colSelect = rowDiv.querySelector('.admin-row-cols');
         const heightInp = rowDiv.querySelector('.admin-row-height-input');
         const labelsContainer = rowDiv.querySelector('.admin-row-labels-container');
+        const btnUp = rowDiv.querySelector('.btn-move-row-up');
+        const btnDown = rowDiv.querySelector('.btn-move-row-down');
+        const btnDelete = rowDiv.querySelector('.btn-delete-row');
+
+        if (btnUp && i > 1) {
+            btnUp.onclick = () => {
+                const rows = getCurrentRowsData();
+                const idx = i - 1;
+                const temp = rows[idx];
+                rows[idx] = rows[idx - 1];
+                rows[idx - 1] = temp;
+                applyUpdatedRows(rows);
+            };
+        }
+
+        if (btnDown && i < rowCount) {
+            btnDown.onclick = () => {
+                const rows = getCurrentRowsData();
+                const idx = i - 1;
+                const temp = rows[idx];
+                rows[idx] = rows[idx + 1];
+                rows[idx + 1] = temp;
+                applyUpdatedRows(rows);
+            };
+        }
+
+        if (btnDelete && rowCount > 1) {
+            btnDelete.onclick = () => {
+                const rows = getCurrentRowsData();
+                const idx = i - 1;
+                rows.splice(idx, 1);
+                applyUpdatedRows(rows);
+            };
+        }
 
         const getMergedLabels = () => {
             const inputs = labelsContainer.querySelectorAll('.admin-col-label-input');
@@ -2296,6 +2551,7 @@ function _syncToggleProps(comp) {
     if (colorPicker && comp.toggleColor) {
         colorPicker.value = comp.toggleColor;
     }
+    _syncAtomDisabledProps(comp);
 }
 
 console.log("[VCTRL INSPECTOR] UI Controller fully loaded and cleaned.");

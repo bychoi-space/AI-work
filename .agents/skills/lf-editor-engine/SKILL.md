@@ -8,6 +8,8 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 ## Core Boundaries & Architecture
 - Keep the engine modular. Add a dedicated JS file for a large new feature instead of swelling an existing file.
 - `vctrl_core.js` owns global `state`, `MessageHub`, GitHub API load/save, dynamic script compilation for iframe `srcdoc`, and SmartGuide calculation flow.
+- `vctrl_connectors.js` owns connector spawning (`spawnLine`), 30px magnetic port snapping (`collectSnapTargets`), port highlighting, real-time anchoring (`syncAnchoredPositions`), and connector inspector routing.
+- `vctrl_iframe_ports.js` owns iframe-side port detection and port-drag connector initiation.
 - `vctrl_grouping.js` owns marquee selection, `selectedIds`, group move/delete/grouping behavior, and selected class sync.
 - `vctrl_inspector.js` owns sidebar tabs, metadata UI, screen list rendering, Quill initialization, floating card routing, and the central `DOM` registry.
 - `vctrl_v3.js` owns annotation pins (legacy render), Canvas Interaction (`adjustZoom`, `centerView`, `updateTransform`), Fullscreen, and Global Space-key Panning logic (integrated with `vctrl_core.js` iframe event propagation).
@@ -42,7 +44,8 @@ description: Use when editing LF Editor engine files, vctrl_core.js, vctrl_inspe
 - **MessageHub Nudge/Align/Undo**: Use MessageHub (`LF_NUDGE`, `LF_ALIGN_COMPONENTS`, `LF_SAVE_UNDO`) to synchronize keyboard movements and alignments from the parent window to the iframe components seamlessly.
 - **Keyboard Nudge Forwarding**: 사용자가 컴포넌트를 클릭하면 포커스가 iframe 내부로 이동하여 부모 창의 키보드 이벤트가 동작하지 않을 수 있다. 따라서 iframe 내부(`vctrl_core.js`의 `v4Script`)에도 화살표 키 리스너를 배치하여, iframe 내 요소가 선택된 경우 직접 이동시키고, 그렇지 않은 경우 `LF_NUDGE` 메시지를 통해 부모 창(커넥터, 텍스트 마커 등)에 이벤트를 전달해야 한다.
 - **통합 키보드 이벤트 파이프라인 (Unified Keyboard Event Pipeline)**: 기존에 분산되어 있던 부모 창과 iframe 내부의 키보드 이벤트 리스너를 단일화된 파이프라인으로 통합했다. 컴포넌트나 커넥터가 포커싱되었을 때 이벤트가 유실되거나 중복 처리되지 않도록, `vctrl_iframe_script.js` 내부의 통합 키보드 핸들러가 이벤트를 포착하고, 부모 창의 단일 리스너와 `MessageHub`를 통해 연동되어야 한다. 화살표 키 이동(Nudge), Delete/Backspace 삭제, Undo/Redo 등의 모든 인터랙션이 단일 이벤트 흐름으로 제어됨을 보장해야 한다.
-- **커넥터(Lines) 실시간 좌표 동기화 (Real-Time Connector Reconciliation)**: 사용자가 컴포넌트를 드래그하거나 화살표 키로 이동시킬 때, 컴포넌트에 연결된 모든 커넥터 라인(Lines)은 브라우저 렌더링 주사율에 맞춰 `requestAnimationFrame`을 사용하여 실시간으로 시작/끝 좌표를 재계산하고 부드럽게 다시 그려야 한다. 드래그가 완료되면 이동된 최종 좌표 상태가 `V4UndoManager` 및 `metadata.json`에 영구히 저장되어야 한다.
+- **커넥터(Lines) 실시간 좌표 동기화 (Real-Time Connector Reconciliation)**: 사용자가 컴포넌트를 드래그하거나 화살표 키로 이동시킬 때, 컴포넌트에 연결된 모든 커넥터 라인(Lines)은 `syncAnchoredPositions()` 및 MessageHub 신호(`LF_SNAP_REQUEST`, `LF_COMP_RESIZED`)를 통해 실시간으로 시작/끝 좌표를 재계산하고 부드럽게 추종하도록 연동해야 한다. 드래그가 완료되면 이동된 최종 좌표 상태가 `V4UndoManager` 및 `metadata.json`에 영구히 저장되어야 한다.
+- **이벤트 핸들러 연쇄 차단 방지 (Non-Blocking Event Listener Flow)**: `mouseup` 또는 `mousemove`와 같은 전역 통합 이벤트 리스너를 수정할 때, 개별 조건문(예: `isConnectorDragging`) 처리 후 `return;`으로 조기 종료를 남용하지 말라. 조기 종료 시 하위의 `isMarquee` 상태 해제(`LF_MARQUEE_END`) 및 선택 박스(`.v4-marquee-box`) 제거 로직이 차단되어 클릭 시 캔버스에 파란색 점 잔상이 생성되거나 다중선택 드래그가 마비되는 사이드 이펙트가 발생하므로, 모든 상태 해제 연산은 독립 순차 구문으로 전개해야 한다.
 
 ## Connector and Cross-Window Interaction Principles
 - **Iframe Occlusion Protection**: 부모 창에서 드래그 인터랙션(커넥터 핸들 등)이 발생할 때, 마우스가 iframe 위로 올라가면 이벤트가 끊길 수 있다. `mousedown` 시 iframe에 `pointer-events: none`을 설정하고 `mouseup` 시 `auto`로 복구하여 끊김 없는 드래그를 보장하라.

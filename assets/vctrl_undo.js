@@ -68,46 +68,48 @@ window.V4UndoManager = (function() {
                     notifyParent({ type: 'LF_RESTORE_CONNECTORS', connectors: prevState.connectors });
                 }
                 
-                if (window.parent && window.parent.state && window.parent.state.activeFile) {
-                    const descList = window.parent.state.activeFile.meta.description || [];
-                    const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
-                    
-                    if (descList.length > remainingPins.length) {
-                        descList.splice(remainingPins.length);
-                    }
-                    
-                    remainingPins.forEach((pin, idx) => {
-                        pin.id = 'v4-pin-' + idx;
-                        const isPinType = pin.classList.contains('pin-marker');
+                try {
+                    if (window.parent && window.parent.state && window.parent.state.activeFile) {
+                        const descList = window.parent.state.activeFile.meta.description || [];
+                        const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
                         
-                        if (!descList[idx]) {
-                            descList[idx] = {};
+                        if (descList.length > remainingPins.length) {
+                            descList.splice(remainingPins.length);
                         }
                         
-                        if (isPinType) {
-                            // Circular Pin: Only sync coordinates, preserve type and text from parent state
-                            descList[idx].x = parseFloat(pin.style.left) || 0;
-                            descList[idx].y = parseFloat(pin.style.top) || 0;
-                            descList[idx].type = 'pin';
-                            descList[idx].standardized = true;
-                        } else {
-                            // Inline Text Component: Sync full content and style
-                            const editable = pin.querySelector('.v4-editable-cell');
-                            const textContent = editable ? editable.innerText.trim() : "Edit Text";
-                            const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                        remainingPins.forEach((pin, idx) => {
+                            pin.id = 'v4-pin-' + idx;
+                            const isPinType = pin.classList.contains('pin-marker');
                             
-                            descList[idx].text = textContent;
-                            descList[idx].html = htmlContent;
-                            descList[idx].x = parseFloat(pin.style.left) || 0;
-                            descList[idx].y = parseFloat(pin.style.top) || 0;
-                            descList[idx].type = 'text';
-                            descList[idx].standardized = true;
+                            if (!descList[idx]) {
+                                descList[idx] = {};
+                            }
+                            
+                            if (isPinType) {
+                                descList[idx].x = parseFloat(pin.style.left) || 0;
+                                descList[idx].y = parseFloat(pin.style.top) || 0;
+                                descList[idx].type = 'pin';
+                                descList[idx].standardized = true;
+                            } else {
+                                const editable = pin.querySelector('.v4-editable-cell');
+                                const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                                const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                                
+                                descList[idx].text = textContent;
+                                descList[idx].html = htmlContent;
+                                descList[idx].x = parseFloat(pin.style.left) || 0;
+                                descList[idx].y = parseFloat(pin.style.top) || 0;
+                                descList[idx].type = 'text';
+                                descList[idx].standardized = true;
+                            }
+                        });
+                        
+                        if (typeof window.parent.renderDescriptionList === 'function') {
+                            window.parent.renderDescriptionList();
                         }
-                    });
-                    
-                    if (typeof window.parent.renderDescriptionList === 'function') {
-                        window.parent.renderDescriptionList();
                     }
+                } catch (e) {
+                    console.warn("[V4 Undo] Parent window access guarded under file:// protocol:", e);
                 }
 
                 if (typeof window.initHandles === 'function') window.initHandles();

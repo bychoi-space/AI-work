@@ -279,10 +279,36 @@ window.v4TableScript = `
         }
     });
 
+    function getTargetCells() {
+        let selected = Array.from(document.querySelectorAll('.selected-cell'));
+        if (selected.length > 0) return selected;
+
+        if (document.activeElement) {
+            const cell = document.activeElement.closest('td, th');
+            if (cell) return [cell];
+        }
+
+        const selectedComp = document.querySelector('.lf-component.selected');
+        if (selectedComp) {
+            const table = selectedComp.querySelector('table');
+            if (table) {
+                const cells = Array.from(table.querySelectorAll('td, th'));
+                if (cells.length > 0) return cells;
+            }
+        }
+
+        const anyTable = document.querySelector('.lf-component table, table');
+        if (anyTable) {
+            return Array.from(anyTable.querySelectorAll('td, th'));
+        }
+
+        return [];
+    }
+
     // Table Style & Dimension Modifier
     const TableManager = {
         updateSelectedCellsStyle(style) {
-            const selected = document.querySelectorAll('.selected-cell');
+            const selected = getTargetCells();
             if (selected.length === 0) return;
             
             if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -306,16 +332,21 @@ window.v4TableScript = `
                     }
                     if (style.textAlign !== undefined) {
                         target.style.setProperty('text-align', style.textAlign, 'important');
+                        target.querySelectorAll('p, span, div, .v4-shape-text-content').forEach(child => {
+                            child.style.setProperty('text-align', style.textAlign, 'important');
+                        });
                     }
                 });
             });
 
             if (window.markDirty) window.markDirty();
-            TableSelection.notifySelectionChanged();
+            if (window.TableSelection && typeof window.TableSelection.notifySelectionChanged === 'function') {
+                window.TableSelection.notifySelectionChanged();
+            }
         },
 
         updateSelectedColumnWidth(width) {
-            const selected = document.querySelectorAll('.selected-cell');
+            const selected = getTargetCells();
             if (selected.length === 0) return;
             
             if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -342,8 +373,8 @@ window.v4TableScript = `
 
             tables.forEach(table => {
                 const cols = colIndicesByTable.get(table);
+                if (!cols || cols.size === 0) return;
                 
-                // Adjust col elements if colgroup exists
                 const colgroup = table.querySelector('colgroup');
                 if (colgroup) {
                     const colElements = colgroup.querySelectorAll('col');
@@ -361,17 +392,24 @@ window.v4TableScript = `
                     if (cols.has(b.minCol)) {
                         if (colSpan === 1) {
                             cell.style.setProperty('width', width + 'px', 'important');
+                            cell.style.setProperty('min-width', width + 'px', 'important');
+                            cell.style.setProperty('max-width', width + 'px', 'important');
                         }
                     }
                 });
             });
 
             if (window.markDirty) window.markDirty();
-            TableSelection.notifySelectionChanged();
+            if (typeof window.syncTableComponentSize === 'function') {
+                window.syncTableComponentSize();
+            }
+            if (window.TableSelection && typeof window.TableSelection.notifySelectionChanged === 'function') {
+                window.TableSelection.notifySelectionChanged();
+            }
         },
 
         updateSelectedRowHeight(height) {
-            const selected = document.querySelectorAll('.selected-cell');
+            const selected = getTargetCells();
             if (selected.length === 0) return;
             
             if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -386,14 +424,21 @@ window.v4TableScript = `
 
             rows.forEach(row => {
                 row.style.setProperty('height', height + 'px', 'important');
-                // Remove inline height styles from cells inside the row so they don't override the row height
+                row.style.setProperty('min-height', height + 'px', 'important');
                 Array.from(row.cells).forEach(cell => {
                     cell.style.removeProperty('height');
+                    cell.style.setProperty('height', height + 'px', 'important');
+                    cell.style.setProperty('min-height', height + 'px', 'important');
                 });
             });
 
             if (window.markDirty) window.markDirty();
-            TableSelection.notifySelectionChanged();
+            if (typeof window.syncTableComponentSize === 'function') {
+                window.syncTableComponentSize();
+            }
+            if (window.TableSelection && typeof window.TableSelection.notifySelectionChanged === 'function') {
+                window.TableSelection.notifySelectionChanged();
+            }
         },
 
         updateSelectedCellsBorder(borderType, color) {

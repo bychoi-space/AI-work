@@ -20,6 +20,46 @@ window.v4Script = `
         };
     })();
 
+    window.syncTableComponentSize = function() {
+        const s = document.querySelector('.lf-component.selected');
+        if (!s) return;
+        
+        const table = s.querySelector('table');
+        if (!table) return;
+        
+        const isGrid = s.classList.contains('v4-grid-container') || s.querySelector('.v4-grid-container');
+        
+        let newWidth, newHeight;
+        if (isGrid) {
+            newWidth = table.offsetWidth;
+            newHeight = table.offsetHeight + 36;
+        } else {
+            const colgroup = table.querySelector('colgroup');
+            if (colgroup && colgroup.children.length > 0) {
+                let totalWidth = 0;
+                Array.from(colgroup.children).forEach(col => {
+                    const wStr = col.style.width || col.getAttribute('width') || '100px';
+                    totalWidth += parseInt(wStr) || 100;
+                });
+                newWidth = totalWidth;
+            } else {
+                newWidth = table.offsetWidth;
+            }
+            
+            const origHeight = table.style.height;
+            table.style.height = 'auto';
+            newHeight = table.offsetHeight;
+            table.style.height = origHeight || '100%';
+        }
+        
+        notifyParent({
+            type: 'LF_TABLE_SIZE_CHANGED',
+            compId: s.id,
+            width: newWidth,
+            height: newHeight
+        });
+    };
+
     let isDraggingLine = false, activeLineId = null, startLineCoords = null;
 
 
@@ -332,7 +372,18 @@ window.v4Script = `
             val: stepperVal,
             btnEnabled: stepperBtnEnabled,
             btnText: stepperBtnText,
-            disabled: stepperDisabled,
+            disabled: (
+                c.getAttribute('data-disabled') === 'true' || 
+                (container && container.getAttribute('data-disabled') === 'true') ||
+                (stepperContainer && stepperContainer.getAttribute('data-disabled') === 'true') ||
+                (selectboxContainer && selectboxContainer.getAttribute('data-disabled') === 'true') ||
+                (fileuploadContainer && fileuploadContainer.getAttribute('data-disabled') === 'true') ||
+                (searchbarContainer && searchbarContainer.getAttribute('data-disabled') === 'true') ||
+                (dpContainer && dpContainer.getAttribute('data-disabled') === 'true') ||
+                (toggleContainer && toggleContainer.getAttribute('data-disabled') === 'true') ||
+                (accordionContainer && accordionContainer.getAttribute('data-disabled') === 'true') ||
+                !!c.querySelector('[data-disabled="true"]')
+            ),
             isSelectbox: isSelectbox,
             selectboxDefaultText: selectboxDefaultText,
             selectboxDropdownActive: selectboxDropdownActive,
@@ -441,6 +492,7 @@ window.v4Script = `
     });
 
     let isMarquee = false;
+    let isConnectorDragging = false;
     let groupChildrenStart = null;
     document.addEventListener('mousedown', e => {
         if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.header-metadata')) return;
@@ -556,6 +608,10 @@ window.v4Script = `
 
     let rafId = null;
     document.addEventListener('mousemove', e => {
+        if (isConnectorDragging) {
+            notifyParent({ type: 'LF_CONNECTOR_HANDLE_MOVE', clientX: e.clientX, clientY: e.clientY });
+            return;
+        }
         if (isDraggingLine && activeLineId) {
             const scale = (window.parent?.state?.transform?.scale) || 1;
             const dx = (e.clientX - startX) / scale;
@@ -593,18 +649,21 @@ window.v4Script = `
 
     document.addEventListener('mouseup', () => { 
         document.querySelectorAll('.lf-component').forEach(comp => comp.classList.remove('near-connector'));
+        if (isConnectorDragging) {
+            isConnectorDragging = false;
+            document.body.classList.remove('drawing-line-active');
+            notifyParent({ type: 'LF_CONNECTOR_HANDLE_UP' });
+        }
         if (isDraggingLine) {
             isDraggingLine = false;
             startLineCoords = null;
             activeLineId = null;
             notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
             markDirty();
-            return;
         }
 
         if (window.V4PortConnectorEngine && window.V4PortConnectorEngine.isDrawingConnector) {
             window.V4PortConnectorEngine.handleMouseUp();
-            return;
         }
 
         if (isMarquee) {
@@ -730,21 +789,26 @@ window.v4Script = `
                         window.updateHandles(c);
                         if (isGroup) {
                             const connIdsStr = c.getAttribute('data-connectors');
-                            const connIds = connIdsStr ? JSON.parse(connIdsStr) : [];
-                            connIds.forEach(connId => {
-                                const conn = (window.parent && window.parent.state && window.parent.state.connectors)
-                                    ? window.parent.state.connectors.find(x => x.id === connId)
-                                    : null;
-                                if (conn) {
-                                    conn.start.x += snapDx;
-                                    conn.start.y += snapDy;
-                                    conn.end.x += snapDx;
-                                    conn.end.y += snapDy;
-                                    conn.start.targetId = null; conn.start.side = null;
-                                    conn.end.targetId = null; conn.end.side = null;
-                                    hasConnectorChanges = true;
-                                }
-                            });
+                            let connIds = [];
+                            if (connIdsStr) {
+                                try { connIds = JSON.parse(connIdsStr); } catch(e) { connIds = []; }
+                            }
+                            if (Array.isArray(connIds)) {
+                                connIds.forEach(connId => {
+                                    const conn = (window.parent && window.parent.state && Array.isArray(window.parent.state.connectors))
+                                        ? window.parent.state.connectors.find(x => x && x.id === connId)
+                                        : null;
+                                    if (conn && conn.start && conn.end) {
+                                        conn.start.x += snapDx;
+                                        conn.start.y += snapDy;
+                                        conn.end.x += snapDx;
+                                        conn.end.y += snapDy;
+                                        conn.start.targetId = null; conn.start.side = null;
+                                        conn.end.targetId = null; conn.end.side = null;
+                                        hasConnectorChanges = true;
+                                    }
+                                });
+                            }
                         }
                         if (typeof window.updateAnchoredConnectorsLocal === 'function') {
                             window.updateAnchoredConnectorsLocal(c.id);
@@ -1396,6 +1460,14 @@ window.v4Script = `
                 }
             }
         }
+        else if (d.type === 'LF_UPDATE_ATOM_DISABLED') {
+            const s = document.querySelector('.lf-component.selected'); if (!s) return;
+            const container = s.querySelector('.v4-textbox-container, .v4-textarea-container, .v4-stepper-container, .v4-selectbox-container, .v4-fileupload-container, .v4-datepicker-container, .v4-toggle-container, .v4-accordion-container, .v4-checkbox-container, .v4-radio-container, .v4-searchbar-container') || s;
+            if (window.V4UndoManager) window.V4UndoManager.saveState();
+            const disabledStr = d.disabled ? 'true' : 'false';
+            s.setAttribute('data-disabled', disabledStr);
+            if (container && container !== s) container.setAttribute('data-disabled', disabledStr);
+        }
         else if (d.type === 'LF_UPDATE_STEPPER_PROPERTIES') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-stepper-container') || (s.classList.contains('v4-stepper-container') ? s : null);
@@ -1733,6 +1805,24 @@ window.v4Script = `
                     if (d.cols !== undefined) container.setAttribute('data-row' + rNum + '-cols', d.cols);
                     if (d.rowType !== undefined) container.setAttribute('data-row' + rNum + '-type', d.rowType);
                     if (d.rowSpecificHeight !== undefined) container.setAttribute('data-row' + rNum + '-height', d.rowSpecificHeight);
+                }
+
+                // Support Bulk Rows Array (Reordering / Deletion)
+                if (Array.isArray(d.rows)) {
+                    d.rows.forEach((rData, idx) => {
+                        const rNum = idx + 1;
+                        if (rData.label !== undefined) container.setAttribute('data-row' + rNum + '-label', rData.label);
+                        if (rData.cols !== undefined) container.setAttribute('data-row' + rNum + '-cols', rData.cols);
+                        if (rData.type !== undefined) container.setAttribute('data-row' + rNum + '-type', rData.type);
+                        if (rData.height !== undefined) container.setAttribute('data-row' + rNum + '-height', rData.height);
+                    });
+                    // Clean up trailing unused row attributes if rows count decreased
+                    for (let rNum = d.rows.length + 1; rNum <= 10; rNum++) {
+                        container.removeAttribute('data-row' + rNum + '-label');
+                        container.removeAttribute('data-row' + rNum + '-cols');
+                        container.removeAttribute('data-row' + rNum + '-type');
+                        container.removeAttribute('data-row' + rNum + '-height');
+                    }
                 }
 
                 // Update Group Header Attributes
@@ -2802,46 +2892,9 @@ window.v4Script = `
 
             notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets, rects });
         } else if (d.type === 'LF_TABLE_ACTION') {
-            window.syncTableComponentSize = function() {
-                const s = document.querySelector('.lf-component.selected');
-                if (!s) return;
-                
-                const table = s.querySelector('table');
-                if (!table) return;
-                
-                const isGrid = s.classList.contains('v4-grid-container') || s.querySelector('.v4-grid-container');
-                
-                let newWidth, newHeight;
-                if (isGrid) {
-                    newWidth = table.offsetWidth;
-                    newHeight = table.offsetHeight + 36;
-                } else {
-                    const colgroup = table.querySelector('colgroup');
-                    if (colgroup && colgroup.children.length > 0) {
-                        let totalWidth = 0;
-                        Array.from(colgroup.children).forEach(col => {
-                            const wStr = col.style.width || col.getAttribute('width') || '100px';
-                            totalWidth += parseInt(wStr) || 100;
-                        });
-                        newWidth = totalWidth;
-                    } else {
-                        newWidth = table.offsetWidth;
-                    }
-                    
-                    const origHeight = table.style.height;
-                    table.style.height = 'auto';
-                    newHeight = table.offsetHeight;
-                    table.style.height = origHeight || '100%';
-                }
-                
-                notifyParent({
-                    type: 'LF_TABLE_SIZE_CHANGED',
-                    compId: s.id,
-                    width: newWidth,
-                    height: newHeight
-                });
+            if (typeof window.syncTableComponentSize === 'function') {
+                window.syncTableComponentSize();
             }
-
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             

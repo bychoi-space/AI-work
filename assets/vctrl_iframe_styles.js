@@ -130,11 +130,85 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     display: block;
 }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
-.v4-stepper-container[data-disabled="true"] { pointer-events: none !important; }
-.v4-stepper-container[data-disabled="true"] .v4-stepper-control { background-color: #e5e7eb !important; border-color: #9ca3af !important; }
-.v4-stepper-container[data-disabled="true"] .v4-stepper-value { color: #9ca3af !important; }
-.v4-stepper-container[data-disabled="true"] .v4-stepper-dec, .v4-stepper-container[data-disabled="true"] .v4-stepper-inc { background-color: #e5e7eb !important; color: #9ca3af !important; }
-.v4-stepper-container[data-disabled="true"] .v4-stepper-action { background-color: #e5e7eb !important; border-color: #9ca3af !important; color: #9ca3af !important; box-shadow: none !important; }
+/* Unified Disabled State for 11 Target Atoms (Shape BG: #c8c8c8, Text/Control: #969696, Border: #969696 / #b0b0b0) */
+
+/* 1. Reset outer containers so background does not fill outer bounding boxes */
+.v4-checkbox-container[data-disabled="true"],
+.v4-radio-container[data-disabled="true"],
+.v4-stepper-container[data-disabled="true"],
+.lf-component[data-disabled="true"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
+
+/* 2. Target specific atom input/shape elements for gray fill #c8c8c8 */
+.v4-textbox-container[data-disabled="true"],
+.v4-textarea-container[data-disabled="true"],
+.v4-stepper-container[data-disabled="true"] .v4-stepper-control,
+.v4-stepper-container[data-disabled="true"] .v4-stepper-dec,
+.v4-stepper-container[data-disabled="true"] .v4-stepper-inc,
+.v4-stepper-container[data-disabled="true"] .v4-stepper-value,
+.v4-stepper-container[data-disabled="true"] .v4-stepper-action,
+.v4-selectbox-header[data-disabled="true"],
+.v4-selectbox-container[data-disabled="true"] .v4-selectbox-header,
+.v4-fileupload-button[data-disabled="true"],
+.v4-fileupload-container[data-disabled="true"] .v4-fileupload-button,
+.v4-datepicker-container[data-disabled="true"],
+.v4-toggle-track[data-disabled="true"],
+.v4-toggle-container[data-disabled="true"] .v4-toggle-track,
+.v4-accordion-container[data-disabled="true"],
+.v4-checkbox[data-disabled="true"],
+.v4-checkbox-container[data-disabled="true"] .v4-checkbox,
+.v4-radio[data-disabled="true"],
+.v4-radio-container[data-disabled="true"] .v4-radio,
+.v4-searchbar-container[data-disabled="true"] {
+    background-color: #c8c8c8 !important;
+    background: #c8c8c8 !important;
+    border-color: #969696 !important;
+}
+
+/* 3. Target text, controls, icons, dots, chevrons for dark gray #969696 */
+[data-disabled="true"] .v4-checkbox-text,
+[data-disabled="true"] .v4-radio-text,
+[data-disabled="true"] .v4-textbox-text,
+[data-disabled="true"] .v4-textarea-text,
+[data-disabled="true"] .v4-searchbar-text,
+[data-disabled="true"] .v4-stepper-value,
+[data-disabled="true"] .v4-stepper-dec,
+[data-disabled="true"] .v4-stepper-inc,
+[data-disabled="true"] .v4-stepper-action,
+[data-disabled="true"] .v4-accordion-title-text,
+[data-disabled="true"] .v4-accordion-chevron,
+[data-disabled="true"] .v4-accordion-item,
+[data-disabled="true"] .v4-radio-dot,
+[data-disabled="true"] .v4-checkbox-check,
+[data-disabled="true"] .v4-toggle-knob,
+[data-disabled="true"] .v4-toggle-thumb {
+    color: #969696 !important;
+    border-color: #969696 !important;
+}
+
+[data-disabled="true"] .v4-radio-dot,
+[data-disabled="true"] .v4-toggle-knob,
+[data-disabled="true"] .v4-toggle-thumb {
+    background-color: #969696 !important;
+    background: #969696 !important;
+}
+
+[data-disabled="true"] svg,
+[data-disabled="true"] svg path,
+[data-disabled="true"] svg polyline,
+[data-disabled="true"] svg line,
+[data-disabled="true"] svg circle {
+    stroke: #969696 !important;
+}
+
+[data-disabled="true"] .v4-searchbar-text:empty::before,
+[data-disabled="true"] .v4-textbox-text:empty::before,
+[data-disabled="true"] .v4-textarea-text:empty::before {
+    color: #969696 !important;
+}
 .v4-selectbox-container { display: flex !important; flex-direction: column !important; box-sizing: border-box !important; position: relative !important; width: 100% !important; height: 100% !important; }
 .v4-selectbox-header { height: 30px !important; min-height: 30px !important; max-height: 30px !important; flex-shrink: 0 !important; display: flex !important; align-items: center !important; justify-content: space-between !important; box-sizing: border-box !important; }
 .v4-selectbox-container[data-dropdown-active="true"] .v4-selectbox-header { border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; }

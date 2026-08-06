@@ -16,9 +16,9 @@ description: Use when creating or editing LF Editor process screens, flowcharts,
 - When the actor/system changes, such as LFMall, OMS/SAP, or POS, use horizontal dotted dividers to separate visual zones.
 
 ## Connector Precision
-- Mix elbow arrows (`v4-shape-arrow-elbow`) and straight arrows only when it improves readability.
-- Align connector endpoints pixel-precisely to node edges.
-- Recheck connector positions after moving any node; do not leave visually detached lines.
+- Mix elbow connectors (`v4-connector-elbow`), straight connectors (`v4-connector-straight`), and block arrows (`v4-shape-arrow`) only when it improves readability.
+- Utilize automatic port magnetic snapping (`collectSnapTargets`) and real-time anchoring (`syncAnchoredPositions`) so connectors stay pixel-precisely attached to node edges.
+- Recheck connector positions after moving any node; ensure automatic follow-along logic (`syncAnchoredPositions`) keeps lines smoothly connected.
 
 ## Text
 - Keep labels short and readable.

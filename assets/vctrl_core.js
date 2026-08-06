@@ -5,6 +5,8 @@
 
 console.log("%c [VCTRL CORE] Initializing Engine... ", "background: #6366f1; color: #fff; font-weight: bold; padding: 4px; border-radius: 4px;");
 
+if (!window.DOM) window.DOM = {};
+
 // 1. Global State Management (SSOT)
 window.state = {
     currentProject: null,
@@ -52,6 +54,7 @@ function getInlinedEngineScript() {
 
 // --- Core Logic ---
 window.loadScreen = async function(fileName) {
+    const DOM = window.DOM || {};
     if (state.isEditing && typeof window.closeActiveEditor === 'function') {
         window.closeActiveEditor(true);
     }
@@ -111,49 +114,51 @@ window.loadScreen = async function(fileName) {
         finalContent = syncCoverMetadata(finalContent, state.projectMetadata, false, fileName);
     }
 
-    if (DOM.iframe) {
-        DOM.iframe.srcdoc = finalContent;
-        DOM.iframe.style.display = 'block';
-    }
+    const iframe = (DOM && DOM.iframe) || document.getElementById('main-iframe');
+    if (iframe) {
+        if (window.DOM && !window.DOM.iframe) window.DOM.iframe = iframe;
+        iframe.srcdoc = finalContent;
+        iframe.style.display = 'block';
 
-    const loadTimeout = setTimeout(() => {
-        if (typeof window.hideLoading === 'function') window.hideLoading();
-    }, 3000);
+        const loadTimeout = setTimeout(() => {
+            if (typeof window.hideLoading === 'function') window.hideLoading();
+        }, 3000);
 
-    DOM.iframe.onload = () => {
-        clearTimeout(loadTimeout);
-        if (typeof window.hideLoading === 'function') window.hideLoading();
-        DOM.iframe.onload = null;
-        
-        // Phase 3: Import legacy description pins ONCE, then render sidebar list
-        const legacyPins = (state.activeFile?.meta?.description || []).filter(p => p.type === 'text' || p.text || p.html);
-        if (legacyPins.length > 0 && DOM.iframe.contentWindow) {
+        iframe.onload = () => {
+            clearTimeout(loadTimeout);
+            if (typeof window.hideLoading === 'function') window.hideLoading();
+            iframe.onload = null;
+            
+            // Phase 3: Import legacy description pins ONCE, then render sidebar list
+            const legacyPins = (state.activeFile?.meta?.description || []).filter(p => p.type === 'text' || p.text || p.html);
+            if (legacyPins.length > 0 && iframe.contentWindow) {
+                setTimeout(() => {
+                    iframe.contentWindow.postMessage({ type: 'LF_IMPORT_PINS', pins: legacyPins }, '*');
+                }, 80);
+            }
+            if (typeof window.renderDescriptionList === 'function') {
+                setTimeout(window.renderDescriptionList, 100); 
+            }
+
+            // [Bug Fix 1] Pre-warm SmartGuide snap targets after iframe DOM is fully rendered.
+            // Without this, the first drag has no iframe targets because the async request
+            // fired on LF_SNAP_START hasn't received a response yet.
             setTimeout(() => {
-                DOM.iframe.contentWindow.postMessage({ type: 'LF_IMPORT_PINS', pins: legacyPins }, '*');
-            }, 80);
-        }
-        if (typeof window.renderDescriptionList === 'function') {
-            setTimeout(window.renderDescriptionList, 100); 
-        }
+                if (window.SmartGuide) {
+                    window.SmartGuide.findSnapTargets();
+                    console.log('[SmartGuide] Targets pre-warmed after screen load.');
+                }
+            }, 300);
 
-        // [Bug Fix 1] Pre-warm SmartGuide snap targets after iframe DOM is fully rendered.
-        // Without this, the first drag has no iframe targets because the async request
-        // fired on LF_SNAP_START hasn't received a response yet.
-        setTimeout(() => {
-            if (window.SmartGuide) {
-                window.SmartGuide.findSnapTargets();
-                console.log('[SmartGuide] Targets pre-warmed after screen load.');
-            }
-        }, 300);
-
-        // [Bug Fix 2] Recalculate center scale after layout has fully settled in iframe.
-        setTimeout(() => {
-            if (typeof window.centerView === 'function') {
-                window.centerView();
-                console.log('[INIT] Layout settled, ran centerView.');
-            }
-        }, 150);
-    };
+            // [Bug Fix 2] Recalculate center scale after layout has fully settled in iframe.
+            setTimeout(() => {
+                if (typeof window.centerView === 'function') {
+                    window.centerView();
+                    console.log('[INIT] Layout settled, ran centerView.');
+                }
+            }, 150);
+        };
+    }
 
     let scMeta = (state.projectMetadata.screens || {})[fileName] || {};
     if (!scMeta.description || !Array.isArray(scMeta.description)) {
@@ -170,7 +175,8 @@ window.loadScreen = async function(fileName) {
     };
     state.connectors = scMeta.connectors;
     
-    if (DOM.fileName) DOM.fileName.innerText = state.projectMetadata.title || state.currentProject;
+    const fileNameEl = (DOM && DOM.fileName) || document.getElementById('file-name-display');
+    if (fileNameEl) fileNameEl.innerText = state.projectMetadata.title || state.currentProject;
     
     if (typeof window.updateProperties === 'function') window.updateProperties(); 
     
@@ -261,6 +267,8 @@ window.insertAtomicComponent = function(type, name) {
             contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
         } else if (name === 'New Window') {
             contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%; padding:8px; box-sizing:border-box; background-image: none !important;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>`;
+        } else if (name === 'Download') {
+            contentHtml = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width:100%; height:100%; padding:8px; box-sizing:border-box; background-image: none !important;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>`;
         } else if (name === 'Share Premium') {
             contentHtml = `<div class="lf-icon" style="width:100%; height:100%; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-position: center; background-repeat: no-repeat; padding: 8px; box-sizing: border-box; background-origin: content-box; background-clip: content-box; pointer-events: none;"></div>`;
         } else if (name === 'Logout') {
@@ -747,6 +755,67 @@ window.MessageHub = {
                         if (!isTyping && typeof window.updateProperties === 'function') window.updateProperties(data);
                     }
                 }
+            } else if (data.type === 'LF_PASTE_COMPLETED') {
+                try {
+                    if (window.SmartGuide) {
+                        try { window.SmartGuide.findSnapTargets(); } catch(e) {}
+                    }
+                    const activeEl = document.activeElement;
+                    const isTyping = activeEl && (
+                        activeEl.tagName === 'INPUT' || 
+                        activeEl.tagName === 'TEXTAREA' || 
+                        activeEl.tagName === 'SELECT' || 
+                        activeEl.isContentEditable || 
+                        activeEl.closest('#floating-inspector-card') !== null || 
+                        activeEl.closest('#sidebar-right') !== null
+                    );
+                    state.isEditing = true;
+                    const newIds = data.ids || [];
+                    const groupMap = data.selectedIdsIsGroupMap || {};
+
+                    if (newIds.length > 0) {
+                        state.editingIndex = newIds[0];
+                    }
+
+                    if (DOM.iframe && DOM.iframe.contentWindow) {
+                        try { DOM.iframe.contentWindow.focus(); } catch(e) {}
+                    }
+
+                    if (window.GroupingManager) {
+                        if (typeof window.GroupingManager.setSelectedIds === 'function') {
+                            window.GroupingManager.setSelectedIds(newIds);
+                        }
+                        if (typeof window.GroupingManager.setSelectedIdsIsGroupMap === 'function') {
+                            window.GroupingManager.setSelectedIdsIsGroupMap(groupMap);
+                        }
+                        if (typeof window.GroupingManager.updateSelectionUI === 'function') {
+                            try { window.GroupingManager.updateSelectionUI(); } catch(e) {}
+                        }
+                        if (window.state) {
+                            window.state.selectedIds = [...newIds];
+                        }
+                        if (DOM.iframe && DOM.iframe.contentWindow) {
+                            MessageHub.send(DOM.iframe.contentWindow, 'LF_UPDATE_MARQUEE_SELECTION', { ids: newIds });
+                        }
+                        if (!isTyping) {
+                            if (newIds.length === 1 && data.firstCompStyles) {
+                                if (typeof window.updateProperties === 'function') {
+                                    try { window.updateProperties(data.firstCompStyles); } catch(e) {}
+                                }
+                            } else {
+                                if (typeof window.updateProperties === 'function') {
+                                    try { window.updateProperties(); } catch(e) {}
+                                }
+                            }
+                        }
+                    } else {
+                        if (!isTyping && typeof window.updateProperties === 'function') {
+                            try { window.updateProperties(data.firstCompStyles || {}); } catch(e) {}
+                        }
+                    }
+                } catch (pasteErr) {
+                    console.error("[Core] Error in LF_PASTE_COMPLETED handler:", pasteErr);
+                }
             } else if (data.type === 'LF_SPACE_DOWN') {
                 const DOM = window.DOM;
                 if (DOM && DOM.canvas) DOM.canvas.classList.add('hand-active');
@@ -879,6 +948,7 @@ window.checkEnvironment = function() {
 
 window.init = async function() {
     try {
+        const DOM = window.DOM || {};
         console.log("[INIT] Initialization started...");
         checkEnvironment();
 
@@ -1078,9 +1148,12 @@ window.init = async function() {
         if (DOM.btnFullscreen) DOM.btnFullscreen.onclick = () => { if (typeof window.toggleFullscreen === 'function') window.toggleFullscreen(); };
         if (DOM.btnFullscreenExit) DOM.btnFullscreenExit.onclick = () => { if (typeof window.toggleFullscreen === 'function') window.toggleFullscreen(true); };
 
-        DOM.tabBtns.forEach(btn => {
-            btn.onclick = () => { if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab(btn.dataset.tab); };
-        });
+        const tabBtns = (DOM && DOM.tabBtns) || document.querySelectorAll('.tab-btn, .sidebar-tab-btn');
+        if (tabBtns) {
+            tabBtns.forEach(btn => {
+                btn.onclick = () => { if (typeof window.switchSidebarTab === 'function') window.switchSidebarTab(btn.dataset.tab); };
+            });
+        }
 
         // RESTORED: Sidebar Tool Buttons (Text, etc.)
         if (DOM.sidebarToolBtns) {
@@ -1165,15 +1238,17 @@ window.init = async function() {
             const proxiedCodes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Delete', 'Backspace', 'Space', 'F2'];
             
             const isC = e.key.toLowerCase() === 'c' || e.code === 'KeyC';
+            const isX = e.key.toLowerCase() === 'x' || e.code === 'KeyX';
             const isV = e.key.toLowerCase() === 'v' || e.code === 'KeyV';
             const isG = e.key.toLowerCase() === 'g' || e.code === 'KeyG';
-            const isCtrlShortcut = (e.ctrlKey || e.metaKey) && (isC || isV || isG);
+            const isCtrlShortcut = (e.ctrlKey || e.metaKey) && (isC || isX || isV || isG);
             
             if (proxiedCodes.includes(e.code) || isF2 || isCtrlShortcut) {
                 if (isF2) {
                     console.log("[VCTRL CORE] F2 key down detected in parent window, proxying to iframe...");
                 }
                 if (DOM.iframe && DOM.iframe.contentWindow) {
+                    try { DOM.iframe.contentWindow.focus(); } catch(err) {}
                     DOM.iframe.contentWindow.postMessage({
                         type: 'LF_SHORTCUT_KEY_PROXY',
                         code: e.code || 'F2',

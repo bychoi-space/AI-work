@@ -7,6 +7,19 @@
 (function() {
     console.log("%c [V4 ADDON LOADED] ", "background: #6366f1; color: #fff; font-weight: bold; padding: 4px; border-radius: 4px;");
 
+    if (typeof window.rgbToHex !== 'function') {
+        window.rgbToHex = function(rgb) {
+            if (!rgb || rgb === "transparent" || rgb === "none" || rgb.includes("rgba(0, 0, 0, 0)")) return null;
+            if (String(rgb).startsWith('#')) return rgb;
+            const matches = String(rgb).match(/\d+/g);
+            if (!matches || matches.length < 3) return "#ffffff";
+            const r = Math.min(255, parseInt(matches[0])).toString(16).padStart(2, "0");
+            const g = Math.min(255, parseInt(matches[1])).toString(16).padStart(2, "0");
+            const b = Math.min(255, parseInt(matches[2])).toString(16).padStart(2, "0");
+            return "#" + r + g + b;
+        };
+    }
+
     function notifyIframe(data) {
         const activeIframe = document.getElementById('main-iframe');
         if (activeIframe && activeIframe.contentWindow) {
@@ -181,9 +194,34 @@
 
     // Shape Style inputs synced dynamically via styleUpdateConfig config loop
 
-    // Event delegation for shape-bg-color and shape-bg-opacity to ensure handlers work even when inspector DOM is dynamically rendered or moved
+    // Event delegation for shape-bg-color, shape-bg-opacity, and table cell controls to ensure handlers work even when inspector DOM is dynamically rendered or moved
     document.addEventListener('input', function(e) {
         if (!e.target) return;
+        const id = e.target.id;
+        if (id === 'cell-col-width' || id === 'cell-col-width-num') {
+            const val = parseInt(e.target.value);
+            if (!isNaN(val) && val >= 10) {
+                notifyIframe({ type: 'LF_UPDATE_CELL_DIMENSION', width: val });
+                const colEl = document.getElementById('cell-col-width');
+                const colNumEl = document.getElementById('cell-col-width-num');
+                const txt = document.getElementById('txt-cell-col-width');
+                if (colEl && colEl.value != val) colEl.value = val;
+                if (colNumEl && colNumEl.value != val) colNumEl.value = val;
+                if (txt) txt.innerText = val;
+            }
+        } else if (id === 'cell-row-height' || id === 'cell-row-height-num') {
+            const val = parseInt(e.target.value);
+            if (!isNaN(val) && val >= 10) {
+                notifyIframe({ type: 'LF_UPDATE_CELL_DIMENSION', height: val });
+                const rowEl = document.getElementById('cell-row-height');
+                const rowNumEl = document.getElementById('cell-row-height-num');
+                const txt = document.getElementById('txt-cell-row-height');
+                if (rowEl && rowEl.value != val) rowEl.value = val;
+                if (rowNumEl && rowNumEl.value != val) rowNumEl.value = val;
+                if (txt) txt.innerText = val;
+            }
+        }
+
         if (e.target.id === 'shape-bg-color') {
             const colorHex = e.target.value;
             const opacitySlider = document.getElementById('shape-bg-opacity');
@@ -851,6 +889,28 @@
         }
     };
     initStepperEvents();
+
+    // Common Atom Disabled Event Delegation
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-atom-disabled, #btn-stepper-disabled-y, #btn-stepper-disabled-n');
+        if (!btn) return;
+        const isDisabled = btn.id === 'btn-stepper-disabled-y' ? true : (btn.id === 'btn-stepper-disabled-n' ? false : (btn.dataset.disabled === 'true'));
+        const parent = btn.closest('.prop-group, div');
+        if (parent) {
+            parent.querySelectorAll('.v4-inspector-btn').forEach(b => {
+                const isThis = (b === btn);
+                b.style.background = isThis ? 'rgba(0, 229, 255, 0.25)' : 'rgba(255, 255, 255, 0.05)';
+                b.style.borderColor = isThis ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 255, 255, 0.15)';
+                b.style.color = isThis ? '#00e5ff' : '#94a3b8';
+                b.style.fontWeight = isThis ? 'bold' : 'normal';
+            });
+        }
+        const iframe = document.getElementById('main-iframe');
+        if (iframe && iframe.contentWindow && window.MessageHub) {
+            MessageHub.send(iframe.contentWindow, 'LF_UPDATE_ATOM_DISABLED', { disabled: isDisabled });
+            MessageHub.send(iframe.contentWindow, 'LF_UPDATE_STEPPER_PROPERTIES', { disabled: isDisabled });
+        }
+    });
  
     // Selectbox Inspector Events
     const initSelectboxEvents = () => {
@@ -2304,6 +2364,20 @@
                 reader.readAsDataURL(file);
                 e.preventDefault();
                 break;
+            }
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!e.target) return;
+        const btn = e.target.closest('#btn-cell-align-left, #btn-cell-align-center, #btn-cell-align-right');
+        if (btn) {
+            let align = 'left';
+            if (btn.id === 'btn-cell-align-center') align = 'center';
+            if (btn.id === 'btn-cell-align-right') align = 'right';
+            notifyIframe({ type: 'LF_UPDATE_CELL_STYLE', style: { textAlign: align } });
+            if (typeof window._updateCellAlignButtonsUI === 'function') {
+                window._updateCellAlignButtonsUI(align);
             }
         }
     });

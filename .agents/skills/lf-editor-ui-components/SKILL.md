@@ -42,6 +42,10 @@ description: Use when editing V4 components, .lf-icon SVG atoms, premium buttons
 - Use CSS `!important` where inline styles can interfere.
 - Preserve or add `MutationObserver` correction only when the component can be mutated live; do not add broad observers speculatively.
 
+## Line Shape Connector Visual Standard
+- **Dual Path Structure**: Connector lines inside `LF_RENDER_CONNECTORS` are rendered with two SVG paths: an invisible 40px hit-area path (`stroke="transparent" stroke-width="40"`) for easy selection, and a visible path (`stroke-width="1.6"` or `baseWidth + 1` when selected).
+- **Magnetic Port Highlight**: When dragging connector endpoints near a component's port (30px threshold), the target port element (`.lf-connector-port`) scales up (`transform: scale(1.8)`) and highlights with a pink background (`#fb7185`).
+
 ## Premium Button And Popup Rules
 - Match the compact JIRA-link button style: pill shape, 26-28px height, 13-14px radius, centered flex alignment, `gap: 8px`, and `padding: 0`.
 - Use hierarchy classes consistently: `btn-accent` for core actions, `btn-primary` for major actions, `btn-secondary` for normal actions.

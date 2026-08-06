@@ -223,17 +223,60 @@ async function fetchProjectMetadata(project) {
     }
 }
 
+function getFormattedKST(dateObj) {
+    const now = dateObj ? new Date(dateObj) : new Date();
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    const hh = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+    const ss = String(now.getSeconds()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+}
+window.getFormattedKST = getFormattedKST;
+
 async function saveProjectMetadata(project, metadata, statusCallback) {
     const content = JSON.stringify(metadata, null, 2);
     return await uploadToProject(project, 'metadata.json', content, statusCallback);
 }
 
 async function fetchProjectHistory(project) {
+    if (!project) return [];
     const content = await fetchFileContent(`${project}/history.json`);
     try {
-        return content ? JSON.parse(content) : [];
-    } catch(e) {
-        return [];
+        if (content && content !== "__NOT_FOUND__") {
+            const list = JSON.parse(content);
+            if (Array.isArray(list) && list.length > 0) {
+                return list;
+            }
+        }
+    } catch(e) {}
+
+    // Auto-generate initial creation history entry if missing or empty
+    try {
+        const meta = await fetchProjectMetadata(project);
+        const createdDate = (meta && meta.updated) ? meta.updated : getFormattedKST();
+        const initialEntry = [{
+            version: '0.1',
+            date: createdDate,
+            message: '프로젝트 최초 생성',
+            assignee: (meta && meta.assignee) ? meta.assignee : '',
+            developer: (meta && meta.developer) ? meta.developer : '',
+            jira: (meta && meta.jira) ? meta.jira : '',
+            file: 'metadata.json'
+        }];
+        if (typeof saveProjectHistory === 'function') {
+            await saveProjectHistory(project, initialEntry, null);
+        }
+        return initialEntry;
+    } catch (err) {
+        console.warn("[History] Auto initialization of project history failed:", err);
+        return [{
+            version: '0.1',
+            date: getFormattedKST(),
+            message: '프로젝트 최초 생성',
+            file: 'metadata.json'
+        }];
     }
 }
 
@@ -711,4 +754,9 @@ const Notification = {
     }
 };
 
-window.Notification = Notification;
+window.NotificationUI = Notification;
+try {
+    window.Notification = Notification;
+} catch(e) {
+    console.warn("Could not overwrite global window.Notification:", e);
+}
