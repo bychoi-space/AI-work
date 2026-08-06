@@ -173,7 +173,7 @@
     "99_Blank_368.html": {
       "title": "카드 설정 상세",
       "type": "admin-nbos",
-      "updatedAt": "2026-08-06T04:42:46.701Z",
+      "updatedAt": "2026-08-06T04:44:24.968Z",
       "template": "template_blank.html",
       "description": [],
       "connectors": [
@@ -218,5 +218,5 @@
   "period": "2026.07.30(목) ~ 2026.08.27(목)",
   "jira": "LFML-145305",
   "themeIndex": 5,
-  "updated": "2026-08-06 13:42:46"
+  "updated": "2026-08-06 13:44:24"
 }
