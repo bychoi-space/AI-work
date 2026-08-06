@@ -203,10 +203,14 @@
       "screenDesc": ""
     },
     "99_Blank_562.html": {
-      "title": "99_Blank_562",
-      "type": "blank",
-      "updatedAt": "2026-08-06T02:23:35.557Z",
-      "template": "template_blank.html"
+      "title": "얼럿 정의",
+      "type": "",
+      "updatedAt": "2026-08-06T02:24:24.777Z",
+      "template": "template_blank.html",
+      "description": [],
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": ""
     }
   },
   "assignee": "최범열",
