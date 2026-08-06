@@ -169,6 +169,12 @@
       "connectors": [],
       "defaultTab": "editor",
       "screenDesc": ""
+    },
+    "99_Blank_368.html": {
+      "title": "99_Blank_368",
+      "type": "blank",
+      "updatedAt": "2026-08-06T01:07:00.583Z",
+      "template": "template_blank.html"
     }
   },
   "assignee": "최범열",
