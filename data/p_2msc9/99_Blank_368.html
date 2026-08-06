@@ -139,85 +139,11 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     display: block;
 }
 .lf-icon[class*="lf-icon-"] { background-image: url("https://img.lfmall.co.kr/file/WAS/display/lf2022/mobile/gnb_fnb_sp_v0.1.png") !important; }
-/* Unified Disabled State for 11 Target Atoms (Shape BG: #c8c8c8, Text/Control: #969696, Border: #969696 / #b0b0b0) */
-
-/* 1. Reset outer containers so background does not fill outer bounding boxes */
-.v4-checkbox-container[data-disabled="true"],
-.v4-radio-container[data-disabled="true"],
-.v4-stepper-container[data-disabled="true"],
-.lf-component[data-disabled="true"] {
-    background: transparent !important;
-    background-color: transparent !important;
-    border-color: transparent !important;
-}
-
-/* 2. Target specific atom input/shape elements for gray fill #c8c8c8 */
-.v4-textbox-container[data-disabled="true"],
-.v4-textarea-container[data-disabled="true"],
-.v4-stepper-container[data-disabled="true"] .v4-stepper-control,
-.v4-stepper-container[data-disabled="true"] .v4-stepper-dec,
-.v4-stepper-container[data-disabled="true"] .v4-stepper-inc,
-.v4-stepper-container[data-disabled="true"] .v4-stepper-value,
-.v4-stepper-container[data-disabled="true"] .v4-stepper-action,
-.v4-selectbox-header[data-disabled="true"],
-.v4-selectbox-container[data-disabled="true"] .v4-selectbox-header,
-.v4-fileupload-button[data-disabled="true"],
-.v4-fileupload-container[data-disabled="true"] .v4-fileupload-button,
-.v4-datepicker-container[data-disabled="true"],
-.v4-toggle-track[data-disabled="true"],
-.v4-toggle-container[data-disabled="true"] .v4-toggle-track,
-.v4-accordion-container[data-disabled="true"],
-.v4-checkbox[data-disabled="true"],
-.v4-checkbox-container[data-disabled="true"] .v4-checkbox,
-.v4-radio[data-disabled="true"],
-.v4-radio-container[data-disabled="true"] .v4-radio,
-.v4-searchbar-container[data-disabled="true"] {
-    background-color: #c8c8c8 !important;
-    background: #c8c8c8 !important;
-    border-color: #969696 !important;
-}
-
-/* 3. Target text, controls, icons, dots, chevrons for dark gray #969696 */
-[data-disabled="true"] .v4-checkbox-text,
-[data-disabled="true"] .v4-radio-text,
-[data-disabled="true"] .v4-textbox-text,
-[data-disabled="true"] .v4-textarea-text,
-[data-disabled="true"] .v4-searchbar-text,
-[data-disabled="true"] .v4-stepper-value,
-[data-disabled="true"] .v4-stepper-dec,
-[data-disabled="true"] .v4-stepper-inc,
-[data-disabled="true"] .v4-stepper-action,
-[data-disabled="true"] .v4-accordion-title-text,
-[data-disabled="true"] .v4-accordion-chevron,
-[data-disabled="true"] .v4-accordion-item,
-[data-disabled="true"] .v4-radio-dot,
-[data-disabled="true"] .v4-checkbox-check,
-[data-disabled="true"] .v4-toggle-knob,
-[data-disabled="true"] .v4-toggle-thumb {
-    color: #969696 !important;
-    border-color: #969696 !important;
-}
-
-[data-disabled="true"] .v4-radio-dot,
-[data-disabled="true"] .v4-toggle-knob,
-[data-disabled="true"] .v4-toggle-thumb {
-    background-color: #969696 !important;
-    background: #969696 !important;
-}
-
-[data-disabled="true"] svg,
-[data-disabled="true"] svg path,
-[data-disabled="true"] svg polyline,
-[data-disabled="true"] svg line,
-[data-disabled="true"] svg circle {
-    stroke: #969696 !important;
-}
-
-[data-disabled="true"] .v4-searchbar-text:empty::before,
-[data-disabled="true"] .v4-textbox-text:empty::before,
-[data-disabled="true"] .v4-textarea-text:empty::before {
-    color: #969696 !important;
-}
+.v4-stepper-container[data-disabled="true"] { pointer-events: none !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-control { background-color: #e5e7eb !important; border-color: #9ca3af !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-value { color: #9ca3af !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-dec, .v4-stepper-container[data-disabled="true"] .v4-stepper-inc { background-color: #e5e7eb !important; color: #9ca3af !important; }
+.v4-stepper-container[data-disabled="true"] .v4-stepper-action { background-color: #e5e7eb !important; border-color: #9ca3af !important; color: #9ca3af !important; box-shadow: none !important; }
 .v4-selectbox-container { display: flex !important; flex-direction: column !important; box-sizing: border-box !important; position: relative !important; width: 100% !important; height: 100% !important; }
 .v4-selectbox-header { height: 30px !important; min-height: 30px !important; max-height: 30px !important; flex-shrink: 0 !important; display: flex !important; align-items: center !important; justify-content: space-between !important; box-sizing: border-box !important; }
 .v4-selectbox-container[data-dropdown-active="true"] .v4-selectbox-header { border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; }
@@ -416,8 +342,8 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
                 </div>
                 <button class="v4-stepper-action" style="height: 30px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); font-size: 12px; font-weight: 600; color: var(--v4-text-color, #374151); cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">적용</button>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_760641_9" class="lf-component" style="position: absolute; top: 424.4px; left: 151.1px; z-index: 1000; transform: none; width: 109px; height: 30px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">상품 단위 쿠폰</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_262367_10" class="lf-component" style="position: absolute; top: 424.4px; left: 270.3px; z-index: 1000; transform: none; width: 98px; height: 30px;"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(50, 50, 50); border: 1.6px solid rgb(255, 255, 255); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">탭 단위 쿠폰</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_710036_11" class="lf-component" style="position: absolute; top: 625.4px; left: 151.1px; z-index: 1000; transform: none; width: 80px; height: 30px;"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:20px; height:20px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">스와이프</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_434491_12" class="lf-component" style="position: absolute; top: 625.4px; left: 241.5px; z-index: 1000; transform: none; width: 69px; height: 30px;"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:20px; height:20px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">리스트</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_930570_13" class="lf-component" style="position: absolute; top: 666.4px; left: 151.1px; z-index: 1000; transform: none; width: 55px; height: 30px;"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:20px; height:20px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">3*2</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_225694_14" class="lf-component" style="position: absolute; top: 505.9px; left: 151.1px; z-index: 1000; transform: none; width: 80px; height: 30px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용안함</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_733460_15" class="lf-component" style="position: absolute; top: 506.9px; left: 241px; z-index: 1000; transform: none; width: 68px; height: 30px;"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(50, 50, 50); border: 1.6px solid rgb(255, 255, 255); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">1단 탭</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_35426_16" class="lf-component" style="position: absolute; top: 506.9px; left: 319px; z-index: 1000; transform: none; width: 68px; height: 30px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">2단 탭</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_965026_0" class="lf-component" style="position: absolute; top: 545.9px; left: 151.1px; z-index: 1000; transform: none; width: 80px; height: 30px;" data-disabled="false"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;" data-disabled="false"><div class="v4-radio lf-icon" style="width:20px; height:20px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용안함</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_85753_1" class="lf-component" data-disabled="false" style="position: absolute; top: 546.9px; left: 241px; z-index: 1000; transform: none; width: 58px; height: 30px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;" data-disabled="false"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_959554_18" class="lf-component lf-group" style="position: absolute; left: 450.3px; top: 545.9px; width: 148px; height: 31px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; z-index: 1000;"><div id="v4-comp-1785978489137_892727_0" class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 80px; height: 30px;" data-disabled="true"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;" data-disabled="true"><div class="v4-radio lf-icon" style="width:20px; height:20px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용안함</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_240414_1" class="lf-component" data-disabled="true" style="position: absolute; top: 1px; left: 89.9px; z-index: 1000; transform: none; width: 58px; height: 30px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;" data-disabled="true"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">사용</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></div><div id="v4-comp-1785978489137_280093_19" class="lf-component lf-group" style="position: absolute; left: 151.1px; top: 165.9px; width: 438px; height: 31px; background: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; z-index: 1000;"><div id="v4-comp-1785978489137_650826_0" class="lf-component" style="position: absolute; top: 0px; left: 0px; z-index: 1000; transform: none; width: 102px; height: 30px;"><div class="v4-checkbox-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-checkbox lf-icon" style="width:20px; height:20px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:6px; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%; pointer-events:none;"><polyline points="20 6 9 17 4 12"></polyline></svg></div><div class="v4-checkbox-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">상단외부여백</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_797657_1" class="lf-component" style="position: absolute; top: 1px; left: 112px; z-index: 1000; transform: none; width: 102px; height: 30px;"><div class="v4-checkbox-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-checkbox lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 6px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%; pointer-events:none;"><polyline points="20 6 9 17 4 12"></polyline></svg></div><div class="v4-checkbox-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">상단내부여백</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_234945_2" class="lf-component" style="position: absolute; top: 1px; left: 223.9px; z-index: 1000; transform: none; width: 102px; height: 30px;"><div class="v4-checkbox-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-checkbox lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 6px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%; pointer-events:none;"><polyline points="20 6 9 17 4 12"></polyline></svg></div><div class="v4-checkbox-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">하단내부여백</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_251667_3" class="lf-component" style="position: absolute; top: 1px; left: 336px; z-index: 1000; transform: none; width: 102px; height: 30px;"><div class="v4-checkbox-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-checkbox lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 6px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70%; height:70%; pointer-events:none;"><polyline points="20 6 9 17 4 12"></polyline></svg></div><div class="v4-checkbox-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">하단외부여백</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div></div><div id="v4-comp-1785978489137_284518_20" class="lf-component" style="position: absolute; top: 666.4px; left: 215.6px; z-index: 1000; transform: none; width: 55px; height: 30px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">3*1</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_446947_21" class="lf-component" style="position: absolute; top: 666.4px; left: 280.889px; z-index: 1000; transform: none; width: 55px; height: 30px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">2*2</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_691295_22" class="lf-component" style="position: absolute; top: 666.4px; left: 345.8px; z-index: 1000; transform: none; width: 55px; height: 30px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">2*1</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_903147_23" class="lf-component" style="position: absolute; top: 666.4px; left: 411px; z-index: 1000; transform: none; width: 55px; height: 30px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">1*2</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_453259_24" class="lf-component" style="position: absolute; top: 666.4px; left: 475.5px; z-index: 1000; transform: none; width: 55px; height: 30px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">1*3</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_647966_25" class="lf-component" style="position: absolute; top: 705.9px; left: 151.1px; z-index: 1000; transform: none; width: 55px; height: 30px;"><div class="v4-radio-container" data-checked="true" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width:20px; height:20px; background:rgb(50, 50, 50); border:1.6px solid rgb(255, 255, 255); border-radius:50%; display:flex; align-items:center; justify-content:center; box-sizing:border-box; flex-shrink:0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">4*1</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_509466_26" class="lf-component" style="position: absolute; top: 705.9px; left: 216.3px; z-index: 1000; transform: none; width: 55px; height: 30px;"><div class="v4-radio-container" data-checked="false" data-text-enabled="true" style="display:flex; align-items:center; gap:8px; width:100%; height:100%;"><div class="v4-radio lf-icon" style="width: 20px; height: 20px; background: rgb(250, 250, 250); border: 1.6px solid rgb(150, 150, 150); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex-shrink: 0;"><div class="v4-radio-dot" style="width:45%; height:45%; background:#ffffff; border-radius:50%; pointer-events:none;"></div></div><div class="v4-radio-text v4-editable-cell" contenteditable="true" style="color:#000000; font-size:12px; font-family:'Inter',sans-serif; white-space:nowrap; outline:none; -webkit-user-select:text; user-select:text;">4*2</div></div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785978489137_950448_27" class="lf-component" data-resized="true" data-custom-width="600px" style="position: absolute; top: 740px; left: 19.5px; z-index: 1000; transform: none; width: 600px; height: 120px;">
-            <div class="v4-admin-settings-container" data-row-count="2" data-row-height="40" data-row1-label="탭 명칭" data-row1-cols="1" data-row1-type="textbox" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background: #ffffff; border: 1.6px solid rgb(226, 232, 240); border-radius: 8px; font-family: inherit; display: flex; flex-direction: column; overflow: hidden; pointer-events: auto;" data-show-group-header="true" data-group-header-title="1번 탭" data-group-header-bg="#73829c" data-group-header-color="#ffffff" data-row2-label="이미지" data-row2-cols="1" data-row2-type="textbox" data-row3-label="탭 형태" data-row3-cols="1" data-row3-type="textbox" data-row4-label="1단 탭 랜덤, 2단 탭 랜덤" data-row4-cols="2" data-row4-type="textbox" data-row5-label="1단 탭 개" data-row5-cols="1" data-row5-type="textbox" data-row6-label="상품 표현 (MO)" data-row6-cols="1" data-row6-type="textbox" data-row1-height="40" data-label-width="120" data-row2-height="40" data-row3-height="40" data-row4-height="40" data-row5-height="40" data-row7-label="상품 표현 (PC)" data-row7-cols="1" data-row7-type="textbox" data-row6-height="40" data-row7-height="40"><div class="v4-admin-group-header" contenteditable="true" style="height: 40px; display: flex; align-items: center; padding: 0px 16px; font-size: 14px; font-weight: 700; background: rgb(115, 130, 156); color: rgb(255, 255, 255); box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;" data-input-bound="true" data-enforced-bg="#73829c" data-enforced-color="#ffffff">1번 탭</div>
-                <div class="v4-admin-settings-table" style="display: flex; flex-direction: column; width: 100%; flex: 1 1 0% !important; height: auto !important;"><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 40px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">탭 명칭</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; box-sizing: border-box; height: 40px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">이미지</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div></div>
+            <div class="v4-admin-settings-container" data-row-count="2" data-row-height="40" data-row1-label="탭 명칭 *" data-row1-cols="1" data-row1-type="textbox" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background: #ffffff; border: 1.6px solid rgb(226, 232, 240); border-radius: 8px; font-family: inherit; display: flex; flex-direction: column; overflow: hidden; pointer-events: auto;" data-show-group-header="true" data-group-header-title="1번 탭" data-group-header-bg="#73829c" data-group-header-color="#ffffff" data-row2-label="이미지" data-row2-cols="1" data-row2-type="textbox" data-row3-label="탭 형태" data-row3-cols="1" data-row3-type="textbox" data-row4-label="1단 탭 랜덤, 2단 탭 랜덤" data-row4-cols="2" data-row4-type="textbox" data-row5-label="1단 탭 개" data-row5-cols="1" data-row5-type="textbox" data-row6-label="상품 표현 (MO)" data-row6-cols="1" data-row6-type="textbox" data-row1-height="40" data-label-width="120" data-row2-height="40" data-row3-height="40" data-row4-height="40" data-row5-height="40" data-row7-label="상품 표현 (PC)" data-row7-cols="1" data-row7-type="textbox" data-row6-height="40" data-row7-height="40"><div class="v4-admin-group-header" contenteditable="true" style="height: 40px; display: flex; align-items: center; padding: 0px 16px; font-size: 14px; font-weight: 700; background: rgb(115, 130, 156); color: rgb(255, 255, 255); box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;" data-input-bound="true" data-enforced-bg="#73829c" data-enforced-color="#ffffff">1번 탭</div>
+                <div class="v4-admin-settings-table" style="display: flex; flex-direction: column; width: 100%; flex: 1 1 0% !important; height: auto !important;"><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 40px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">탭 명칭 *</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; box-sizing: border-box; height: 40px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">이미지</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div></div>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right" style="background: rgb(0, 229, 255);"></div></div><div id="v4-comp-1785978489137_305822_28" class="lf-component" data-resized="true" style="position: absolute; top: 784.6px; left: 149.1px; z-index: 1000; transform: none; width: 300px; height: 30px;">
             <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;" data-placeholder="" data-maxlength="24">
                 <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;"></div>
@@ -441,8 +367,8 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
 
 
 <div id="v4-comp-1785979603292_184158_0" class="lf-component" data-resized="true" data-custom-width="600px" style="position: absolute; top: 81.4px; left: 790px; z-index: 1000; transform: none; width: 600px; height: 400px;">
-            <div class="v4-admin-settings-container" data-row-count="4" data-row-height="40" data-row1-label="탭 명칭" data-row1-cols="1" data-row1-type="textbox" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background: #ffffff; border: 1.6px solid rgb(226, 232, 240); border-radius: 8px; font-family: inherit; display: flex; flex-direction: column; overflow: hidden; pointer-events: auto;" data-show-group-header="true" data-group-header-title="1번 탭" data-group-header-bg="#73829c" data-group-header-color="#ffffff" data-row2-label="이미지" data-row2-cols="1" data-row2-type="textbox" data-row3-label="쿠폰 선택" data-row3-cols="1" data-row3-type="textbox" data-row4-label="상품 선택 *" data-row4-cols="1" data-row4-type="textbox" data-row5-label="1단 탭 개" data-row5-cols="1" data-row5-type="textbox" data-row6-label="상품 표현 (MO)" data-row6-cols="1" data-row6-type="textbox" data-row1-height="40" data-label-width="120" data-row2-height="80" data-row3-height="120" data-row4-height="120" data-row5-height="40" data-row7-label="상품 표현 (PC)" data-row7-cols="1" data-row7-type="textbox" data-row6-height="40" data-row7-height="40"><div class="v4-admin-group-header" contenteditable="true" style="height: 40px; display: flex; align-items: center; padding: 0px 16px; font-size: 14px; font-weight: 700; background: rgb(115, 130, 156); color: rgb(255, 255, 255); box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;" data-input-bound="true" data-enforced-bg="#73829c" data-enforced-color="#ffffff">1번 탭</div>
-                <div class="v4-admin-settings-table" style="display: flex; flex-direction: column; width: 100%; flex: 1 1 0% !important; height: auto !important;"><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 40px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">탭 명칭</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 80px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">이미지</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 120px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">쿠폰 선택</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; box-sizing: border-box; height: 120px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">상품 선택 *</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div></div>
+            <div class="v4-admin-settings-container" data-row-count="4" data-row-height="40" data-row1-label="탭 명칭 *" data-row1-cols="1" data-row1-type="textbox" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background: #ffffff; border: 1.6px solid rgb(226, 232, 240); border-radius: 8px; font-family: inherit; display: flex; flex-direction: column; overflow: hidden; pointer-events: auto;" data-show-group-header="true" data-group-header-title="1번 탭" data-group-header-bg="#73829c" data-group-header-color="#ffffff" data-row2-label="이미지" data-row2-cols="1" data-row2-type="textbox" data-row3-label="쿠폰 선택" data-row3-cols="1" data-row3-type="textbox" data-row4-label="상품 선택 *" data-row4-cols="1" data-row4-type="textbox" data-row5-label="1단 탭 개" data-row5-cols="1" data-row5-type="textbox" data-row6-label="상품 표현 (MO)" data-row6-cols="1" data-row6-type="textbox" data-row1-height="40" data-label-width="120" data-row2-height="80" data-row3-height="120" data-row4-height="120" data-row5-height="40" data-row7-label="상품 표현 (PC)" data-row7-cols="1" data-row7-type="textbox" data-row6-height="40" data-row7-height="40"><div class="v4-admin-group-header" contenteditable="true" style="height: 40px; display: flex; align-items: center; padding: 0px 16px; font-size: 14px; font-weight: 700; background: rgb(115, 130, 156); color: rgb(255, 255, 255); box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;" data-input-bound="true" data-enforced-bg="#73829c" data-enforced-color="#ffffff">1번 탭</div>
+                <div class="v4-admin-settings-table" style="display: flex; flex-direction: column; width: 100%; flex: 1 1 0% !important; height: auto !important;"><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 40px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">탭 명칭 *</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 80px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">이미지</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 120px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">쿠폰 선택</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; box-sizing: border-box; height: 120px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">상품 선택 *</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div></div>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left" style="background: rgb(0, 229, 255);"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785979667251_441049_0" class="lf-component" data-resized="true" style="position: absolute; top: 126.889px; left: 921.6px; z-index: 1000; transform: none; width: 300px; height: 30px;">
             <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;" data-placeholder="" data-maxlength="24">
                 <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;"></div>
@@ -505,8 +431,8 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
                     <td class="v4-editable-cell" contenteditable="true" style="border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); font-size: 12px; padding: 0px 8px; text-align: left; vertical-align: middle; box-sizing: border-box; width: 100px !important; min-width: 100px !important; max-width: 100px !important; min-height: 30px !important; height: 30px !important;"><br></td><td class="v4-editable-cell" contenteditable="true" style="border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); font-size: 12px; padding: 0px 8px; text-align: left; vertical-align: middle; box-sizing: border-box; width: 80px !important; min-width: 80px !important; max-width: 80px !important; min-height: 30px !important; height: 30px !important;"><br></td><td class="v4-editable-cell" contenteditable="true" style="border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); font-size: 12px; padding: 0px 8px; text-align: left; vertical-align: middle; box-sizing: border-box; width: 80px !important; min-width: 80px !important; max-width: 80px !important; min-height: 30px !important; height: 30px !important;"><br></td><td class="v4-editable-cell" contenteditable="true" style="border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); font-size: 12px; padding: 0px 8px; text-align: left; vertical-align: middle; box-sizing: border-box; width: 50px !important; min-width: 50px !important; max-width: 50px !important; min-height: 30px !important; height: 30px !important;"><br></td></tr>
                 </tbody>
             </table><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785982467576_542316_0" class="lf-component" data-resized="true" data-custom-width="600px" style="position: absolute; top: 481.4px; left: 790px; z-index: 1000; transform: none; width: 600px; height: 400px;">
-            <div class="v4-admin-settings-container" data-row-count="4" data-row-height="40" data-row1-label="탭 명칭" data-row1-cols="1" data-row1-type="textbox" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background: #ffffff; border: 1.6px solid rgb(226, 232, 240); border-radius: 8px; font-family: inherit; display: flex; flex-direction: column; overflow: hidden; pointer-events: auto;" data-show-group-header="true" data-group-header-title="2번 탭" data-group-header-bg="#73829c" data-group-header-color="#ffffff" data-row2-label="이미지" data-row2-cols="1" data-row2-type="textbox" data-row3-label="쿠폰 선택" data-row3-cols="1" data-row3-type="textbox" data-row4-label="상품 선택 *" data-row4-cols="1" data-row4-type="textbox" data-row5-label="1단 탭 개" data-row5-cols="1" data-row5-type="textbox" data-row6-label="상품 표현 (MO)" data-row6-cols="1" data-row6-type="textbox" data-row1-height="40" data-label-width="120" data-row2-height="80" data-row3-height="120" data-row4-height="120" data-row5-height="40" data-row7-label="상품 표현 (PC)" data-row7-cols="1" data-row7-type="textbox" data-row6-height="40" data-row7-height="40"><div class="v4-admin-group-header" contenteditable="true" style="height: 40px; display: flex; align-items: center; padding: 0px 16px; font-size: 14px; font-weight: 700; background: rgb(115, 130, 156); color: rgb(255, 255, 255); box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;" data-input-bound="true" data-enforced-bg="#73829c" data-enforced-color="#ffffff">2번 탭</div>
-                <div class="v4-admin-settings-table" style="display: flex; flex-direction: column; width: 100%; flex: 1 1 0% !important; height: auto !important;"><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 40px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">탭 명칭</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 80px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">이미지</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 120px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">쿠폰 선택</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; box-sizing: border-box; height: 120px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">상품 선택 *</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div></div>
+            <div class="v4-admin-settings-container" data-row-count="4" data-row-height="40" data-row1-label="탭 명칭 *" data-row1-cols="1" data-row1-type="textbox" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background: #ffffff; border: 1.6px solid rgb(226, 232, 240); border-radius: 8px; font-family: inherit; display: flex; flex-direction: column; overflow: hidden; pointer-events: auto;" data-show-group-header="true" data-group-header-title="2번 탭" data-group-header-bg="#73829c" data-group-header-color="#ffffff" data-row2-label="이미지" data-row2-cols="1" data-row2-type="textbox" data-row3-label="쿠폰 선택" data-row3-cols="1" data-row3-type="textbox" data-row4-label="상품 선택 *" data-row4-cols="1" data-row4-type="textbox" data-row5-label="1단 탭 개" data-row5-cols="1" data-row5-type="textbox" data-row6-label="상품 표현 (MO)" data-row6-cols="1" data-row6-type="textbox" data-row1-height="40" data-label-width="120" data-row2-height="80" data-row3-height="120" data-row4-height="120" data-row5-height="40" data-row7-label="상품 표현 (PC)" data-row7-cols="1" data-row7-type="textbox" data-row6-height="40" data-row7-height="40"><div class="v4-admin-group-header" contenteditable="true" style="height: 40px; display: flex; align-items: center; padding: 0px 16px; font-size: 14px; font-weight: 700; background: rgb(115, 130, 156); color: rgb(255, 255, 255); box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;" data-input-bound="true" data-enforced-bg="#73829c" data-enforced-color="#ffffff">2번 탭</div>
+                <div class="v4-admin-settings-table" style="display: flex; flex-direction: column; width: 100%; flex: 1 1 0% !important; height: auto !important;"><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 40px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">탭 명칭 *</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 80px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">이미지</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; height: 120px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">쿠폰 선택</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div><div class="v4-admin-row" style="display: flex; width: 100%; border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; box-sizing: border-box; height: 120px;"><div class="v4-admin-label-cell" style="width: 120px; background: rgb(241, 245, 249); display: flex; align-items: center; padding: 0px 16px; font-size: 12px; font-weight: 600; color: rgb(51, 65, 85); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">상품 선택 *</div><div class="v4-admin-content-cell" style="flex: 1 1 0%; display: flex; align-items: center; padding: 0px 16px; box-sizing: border-box;"></div></div></div>
             </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left" style="background: rgb(0, 229, 255);"></div><div class="lf-connector-port port-right" data-side="right"></div></div><div id="v4-comp-1785982467576_424196_1" class="lf-component" data-resized="true" style="position: absolute; top: 526.889px; left: 921.6px; z-index: 1000; transform: none; width: 300px; height: 30px;">
             <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;" data-placeholder="" data-maxlength="24">
                 <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit; display: block;"></div>
@@ -574,8 +500,9 @@ body.drawing-line-active .lf-component.near-connector > .lf-connector-port {
                     <polygon points="0,6 45,2 90,6 135,2 180,6 225,2 270,6 315,2 360,6 360,16 315,12 270,16 225,12 180,16 135,12 90,16 45,12 0,16" style="fill: #ffedd5; stroke: #fb923c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" stroke-width="1.6"></polygon>
                 </svg>
                 <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2px 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; z-index: 2; position: relative; color: #0f172a;"></div>
-            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div><script id="v4-inlined-script">
-// Cache Buster Timestamp: 1785982557815
+            </div><div class="lf-connector-port port-top" data-side="top"></div><div class="lf-connector-port port-bottom" data-side="bottom"></div><div class="lf-connector-port port-left" data-side="left"></div><div class="lf-connector-port port-right" data-side="right"></div></div>
+<script id="v4-inlined-script">
+// Cache Buster Timestamp: 1785983094308
 
 window.V4UndoManager = (function() {
     const MAX_HISTORY = 10;
@@ -635,48 +562,46 @@ window.V4UndoManager = (function() {
                     notifyParent({ type: 'LF_RESTORE_CONNECTORS', connectors: prevState.connectors });
                 }
                 
-                try {
-                    if (window.parent && window.parent.state && window.parent.state.activeFile) {
-                        const descList = window.parent.state.activeFile.meta.description || [];
-                        const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
-                        
-                        if (descList.length > remainingPins.length) {
-                            descList.splice(remainingPins.length);
-                        }
-                        
-                        remainingPins.forEach((pin, idx) => {
-                            pin.id = 'v4-pin-' + idx;
-                            const isPinType = pin.classList.contains('pin-marker');
-                            
-                            if (!descList[idx]) {
-                                descList[idx] = {};
-                            }
-                            
-                            if (isPinType) {
-                                descList[idx].x = parseFloat(pin.style.left) || 0;
-                                descList[idx].y = parseFloat(pin.style.top) || 0;
-                                descList[idx].type = 'pin';
-                                descList[idx].standardized = true;
-                            } else {
-                                const editable = pin.querySelector('.v4-editable-cell');
-                                const textContent = editable ? editable.innerText.trim() : "Edit Text";
-                                const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
-                                
-                                descList[idx].text = textContent;
-                                descList[idx].html = htmlContent;
-                                descList[idx].x = parseFloat(pin.style.left) || 0;
-                                descList[idx].y = parseFloat(pin.style.top) || 0;
-                                descList[idx].type = 'text';
-                                descList[idx].standardized = true;
-                            }
-                        });
-                        
-                        if (typeof window.parent.renderDescriptionList === 'function') {
-                            window.parent.renderDescriptionList();
-                        }
+                if (window.parent && window.parent.state && window.parent.state.activeFile) {
+                    const descList = window.parent.state.activeFile.meta.description || [];
+                    const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
+                    
+                    if (descList.length > remainingPins.length) {
+                        descList.splice(remainingPins.length);
                     }
-                } catch (e) {
-                    console.warn("[V4 Undo] Parent window access guarded under file:// protocol:", e);
+                    
+                    remainingPins.forEach((pin, idx) => {
+                        pin.id = 'v4-pin-' + idx;
+                        const isPinType = pin.classList.contains('pin-marker');
+                        
+                        if (!descList[idx]) {
+                            descList[idx] = {};
+                        }
+                        
+                        if (isPinType) {
+                            // Circular Pin: Only sync coordinates, preserve type and text from parent state
+                            descList[idx].x = parseFloat(pin.style.left) || 0;
+                            descList[idx].y = parseFloat(pin.style.top) || 0;
+                            descList[idx].type = 'pin';
+                            descList[idx].standardized = true;
+                        } else {
+                            // Inline Text Component: Sync full content and style
+                            const editable = pin.querySelector('.v4-editable-cell');
+                            const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                            const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                            
+                            descList[idx].text = textContent;
+                            descList[idx].html = htmlContent;
+                            descList[idx].x = parseFloat(pin.style.left) || 0;
+                            descList[idx].y = parseFloat(pin.style.top) || 0;
+                            descList[idx].type = 'text';
+                            descList[idx].standardized = true;
+                        }
+                    });
+                    
+                    if (typeof window.parent.renderDescriptionList === 'function') {
+                        window.parent.renderDescriptionList();
+                    }
                 }
 
                 if (typeof window.initHandles === 'function') window.initHandles();
@@ -988,36 +913,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         }
     });
 
-    function getTargetCells() {
-        let selected = Array.from(document.querySelectorAll('.selected-cell'));
-        if (selected.length > 0) return selected;
-
-        if (document.activeElement) {
-            const cell = document.activeElement.closest('td, th');
-            if (cell) return [cell];
-        }
-
-        const selectedComp = document.querySelector('.lf-component.selected');
-        if (selectedComp) {
-            const table = selectedComp.querySelector('table');
-            if (table) {
-                const cells = Array.from(table.querySelectorAll('td, th'));
-                if (cells.length > 0) return cells;
-            }
-        }
-
-        const anyTable = document.querySelector('.lf-component table, table');
-        if (anyTable) {
-            return Array.from(anyTable.querySelectorAll('td, th'));
-        }
-
-        return [];
-    }
-
     // Table Style & Dimension Modifier
     const TableManager = {
         updateSelectedCellsStyle(style) {
-            const selected = getTargetCells();
+            const selected = document.querySelectorAll('.selected-cell');
             if (selected.length === 0) return;
             
             if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -1041,21 +940,16 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     }
                     if (style.textAlign !== undefined) {
                         target.style.setProperty('text-align', style.textAlign, 'important');
-                        target.querySelectorAll('p, span, div, .v4-shape-text-content').forEach(child => {
-                            child.style.setProperty('text-align', style.textAlign, 'important');
-                        });
                     }
                 });
             });
 
             if (window.markDirty) window.markDirty();
-            if (window.TableSelection && typeof window.TableSelection.notifySelectionChanged === 'function') {
-                window.TableSelection.notifySelectionChanged();
-            }
+            TableSelection.notifySelectionChanged();
         },
 
         updateSelectedColumnWidth(width) {
-            const selected = getTargetCells();
+            const selected = document.querySelectorAll('.selected-cell');
             if (selected.length === 0) return;
             
             if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -1082,8 +976,8 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
             tables.forEach(table => {
                 const cols = colIndicesByTable.get(table);
-                if (!cols || cols.size === 0) return;
                 
+                // Adjust col elements if colgroup exists
                 const colgroup = table.querySelector('colgroup');
                 if (colgroup) {
                     const colElements = colgroup.querySelectorAll('col');
@@ -1101,24 +995,17 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     if (cols.has(b.minCol)) {
                         if (colSpan === 1) {
                             cell.style.setProperty('width', width + 'px', 'important');
-                            cell.style.setProperty('min-width', width + 'px', 'important');
-                            cell.style.setProperty('max-width', width + 'px', 'important');
                         }
                     }
                 });
             });
 
             if (window.markDirty) window.markDirty();
-            if (typeof window.syncTableComponentSize === 'function') {
-                window.syncTableComponentSize();
-            }
-            if (window.TableSelection && typeof window.TableSelection.notifySelectionChanged === 'function') {
-                window.TableSelection.notifySelectionChanged();
-            }
+            TableSelection.notifySelectionChanged();
         },
 
         updateSelectedRowHeight(height) {
-            const selected = getTargetCells();
+            const selected = document.querySelectorAll('.selected-cell');
             if (selected.length === 0) return;
             
             if (window.V4UndoManager) window.V4UndoManager.saveState();
@@ -1133,21 +1020,14 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
             rows.forEach(row => {
                 row.style.setProperty('height', height + 'px', 'important');
-                row.style.setProperty('min-height', height + 'px', 'important');
+                // Remove inline height styles from cells inside the row so they don't override the row height
                 Array.from(row.cells).forEach(cell => {
                     cell.style.removeProperty('height');
-                    cell.style.setProperty('height', height + 'px', 'important');
-                    cell.style.setProperty('min-height', height + 'px', 'important');
                 });
             });
 
             if (window.markDirty) window.markDirty();
-            if (typeof window.syncTableComponentSize === 'function') {
-                window.syncTableComponentSize();
-            }
-            if (window.TableSelection && typeof window.TableSelection.notifySelectionChanged === 'function') {
-                window.TableSelection.notifySelectionChanged();
-            }
+            TableSelection.notifySelectionChanged();
         },
 
         updateSelectedCellsBorder(borderType, color) {
@@ -1626,9 +1506,21 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
     // Strategy 3-C: Shape-Embedded Text (.v4-shape with text)
     const fitShapeText = (c, measured, origW, origH) => {
-        // Preserve user-defined shape dimensions; do NOT auto-expand/shrink shape size on text edit
-        if (origW && c.style.width !== origW) c.style.width = origW;
-        if (origH && c.style.height !== origH) c.style.height = origH;
+        const addedW = 24;
+        const addedH = 16;
+        const targetW = measured.textW + addedW;
+        const targetH = measured.lineCount > 1 
+            ? (measured.fsPx * 1.2 * measured.lineCount) + addedH 
+            : measured.textH + addedH;
+
+        const currentW = parseFloat(origW) || c.offsetWidth || 120;
+        const currentH = parseFloat(origH) || c.offsetHeight || 36;
+        
+        // Prevent shrinking below text requirements while maintaining shape bounds
+        const newW = Math.max(currentW, targetW) + 'px';
+        const newH = Math.max(currentH, targetH, 36) + 'px';
+        if (origW !== newW) c.style.width = newW;
+        if (origH !== newH) c.style.height = newH;
 
         return { hideResizer: false };
     };
@@ -2955,7 +2847,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 (function() {
     let v4Clipboard = [];
     let isArrowMoving = false;
-    let isPastingLocked = false;
+    
 
     window.reorderAllPins = () => {
         const pins = document.querySelectorAll('.text-marker, .pin-marker');
@@ -2966,49 +2858,41 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 badge.innerText = idx + 1;
             }
         });
-        try {
-            if (window.parent && window.parent.state && window.parent.state.activeFile) {
-                const descList = window.parent.state.activeFile.meta.description || [];
-                const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
-                if (descList.length > remainingPins.length) {
-                    descList.splice(remainingPins.length);
-                }
-                remainingPins.forEach((pin, idx) => {
-                    const isPinType = pin.classList.contains('pin-marker');
-                    if (!descList[idx]) {
-                        descList[idx] = {};
-                    }
-                    descList[idx].x = parseFloat(pin.style.left) || 0;
-                    descList[idx].y = parseFloat(pin.style.top) || 0;
-                    descList[idx].standardized = true;
-                    if (isPinType) {
-                        descList[idx].type = 'pin';
-                    } else {
-                        const editable = pin.querySelector('.v4-editable-cell');
-                        const textContent = editable ? editable.innerText.trim() : "Edit Text";
-                        const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
-                        descList[idx].type = 'text';
-                        descList[idx].text = textContent;
-                        descList[idx].html = htmlContent;
-                    }
-                });
-                if (typeof window.parent.renderDescriptionList === 'function') {
-                    window.parent.renderDescriptionList();
-                }
+        if (window.parent && window.parent.state && window.parent.state.activeFile) {
+            const descList = window.parent.state.activeFile.meta.description || [];
+            const remainingPins = document.querySelectorAll('.text-marker, .pin-marker');
+            if (descList.length > remainingPins.length) {
+                descList.splice(remainingPins.length);
             }
-        } catch (e) {
-            console.warn("[V4 Shortcuts] Parent window access guarded under file:// protocol:", e);
+            remainingPins.forEach((pin, idx) => {
+                const isPinType = pin.classList.contains('pin-marker');
+                if (!descList[idx]) {
+                    descList[idx] = {};
+                }
+                descList[idx].x = parseFloat(pin.style.left) || 0;
+                descList[idx].y = parseFloat(pin.style.top) || 0;
+                descList[idx].standardized = true;
+                if (isPinType) {
+                    descList[idx].type = 'pin';
+                } else {
+                    const editable = pin.querySelector('.v4-editable-cell');
+                    const textContent = editable ? editable.innerText.trim() : "Edit Text";
+                    const htmlContent = editable ? editable.innerHTML : pin.innerHTML;
+                    descList[idx].type = 'text';
+                    descList[idx].text = textContent;
+                    descList[idx].html = htmlContent;
+                }
+            });
+            if (typeof window.parent.renderDescriptionList === 'function') {
+                window.parent.renderDescriptionList();
+            }
         }
     };
 
     window.copySelectedObjects = () => {
         const selected = document.querySelectorAll('.lf-component.selected');
-        const selectedConnIds = (window.parent && window.parent.ConnectorEngine && typeof window.parent.ConnectorEngine.getSelectedIds === 'function')
-            ? window.parent.ConnectorEngine.getSelectedIds()
-            : [];
-        console.log("[Clipboard Debug] copySelectedObjects running. Selected elements:", selected.length, "connectors:", selectedConnIds.length);
-        if (selected.length === 0 && selectedConnIds.length === 0) return;
-
+        console.log("[Clipboard Debug] copySelectedObjects running. Selected elements count:", selected.length);
+        if (selected.length === 0) return;
         const topLevelSelected = Array.from(selected).filter(el => {
             let parent = el.parentElement;
             while (parent && parent !== document.body) {
@@ -3019,42 +2903,24 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             }
             return true;
         });
-
         const clipboardData = [];
-        const copiedConnectorIds = new Set(selectedConnIds);
-
         topLevelSelected.forEach(el => {
+            // Clean up 'selected' and 'dragging-now' classes safely without regex escape issues
             const cleanClasses = el.className.split(' ')
                 .map(c => c.trim())
                 .filter(c => c && c !== 'selected' && c !== 'dragging-now')
                 .join(' ');
 
+            // Collect all custom data attributes and id for synchronization
             const attrs = {};
             Array.from(el.attributes).forEach(attr => {
-                const name = attr.name;
-                if (name === 'data-source-id' || name === 'data-target-id') return;
-                if (name.startsWith('data-') || name === 'id') {
-                    attrs[name] = attr.value;
+                if (attr.name.startsWith('data-') || attr.name === 'id') {
+                    attrs[attr.name] = attr.value;
                 }
             });
 
-            if (el.classList.contains('lf-group')) {
-                const connIdsStr = el.getAttribute('data-connectors');
-                if (connIdsStr) {
-                    try {
-                        const connIds = JSON.parse(connIdsStr);
-                        if (Array.isArray(connIds)) {
-                            connIds.forEach(id => copiedConnectorIds.add(id));
-                        }
-                    } catch(e) {}
-                }
-            }
-
-            const clone = el.cloneNode(true);
-            clone.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(h => h.remove());
-
             clipboardData.push({
-                html: clone.innerHTML,
+                html: el.innerHTML,
                 className: cleanClasses,
                 styleCssText: el.style.cssText,
                 left: parseFloat(el.style.left) || 0,
@@ -3065,75 +2931,12 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 attributes: attrs
             });
         });
-
-        if (window.parent && window.parent.state && Array.isArray(window.parent.state.connectors)) {
-            copiedConnectorIds.forEach(connId => {
-                const conn = window.parent.state.connectors.find(c => c && c.id === connId);
-                if (conn && conn.start && conn.end) {
-                    clipboardData.push({
-                        isConnector: true,
-                        connId: conn.id,
-                        connType: conn.type || 'straight',
-                        start: JSON.parse(JSON.stringify(conn.start)),
-                        end: JSON.parse(JSON.stringify(conn.end)),
-                        style: conn.style ? JSON.parse(JSON.stringify(conn.style)) : { stroke: '#475569', strokeWidth: 1.6 }
-                    });
-                }
-            });
-        }
-
         v4Clipboard = clipboardData;
         notifyParent({
             type: 'LF_SAVE_CLIPBOARD',
             clipboard: clipboardData
         });
-        console.log("[Clipboard Debug] Copied " + clipboardData.length + " item(s). Notifying parent with LF_SAVE_CLIPBOARD.");
-    };
-
-    window.cutSelectedObjects = () => {
-        const selected = document.querySelectorAll('.lf-component.selected');
-        const selectedConnIds = (window.parent && window.parent.ConnectorEngine && typeof window.parent.ConnectorEngine.getSelectedIds === 'function')
-            ? window.parent.ConnectorEngine.getSelectedIds()
-            : [];
-        console.log("[Clipboard Debug] cutSelectedObjects running. Selected elements:", selected.length, "connectors:", selectedConnIds.length);
-        if (selected.length === 0 && selectedConnIds.length === 0) return;
-
-        window.copySelectedObjects();
-
-        if (Array.isArray(v4Clipboard)) {
-            v4Clipboard.forEach(item => item.isCut = true);
-        }
-        if (window.top && Array.isArray(window.top.__lf_global_clipboard__)) {
-            window.top.__lf_global_clipboard__.forEach(item => item.isCut = true);
-        }
-        notifyParent({
-            type: 'LF_SAVE_CLIPBOARD',
-            clipboard: v4Clipboard
-        });
-
-        if (window.V4UndoManager) window.V4UndoManager.saveState();
-
-        selected.forEach(c => {
-            if (c.classList.contains('connector-line')) {
-                notifyParent({ type: 'LF_DELETE_CONNECTOR', id: c.id });
-            } else if (c.classList.contains('text-marker') || c.classList.contains('pin-marker')) {
-                const idx = parseInt(c.id.replace('v4-pin-', ''));
-                notifyParent({ type: 'LF_DELETE_PIN', index: idx });
-                c.remove();
-            } else {
-                c.remove();
-            }
-        });
-
-        if (selectedConnIds.length > 0) {
-            selectedConnIds.forEach(id => {
-                notifyParent({ type: 'LF_DELETE_CONNECTOR', id: id });
-            });
-        }
-
-        notifyParent({ type: 'LF_DESELECT' });
-        markDirty();
-        console.log("[Clipboard Debug] Cut operation complete.");
+        console.log("[Clipboard Debug] Copied " + clipboardData.length + " object(s). Notifying parent with LF_SAVE_CLIPBOARD.");
     };
 
     window.pasteCopiedObjectsFromData = (clipboardData) => {
@@ -3143,169 +2946,87 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             return;
         }
 
-        try {
-            if (window.V4UndoManager) window.V4UndoManager.saveState();
-            document.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
-            const host = document.body;
-            const newSelectedIds = [];
-            const selectedIdsIsGroupMap = {};
-            const isCutOperation = clipboardData.some(item => item.isCut === true);
-            const offset = isCutOperation ? 0 : 15;
+        if (window.V4UndoManager) window.V4UndoManager.saveState();
+        document.querySelectorAll('.lf-component').forEach(el => el.classList.remove('selected'));
+        const host = document.body;
+        const newSelectedIds = [];
+        const offset = 15;
+        clipboardData.forEach(item => {
+            const v = document.createElement('div');
+            const newId = item.isPinMarker ? ('v4-pin-' + Date.now() + Math.floor(Math.random() * 1000)) : ('v4-comp-' + Date.now() + Math.floor(Math.random() * 1000));
+            v.id = newId;
+            v.className = item.className + ' selected';
+            v.style.cssText = item.styleCssText;
+            v.style.left = (item.left + offset) + 'px';
+            v.style.top = (item.top + offset) + 'px';
+            v.innerHTML = item.html;
 
-            clipboardData.forEach(item => { item.isCut = false; });
-            if (Array.isArray(v4Clipboard)) v4Clipboard.forEach(item => { item.isCut = false; });
-            if (window.top && Array.isArray(window.top.__lf_global_clipboard__)) {
-                window.top.__lf_global_clipboard__.forEach(item => { item.isCut = false; });
+            // Restore all cloned data attributes to the new container
+            if (item.attributes) {
+                Object.keys(item.attributes).forEach(attrName => {
+                    if (attrName !== 'id') { // Skip binding the old parent container ID
+                        v.setAttribute(attrName, item.attributes[attrName]);
+                    }
+                });
             }
-            notifyParent({
-                type: 'LF_SAVE_CLIPBOARD',
-                clipboard: clipboardData
-            });
 
-            const nowStamp = Date.now();
-
-            const componentItems = clipboardData.filter(item => !item.isConnector);
-            const connectorItems = clipboardData.filter(item => item.isConnector);
+            // Regenerate IDs of all nested child components to prevent duplicate ID issues
             const idMap = {};
-
-            componentItems.forEach((item, idx) => {
-                const v = document.createElement('div');
-                const randSuffix = Math.floor(Math.random() * 1000000) + '_' + idx;
-                const newId = item.isPinMarker ? ('v4-pin-' + nowStamp + '_' + randSuffix) : ('v4-comp-' + nowStamp + '_' + randSuffix);
-                v.id = newId;
-                v.className = item.className + ' selected';
-                v.style.cssText = item.styleCssText;
-                v.style.left = (item.left + offset) + 'px';
-                v.style.top = (item.top + offset) + 'px';
-                v.innerHTML = item.html;
-
-                if (item.attributes && item.attributes.id) {
-                    idMap[item.attributes.id] = newId;
+            const childrenWithId = v.querySelectorAll('[id]');
+            childrenWithId.forEach(child => {
+                const oldId = child.id;
+                let prefix = 'v4-comp-';
+                if (child.classList.contains('pin-marker') || oldId.startsWith('v4-pin-')) {
+                    prefix = 'v4-pin-';
                 }
-
-                if (item.isGroup) {
-                    selectedIdsIsGroupMap[newId] = true;
-                }
-
-                if (item.attributes) {
-                    Object.keys(item.attributes).forEach(attrName => {
-                        if (attrName !== 'id' && attrName !== 'data-connectors' && attrName !== 'data-source-id' && attrName !== 'data-target-id') {
-                            v.setAttribute(attrName, item.attributes[attrName]);
-                        }
-                    });
-                }
-                v.removeAttribute('data-source-id');
-                v.removeAttribute('data-target-id');
-
-                const childrenWithId = v.querySelectorAll('[id]');
-                childrenWithId.forEach((child, cIdx) => {
-                    const oldId = child.id;
-                    let prefix = 'v4-comp-';
-                    if (child.classList.contains('pin-marker') || oldId.startsWith('v4-pin-')) {
-                        prefix = 'v4-pin-';
-                    }
-                    const uniqueSuffix = nowStamp + '_' + Math.floor(Math.random() * 1000000) + '_' + cIdx;
-                    const newChildId = prefix + uniqueSuffix;
-                    child.id = newChildId;
-                    idMap[oldId] = newChildId;
-                });
-
-                if (item.isGroup) {
-                    const rawChildren = v.getAttribute('data-children');
-                    if (rawChildren) {
-                        try {
-                            const childIds = JSON.parse(rawChildren);
-                            const newChildIds = childIds.map(oldId => idMap[oldId] || oldId);
-                            v.setAttribute('data-children', JSON.stringify(newChildIds));
-                        } catch (e) {
-                            console.warn("[Clipboard] Failed to remap data-children inside cloned group:", e);
-                        }
-                    }
-                }
-
-                v.querySelectorAll('.lf-component').forEach(child => child.classList.remove('selected'));
-                v.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
-                host.appendChild(v);
-                newSelectedIds.push(newId);
+                const uniqueSuffix = Date.now() + Math.floor(Math.random() * 1000000) + Math.floor(Math.random() * 1000);
+                const newChildId = prefix + uniqueSuffix;
+                child.id = newChildId;
+                idMap[oldId] = newChildId;
             });
 
-            // Paste connectors
-            const pastedConnIds = [];
-            if (connectorItems.length > 0 && window.parent && window.parent.state) {
-                if (!Array.isArray(window.parent.state.connectors)) {
-                    window.parent.state.connectors = [];
+            // If this is a group component, remap children IDs inside its metadata attributes
+            if (item.isGroup) {
+                const rawChildren = v.getAttribute('data-children');
+                if (rawChildren) {
+                    try {
+                        const childIds = JSON.parse(rawChildren);
+                        const newChildIds = childIds.map(oldId => idMap[oldId] || oldId);
+                        v.setAttribute('data-children', JSON.stringify(newChildIds));
+                    } catch (e) {
+                        console.warn("[Clipboard] Failed to remap data-children inside cloned group:", e);
+                    }
                 }
-                connectorItems.forEach((cItem, cIdx) => {
-                    const newConnId = 'conn_' + nowStamp + '_' + Math.floor(Math.random() * 1000000) + '_' + cIdx;
-                    const newStart = { ...cItem.start, x: (cItem.start.x || 0) + offset, y: (cItem.start.y || 0) + offset };
-                    const newEnd = { ...cItem.end, x: (cItem.end.x || 0) + offset, y: (cItem.end.y || 0) + offset };
-
-                    if (newStart.targetId && idMap[newStart.targetId]) newStart.targetId = idMap[newStart.targetId];
-                    else { newStart.targetId = null; newStart.side = null; }
-
-                    if (newEnd.targetId && idMap[newEnd.targetId]) newEnd.targetId = idMap[newEnd.targetId];
-                    else { newEnd.targetId = null; newEnd.side = null; }
-
-                    const newConn = {
-                        id: newConnId,
-                        type: cItem.connType || 'straight',
-                        start: newStart,
-                        end: newEnd,
-                        style: cItem.style ? { ...cItem.style } : { stroke: '#475569', strokeWidth: 1.6 }
-                    };
-                    window.parent.state.connectors.push(newConn);
-                    pastedConnIds.push(newConnId);
-                    newSelectedIds.push(newConnId);
-                });
-
-                if (window.parent.ConnectorEngine && typeof window.parent.ConnectorEngine.redrawAll === 'function') {
-                    window.parent.ConnectorEngine.redrawAll();
-                }
-                if (window.parent.ConnectorEngine && typeof window.parent.ConnectorEngine.setSelectedIds === 'function') {
-                    window.parent.ConnectorEngine.setSelectedIds(pastedConnIds);
-                }
-                notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent.state.connectors });
             }
 
-            if (typeof window.enforceDesignSystem === 'function') {
-                try { window.enforceDesignSystem(); } catch(dsErr) { console.warn("[Clipboard] enforceDesignSystem error:", dsErr); }
-            } else if (typeof window.initHandles === 'function') {
-                try { window.initHandles(); } catch(ihErr) { console.warn("[Clipboard] initHandles error:", ihErr); }
-            }
-
-            const hasPin = clipboardData.some(item => item.isPinMarker || item.isTextMarker);
-            if (hasPin && typeof window.reorderAllPins === 'function') {
-                try { window.reorderAllPins(); } catch(pinErr) { console.warn("[Clipboard] reorderAllPins error:", pinErr); }
-            }
-
-            if (newSelectedIds.length > 0) {
-                const firstNewEl = document.getElementById(newSelectedIds[0]);
-                const firstStyles = (firstNewEl && typeof window._getCompStyles === 'function') ? window._getCompStyles(firstNewEl) : {};
-                notifyParent({
-                    type: "LF_PASTE_COMPLETED",
-                    ids: newSelectedIds,
-                    selectedIdsIsGroupMap: selectedIdsIsGroupMap,
-                    firstCompStyles: firstStyles
-                });
-            }
-            if (typeof window.markDirty === 'function') window.markDirty();
-            else if (typeof markDirty === 'function') markDirty();
-            else notifyParent({ type: 'LF_DIRTY' });
-
-            try { window.focus(); } catch(e) {}
-            console.log("[Clipboard Debug] Pasted " + clipboardData.length + " item(s) successfully.");
-        } catch(err) {
-            console.error("[Clipboard Error] Exception in pasteCopiedObjectsFromData:", err);
+            v.querySelectorAll('.lf-component').forEach(child => child.classList.remove('selected'));
+            v.querySelectorAll('.lf-resizer, .lf-drag-handle, .lf-delete-trigger').forEach(el => el.remove());
+            host.appendChild(v);
+            newSelectedIds.push(newId);
+        });
+        if (typeof window.enforceDesignSystem === 'function') {
+            window.enforceDesignSystem();
+        } else if (typeof window.initHandles === 'function') {
+            window.initHandles();
         }
+        const hasPin = clipboardData.some(item => item.isPinMarker || item.isTextMarker);
+        if (hasPin) {
+            window.reorderAllPins();
+        }
+        if (newSelectedIds.length > 0) {
+            const firstNewEl = document.getElementById(newSelectedIds[0]);
+            if (firstNewEl && typeof window._getCompStyles === 'function') {
+                notifyParent({
+                    type: "LF_COMP_SELECTED",
+                    ...window._getCompStyles(firstNewEl)
+                });
+            }
+        }
+        markDirty();
+        console.log("[Clipboard Debug] Pasted " + clipboardData.length + " object(s) successfully.");
     };
 
     window.pasteCopiedObjects = () => {
-        if (isPastingLocked) {
-            console.log("[Clipboard Debug] Paste call throttled to prevent duplicate execution.");
-            return;
-        }
-        isPastingLocked = true;
-        setTimeout(() => { isPastingLocked = false; }, 400);
         console.log("[Clipboard Debug] pasteCopiedObjects calling LF_REQUEST_CLIPBOARD to parent.");
         notifyParent({ type: 'LF_REQUEST_CLIPBOARD' });
     };
@@ -3374,7 +3095,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
         const isS = e.key === 's' || e.key === 'S' || e.code === 'KeyS';
         const isC = e.key === 'c' || e.key === 'C' || e.code === 'KeyC';
-        const isX = e.key === 'x' || e.key === 'X' || e.code === 'KeyX';
         const isV = e.key === 'v' || e.key === 'V' || e.code === 'KeyV';
         const isG = e.key === 'g' || e.key === 'G' || e.code === 'KeyG';
         const inInput = isInputActive(e.target);
@@ -3387,11 +3107,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         if ((e.ctrlKey || e.metaKey) && isC && !inInput) {
             e.preventDefault();
             window.copySelectedObjects();
-            return;
-        }
-        if ((e.ctrlKey || e.metaKey) && isX && !inInput) {
-            e.preventDefault();
-            window.cutSelectedObjects();
             return;
         }
         if ((e.ctrlKey || e.metaKey) && isV && !inInput) {
@@ -3550,15 +3265,10 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             const isCtrl = !!d.ctrlKey || !!d.metaKey;
             const keyChar = (d.key || "").toLowerCase();
             const isC = keyChar === 'c' || d.code === 'KeyC';
-            const isX = keyChar === 'x' || d.code === 'KeyX';
             const isV = keyChar === 'v' || d.code === 'KeyV';
             if (isCtrl && !d.isKeyUp) {
                 if (isC) {
                     window.copySelectedObjects();
-                    return;
-                }
-                if (isX) {
-                    window.cutSelectedObjects();
                     return;
                 }
                 if (isV) {
@@ -4946,46 +4656,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
         };
     })();
 
-    window.syncTableComponentSize = function() {
-        const s = document.querySelector('.lf-component.selected');
-        if (!s) return;
-        
-        const table = s.querySelector('table');
-        if (!table) return;
-        
-        const isGrid = s.classList.contains('v4-grid-container') || s.querySelector('.v4-grid-container');
-        
-        let newWidth, newHeight;
-        if (isGrid) {
-            newWidth = table.offsetWidth;
-            newHeight = table.offsetHeight + 36;
-        } else {
-            const colgroup = table.querySelector('colgroup');
-            if (colgroup && colgroup.children.length > 0) {
-                let totalWidth = 0;
-                Array.from(colgroup.children).forEach(col => {
-                    const wStr = col.style.width || col.getAttribute('width') || '100px';
-                    totalWidth += parseInt(wStr) || 100;
-                });
-                newWidth = totalWidth;
-            } else {
-                newWidth = table.offsetWidth;
-            }
-            
-            const origHeight = table.style.height;
-            table.style.height = 'auto';
-            newHeight = table.offsetHeight;
-            table.style.height = origHeight || '100%';
-        }
-        
-        notifyParent({
-            type: 'LF_TABLE_SIZE_CHANGED',
-            compId: s.id,
-            width: newWidth,
-            height: newHeight
-        });
-    };
-
     let isDraggingLine = false, activeLineId = null, startLineCoords = null;
 
 
@@ -5298,18 +4968,7 @@ if (window.V4UndoManager) window.V4UndoManager.init();
             val: stepperVal,
             btnEnabled: stepperBtnEnabled,
             btnText: stepperBtnText,
-            disabled: (
-                c.getAttribute('data-disabled') === 'true' || 
-                (container && container.getAttribute('data-disabled') === 'true') ||
-                (stepperContainer && stepperContainer.getAttribute('data-disabled') === 'true') ||
-                (selectboxContainer && selectboxContainer.getAttribute('data-disabled') === 'true') ||
-                (fileuploadContainer && fileuploadContainer.getAttribute('data-disabled') === 'true') ||
-                (searchbarContainer && searchbarContainer.getAttribute('data-disabled') === 'true') ||
-                (dpContainer && dpContainer.getAttribute('data-disabled') === 'true') ||
-                (toggleContainer && toggleContainer.getAttribute('data-disabled') === 'true') ||
-                (accordionContainer && accordionContainer.getAttribute('data-disabled') === 'true') ||
-                !!c.querySelector('[data-disabled="true"]')
-            ),
+            disabled: stepperDisabled,
             isSelectbox: isSelectbox,
             selectboxDefaultText: selectboxDefaultText,
             selectboxDropdownActive: selectboxDropdownActive,
@@ -5418,7 +5077,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
     });
 
     let isMarquee = false;
-    let isConnectorDragging = false;
     let groupChildrenStart = null;
     document.addEventListener('mousedown', e => {
         if (e.target.closest('.sidebar') || e.target.closest('.modal') || e.target.closest('.header-metadata')) return;
@@ -5534,10 +5192,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
     let rafId = null;
     document.addEventListener('mousemove', e => {
-        if (isConnectorDragging) {
-            notifyParent({ type: 'LF_CONNECTOR_HANDLE_MOVE', clientX: e.clientX, clientY: e.clientY });
-            return;
-        }
         if (isDraggingLine && activeLineId) {
             const scale = (window.parent?.state?.transform?.scale) || 1;
             const dx = (e.clientX - startX) / scale;
@@ -5575,21 +5229,18 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
     document.addEventListener('mouseup', () => { 
         document.querySelectorAll('.lf-component').forEach(comp => comp.classList.remove('near-connector'));
-        if (isConnectorDragging) {
-            isConnectorDragging = false;
-            document.body.classList.remove('drawing-line-active');
-            notifyParent({ type: 'LF_CONNECTOR_HANDLE_UP' });
-        }
         if (isDraggingLine) {
             isDraggingLine = false;
             startLineCoords = null;
             activeLineId = null;
             notifyParent({ type: 'LF_SYNC_CONNECTORS', connectors: window.parent?.state?.connectors });
             markDirty();
+            return;
         }
 
         if (window.V4PortConnectorEngine && window.V4PortConnectorEngine.isDrawingConnector) {
             window.V4PortConnectorEngine.handleMouseUp();
+            return;
         }
 
         if (isMarquee) {
@@ -5715,26 +5366,21 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                         window.updateHandles(c);
                         if (isGroup) {
                             const connIdsStr = c.getAttribute('data-connectors');
-                            let connIds = [];
-                            if (connIdsStr) {
-                                try { connIds = JSON.parse(connIdsStr); } catch(e) { connIds = []; }
-                            }
-                            if (Array.isArray(connIds)) {
-                                connIds.forEach(connId => {
-                                    const conn = (window.parent && window.parent.state && Array.isArray(window.parent.state.connectors))
-                                        ? window.parent.state.connectors.find(x => x && x.id === connId)
-                                        : null;
-                                    if (conn && conn.start && conn.end) {
-                                        conn.start.x += snapDx;
-                                        conn.start.y += snapDy;
-                                        conn.end.x += snapDx;
-                                        conn.end.y += snapDy;
-                                        conn.start.targetId = null; conn.start.side = null;
-                                        conn.end.targetId = null; conn.end.side = null;
-                                        hasConnectorChanges = true;
-                                    }
-                                });
-                            }
+                            const connIds = connIdsStr ? JSON.parse(connIdsStr) : [];
+                            connIds.forEach(connId => {
+                                const conn = (window.parent && window.parent.state && window.parent.state.connectors)
+                                    ? window.parent.state.connectors.find(x => x.id === connId)
+                                    : null;
+                                if (conn) {
+                                    conn.start.x += snapDx;
+                                    conn.start.y += snapDy;
+                                    conn.end.x += snapDx;
+                                    conn.end.y += snapDy;
+                                    conn.start.targetId = null; conn.start.side = null;
+                                    conn.end.targetId = null; conn.end.side = null;
+                                    hasConnectorChanges = true;
+                                }
+                            });
                         }
                         if (typeof window.updateAnchoredConnectorsLocal === 'function') {
                             window.updateAnchoredConnectorsLocal(c.id);
@@ -6386,14 +6032,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                 }
             }
         }
-        else if (d.type === 'LF_UPDATE_ATOM_DISABLED') {
-            const s = document.querySelector('.lf-component.selected'); if (!s) return;
-            const container = s.querySelector('.v4-textbox-container, .v4-textarea-container, .v4-stepper-container, .v4-selectbox-container, .v4-fileupload-container, .v4-datepicker-container, .v4-toggle-container, .v4-accordion-container, .v4-checkbox-container, .v4-radio-container, .v4-searchbar-container') || s;
-            if (window.V4UndoManager) window.V4UndoManager.saveState();
-            const disabledStr = d.disabled ? 'true' : 'false';
-            s.setAttribute('data-disabled', disabledStr);
-            if (container && container !== s) container.setAttribute('data-disabled', disabledStr);
-        }
         else if (d.type === 'LF_UPDATE_STEPPER_PROPERTIES') {
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             const container = s.querySelector('.v4-stepper-container') || (s.classList.contains('v4-stepper-container') ? s : null);
@@ -6731,24 +6369,6 @@ if (window.V4UndoManager) window.V4UndoManager.init();
                     if (d.cols !== undefined) container.setAttribute('data-row' + rNum + '-cols', d.cols);
                     if (d.rowType !== undefined) container.setAttribute('data-row' + rNum + '-type', d.rowType);
                     if (d.rowSpecificHeight !== undefined) container.setAttribute('data-row' + rNum + '-height', d.rowSpecificHeight);
-                }
-
-                // Support Bulk Rows Array (Reordering / Deletion)
-                if (Array.isArray(d.rows)) {
-                    d.rows.forEach((rData, idx) => {
-                        const rNum = idx + 1;
-                        if (rData.label !== undefined) container.setAttribute('data-row' + rNum + '-label', rData.label);
-                        if (rData.cols !== undefined) container.setAttribute('data-row' + rNum + '-cols', rData.cols);
-                        if (rData.type !== undefined) container.setAttribute('data-row' + rNum + '-type', rData.type);
-                        if (rData.height !== undefined) container.setAttribute('data-row' + rNum + '-height', rData.height);
-                    });
-                    // Clean up trailing unused row attributes if rows count decreased
-                    for (let rNum = d.rows.length + 1; rNum <= 10; rNum++) {
-                        container.removeAttribute('data-row' + rNum + '-label');
-                        container.removeAttribute('data-row' + rNum + '-cols');
-                        container.removeAttribute('data-row' + rNum + '-type');
-                        container.removeAttribute('data-row' + rNum + '-height');
-                    }
                 }
 
                 // Update Group Header Attributes
@@ -7818,9 +7438,46 @@ if (window.V4UndoManager) window.V4UndoManager.init();
 
             notifyParent({ type: 'LF_SNAP_TARGETS_RESPONSE', targets, rects });
         } else if (d.type === 'LF_TABLE_ACTION') {
-            if (typeof window.syncTableComponentSize === 'function') {
-                window.syncTableComponentSize();
+            window.syncTableComponentSize = function() {
+                const s = document.querySelector('.lf-component.selected');
+                if (!s) return;
+                
+                const table = s.querySelector('table');
+                if (!table) return;
+                
+                const isGrid = s.classList.contains('v4-grid-container') || s.querySelector('.v4-grid-container');
+                
+                let newWidth, newHeight;
+                if (isGrid) {
+                    newWidth = table.offsetWidth;
+                    newHeight = table.offsetHeight + 36;
+                } else {
+                    const colgroup = table.querySelector('colgroup');
+                    if (colgroup && colgroup.children.length > 0) {
+                        let totalWidth = 0;
+                        Array.from(colgroup.children).forEach(col => {
+                            const wStr = col.style.width || col.getAttribute('width') || '100px';
+                            totalWidth += parseInt(wStr) || 100;
+                        });
+                        newWidth = totalWidth;
+                    } else {
+                        newWidth = table.offsetWidth;
+                    }
+                    
+                    const origHeight = table.style.height;
+                    table.style.height = 'auto';
+                    newHeight = table.offsetHeight;
+                    table.style.height = origHeight || '100%';
+                }
+                
+                notifyParent({
+                    type: 'LF_TABLE_SIZE_CHANGED',
+                    compId: s.id,
+                    width: newWidth,
+                    height: newHeight
+                });
             }
+
             const s = document.querySelector('.lf-component.selected'); if (!s) return;
             if (window.V4UndoManager) window.V4UndoManager.saveState();
             
