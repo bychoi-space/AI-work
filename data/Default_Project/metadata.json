@@ -1,0 +1,11 @@
+{
+  "title": "Default_Project",
+  "screens": {
+    "99_Blank_177.html": {
+      "title": "99_Blank_177",
+      "type": "blank",
+      "updatedAt": "2026-08-18T08:38:36.656Z",
+      "template": "template_blank.html"
+    }
+  }
+}
