@@ -1,6 +1,14 @@
 {
   "title": "[기획전] 상품표현카드 개인화 정렬",
-  "screens": {},
+  "screens": {
+    "00_Cover_445.html": {
+      "title": "00_Cover_445",
+      "type": "cover",
+      "updatedAt": "2026-08-19T01:01:18.315Z",
+      "template": "template_cover.html",
+      "version": 0.1
+    }
+  },
   "assignee": "최범열",
   "developer": "",
   "period": "2026.08.19(수) ~ 2026.09.24(목)",
