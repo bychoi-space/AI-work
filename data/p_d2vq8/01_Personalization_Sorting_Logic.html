@@ -47,6 +47,9 @@
         
         .v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4,0,0.2,1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; box-sizing: border-box; }
         .v4-shape-rect { border-radius: 8px; }
+        .v4-shape-diamond { background: transparent; border: none !important; overflow: visible; }
+        .v4-shape-circle { border-radius: 50%; }
+        
         .v4-shape-text-content, .v4-shape-text-overlay, .v4-shape .v4-editable-cell { padding: 4px !important; margin: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; text-align: center !important; box-sizing: border-box !important; width: 100% !important; height: 100% !important; flex-direction: column !important; }
         .v4-shape-text-content p, .v4-shape-text-overlay p, .v4-shape .v4-editable-cell p { margin: 0 !important; padding: 0 !important; line-height: 1.35 !important; text-align: center !important; display: block !important; transform: translateY(var(--v4-text-adjust-y, 0px)) !important; }
         .v4-shape-text-content span, .v4-shape-text-overlay span, .v4-shape .v4-editable-cell span { line-height: 1.35 !important; display: inline-block !important; }
@@ -54,6 +57,8 @@
         .v4-text-box { background: transparent; border: none; }
         .v4-text-box .v4-editable-cell { outline: none; padding: 4px !important; margin: 0 !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: center; box-sizing: border-box !important; width: 100% !important; height: 100% !important; }
         .v4-text-box .v4-editable-cell p { margin: 0 !important; padding: 0 !important; line-height: 1.35 !important; }
+        
+        svg.lf-icon { background-image: none !important; pointer-events: none; }
         
         .lf-connector-port { position: absolute; width: 8px; height: 8px; background: #6366f1; border: 1.6px solid #ffffff; border-radius: 50%; opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: auto; z-index: 10005; }
         .lf-component:hover .lf-connector-port, .lf-component.selected .lf-connector-port { opacity: 0.85; }
@@ -67,12 +72,17 @@
 <body>
     <div class="artboard" id="canvas">
 
-        <!-- ==================== HEADER ZONE ==================== -->
-        <!-- Main Title Bar -->
-        <div class="lf-component" id="comp-main-title" style="top: 20px; left: 20px; width: 1400px; height: 42px; z-index: 1000;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #0f172a; border: 1.6px solid #334155; border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.12); box-sizing: border-box;">
-                <div class="v4-shape-text-content" contenteditable="true">
-                    <p><strong style="font-size: 17px; color: #ffffff; letter-spacing: -0.3px;">[기획전] 상품표현카드 개인화 상품 정렬 로직 설계</strong></p>
+        <!-- ================================================================= -->
+        <!-- HEADER ZONE (Y: 16px ~ 96px)                                       -->
+        <!-- ================================================================= -->
+        <!-- Main Title Pill Bar -->
+        <div class="lf-component" id="comp-main-title" style="top: 16px; left: 20px; width: 1400px; height: 42px; z-index: 1000;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #0f172a; border: 1.6px solid #334155; border-radius: 21px; box-shadow: 0 4px 14px rgba(0,0,0,0.12); box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; padding: 0 24px;">
+                <div class="v4-shape-text-content" contenteditable="true" style="flex: 1; text-align: left; align-items: flex-start;">
+                    <p><strong style="font-size: 16px; color: #ffffff; letter-spacing: -0.2px;">[기획전] 상품표현카드 개인화 상품 정렬 로직 설계</strong></p>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); border: 1.6px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 3px 12px; font-size: 11px; font-weight: 600; color: #94a3b8;">
+                    Data Innovation BSU × e커머스개발실
                 </div>
             </div>
             <div class="lf-connector-port port-top" data-side="top"></div>
@@ -81,11 +91,15 @@
             <div class="lf-connector-port port-right" data-side="right"></div>
         </div>
 
-        <!-- Sub Summary Bar -->
-        <div class="lf-component" id="comp-sub-summary" style="top: 68px; left: 20px; width: 1400px; height: 36px; z-index: 1000;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f0fdf4; border: 1.6px solid #10b981; border-radius: 8px; box-sizing: border-box;">
+        <!-- Sub Strategy Summary Bar -->
+        <div class="lf-component" id="comp-sub-summary" style="top: 64px; left: 20px; width: 1400px; height: 32px; z-index: 1000;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ffffff; border: 1.6px solid #cbd5e1; border-radius: 16px; box-sizing: border-box;">
                 <div class="v4-shape-text-content" contenteditable="true">
-                    <p><span style="color: #065f46; font-size: 13px; font-weight: 700;">핵심 전략 : 카드 등록 상품 대상 ① [관심상품 ML 100개] 우선 매칭 추출(1순위) ➔ ② [ES 실시간 개인화] 미매칭 잔여상품 랭킹 정렬(2순위) 결합 노출</span></p>
+                    <p style="font-size: 12.5px; color: #334155; font-weight: 600;">
+                        <span style="background: #4338ca; color: #fff; padding: 1px 7px; border-radius: 4px; font-size: 11px; margin-right: 6px;">1순위</span> <strong>관심상품(ML 100개)</strong> 매칭 상품 최우선 추출 ➔ 
+                        <span style="background: #059669; color: #fff; padding: 1px 7px; border-radius: 4px; font-size: 11px; margin: 0 6px;">2순위</span> 미매칭 잔여 상품 <strong>ES 실시간 개인화</strong> 랭킹 정렬 ➔ 
+                        <span style="background: #0f172a; color: #fff; padding: 1px 7px; border-radius: 4px; font-size: 11px; margin-left: 6px;">결과</span> 하이브리드 리스트 노출
+                    </p>
                 </div>
             </div>
             <div class="lf-connector-port port-top" data-side="top"></div>
@@ -94,21 +108,52 @@
             <div class="lf-connector-port port-right" data-side="right"></div>
         </div>
 
-        <!-- ==================== MIDDLE ZONE: 2 CORE ENGINES ==================== -->
+
+        <!-- ================================================================= -->
+        <!-- MIDDLE ZONE: 2 CORE PERSONALIZATION ENGINES (Y: 104px ~ 416px)    -->
+        <!-- ================================================================= -->
+
         <!-- [LEFT PANEL] 로직 1. 개인화 (관심상품) 컨테이너 -->
-        <div class="lf-component" id="comp-logic1-container" style="top: 112px; left: 20px; width: 690px; height: 356px; z-index: 100;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ffffff; border: 1.6px solid #cbd5e1; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); box-sizing: border-box;"></div>
+        <div class="lf-component" id="comp-logic1-panel" style="top: 104px; left: 20px; width: 690px; height: 312px; z-index: 100;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ffffff; border: 1.6px solid #cbd5e1; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); box-sizing: border-box;"></div>
             <div class="lf-connector-port port-top" data-side="top"></div>
             <div class="lf-connector-port port-bottom" data-side="bottom"></div>
             <div class="lf-connector-port port-left" data-side="left"></div>
             <div class="lf-connector-port port-right" data-side="right"></div>
         </div>
 
-        <!-- Logic 1 Header Badge -->
-        <div class="lf-component" id="comp-logic1-badge" style="top: 124px; left: 35px; width: 660px; height: 32px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #4338ca; border: 1.6px solid #3730a3; border-radius: 8px; box-sizing: border-box;">
-                <div class="v4-shape-text-content" contenteditable="true">
-                    <p><strong style="color: #ffffff; font-size: 14px;">1. 개인화 (관심상품) 로직</strong><span style="color: #e0e7ff; font-size: 12px; font-weight: 500; margin-left: 8px;">| 관리: Data Innovation BSU (머신러닝 기반)</span></p>
+        <!-- Logic 1 Header Pill -->
+        <div class="lf-component" id="comp-logic1-header" style="top: 116px; left: 34px; width: 662px; height: 32px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #312e81; border: 1.6px solid #1e1b4b; border-radius: 16px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; padding: 0 16px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="background: #6366f1; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">ENGINE 01</span>
+                    <strong style="color: #ffffff; font-size: 13px;">개인화 (관심상품) 로직</strong>
+                </div>
+                <span style="color: #c7d2fe; font-size: 11px; font-weight: 500;">Data Innovation BSU • 머신러닝(ML) 기반</span>
+            </div>
+            <div class="lf-connector-port port-top" data-side="top"></div>
+            <div class="lf-connector-port port-bottom" data-side="bottom"></div>
+            <div class="lf-connector-port port-left" data-side="left"></div>
+            <div class="lf-connector-port port-right" data-side="right"></div>
+        </div>
+
+        <!-- Logic 1 - Card 1A: 머신러닝 배치 생성 -->
+        <div class="lf-component" id="comp-l1-card-a" style="top: 156px; left: 34px; width: 212px; height: 248px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f8fafc; border: 1.6px solid #e2e8f0; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 14px 10px;">
+                <!-- Circle Icon -->
+                <div style="width: 42px; height: 42px; border-radius: 50%; background: #eef2ff; border: 1.6px solid #c7d2fe; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 22px; height: 22px;">
+                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+                    </svg>
+                </div>
+                <strong style="font-size: 13px; color: #1e1b4b;">ML 일단위 배치</strong>
+                <div style="display: flex; gap: 4px; margin: 6px 0; flex-wrap: wrap; justify-content: center;">
+                    <span style="background: #e0e7ff; color: #3730a3; font-size: 9.5px; font-weight: 700; padding: 1px 5px; border-radius: 3px;">클릭 상품</span>
+                    <span style="background: #e0e7ff; color: #3730a3; font-size: 9.5px; font-weight: 700; padding: 1px 5px; border-radius: 3px;">구매 기록</span>
+                    <span style="background: #e0e7ff; color: #3730a3; font-size: 9.5px; font-weight: 700; padding: 1px 5px; border-radius: 3px;">선호도</span>
+                </div>
+                <div class="v4-editable-cell" contenteditable="true" style="text-align: center; width: 100%; font-size: 11px; color: #475569; line-height: 1.4; margin-top: 4px;">
+                    고객의 행동 실적을<br>종합 분석하여 <strong>매일 1회<br>머신러닝 배치 생성</strong>
                 </div>
             </div>
             <div class="lf-connector-port port-top" data-side="top"></div>
@@ -117,12 +162,25 @@
             <div class="lf-connector-port port-right" data-side="right"></div>
         </div>
 
-        <!-- Logic 1 Card A: 데이터 생성 방식 -->
-        <div class="lf-component" id="comp-logic1-card-a" style="top: 164px; left: 35px; width: 660px; height: 68px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f8fafc; border: 1.6px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; text-align: left; align-items: flex-start; justify-content: flex-start;">
-                <div class="v4-editable-cell" contenteditable="true" style="padding: 8px 12px !important; text-align: left; align-items: flex-start; width: 100%;">
-                    <p><strong style="color: #1e1b4b; font-size: 13px;">• 데이터 생성 방식 (머신러닝 기반 Daily Batch)</strong></p>
-                    <p style="margin-top: 3px; font-size: 12px; color: #334155;"><span style="color: #475569;">고객 클릭 상품, 구매 기록, 선호도 특성을 종합 분석하여 <strong>매일(1일 1회) 배치로 머신러닝 데이터 생성</strong></span></p>
+        <!-- Logic 1 - Card 1B: 100개 String 스키마 -->
+        <div class="lf-component" id="comp-l1-card-b" style="top: 156px; left: 258px; width: 214px; height: 248px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f5f3ff; border: 1.6px solid #ddd6fe; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 14px 10px;">
+                <!-- Circle Icon -->
+                <div style="width: 42px; height: 42px; border-radius: 50%; background: #ede9fe; border: 1.6px solid #c4b5fd; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 22px; height: 22px;">
+                        <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                    </svg>
+                </div>
+                <strong style="font-size: 13px; color: #4c1d95;">100개 String 적재</strong>
+                <span style="font-size: 10px; color: #6d28d9; font-weight: 600; margin: 4px 0 2px;">고객 1명 : 상품 100개</span>
+                <!-- Mini Code Block -->
+                <div style="background: #ffffff; border: 1.6px solid #c4b5fd; border-radius: 6px; padding: 5px 6px; width: 100%; box-sizing: border-box; font-family: monospace; font-size: 9.5px; color: #1e1b4b; line-height: 1.35; word-break: break-all; margin: 4px 0;">
+                    JLSO6F601W2,<br>WHTS5B901W2,<br>AABA6F280IV...
+                </div>
+                <div class="v4-editable-cell" contenteditable="true" style="text-align: center; width: 100%; font-size: 10.5px; color: #5b21b6; line-height: 1.35;">
+                    단일 콤마 구분자 한 줄<br>초경량 고속 조회 스키마
                 </div>
             </div>
             <div class="lf-connector-port port-top" data-side="top"></div>
@@ -131,29 +189,21 @@
             <div class="lf-connector-port port-right" data-side="right"></div>
         </div>
 
-        <!-- Logic 1 Card B: 데이터 구조 스키마 -->
-        <div class="lf-component" id="comp-logic1-card-b" style="top: 240px; left: 35px; width: 660px; height: 128px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #eef2ff; border: 1.6px solid #c7d2fe; border-radius: 8px; box-sizing: border-box; text-align: left; align-items: flex-start; justify-content: flex-start;">
-                <div class="v4-editable-cell" contenteditable="true" style="padding: 8px 12px !important; text-align: left; align-items: flex-start; width: 100%;">
-                    <p><strong style="color: #3730a3; font-size: 13px;">• 데이터 구조 스키마 (고객 1명 / 상품 100개 단일 String)</strong></p>
-                    <p style="margin-top: 3px; font-size: 12px; color: #4338ca;"><span style="color: #4338ca;">고객 1명당 추천 상품코드 100개가 단일 콤마 구분자 String 문자열로 한 줄 적재되는 초경량 구조</span></p>
-                    <div style="background: #ffffff; border: 1.6px solid #c7d2fe; border-radius: 6px; padding: 6px 10px; margin-top: 6px; font-family: monospace; font-size: 12px; color: #1e1b4b; font-weight: 600; width: 100%; box-sizing: border-box; word-break: break-all;">
-                        데이터 예시 : JLSO6F601W2, WHTS5B901W2, AABA6F280IV, TFSO5D201N1, HATS6C100BK... (총 100개)
-                    </div>
+        <!-- Logic 1 - Card 1C: 1순위 우선순위 역할 -->
+        <div class="lf-component" id="comp-l1-card-c" style="top: 156px; left: 484px; width: 212px; height: 248px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #fdf4ff; border: 1.6px solid #f0abfc; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 14px 10px;">
+                <!-- Circle Icon -->
+                <div style="width: 42px; height: 42px; border-radius: 50%; background: #fae8ff; border: 1.6px solid #f5d0fe; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#c026d3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 22px; height: 22px;">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
                 </div>
-            </div>
-            <div class="lf-connector-port port-top" data-side="top"></div>
-            <div class="lf-connector-port port-bottom" data-side="bottom"></div>
-            <div class="lf-connector-port port-left" data-side="left"></div>
-            <div class="lf-connector-port port-right" data-side="right"></div>
-        </div>
-
-        <!-- Logic 1 Card C: 기획전 적용 역할 -->
-        <div class="lf-component" id="comp-logic1-card-c" style="top: 376px; left: 35px; width: 660px; height: 82px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #fdf4ff; border: 1.6px solid #f0abfc; border-radius: 8px; box-sizing: border-box; text-align: left; align-items: flex-start; justify-content: flex-start;">
-                <div class="v4-editable-cell" contenteditable="true" style="padding: 8px 12px !important; text-align: left; align-items: flex-start; width: 100%;">
-                    <p><strong style="color: #86198f; font-size: 13px;">• 기획전 상품표현카드 적용 역할 (1순위 우선순위 부여)</strong></p>
-                    <p style="margin-top: 3px; font-size: 12px; color: #701a75;"><span style="color: #701a75;">카드에 설정된 등록 상품 목록과 고객의 관심상품 100개 리스트를 대조하여, <strong>일치(매칭)하는 상품을 우선 추출하여 최상단 1순위로 배치</strong></span></p>
+                <strong style="font-size: 13px; color: #701a75;">1순위 우선 배치</strong>
+                <div style="background: #a21caf; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; margin: 6px 0;">
+                    TOP PRIORITY
+                </div>
+                <div class="v4-editable-cell" contenteditable="true" style="text-align: center; width: 100%; font-size: 11px; color: #86198f; line-height: 1.4; margin-top: 4px;">
+                    카드 등록 상품 중<br><strong>100개 관심상품 내<br>일치 상품을 1순위로<br>최상단에 우선 추출</strong>
                 </div>
             </div>
             <div class="lf-connector-port port-top" data-side="top"></div>
@@ -164,19 +214,47 @@
 
 
         <!-- [RIGHT PANEL] 로직 2. 개인화 (직접설정) 컨테이너 -->
-        <div class="lf-component" id="comp-logic2-container" style="top: 112px; left: 730px; width: 690px; height: 356px; z-index: 100;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ffffff; border: 1.6px solid #cbd5e1; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); box-sizing: border-box;"></div>
+        <div class="lf-component" id="comp-logic2-panel" style="top: 104px; left: 730px; width: 690px; height: 312px; z-index: 100;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ffffff; border: 1.6px solid #cbd5e1; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); box-sizing: border-box;"></div>
             <div class="lf-connector-port port-top" data-side="top"></div>
             <div class="lf-connector-port port-bottom" data-side="bottom"></div>
             <div class="lf-connector-port port-left" data-side="left"></div>
             <div class="lf-connector-port port-right" data-side="right"></div>
         </div>
 
-        <!-- Logic 2 Header Badge -->
-        <div class="lf-component" id="comp-logic2-badge" style="top: 124px; left: 745px; width: 660px; height: 32px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #059669; border: 1.6px solid #047857; border-radius: 8px; box-sizing: border-box;">
-                <div class="v4-shape-text-content" contenteditable="true">
-                    <p><strong style="color: #ffffff; font-size: 14px;">2. 개인화 (직접설정) 로직</strong><span style="color: #d1fae5; font-size: 12px; font-weight: 500; margin-left: 8px;">| 관리: e커머스개발실 (Elastic Search 기반)</span></p>
+        <!-- Logic 2 Header Pill -->
+        <div class="lf-component" id="comp-logic2-header" style="top: 116px; left: 744px; width: 662px; height: 32px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #064e3b; border: 1.6px solid #022c22; border-radius: 16px; box-sizing: border-box; display: flex; align-items: center; justify-content: space-between; padding: 0 16px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="background: #10b981; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">ENGINE 02</span>
+                    <strong style="color: #ffffff; font-size: 13px;">개인화 (직접설정) 로직</strong>
+                </div>
+                <span style="color: #a7f3d0; font-size: 11px; font-weight: 500;">e커머스개발실 • Elastic Search (ES) 기반</span>
+            </div>
+            <div class="lf-connector-port port-top" data-side="top"></div>
+            <div class="lf-connector-port port-bottom" data-side="bottom"></div>
+            <div class="lf-connector-port port-left" data-side="left"></div>
+            <div class="lf-connector-port port-right" data-side="right"></div>
+        </div>
+
+        <!-- Logic 2 - Card 2A: Step 1 Combo 속성 배치 -->
+        <div class="lf-component" id="comp-l2-card-a" style="top: 156px; left: 744px; width: 212px; height: 248px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f8fafc; border: 1.6px solid #e2e8f0; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 14px 10px;">
+                <!-- Circle Icon -->
+                <div style="width: 42px; height: 42px; border-radius: 50%; background: #ecfdf5; border: 1.6px solid #a7f3d0; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 22px; height: 22px;">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </div>
+                <strong style="font-size: 13px; color: #064e3b;">Step 1. 속성 Combo</strong>
+                <div style="display: flex; gap: 4px; margin: 6px 0; flex-wrap: wrap; justify-content: center;">
+                    <span style="background: #d1fae5; color: #065f46; font-size: 9.5px; font-weight: 700; padding: 1px 5px; border-radius: 3px;">브랜드</span>
+                    <span style="background: #d1fae5; color: #065f46; font-size: 9.5px; font-weight: 700; padding: 1px 5px; border-radius: 3px;">카테고리</span>
+                    <span style="background: #d1fae5; color: #065f46; font-size: 9.5px; font-weight: 700; padding: 1px 5px; border-radius: 3px;">시즌/성별</span>
+                </div>
+                <div class="v4-editable-cell" contenteditable="true" style="text-align: center; width: 100%; font-size: 11px; color: #475569; line-height: 1.4; margin-top: 4px;">
+                    상품 메타정보 조합<br><strong>다차원 Combo 피처화<br>사전 인덱싱 & 점수화</strong>
                 </div>
             </div>
             <div class="lf-connector-port port-top" data-side="top"></div>
@@ -185,29 +263,29 @@
             <div class="lf-connector-port port-right" data-side="right"></div>
         </div>
 
-        <!-- Logic 2 Card A: Step 1 배치 전처리 & Combo 필드 -->
-        <div class="lf-component" id="comp-logic2-card-a" style="top: 164px; left: 745px; width: 660px; height: 68px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f8fafc; border: 1.6px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; text-align: left; align-items: flex-start; justify-content: flex-start;">
-                <div class="v4-editable-cell" contenteditable="true" style="padding: 8px 12px !important; text-align: left; align-items: flex-start; width: 100%;">
-                    <p><strong style="color: #064e3b; font-size: 13px;">• Step 1. [배치] 데이터 전처리 및 속성 Combo 필드 생성</strong></p>
-                    <p style="margin-top: 3px; font-size: 12px; color: #334155;"><span style="color: #475569;">상품의 메타 정보(<strong>브랜드 / 카테고리 / 시즌 / 성별 등</strong>)를 유기적으로 조합하여 피처(Feature)화하고 ES 인덱스에 사전 스코어링</span></p>
+        <!-- Logic 2 - Card 2B: Step 2 실시간 3단계 매칭 -->
+        <div class="lf-component" id="comp-l2-card-b" style="top: 156px; left: 968px; width: 214px; height: 248px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f0fdf4; border: 1.6px solid #bbf7d0; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 14px 8px;">
+                <!-- Circle Icon -->
+                <div style="width: 42px; height: 42px; border-radius: 50%; background: #dcfce7; border: 1.6px solid #86efac; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 22px; height: 22px;">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        <path d="M11 8v6M8 11h6"></path>
+                    </svg>
                 </div>
-            </div>
-            <div class="lf-connector-port port-top" data-side="top"></div>
-            <div class="lf-connector-port port-bottom" data-side="bottom"></div>
-            <div class="lf-connector-port port-left" data-side="left"></div>
-            <div class="lf-connector-port port-right" data-side="right"></div>
-        </div>
-
-        <!-- Logic 2 Card B: Step 2 실시간 검색 & 매칭 3단계 -->
-        <div class="lf-component" id="comp-logic2-card-b" style="top: 240px; left: 745px; width: 660px; height: 128px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f0fdf4; border: 1.6px solid #86efac; border-radius: 8px; box-sizing: border-box; text-align: left; align-items: flex-start; justify-content: flex-start;">
-                <div class="v4-editable-cell" contenteditable="true" style="padding: 8px 12px !important; text-align: left; align-items: flex-start; width: 100%;">
-                    <p><strong style="color: #047857; font-size: 13px;">• Step 2. [실시간] 검색 및 매칭 3단계 프로세스</strong></p>
-                    <div style="font-size: 12px; color: #065f46; line-height: 1.45; margin-top: 4px;">
-                        <p><strong>① 유저 니즈 파악</strong> : 고객의 '최근 클릭 상품' 정보를 바탕으로 속성 Combo 필드 조회 후 수치화</p>
-                        <p><strong>② 타겟 그룹 매칭</strong> : 상품 행동 실적을 기반으로 고객의 성별/연령대 세그먼트 정밀 추정</p>
-                        <p><strong>③ 최종 랭킹 노출</strong> : 계산된 유저 니즈 + 타겟 그룹 결합 ➔ 최종 점수화(Scoring) 순서 노출</p>
+                <strong style="font-size: 13px; color: #14532d;">Step 2. 실시간 매칭</strong>
+                <span style="font-size: 10px; color: #15803d; font-weight: 600; margin: 4px 0 2px;">ES 3단계 실시간 연산</span>
+                <!-- 3 Step Micro Pills -->
+                <div style="width: 100%; display: flex; flex-direction: column; gap: 3px; margin-top: 4px;">
+                    <div style="background: #ffffff; border: 1px solid #86efac; border-radius: 4px; padding: 3px 6px; font-size: 9.5px; color: #166534; text-align: left;">
+                        <strong>① 니즈 파악:</strong> 최근 클릭 조회 수치화
+                    </div>
+                    <div style="background: #ffffff; border: 1px solid #86efac; border-radius: 4px; padding: 3px 6px; font-size: 9.5px; color: #166534; text-align: left;">
+                        <strong>② 타겟 매칭:</strong> 성별/연령 세그먼트
+                    </div>
+                    <div style="background: #ffffff; border: 1px solid #86efac; border-radius: 4px; padding: 3px 6px; font-size: 9.5px; color: #166534; text-align: left;">
+                        <strong>③ 랭킹 산출:</strong> 가중치 최종 점수화
                     </div>
                 </div>
             </div>
@@ -217,12 +295,23 @@
             <div class="lf-connector-port port-right" data-side="right"></div>
         </div>
 
-        <!-- Logic 2 Card C: 기획전 적용 역할 -->
-        <div class="lf-component" id="comp-logic2-card-c" style="top: 376px; left: 745px; width: 660px; height: 82px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ecfeff; border: 1.6px solid #67e8f9; border-radius: 8px; box-sizing: border-box; text-align: left; align-items: flex-start; justify-content: flex-start;">
-                <div class="v4-editable-cell" contenteditable="true" style="padding: 8px 12px !important; text-align: left; align-items: flex-start; width: 100%;">
-                    <p><strong style="color: #0e7490; font-size: 13px;">• 기획전 상품표현카드 적용 역할 (2순위 실시간 랭킹 정렬)</strong></p>
-                    <p style="margin-top: 3px; font-size: 12px; color: #155e75;"><span style="color: #155e75;">1번 로직에서 매칭되지 않은 나머지 상품들을 대상으로 <strong>2번 ES 실시간 개인화 로직을 적용하여 최적의 관심 순서대로 나열</strong></span></p>
+        <!-- Logic 2 - Card 2C: 2순위 실시간 랭킹 역할 -->
+        <div class="lf-component" id="comp-l2-card-c" style="top: 156px; left: 1194px; width: 212px; height: 248px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ecfeff; border: 1.6px solid #a5f3fc; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 14px 10px;">
+                <!-- Circle Icon -->
+                <div style="width: 42px; height: 42px; border-radius: 50%; background: #cffafe; border: 1.6px solid #67e8f9; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 22px; height: 22px;">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                </div>
+                <strong style="font-size: 13px; color: #164e63;">2순위 랭킹 정렬</strong>
+                <div style="background: #0891b2; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; margin: 6px 0;">
+                    DYNAMIC RANKING
+                </div>
+                <div class="v4-editable-cell" contenteditable="true" style="text-align: center; width: 100%; font-size: 11px; color: #0e7490; line-height: 1.4; margin-top: 4px;">
+                    1순위 미매칭 잔여상품을<br><strong>실시간 ES 점수순으로<br>최적 관심 순서대로<br>차순위 동적 나열</strong>
                 </div>
             </div>
             <div class="lf-connector-port port-top" data-side="top"></div>
@@ -232,10 +321,13 @@
         </div>
 
 
-        <!-- ==================== BOTTOM ZONE: INTEGRATED WORKFLOW ==================== -->
+        <!-- ================================================================= -->
+        <!-- BOTTOM ZONE: INTEGRATED EXECUTION PIPELINE (Y: 426px ~ 880px)     -->
+        <!-- ================================================================= -->
+
         <!-- Pipeline Outer Container -->
-        <div class="lf-component" id="comp-pipeline-container" style="top: 478px; left: 20px; width: 1400px; height: 402px; z-index: 100;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ffffff; border: 1.6px solid #cbd5e1; border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.03); box-sizing: border-box;"></div>
+        <div class="lf-component" id="comp-pipeline-outer" style="top: 426px; left: 20px; width: 1400px; height: 454px; z-index: 100;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ffffff; border: 1.6px solid #cbd5e1; border-radius: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.02); box-sizing: border-box;"></div>
             <div class="lf-connector-port port-top" data-side="top"></div>
             <div class="lf-connector-port port-bottom" data-side="bottom"></div>
             <div class="lf-connector-port port-left" data-side="left"></div>
@@ -243,9 +335,9 @@
         </div>
 
         <!-- Pipeline Header Title -->
-        <div class="lf-component v4-text-box" id="comp-pipeline-header" style="top: 490px; left: 35px; width: 1370px; height: 26px; z-index: 110;" data-resized="true">
+        <div class="lf-component v4-text-box" id="comp-pipeline-title" style="top: 436px; left: 34px; width: 1372px; height: 26px; z-index: 110;" data-resized="true">
             <div class="v4-editable-cell" contenteditable="true" style="text-align: left; align-items: flex-start; justify-content: center; width: 100%;">
-                <p><strong style="color: #0f172a; font-size: 14px;">[통합 실행 파이프라인] 기획전 - 상품표현카드 개인화 상품 정렬 순서 결정 흐름도</strong></p>
+                <p><strong style="color: #0f172a; font-size: 13.5px;">[통합 실행 파이프라인] 기획전 - 상품표현카드 개인화 상품 정렬 결정 흐름도</strong></p>
             </div>
             <div class="lf-connector-port port-top" data-side="top"></div>
             <div class="lf-connector-port port-bottom" data-side="bottom"></div>
@@ -253,91 +345,35 @@
             <div class="lf-connector-port port-right" data-side="right"></div>
         </div>
 
-        <!-- Stage 1: 기획전 카드 등록 상품 (Input) -->
-        <div class="lf-component" id="comp-stage1-box" style="top: 524px; left: 35px; width: 205px; height: 340px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f8fafc; border: 1.6px solid #cbd5e1; border-radius: 10px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-start; padding: 12px 10px;">
-                <div style="background: #475569; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px;">INPUT</div>
-                <div class="v4-editable-cell" contenteditable="true" style="text-align: left; align-items: flex-start; width: 100%;">
-                    <p><strong style="font-size: 13px; color: #0f172a;">카드 설정 상품군</strong></p>
-                    <p style="font-size: 12px; color: #64748b; margin-top: 6px;">기획전 관리자가 상품표현카드에 등록한 원천 상품 리스트</p>
-                    <div style="background: #ffffff; border: 1.6px solid #e2e8f0; border-radius: 6px; padding: 8px; margin-top: 10px; font-size: 11px; color: #334155; line-height: 1.4;">
-                        <strong>대상 상품 목록:</strong><br>
-                        • Prod_01 (JLSO...)<br>
-                        • Prod_02 (WHTS...)<br>
-                        • Prod_03 (AABA...)<br>
-                        • Prod_04 (TFSO...)<br>
-                        • Prod_N (총 N개 등록)
-                    </div>
-                </div>
-            </div>
-            <div class="lf-connector-port port-top" data-side="top"></div>
-            <div class="lf-connector-port port-bottom" data-side="bottom"></div>
-            <div class="lf-connector-port port-left" data-side="left"></div>
-            <div class="lf-connector-port port-right" data-side="right"></div>
-        </div>
-
-        <!-- Arrow 1 -> 2 -->
-        <div class="lf-component v4-text-box" id="comp-arrow-12" style="top: 670px; left: 245px; width: 30px; height: 30px; z-index: 120;" data-resized="true">
-            <div class="v4-editable-cell" style="font-size: 24px; color: #6366f1; font-weight: 900; line-height: 1;">➔</div>
-        </div>
-
-        <!-- Stage 2: 1차 로직 분기 [관심상품 ML 100개 대조] -->
-        <div class="lf-component" id="comp-stage2-box" style="top: 524px; left: 280px; width: 295px; height: 340px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f5f3ff; border: 1.6px solid #c4b5fd; border-radius: 10px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-start; padding: 12px 10px;">
+        <!-- ==================== STAGE 01: INPUT ==================== -->
+        <div class="lf-component" id="comp-st1-box" style="top: 468px; left: 34px; width: 200px; height: 398px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f8fafc; border: 1.6px solid #cbd5e1; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 14px 10px;">
+                <!-- Stage Number Badge -->
                 <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 8px;">
-                    <div style="background: #4f46e5; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 4px;">1차 필터링</div>
-                    <span style="font-size: 11px; color: #6366f1; font-weight: 600;">Data Innovation BSU</span>
+                    <div style="width: 24px; height: 24px; border-radius: 50%; background: #475569; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;">1</div>
+                    <span style="background: #e2e8f0; color: #475569; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">INPUT</span>
                 </div>
-                <div class="v4-editable-cell" contenteditable="true" style="text-align: left; align-items: flex-start; width: 100%;">
-                    <p><strong style="font-size: 13px; color: #1e1b4b;">로직 1 적용 (관심상품 ML 대조)</strong></p>
-                    <p style="font-size: 11px; color: #4338ca; margin-top: 4px;">고객별 관심상품 100개 String 리스트와 카드 등록 상품 대조</p>
-                    
-                    <!-- Y Branch Card -->
-                    <div style="background: #ffffff; border: 1.6px solid #a78bfa; border-radius: 6px; padding: 8px; margin-top: 10px; width: 100%; box-sizing: border-box;">
-                        <span style="background: #10b981; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 3px;">Y (매칭 상품)</span>
-                        <p style="margin: 4px 0 0 0; font-size: 11px; color: #065f46; font-weight: 600;">➔ [1순위 그룹] 최상단 우선 추출</p>
-                        <p style="margin: 2px 0 0 0; font-size: 11px; color: #475569;">100개 관심상품 내 매칭된 상품을 1순위로 즉시 할당</p>
-                    </div>
-
-                    <!-- N Branch Card -->
-                    <div style="background: #ffffff; border: 1.6px solid #cbd5e1; border-radius: 6px; padding: 8px; margin-top: 8px; width: 100%; box-sizing: border-box;">
-                        <span style="background: #64748b; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 3px;">N (미매칭 잔여상품)</span>
-                        <p style="margin: 4px 0 0 0; font-size: 11px; color: #0284c7; font-weight: 600;">➔ [로직 2 이관] 2순위 대상 전달</p>
-                        <p style="margin: 2px 0 0 0; font-size: 11px; color: #475569;">매칭되지 않은 나머지 상품들을 2차 ES 엔진으로 전달</p>
-                    </div>
+                
+                <!-- Icon -->
+                <div style="width: 46px; height: 46px; border-radius: 50%; background: #ffffff; border: 1.6px solid #cbd5e1; display: flex; align-items: center; justify-content: center; margin: 4px 0 8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 24px; height: 24px;">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
                 </div>
-            </div>
-            <div class="lf-connector-port port-top" data-side="top"></div>
-            <div class="lf-connector-port port-bottom" data-side="bottom"></div>
-            <div class="lf-connector-port port-left" data-side="left"></div>
-            <div class="lf-connector-port port-right" data-side="right"></div>
-        </div>
 
-        <!-- Arrow 2 -> 3 -->
-        <div class="lf-component v4-text-box" id="comp-arrow-23" style="top: 670px; left: 580px; width: 30px; height: 30px; z-index: 120;" data-resized="true">
-            <div class="v4-editable-cell" style="font-size: 24px; color: #059669; font-weight: 900; line-height: 1;">➔</div>
-        </div>
-
-        <!-- Stage 3: 2차 로직 적용 [ES 실시간 개인화 정렬] -->
-        <div class="lf-component" id="comp-stage3-box" style="top: 524px; left: 615px; width: 295px; height: 340px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f0fdf4; border: 1.6px solid #86efac; border-radius: 10px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-start; padding: 12px 10px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 8px;">
-                    <div style="background: #059669; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 4px;">2차 랭킹정렬</div>
-                    <span style="font-size: 11px; color: #059669; font-weight: 600;">e커머스개발실 (ES)</span>
-                </div>
-                <div class="v4-editable-cell" contenteditable="true" style="text-align: left; align-items: flex-start; width: 100%;">
-                    <p><strong style="font-size: 13px; color: #064e3b;">로직 2 적용 (ES 실시간 개인화)</strong></p>
-                    <p style="font-size: 11px; color: #047857; margin-top: 4px;">1차 미매칭 잔여 상품군 대상 실시간 ES 점수화 연산</p>
-                    
-                    <div style="background: #ffffff; border: 1.6px solid #86efac; border-radius: 6px; padding: 8px; margin-top: 10px; width: 100%; box-sizing: border-box; font-size: 11px; color: #334155; line-height: 1.45;">
-                        <p style="margin: 0; color: #047857; font-weight: 700;">ES 개인화 파이프라인 수행:</p>
-                        <p style="margin: 3px 0 0 0;">• <strong>Combo 피처 조회</strong> (브랜드/카테고리/시즌)</p>
-                        <p style="margin: 2px 0 0 0;">• <strong>실시간 유저 니즈</strong> (최근 클릭 반영 수치화)</p>
-                        <p style="margin: 2px 0 0 0;">• <strong>타겟 그룹 가중치</strong> (성별/연령 세그먼트)</p>
-                        <div style="background: #f0fdf4; border-top: 1px dashed #86efac; margin-top: 6px; padding-top: 4px; color: #065f46; font-weight: 700;">
-                            ➔ [2순위 그룹] 점수 내림차순 정렬
-                        </div>
-                    </div>
+                <strong style="font-size: 13px; color: #0f172a;">카드 등록 상품군</strong>
+                <p style="font-size: 10.5px; color: #64748b; margin: 4px 0 8px; text-align: center;">기획전 어드민 설정 목록</p>
+                
+                <!-- Target Product List Box -->
+                <div style="background: #ffffff; border: 1.6px solid #e2e8f0; border-radius: 8px; padding: 8px; width: 100%; box-sizing: border-box; font-size: 10.5px; color: #334155; line-height: 1.45; text-align: left;">
+                    <strong style="color: #0f172a; display: block; margin-bottom: 4px; border-bottom: 1px solid #f1f5f9; padding-bottom: 2px;">대상 상품 리스트</strong>
+                    • Prod_01 (JLSO...)<br>
+                    • Prod_02 (WHTS...)<br>
+                    • Prod_03 (AABA...)<br>
+                    • Prod_04 (TFSO...)<br>
+                    • Prod_N (총 N개 등록)
                 </div>
             </div>
             <div class="lf-connector-port port-top" data-side="top"></div>
@@ -346,29 +382,54 @@
             <div class="lf-connector-port port-right" data-side="right"></div>
         </div>
 
-        <!-- Arrow 3 -> 4 -->
-        <div class="lf-component v4-text-box" id="comp-arrow-34" style="top: 670px; left: 915px; width: 30px; height: 30px; z-index: 120;" data-resized="true">
-            <div class="v4-editable-cell" style="font-size: 24px; color: #0891b2; font-weight: 900; line-height: 1;">➔</div>
+        <!-- Arrow Connector 1 -> 2 -->
+        <div class="lf-component v4-text-box" id="comp-arrow-12" style="top: 650px; left: 240px; width: 22px; height: 24px; z-index: 120;" data-resized="true">
+            <div class="v4-editable-cell" style="font-size: 20px; color: #4338ca; font-weight: 900; line-height: 1;">➔</div>
         </div>
 
-        <!-- Stage 4: 1·2순위 결합 및 리스트 병합 (Merge) -->
-        <div class="lf-component" id="comp-stage4-box" style="top: 524px; left: 950px; width: 225px; height: 340px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ecfeff; border: 1.6px solid #67e8f9; border-radius: 10px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-start; padding: 12px 10px;">
-                <div style="background: #0891b2; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px;">순위 결합</div>
-                <div class="v4-editable-cell" contenteditable="true" style="text-align: left; align-items: flex-start; width: 100%;">
-                    <p><strong style="font-size: 13px; color: #0e7490;">하이브리드 리스트 병합</strong></p>
-                    <p style="font-size: 11px; color: #155e75; margin-top: 4px;">1순위 그룹과 2순위 그룹을 단일 정렬 리스트로 조합</p>
-                    
-                    <div style="background: #ffffff; border: 1.6px solid #67e8f9; border-radius: 6px; padding: 8px; margin-top: 10px; width: 100%; box-sizing: border-box; font-size: 11px; color: #334155; line-height: 1.45;">
-                        <div style="background: #fdf4ff; border: 1px solid #f0abfc; border-radius: 4px; padding: 4px 6px; margin-bottom: 6px;">
-                            <strong style="color: #86198f;">[Tier 1. 1순위 상단 노출]</strong><br>
-                            로직 1 관심상품 매칭 상품군
-                        </div>
-                        <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 4px; padding: 4px 6px;">
-                            <strong style="color: #047857;">[Tier 2. 2순위 차순위 노출]</strong><br>
-                            로직 2 ES 실시간 정렬 상품군
-                        </div>
+        <!-- ==================== STAGE 02: LOGIC 1 FILTER & DECISION ==================== -->
+        <div class="lf-component" id="comp-st2-box" style="top: 468px; left: 268px; width: 330px; height: 398px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f5f3ff; border: 1.6px solid #c4b5fd; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 12px 10px;">
+                <!-- Header -->
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 6px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 24px; height: 24px; border-radius: 50%; background: #4f46e5; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;">2</div>
+                        <strong style="font-size: 12.5px; color: #1e1b4b;">1차 필터링 (로직 1 대조)</strong>
                     </div>
+                    <span style="background: #e0e7ff; color: #4338ca; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">관심상품 ML</span>
+                </div>
+
+                <!-- Diamond Decision Shape -->
+                <div style="width: 130px; height: 74px; position: relative; margin: 4px 0; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 100 60" style="position: absolute; width: 100%; height: 100%; overflow: visible;">
+                        <polygon points="50,2 98,30 50,58 2,30" style="fill: #ffffff; stroke: #6366f1; stroke-width: 1.6; vector-effect: non-scaling-stroke;"></polygon>
+                    </svg>
+                    <div class="v4-editable-cell" contenteditable="true" style="position: relative; z-index: 2; font-size: 10.5px; font-weight: 700; color: #1e1b4b; text-align: center; line-height: 1.25;">
+                        관심상품 100개<br>매칭 여부?
+                    </div>
+                </div>
+
+                <!-- Dual Branch Results -->
+                <!-- Branch Y: Top Priority Extraction -->
+                <div style="background: #ffffff; border: 1.6px solid #818cf8; border-radius: 8px; padding: 8px 10px; width: 100%; box-sizing: border-box; margin-top: 4px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span style="background: #10b981; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">Y (매칭됨)</span>
+                        <strong style="font-size: 11px; color: #047857;">[1순위] 최상단 우선 추출</strong>
+                    </div>
+                    <p style="margin: 4px 0 0 0; font-size: 10.5px; color: #334155; line-height: 1.35; text-align: left;">
+                        100개 관심상품 내 포함된 상품을 <strong>1순위 그룹으로 확정</strong>하고 최상단 배치
+                    </p>
+                </div>
+
+                <!-- Branch N: Fallback to Logic 2 -->
+                <div style="background: #ffffff; border: 1.6px solid #cbd5e1; border-radius: 8px; padding: 8px 10px; width: 100%; box-sizing: border-box; margin-top: 6px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span style="background: #64748b; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">N (미매칭)</span>
+                        <strong style="font-size: 11px; color: #0284c7;">[2순위 대상] 로직 2 전달</strong>
+                    </div>
+                    <p style="margin: 4px 0 0 0; font-size: 10.5px; color: #475569; line-height: 1.35; text-align: left;">
+                        매칭되지 않은 나머지 잔여 상품군을 <strong>2차 ES 실시간 엔진으로 인계</strong>
+                    </p>
                 </div>
             </div>
             <div class="lf-connector-port port-top" data-side="top"></div>
@@ -377,25 +438,135 @@
             <div class="lf-connector-port port-right" data-side="right"></div>
         </div>
 
-        <!-- Arrow 4 -> 5 -->
-        <div class="lf-component v4-text-box" id="comp-arrow-45" style="top: 670px; left: 1180px; width: 30px; height: 30px; z-index: 120;" data-resized="true">
-            <div class="v4-editable-cell" style="font-size: 24px; color: #e11d48; font-weight: 900; line-height: 1;">➔</div>
+        <!-- Arrow Connector 2 -> 3 -->
+        <div class="lf-component v4-text-box" id="comp-arrow-23" style="top: 650px; left: 605px; width: 22px; height: 24px; z-index: 120;" data-resized="true">
+            <div class="v4-editable-cell" style="font-size: 20px; color: #059669; font-weight: 900; line-height: 1;">➔</div>
         </div>
 
-        <!-- Stage 5: 기획전 상품표현카드 최종 노출 (Output) -->
-        <div class="lf-component" id="comp-stage5-box" style="top: 524px; left: 1215px; width: 190px; height: 340px; z-index: 110;" data-resized="true">
-            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #fff1f2; border: 1.6px solid #fecdd3; border-radius: 10px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-start; padding: 12px 10px;">
-                <div style="background: #e11d48; color: #ffffff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px;">OUTPUT</div>
-                <div class="v4-editable-cell" contenteditable="true" style="text-align: left; align-items: flex-start; width: 100%;">
-                    <p><strong style="font-size: 13px; color: #881337;">상품표현카드 노출</strong></p>
-                    <p style="font-size: 11px; color: #9f1239; margin-top: 4px;">LFmall 기획전 실시간 렌더링</p>
-                    
-                    <div style="background: #ffffff; border: 1.6px solid #fecdd3; border-radius: 6px; padding: 8px; margin-top: 10px; width: 100%; box-sizing: border-box; font-size: 11px; color: #334155; line-height: 1.45;">
-                        <p style="margin: 0; color: #881337; font-weight: 700;">최종 개인화 노출 효과:</p>
-                        <p style="margin: 4px 0 0 0;">• 고객 맞춤 최적화 정렬</p>
-                        <p style="margin: 2px 0 0 0;">• 실시간 선호 반영 극대화</p>
-                        <p style="margin: 2px 0 0 0;">• 기획전 CTR / CVR 상승</p>
+        <!-- ==================== STAGE 03: LOGIC 2 REALTIME ES SORT ==================== -->
+        <div class="lf-component" id="comp-st3-box" style="top: 468px; left: 634px; width: 310px; height: 398px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #f0fdf4; border: 1.6px solid #86efac; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 12px 10px;">
+                <!-- Header -->
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 6px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 24px; height: 24px; border-radius: 50%; background: #059669; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;">3</div>
+                        <strong style="font-size: 12.5px; color: #064e3b;">2차 정렬 (로직 2 적용)</strong>
                     </div>
+                    <span style="background: #d1fae5; color: #065f46; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">ES 직접설정</span>
+                </div>
+
+                <!-- Circle Icon -->
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: #ffffff; border: 1.6px solid #86efac; display: flex; align-items: center; justify-content: center; margin: 4px 0 6px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 22px; height: 22px;">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                </div>
+
+                <p style="font-size: 10.5px; color: #047857; margin: 0 0 6px; font-weight: 600;">미매칭 잔여상품 실시간 ES 점수화</p>
+
+                <!-- 3 Step Algorithm Box -->
+                <div style="background: #ffffff; border: 1.6px solid #86efac; border-radius: 8px; padding: 8px 10px; width: 100%; box-sizing: border-box; text-align: left; font-size: 10px; color: #334155; line-height: 1.4;">
+                    <div style="color: #065f46; font-weight: 700; margin-bottom: 3px; border-bottom: 1px solid #d1fae5; padding-bottom: 2px;">ES 실시간 연산 파이프라인</div>
+                    • <strong>Combo 피처 조회</strong> : 브랜드/카테고리/시즌<br>
+                    • <strong>유저 니즈 파악</strong> : 최근 클릭 실시간 반영<br>
+                    • <strong>타겟 그룹 매칭</strong> : 성별/연령 세그먼트
+                </div>
+
+                <!-- Result Pill Box -->
+                <div style="background: #dcfce7; border: 1.6px solid #86efac; border-radius: 8px; padding: 6px 10px; width: 100%; box-sizing: border-box; margin-top: 6px; text-align: center;">
+                    <span style="color: #047857; font-size: 11px; font-weight: 800;">➔ [2순위 그룹] 점수 내림차순 랭킹</span>
+                </div>
+            </div>
+            <div class="lf-connector-port port-top" data-side="top"></div>
+            <div class="lf-connector-port port-bottom" data-side="bottom"></div>
+            <div class="lf-connector-port port-left" data-side="left"></div>
+            <div class="lf-connector-port port-right" data-side="right"></div>
+        </div>
+
+        <!-- Arrow Connector 3 -> 4 -->
+        <div class="lf-component v4-text-box" id="comp-arrow-34" style="top: 650px; left: 950px; width: 22px; height: 24px; z-index: 120;" data-resized="true">
+            <div class="v4-editable-cell" style="font-size: 20px; color: #0891b2; font-weight: 900; line-height: 1;">➔</div>
+        </div>
+
+        <!-- ==================== STAGE 04: HYBRID LIST MERGE ==================== -->
+        <div class="lf-component" id="comp-st4-box" style="top: 468px; left: 978px; width: 220px; height: 398px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #ecfeff; border: 1.6px solid #67e8f9; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 12px 10px;">
+                <!-- Header -->
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 6px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 24px; height: 24px; border-radius: 50%; background: #0891b2; color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center;">4</div>
+                        <strong style="font-size: 12.5px; color: #164e63;">순위 결합 (Merge)</strong>
+                    </div>
+                    <span style="background: #cffafe; color: #0e7490; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">리스트 병합</span>
+                </div>
+
+                <!-- Circle Icon -->
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: #ffffff; border: 1.6px solid #67e8f9; display: flex; align-items: center; justify-content: center; margin: 4px 0 8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 22px; height: 22px;">
+                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                        <polyline points="2 17 12 22 22 17"></polyline>
+                        <polyline points="2 12 12 17 22 12"></polyline>
+                    </svg>
+                </div>
+
+                <strong style="font-size: 12.5px; color: #0e7490;">하이브리드 계층 구조</strong>
+
+                <!-- Tier Stack Boxes -->
+                <div style="width: 100%; display: flex; flex-direction: column; gap: 6px; margin-top: 8px;">
+                    <div style="background: #fdf4ff; border: 1.6px solid #f0abfc; border-radius: 6px; padding: 6px 8px; text-align: left;">
+                        <span style="background: #86198f; color: #fff; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 3px;">Tier 1 • 1순위</span>
+                        <p style="margin: 2px 0 0; font-size: 10px; color: #701a75; font-weight: 600;">관심상품 ML 매칭 상품군</p>
+                    </div>
+                    <div style="background: #f0fdf4; border: 1.6px solid #86efac; border-radius: 6px; padding: 6px 8px; text-align: left;">
+                        <span style="background: #047857; color: #fff; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 3px;">Tier 2 • 2순위</span>
+                        <p style="margin: 2px 0 0; font-size: 10px; color: #065f46; font-weight: 600;">ES 실시간 정렬 잔여 상품군</p>
+                    </div>
+                </div>
+
+                <p style="font-size: 10px; color: #155e75; margin-top: 8px; text-align: center; line-height: 1.35;">
+                    단절 없는 1+2순위<br>단일 통합 리스트 구축
+                </p>
+            </div>
+            <div class="lf-connector-port port-top" data-side="top"></div>
+            <div class="lf-connector-port port-bottom" data-side="bottom"></div>
+            <div class="lf-connector-port port-left" data-side="left"></div>
+            <div class="lf-connector-port port-right" data-side="right"></div>
+        </div>
+
+        <!-- Arrow Connector 4 -> 5 -->
+        <div class="lf-component v4-text-box" id="comp-arrow-45" style="top: 650px; left: 1204px; width: 22px; height: 24px; z-index: 120;" data-resized="true">
+            <div class="v4-editable-cell" style="font-size: 20px; color: #334155; font-weight: 900; line-height: 1;">➔</div>
+        </div>
+
+        <!-- ==================== STAGE 05: CARD FINAL DISPLAY ==================== -->
+        <div class="lf-component" id="comp-st5-box" style="top: 468px; left: 1232px; width: 174px; height: 398px; z-index: 110;" data-resized="true">
+            <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: #0f172a; border: 1.6px solid #334155; border-radius: 12px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 12px 10px; color: #ffffff;">
+                <!-- Header -->
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 6px;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <div style="width: 24px; height: 24px; border-radius: 50%; background: #00e5ff; color: #0f172a; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center;">5</div>
+                        <strong style="font-size: 12.5px; color: #ffffff;">최종 노출</strong>
+                    </div>
+                    <span style="background: rgba(0,229,255,0.2); color: #00e5ff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">OUTPUT</span>
+                </div>
+
+                <!-- Circle Icon -->
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1.6px solid #00e5ff; display: flex; align-items: center; justify-content: center; margin: 4px 0 8px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 22px; height: 22px;">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                        <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                    </svg>
+                </div>
+
+                <strong style="font-size: 12.5px; color: #ffffff;">상품표현카드 노출</strong>
+                <p style="font-size: 10px; color: #94a3b8; margin: 2px 0 8px; text-align: center;">LFmall 기획전 렌더링</p>
+
+                <!-- Output Summary Tag Box -->
+                <div style="background: rgba(255,255,255,0.06); border: 1.6px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px; width: 100%; box-sizing: border-box; font-size: 10px; color: #cbd5e1; line-height: 1.45; text-align: left;">
+                    <div style="color: #00e5ff; font-weight: 700; margin-bottom: 2px;">기대 효과:</div>
+                    • 고객 맞춤 최적화<br>
+                    • 실시간 니즈 반영<br>
+                    • CTR & CVR 극대화
                 </div>
             </div>
             <div class="lf-connector-port port-top" data-side="top"></div>
