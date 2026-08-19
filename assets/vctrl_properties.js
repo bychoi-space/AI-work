@@ -349,17 +349,22 @@
         }
     });
 
-    // Custom Color Palette System
+    // Custom Color Palette System - Extended Spectrum with Soft Pastel & Light Tones
     const PALETTE_COLORS = [
-        // Grayscale / Neutral
-        '#ffffff', '#f1f5f9', '#cbd5e1', '#94a3b8', '#475569', '#0f172a',
-        '#e6e6e6', '#c8c8c8', '#969696', '#646464', '#323232', '#000000',
-        // Red / Orange
-        '#ef4444', '#b91c1c', '#f97316', '#c2410c', '#f59e0b', '#d97706',
-        // Green / Teal
-        '#10b981', '#047857', '#06b6d4', '#0891b2', '#3b82f6', '#1d4ed8',
-        // Indigo / Purple / Pink
-        '#6366f1', '#4338ca', '#8b5cf6', '#6d28d9', '#ec4899', '#be185d'
+        // Row 1: Soft Pastel & Water Light Tones (연한 파스텔 & 수채화 톤)
+        '#ffffff', '#f8fafc', '#fef2f2', '#fff7ed', '#fefce8', '#f0fdf4', '#ecfeff', '#f0f9ff',
+        // Row 2: Light Delicate Tones (화사한 연한 톤)
+        '#f5f3ff', '#fdf2f8', '#f1f5f9', '#e2e8f0', '#fecdd3', '#ffedd5', '#fef08a', '#dcfce7',
+        // Row 3: Soft Medium Tones (부드러운 중간 톤)
+        '#cff4fc', '#dbeafe', '#e0e7ff', '#f3e8ff', '#fce7f3', '#cbd5e1', '#fda4af', '#fed7aa',
+        // Row 4: Bright Fresh Tones (선명하고 밝은 톤)
+        '#86efac', '#67e8f9', '#93c5fd', '#a5b4fc', '#c084fc', '#f472b6', '#94a3b8', '#64748b',
+        // Row 5: Vivid Standard Tones (표준 비비드 톤)
+        '#ef4444', '#f97316', '#eab308', '#10b981', '#06b6d4', '#3b82f6', '#6366f1', '#8b5cf6',
+        // Row 6: Deep Rich Tones (중후한 딥 톤)
+        '#ec4899', '#dc2626', '#ea580c', '#ca8a04', '#059669', '#0891b2', '#2563eb', '#4f46e5',
+        // Row 7: Dark Neutral & Grayscale Tones (다크 & 무채색 톤)
+        '#7c3aed', '#db2777', '#334155', '#1e293b', '#0f172a', '#18181b', '#3f3f46', '#000000'
     ];
 
     let activePaletteInput = null;
@@ -439,9 +444,9 @@
         let top = rect.bottom + 6;
         let left = rect.left;
 
-        // Keep inside viewport bounds
-        const popupWidth = 172;
-        const popupHeight = 180; // approximate height
+        // Keep inside viewport bounds for 8-column layout
+        const popupWidth = 230;
+        const popupHeight = 240; // approximate height for 7 rows
         if (left + popupWidth > window.innerWidth) {
             left = window.innerWidth - popupWidth - 12;
         }

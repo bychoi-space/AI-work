@@ -25,8 +25,8 @@ window.V4_COMPONENT_LIBRARY = {
             category: 'Atoms',
             previewHtml: `<div style="font-size: 12px; color: #0f172a; border-bottom: 1.6px solid #475569; width: 40px; text-align: center;">TEXT</div>`,
             html: `
-            <div class="v4-shape v4-shape-text" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid transparent; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 8px; text-align: center; outline: none; font-weight: 500; font-size: 14px; word-break: break-word; white-space: pre-wrap;">Enter Premium Text</div>
+            <div class="v4-shape v4-shape-text" style="width: 100%; height: 100%; background: transparent; border: 1.6px solid transparent; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 8px; text-align: center; outline: none; font-weight: 400; font-size: 12px; font-family: inherit; word-break: break-word; white-space: pre-wrap;">Enter Premium Text</div>
             </div>`
         },
         {
@@ -35,7 +35,7 @@ window.V4_COMPONENT_LIBRARY = {
             category: 'Atoms',
             width: '40px',
             height: '40px',
-            previewHtml: `<div class="lf-icon lf-icon-share" style="width: 24px; height: 24px; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-origin: content-box;"></div>`,
+            previewHtml: `<div class="lf-icon lf-icon-share" style="width: 24px; height: 24px; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-repeat: no-repeat; background-position: center; background-origin: content-box; filter: brightness(0) invert(1);"></div>`,
             html: `<div class="lf-icon" style="width: 100%; height: 100%; background-image: url('https://img.lfmall.co.kr/file/WAS/apps/2023/mfront/product/iconShare@2x.png'); background-size: contain; background-repeat: no-repeat; background-position: center; padding: 8px; box-sizing: border-box; background-origin: content-box; background-clip: content-box; pointer-events: none;"></div>`
         },
         {
@@ -47,9 +47,9 @@ window.V4_COMPONENT_LIBRARY = {
             previewHtml: `<div style="width: 80px; height: 20px; background: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 4px; display: flex; align-items: center; padding: 0 4px; font-size: 8px; color: var(--v4-placeholder-color, #a3a3a3); font-family: inherit;">Placeholder</div>`,
             html: `
             <div class="v4-textbox-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; align-items: center; padding: 0 12px; pointer-events: auto;">
-                <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit;">Placeholder</div>
-                <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border: none; outline: none; background: transparent; color: var(--v4-text-color, #374151); font-size: 12px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 0; box-sizing: border-box; padding-right: 48px; font-family: inherit;"></div>
-                <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: none; font-family: inherit;">0/100</div>
+                <div class="v4-textbox-placeholder" style="position: absolute; left: 12px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; font-weight: 400; user-select: none; font-family: inherit;">Placeholder</div>
+                <div contenteditable="true" class="v4-editable-cell v4-textbox-input" style="width: 100%; height: 100%; border: none; outline: none; background: transparent; color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; display: flex; align-items: center; white-space: nowrap; overflow: hidden; padding: 8px 0; box-sizing: border-box; padding-right: 48px; font-family: inherit;"></div>
+                <div class="v4-textbox-counter" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 400; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: none; font-family: inherit;">0/100</div>
             </div>`
         },
         {
@@ -61,9 +61,9 @@ window.V4_COMPONENT_LIBRARY = {
             previewHtml: `<div style="width: 80px; height: 30px; background: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 4px; padding: 2px; font-size: 8px; color: var(--v4-placeholder-color, #a3a3a3); box-sizing: border-box; font-family: inherit;">Placeholder</div>`,
             html: `
             <div class="v4-textarea-container" style="position: relative; width: 100%; height: 100%; box-sizing: border-box; background-color: var(--v4-input-bg, #fafaf2); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; display: flex; flex-direction: column; padding: 10px 12px; pointer-events: auto;">
-                <div class="v4-textarea-placeholder" style="position: absolute; left: 12px; top: 10px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; user-select: none; font-family: inherit;">Placeholder</div>
-                <div contenteditable="true" class="v4-editable-cell v4-textarea-input" style="width: 100%; height: 100%; border: none; outline: none; background: transparent; color: var(--v4-text-color, #374151); font-size: 12px; resize: none; overflow-y: auto; padding: 0 0 20px 0; word-break: break-all; white-space: pre-wrap; box-sizing: border-box; font-family: inherit;"></div>
-                <div class="v4-textarea-counter" style="position: absolute; right: 12px; bottom: 8px; font-size: 11px; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: none; font-family: inherit;">0/100</div>
+                <div class="v4-textarea-placeholder" style="position: absolute; left: 12px; top: 10px; color: var(--v4-placeholder-color, #a3a3a3); pointer-events: none; font-size: 12px; font-weight: 400; user-select: none; font-family: inherit;">Placeholder</div>
+                <div contenteditable="true" class="v4-editable-cell v4-textarea-input" style="width: 100%; height: 100%; border: none; outline: none; background: transparent; color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; resize: none; overflow-y: auto; padding: 0 0 20px 0; word-break: break-all; white-space: pre-wrap; box-sizing: border-box; font-family: inherit;"></div>
+                <div class="v4-textarea-counter" style="position: absolute; right: 12px; bottom: 8px; font-size: 12px; font-weight: 400; color: var(--v4-placeholder-color, #a3a3a3); user-select: none; display: none; font-family: inherit;">0/100</div>
             </div>`
         },
         {
@@ -72,15 +72,15 @@ window.V4_COMPONENT_LIBRARY = {
             category: 'Atoms',
             width: '154px',
             height: '30px',
-            previewHtml: `<div style="display: flex; align-items: center; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 6px; font-size: 10px; height: 20px; padding: 0 4px; box-sizing: border-box; width: 80px; justify-content: space-between;"><span style="color: var(--v4-placeholder-color, #9ca3af); font-weight: bold; cursor: default;">—</span><span style="font-weight: bold; color: var(--v4-text-color, #111827);">1</span><span style="color: var(--v4-text-color, #374151); font-weight: bold; cursor: default;">+</span></div>`,
+            previewHtml: `<div style="display: flex; align-items: center; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 6px; font-size: 10px; height: 20px; padding: 0 4px; box-sizing: border-box; width: 80px; justify-content: space-between;"><span style="color: var(--v4-placeholder-color, #9ca3af); font-weight: bold; cursor: default;">—</span><span style="font-weight: bold; color: var(--v4-text-color, #0f172a);">1</span><span style="color: var(--v4-text-color, #0f172a); font-weight: bold; cursor: default;">+</span></div>`,
             html: `
             <div class="v4-stepper-container" data-min="1" data-max="99" data-val="1" data-btn-enabled="true" data-btn-text="적용" data-disabled="false" style="position: relative; display: inline-flex; align-items: center; gap: 6px; font-family: inherit; pointer-events: auto; user-select: none;">
                 <div class="v4-stepper-control" style="display: inline-flex; align-items: center; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); overflow: hidden; height: 30px; box-sizing: border-box;">
-                    <button class="v4-stepper-dec" style="width: 30px; height: 100%; border: none; background: var(--v4-disabled-bg, #f3f4f6); color: var(--v4-placeholder-color, #9ca3af); font-size: 14px; font-weight: bold; cursor: not-allowed; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">—</button>
-                    <div class="v4-stepper-value" style="width: 40px; text-align: center; font-size: 14px; font-weight: 600; color: var(--v4-text-color, #111827); user-select: none; font-family: inherit;">1</div>
-                    <button class="v4-stepper-inc" style="width: 30px; height: 100%; border: none; background: var(--v4-component-bg, #ffffff); border-left: 1.6px solid var(--v4-border-color, #e5e7eb); color: var(--v4-text-color, #374151); font-size: 14px; font-weight: bold; cursor: pointer; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s;">+</button>
+                    <button class="v4-stepper-dec" style="width: 30px; height: 100%; border: none; background: var(--v4-disabled-bg, #f3f4f6); color: var(--v4-placeholder-color, #9ca3af); font-size: 12px; font-weight: 400; cursor: not-allowed; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s; font-family: inherit;">—</button>
+                    <div class="v4-stepper-value" style="width: 40px; text-align: center; font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); user-select: none; font-family: inherit;">1</div>
+                    <button class="v4-stepper-inc" style="width: 30px; height: 100%; border: none; background: var(--v4-component-bg, #ffffff); border-left: 1.6px solid var(--v4-border-color, #e5e7eb); color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; cursor: pointer; outline: none; display: flex; align-items: center; justify-content: center; user-select: none; transition: background-color 0.2s, color 0.2s; font-family: inherit;">+</button>
                 </div>
-                <button class="v4-stepper-action" style="height: 30px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); font-size: 12px; font-weight: 600; color: var(--v4-text-color, #374151); cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">적용</button>
+                <button class="v4-stepper-action" style="height: 30px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">적용</button>
             </div>`
         },
         {
@@ -89,17 +89,17 @@ window.V4_COMPONENT_LIBRARY = {
             category: 'Atoms',
             width: '150px',
             height: '30px',
-            previewHtml: `<div style="display: flex; align-items: center; justify-content: space-between; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 6px; font-size: 10px; height: 20px; padding: 0 6px; box-sizing: border-box; width: 80px;"><span style="color: var(--v4-text-color, #374151);">선택하세요</span><span style="font-size: 8px; color: var(--v4-placeholder-color, #9ca3af);">▼</span></div>`,
+            previewHtml: `<div style="display: flex; align-items: center; justify-content: space-between; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 6px; font-size: 10px; height: 20px; padding: 0 6px; box-sizing: border-box; width: 80px;"><span style="color: var(--v4-text-color, #0f172a);">선택하세요</span><span style="font-size: 8px; color: var(--v4-placeholder-color, #9ca3af);">▼</span></div>`,
             html: `
             <div class="v4-selectbox-container" data-default-text="선택하세요" data-dropdown-active="false" data-options="Option 1,Option 2,Option 3" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
-                <div class="v4-selectbox-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); height: 100%; width: 100%; padding: 0 12px; box-sizing: border-box; font-size: 12px; color: var(--v4-text-color, #374151); cursor: pointer; overflow: hidden;">
+                <div class="v4-selectbox-header" style="display: flex; align-items: center; justify-content: space-between; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); height: 100%; width: 100%; padding: 0 12px; box-sizing: border-box; font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); cursor: pointer; overflow: hidden;">
                     <span class="v4-selectbox-selected-text" style="flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">선택하세요</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 15px; height: 15px; flex-shrink: 0; transition: transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </div>
                 <div class="v4-selectbox-options" style="display: none; position: absolute; top: calc(100% - 2px); left: 0; width: 100%; background-color: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-top: none; border-radius: 0 0 8px 8px; box-sizing: border-box; z-index: 1000; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                    <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: var(--v4-text-color, #374151); border-bottom: 1.6px solid var(--v4-disabled-bg, #f3f4f6); box-sizing: border-box;">Option 1</div>
-                    <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: var(--v4-text-color, #374151); border-bottom: 1.6px solid var(--v4-disabled-bg, #f3f4f6); box-sizing: border-box;">Option 2</div>
-                    <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; color: var(--v4-text-color, #374151); box-sizing: border-box;">Option 3</div>
+                    <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); border-bottom: 1.6px solid var(--v4-disabled-bg, #f3f4f6); box-sizing: border-box;">Option 1</div>
+                    <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); border-bottom: 1.6px solid var(--v4-disabled-bg, #f3f4f6); box-sizing: border-box;">Option 2</div>
+                    <div class="v4-selectbox-option" style="height: 30px; padding: 0 12px; display: flex; align-items: center; font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); border-bottom: 1.6px solid var(--v4-disabled-bg, #f3f4f6); box-sizing: border-box;">Option 3</div>
                 </div>
             </div>`
         },
@@ -113,10 +113,10 @@ window.V4_COMPONENT_LIBRARY = {
             html: `
             <div class="v4-fileupload-container" data-selected="false" data-file-name="" data-button-text="파일첨부" data-placeholder="선택된 파일 없음" style="position: relative; display: flex; align-items: center; gap: 6px; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box;">
                 <div class="v4-fileupload-textbox-wrapper" style="position: relative; display: flex; align-items: center; flex: 1; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); height: 30px; padding: 0 10px; box-sizing: border-box;">
-                    <div class="v4-fileupload-textbox" style="font-size: 12px; color: var(--v4-placeholder-color, #9ca3af); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; cursor: not-allowed; font-family: inherit;">선택된 파일 없음</div>
+                    <div class="v4-fileupload-textbox" style="font-size: 12px; font-weight: 400; color: var(--v4-placeholder-color, #9ca3af); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; cursor: not-allowed; font-family: inherit;">선택된 파일 없음</div>
                     <span class="v4-fileupload-delete" style="display: none; cursor: pointer; color: var(--v4-placeholder-color, #9ca3af); font-size: 14px; font-weight: bold; margin-left: 8px; flex-shrink: 0; transition: color 0.2s;">&times;</span>
                 </div>
-                <button class="v4-fileupload-button" style="height: 30px; padding: 0 14px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); font-size: 12px; font-weight: 600; color: var(--v4-text-color, #374151); cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">파일첨부</button>
+                <button class="v4-fileupload-button" style="height: 30px; padding: 0 14px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background-color: var(--v4-component-bg, #ffffff); font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-family: inherit;">파일첨부</button>
             </div>`
         },
         {
@@ -129,19 +129,19 @@ window.V4_COMPONENT_LIBRARY = {
             html: `
             <div class="v4-alert-container" data-message="얼럿 메시지 입력 표시" data-btn-count="1" data-btn-text-1="확인" data-btn-text-2="취소" data-btn-text-3="저장" data-btn-style-1="normal" data-btn-style-2="normal" data-btn-style-3="normal" data-show-desc="true" data-desc="얼럿 노출 케이스" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px; background: transparent; justify-content: flex-end;">
                 <div class="v4-alert-desc-wrapper" style="display: flex; justify-content: flex-start; width: 100%; flex-shrink: 0;">
-                    <div class="v4-alert-desc-badge" style="background: #1e3a8a; color: #ffffff; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1.6px solid #1e40af;">얼럿 노출 케이스</div>
+                    <div class="v4-alert-desc-badge" style="background: #1e3a8a; color: #ffffff; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 400; font-family: inherit; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1.6px solid #1e40af;">얼럿 노출 케이스</div>
                 </div>
                 <div class="v4-alert-dialog" style="flex: 1; width: 100%; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc) !important; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); overflow: hidden; display: flex; flex-direction: column; box-sizing: border-box;">
                     <div class="v4-alert-header" style="height: 32px; flex-shrink: 0; background: var(--v4-disabled-bg, #e5e7eb); display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1.6px solid var(--v4-border-color, #cccccc) !important; box-sizing: border-box; width: 100%;">
-                        <span class="v4-alert-title" style="font-size: 12px; font-weight: 600; color: var(--v4-text-color, #374151);">Alert</span>
+                        <span class="v4-alert-title" style="font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); font-family: inherit;">Alert</span>
                         <span class="v4-alert-close" style="cursor: pointer; color: var(--v4-placeholder-color, #9ca3af); font-size: 16px; font-weight: bold; line-height: 1; display: flex; align-items: center; justify-content: center;">&times;</span>
                     </div>
                     <div class="v4-alert-content" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px 12px; box-sizing: border-box; width: 100%;">
-                        <div class="v4-alert-message" style="font-size: 13px; color: var(--v4-text-color, #1f2937); text-align: center; line-height: 1.4; white-space: pre-wrap; font-family: inherit; margin-bottom: 14px; word-break: break-all; width: 100%;">얼럿 메시지 입력 표시</div>
+                        <div class="v4-alert-message" style="font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); text-align: center; line-height: 1.4; white-space: pre-wrap; font-family: inherit; margin-bottom: 14px; word-break: break-all; width: 100%;">얼럿 메시지 입력 표시</div>
                         <div class="v4-alert-buttons" style="display: flex; gap: 8px; justify-content: center; width: 100%; flex-wrap: nowrap; flex-shrink: 0;">
-                            <button class="v4-alert-btn v4-alert-btn-1 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc) !important; border-radius: 6px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #374151); font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">확인</button>
-                            <button class="v4-alert-btn v4-alert-btn-2 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc) !important; border-radius: 6px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #374151); font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">취소</button>
-                            <button class="v4-alert-btn v4-alert-btn-3 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc) !important; border-radius: 6px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #374151); font-size: 11px; font-weight: 600; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">저장</button>
+                            <button class="v4-alert-btn v4-alert-btn-1 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc) !important; border-radius: 6px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">확인</button>
+                            <button class="v4-alert-btn v4-alert-btn-2 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc) !important; border-radius: 6px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; font-family: inherit; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">취소</button>
+                            <button class="v4-alert-btn v4-alert-btn-3 style-normal" style="height: 28px; min-width: 70px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc) !important; border-radius: 6px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; font-family: inherit; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); box-sizing: border-box; transition: background 0.2s;">저장</button>
                         </div>
                     </div>
                 </div>
@@ -158,7 +158,7 @@ window.V4_COMPONENT_LIBRARY = {
             html: `
             <div class="v4-shape v4-popup-container" style="width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; flex-direction: column; background: var(--v4-component-bg, rgb(255, 255, 255)); border: 1.6px solid var(--v4-border-color, rgb(200, 200, 200)) !important; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 2px 10px rgba(0,0,0,0.06); overflow: hidden;">
                 <div class="v4-popup-header" style="height: 36px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: var(--v4-disabled-bg, #f1f5f9); border-bottom: 1.6px solid var(--v4-border-color, rgb(200, 200, 200)) !important; box-sizing: border-box; width: 100%; flex-shrink: 0; pointer-events: auto;">
-                    <div contenteditable="true" class="v4-editable-cell v4-popup-title" style="font-size: 13px; font-weight: 700; color: var(--v4-text-color, #1e293b); outline: none; text-align: left; flex: 1;">Popup Title</div>
+                    <div contenteditable="true" class="v4-editable-cell v4-popup-title" style="font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); outline: none; text-align: left; flex: 1; font-family: inherit;">Popup Title</div>
                     <span class="v4-popup-close" style="cursor: pointer; color: var(--v4-placeholder-color, #94a3b8); font-size: 16px; font-weight: bold; line-height: 1; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px;">&times;</span>
                 </div>
                 <div class="v4-popup-body" style="flex: 1; width: 100%; padding: 12px; box-sizing: border-box; background: transparent; position: relative;">
@@ -175,7 +175,7 @@ window.V4_COMPONENT_LIBRARY = {
             previewHtml: `<div style="display: flex; align-items: center; justify-content: center; width: 60px; height: 30px; background: var(--v4-component-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-size: 8px; font-weight: bold; color: var(--v4-text-color, #333); box-sizing: border-box;">Button</div>`,
             html: `
             <div class="v4-btn-container" data-text="버튼" data-btn-style="normal" data-btn-radius="6" data-font-size="12" style="position: relative; width: 100%; height: 100%; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; display: flex; align-items: center; justify-content: center;">
-                <button class="v4-custom-btn style-normal" style="width: 100%; height: 100%; border: 1.6px solid var(--v4-border-color, #cccccc) !important; border-radius: 6px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #374151); font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); box-sizing: border-box; transition: all 0.2s; font-family: inherit;">버튼</button>
+                <button class="v4-custom-btn style-normal" style="width: 100%; height: 100%; border: 1.6px solid var(--v4-border-color, #cccccc) !important; border-radius: 6px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); box-sizing: border-box; transition: all 0.2s; font-family: inherit;">버튼</button>
             </div>`
         },
         {
@@ -184,26 +184,26 @@ window.V4_COMPONENT_LIBRARY = {
             category: 'Atoms',
             width: '500px',
             height: '30px',
-            previewHtml: `<div style="display:flex; align-items:center; background:var(--v4-component-bg, #ffffff); border:1.6px solid var(--v4-border-color, #cccccc); border-radius:4px; height:20px; padding:0 5px; font-size:7px; color:var(--v4-text-color, #374151); box-sizing:border-box; gap:3px; white-space:nowrap;"><span>26/05/18</span><span style="color:var(--v4-placeholder-color, #9ca3af);">&#9553;</span><span>-</span><span style="color:var(--v4-placeholder-color, #9ca3af);">&#9553;</span><span>26/06/18</span></div>`,
+            previewHtml: `<div style="display:flex; align-items:center; background:var(--v4-component-bg, #ffffff); border:1.6px solid var(--v4-border-color, #cccccc); border-radius:4px; height:20px; padding:0 5px; font-size:7px; color:var(--v4-text-color, #0f172a); box-sizing:border-box; gap:3px; white-space:nowrap;"><span>26/05/18</span><span style="color:var(--v4-placeholder-color, #9ca3af);">&#9553;</span><span>-</span><span style="color:var(--v4-placeholder-color, #9ca3af);">&#9553;</span><span>26/06/18</span></div>`,
             html: `
             <div class="v4-datepicker-container" data-show-presets="true" data-show-end-date="true" data-default-preset="1M" data-start-date="" data-end-date="" style="position: relative; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; pointer-events: auto; user-select: none; box-sizing: border-box; flex-wrap: nowrap; width: 100%; height: 100%;">
                 <div class="v4-dp-fields" style="display: inline-flex; align-items: center; gap: 0; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); height: 100%; min-height: 30px; overflow: hidden; box-sizing: border-box; flex-shrink: 0;">
                     <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; gap: 6px; height: 100%;">
-                        <div class="v4-dp-date-field v4-dp-start v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;"></div>
+                        <div class="v4-dp-date-field v4-dp-start v4-editable-cell" contenteditable="true" style="font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;"></div>
                         <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                     </div>
-                    <div class="v4-dp-separator" style="color: var(--v4-placeholder-color, #9ca3af); font-size: 13px; padding: 0 2px; flex-shrink: 0; font-family: inherit;">-</div>
+                    <div class="v4-dp-separator" style="color: var(--v4-placeholder-color, #9ca3af); font-size: 12px; padding: 0 2px; flex-shrink: 0; font-family: inherit;">-</div>
                     <div class="v4-dp-input-group" style="display: inline-flex; align-items: center; padding: 0 10px; gap: 6px; height: 100%;">
-                        <div class="v4-dp-date-field v4-dp-end v4-editable-cell" contenteditable="true" style="font-size: 13px; color: var(--v4-text-color, #374151); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;"></div>
+                        <div class="v4-dp-date-field v4-dp-end v4-editable-cell" contenteditable="true" style="font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); outline: none; white-space: nowrap; min-width: 82px; font-family: inherit; -webkit-user-select: text; user-select: text;"></div>
                         <svg viewBox="0 0 24 24" fill="none" stroke="var(--v4-placeholder-color, #9ca3af)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lf-icon" style="width: 15px; height: 15px; flex-shrink: 0; pointer-events: none; background-image: none !important;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                     </div>
                 </div>
                 <div class="v4-dp-presets" style="display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0;">
-                    <button class="v4-dp-preset-btn" data-preset="1D" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #374151); font-size: 12px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1D</button>
-                    <button class="v4-dp-preset-btn" data-preset="1W" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #374151); font-size: 12px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1W</button>
-                    <button class="v4-dp-preset-btn v4-dp-preset-active" data-preset="1M" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-primary); border-radius: 8px; background: var(--v4-primary); color: #ffffff; font-size: 12px; font-weight: 700; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1M</button>
-                    <button class="v4-dp-preset-btn" data-preset="6M" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #374151); font-size: 12px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">6M</button>
-                    <button class="v4-dp-preset-btn" data-preset="all" style="height: 30px; min-width: 36px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #374151); font-size: 12px; font-weight: 600; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">&#51204;&#52404;</button>
+                    <button class="v4-dp-preset-btn" data-preset="1D" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1D</button>
+                    <button class="v4-dp-preset-btn" data-preset="1W" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1W</button>
+                    <button class="v4-dp-preset-btn v4-dp-preset-active" data-preset="1M" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-primary); border-radius: 8px; background: var(--v4-primary); color: #ffffff; font-size: 12px; font-weight: 400; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">1M</button>
+                    <button class="v4-dp-preset-btn" data-preset="6M" style="height: 30px; min-width: 36px; padding: 0 10px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">6M</button>
+                    <button class="v4-dp-preset-btn" data-preset="all" style="height: 30px; min-width: 36px; padding: 0 12px; border: 1.6px solid var(--v4-border-color, #cccccc); border-radius: 8px; background: var(--v4-component-bg, #ffffff); color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; cursor: pointer; outline: none; white-space: nowrap; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit;">&#51204;&#52404;</button>
                 </div>
             </div>`
         },
@@ -245,7 +245,7 @@ window.V4_COMPONENT_LIBRARY = {
                 <div class="v4-admin-settings-table" style="display: flex; flex-direction: column; width: 100%; height: 100%;">
                     <!-- Row 1 -->
                     <div class="v4-admin-row" style="display: flex; width: 100%; box-sizing: border-box; height: 40px;">
-                        <div class="v4-admin-label-cell" style="width: 140px; background: #f1f5f9; display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 600; color: #334155; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;">조회 항목</div>
+                        <div class="v4-admin-label-cell" style="width: 140px; background: #f1f5f9; display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0; font-family: inherit;">조회 항목</div>
                         <div class="v4-admin-content-cell" style="flex: 1; display: flex; align-items: center; padding: 0 16px; box-sizing: border-box;"></div>
                     </div>
                 </div>
@@ -315,7 +315,7 @@ window.V4_COMPONENT_LIBRARY = {
             icon: 'title',
             iconColor: 'var(--accent)',
             cardStyle: 'background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(255, 255, 255, 0.1) !important;',
-            html: '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:var(--v4-text-color, #000000); padding:2px 4px; display:block; text-align:left;">Edit Text</div>'
+            html: '<div class="v4-editable-cell" contenteditable="true" style="outline:none; color:var(--v4-text-color, #0f172a); font-size:12px; font-weight:400; font-family:inherit; padding:2px 4px; display:block; text-align:left;">Edit Text</div>'
         },
         {
             id: 'v4-data-table',
@@ -329,21 +329,21 @@ window.V4_COMPONENT_LIBRARY = {
             cardStyle: 'background: rgba(99, 102, 241, 0.05); border: 1.6px solid rgba(99, 102, 241, 0.1) !important;',
             previewHtml: `<div style="width: 80px; height: 40px; border: 1.6px solid var(--v4-border-color, #475569); background: var(--v4-disabled-bg, #e2e8f0); border-radius: 4px;"></div>`,
             html: `
-            <table class="v4-premium-table" style="background: var(--v4-disabled-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); width: 100%; height: 100%; table-layout: fixed; border-collapse: collapse; box-sizing: border-box;">
+            <table class="v4-premium-table" style="background: var(--v4-disabled-bg, #ffffff); border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); font-family: inherit; width: 100%; height: 100%; table-layout: fixed; border-collapse: collapse; box-sizing: border-box;">
                 <colgroup>
                     <col style="width: 100px;">
                     <col style="width: 100px;">
                 </colgroup>
                 <thead>
                     <tr style="height: 50px;">
-                        <th contenteditable="true" class="v4-editable-cell" style="background: var(--v4-input-bg, #f8fafc); color: var(--v4-text-color, #334155); border: 1.6px solid var(--v4-border-color, #cbd5e1); font-size: 12px; font-weight: 700; padding: 0 8px; text-align: left; vertical-align: middle; box-sizing: border-box;">구분</th>
-                        <th contenteditable="true" class="v4-editable-cell" style="background: var(--v4-input-bg, #f8fafc); color: var(--v4-text-color, #334155); border: 1.6px solid var(--v4-border-color, #cbd5e1); font-size: 12px; font-weight: 700; padding: 0 8px; text-align: left; vertical-align: middle; box-sizing: border-box;">상세 내용</th>
+                        <th contenteditable="true" class="v4-editable-cell" style="background: var(--v4-input-bg, #f8fafc); color: var(--v4-text-color, #0f172a); border: 1.6px solid var(--v4-border-color, #cbd5e1); font-size: 12px; font-weight: 400; font-family: inherit; padding: 0 8px; text-align: left; vertical-align: middle; box-sizing: border-box;">구분</th>
+                        <th contenteditable="true" class="v4-editable-cell" style="background: var(--v4-input-bg, #f8fafc); color: var(--v4-text-color, #0f172a); border: 1.6px solid var(--v4-border-color, #cbd5e1); font-size: 12px; font-weight: 400; font-family: inherit; padding: 0 8px; text-align: left; vertical-align: middle; box-sizing: border-box;">상세 내용</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr style="height: 50px;">
-                        <td contenteditable="true" class="v4-editable-cell" style="border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); font-size: 12px; padding: 0 8px; text-align: left; vertical-align: middle; box-sizing: border-box;">내용</td>
-                        <td contenteditable="true" class="v4-editable-cell" style="border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); font-size: 12px; padding: 0 8px; text-align: left; vertical-align: middle; box-sizing: border-box;">정보</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; font-family: inherit; padding: 0 8px; text-align: left; vertical-align: middle; box-sizing: border-box;">내용</td>
+                        <td contenteditable="true" class="v4-editable-cell" style="border: 1.6px solid var(--v4-border-color, #cbd5e1); color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; font-family: inherit; padding: 0 8px; text-align: left; vertical-align: middle; box-sizing: border-box;">정보</td>
                     </tr>
                 </tbody>
             </table>`
@@ -361,7 +361,7 @@ window.V4_COMPONENT_LIBRARY = {
             previewHtml: `<div style="width: 40px; height: 30px; background: var(--v4-component-bg, rgb(255, 255, 255)); border: 1.6px solid var(--v4-border-color, rgb(200, 200, 200)); border-radius: 4px;"></div>`,
             html: `
             <div class="v4-shape v4-shape-rect" style="width: 100%; height: 100%; background: var(--v4-component-bg, rgb(255, 255, 255)); border: 1.6px solid var(--v4-border-color, rgb(200, 200, 200)); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 400; font-size: 12px; font-family: inherit; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
             </div>`
         },
         {
@@ -377,7 +377,7 @@ window.V4_COMPONENT_LIBRARY = {
             previewHtml: `<div style="width: 30px; height: 30px; background: var(--v4-component-bg, rgb(255, 255, 255)); border: 1.6px solid var(--v4-border-color, rgb(200, 200, 200)); border-radius: 50%;"></div>`,
             html: `
             <div class="v4-shape v4-shape-circle" style="width: 100%; height: 100%; background: var(--v4-component-bg, rgb(255, 255, 255)); border: 1.6px solid var(--v4-border-color, rgb(200, 200, 200)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 700; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 400; font-size: 12px; font-family: inherit; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
             </div>`
         },
         {
@@ -396,7 +396,7 @@ window.V4_COMPONENT_LIBRARY = {
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible;">
                     <polygon points="50,1 1,99 99,99" style="fill: rgb(255, 255, 255); stroke: rgb(200, 200, 200); stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
                 </svg>
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 10px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; z-index: 2; position: relative;"></div>
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 10px; text-align: center; outline: none; font-weight: 400; font-size: 12px; font-family: inherit; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; z-index: 2; position: relative;"></div>
             </div>`
         },
         {
@@ -416,7 +416,7 @@ window.V4_COMPONENT_LIBRARY = {
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible;">
                     <polygon points="50,1 99,50 50,99 1,50" style="fill: rgb(255, 255, 255); stroke: rgb(200, 200, 200); stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
                 </svg>
-                <div contenteditable="true" class="v4-editable-cell" style="width: 60%; height: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; outline: none; font-weight: 700; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; font-size: 14px; z-index: 2; position: relative;"></div>
+                <div contenteditable="true" class="v4-editable-cell" style="width: 60%; height: 60%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; outline: none; font-weight: 400; font-size: 12px; font-family: inherit; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; z-index: 2; position: relative;"></div>
             </div>`
         },
         {
@@ -435,7 +435,7 @@ window.V4_COMPONENT_LIBRARY = {
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible;">
                     <path class="v4-arrow-path" d="M 0,30 L 60,30 L 60,10 L 100,50 L 60,90 L 60,70 L 0,70 Z" style="fill: rgb(255, 255, 255); stroke: rgb(200, 200, 200); stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
                 </svg>
-                <div contenteditable="true" class="v4-editable-cell" style="width: 50%; height: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; outline: none; font-weight: 700; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; font-size: 14px; z-index: 2; position: relative;"></div>
+                <div contenteditable="true" class="v4-editable-cell" style="width: 50%; height: 40%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; outline: none; font-weight: 400; font-size: 12px; font-family: inherit; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; z-index: 2; position: relative;"></div>
             </div>`
         },
         {
@@ -470,8 +470,8 @@ window.V4_COMPONENT_LIBRARY = {
             cardStyle: 'background: rgba(255, 255, 255, 0.05); border: 1.6px solid rgba(255, 255, 255, 0.1) !important;',
             previewHtml: `<div class="v4-shape-pattern-grid" style="width: 40px; height: 30px; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200);"></div>`,
             html: `
-            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200); display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: hidden; box-sizing: border-box;">
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
+            <div class="v4-shape v4-shape-pattern-grid" style="width: 100%; height: 100%; background: rgb(255, 255, 255); border: 1.6px solid rgb(200, 200, 200); display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: hidden; box-sizing: border-box;">
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; outline: none; font-weight: 400; font-size: 12px; font-family: inherit; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap;"></div>
             </div>`
         },
         {
@@ -486,11 +486,11 @@ window.V4_COMPONENT_LIBRARY = {
             height: '20px',
             previewHtml: `<svg viewBox="0 0 100 20" preserveAspectRatio="none" style="width: 45px; height: 15px;"><polygon points="0,6 12.5,2 25,6 37.5,2 50,6 62.5,2 75,6 87.5,2 100,6 100,16 87.5,12 75,16 62.5,12 50,16 37.5,12 25,16 12.5,12 0,16" style="fill: #ffedd5; stroke: #fb923c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" /></svg>`,
             html: `
-            <div class="v4-shape v4-shape-wave" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; color: #0f172a; overflow: visible; box-sizing: border-box; position: relative;">
+            <div class="v4-shape v4-shape-wave" style="width: 100%; height: 100%; background: transparent; border: none !important; display: flex; align-items: center; justify-content: center; color: var(--v4-text-color, #0f172a); overflow: visible; box-sizing: border-box; position: relative;">
                 <svg viewBox="0 0 360 20" preserveAspectRatio="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: visible;">
                     <polygon points="0,6 45,2 90,6 135,2 180,6 225,2 270,6 315,2 360,6 360,16 315,12 270,16 225,12 180,16 135,12 90,16 45,12 0,16" style="fill: #ffedd5; stroke: #fb923c; stroke-width: 1.6; vector-effect: non-scaling-stroke;" />
                 </svg>
-                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2px 20px; text-align: center; outline: none; font-weight: 600; font-size: 14px; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; z-index: 2; position: relative; color: #0f172a;"></div>
+                <div contenteditable="true" class="v4-editable-cell" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2px 20px; text-align: center; outline: none; font-weight: 400; font-size: 12px; font-family: inherit; word-break: break-word; overflow-wrap: break-word; white-space: pre-wrap; z-index: 2; position: relative; color: var(--v4-text-color, #0f172a);"></div>
             </div>`
         }
     ],

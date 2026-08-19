@@ -1888,8 +1888,10 @@ window.v4Script = `
                         const isActive = btn.getAttribute('data-preset') === d.defaultPreset;
                         btn.style.background = isActive ? '#1d4ed8' : '#ffffff';
                         btn.style.borderColor = isActive ? '#1d4ed8' : '#cccccc';
-                        btn.style.color = isActive ? '#ffffff' : '#374151';
-                        btn.style.fontWeight = isActive ? '700' : '600';
+                        btn.style.color = isActive ? '#ffffff' : '#0f172a';
+                        btn.style.fontWeight = '400';
+                        btn.style.fontSize = '12px';
+                        btn.style.fontFamily = 'inherit';
                         if (isActive) btn.classList.add('v4-dp-preset-active');
                         else btn.classList.remove('v4-dp-preset-active');
                     });
@@ -1996,7 +1998,7 @@ window.v4Script = `
                     
                     if (headerEl.innerText !== titleText) headerEl.innerText = titleText;
                     headerEl.contentEditable = 'true';
-                    headerEl.style.cssText = 'height: 40px; display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 700; background: ' + bgCol + '; color: ' + textCol + '; box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;';
+                    headerEl.style.cssText = 'height: 40px; display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 400; font-family: inherit; background: ' + bgCol + '; color: ' + textCol + '; box-sizing: border-box; width: 100%; outline: none; border-bottom: 1.6px solid rgb(226, 232, 240); flex-shrink: 0 !important;';
                     
                     if (!headerEl.dataset.inputBound) {
                         headerEl.dataset.inputBound = 'true';
@@ -2051,7 +2053,7 @@ window.v4Script = `
                             // Label cell
                             const labelCell = document.createElement('div');
                             labelCell.className = 'v4-admin-label-cell';
-                            labelCell.style.cssText = 'width: ' + labelWidth + 'px; background: #f1f5f9; display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 600; color: #334155; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;';
+                            labelCell.style.cssText = 'width: ' + labelWidth + 'px; background: #f1f5f9; display: flex; align-items: center; padding: 0 16px; font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); font-family: inherit; border-right: 1.6px solid rgb(226, 232, 240); box-sizing: border-box; flex-shrink: 0;';
                             labelCell.innerText = colLabel;
                             rowEl.appendChild(labelCell);
                             

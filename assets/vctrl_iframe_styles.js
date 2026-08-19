@@ -1,8 +1,21 @@
 // --- Core CSS Constants for V4 Iframe Injection ---
 window.v4Styles = `
-:root { --v4-primary: #6366f1; --v4-accent: #00e5ff; --v4-bg-dark: #0f172a; --v4-panel-bg: rgba(30, 41, 59, 0.7); --v4-border: rgba(255, 255, 255, 0.15); --v4-text-main: #ffffff; --v4-text-dim: #94a3b8; }
-body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
-.v4-editable-cell, [contenteditable="true"] { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
+:root { 
+    --v4-primary: #6366f1; 
+    --v4-accent: #00e5ff; 
+    --v4-bg-dark: #0f172a; 
+    --v4-panel-bg: rgba(30, 41, 59, 0.7); 
+    --v4-border: rgba(255, 255, 255, 0.15); 
+    --v4-text-main: #ffffff; 
+    --v4-text-dim: #94a3b8;
+    --v4-text-color: #0f172a;
+    --v4-font-size: 12px;
+    --v4-font-weight: 400;
+    --v4-font-family: inherit;
+    --v4-placeholder-color: #94a3b8;
+}
+body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; font-family: inherit; }
+.v4-editable-cell, [contenteditable="true"] { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; font-family: inherit; }
 .lf-component { 
     position: absolute; cursor: pointer; transition: outline 0.2s; 
     box-sizing: border-box; z-index: 100;
@@ -28,16 +41,16 @@ body, .lf-component { -webkit-user-select: none; -moz-user-select: none; -ms-use
 .lf-component:hover .lf-resizer, .lf-component.selected .lf-resizer { opacity: 1; }
 .lf-delete-trigger { position: absolute; top: -12px; right: -12px; width: 24px; height: 24px; background: #ef4444; color: #fff; border-radius: 50%; display: none !important; align-items: center; justify-content: center; cursor: pointer; border: 2px solid #fff; z-index: 10002; font-size: 14px; font-weight: bold; }
 .lf-component:hover .lf-delete-trigger, .lf-component.selected .lf-delete-trigger { display: none !important; }
-.v4-premium-table { table-layout: fixed; border-collapse: collapse; border: 1.6px solid #cbd5e1 !important; font-family: 'Inter', sans-serif; }
-.v4-premium-table th { padding: 14px 16px; text-align: left; border: 1.6px solid #cbd5e1 !important; font-weight: 700; white-space: nowrap; }
-.v4-premium-table td { padding: 14px 16px; border: 1.6px solid #cbd5e1 !important; }
+.v4-premium-table { table-layout: fixed; border-collapse: collapse; border: 1.6px solid #cbd5e1 !important; font-family: inherit; }
+.v4-premium-table th { padding: 14px 16px; text-align: left; border: 1.6px solid #cbd5e1 !important; font-weight: 400; font-size: 12px; color: var(--v4-text-color, #0f172a); white-space: nowrap; }
+.v4-premium-table td { padding: 14px 16px; border: 1.6px solid #cbd5e1 !important; font-size: 12px; font-weight: 400; color: var(--v4-text-color, #0f172a); }
 .v4-grid-container table th, .v4-grid-container table td { border-right: 1.6px solid rgb(226, 232, 240) !important; line-height: 1.2 !important; padding: 0 8px !important; }
 .v4-grid-container table td[data-type="checkbox"], .v4-grid-container table th[data-type="checkbox"], .v4-grid-container table td.v4-grid-check-col, .v4-grid-container table th.v4-grid-check-col { padding: 0 !important; }
 .v4-grid-container table td *, .v4-grid-container table th * { margin: 0 !important; padding: 0 !important; line-height: inherit !important; }
 .v4-grid-container table tr { border-bottom: 1.6px solid rgb(226, 232, 240) !important; }
-.v4-grid-container td.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; }
-.v4-grid-container th.v4-grid-cell { font-size: 12px !important; font-family: 'Inter', sans-serif !important; color: #0f172a !important; font-weight: 500 !important; position: sticky !important; top: 0 !important; z-index: 10 !important; background: #f8fafc !important; }
-.v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: #0f172a; }
+.v4-grid-container td.v4-grid-cell { font-size: 12px !important; font-family: inherit !important; color: var(--v4-text-color, #0f172a) !important; font-weight: 400 !important; }
+.v4-grid-container th.v4-grid-cell { font-size: 12px !important; font-family: inherit !important; color: var(--v4-text-color, #0f172a) !important; font-weight: 400 !important; position: sticky !important; top: 0 !important; z-index: 10 !important; background: #f8fafc !important; }
+.v4-shape { position: relative; border-width: 1.6px !important; border-style: solid !important; border-color: rgb(200, 200, 200); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; background: rgb(255, 255, 255); color: var(--v4-text-color, #0f172a); font-size: 12px; font-weight: 400; font-family: inherit; }
 .v4-shape-text-content, .v4-shape-text-overlay, .v4-shape .v4-editable-cell { padding: 4px !important; margin: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; text-align: center !important; box-sizing: border-box !important; width: 100% !important; height: 100% !important; flex-direction: column !important; }
 .v4-shape-text-content p, .v4-shape-text-overlay p, .v4-shape .v4-editable-cell p { margin: 0 !important; padding: 0 !important; line-height: 1 !important; text-align: center !important; display: block !important; transform: translateY(var(--v4-text-adjust-y, 0px)) !important; }
 .v4-shape-text-content span, .v4-shape-text-overlay span, .v4-shape .v4-editable-cell span { line-height: 1 !important; display: inline-block !important; }
@@ -224,12 +237,12 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
 /* Text Marker Integration - Unified px Top-Left (same as shapes/atoms) */
 .text-marker, .v4-text-box, .v4-text-shape { 
     position: absolute; padding: 0 !important; border-radius: 4px; 
-    border: 1.6px solid transparent; font-size: 14px; line-height: 1.2; 
+    border: 1.6px solid transparent; font-size: 12px; font-weight: 400; font-family: inherit; line-height: 1.2; 
     white-space: normal; cursor: grab; pointer-events: auto; z-index: 100; 
     transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, outline 0.2s;
     min-width: unset; min-height: unset; background: transparent; 
     box-shadow: none; box-sizing: border-box;
-    color: #1e293b; text-align: left;
+    color: var(--v4-text-color, #0f172a); text-align: left;
     width: auto;
 }
 .text-marker .v4-editable-cell, .v4-text-box .v4-editable-cell, .v4-text-shape .v4-editable-cell { padding: 4px !important; margin: 0 !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: inherit; box-sizing: border-box !important; line-height: 1 !important; width: 100% !important; height: 100% !important; }
@@ -250,7 +263,7 @@ svg.lf-icon, div.v4-checkbox.lf-icon, div.v4-radio.lf-icon { background-image: n
     justify-content: center !important;
     border: 2px solid #ffffff !important;
     box-shadow: 0 4px 12px rgba(251, 113, 133, 0.4) !important;
-    font-family: 'Inter', sans-serif !important;
+    font-family: inherit !important;
     font-weight: 800 !important;
     font-size: 13px !important;
     z-index: 1000 !important;
@@ -287,7 +300,7 @@ html, body { position: relative !important; min-height: 100vh; margin: 0; paddin
 .v4-radio-container[data-checked="false"] .v4-radio-dot { display: none !important; }
 .v4-checkbox-container[data-text-enabled="false"] .v4-checkbox-text { display: none !important; }
 .v4-radio-container[data-text-enabled="false"] .v4-radio-text { display: none !important; }
-.v4-checkbox-text, .v4-radio-text { color: #000000 !important; font-size: 12px !important; }
+.v4-checkbox-text, .v4-radio-text { color: var(--v4-text-color, #0f172a) !important; font-size: 12px !important; font-weight: 400 !important; font-family: inherit !important; }
 .v4-checkbox-container[data-text-enabled="false"], 
 .v4-radio-container[data-text-enabled="false"] {
     width: 100% !important;
@@ -298,12 +311,19 @@ html, body { position: relative !important; min-height: 100vh; margin: 0; paddin
     width: 100% !important;
     height: 100% !important;
 }
-.v4-alert-btn.style-primary { background: #4f46e5 !important; border-color: #4f46e5 !important; color: #ffffff !important; }
-.v4-alert-btn.style-normal { background: #ffffff !important; border-color: #cbd5e1 !important; color: #1f2937 !important; }
-.v4-alert-btn.style-negative { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #475569 !important; }
+.v4-alert-btn.style-primary { background: #4f46e5 !important; border-color: #4f46e5 !important; color: #ffffff !important; font-size: 12px !important; font-weight: 400 !important; font-family: inherit !important; }
+.v4-alert-btn.style-normal { background: #ffffff !important; border-color: #cbd5e1 !important; color: var(--v4-text-color, #0f172a) !important; font-size: 12px !important; font-weight: 400 !important; font-family: inherit !important; }
+.v4-alert-btn.style-negative { background: #e2e8f0 !important; border-color: #cbd5e1 !important; color: #475569 !important; font-size: 12px !important; font-weight: 400 !important; font-family: inherit !important; }
+.v4-alert-desc-badge { font-size: 12px !important; font-weight: 400 !important; font-family: inherit !important; }
+.v4-admin-group-header { font-size: 12px !important; font-weight: 400 !important; font-family: inherit !important; }
+.v4-admin-label-cell { font-size: 12px !important; font-weight: 400 !important; color: var(--v4-text-color, #0f172a) !important; font-family: inherit !important; }
+.v4-dp-preset-btn { font-size: 12px !important; font-weight: 400 !important; font-family: inherit !important; }
 .v4-custom-btn {
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18) !important;
     transition: all 0.2s ease !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    font-family: inherit !important;
 }
 .v4-custom-btn:hover {
     filter: brightness(0.95);

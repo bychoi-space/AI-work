@@ -12,14 +12,18 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
-    <link rel="stylesheet" href="assets/style.css?v=V215_FORCE_14PX">
-    <link rel="stylesheet" href="assets/theme.css">
+    <link rel="stylesheet" href="assets/style.css?v=V307_PLACEHOLDER_ALIGN_FIX">
+    <link rel="stylesheet" href="assets/theme.css?v=V307_PLACEHOLDER_ALIGN_FIX">
     <link rel="stylesheet" href="enhanced_v4/style_v4.css">
     <!-- Flatpickr (Date Picker) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
-    <link rel="stylesheet" href="assets/viewer.css?v=V260_STAGE_ALIGN_FIX">
+    <link rel="stylesheet" href="assets/viewer.css?v=V307_PLACEHOLDER_ALIGN_FIX">
+    <!-- PDF Exporter Libraries (html2canvas & jsPDF) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="assets/vctrl_pdf_exporter.js?v=V302_MOBILE_FRAME_BG_FIX"></script>
     <script>
         // --- Console Log Auto-Clearing Guard (Disabled console.clear for better debugging visibility) ---
         (function() {
@@ -76,7 +80,7 @@
             </a>
             <div class="toolbar-divider"></div>
             <img src="assets/logo.svg" class="brand-logo" alt="Logo" loading="lazy">
-            <span class="brand-name" style="font-size: 12px; font-weight: 700; color: #cbd5e1; margin-right: 6px; letter-spacing: -0.2px; white-space: nowrap;">bychoi workspace</span>
+            <span class="brand-name">bychoi workspace</span>
             <span class="toolbar-file-name" id="file-name-display">Loading...</span>
         </div>
         
@@ -108,6 +112,10 @@
                 </button>
             </div>
 
+            <button id="btn-export-project-pdf" class="btn-secondary btn-export-pdf" title="현재 프로젝트의 모든 스크린을 PDF로 내려받기">
+                <span class="material-icons-outlined btn-icon-sm">picture_as_pdf</span>
+                <span>PDF 다운로드</span>
+            </button>
             <button id="btn-global-save" class="btn-accent btn-global-save">전체 저장</button>
         </div>
     </header>
@@ -158,20 +166,20 @@
 
                 <!-- Absolute Centered Placeholder -->
                 <div class="placeholder-card" id="placeholder">
-                    <i class="material-icons-outlined" style="font-size: 64px; color: var(--accent); margin-bottom: 12px;">add_to_photos</i>
-                    <h2 id="placeholder-txt" style="font-weight: 700; color: #fff; margin: 0;">프로젝트 스크린을 추가해주세요.</h2>
-                    <p style="color: rgba(255,255,255,0.4); font-size: 13px; margin: 8px 0 0 0;">왼쪽 프로젝트 스크린 패널에서 '+' 버튼을 눌러 시작하세요.</p>
+                    <span class="material-icons-outlined placeholder-icon">add_to_photos</span>
+                    <h2 id="placeholder-txt" class="placeholder-title">프로젝트 스크린을 추가해주세요.</h2>
+                    <p class="placeholder-subtitle">왼쪽 프로젝트 스크린 패널에서 '+' 버튼을 눌러 시작하세요.</p>
                 </div>
 
                 <!-- Floating Inspector Card (Option B) -->
                 <div id="floating-inspector-card" class="floating-inspector-card" style="display: none;">
                     <div class="floating-inspector-header">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span class="material-icons-outlined" style="font-size: 16px; color: var(--accent);">tune</span>
-                            <span style="font-weight: 700; font-size: 12px; letter-spacing: 0.5px; color: #fff;">OBJECT PROPERTIES</span>
+                        <div class="floating-inspector-title-group">
+                            <span class="material-icons-outlined floating-inspector-icon">tune</span>
+                            <span class="floating-inspector-title">OBJECT PROPERTIES</span>
                         </div>
                         <button id="btn-floating-minimize" title="최소화" class="floating-inspector-minimize-btn">
-                            <span class="material-icons-outlined" style="font-size: 16px;">keyboard_arrow_down</span>
+                            <span class="material-icons-outlined">keyboard_arrow_down</span>
                         </button>
                     </div>
                     <!-- Storage Container for Dynamically Injected Inspector Panels -->
@@ -179,79 +187,79 @@
 
                     <div class="floating-inspector-body" id="floating-inspector-body">
                         <!-- Selection Actions (Dynamic Stacked Layout) -->
-                        <div id="selection-actions-bar" style="display: none; flex-direction: column; background: rgba(99, 102, 241, 0.05); border-bottom: 1px solid var(--border); padding: 12px 14px; gap: 10px; box-sizing: border-box; width: 100%;">
-                            <div style="display: flex; align-items: center; gap: 6px;">
-                                <span class="material-icons-outlined" style="font-size: 14px; color: var(--accent);">info</span>
-                                <span id="selection-count" style="font-size: 10px; font-weight: 800; color: rgba(255, 255, 255, 0.4); letter-spacing: 0.8px; text-transform: uppercase; white-space: nowrap;">
-                                    <span id="selection-number" style="color: var(--accent);">0</span> <span id="selection-label">OBJECT</span> SELECTED
+                        <div id="selection-actions-bar" class="selection-actions-bar" style="display: none;">
+                            <div class="selection-count-group">
+                                <span class="material-icons-outlined selection-count-icon">info</span>
+                                <span id="selection-count" class="selection-count-txt">
+                                    <span id="selection-number" class="selection-count-number">0</span> <span id="selection-label">OBJECT</span> SELECTED
                                 </span>
                             </div>
-                            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
-                                <div style="display: flex; gap: 8px; width: 100%;">
-                                    <button id="btn-group-action" class="v4-inspector-btn btn-accent" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
-                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                            <div class="selection-btn-stack">
+                                <div class="selection-btn-row">
+                                    <button id="btn-group-action" class="v4-inspector-btn btn-accent" style="display: none;">
+                                        <svg class="lf-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                                         GROUP
                                     </button>
-                                    <button id="btn-ungroup-action" class="v4-inspector-btn btn-secondary" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.9); color: #0f172a; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
-                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                                    <button id="btn-ungroup-action" class="v4-inspector-btn btn-secondary" style="display: none;">
+                                        <svg class="lf-icon" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
                                         UNGROUP
                                     </button>
                                 </div>
                                 <button id="btn-add-molecules-action" class="v4-inspector-btn btn-primary">
-                                    <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M12 5v14M5 12h14"></path></svg>
+                                    <svg class="lf-icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
                                     ADD TO MOLECULES
                                 </button>
-                                <div style="display: flex; gap: 8px; width: 100%;">
-                                    <button id="btn-bring-front-action" class="v4-inspector-btn btn-secondary" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
-                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><polyline points="17 11 12 6 7 11"></polyline><polyline points="17 18 12 13 7 18"></polyline></svg>
+                                <div class="selection-btn-row">
+                                    <button id="btn-bring-front-action" class="v4-inspector-btn btn-secondary">
+                                        <svg class="lf-icon" viewBox="0 0 24 24"><polyline points="17 11 12 6 7 11"></polyline><polyline points="17 18 12 13 7 18"></polyline></svg>
                                         BRING FRONT
                                     </button>
-                                    <button id="btn-send-back-action" class="v4-inspector-btn btn-secondary" style="flex: 1; height: 28px; border-radius: 14px; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); padding: 0;">
-                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><polyline points="17 13 12 18 7 13"></polyline><polyline points="17 6 12 11 7 6"></polyline></svg>
+                                    <button id="btn-send-back-action" class="v4-inspector-btn btn-secondary">
+                                        <svg class="lf-icon" viewBox="0 0 24 24"><polyline points="17 13 12 18 7 13"></polyline><polyline points="17 6 12 11 7 6"></polyline></svg>
                                         SEND BACK
                                     </button>
                                 </div>
                             </div>
 
                             <!-- Alignment Section -->
-                            <div id="selection-align-bar" class="v4-inspector-panel" style="display: none; background: rgba(30, 41, 59, 0.4); border: 1.6px solid rgba(99, 102, 241, 0.4); border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                                    <span style="font-size: 10px; font-weight: 900; color: #818cf8; letter-spacing: 1px;">ALIGNMENT</span>
+                            <div id="selection-align-bar" class="v4-inspector-panel selection-align-panel" style="display: none;">
+                                <div class="selection-align-header">
+                                    <span class="selection-align-title">ALIGNMENT</span>
                                 </div>
-                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 6px;">
-                                    <button id="btn-align-left" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Left">
-                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M4 2v20M8 6h12v4H8zM8 14h8v4H8z"/></svg>
+                                <div class="selection-align-grid-3">
+                                    <button id="btn-align-left" class="v4-inspector-btn btn-secondary selection-align-btn" title="Left">
+                                        <svg class="lf-icon" viewBox="0 0 24 24"><path d="M4 2v20M8 6h12v4H8zM8 14h8v4H8z"/></svg>
                                     </button>
-                                    <button id="btn-align-center" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Center">
-                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M12 2v2M12 20v2M8 4h8v6H8zM6 14h12v6H6z"/></svg>
+                                    <button id="btn-align-center" class="v4-inspector-btn btn-secondary selection-align-btn" title="Center">
+                                        <svg class="lf-icon" viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M8 4h8v6H8zM6 14h12v6H6z"/></svg>
                                     </button>
-                                    <button id="btn-align-right" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Right">
-                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M20 2v20M4 6h12v4H4zM8 14h12v4H8z"/></svg>
-                                    </button>
-                                </div>
-                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
-                                    <button id="btn-align-top" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Top">
-                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M2 4h20M6 8v12h4V8zM14 8v8h4V8z"/></svg>
-                                    </button>
-                                    <button id="btn-align-middle" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Middle">
-                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M2 12h2M20 12h2M4 8h6v8H4zM14 6h6v12h-6z"/></svg>
-                                    </button>
-                                    <button id="btn-align-bottom" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Bottom">
-                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;"><path d="M2 20h20M6 4v12h4V4zM14 8v8h4V8z"/></svg>
+                                    <button id="btn-align-right" class="v4-inspector-btn btn-secondary selection-align-btn" title="Right">
+                                        <svg class="lf-icon" viewBox="0 0 24 24"><path d="M20 2v20M4 6h12v4H4zM8 14h12v4H8z"/></svg>
                                     </button>
                                 </div>
-                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 6px;">
-                                    <button id="btn-align-distribute-h" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Distribute Horizontally">
-                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;">
+                                <div class="selection-align-grid-3">
+                                    <button id="btn-align-top" class="v4-inspector-btn btn-secondary selection-align-btn" title="Top">
+                                        <svg class="lf-icon" viewBox="0 0 24 24"><path d="M2 4h20M6 8v12h4V8zM14 8v8h4V8z"/></svg>
+                                    </button>
+                                    <button id="btn-align-middle" class="v4-inspector-btn btn-secondary selection-align-btn" title="Middle">
+                                        <svg class="lf-icon" viewBox="0 0 24 24"><path d="M2 12h2M20 12h2M4 8h6v8H4zM14 6h6v12h-6z"/></svg>
+                                    </button>
+                                    <button id="btn-align-bottom" class="v4-inspector-btn btn-secondary selection-align-btn" title="Bottom">
+                                        <svg class="lf-icon" viewBox="0 0 24 24"><path d="M2 20h20M6 4v12h4V4zM14 8v8h4V8z"/></svg>
+                                    </button>
+                                </div>
+                                <div class="selection-align-grid-2">
+                                    <button id="btn-align-distribute-h" class="v4-inspector-btn btn-secondary selection-align-btn" title="Distribute Horizontally">
+                                        <svg class="lf-icon" viewBox="0 0 24 24">
                                             <line x1="4" y1="2" x2="4" y2="22"></line>
                                             <line x1="20" y1="2" x2="20" y2="22"></line>
                                             <rect x="9" y="6" width="6" height="12" rx="1"></rect>
                                         </svg>
                                     </button>
-                                    <button id="btn-align-distribute-v" class="v4-inspector-btn btn-secondary" style="height: 32px; padding: 0;" title="Distribute Vertically">
-                                        <svg class="lf-icon" viewBox="0 0 24 24" style="width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; background-image:none !important;">
+                                    <button id="btn-align-distribute-v" class="v4-inspector-btn btn-secondary selection-align-btn" title="Distribute Vertically">
+                                        <svg class="lf-icon" viewBox="0 0 24 24">
                                             <line x1="2" y1="4" x2="22" y2="4"></line>
-                                            <line x1="2" y1="20" x2="22" y2="20"></line>
+                                            <line x1="20" y1="2" x2="20" y2="20"></line>
                                             <rect x="6" y="9" width="12" height="6" rx="1"></rect>
                                         </svg>
                                     </button>
@@ -365,16 +373,16 @@
 
     <!-- Auth Modal -->
     <div id="auth-modal" class="modal-overlay">
-        <div class="modal-card" style="max-width: 400px;">
+        <div class="modal-card modal-card-narrow">
             <div class="modal-header">
                 <h3 class="modal-title">에디터 인증</h3>
-                <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">관리 권한이 필요한 작업입니다.</p>
+                <p class="modal-subtitle">관리 권한이 필요한 작업입니다.</p>
             </div>
             <div class="modal-body">
                 <div class="form-group">
                     <label class="form-label">GitHub Personal Access Token</label>
                     <input type="password" id="modal-gh-token" class="form-input" placeholder="ghp_...">
-                    <p id="modal-auth-status" style="font-size: 11px; margin-top: 8px;"></p>
+                    <p id="modal-auth-status" class="form-notice"></p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -387,16 +395,16 @@
     <!-- Modals extracted dynamically -->
 
     <!-- Revision History Modal -->
-    <div id="history-modal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 17, 21, 0.7); backdrop-filter: blur(8px); z-index: 10005; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;">
-        <div class="dialog-card" style="max-width: 560px; width: 92%; max-height: 80vh; display: flex; flex-direction: column; background: rgba(30, 41, 59, 0.95); border: 1.6px solid rgba(255, 255, 255, 0.12); border-radius: 16px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); padding: 24px; box-sizing: border-box; backdrop-filter: blur(20px);">
-            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 14px; margin-bottom: 18px; flex-shrink: 0;">
-                <div style="display: flex; align-items: center; gap: 10px; color: var(--accent-nav, #22d3ee);">
-                    <span class="material-icons-outlined" style="font-size: 22px;">history</span>
-                    <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.2px;">프로젝트 재개정 이력</h3>
+    <div id="history-modal" class="modal-overlay history-dialog-overlay" style="display: none;">
+        <div class="dialog-card history-dialog-card">
+            <div class="history-dialog-header">
+                <div class="history-dialog-title-group">
+                    <span class="material-icons-outlined">history</span>
+                    <h3 class="history-dialog-title">프로젝트 재개정 이력</h3>
                 </div>
-                <button id="btn-close-history" class="btn-secondary" style="width: 32px; height: 32px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); cursor: pointer; color: #cbd5e1; transition: all 0.2s; margin-left: auto;"><span class="material-icons-outlined" style="font-size: 18px;">close</span></button>
+                <button id="btn-close-history" class="history-dialog-close" title="닫기"><span class="material-icons-outlined">close</span></button>
             </div>
-            <div id="history-popup-list" style="flex: 1; overflow-y: auto; padding-right: 4px; display: flex; flex-direction: column; gap: 12px; min-height: 140px;">
+            <div id="history-popup-list" class="history-dialog-list">
                 <!-- Dynamic history entries here -->
             </div>
         </div>
@@ -404,10 +412,11 @@
 
 
     <!-- Script modularization: Pure Vanilla V3 Migration -->
+    <script src="assets/vctrl_typography.js?v=V300_TYPOGRAPHY_UNIFIED"></script>
     <!-- Dynamic UI Library for Inspectors, Library Icons & Modals -->
     <script src="assets/vctrl_ui_library.js?v=V258_ASYNC_LIBRARY"></script>
     <script src="assets/templates.js?v=V199_DYNAMIC_TEMPLATES"></script>
-    <script src="assets/app.js?v=V186_DYNAMIC_TEMPLATES"></script>
+    <script src="assets/app.js?v=V187_NOTIFICATION_ALIGN_FIX"></script>
     
     <!-- Modularized Engine -->
     <script src="assets/ui_library_data.js?v=V300_REFATCORED"></script>
@@ -431,7 +440,7 @@
     <script src="assets/vctrl_iframe_ports.js?v=V300_REFATCORED"></script>
     <script src="assets/vctrl_presentation_pen.js?v=V103_TOOLTIP_GUIDE"></script>
     <script src="assets/vctrl_github_api.js?v=V300_REFATCORED"></script>
-    <script src="assets/vctrl_core.js?v=V240_ROW_HEIGHT_HOTFIX"></script>
+    <script src="assets/vctrl_core.js?v=V241_PDF_EXPORT_FIX"></script>
     <script src="assets/vctrl_smartguide.js?v=V196_DEBUG_TOGGLE"></script>
     <script src="assets/vctrl_grouping.js?v=V182_MARQUEE_CLEANUP_FIX"></script>
     <script src="assets/vctrl_screen_manager.js?v=V300_REFATCORED"></script>

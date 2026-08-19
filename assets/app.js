@@ -670,7 +670,9 @@ const Notification = {
         overlay.id = 'notification-overlay';
         overlay.className = 'dialog-overlay';
         overlay.innerHTML = `<div class="dialog-card">
-                <div id="notification-icon" class="material-icons-outlined dialog-icon"></div>
+                <div id="notification-icon-bg" class="dialog-icon">
+                    <span id="notification-icon" class="material-icons-outlined"></span>
+                </div>
                 <h3 id="notification-title" class="dialog-title"></h3>
                 <div id="notification-message" class="dialog-message"></div>
                 <div id="notification-input-container"></div>
@@ -680,6 +682,7 @@ const Notification = {
         this.DOM = {
             overlay,
             card: overlay.querySelector('.dialog-card'),
+            iconBg: overlay.querySelector('#notification-icon-bg'),
             icon: overlay.querySelector('#notification-icon'),
             title: overlay.querySelector('#notification-title'),
             message: overlay.querySelector('#notification-message'),
@@ -694,8 +697,14 @@ const Notification = {
         const iconMap = { success: 'check_circle', error: 'error_outline', warning: 'report_problem', info: 'info_outline' };
         
         // Clean up classes
-        this.DOM.icon.className = `material-icons-outlined dialog-icon ${type || 'info'}`;
-        this.DOM.icon.innerText = iconMap[type] || 'info_outline';
+        const iconBg = this.DOM.iconBg || this.DOM.overlay.querySelector('#notification-icon-bg');
+        if (iconBg) {
+            iconBg.className = `dialog-icon ${type || 'info'}`;
+        }
+        if (this.DOM.icon) {
+            this.DOM.icon.className = 'material-icons-outlined';
+            this.DOM.icon.innerText = iconMap[type] || 'info_outline';
+        }
         
         this.DOM.inputContainer.innerHTML = hasInput ? `<input type="text" id="notification-prompt-input" class="dialog-input" style="width:100%; box-sizing:border-box;" value="${defaultValue}">` : '';
         this.DOM.footer.innerHTML = '';

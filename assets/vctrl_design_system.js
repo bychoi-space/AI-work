@@ -115,8 +115,9 @@ window.v4DesignSystemScript = `
                     if (header.style.display !== 'flex') header.style.display = 'flex';
                     if (header.style.alignItems !== 'center') header.style.alignItems = 'center';
                     if (header.style.padding !== '0px 16px') header.style.padding = '0 16px';
-                    if (header.style.fontSize !== '14px') header.style.fontSize = '14px';
-                    if (header.style.fontWeight !== '700') header.style.fontWeight = '700';
+                    if (header.style.fontSize !== '12px') header.style.fontSize = '12px';
+                    if (header.style.fontWeight !== '400') header.style.fontWeight = '400';
+                    if (header.style.fontFamily !== 'inherit') header.style.fontFamily = 'inherit';
                     if (header.style.boxSizing !== 'border-box') header.style.boxSizing = 'border-box';
                     if (header.style.width !== '100%') header.style.width = '100%';
                     if (header.style.outline !== 'none') header.style.outline = 'none';
@@ -533,12 +534,14 @@ window.v4DesignSystemScript = `
                 const isActive = btn.getAttribute('data-preset') === defaultPreset;
                 const targetBg = isActive ? '#1d4ed8' : '#ffffff';
                 const targetBc = isActive ? '#1d4ed8' : '#cccccc';
-                const targetColor = isActive ? '#ffffff' : '#374151';
-                const targetFw = isActive ? '700' : '600';
+                const targetColor = isActive ? '#ffffff' : '#0f172a';
+                const targetFw = '400';
                 if (btn.style.background !== targetBg) btn.style.background = targetBg;
                 if (btn.style.borderColor !== targetBc) btn.style.borderColor = targetBc;
                 if (btn.style.color !== targetColor) btn.style.color = targetColor;
                 if (btn.style.fontWeight !== targetFw) btn.style.fontWeight = targetFw;
+                if (btn.style.fontSize !== '12px') btn.style.fontSize = '12px';
+                if (btn.style.fontFamily !== 'inherit') btn.style.fontFamily = 'inherit';
             });
 
             if (dp.style.width !== '100%') dp.style.width = '100%';

@@ -492,6 +492,9 @@ async function renderList(projectsToRender = state.projects) {
         }
 
         card.innerHTML = `
+            <div class="pdf-btn-card" data-project="${p.name}" title="프로젝트 전체 스크린 PDF 다운로드">
+                <span class="material-icons-outlined">picture_as_pdf</span>
+            </div>
             <div class="edit-btn-card" data-project="${p.name}" title="정보 수정">
                 <span class="material-icons-outlined">edit</span>
             </div>
@@ -525,10 +528,18 @@ async function renderList(projectsToRender = state.projects) {
 }
 
 document.addEventListener('click', async (e) => {
+    const pdfBtn = e.target.closest('.pdf-btn-card');
     const delBtn = e.target.closest('.delete-btn-card');
     const editBtn = e.target.closest('.edit-btn-card');
     const figmaLink = e.target.closest('.meta-chip-figma');
     const addCta = e.target.closest('.meta-chip-add-cta');
+
+    if (pdfBtn) {
+        e.preventDefault(); e.stopPropagation();
+        const projName = pdfBtn.dataset.project;
+        const targetProj = state.projects.find(p => p.name === projName);
+        exportProjectToPDF(projName, targetProj ? targetProj.meta : null);
+    }
 
     if (figmaLink) {
         e.stopPropagation();

@@ -1,0 +1,21 @@
+{
+  "title": "[기획전] 상품표현카드 개인화 정렬 로직",
+  "screens": {
+    "01_Personalization_Sorting_Logic.html": {
+      "title": "상품표현카드 개인화 정렬 프로세스",
+      "type": "plan",
+      "updatedAt": "2026-08-19T10:15:00.000Z",
+      "template": "template_plan.html",
+      "description": [],
+      "connectors": [],
+      "defaultTab": "editor",
+      "screenDesc": "LFmall 2대 개인화 로직(관심상품 ML + 직접설정 ES) 결합 기반 기획전 상품표현카드 1·2순위 하이브리드 정렬 프로세스 설계"
+    }
+  },
+  "assignee": "최범열",
+  "developer": "e커머스개발실 / Data Innovation BSU",
+  "period": "2026.08.19 ~ 2026.09.18",
+  "jira": "",
+  "themeIndex": 5,
+  "updated": "2026-08-19 10:15:00"
+}
