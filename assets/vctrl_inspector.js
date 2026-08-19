@@ -322,6 +322,8 @@ const ProjectMetadataManager = {
         const floatingInspector = document.getElementById('floating-inspector-card');
         if (floatingInspector) {
             floatingInspector.style.setProperty('display', 'flex', 'important');
+            floatingInspector.style.bottom = '24px';
+            floatingInspector.style.top = 'auto';
             if (compStyles && typeof compStyles.x === 'number' && typeof compStyles.w === 'number') {
                 const compCenter = compStyles.x + (compStyles.w / 2);
                 if (compCenter >= 720) {
@@ -815,6 +817,8 @@ const ProjectMetadataManager = {
             floatingInspector.style.setProperty('display', 'none', 'important');
             floatingInspector.style.right = '24px';
             floatingInspector.style.left = 'auto';
+            floatingInspector.style.bottom = '24px';
+            floatingInspector.style.top = 'auto';
         }
         state.isEditing = false;
         state.editingIndex = -1;

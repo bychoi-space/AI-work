@@ -258,25 +258,35 @@ body.fullscreen-mode #btn-fullscreen-exit {
 /* Floating Inspector Card Style (Glassmorphism & Draggable) */
 .floating-inspector-card {
     position: absolute;
-    bottom: 24px;
+    bottom: 24px !important;
+    top: auto !important;
     right: 24px;
     width: 320px;
     max-height: calc(100% - 120px);
-    background: rgba(30, 41, 59, 0.7) !important;
+    background: rgba(15, 23, 42, 0.92) !important;
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1.6px solid rgba(255, 255, 255, 0.1) !important;
+    border: 1.6px solid rgba(255, 255, 255, 0.12) !important;
     border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
     z-index: 10001;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .floating-inspector-card.minimized {
     max-height: 44px !important;
+    overflow: hidden !important;
+}
+
+.floating-inspector-card.minimized .floating-inspector-body {
+    display: none !important;
+}
+
+.floating-inspector-card.minimized .floating-inspector-header {
+    border-bottom: none !important;
 }
 
 .floating-inspector-header {
@@ -289,11 +299,30 @@ body.fullscreen-mode #btn-fullscreen-exit {
     cursor: grab;
     user-select: none;
     flex-shrink: 0;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .floating-inspector-header:active {
     cursor: grabbing;
+}
+
+.floating-inspector-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.floating-inspector-icon {
+    font-size: 16px;
+    color: var(--accent);
+}
+
+.floating-inspector-title {
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    color: var(--text-primary);
+    text-transform: uppercase;
 }
 
 .floating-inspector-minimize-btn {
@@ -974,71 +1003,7 @@ body.fullscreen-mode .stage {
     margin: 8px 0 0 0;
 }
 
-/* Floating Inspector (Object Properties) */
-.floating-inspector-card {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 290px;
-    background: rgba(23, 25, 34, 0.92);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1.6px solid var(--border-color);
-    border-radius: 16px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
-    z-index: 10003;
-    overflow: hidden;
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
-}
-.floating-inspector-card:hover {
-    border-color: rgba(99, 102, 241, 0.35);
-}
-.floating-inspector-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    background: rgba(255, 255, 255, 0.03);
-    border-bottom: 1px solid var(--border-color);
-}
-.floating-inspector-title-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.floating-inspector-icon {
-    font-size: 16px;
-    color: var(--accent);
-}
-.floating-inspector-title {
-    font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 0.8px;
-    color: var(--text-primary);
-    text-transform: uppercase;
-}
-.floating-inspector-minimize-btn {
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 0;
-}
-.floating-inspector-minimize-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-primary);
-}
-.floating-inspector-body {
-    max-height: calc(100vh - 180px);
-    overflow-y: auto;
-}
+
 .selection-actions-bar {
     display: flex;
     flex-direction: column;
