@@ -1,5 +1,5 @@
 {
-  "title": "[배송] 7월 배송예정일 이슈",
+  "title": "[배송] 26년 7월 배송예정일 이슈",
   "screens": {
     "03_Delivery_Notice_740.html": {
       "title": "03_Delivery_Notice_740",
@@ -12,7 +12,7 @@
   },
   "assignee": "최범열",
   "developer": "신소연",
-  "period": "2026.07.06(월) ~ 2026.07.20(월)",
+  "period": "2026.07.06 ~ 2026.07.20",
   "jira": "LFML-144852",
   "themeIndex": 6,
   "updated": "2026-07-10 09:51:09"

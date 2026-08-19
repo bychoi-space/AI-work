@@ -1,6 +1,15 @@
 {
-  "title": "[기획전] 상품표현카드 개인화 정렬 로직",
+  "title": "[기획전] 상품표현카드 개인화 정렬",
   "screens": {
+    "00_Cover_445.html": {
+      "title": "00_Cover_445",
+      "type": "cover",
+      "updatedAt": "2026-08-19T01:01:18.315Z",
+      "template": "template_cover.html",
+      "version": 0.1,
+      "description": [],
+      "connectors": []
+    },
     "01_Personalization_Sorting_Logic.html": {
       "title": "상품표현카드 개인화 정렬 프로세스",
       "type": "plan",
@@ -14,8 +23,12 @@
   },
   "assignee": "최범열",
   "developer": "e커머스개발실 / Data Innovation BSU",
-  "period": "2026.08.19 ~ 2026.09.18",
-  "jira": "",
+  "period": "2026.08.19(수) ~ 2026.09.24(목)",
+  "jira": "LFML-144862",
+  "screenOrder": [
+    "00_Cover_445.html",
+    "01_Personalization_Sorting_Logic.html"
+  ],
   "themeIndex": 5,
   "updated": "2026-08-19 10:15:00"
 }
