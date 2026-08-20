@@ -5,15 +5,15 @@ if (!window.v4Styles) {
 
 window.v4Script = `
 (function() {
-    // --- Console Log Auto-Clearing Guard inside iframe ---
+    // --- Console Log Auto-Clearing Guard inside iframe (Preserved for debugging) ---
     (function() {
         let logCount = 0;
         const originalLog = console.log;
         console.log = function(...args) {
             logCount++;
-            if (logCount > 150) {
-                console.clear();
-                originalLog("[LF Editor Iframe] Auto-cleared console logs after reaching threshold.");
+            if (logCount > 1500) {
+                // console.clear(); // Keep logs preserved for debugging visibility
+                originalLog("[LF Editor Iframe] Logger threshold reached, preservation active.");
                 logCount = 0;
             }
             originalLog.apply(console, args);

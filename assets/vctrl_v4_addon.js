@@ -42,12 +42,7 @@
     };
     const highlightActive = window.highlightActive;
 
-    // 1. Component Insertion (Delegated to vctrl_component_inserter.js)
-    if (!window.insertV4ComponentById) {
-        window.insertV4ComponentById = function(id, customIdx) {
-            console.log("[V4 Addon] Delegating insertion for:", id);
-        };
-    }
+    // 1. Component Insertion (Handled by vctrl_component_inserter.js as SSOT)
 
     // Dependencies are now pre-injected via vctrl_v3.js loadScreen() for security compliance.
 

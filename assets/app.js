@@ -50,6 +50,7 @@ const ghConfig = {
     get isReadOnly() { return !this.token; },
     clearToken() { localStorage.removeItem('gh_token'); location.reload(); }
 };
+window.ghConfig = ghConfig;
 
 async function listContents(path) {
     const safePath = (ghConfig.dataDir + path).split('/').map(segment => encodeURIComponent(segment).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16))).join('/');

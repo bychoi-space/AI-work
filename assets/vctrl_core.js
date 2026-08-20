@@ -48,8 +48,6 @@ function getInlinedEngineScript() {
         (window.v4PortConnectorScript || '') + '\n' + 
         (window.v4GridScript || '') + '\n' + 
         (window.v4AccordionScript || '') + '\n' + 
-        (window.v4IframeTextEditorScript || '') + '\n' + 
-        (window.v4IframeStyleHandlersScript || '') + '\n' + 
         (window.v4Script || '') + '\n</script>';
 }
 
